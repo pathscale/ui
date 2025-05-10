@@ -30,6 +30,7 @@ const Polymorphic = <ElementProps,>(
 ) => {
   const [localProps, otherProps] = splitProps(props, ["as"]);
 
+  // biome-ignore lint: types are valid
   const cached = createMemo<Function | string>(() => localProps.as ?? "div");
 
   return createMemo(() => {
@@ -38,7 +39,12 @@ const Polymorphic = <ElementProps,>(
       case "function":
         return untrack(() => component(otherProps));
       case "string":
-        return <Dynamic component={component} {...otherProps} />;
+        return (
+          <Dynamic
+            component={component}
+            {...otherProps}
+          />
+        );
     }
   }) as unknown as JSX.Element;
 };

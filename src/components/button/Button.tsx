@@ -15,13 +15,13 @@ import styles from "./Button.module.css";
 
 export const variants = {
   color: {
-    inverse: styles["button__inverse"],
-    primary: styles["button__primary"],
-    secondary: styles["button__secondary"],
-    tertiary: styles["button__tertiary"],
-    accent: styles["button__accent"],
-    positive: styles["button__positive"],
-    destructive: styles["button__destructive"],
+    inverse: styles.button__inverse,
+    primary: styles.button__primary,
+    secondary: styles.button__secondary,
+    tertiary: styles.button__tertiary,
+    accent: styles.button__accent,
+    positive: styles.button__positive,
+    destructive: styles.button__destructive,
   },
   loading: styles["button--loading"],
 } as const;

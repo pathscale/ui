@@ -23,11 +23,7 @@ function generateConfig(format: "esm" | "cjs", jsx: boolean): Options {
       options.drop = ["console", "debugger"];
     },
     outExtension() {
-      if (jsx) {
-        return { js: ".jsx" };
-      } else {
-        return {};
-      }
+      return jsx ? { js: ".jsx" } : {};
     },
     loader: {
       ".css": "copy",
