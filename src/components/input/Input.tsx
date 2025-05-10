@@ -21,29 +21,21 @@ export type InputProps = Partial<
 const Input = (props: InputProps) => {
   const defaultedProps = mergeProps({ type: "text" }, props);
 
-  const [variantProps, variantRest] = splitProps(defaultedProps, [
-    "class",
-    ...inputVariants.variantKeys,
-  ]);
-
-  const [localProps, otherProps] = splitProps(variantRest, [
-    "type",
-    "passwordReveal",
-    "value",
-    "onInput",
-    "leftIcon",
-    "rightIcon",
-  ]);
+  const [localProps, variantProps, otherProps] = splitProps(
+    defaultedProps,
+    ["passwordReveal", "leftIcon", "rightIcon"],
+    ["class", ...inputVariants.variantKeys]
+  );
 
   const [showPassword, setShowPassword] = createSignal(false);
 
   const computedType = createMemo(() =>
     localProps.passwordReveal && showPassword()
       ? "text"
-      : (localProps.type ?? "text")
+      : (defaultedProps.type ?? "text")
   );
 
-  localProps.type = computedType();
+  const { type: _ignored, ...cleanOtherProps } = otherProps;
 
   return (
     <div class="relative flex items-center">
@@ -55,9 +47,9 @@ const Input = (props: InputProps) => {
 
       <input
         class={inputVariants(variantProps)}
+        type={computedType()}
         aria-invalid={variantProps.color === "danger" ? "true" : undefined}
-        {...localProps}
-        {...otherProps}
+        {...cleanOtherProps}
       />
 
       <Show when={localProps.passwordReveal && localProps.rightIcon}>
