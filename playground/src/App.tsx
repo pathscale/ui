@@ -1,6 +1,4 @@
-import Button, {
-  type ButtonVariantProps,
-} from "@pathscale/ui/components/button";
+import Button, { type ButtonVariantProps } from "../../src/components/button";
 import { createSignal, For } from "solid-js";
 
 export default function App() {
