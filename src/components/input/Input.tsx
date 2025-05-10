@@ -1,123 +1,74 @@
 import {
-  PolymorphicInput,
-  type PolymorphicInputElementProps,
-  type PolymorphicInputSharedProps,
-  type PolymorphicProps,
-} from "@src/components/polymorphic";
-import { classes } from "@src/lib/style";
-import {
-  type Component,
+  createMemo,
   createSignal,
   type JSX,
   mergeProps,
+  Show,
   splitProps,
-  type ValidComponent,
 } from "solid-js";
-import styles from "./Input.module.css";
+import { inputVariants } from "./Input.styles";
+import type { ClassProps, VariantProps } from "@src/lib/style";
 
-export const variants = {
-  color: {
-    danger: styles.input__danger,
-    success: styles.input__success,
-    warning: styles.input__warning,
-  },
-  loading: styles["input--loading"],
-  rounded: styles["input--rounded"],
-  expanded: styles["input--expanded"],
-} as const;
+export type InputVariantProps = VariantProps<typeof inputVariants>;
 
-export type InputVariantProps = {
-  color?: keyof typeof variants.color;
-  loading?: boolean;
-  rounded?: boolean;
-  expanded?: boolean;
+export type InputSharedProps = ClassProps & {
+  value?: string;
+  onInput?: JSX.EventHandlerUnion<HTMLInputElement, InputEvent>;
+  leftIcon?: JSX.Element;
+  rightIcon?: JSX.Element;
+  type?: string;
   passwordReveal?: boolean;
 };
 
-export type InputSharedProps<T extends ValidComponent = "input"> =
-  PolymorphicInputSharedProps<T> & {
-    class?: string;
-    value?: string;
-    onInput?: JSX.EventHandlerUnion<HTMLInputElement, InputEvent>;
-    leftIcon?: JSX.Element;
-    rightIcon?: JSX.Element;
-  };
+export type InputProps = Partial<InputVariantProps & InputSharedProps>;
 
-export type InputElementProps = PolymorphicInputElementProps &
-  InputSharedProps & {
-    "aria-invalid"?: "true" | undefined;
-  };
-
-export type InputProps<T extends ValidComponent = "input"> = Partial<
-  InputVariantProps & InputSharedProps<T>
->;
-
-const Input = <T extends ValidComponent = "input">(
-  props: PolymorphicProps<T, InputProps<T>>
-) => {
+const Input = (props: InputProps) => {
   const defaultedProps = mergeProps({ type: "text" }, props);
-  const [localProps, otherProps] = splitProps(defaultedProps as InputProps, [
+  const [variantProps, otherProps] = splitProps(defaultedProps, [
     "class",
-    "color",
-    "loading",
-    "rounded",
-    "expanded",
-    "passwordReveal",
-    "type",
+    ...inputVariants.variantKeys,
     "value",
     "onInput",
     "leftIcon",
     "rightIcon",
+    "passwordReveal",
+    "type",
   ]);
 
   const [showPassword, setShowPassword] = createSignal(false);
 
-  const computedType = () => {
-    if (localProps.passwordReveal && showPassword()) {
-      return "text";
-    }
-
-    return localProps.type;
-  };
+  const computedType = createMemo(() =>
+    variantProps.passwordReveal && showPassword()
+      ? "text"
+      : (variantProps.type ?? "text")
+  );
 
   return (
-    <div class={styles.input__wrapper}>
-      {localProps.leftIcon && (
-        <span class={styles["input__icon--left"]}>{localProps.leftIcon}</span>
-      )}
+    <div class="relative flex items-center">
+      <Show when={variantProps.leftIcon}>
+        <span class="absolute left-3 top-1/2 -translate-y-1/2">
+          {variantProps.leftIcon}
+        </span>
+      </Show>
 
-      <PolymorphicInput<
-        Component<Omit<InputElementProps, keyof PolymorphicInputElementProps>>
-      >
-        class={classes(
-          styles.input,
-          localProps.color && variants.color[localProps.color],
-          localProps.loading && variants.loading,
-          localProps.rounded && variants.rounded,
-          localProps.expanded && variants.expanded,
-          localProps.class
-        )}
+      <input
+        class={inputVariants(variantProps)}
         type={computedType()}
-        value={localProps.value}
-        onInput={localProps.onInput}
-        aria-invalid={localProps.color === "danger" ? "true" : undefined}
+        value={variantProps.value}
+        onInput={variantProps.onInput}
+        aria-invalid={variantProps.color === "danger" ? "true" : undefined}
         {...otherProps}
       />
-      {localProps.rightIcon || localProps.passwordReveal ? (
-        <span class={styles["input__icon--right"]}>
-          {localProps.passwordReveal ? (
-            <button
-              type="button"
-              onclick={() => setShowPassword(!showPassword())}
-              class={styles.input__revealButton}
-            >
-              {localProps.rightIcon}
-            </button>
-          ) : (
-            localProps.rightIcon
-          )}
-        </span>
-      ) : null}
+
+      <Show when={variantProps.passwordReveal && variantProps.rightIcon}>
+        <button
+          type="button"
+          onClick={() => setShowPassword((prev) => !prev)}
+          class="absolute right-3 top-1/2 -translate-y-1/2 outline-none"
+        >
+          {variantProps.rightIcon}
+        </button>
+      </Show>
     </div>
   );
 };

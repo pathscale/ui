@@ -38,7 +38,7 @@ export default function App() {
       <Input
         value={username()}
         onInput={(e) => setUsername(e.currentTarget.value)}
-        placeholder="Username"
+        placeholder="the_boogeyman"
       />
 
       <Input
