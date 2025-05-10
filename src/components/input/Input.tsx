@@ -23,19 +23,15 @@ const Input = (props: InputProps) => {
 
   const [localProps, variantProps, otherProps] = splitProps(
     defaultedProps,
-    ["passwordReveal", "leftIcon", "rightIcon"],
+    ["type", "passwordReveal", "leftIcon", "rightIcon"],
     ["class", ...inputVariants.variantKeys]
   );
 
   const [showPassword, setShowPassword] = createSignal(false);
 
   const computedType = createMemo(() =>
-    localProps.passwordReveal && showPassword()
-      ? "text"
-      : (defaultedProps.type ?? "text")
+    localProps.passwordReveal && showPassword() ? "text" : defaultedProps.type
   );
-
-  const { type: _ignored, ...cleanOtherProps } = otherProps;
 
   return (
     <div class="relative flex items-center">
@@ -49,7 +45,7 @@ const Input = (props: InputProps) => {
         class={inputVariants(variantProps)}
         type={computedType()}
         aria-invalid={variantProps.color === "danger" ? "true" : undefined}
-        {...cleanOtherProps}
+        {...otherProps}
       />
 
       <Show when={localProps.passwordReveal && localProps.rightIcon}>
