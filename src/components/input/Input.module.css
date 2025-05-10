@@ -1,0 +1,65 @@
+.input {
+  border: 1px solid gray;
+  padding: 0.5rem 0.75rem;
+  border-radius: 0.5rem;
+  font-size: 1rem;
+  width: 100%;
+}
+
+.input:focus {
+  outline: none;
+  border-color: black;
+}
+
+.input__danger {
+  border-color: red;
+  color: red;
+}
+
+.input__success {
+  border-color: green;
+  color: green;
+}
+
+.input__warning {
+  border-color: orange;
+  color: orange;
+}
+
+.input--rounded {
+  border-radius: 1.5rem;
+}
+
+.input--loading {
+  opacity: 0.5;
+}
+
+.input__wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.input__icon-left .input__icon-right {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.input__icon-left {
+  left: 0.75rem;
+}
+
+.input__icon-right {
+  right: 0.75rem;
+}
+
+.input__revealButton {
+  all: unset;
+  cursor: pointer;
+  padding: 0.25rem;
+  font-size: 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}

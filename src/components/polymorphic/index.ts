@@ -7,6 +7,11 @@ import PolymorphicButton, {
   type PolymorphicButtonProps,
   type PolymorphicButtonSharedProps,
 } from "./PolymorphicButton";
+import PolymorphicInput, {
+  type PolymorphicInputElementProps,
+  type PolymorphicInputProps,
+  type PolymorphicInputSharedProps,
+} from "./PolymorphicInput";
 
 export type {
   PolymorphicAttributes,
@@ -14,6 +19,9 @@ export type {
   PolymorphicButtonProps,
   PolymorphicButtonSharedProps,
   PolymorphicProps,
+  PolymorphicInputElementProps,
+  PolymorphicInputProps,
+  PolymorphicInputSharedProps,
 };
 
-export { Polymorphic, PolymorphicButton };
+export { Polymorphic, PolymorphicButton, PolymorphicInput };
