@@ -6,7 +6,7 @@ export default function App() {
     createSignal<ButtonVariantProps["color"]>("primary");
 
   return (
-    <div>
+    <div class="flex gap-2">
       <select
         name="color"
         id="color"

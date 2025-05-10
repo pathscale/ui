@@ -1,0 +1,27 @@
+@layer theme {
+  [data-theme="dark"] {
+    --color-bg-body: var(--color-zinc-900);
+    --color-bg-inverse: var(--color-zinc-100);
+    --color-bg-primary: var(--color-zinc-800);
+    --color-bg-secondary: var(--color-zinc-700);
+    --color-bg-tertiary: var(--color-zinc-600);
+    --color-bg-accent: var(--color-sky-600);
+    --color-bg-positive: var(--color-emerald-700);
+    --color-bg-destructive: var(--color-rose-800);
+
+    --color-fg-body: var(--color-zinc-100);
+    --color-fg-inverse: var(--color-zinc-900);
+    --color-fg-primary: var(--color-zinc-200);
+    --color-fg-secondary: var(--color-zinc-300);
+    --color-fg-tertiary: var(--color-zinc-400);
+    --color-fg-accent: var(--color-sky-500);
+    --color-fg-positive: var(--color-emerald-600);
+    --color-fg-destructive: var(--color-rose-700);
+  }
+}
+
+@layer base {
+  [data-theme="dark"] {
+    color-scheme: only dark;
+  }
+}

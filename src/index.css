@@ -1,0 +1,26 @@
+@import "./styles/base/index.css";
+@import "./styles/themes/dark.css";
+@import "./styles/themes/light.css";
+
+@theme {
+  --color-light: var(--color-zinc-100);
+  --color-dark: var(--color-zinc-900);
+
+  --color-bg-body: var(--color-bg-body);
+  --color-bg-inverse: var(--color-bg-inverse);
+  --color-bg-primary: var(--color-bg-primary);
+  --color-bg-secondary: var(--color-bg-secondary);
+  --color-bg-tertiary: var(--color-bg-tertiary);
+  --color-bg-accent: var(--color-bg-accent);
+  --color-bg-positive: var(--color-bg-positive);
+  --color-bg-destructive: var(--color-bg-destructive);
+
+  --color-fg-body: var(--color-fg-body);
+  --color-fg-inverse: var(--color-fg-inverse);
+  --color-fg-primary: var(--color-fg-primary);
+  --color-fg-secondary: var(--color-fg-secondary);
+  --color-fg-tertiary: var(--color-fg-tertiary);
+  --color-fg-accent: var(--color-fg-accent);
+  --color-fg-positive: var(--color-fg-positive);
+  --color-fg-destructive: var(--color-fg-destructive);
+}

@@ -11,7 +11,12 @@ function generateConfig(format: "esm" | "cjs", jsx: boolean): Options {
     minify: false,
     sourcemap: false,
     dts: format === "esm" && !jsx,
-    entry: ["src/index.ts", "src/*/index.tsx", "src/components/*/index.ts"],
+    entry: [
+      "src/index.ts",
+      "src/index.css",
+      "src/*/index.tsx",
+      "src/components/*/index.ts",
+    ],
     outDir: "dist/",
     treeshake: { preset: "smallest" },
     replaceNodeEnv: true,
@@ -24,9 +29,6 @@ function generateConfig(format: "esm" | "cjs", jsx: boolean): Options {
     },
     outExtension() {
       return jsx ? { js: ".jsx" } : {};
-    },
-    loader: {
-      ".css": "copy",
     },
     esbuildPlugins: !jsx ? [solidPlugin({ solid: { generate: "dom" } })] : [],
   };

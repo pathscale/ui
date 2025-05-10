@@ -7,7 +7,6 @@
     "paths": {
       "@src/*": ["./src/*"]
     },
-    "types": ["./client.d.ts"],
     "moduleResolution": "Bundler",
     "noEmit": true,
     "allowSyntheticDefaultImports": true,
