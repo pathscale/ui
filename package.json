@@ -1,0 +1,24 @@
+{
+  "name": "@pathscale/monorepo",
+  "private": true,
+  "description": "Highly opinionated SolidJS component library — batteries and kitchen sink included, but optimized and shiny.",
+  "license": "MIT",
+  "author": "pathscale",
+  "workspaces": [
+    "examples/*",
+    "packages/*"
+  ],
+  "scripts": {
+    "build": "bun run -F @pathscale/ui build",
+    "clean": "rm -rf node_modules && bun run -F '*' clean",
+    "dev": "bun run -F bare dev",
+    "format": "sort-package-json && bun run -F '*' format",
+    "lint": "bun run -F '*' lint",
+    "preview": "bun run -F bare preview"
+  },
+  "devDependencies": {
+    "@types/bun": "^1.2.12",
+    "sort-package-json": "^3.2.1",
+    "typescript": "^5.8.3"
+  }
+}

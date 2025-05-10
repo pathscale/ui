@@ -1,0 +1,50 @@
+.button {
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: 0.75rem;
+  cursor: pointer;
+  font-size: 1rem;
+}
+
+.button:hover {
+  opacity: 0.75;
+}
+
+.button__inverse {
+  color: black;
+  background-color: white;
+}
+
+.button__primary {
+  color: black;
+  background-color: lightgray;
+}
+
+.button__secondary {
+  color: black;
+  background-color: gray;
+}
+
+.button__tertiary {
+  color: black;
+  background-color: darkgray;
+}
+
+.button__accent {
+  color: white;
+  background-color: blue;
+}
+
+.button__positive {
+  color: white;
+  background-color: green;
+}
+
+.button__destructive {
+  color: white;
+  background-color: red;
+}
+
+.button--loading {
+  opacity: 0.5;
+}
