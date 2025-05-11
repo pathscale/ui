@@ -55,10 +55,19 @@ export default function App() {
           alt="John Doe"
           background="has-background-info"
           text="has-text-dark"
-          src="https://example.com/john-doe.jpg"
-          dataSrc="https://example.com/john-doe.jpg"
+          src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde"
+          dataSrc="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde"
           customClass="custom-avatar-class"
           rounded={true}
+        />
+        <Avatar
+          alt="John Doe"
+          background="has-background-info"
+          text="has-text-dark"
+          src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde"
+          dataSrc="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde"
+          customClass="custom-avatar-class"
+          rounded={false}
         />
       </div>
     </>
