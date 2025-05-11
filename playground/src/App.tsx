@@ -1,6 +1,7 @@
 import Button, { type ButtonVariantProps } from "../../src/components/button";
 import Input from "../../src/components/input";
 import Textarea from "../../src/components/textarea";
+import Checkbox from "../../src/components/checkbox";
 import { createSignal, For } from "solid-js";
 import Avatar from "../../src/components/Avatar";
 
@@ -91,6 +92,21 @@ export default function App() {
             value=""
             onInput={(e) => console.log(e.currentTarget.value)}
           />
+        </section>
+
+        <section class="space-y-2">
+          <h2 class="text-lg font-semibold">Checkbox</h2>
+
+          <div class="flex flex-col gap-3">
+            <Checkbox
+              label="Accept Terms"
+              onChange={(e) => console.log("Checked:", e.currentTarget.checked)}
+            />
+
+            <Checkbox label="Indeterminate" indeterminate />
+
+            <Checkbox label="Disabled checkbox" checked disabled />
+          </div>
         </section>
       </main>
     </>
