@@ -1,3 +1,12 @@
-import { Avatar } from "./Avatar";
 
-export default { Avatar };
+import Avatar, {
+    type AvatarProps,
+    type avatarVariants,
+} from "./Avatar";
+
+export type {
+    AvatarProps,
+    avatarVariants,
+};
+
+export default Avatar;

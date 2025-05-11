@@ -1,12 +1,14 @@
-import type { Component } from "solid-js";
-import { createSignal, onMount, createMemo } from "solid-js";
+import { createSignal, onMount, createMemo, type Component } from "solid-js";
 import { checkBenchieSupport } from "@src/utils/functions";
 import { avatarVariants } from "./Avatar.styles";
+import type { VariantProps } from "@src/lib/style";
 
 const t = (url: string, cdn: string) => `${cdn}/${url}`;
 const CDN_URL = "https://cdn.example.com"; 
 
-type AvatarProps = {
+export type avatarVariants = VariantProps<typeof avatarVariants>;
+
+export type AvatarProps = {
   alt?: string;
   size?: "sm" | "md" | "lg";
   rounded?: boolean;
@@ -17,7 +19,7 @@ type AvatarProps = {
   customClass?: string;
 };
 
-export const Avatar: Component<AvatarProps> = (props) => {
+const Avatar: Component<AvatarProps> = (props) => {
   const hasBenchieSupport = checkBenchieSupport();
 
   const [source, setSource] = createSignal(props.src || props.dataSrc);
@@ -25,8 +27,7 @@ export const Avatar: Component<AvatarProps> = (props) => {
 
   onMount(async () => {
     if (props.dataSrc && hasBenchieSupport) {
-      // Define t and $__CDN appropriately in your project context
-      const result = await t(props.dataSrc, CDN_URL);
+      const result = await t(props.dataSrc, CDN_URL); 
       setSource(result);
     }
   });
@@ -71,6 +72,6 @@ export const Avatar: Component<AvatarProps> = (props) => {
       )}
     </figure>
   );
-}
+};
 
 export default Avatar;

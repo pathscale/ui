@@ -1,6 +1,7 @@
 import Button, { type ButtonVariantProps } from "../../src/components/button";
 import Input from "../../src/components/input";
 import { createSignal, For } from "solid-js";
+import Avatar from '../../src/components/Avatar';
 
 export default function App() {
   const [color, setColor] =
@@ -10,25 +11,15 @@ export default function App() {
   const [password, setPassword] = createSignal("Daisy");
 
   return (
-    <div class="flex gap-2">
-      <select
-        name="color"
-        id="color"
-        value={color()}
-        onChange={(e) =>
-          setColor(e.currentTarget.value as ButtonVariantProps["color"])
-        }
-      >
-        <For
-          each={[
-            "inverse",
-            "primary",
-            "secondary",
-            "tertiary",
-            "accent",
-            "positive",
-            "destructive",
-          ]}
+    <>
+      <div class="flex gap-2">
+        <select
+          name="color"
+          id="color"
+          value={color()}
+          onChange={(e) =>
+            setColor(e.currentTarget.value as ButtonVariantProps["color"])
+          }
         >
           {(color) => <option value={color}>{color}</option>}
         </For>
@@ -49,6 +40,17 @@ export default function App() {
         passwordReveal
         color="danger"
       />
-    </div>
+      <div class="flex gap-2">
+        <Avatar
+          alt="John Doe"
+          background="has-background-info"
+          text="has-text-dark"
+          src="https://example.com/john-doe.jpg"
+          dataSrc="https://example.com/john-doe.jpg"
+          customClass="custom-avatar-class"
+          rounded={true}
+        />
+      </div>
+    </>
   );
 }
