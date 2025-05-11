@@ -58,7 +58,7 @@ const Avatar: Component<AvatarProps> = (rawProps) => {
         <img
           src={source()}
           data-src={props.dataSrc}
-          class="w-full h-full object-cover"
+          class="size-full object-cover"
           {...otherProps}
         />
       </Show>
