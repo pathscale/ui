@@ -13,18 +13,16 @@ import type { ComponentProps, JSX } from "solid-js";
 import type { ClassProps } from "@src/lib/style";
 import { parseCaption } from "./utils";
 
-const CDN_URL = "https://cdn.example.com";
-
 export type AvatarVariantProps = VariantProps<typeof avatarVariants>;
 
-export type AvatarProps = Partial<
-  AvatarVariantProps & ClassProps & ComponentProps<"img">
-> & {
-  src?: string;
-  dataSrc?: string;
-  alt?: string;
-  text?: string;
-};
+export type AvatarProps = AvatarVariantProps &
+  ClassProps &
+  ComponentProps<"img"> & {
+    src?: string;
+    dataSrc?: string;
+    alt?: string;
+    text?: string;
+  };
 
 const Avatar: Component<AvatarProps> = (rawProps) => {
   const props = mergeProps({ alt: "User Avatar" }, rawProps);
@@ -38,7 +36,7 @@ const Avatar: Component<AvatarProps> = (rawProps) => {
 
   createEffect(() => {
     if (import.meta.env.PROD && props.dataSrc) {
-      setSource(`${CDN_URL}/${props.dataSrc}`);
+      setSource(props.dataSrc);
     }
   });
 
@@ -53,16 +51,16 @@ const Avatar: Component<AvatarProps> = (rawProps) => {
 
   return (
     <figure class={avatarVariants(variantProps)}>
-      <Show when={source()}>
+      <Show
+        when={source()}
+        fallback={<figcaption class="text-lg">{caption()}</figcaption>}
+      >
         <img
           src={source()}
           data-src={props.dataSrc}
           class="w-full h-full object-cover"
           {...otherProps}
         />
-      </Show>
-      <Show when={!source()}>
-        <span class="text-lg">{caption()}</span>
       </Show>
     </figure>
   );
