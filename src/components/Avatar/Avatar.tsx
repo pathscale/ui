@@ -1,75 +1,69 @@
-import { createSignal, onMount, createMemo, type Component } from "solid-js";
-import { checkBenchieSupport } from "@src/utils/functions";
+import {
+  type Component,
+  createSignal,
+  createMemo,
+  createEffect,
+  mergeProps,
+  splitProps,
+  Show,
+} from "solid-js";
 import { avatarVariants } from "./Avatar.styles";
 import type { VariantProps } from "@src/lib/style";
+import type { ComponentProps, JSX } from "solid-js";
+import type { ClassProps } from "@src/lib/style";
+import { parseCaption } from "./utils";
 
-const t = (url: string, cdn: string) => `${cdn}/${url}`;
-const CDN_URL = "https://cdn.example.com"; 
+const CDN_URL = "https://cdn.example.com";
 
-export type avatarVariants = VariantProps<typeof avatarVariants>;
+export type AvatarVariantProps = VariantProps<typeof avatarVariants>;
 
-export type AvatarProps = {
-  alt?: string;
-  size?: "sm" | "md" | "lg";
-  rounded?: boolean;
-  background?: string;
-  text?: string;
+export type AvatarProps = Partial<
+  AvatarVariantProps & ClassProps & ComponentProps<"img">
+> & {
   src?: string;
   dataSrc?: string;
-  customClass?: string;
+  alt?: string;
+  text?: string;
 };
 
-const Avatar: Component<AvatarProps> = (props) => {
-  const hasBenchieSupport = checkBenchieSupport();
+const Avatar: Component<AvatarProps> = (rawProps) => {
+  const props = mergeProps({ alt: "User Avatar" }, rawProps);
+
+  const [variantProps, otherProps] = splitProps(props, [
+    "class",
+    ...avatarVariants.variantKeys,
+  ]);
 
   const [source, setSource] = createSignal(props.src || props.dataSrc);
-  const alt = () => props.alt || "User Avatar";
 
-  onMount(async () => {
-    if (props.dataSrc && hasBenchieSupport) {
-      const result = await t(props.dataSrc, CDN_URL); 
-      setSource(result);
+  createEffect(() => {
+    if (import.meta.env.PROD && props.dataSrc) {
+      setSource(`${CDN_URL}/${props.dataSrc}`);
     }
   });
 
   const backgroundColor = createMemo(() =>
-    source() ? "" : props.background || "bg-blue-500"
+    source() ? "" : (props.class ?? "bg-blue-500")
   );
   const textColor = createMemo(() =>
-    source() ? "" : props.text || "text-white"
+    source() ? "" : (props.text ?? "text-white")
   );
 
-  const caption = createMemo(() => {
-    if (alt()) {
-      const parts = alt()?.split(" ");
-      if (parts && parts.length >= 2) {
-        return parts[0][0] + parts[1][0];
-      }
-    }
-    return "";
-  });
+  const caption = createMemo(() => parseCaption(props.alt));
 
   return (
-    <figure
-      class={`image is-flex is-justify-content-center is-align-items-center mx-1 ${avatarVariants({
-        size: props.size,
-        variant: "filled",
-      })} ${backgroundColor()} ${textColor()}`}
-    >
-      {source() ? (
+    <figure class={avatarVariants(variantProps)}>
+      <Show when={source()}>
         <img
           src={source()}
           data-src={props.dataSrc}
-          alt={alt()}
-          class={`${props.customClass || ""} ${
-            props.rounded ? "rounded-full" : ""
-          }`}
+          class="w-full h-full object-cover"
+          {...otherProps}
         />
-      ) : (
-        <span class={`is-size-4 ${props.rounded ? "rounded-full" : ""}`}>
-          {caption()}
-        </span>
-      )}
+      </Show>
+      <Show when={!source()}>
+        <span class="text-lg">{caption()}</span>
+      </Show>
     </figure>
   );
 };

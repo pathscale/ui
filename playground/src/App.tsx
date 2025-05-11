@@ -1,7 +1,7 @@
 import Button, { type ButtonVariantProps } from "../../src/components/button";
 import Input from "../../src/components/input";
 import { createSignal, For } from "solid-js";
-import Avatar from '../../src/components/Avatar';
+import Avatar from "../../src/components/Avatar";
 
 export default function App() {
   const [color, setColor] =
@@ -53,21 +53,18 @@ export default function App() {
         />
         <Avatar
           alt="John Doe"
-          background="has-background-info"
-          text="has-text-dark"
+          shape="circle"
+          class="custom-avatar-class"
           src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde"
           dataSrc="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde"
-          customClass="custom-avatar-class"
-          rounded={true}
         />
+
         <Avatar
-          alt="John Doe"
-          background="has-background-info"
-          text="has-text-dark"
+          alt="Jane Doe"
+          shape="rounded"
+          class="custom-avatar-class"
           src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde"
           dataSrc="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde"
-          customClass="custom-avatar-class"
-          rounded={false}
         />
       </div>
     </>
