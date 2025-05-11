@@ -1,5 +1,6 @@
 import Button, { type ButtonVariantProps } from "../../src/components/button";
 import Input from "../../src/components/input";
+import Textarea from "../../src/components/textarea";
 import { createSignal, For } from "solid-js";
 import Avatar from "../../src/components/Avatar";
 
@@ -12,61 +13,86 @@ export default function App() {
 
   return (
     <>
-      <div class="flex gap-2">
-        <select
-          name="color"
-          id="color"
-          value={color()}
-          onChange={(e) =>
-            setColor(e.currentTarget.value as ButtonVariantProps["color"])
-          }
-        >
-          <For
-            each={[
-              "inverse",
-              "primary",
-              "secondary",
-              "tertiary",
-              "accent",
-              "positive",
-              "destructive",
-            ]}
-          >
-            {(color) => <option value={color}>{color}</option>}
-          </For>
-        </select>
-        <Button color={color()}>Button</Button>
+      <main class="flex flex-col gap-10 p-6 max-w-xl mx-auto">
+        <section class="space-y-2">
+          <h2 class="text-lg font-semibold">Button</h2>
+          <div class="flex items-center gap-2">
+            <select
+              name="color"
+              id="color"
+              value={color()}
+              onChange={(e) =>
+                setColor(e.currentTarget.value as ButtonVariantProps["color"])
+              }
+              class="border rounded px-2 py-1"
+            >
+              <For
+                each={[
+                  "inverse",
+                  "primary",
+                  "secondary",
+                  "tertiary",
+                  "accent",
+                  "positive",
+                  "destructive",
+                ]}
+              >
+                {(color) => <option value={color}>{color}</option>}
+              </For>
+            </select>
+            <Button color={color()}>Button</Button>
+          </div>
+        </section>
 
-        <Input
-          value={username()}
-          onInput={(e) => setUsername(e.currentTarget.value)}
-          placeholder="the_boogeyman"
-        />
+        <section class="space-y-2">
+          <h2 class="text-lg font-semibold">Input</h2>
+          <Input
+            value={username()}
+            onInput={(e) => setUsername(e.currentTarget.value)}
+            placeholder="the_boogeyman"
+          />
+          <Input
+            value={password()}
+            onInput={(e) => setPassword(e.currentTarget.value)}
+            placeholder="Password"
+            type="password"
+            passwordReveal
+            color="danger"
+          />
+        </section>
 
-        <Input
-          value={password()}
-          onInput={(e) => setPassword(e.currentTarget.value)}
-          placeholder="Password"
-          type="password"
-          passwordReveal
-          color="danger"
-        />
-        <Avatar
-          alt="John Doe"
-          shape="circle"
-          class="custom-avatar-class"
-          src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde"
-          dataSrc="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde"
-        />
+        <section class="space-y-2">
+          <h2 class="text-lg font-semibold">Avatar</h2>
+          <div class="flex gap-4">
+            <Avatar
+              alt="John Doe"
+              shape="circle"
+              src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde"
+              dataSrc="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde"
+            />
+            <Avatar
+              alt="Jane Doe"
+              shape="rounded"
+              src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde"
+              dataSrc="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde"
+            />
+          </div>
+        </section>
 
-        <Avatar
-          alt="Jane Doe"
-          shape="rounded"
-          class="custom-avatar-class"
-          src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde"
-          dataSrc="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde"
-        />
-      </div>
+        <section class="space-y-2">
+          <h2 class="text-lg font-semibold">Textarea</h2>
+          <Textarea
+            placeholder="Write your thoughts..."
+            color="primary"
+            size="md"
+            resize="y"
+            hasCounter
+            maxlength={144}
+            value=""
+            onInput={(e) => console.log(e.currentTarget.value)}
+          />
+        </section>
+      </main>
     </>
   );
 }
