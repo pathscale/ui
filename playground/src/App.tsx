@@ -5,6 +5,7 @@ import Checkbox from "../../src/components/checkbox";
 import Select from "../../src/components/select";
 import Avatar from "../../src/components/Avatar";
 import { createSignal, For } from "solid-js";
+import Progress from "../../src/components/Progress"
 
 export default function App() {
   const [color, setColor] =
@@ -63,7 +64,18 @@ export default function App() {
               src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde"
               dataSrc="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde"
             />
-            <Avatar
+          </div>
+        </section>
+        <section class="space-y-2">
+          <h2 class="text-lg font-semibold">Progress</h2>
+          <div class="flex gap-4">
+            <Progress
+              alt="John Doe"
+              shape="circle"
+              src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde"
+              dataSrc="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde"
+            />
+            <Progress
               alt="Jane Doe"
               shape="rounded"
               src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde"
@@ -71,7 +83,6 @@ export default function App() {
             />
           </div>
         </section>
-
         <section class="space-y-2">
           <h2 class="text-lg font-semibold">Textarea</h2>
           <Textarea
