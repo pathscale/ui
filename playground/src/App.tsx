@@ -1,6 +1,7 @@
 import Button, { type ButtonVariantProps } from "../../src/components/button";
 import Input from "../../src/components/input";
 import Textarea from "../../src/components/textarea";
+import Switch from "../../src/components/switch";
 import { createSignal, For } from "solid-js";
 import Avatar from "../../src/components/Avatar";
 
@@ -91,6 +92,48 @@ export default function App() {
             value=""
             onInput={(e) => console.log(e.currentTarget.value)}
           />
+        </section>
+
+        <section class="space-y-2">
+          <h2 class="text-lg font-semibold">Switch</h2>
+          <div class="space-y-2">
+            <Switch>Default</Switch>
+            <Switch color="green" outlined>
+              Success
+            </Switch>
+            <Switch color="red" disabled>
+              Disabled
+            </Switch>
+            <Switch color="yellow" rounded={false}>
+              Square
+            </Switch>
+          </div>
+          <div>
+            <Switch size="sm" color="green" passiveColor="green">
+              Small
+            </Switch>
+            <Switch size="md" color="yellow" passiveColor="yellow">
+              Medium
+            </Switch>
+            <Switch size="lg" color="red" passiveColor="red">
+              Large
+            </Switch>
+          </div>
+          <div class="space-y-2">
+            <Switch
+              checked
+              onChange={(val) => console.log("Switched to", val)}
+              color="gray"
+            >
+              Value
+            </Switch>
+            <Switch color="blue" passiveColor="red">
+              Blue / Passive Red
+            </Switch>
+            <Switch color="red" passiveColor="blue">
+              Red / Passive Blue
+            </Switch>
+          </div>
         </section>
       </main>
     </>
