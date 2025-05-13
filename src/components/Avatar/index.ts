@@ -1,12 +1,6 @@
+import Avatar, { type AvatarProps } from "./Avatar";
+import type { avatarVariants } from "./Avatar.styles";
 
-import Avatar, {
-    type AvatarProps,
-    type avatarVariants,
-} from "./Avatar";
-
-export type {
-    AvatarProps,
-    avatarVariants,
-};
+export type { AvatarProps, avatarVariants };
 
 export default Avatar;

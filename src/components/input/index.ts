@@ -1,15 +1,5 @@
-import Input, {
-  type InputElementProps,
-  type InputProps,
-  type InputSharedProps,
-  type InputVariantProps,
-} from "./Input";
+import Input, { type InputProps } from "./Input";
 
-export type {
-  InputElementProps,
-  InputProps,
-  InputSharedProps,
-  InputVariantProps,
-};
+export type { InputProps };
 
 export default Input;
