@@ -1,3 +1,3 @@
-import Textarea, { type TextareaProps } from "./Textarea";
-export type { TextareaProps };
-export default Textarea;
+import Search from "./Search";
+
+export default Search;

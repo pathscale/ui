@@ -26,6 +26,7 @@ import {
   NavbarDropdown,
 } from "../../src/components/navbar";
 import { imageStyles } from "../../src/components/navbar/Navbar.styles";
+import Search from "../../src/components/search/index";
 
 export default function App() {
   const [color, setColor] =
