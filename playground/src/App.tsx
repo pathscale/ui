@@ -28,6 +28,7 @@ import {
 import { imageStyles } from "../../src/components/navbar/Navbar.styles";
 import Search from "../../src/components/search/index";
 
+
 export default function App() {
   const [color, setColor] =
     createSignal<ButtonVariantProps["color"]>("primary");
@@ -138,11 +139,17 @@ export default function App() {
           ? 1
           : -1
         : aVal < bVal
-        ? 1
-        : -1;
+          ? 1
+          : -1;
     });
     setRows(sorted);
   };
+  // search controller
+  const [value, setValue] = createSignal("");
+
+  const handleSearch = () => {
+    console.log("Searching:", value());
+  }
   return (
     <main class="min-h-screen bg-gray-50 p-8">
       <div class="max-w-4xl mx-auto space-y-6">
