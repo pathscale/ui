@@ -69,18 +69,7 @@ export default function App() {
         <section class="space-y-2">
           <h2 class="text-lg font-semibold">Progress</h2>
           <div class="flex gap-4">
-            <Progress
-              alt="John Doe"
-              shape="circle"
-              src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde"
-              dataSrc="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde"
-            />
-            <Progress
-              alt="Jane Doe"
-              shape="rounded"
-              src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde"
-              dataSrc="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde"
-            />
+            <Progress />
           </div>
         </section>
         <section class="space-y-2">

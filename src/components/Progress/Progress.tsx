@@ -1,66 +1,31 @@
-import {
-  type Component,
-  createSignal,
-  createMemo,
-  createEffect,
-  mergeProps,
-  splitProps,
-  Show,
-} from "solid-js";
-import { progressVariants } from "./Progress.styles";
-import type { VariantProps } from "@src/lib/style";
-import type { ComponentProps } from "solid-js";
-import type { ClassProps } from "@src/lib/style";
+import { type Component } from "solid-js";
+import { Percent, Value, Sizes, Colors } from "./index";
 
-export type ProgressVariantProps = VariantProps<typeof progressVariants>;
-
-export type ProgressProps = ProgressVariantProps &
-  ClassProps &
-  ComponentProps<"img"> & {
-    src?: string;
-    dataSrc?: string;
-    alt?: string;
-    text?: string;
-  };
-
-const Progress: Component<ProgressProps> = (rawProps) => {
-  const props = mergeProps({ alt: "User Avatar" }, rawProps);
-
-  const [variantProps, otherProps] = splitProps(props, [
-    "class",
-    ...progressVariants.variantKeys,
-  ]);
-
-  const [source, setSource] = createSignal(props.src || props.dataSrc);
-
-  createEffect(() => {
-    if (import.meta.env.PROD && props.dataSrc) {
-      setSource(props.dataSrc);
-    }
-  });
-
-  const backgroundColor = createMemo(() =>
-    source() ? "" : (props.class ?? "bg-blue-500")
-  );
-  const textColor = createMemo(() =>
-    source() ? "" : (props.text ?? "text-white")
-  );
-
-
+const Progress: Component = () => {
   return (
-    <figure class={progressVariants(variantProps)}>
-      <Show
-        when={source()}
-        fallback={<figcaption class="text-lg">{""}</figcaption>}
-      >
-        <img
-          src={source()}
-          data-src={props.dataSrc}
-          class="size-full object-cover"
-          {...otherProps}
-        />
-      </Show>
-    </figure>
+    <section>
+      <div class="p-4">
+        <h1 class="text-2xl font-semibold mb-4">Progress Component Demo</h1>
+        <Value value={40} size="sm" shape="circle" variant="filled" />
+        <Value value={70} size="md" shape="rounded" variant="outlined" />
+        <Value value={90} size="lg" shape="circle" variant="ghost" />
+      </div>
+      <div class="mt-4 flex flex-col gap-4">
+        <Sizes value={20} size="sm" />
+        <Sizes value={30} size="md" />
+        <Sizes value={50} size="lg" />
+      </div>
+      <div class="mt-4">
+        <Percent value={80} showValue format="percent" />
+      </div>
+      <div class="mt-4 flex flex-col gap-4">
+        <Colors value={40} color="danger" />
+        <Colors value={60} color="success" />
+        <Colors value={80} color="info" />
+        <Colors value={100} color="warning" />
+      </div>
+    </section>
+
   );
 };
 
