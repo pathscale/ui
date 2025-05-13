@@ -15,6 +15,30 @@ import Upload from "../../src/components/upload";
 import Avatar from "../../src/components/Avatar";
 import Progress from "../../src/components/Progress";
 import Tooltip from "../../src/components/tooltip";
+import Table, { type Column } from "../../src/components/table/index";
+
+type RowData = {
+  id: number;
+  firstName: string;
+  lastName: string;
+  color: string;
+};
+
+const columns: Column<RowData>[] = [
+  { key: "id", header: "ID" },
+  { key: "firstName", header: "First Name" },
+  { key: "lastName", header: "Last Name" },
+  { key: "color", header: "Color" },
+];
+
+const rows: RowData[] = [
+  { id: 1, firstName: "John", lastName: "Doe", color: "Blue" },
+  { id: 2, firstName: "Sheri", lastName: "Adamin", color: "Green" },
+  { id: 3, firstName: "Kristopher", lastName: "Amos", color: "Blue" },
+  { id: 4, firstName: "Nelly", lastName: "Derby", color: "Green" },
+  { id: 5, firstName: "Philander", lastName: "Barney", color: "Blue" },
+];
+
 
 export default function App() {
   const [color, setColor] =
@@ -795,6 +819,20 @@ export default function App() {
               </For>
             </div>
           </div>
+        </div>
+        <div class="bg-white rounded-lg shadow-sm p-6">
+        <h1 class="text-xl font-bold mb-4">User Data</h1>
+          <Table
+            columns={columns}
+            rows={rows}
+            header="default"
+            row="default"
+            cell="default"
+            class="my-wrapper-class"
+            className="another-wrapper-class"
+            data-testid="user-table" // any <table> prop
+            style="background: white;"
+          />
         </div>
       </div>
     </main>
