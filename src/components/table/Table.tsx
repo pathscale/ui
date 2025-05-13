@@ -1,13 +1,8 @@
-// components/Table.tsx
-import {
-  type Component,
-  createMemo,
-  splitProps,
-  type ComponentProps,
-} from "solid-js";
-import { tableWrapper, tableVariants, columnDividerClass } from "./Table.styles";
+import { splitProps, createMemo } from "solid-js";
+import type { ComponentProps } from "solid-js";
 import type { VariantProps, ClassProps } from "@src/lib/style";
 import { classes } from "@src/lib/style";
+import { tableWrapper, tableVariants } from "./Table.styles";
 
 export type Column<Row> = {
   key: keyof Row;
@@ -22,48 +17,51 @@ export type TableProps<Row> = {
   ComponentProps<"table">;
 
 const Table = <Row extends Record<string, any>>(props: TableProps<Row>) => {
-  const [local, rest] = splitProps(
+
+  const [localProps, variantProps, otherProps] = splitProps(
     props,
-    [
-      "columns",
-      "rows",
-      "class",
-      "className",
-      // variant props
-      "header",
-      "row",
-      "cell",
-    ] as const
+    ["columns", "rows", "class", "className"] as const,
+    Object.keys(tableVariants.variantKeys ?? {}) as any,
   );
 
-  const data = createMemo(() => local.rows);
-  const cols = createMemo(() => local.columns);
+  const data = createMemo(() => localProps.rows);
+  const cols = createMemo(() => localProps.columns);
+  const baseVars = () => variantProps as VariantProps<typeof tableVariants>;
+
+  const wrapperClass = classes(
+    tableWrapper(),
+    localProps.class,
+    localProps.className
+  );
 
   const tableClass = classes(
-    tableVariants({ header: local.header, row: local.row, cell: local.cell }),
-    rest.class,
-    rest.className
+    tableVariants(baseVars()),
+    otherProps.class,
+    otherProps.className
   );
 
   return (
-    <div class={classes(tableWrapper(), local.class, local.className)}>
-      <table {...rest} class={tableClass}>
+    <div class={wrapperClass}>
+      <table {...otherProps} class={tableClass}>
         <thead>
           <tr>
-            {cols().map((col) => (
-              <th>{col.header}</th>
+            {cols().map(col => (
+              <th class={tableVariants({ ...baseVars(), cell: variantProps.cell, divider: "on" })}>
+                {col.header}
+              </th>
             ))}
           </tr>
         </thead>
         <tbody>
-          {data().map((row) => (
-            <tr>
-              {cols().map((col, colIndex) => (
+          {data().map(row => (
+            <tr class={tableVariants({ ...baseVars(), row: variantProps.row })}>
+              {cols().map((col, i) => (
                 <td
-                  class={classes(
-                    columnDividerClass && colIndex !== cols().length - 1 && columnDividerClass,
-                    tableVariants({ cell: local.cell }) // include base cell styling
-                  )}
+                  class={tableVariants({
+                    ...baseVars(),
+                    cell: variantProps.cell,
+                    divider: i === cols().length - 1 ? "off" : "on",
+                  })}
                 >
                   {String(row[col.key])}
                 </td>
