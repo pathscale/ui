@@ -9,6 +9,7 @@ import Tag from "../../src/components/tag";
 import Checkbox from "../../src/components/checkbox";
 import Select from "../../src/components/select";
 import Pagination from "../../src/components/pagination";
+import Accordion from "../../src/components/accordion";
 import Avatar from "../../src/components/Avatar";
 import Progress from "../../src/components/Progress";
 import Tooltip from "../../src/components/tooltip";
@@ -522,6 +523,42 @@ export default function App() {
                 <Pagination total={10} current={page()} onChange={setPage} />
               );
             })()}
+          </div>
+        </div>
+        <div class="bg-white rounded-lg shadow-sm p-6">
+          <h2 class="text-xl font-semibold text-gray-800 border-b pb-2 mb-4">
+            Accordion
+          </h2>
+          <div class="space-y-2">
+            <Accordion
+              headerIsTrigger
+              header={
+                <div class="py-2 px-3 font-medium text-red-600">Click me</div>
+              }
+              content={<div class="py-2 px-3">Content goes here</div>}
+            />
+
+            <Accordion
+              expanded
+              headerIsTrigger
+              header={
+                <div class="py-2 px-3 font-medium text-blue-600">
+                  Expanded by default
+                </div>
+              }
+              content={
+                <div class="py-2 px-3">This panel is open by default</div>
+              }
+            />
+
+            <Accordion
+              disabled
+              headerIsTrigger
+              header={
+                <div class="py-2 px-3 text-gray-500">Disabled Accordion</div>
+              }
+              content={<div class="py-2 px-3">You can't toggle this</div>}
+            />
           </div>
         </div>
       </div>
