@@ -17,6 +17,8 @@ import Progress from "../../src/components/Progress";
 import Tooltip from "../../src/components/tooltip";
 import Table, { type Column } from "../../src/components/table/index";
 import { Menu, MenuList, MenuItem } from "../../src/components/menu";
+import { Steps } from "../../src/components/steps";
+import { inputVariants } from "../../src/components/input/Input.styles";
 
 export default function App() {
   const [color, setColor] =
@@ -33,6 +35,14 @@ export default function App() {
   const removeFile = (index: number) => {
     setFiles((prev) => prev.filter((_, i) => i !== index));
   };
+  const [formData, setFormData] = createSignal({
+    name: "John Wick",
+    email: "boogeyman@gmail.com",
+    username: "the_boogeyman",
+    password: "Daisy",
+    message: "Guns. Lots of guns.",
+    amount: 0,
+  });
 
   // Table handlers:
   type Person = {
