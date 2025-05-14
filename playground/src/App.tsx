@@ -22,6 +22,7 @@ type Person = {
   name: string;
   age: number;
 };
+import { Menu, MenuList, MenuItem } from "../../src/components/menu";
 
 export default function App() {
   const [color, setColor] =
@@ -58,8 +59,12 @@ export default function App() {
       const bVal = b[key]!;
       if (aVal === bVal) return 0;
       return direction === "asc"
-        ? (aVal > bVal ? 1 : -1)
-        : (aVal < bVal ? 1 : -1);
+        ? aVal > bVal
+          ? 1
+          : -1
+        : aVal < bVal
+        ? 1
+        : -1;
     });
     setRows(sorted);
   };
@@ -828,7 +833,9 @@ export default function App() {
           </div>
         </div>
         <div class="bg-white rounded-lg shadow-sm p-6">
-          <h2 class="text-xl font-semibold text-gray-800 border-b pb-2 mb-4">User Data</h2>
+          <h2 class="text-xl font-semibold text-gray-800 border-b pb-2 mb-4">
+            User Data
+          </h2>
           <Table<Person>
             columns={columns}
             rows={rows()}
@@ -842,6 +849,33 @@ export default function App() {
             data-testid="user-table"
             style="background: white;"
           />
+        </div>
+        <div class="bg-white rounded-lg shadow-sm p-6">
+          <h2 class="text-xl font-semibold text-gray-800 border-b pb-2 mb-4">
+            Menu
+          </h2>
+          <Menu>
+            <MenuList label="Menu">
+              <MenuItem label="Info" />
+              <MenuItem label="Administrator" active expanded>
+                <MenuItem label="Users" />
+                <MenuItem label="Devices" />
+                <MenuItem label="Payments" disabled />
+              </MenuItem>
+              <MenuItem label="My Account">
+                <MenuItem label="Account data" />
+                <MenuItem label="Addresses" />
+              </MenuItem>
+            </MenuList>
+
+            <MenuList>
+              <MenuItem label="Expo" tag="a" to="/" target="_blank" />
+            </MenuList>
+
+            <MenuList label="Actions">
+              <MenuItem label="Logout" />
+            </MenuList>
+          </Menu>
         </div>
       </div>
     </main>
