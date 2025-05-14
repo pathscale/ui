@@ -17,28 +17,11 @@ import Progress from "../../src/components/Progress";
 import Tooltip from "../../src/components/tooltip";
 import Table, { type Column } from "../../src/components/table/index";
 
-type RowData = {
+type Person = {
   id: number;
-  firstName: string;
-  lastName: string;
-  color: string;
+  name: string;
+  age: number;
 };
-
-const columns: Column<RowData>[] = [
-  { key: "id", header: "ID" },
-  { key: "firstName", header: "First Name" },
-  { key: "lastName", header: "Last Name" },
-  { key: "color", header: "Color" },
-];
-
-const rows: RowData[] = [
-  { id: 1, firstName: "John", lastName: "Doe", color: "Blue" },
-  { id: 2, firstName: "Sheri", lastName: "Adamin", color: "Green" },
-  { id: 3, firstName: "Kristopher", lastName: "Amos", color: "Blue" },
-  { id: 4, firstName: "Nelly", lastName: "Derby", color: "Green" },
-  { id: 5, firstName: "Philander", lastName: "Barney", color: "Blue" },
-];
-
 
 export default function App() {
   const [color, setColor] =
@@ -56,6 +39,34 @@ export default function App() {
     setFiles((prev) => prev.filter((_, i) => i !== index));
   };
 
+  // Table handlers:
+   // 1. Define your columns (with sortable flags if you want per‑column sorting)
+   const columns: Column<Person>[] = [
+    { key: "id",   header: "ID",   sortable: true },
+    { key: "name", header: "Name", sortable: true },
+    { key: "age",  header: "Age",  sortable: true },
+  ];
+
+  // 2. Prepare some data rows
+  const [rows, setRows] = createSignal<Person[]>([
+    { id: 1, name: "Alice", age: 30 },
+    { id: 2, name: "Bob",   age: 24 },
+    { id: 3, name: "Carol", age: 29 },
+  ]);
+
+  // 3. Optional: handle sort events
+  const onSort = (key: keyof Person, direction: "asc" | "desc") => {
+    console.log(`Sorting by ${String(key)} (${direction})`);
+    // If you want the parent to actually sort, do it here:
+    const sorted = [...rows()].sort((a, b) => {
+      const aVal = a[key]!;
+      const bVal = b[key]!;
+      if (aVal === bVal) return 0;
+      const cmp = aVal > bVal ? 1 : -1;
+      return direction === "asc" ? cmp : -cmp;
+    });
+    setRows(sorted);
+  };
   return (
     <main class="min-h-screen bg-gray-50 p-8">
       <div class="max-w-4xl mx-auto space-y-6">
@@ -824,7 +835,8 @@ export default function App() {
         <h1 class="text-xl font-bold mb-4">User Data</h1>
           <Table
             columns={columns}
-            rows={rows}
+            rows={rows()}
+            onSort={onSort}
             header="default"
             row="default"
             cell="default"
