@@ -1,4 +1,10 @@
-import { type Component, splitProps, Show, createMemo } from "solid-js";
+import {
+  type Component,
+  splitProps,
+  Show,
+  createMemo,
+  type JSX,
+} from "solid-js";
 import { selectVariants } from "./Select.styles";
 import { type VariantProps, type ClassProps, classes } from "@src/lib/style";
 import type { ComponentProps } from "solid-js";
@@ -9,6 +15,9 @@ export type SelectProps = VariantProps<typeof selectVariants> &
     placeholder?: string;
     nativeSize?: string | number;
     value?: string | number | null;
+    onChange?: JSX.EventHandlerUnion<HTMLInputElement, Event>;
+    onFocus?: JSX.EventHandlerUnion<HTMLInputElement, FocusEvent>;
+    onBlur?: JSX.EventHandlerUnion<HTMLInputElement, FocusEvent>;
   };
 
 const Select: Component<SelectProps> = (props) => {
@@ -25,17 +34,11 @@ const Select: Component<SelectProps> = (props) => {
   return (
     <select
       class={selectVariants(variantProps)}
-      size={localProps.nativeSize as number | undefined}
-      value={localProps.value ?? ""}
-      onChange={(e) => {
-        typeof localProps.onChange === "function" && localProps.onChange?.(e);
-      }}
-      onFocus={(e) => {
-        typeof localProps.onFocus === "function" && localProps.onFocus?.(e);
-      }}
-      onBlur={(e) => {
-        typeof localProps.onBlur === "function" && localProps.onBlur?.(e);
-      }}
+      size={localProps.nativeSize}
+      value={localProps.value}
+      onChange={localProps.onChange}
+      onFocus={localProps.onFocus}
+      onBlur={localProps.onBlur}
       {...otherProps}
     >
       <Show when={localProps.placeholder && empty()}>
