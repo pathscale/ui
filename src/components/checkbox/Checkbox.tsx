@@ -15,6 +15,9 @@ export type CheckboxProps = VariantProps<typeof checkboxVariants> &
   ComponentProps<"input"> & {
     indeterminate?: boolean;
     label?: JSX.Element;
+    onChange?: JSX.EventHandlerUnion<HTMLInputElement, Event>;
+    onFocus?: JSX.EventHandlerUnion<HTMLInputElement, FocusEvent>;
+    onBlur?: JSX.EventHandlerUnion<HTMLInputElement, FocusEvent>;
   };
 
 const Checkbox: Component<CheckboxProps> = (props) => {
@@ -50,15 +53,9 @@ const Checkbox: Component<CheckboxProps> = (props) => {
         checked={localProps.checked}
         disabled={localProps.disabled}
         {...otherProps}
-        onChange={(e) => {
-          typeof localProps.onChange === "function" && localProps.onChange?.(e);
-        }}
-        onFocus={(e) => {
-          typeof localProps.onFocus === "function" && localProps.onFocus?.(e);
-        }}
-        onBlur={(e) => {
-          typeof localProps.onBlur === "function" && localProps.onBlur?.(e);
-        }}
+        onChange={localProps.onChange}
+        onFocus={localProps.onFocus}
+        onBlur={localProps.onBlur}
       />
 
       <span
