@@ -1,6 +1,7 @@
 import Button, { type ButtonVariantProps } from "../../src/components/button";
 import Input from "../../src/components/input";
 import Textarea from "../../src/components/textarea";
+import { Breadcrumb, BreadcrumbItem } from "../../src/components/breadcrumb";
 import { createSignal, For } from "solid-js";
 import Avatar from "../../src/components/Avatar";
 
@@ -91,6 +92,64 @@ export default function App() {
             value=""
             onInput={(e) => console.log(e.currentTarget.value)}
           />
+        </section>
+
+        <section class="space-y-2">
+          <h2 class="text-lg font-semibold">Breadcrumb</h2>
+
+          {/* Default ("/" como separador) */}
+          <Breadcrumb>
+            <BreadcrumbItem href="#">Home</BreadcrumbItem>
+            <BreadcrumbItem href="#">Docs</BreadcrumbItem>
+            <BreadcrumbItem active>Breadcrumb</BreadcrumbItem>
+          </Breadcrumb>
+
+          {/* Con separadores personalizados */}
+          <Breadcrumb separator="arrow">
+            <BreadcrumbItem href="#">Home</BreadcrumbItem>
+            <BreadcrumbItem href="#">Docs</BreadcrumbItem>
+            <BreadcrumbItem active>Arrow →</BreadcrumbItem>
+          </Breadcrumb>
+
+          <Breadcrumb separator="dot">
+            <BreadcrumbItem href="#">Home</BreadcrumbItem>
+            <BreadcrumbItem href="#">Docs</BreadcrumbItem>
+            <BreadcrumbItem active>Dot ·</BreadcrumbItem>
+          </Breadcrumb>
+
+          <Breadcrumb separator="bullet">
+            <BreadcrumbItem href="#">Home</BreadcrumbItem>
+            <BreadcrumbItem href="#">Docs</BreadcrumbItem>
+            <BreadcrumbItem active>Bullet •</BreadcrumbItem>
+          </Breadcrumb>
+
+          <Breadcrumb separator="succeeds">
+            <BreadcrumbItem href="#">Home</BreadcrumbItem>
+            <BreadcrumbItem href="#">Docs</BreadcrumbItem>
+            <BreadcrumbItem active>Succeeds »</BreadcrumbItem>
+          </Breadcrumb>
+
+          {/* Tamaños */}
+          <Breadcrumb size="sm">
+            <BreadcrumbItem href="#">Home</BreadcrumbItem>
+            <BreadcrumbItem active>Small</BreadcrumbItem>
+          </Breadcrumb>
+
+          <Breadcrumb size="lg">
+            <BreadcrumbItem href="#">Home</BreadcrumbItem>
+            <BreadcrumbItem active>Large</BreadcrumbItem>
+          </Breadcrumb>
+
+          {/* Alineación */}
+          <Breadcrumb alignment="center">
+            <BreadcrumbItem href="#">Center</BreadcrumbItem>
+            <BreadcrumbItem active>Item</BreadcrumbItem>
+          </Breadcrumb>
+
+          <Breadcrumb alignment="right">
+            <BreadcrumbItem href="#">Right</BreadcrumbItem>
+            <BreadcrumbItem active>Item</BreadcrumbItem>
+          </Breadcrumb>
         </section>
       </main>
     </>
