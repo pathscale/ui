@@ -11,6 +11,7 @@ import Select from "../../src/components/select";
 import Pagination from "../../src/components/pagination";
 import Accordion from "../../src/components/accordion";
 import Tabs from "../../src/components/tabs";
+import Upload from "../../src/components/upload";
 import Avatar from "../../src/components/Avatar";
 import Progress from "../../src/components/Progress";
 import Tooltip from "../../src/components/tooltip";
@@ -20,6 +21,16 @@ export default function App() {
     createSignal<ButtonVariantProps["color"]>("primary");
   const [username, setUsername] = createSignal("the_boogeyman");
   const [password, setPassword] = createSignal("Daisy");
+  const [files, setFiles] = createSignal<File[]>([]);
+
+  const handleChange = (selected: File | File[]) => {
+    const list = Array.isArray(selected) ? selected : [selected];
+    setFiles(list);
+  };
+
+  const removeFile = (index: number) => {
+    setFiles((prev) => prev.filter((_, i) => i !== index));
+  };
 
   return (
     <main class="min-h-screen bg-gray-50 p-8">
@@ -637,6 +648,152 @@ export default function App() {
                 { label: "Right B", content: <p>Right B content</p> },
               ]}
             />
+          </div>
+        </div>
+        <div class="bg-white rounded-lg shadow-sm p-6">
+          <h2 class="text-xl font-semibold text-gray-800 border-b pb-2 mb-4">
+            Upload
+          </h2>
+          <div class="grid grid-cols-2 gap-3">
+            <Upload
+              style="boxed"
+              label="Choose a file…"
+              multiple
+              expanded
+              icon={
+                <svg
+                  class="w-5 h-5 text-gray-600"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M4 16v2a2 2 0 002 2h12a2 2 0 002-2v-2M16 8l-4-4m0 0L8 8m4-4v12"
+                  />
+                </svg>
+              }
+              onChange={handleChange}
+            />
+
+            <div class="grid grid-cols-2 gap-3">
+              {(["success", "info", "warning", "danger"] as const).map(
+                (color) => (
+                  <Upload
+                    style="button"
+                    color={color}
+                    label={`Upload ${color}`}
+                    icon={
+                      <svg
+                        class="w-5 h-5 text-white"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                        xmlns="http://www.w3.org/2000/svg"
+                      >
+                        <path
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                          stroke-width="2"
+                          d="M4 16v2a2 2 0 002 2h12a2 2 0 002-2v-2M16 8l-4-4m0 0L8 8m4-4v12"
+                        />
+                      </svg>
+                    }
+                    onChange={handleChange}
+                  />
+                )
+              )}
+            </div>
+
+            <div class="grid grid-cols-2 gap-3">
+              <Upload
+                style="button"
+                size="sm"
+                color="info"
+                label="Small"
+                icon={
+                  <svg
+                    class="w-4 h-4 text-white"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M4 16v2a2 2 0 002 2h12a2 2 0 002-2v-2M16 8l-4-4m0 0L8 8m4-4v12"
+                    />
+                  </svg>
+                }
+                onChange={handleChange}
+              />
+              <Upload
+                style="button"
+                size="md"
+                color="info"
+                label="Medium"
+                icon={
+                  <svg
+                    class="w-5 h-5 text-white"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M4 16v2a2 2 0 002 2h12a2 2 0 002-2v-2M16 8l-4-4m0 0L8 8m4-4v12"
+                    />
+                  </svg>
+                }
+                onChange={handleChange}
+              />
+              <Upload
+                style="button"
+                size="lg"
+                color="info"
+                label="Large"
+                icon={
+                  <svg
+                    class="w-6 h-6 text-white"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M4 16v2a2 2 0 002 2h12a2 2 0 002-2v-2M16 8l-4-4m0 0L8 8m4-4v12"
+                    />
+                  </svg>
+                }
+                onChange={handleChange}
+              />
+            </div>
+            <div class="grid grid-cols-2 gap-3">
+              <For each={files()}>
+                {(file, index) => (
+                  <div class="flex items-center bg-blue-100 text-blue-800 px-3 py-1 rounded text-sm">
+                    <span class="truncate max-w-[160px]">{file.name}</span>
+                    <button
+                      onClick={() => removeFile(index())}
+                      class="ml-2 text-blue-500 hover:text-blue-700 font-bold"
+                    >
+                      ×
+                    </button>
+                  </div>
+                )}
+              </For>
+            </div>
           </div>
         </div>
       </div>
