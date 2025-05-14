@@ -33,7 +33,7 @@ const Select: Component<SelectProps> = (props) => {
 
   return (
     <select
-      class={selectVariants(variantProps)}
+      class={classes(selectVariants(variantProps), variantProps.class)}
       size={localProps.nativeSize}
       value={localProps.value}
       onChange={localProps.onChange}
