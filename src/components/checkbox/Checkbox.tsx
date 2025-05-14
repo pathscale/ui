@@ -36,18 +36,15 @@ const Checkbox: Component<CheckboxProps> = (props) => {
     ["class", ...checkboxVariants.variantKeys]
   );
 
-  const [inputRef, setInputRef] = createSignal<HTMLInputElement>();
-
-  createEffect(() => {
-    if (inputRef()) {
-      inputRef()!.indeterminate = !!localProps.indeterminate;
-    }
-  });
+  let inputRef: HTMLInputElement | undefined;
 
   return (
     <label class={checkboxVariants(variantProps)}>
       <input
-        ref={setInputRef}
+        ref={(el) => {
+          inputRef = el;
+          if (inputRef) inputRef.indeterminate = !!localProps.indeterminate;
+        }}
         type="checkbox"
         class="peer absolute opacity-0 w-4 h-4"
         checked={localProps.checked}
