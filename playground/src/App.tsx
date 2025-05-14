@@ -1,12 +1,14 @@
+import { createSignal, For } from "solid-js";
+
 import Button, { type ButtonVariantProps } from "../../src/components/button";
 import Input from "../../src/components/input";
 import Textarea from "../../src/components/textarea";
 import { Breadcrumb, BreadcrumbItem } from "../../src/components/breadcrumb";
 import Switch from "../../src/components/switch";
-import { createSignal } from "solid-js";
 import Tag from "../../src/components/tag";
 import Checkbox from "../../src/components/checkbox";
 import Select from "../../src/components/select";
+import Pagination from "../../src/components/pagination";
 import Avatar from "../../src/components/Avatar";
 import Progress from "../../src/components/Progress";
 import Tooltip from "../../src/components/tooltip";
@@ -410,6 +412,106 @@ export default function App() {
             >
               <option value="expanded">Expanded</option>
             </Select>
+          </div>
+        </div>
+
+        <div class="bg-white rounded-lg shadow-sm p-6">
+          <h2 class="text-xl font-semibold text-gray-800 border-b pb-2 mb-4">
+            Pagination
+          </h2>
+          <div class="space-y-2">
+            <h3 class="font-medium">Default</h3>
+            {(() => {
+              const [page, setPage] = createSignal(5);
+              return (
+                <Pagination total={100} current={page()} onChange={setPage} />
+              );
+            })()}
+          </div>
+
+          <div class="space-y-2">
+            <h3 class="font-medium">Sizes</h3>
+            <div class="flex gap-4">
+              {(() => {
+                const [page, setPage] = createSignal(2);
+                return (
+                  <Pagination
+                    total={50}
+                    current={page()}
+                    size="sm"
+                    onChange={setPage}
+                  />
+                );
+              })()}
+              {(() => {
+                const [page, setPage] = createSignal(2);
+                return (
+                  <Pagination
+                    total={50}
+                    current={page()}
+                    size="md"
+                    onChange={setPage}
+                  />
+                );
+              })()}
+              {(() => {
+                const [page, setPage] = createSignal(2);
+                return (
+                  <Pagination
+                    total={50}
+                    current={page()}
+                    size="lg"
+                    onChange={setPage}
+                  />
+                );
+              })()}
+            </div>
+          </div>
+
+          <div class="space-y-2">
+            <h3 class="font-medium">Rounded</h3>
+            {(() => {
+              const [page, setPage] = createSignal(3);
+              return (
+                <Pagination
+                  total={80}
+                  current={page()}
+                  onChange={setPage}
+                  rounded
+                />
+              );
+            })()}
+          </div>
+
+          <div class="space-y-2">
+            <h3 class="font-medium">Simple</h3>
+            {(() => {
+              const [page, setPage] = createSignal(6);
+              return (
+                <Pagination
+                  total={200}
+                  current={page()}
+                  simple
+                  onChange={setPage}
+                />
+              );
+            })()}
+          </div>
+
+          <div class="space-y-2">
+            <h3 class="font-medium">Custom rangeBefore / rangeAfter</h3>
+            {(() => {
+              const [page, setPage] = createSignal(8);
+              return (
+                <Pagination
+                  total={150}
+                  current={page()}
+                  rangeBefore={2}
+                  rangeAfter={3}
+                  onChange={setPage}
+                />
+              );
+            })()}
           </div>
         </div>
       </div>
