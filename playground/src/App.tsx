@@ -146,10 +146,26 @@ export default function App() {
   };
   // search controller
   const [value, setValue] = createSignal("");
+  // 1️⃣ Error‑message instance
+  const [msg, setMsg] = createSignal("");
+  const handleMsgSearch = () => {
+    // your custom search logic for the “Message” field
+    console.log("Searching message for:", msg());
+  };
 
-  const handleSearch = () => {
-    console.log("Searching:", value());
-  }
+  // 2️⃣ “From” horizontal/size=sm instance
+  const [name, setName] = createSignal("");
+  const handleNameSearch = () => {
+    // your custom search logic for the “From” field
+    console.log("Searching from:", name());
+  };
+
+  // 3️⃣ “To” horizontal/size=lg instance
+  const [email, setEmail] = createSignal("");
+  const handleEmailSearch = () => {
+    // your custom search logic for the “To” field
+    console.log("Searching to:", email());
+  };
   return (
     <main class="min-h-screen bg-gray-50 p-8">
       <div class="max-w-4xl mx-auto space-y-6">
