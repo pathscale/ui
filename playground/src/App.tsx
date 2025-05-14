@@ -97,14 +97,12 @@ export default function App() {
         <section class="space-y-2">
           <h2 class="text-lg font-semibold">Breadcrumb</h2>
 
-          {/* Default ("/" como separador) */}
           <Breadcrumb>
             <BreadcrumbItem href="#">Home</BreadcrumbItem>
             <BreadcrumbItem href="#">Docs</BreadcrumbItem>
             <BreadcrumbItem active>Breadcrumb</BreadcrumbItem>
           </Breadcrumb>
 
-          {/* Con separadores personalizados */}
           <Breadcrumb separator="arrow">
             <BreadcrumbItem href="#">Home</BreadcrumbItem>
             <BreadcrumbItem href="#">Docs</BreadcrumbItem>
@@ -129,7 +127,6 @@ export default function App() {
             <BreadcrumbItem active>Succeeds »</BreadcrumbItem>
           </Breadcrumb>
 
-          {/* Tamaños */}
           <Breadcrumb size="sm">
             <BreadcrumbItem href="#">Home</BreadcrumbItem>
             <BreadcrumbItem active>Small</BreadcrumbItem>
@@ -140,7 +137,6 @@ export default function App() {
             <BreadcrumbItem active>Large</BreadcrumbItem>
           </Breadcrumb>
 
-          {/* Alineación */}
           <Breadcrumb alignment="center">
             <BreadcrumbItem href="#">Center</BreadcrumbItem>
             <BreadcrumbItem active>Item</BreadcrumbItem>
