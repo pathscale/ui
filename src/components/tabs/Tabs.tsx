@@ -49,12 +49,14 @@ const Tabs: Component<TabsProps> = (props) => {
   return (
     <div {...otherProps}>
       <nav class={tabsNavVariants(variantProps)}>
-        <ul class="flex gap-2">
+        <ul class="flex gap-0">
           <For each={local.items}>
             {(tab, i) => (
               <li>
                 <button
                   class={tabTriggerVariants({
+                    type: variantProps.type ?? "basic",
+                    size: variantProps.size ?? "md",
                     active: i() === active(),
                     disabled: tab.disabled,
                   })}
