@@ -10,7 +10,7 @@ import Checkbox from "../../src/components/checkbox";
 import Select from "../../src/components/select";
 import Pagination from "../../src/components/pagination";
 import Accordion from "../../src/components/accordion";
-import { Tabs } from "../../src/components/tabs";
+import Tabs from "../../src/components/tabs";
 import Avatar from "../../src/components/Avatar";
 import Progress from "../../src/components/Progress";
 import Tooltip from "../../src/components/tooltip";
@@ -47,7 +47,6 @@ export default function App() {
             <Button color={color()}>Button</Button>
           </div>
         </div>
-
         <div class="bg-white rounded-lg shadow-sm p-6">
           <h2 class="text-xl font-semibold text-gray-800 border-b pb-2 mb-4">
             Input
@@ -72,7 +71,6 @@ export default function App() {
             />
           </div>
         </div>
-
         <div class="bg-white rounded-lg shadow-sm p-6">
           <h2 class="text-xl font-semibold text-gray-800 border-b pb-2 mb-4">
             Avatar
@@ -86,7 +84,6 @@ export default function App() {
             />
           </div>
         </div>
-
         <div class="bg-white rounded-lg shadow-sm p-6">
           <h2 class="text-xl font-semibold text-gray-800 border-b pb-2 mb-4">
             Progress
@@ -95,7 +92,6 @@ export default function App() {
             <Progress />
           </div>
         </div>
-
         <div class="bg-white rounded-lg shadow-sm p-6">
           <h2 class="text-xl font-semibold text-gray-800 border-b pb-2 mb-4">
             Textarea
@@ -113,7 +109,6 @@ export default function App() {
             }
           />
         </div>
-
         <div class="bg-white rounded-lg shadow-sm p-6">
           <h2 class="text-xl font-semibold text-gray-800 border-b pb-2 mb-4">
             Tooltip
@@ -210,7 +205,6 @@ export default function App() {
             </div>
           </div>
         </div>
-
         <div class="bg-white rounded-lg shadow-sm p-6">
           <h2 class="text-xl font-semibold text-gray-800 border-b pb-2 mb-4">
             Breadcrumb
@@ -267,7 +261,6 @@ export default function App() {
             </Breadcrumb>
           </div>
         </div>
-
         <div class="bg-white rounded-lg shadow-sm p-6">
           <h2 class="text-xl font-semibold text-gray-800 border-b pb-2 mb-4">
             Switch
@@ -313,7 +306,6 @@ export default function App() {
             </div>
           </div>
         </div>
-
         <div class="bg-white rounded-lg shadow-sm p-6">
           <h2 class="text-xl font-semibold text-gray-800 border-b pb-2 mb-4">
             Tag
@@ -360,7 +352,6 @@ export default function App() {
             </div>
           </div>
         </div>
-
         <div class="bg-white rounded-lg shadow-sm p-6">
           <h2 class="text-xl font-semibold text-gray-800 border-b pb-2 mb-4">
             Checkbox
@@ -376,7 +367,6 @@ export default function App() {
             <Checkbox label="Disabled checkbox" checked disabled />
           </div>
         </div>
-
         <div class="bg-white rounded-lg shadow-sm p-6">
           <h2 class="text-xl font-semibold text-gray-800 border-b pb-2 mb-4">
             Select
@@ -416,7 +406,6 @@ export default function App() {
             </Select>
           </div>
         </div>
-
         <div class="bg-white rounded-lg shadow-sm p-6">
           <h2 class="text-xl font-semibold text-gray-800 border-b pb-2 mb-4">
             Pagination
@@ -562,91 +551,94 @@ export default function App() {
             />
           </div>
         </div>
-        <section class="space-y-2">
-          <h2 class="text-lg font-semibold">Tabs</h2>
+        <div class="bg-white rounded-lg shadow-sm p-6">
+          <h2 class="text-xl font-semibold text-gray-800 border-b pb-2 mb-4">
+            Tabs
+          </h2>
+          <div class="grid grid-cols-2 gap-3">
+            {(() => {
+              const [active, setActive] = createSignal(0);
 
-          {(() => {
-            const [active, setActive] = createSignal(0);
+              return (
+                <Tabs
+                  value={active()}
+                  onChange={setActive}
+                  items={[
+                    {
+                      label: "Overview",
+                      content: <p>This is the overview section.</p>,
+                    },
+                    {
+                      label: "Details",
+                      content: <p>This is the details section.</p>,
+                    },
+                    {
+                      label: "Stats",
+                      content: <p>This is the stats section.</p>,
+                    },
+                    {
+                      label: "Disabled",
+                      content: <p>Should not activate.</p>,
+                      disabled: true,
+                    },
+                  ]}
+                />
+              );
+            })()}
 
-            return (
-              <Tabs
-                value={active()}
-                onChange={setActive}
-                items={[
-                  {
-                    label: "Overview",
-                    content: <p>This is the overview section.</p>,
-                  },
-                  {
-                    label: "Details",
-                    content: <p>This is the details section.</p>,
-                  },
-                  {
-                    label: "Stats",
-                    content: <p>This is the stats section.</p>,
-                  },
-                  {
-                    label: "Disabled",
-                    content: <p>Should not activate.</p>,
-                    disabled: true,
-                  },
-                ]}
-              />
-            );
-          })()}
+            <Tabs
+              size="sm"
+              items={[
+                { label: "Small A", content: <p>Small A content</p> },
+                { label: "Small B", content: <p>Small B content</p> },
+              ]}
+            />
+            <Tabs
+              size="lg"
+              items={[
+                { label: "Large A", content: <p>Large A content</p> },
+                { label: "Large B", content: <p>Large B content</p> },
+              ]}
+            />
 
-          <Tabs
-            size="sm"
-            items={[
-              { label: "Small A", content: <p>Small A content</p> },
-              { label: "Small B", content: <p>Small B content</p> },
-            ]}
-          />
-          <Tabs
-            size="lg"
-            items={[
-              { label: "Large A", content: <p>Large A content</p> },
-              { label: "Large B", content: <p>Large B content</p> },
-            ]}
-          />
+            <Tabs
+              type="boxed"
+              items={[
+                { label: "Boxed 1", content: <p>Boxed tab 1</p> },
+                { label: "Boxed 2", content: <p>Boxed tab 2</p> },
+              ]}
+            />
+            <Tabs
+              type="toggle"
+              items={[
+                { label: "Toggle 1", content: <p>Toggle tab 1</p> },
+                { label: "Toggle 2", content: <p>Toggle tab 2</p> },
+              ]}
+            />
+            <Tabs
+              type="toggle-rounded"
+              items={[
+                { label: "Rounded 1", content: <p>Rounded tab 1</p> },
+                { label: "Rounded 2", content: <p>Rounded tab 2</p> },
+              ]}
+            />
 
-          <Tabs
-            type="boxed"
-            items={[
-              { label: "Boxed 1", content: <p>Boxed tab 1</p> },
-              { label: "Boxed 2", content: <p>Boxed tab 2</p> },
-            ]}
-          />
-          <Tabs
-            type="toggle"
-            items={[
-              { label: "Toggle 1", content: <p>Toggle tab 1</p> },
-              { label: "Toggle 2", content: <p>Toggle tab 2</p> },
-            ]}
-          />
-          <Tabs
-            type="toggle-rounded"
-            items={[
-              { label: "Rounded 1", content: <p>Rounded tab 1</p> },
-              { label: "Rounded 2", content: <p>Rounded tab 2</p> },
-            ]}
-          />
-
-          <Tabs
-            alignment="center"
-            items={[
-              { label: "Center A", content: <p>Center A content</p> },
-              { label: "Center B", content: <p>Center B content</p> },
-            ]}
-          />
-          <Tabs
-            alignment="right"
-            items={[
-              { label: "Right A", content: <p>Right A content</p> },
-              { label: "Right B", content: <p>Right B content</p> },
-            ]}
-          />
-        </section>
+            <Tabs
+              alignment="center"
+              items={[
+                { label: "Center A", content: <p>Center A content</p> },
+                { label: "Center B", content: <p>Center B content</p> },
+              ]}
+            />
+            <Tabs
+              alignment="right"
+              items={[
+                { label: "Right A", content: <p>Right A content</p> },
+                { label: "Right B", content: <p>Right B content</p> },
+              ]}
+            />
+          </div>
+        </div>
       </div>
     </main>
   );
