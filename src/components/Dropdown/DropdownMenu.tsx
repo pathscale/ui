@@ -3,12 +3,12 @@ import type { VariantProps } from "@src/lib/style";
 import { dropdownVariants } from "./Dropdown.styles";
 
 export interface DropdownMenuProps
-  extends VariantProps<typeof dropdownVariants>,  // open + position only
-  JSX.HTMLAttributes<HTMLDivElement> {   // allow id, data-*, aria-*, etc.
+  extends VariantProps<typeof dropdownVariants>, // open + position only
+    JSX.HTMLAttributes<HTMLDivElement> {
   children: JSX.Element;
 }
 
-const DropdownMenu: Component<DropdownMenuProps> = props => {
+const DropdownMenu: Component<DropdownMenuProps> = (props) => {
   const [local, other] = splitProps(props, ["open", "position", "children"]);
   return (
     <div
@@ -17,7 +17,7 @@ const DropdownMenu: Component<DropdownMenuProps> = props => {
       id="dropdown-menu"
       role="menu"
     >
-      <div class="flex flex-col">{local.children}</div>
+      {local.children}
     </div>
   );
 };
