@@ -1,11 +1,12 @@
 import Button, { type ButtonVariantProps } from "../../src/components/button";
 import Input from "../../src/components/input";
 import Textarea from "../../src/components/textarea";
+import Tag from "../../src/components/tag";
 import Checkbox from "../../src/components/checkbox";
 import Select from "../../src/components/select";
 import Avatar from "../../src/components/Avatar";
 import { createSignal, For } from "solid-js";
-import Progress from "../../src/components/Progress"
+import Progress from "../../src/components/Progress";
 
 export default function App() {
   const [color, setColor] =
@@ -66,12 +67,14 @@ export default function App() {
             />
           </div>
         </section>
+
         <section class="space-y-2">
           <h2 class="text-lg font-semibold">Progress</h2>
           <div class="flex gap-4">
             <Progress />
           </div>
         </section>
+
         <section class="space-y-2">
           <h2 class="text-lg font-semibold">Textarea</h2>
           <Textarea
@@ -87,16 +90,57 @@ export default function App() {
         </section>
 
         <section class="space-y-2">
-          <h2 class="text-lg font-semibold">Checkbox</h2>
+          <h2 class="text-lg font-semibold">Tag</h2>
 
+          <div class="flex flex-wrap gap-2">
+            <Tag type="primary">Primary</Tag>
+            <Tag type="success">Success</Tag>
+            <Tag type="warning">Warning</Tag>
+            <Tag type="danger">Danger</Tag>
+            <Tag type="info">Info</Tag>
+            <Tag type="dark">Dark</Tag>
+          </div>
+
+          <div class="flex flex-wrap gap-2">
+            <Tag size="normal" type="dark">
+              Default
+            </Tag>
+            <Tag size="medium" type="primary">
+              Medium
+            </Tag>
+            <Tag size="large" type="info">
+              Large
+            </Tag>
+          </div>
+
+          <div class="flex flex-wrap gap-2">
+            <Tag disabled type="info">
+              Disabled
+            </Tag>
+          </div>
+
+          <div class="flex flex-wrap gap-2">
+            <Tag closable onClose={() => console.log("Closed")}>
+              Closable
+            </Tag>
+            <Tag
+              attached
+              closable
+              onClose={() => console.log("Attached closed")}
+            >
+              Attached
+            </Tag>
+          </div>
+        </section>
+
+        <section class="space-y-2">
+          <h2 class="text-lg font-semibold">Checkbox</h2>
           <div class="flex flex-col gap-3">
             <Checkbox
               label="Accept Terms"
               onChange={(e) => console.log("Checked:", e.currentTarget.checked)}
             />
-
             <Checkbox label="Indeterminate" indeterminate />
-
             <Checkbox label="Disabled checkbox" checked disabled />
           </div>
         </section>
