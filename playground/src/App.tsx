@@ -1,11 +1,12 @@
 import Button, { type ButtonVariantProps } from "../../src/components/button";
 import Input from "../../src/components/input";
 import Textarea from "../../src/components/textarea";
+import Switch from "../../src/components/switch";
+import { createSignal, For } from "solid-js";
 import Tag from "../../src/components/tag";
 import Checkbox from "../../src/components/checkbox";
 import Select from "../../src/components/select";
 import Avatar from "../../src/components/Avatar";
-import { createSignal, For } from "solid-js";
 import Progress from "../../src/components/Progress";
 
 export default function App() {
@@ -90,8 +91,49 @@ export default function App() {
         </section>
 
         <section class="space-y-2">
-          <h2 class="text-lg font-semibold">Tag</h2>
+          <h2 class="text-lg font-semibold">Switch</h2>
+          <div class="space-y-2">
+            <Switch>Default</Switch>
+            <Switch color="green" outlined>
+              Success
+            </Switch>
+            <Switch color="red" disabled>
+              Disabled
+            </Switch>
+            <Switch color="yellow" rounded={false}>
+              Square
+            </Switch>
+          </div>
+          <div>
+            <Switch size="sm" color="green" passiveColor="green">
+              Small
+            </Switch>
+            <Switch size="md" color="yellow" passiveColor="yellow">
+              Medium
+            </Switch>
+            <Switch size="lg" color="red" passiveColor="red">
+              Large
+            </Switch>
+          </div>
+          <div class="space-y-2">
+            <Switch
+              checked
+              onChange={(val) => console.log("Switched to", val)}
+              color="gray"
+            >
+              Value
+            </Switch>
+            <Switch color="blue" passiveColor="red">
+              Blue / Passive Red
+            </Switch>
+            <Switch color="red" passiveColor="blue">
+              Red / Passive Blue
+            </Switch>
+          </div>
+        </section>
 
+        <section class="space-y-2">
+          <h2 class="text-lg font-semibold">Tag</h2>
           <div class="flex flex-wrap gap-2">
             <Tag type="primary">Primary</Tag>
             <Tag type="success">Success</Tag>
