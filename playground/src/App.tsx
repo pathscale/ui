@@ -233,8 +233,20 @@ export default function App() {
           <h2 class="text-xl font-semibold text-gray-800 border-b pb-2 mb-4">
             Progress
           </h2>
-          <div class="flex gap-4">
-            <Progress />
+          <div class="flex gap-4 mb-2">
+            <Progress value={40} size="sm" shape="circle" variant="filled" showValue format="percent" />
+          </div>
+          <div class="flex gap-4 mb-2">
+            <Progress value={70} variant="outlined" showValue />
+          </div>
+          <div class="flex gap-4 mb-2">
+            <Progress value={null} variant="ghost" size="lg" />
+          </div>
+          <div class="flex gap-4 mb-2">
+            <Progress value={80} color="info" showValue />
+          </div>
+          <div class="flex gap-4 mb-2">
+            <Progress value={100} color="warning" shape="circle" showValue />
           </div>
         </div>
         <div class="bg-white rounded-lg shadow-sm p-6">

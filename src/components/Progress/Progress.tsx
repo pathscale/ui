@@ -1,38 +1,97 @@
-import { type Component } from "solid-js";
-import ProgressValue from "./ProgressValue";
-import ProgressSizes from "./ProgressSizes";
-import ProgressPercent from "./ProgressPercent";
-import ProgressColors from "./ProgressColors";
+import {
+  type Component,
+  splitProps,
+  Show,
+  createMemo,
+  type ComponentProps,
+} from "solid-js";
+import { classes } from "@src/lib/style";
+import type { VariantProps, ClassProps } from "@src/lib/style";
+import {
+  progressContainer,
+  progressWrapper,
+  progressFill,
+  progressLabel,
+} from "./Progress.styles";
 
-const Progress: Component = () => {
+export interface ProgressProps
+  extends VariantProps<typeof progressContainer>,
+    VariantProps<typeof progressWrapper>,
+    VariantProps<typeof progressFill>,
+    ClassProps,
+    ComponentProps<"div"> {
+  /** 0–100 for determinate, null for indeterminate */
+  value?: number | null;
+  /** Show the numeric label */
+  showValue?: boolean;
+  /** percent (e.g. “70%”) or raw (“70”) */
+  format?: "percent" | "raw";
+}
+
+const Progress: Component<ProgressProps> = (props) => {
+  const [local, rest] = splitProps(props, [
+    "value",
+    "size",
+    "shape",
+    "variant",
+    "color",
+    "showValue",
+    "format",
+    "class",
+    "className",
+  ] as const);
+
+  // Ensure a number or null
+  const val = createMemo(() =>
+    typeof local.value === "number"
+      ? Math.max(0, Math.min(100, local.value))
+      : null
+  );
+  const isDeterminate = () => val() !== null;
+
+  const labelText = createMemo(() => {
+    if (!local.showValue || val() == null) return "";
+    return local.format === "percent" ? `${val()}%` : String(val());
+  });
+
   return (
-    <section>
-      <div class="p-4">
-        <h1 class="text-2xl font-semibold mb-4">Progress Component Demo</h1>
-        <ProgressValue value={40} size="sm" shape="circle" variant="filled" />
-        <ProgressValue
-          value={70}
-          size="md"
-          shape="rounded"
-          variant="outlined"
-        />
-        <ProgressValue value={90} size="lg" shape="circle" variant="ghost" />
+    <div
+      {...rest}
+      class={classes(
+        progressContainer({ size: local.size }),
+        local.class,
+        local.className
+      )}
+      aria-busy={!isDeterminate()}
+    >
+      <div
+        class={classes(
+          progressWrapper({ size: local.size, shape: local.shape })
+        )}
+      >
+        <Show
+          when={isDeterminate()}
+          fallback={
+            <div
+              class={classes(
+                progressFill({ color: local.color, variant: local.variant }),
+                "animate-pulse"
+              )}
+              style={{ width: "100%" }}
+            />
+          }
+        >
+          <div
+            class={progressFill({ color: local.color, variant: local.variant })}
+            style={{ width: `${val()}%` }}
+          />
+        </Show>
       </div>
-      <div class="mt-4 flex flex-col gap-4">
-        <ProgressSizes value={20} size="sm" />
-        <ProgressSizes value={30} size="md" />
-        <ProgressSizes value={50} size="lg" />
-      </div>
-      <div class="mt-4">
-        <ProgressPercent value={80} showValue format="percent" />
-      </div>
-      <div class="mt-4 flex flex-col gap-4">
-        <ProgressColors value={40} color="danger" />
-        <ProgressColors value={60} color="success" />
-        <ProgressColors value={80} color="info" />
-        <ProgressColors value={100} color="warning" />
-      </div>
-    </section>
+
+      <Show when={local.showValue && labelText()}>
+        <div class={progressLabel()}>{labelText()}</div>
+      </Show>
+    </div>
   );
 };
 
