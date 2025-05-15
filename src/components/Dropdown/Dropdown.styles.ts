@@ -5,6 +5,7 @@ export const dropdownVariants = cva(
     "absolute mt-2 shadow-lg z-10",
     "w-max rounded-md bg-white border border-gray-300",
     "transition-all duration-150 ease-in-out",
+    "flex flex-col",
   ],
   {
     variants: {
