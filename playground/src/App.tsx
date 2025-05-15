@@ -20,6 +20,12 @@ import { inputVariants } from "../../src/components/input/Input.styles";
 import { Menu, MenuItem, MenuList } from "../../src/components/menu";
 import Table, { type Column } from "../../src/components/table/index";
 import { Dropdown, DropdownItem } from "../../src/components/Dropdown/index";
+import {
+  Navbar,
+  NavbarItem,
+  NavbarDropdown,
+} from "../../src/components/navbar";
+import { imageStyles } from "../../src/components/navbar/Navbar.styles";
 
 export default function App() {
   const [color, setColor] =
@@ -1111,6 +1117,51 @@ export default function App() {
           >
             <DropdownItem>This shouldn't open</DropdownItem>
           </Dropdown>
+        </div>
+        <div class="bg-white rounded-lg shadow-sm p-6">
+          <h2 class="text-xl font-semibold text-gray-800 border-b pb-2 mb-4">
+            Navbar
+          </h2>
+          <Navbar
+            color="info"
+            brand={
+              <NavbarItem tag="a" to="/navbar">
+                <img
+                  src="/logo.png"
+                  alt="Logo"
+                  class={imageStyles({
+                    size: "lg",
+                    rounded: true,
+                    bordered: true,
+                  })}
+                />
+              </NavbarItem>
+            }
+            start={
+              <>
+                <NavbarItem href="#" active>
+                  Home
+                </NavbarItem>
+                <NavbarItem href="#">Documentation</NavbarItem>
+                <NavbarDropdown label="Info" hoverable align="left">
+                  <NavbarItem href="#" active>
+                    About
+                  </NavbarItem>
+                  <NavbarItem href="#">Contact</NavbarItem>
+                </NavbarDropdown>
+              </>
+            }
+            end={
+              <>
+                <NavbarItem tag="div">
+                  <button>Sign up</button>
+                </NavbarItem>
+                <NavbarItem tag="div">
+                  <button>Log in</button>
+                </NavbarItem>
+              </>
+            }
+          />
         </div>
       </div>
     </main>
