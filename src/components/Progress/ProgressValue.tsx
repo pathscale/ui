@@ -4,19 +4,31 @@ import {
   progressBar,
   progressFill,
   progressLabel,
+  progressVariants,
 } from "./ProgressValue.styles";
 
-const DevShowcaseProgress: Component = () => {
-  const value = 40;
+export interface ProgressValueProps {
+  value: number;
+  size?: "sm" | "md" | "lg";
+  shape?: "circle" | "rounded";
+  variant?: "filled" | "outlined" | "ghost";
+}
 
+const ProgressValue: Component<ProgressValueProps> = (props) => {
   return (
-    <div class={progressWrapper()}>
+    <div
+      class={`${progressWrapper()} ${progressVariants({
+        size: props.size,
+        shape: props.shape,
+        variant: props.variant,
+      })}`}
+    >
       <div class={progressBar()}>
-        <div class={progressFill()} style={{ width: `${value}%` }} />
+        <div class={progressFill()} style={{ width: `${props.value}%` }} />
       </div>
-      <div class={progressLabel()}>{value}%</div>
+      <div class={progressLabel()}>{props.value}%</div>
     </div>
   );
 };
 
-export default DevShowcaseProgress;
+export default ProgressValue;

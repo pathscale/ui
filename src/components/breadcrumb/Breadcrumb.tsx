@@ -18,7 +18,7 @@ const separatorMap: Record<SeparatorType, string> = {
   succeeds: "»",
 };
 
-type BreadcrumbProps = {
+export type BreadcrumbProps = {
   children?: JSX.Element;
 } & VariantProps<typeof breadcrumbContainerVariants> &
   JSX.HTMLAttributes<HTMLElement>;

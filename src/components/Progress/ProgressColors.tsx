@@ -7,7 +7,7 @@ import {
   progressVariants,
 } from "./ProgressValue.styles";
 
-interface ProgressProps {
+export interface ProgressProps {
   value: number | null;
   size?: "sm" | "md" | "lg";
   shape?: "circle" | "rounded";
@@ -30,12 +30,21 @@ const Progress: Component<ProgressProps> = ({
     format === "percent" && value != null ? `${value}%` : value;
 
   return (
-    <div class={`${progressWrapper()} ${progressVariants({ size, shape, variant })}`}>
+    <div
+      class={`${progressWrapper()} ${progressVariants({
+        size,
+        shape,
+        variant,
+      })}`}
+    >
       <div class={progressBar()}>
         <Show
           when={value != null}
           fallback={
-            <div class={`${progressFill({ color })} animate-pulse`} style={{ width: "100%" }} />
+            <div
+              class={`${progressFill({ color })} animate-pulse`}
+              style={{ width: "100%" }}
+            />
           }
         >
           <div class={progressFill({ color })} style={{ width: `${value}%` }} />

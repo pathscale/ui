@@ -7,7 +7,7 @@ import {
   progressVariants,
 } from "./ProgressValue.styles";
 
-interface ProgressProps {
+export interface ProgressProps {
   value: number;
   size?: "sm" | "md" | "lg"; // Maps from is-small, is-medium, is-large
   shape?: "circle" | "rounded";
@@ -21,12 +21,15 @@ const Progress: Component<ProgressProps> = ({
   variant = "filled",
 }) => {
   return (
-    <div class={`${progressWrapper()} ${progressVariants({ size, shape, variant })}`}>
+    <div
+      class={`${progressWrapper()} ${progressVariants({
+        size,
+        shape,
+        variant,
+      })}`}
+    >
       <div class={progressBar()}>
-        <div
-          class={progressFill()}
-          style={{ width: `${value}%` }}
-        />
+        <div class={progressFill()} style={{ width: `${value}%` }} />
       </div>
       <div class={progressLabel()}>{value}%</div>
     </div>
