@@ -9,10 +9,10 @@ export const dropdownVariants = cva(
   {
     variants: {
       position: {
-        "bottom-left": "left-0 top-full",
-        "bottom-right": "right-0 top-full",
-        "top-left": "left-0 bottom-full",
-        "top-right": "right-0 bottom-full",
+        "bottom-left": "left-0 top-full text-black",
+        "bottom-right": "right-0 top-full text-black",
+        "top-left": "left-0 bottom-full text-black",
+        "top-right": "right-0 bottom-full text-black",
       },
       open: {
         true: "block",
@@ -27,10 +27,10 @@ export const dropdownVariants = cva(
 );
 
 export const dropdownItemVariants = cva(
-  "px-4 py-2 cursor-pointer transition-colors duration-150 ease-in-out hover:bg-gray-100",
+  "px-4 py-2 cursor-pointer transition-colors duration-150 ease-in-out hover:bg-gray-100 text-black",
   {
     variants: {
-      hasLink: { true: "p-0 text-blue-600 hover:underline", false: "" },
+      hasLink: { true: "p-0 text-blue-600 hover:underline text-black", false: "" },
     },
     defaultVariants: { hasLink: false },
   }

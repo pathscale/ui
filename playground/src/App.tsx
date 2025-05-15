@@ -444,7 +444,7 @@ export default function App() {
             disabledLabel="I really can't!"
             disabled
           >
-            <DropdownItem value="none">This shouldn't open</DropdownItem>
+            <DropdownItem value="none" >This shouldn't open</DropdownItem>
           </Dropdown>
         </div>
       </div>
