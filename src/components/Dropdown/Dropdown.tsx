@@ -13,11 +13,13 @@ import { buttonVariants } from "../button/Button.styles";
 import { classes, type VariantProps, type ClassProps } from "@src/lib/style";
 
 type DropdownProps = {
-  label?: JSX.Element;
-  disabledLabel?: JSX.Element;
+  label?: string | JSX.Element;
+  disabledLabel?: string | JSX.Element;
   trigger?: "click" | "hover";
   children: JSX.Element;
   color?: "primary" | "secondary" | "default";
+  disabled?: boolean;
+  className?: string;
 } & VariantProps<typeof dropdownVariants> &
   ClassProps &
   ComponentProps<"div">;
@@ -46,8 +48,7 @@ const Dropdown: Component<DropdownProps> = (props) => {
 
   const buttonClass = createMemo(() =>
     buttonVariants({
-      color: localProps.color ?? "primary",
-      disabled: localProps.disabled ? "true" : "false",
+      color: "primary",
     })
   );
 
@@ -63,11 +64,12 @@ const Dropdown: Component<DropdownProps> = (props) => {
         type="button"
         onClick={(e) => {
           e.preventDefault();
-          toggle();
+          if (localProps.trigger === "click") toggle();
         }}
         class={buttonClass()}
         aria-disabled={localProps.disabled}
         disabled={localProps.disabled}
+        aria-controls="dropdown-menu"
       >
         {labelContent()}
       </button>
