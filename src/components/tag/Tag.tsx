@@ -1,4 +1,10 @@
-import { type Component, splitProps, createMemo, Show } from "solid-js";
+import {
+  type Component,
+  splitProps,
+  createMemo,
+  Show,
+  untrack,
+} from "solid-js";
 import type { JSX } from "solid-js";
 import { tagVariants } from "./Tag.styles";
 import type { ClassProps, VariantProps } from "@src/lib/style";
@@ -31,37 +37,51 @@ const Tag: Component<TagProps> = (props) => {
     ["class", ...tagVariants.variantKeys]
   );
 
-  const isAttachedClosable = createMemo(
-    () => localProps.attached && localProps.closable
+  const isAttachedClosable = createMemo(() =>
+    untrack(() => localProps.attached && localProps.closable)
   );
-  const isClosable = createMemo(
-    () => localProps.closable && !localProps.attached
+
+  const isClosable = createMemo(() =>
+    untrack(() => localProps.closable && !localProps.attached)
+  );
+
+  const tagClasses = createMemo(() =>
+    classes(
+      tagVariants({
+        ...variantProps,
+        closable: localProps.closable,
+      }),
+      variantProps.class
+    )
+  );
+
+  const attachedButtonClasses = createMemo(() =>
+    tagVariants({
+      ...variantProps,
+      class: "ml-1 text-xs hover:opacity-80",
+    })
   );
 
   const handleClose = (e: MouseEvent) => {
-    if (typeof localProps.onClose === "function") {
-      localProps.onClose(e);
-    }
+    untrack(() => {
+      if (typeof localProps.onClose === "function") {
+        localProps.onClose(e);
+      }
+    });
   };
 
   return (
-    <div class={isAttachedClosable() ? "tags has-addons" : undefined}>
-      <span
-        class={classes(
-          tagVariants({
-            ...variantProps,
-            closable: localProps.closable,
-          }),
-          variantProps.class
-        )}
-        {...otherProps}
-      >
+    <div
+      class={isAttachedClosable() ? "tags has-addons" : undefined}
+      role="group"
+    >
+      <span class={tagClasses()} role="status" {...otherProps}>
         <span class="truncate">{localProps.children}</span>
 
         <Show when={isClosable()}>
           <button
             type="button"
-            aria-label={localProps.ariaCloseLabel}
+            aria-label={localProps.ariaCloseLabel ?? "Remove tag"}
             onClick={handleClose}
             class="ml-2 text-xs text-white hover:opacity-80"
           >
@@ -73,12 +93,9 @@ const Tag: Component<TagProps> = (props) => {
       <Show when={isAttachedClosable()}>
         <button
           type="button"
-          aria-label={localProps.ariaCloseLabel}
+          aria-label={localProps.ariaCloseLabel ?? "Remove tag"}
           onClick={handleClose}
-          class={tagVariants({
-            ...variantProps,
-            class: "ml-1 text-xs hover:opacity-80",
-          })}
+          class={attachedButtonClasses()}
         >
           {localProps.closeIcon ?? "×"}
         </button>

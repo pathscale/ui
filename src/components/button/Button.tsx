@@ -9,6 +9,7 @@ import {
   mergeProps,
   splitProps,
   type ValidComponent,
+  createMemo,
 } from "solid-js";
 import { buttonVariants } from "./Button.styles";
 import type { ClassProps, VariantProps } from "@src/lib/style";
@@ -27,13 +28,13 @@ export type ButtonProps<T extends ValidComponent = "button"> =
   Partial<ButtonVariantProps> & Partial<ButtonSharedProps<T>>;
 
 const Button = <T extends ValidComponent = "button">(
-  props: PolymorphicProps<T, ButtonProps<T>>,
+  props: PolymorphicProps<T, ButtonProps<T>>
 ) => {
   const defaultedProps = mergeProps(
     {
       color: "primary",
     } satisfies Partial<ButtonProps<T>>,
-    props,
+    props
   );
 
   const [variantProps, otherProps] = splitProps(defaultedProps as ButtonProps, [
@@ -41,13 +42,13 @@ const Button = <T extends ValidComponent = "button">(
     ...buttonVariants.variantKeys,
   ]);
 
+  const classes = createMemo(() => buttonVariants(variantProps));
+
   return (
     <PolymorphicButton<
       Component<Omit<ButtonElementProps, keyof PolymorphicButtonElementProps>>
     >
-      // === SharedProps ===
-      class={buttonVariants(variantProps)}
-      // === ElementProps ===
+      class={classes()}
       aria-busy={variantProps.loading ? "true" : undefined}
       {...otherProps}
     />

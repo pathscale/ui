@@ -4,6 +4,7 @@ import {
   Show,
   createMemo,
   type JSX,
+  untrack,
 } from "solid-js";
 import { selectVariants } from "./Select.styles";
 import { type VariantProps, type ClassProps, classes } from "@src/lib/style";
@@ -15,9 +16,9 @@ export type SelectProps = VariantProps<typeof selectVariants> &
     placeholder?: string;
     nativeSize?: string | number;
     value?: string | number | null;
-    onChange?: JSX.EventHandlerUnion<HTMLInputElement, Event>;
-    onFocus?: JSX.EventHandlerUnion<HTMLInputElement, FocusEvent>;
-    onBlur?: JSX.EventHandlerUnion<HTMLInputElement, FocusEvent>;
+    onChange?: JSX.EventHandlerUnion<HTMLSelectElement, Event>;
+    onFocus?: JSX.EventHandlerUnion<HTMLSelectElement, FocusEvent>;
+    onBlur?: JSX.EventHandlerUnion<HTMLSelectElement, FocusEvent>;
   };
 
 const Select: Component<SelectProps> = (props) => {
@@ -27,13 +28,17 @@ const Select: Component<SelectProps> = (props) => {
     ["class", ...selectVariants.variantKeys]
   );
 
-  const empty = createMemo(
-    () => localProps.value === null || localProps.value === undefined
+  const empty = createMemo(() =>
+    untrack(() => localProps.value === null || localProps.value === undefined)
+  );
+
+  const selectClasses = createMemo(() =>
+    classes(selectVariants(variantProps), variantProps.class)
   );
 
   return (
     <select
-      class={classes(selectVariants(variantProps), variantProps.class)}
+      class={selectClasses()}
       size={localProps.nativeSize}
       value={localProps.value}
       onChange={localProps.onChange}

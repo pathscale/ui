@@ -1,7 +1,6 @@
 import Button, { type ButtonVariantProps } from "../../src/components/button";
 import Input from "../../src/components/input";
 import Textarea from "../../src/components/textarea";
-import Tooltip from "../../src/components/tooltip";
 import { Breadcrumb, BreadcrumbItem } from "../../src/components/breadcrumb";
 import Switch from "../../src/components/switch";
 import { createSignal } from "solid-js";
@@ -10,6 +9,7 @@ import Checkbox from "../../src/components/checkbox";
 import Select from "../../src/components/select";
 import Avatar from "../../src/components/Avatar";
 import Progress from "../../src/components/Progress";
+import Tooltip from "../../src/components/tooltip";
 
 export default function App() {
   const [color, setColor] =
@@ -18,15 +18,17 @@ export default function App() {
   const [password, setPassword] = createSignal("Daisy");
 
   return (
-    <>
-      <main class="flex flex-col gap-10 p-6 max-w-xl mx-auto">
-        <section class="space-y-2">
-          <h2 class="text-lg font-semibold">Button</h2>
-          <div class="flex items-center gap-2">
+    <main class="min-h-screen bg-gray-50 p-8">
+      <div class="max-w-4xl mx-auto space-y-6">
+        <div class="bg-white rounded-lg shadow-sm p-6">
+          <h2 class="text-xl font-semibold text-gray-800 border-b pb-2 mb-4">
+            Button
+          </h2>
+          <div class="flex items-center gap-4">
             <Select
               placeholder="Select color"
               value={color()}
-              onChange={(e) =>
+              onChange={(e: { currentTarget: { value: string } }) =>
                 setColor(e.currentTarget.value as ButtonVariantProps["color"])
               }
             >
@@ -40,27 +42,37 @@ export default function App() {
             </Select>
             <Button color={color()}>Button</Button>
           </div>
-        </section>
+        </div>
 
-        <section class="space-y-2">
-          <h2 class="text-lg font-semibold">Input</h2>
-          <Input
-            value={username()}
-            onInput={(e) => setUsername(e.currentTarget.value)}
-            placeholder="the_boogeyman"
-          />
-          <Input
-            value={password()}
-            onInput={(e) => setPassword(e.currentTarget.value)}
-            placeholder="Password"
-            type="password"
-            passwordReveal
-            color="danger"
-          />
-        </section>
+        <div class="bg-white rounded-lg shadow-sm p-6">
+          <h2 class="text-xl font-semibold text-gray-800 border-b pb-2 mb-4">
+            Input
+          </h2>
+          <div class="space-y-4">
+            <Input
+              value={username()}
+              onInput={(e: { currentTarget: { value: string } }) =>
+                setUsername(e.currentTarget.value)
+              }
+              placeholder="the_boogeyman"
+            />
+            <Input
+              value={password()}
+              onInput={(e: { currentTarget: { value: string } }) =>
+                setPassword(e.currentTarget.value)
+              }
+              placeholder="Password"
+              type="password"
+              passwordReveal
+              color="danger"
+            />
+          </div>
+        </div>
 
-        <section class="space-y-2">
-          <h2 class="text-lg font-semibold">Avatar</h2>
+        <div class="bg-white rounded-lg shadow-sm p-6">
+          <h2 class="text-xl font-semibold text-gray-800 border-b pb-2 mb-4">
+            Avatar
+          </h2>
           <div class="flex gap-4">
             <Avatar
               alt="John Doe"
@@ -69,17 +81,21 @@ export default function App() {
               dataSrc="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde"
             />
           </div>
-        </section>
+        </div>
 
-        <section class="space-y-2">
-          <h2 class="text-lg font-semibold">Progress</h2>
+        <div class="bg-white rounded-lg shadow-sm p-6">
+          <h2 class="text-xl font-semibold text-gray-800 border-b pb-2 mb-4">
+            Progress
+          </h2>
           <div class="flex gap-4">
             <Progress />
           </div>
-        </section>
+        </div>
 
-        <section class="space-y-2">
-          <h2 class="text-lg font-semibold">Textarea</h2>
+        <div class="bg-white rounded-lg shadow-sm p-6">
+          <h2 class="text-xl font-semibold text-gray-800 border-b pb-2 mb-4">
+            Textarea
+          </h2>
           <Textarea
             placeholder="Write your thoughts..."
             color="primary"
@@ -88,258 +104,280 @@ export default function App() {
             hasCounter
             maxlength={144}
             value=""
-            onInput={(e) => console.log(e.currentTarget.value)}
+            onInput={(e: { currentTarget: { value: string } }) =>
+              console.log(e.currentTarget.value)
+            }
           />
-        </section>
+        </div>
 
-        <section class="space-y-2">
-          <h2 class="text-lg font-semibold">Tooltip</h2>
+        <div class="bg-white rounded-lg shadow-sm p-6">
+          <h2 class="text-xl font-semibold text-gray-800 border-b pb-2 mb-4">
+            Tooltip
+          </h2>
+          <div class="space-y-6">
+            <div class="flex gap-4 flex-wrap items-center">
+              <Tooltip type="info" label="info">
+                <button class="bg-blue-500 text-white px-3 py-1 rounded">
+                  Info
+                </button>
+              </Tooltip>
+              <Tooltip type="success" label="success">
+                <button class="bg-green-500 text-white px-3 py-1 rounded">
+                  Success
+                </button>
+              </Tooltip>
+              <Tooltip type="warning" label="warning">
+                <button class="bg-yellow-500 text-white px-3 py-1 rounded">
+                  Warning
+                </button>
+              </Tooltip>
+              <Tooltip type="danger" label="danger">
+                <button class="bg-red-500 text-white px-3 py-1 rounded">
+                  Danger
+                </button>
+              </Tooltip>
+              <Tooltip type="primary" label="primary">
+                <button class="bg-indigo-500 text-white px-3 py-1 rounded">
+                  Primary
+                </button>
+              </Tooltip>
+              <Tooltip type="gray" label="gray">
+                <button class="bg-gray-700 text-white px-3 py-1 rounded">
+                  Gray
+                </button>
+              </Tooltip>
+            </div>
 
-          <div class="flex gap-4 flex-wrap items-center">
-            <Tooltip type="info" label="info">
-              <button class="bg-blue-500 text-white px-3 py-1 rounded">
-                Info
-              </button>
-            </Tooltip>
-            <Tooltip type="success" label="success">
-              <button class="bg-green-500 text-white px-3 py-1 rounded">
+            <div class="flex gap-4 flex-wrap items-center">
+              <Tooltip size="sm" label="Small tooltip" multilined>
+                <button class="bg-gray-700 text-white px-3 py-1 rounded">
+                  Small
+                </button>
+              </Tooltip>
+              <Tooltip size="md" label="Medium tooltip" multilined>
+                <button class="bg-gray-700 text-white px-3 py-1 rounded">
+                  Medium
+                </button>
+              </Tooltip>
+              <Tooltip size="lg" label="Large tooltip" multilined>
+                <button class="bg-gray-700 text-white px-3 py-1 rounded">
+                  Large
+                </button>
+              </Tooltip>
+            </div>
+
+            <div class="flex gap-4 flex-wrap items-center">
+              <Tooltip label="Squared tooltip" rounded={false}>
+                <button class="bg-blue-500 text-white px-3 py-1 rounded">
+                  Squared
+                </button>
+              </Tooltip>
+              <Tooltip label="Dashed tooltip" dashed>
+                <button class="bg-green-500 text-white px-3 py-1 rounded">
+                  Dashed
+                </button>
+              </Tooltip>
+              <Tooltip label="Multilined\nTooltip with\nline breaks" multilined>
+                <button class="bg-yellow-500 text-white px-3 py-1 rounded">
+                  Multilined
+                </button>
+              </Tooltip>
+            </div>
+
+            <div class="flex gap-4 flex-wrap items-center">
+              <Tooltip label="Always visible" always position="right">
+                <button class="bg-green-500 text-white px-3 py-1 rounded">
+                  Always
+                </button>
+              </Tooltip>
+            </div>
+
+            <div class="flex gap-4 flex-wrap items-center">
+              <Tooltip label="Appears after 500ms" delay={500}>
+                <button class="bg-red-500 text-white px-3 py-1 rounded">
+                  Delay
+                </button>
+              </Tooltip>
+              <Tooltip label="Animated tooltip" animated position="right">
+                <button class="bg-blue-500 text-white px-3 py-1 rounded">
+                  Animated
+                </button>
+              </Tooltip>
+            </div>
+          </div>
+        </div>
+
+        <div class="bg-white rounded-lg shadow-sm p-6">
+          <h2 class="text-xl font-semibold text-gray-800 border-b pb-2 mb-4">
+            Breadcrumb
+          </h2>
+          <div class="space-y-4">
+            <Breadcrumb>
+              <BreadcrumbItem href="#">Home</BreadcrumbItem>
+              <BreadcrumbItem href="#">Docs</BreadcrumbItem>
+              <BreadcrumbItem active>Breadcrumb</BreadcrumbItem>
+            </Breadcrumb>
+
+            <Breadcrumb separator="arrow">
+              <BreadcrumbItem href="#">Home</BreadcrumbItem>
+              <BreadcrumbItem href="#">Docs</BreadcrumbItem>
+              <BreadcrumbItem active>Arrow →</BreadcrumbItem>
+            </Breadcrumb>
+
+            <Breadcrumb separator="dot">
+              <BreadcrumbItem href="#">Home</BreadcrumbItem>
+              <BreadcrumbItem href="#">Docs</BreadcrumbItem>
+              <BreadcrumbItem active>Dot ·</BreadcrumbItem>
+            </Breadcrumb>
+
+            <Breadcrumb separator="bullet">
+              <BreadcrumbItem href="#">Home</BreadcrumbItem>
+              <BreadcrumbItem href="#">Docs</BreadcrumbItem>
+              <BreadcrumbItem active>Bullet •</BreadcrumbItem>
+            </Breadcrumb>
+
+            <Breadcrumb separator="succeeds">
+              <BreadcrumbItem href="#">Home</BreadcrumbItem>
+              <BreadcrumbItem href="#">Docs</BreadcrumbItem>
+              <BreadcrumbItem active>Succeeds »</BreadcrumbItem>
+            </Breadcrumb>
+
+            <Breadcrumb size="sm">
+              <BreadcrumbItem href="#">Home</BreadcrumbItem>
+              <BreadcrumbItem active>Small</BreadcrumbItem>
+            </Breadcrumb>
+
+            <Breadcrumb size="lg">
+              <BreadcrumbItem href="#">Home</BreadcrumbItem>
+              <BreadcrumbItem active>Large</BreadcrumbItem>
+            </Breadcrumb>
+
+            <Breadcrumb alignment="center">
+              <BreadcrumbItem href="#">Center</BreadcrumbItem>
+              <BreadcrumbItem active>Item</BreadcrumbItem>
+            </Breadcrumb>
+
+            <Breadcrumb alignment="right">
+              <BreadcrumbItem href="#">Right</BreadcrumbItem>
+              <BreadcrumbItem active>Item</BreadcrumbItem>
+            </Breadcrumb>
+          </div>
+        </div>
+
+        <div class="bg-white rounded-lg shadow-sm p-6">
+          <h2 class="text-xl font-semibold text-gray-800 border-b pb-2 mb-4">
+            Switch
+          </h2>
+          <div class="space-y-6">
+            <div class="space-y-3">
+              <Switch>Default</Switch>
+              <Switch color="green" outlined>
                 Success
-              </button>
-            </Tooltip>
-            <Tooltip type="warning" label="warning">
-              <button class="bg-yellow-500 text-white px-3 py-1 rounded">
-                Warning
-              </button>
-            </Tooltip>
-            <Tooltip type="danger" label="danger">
-              <button class="bg-red-500 text-white px-3 py-1 rounded">
-                Danger
-              </button>
-            </Tooltip>
-            <Tooltip type="primary" label="primary">
-              <button class="bg-indigo-500 text-white px-3 py-1 rounded">
-                Primary
-              </button>
-            </Tooltip>
-            <Tooltip type="gray" label="gray">
-              <button class="bg-gray-700 text-white px-3 py-1 rounded">
-                Gray
-              </button>
-            </Tooltip>
-          </div>
-
-          <div class="flex gap-4 flex-wrap items-center">
-            <Tooltip size="sm" label="Small tooltip" multilined>
-              <button class="bg-gray-700 text-white px-3 py-1 rounded">
+              </Switch>
+              <Switch color="red" disabled>
+                Disabled
+              </Switch>
+              <Switch color="yellow" rounded={false}>
+                Square
+              </Switch>
+            </div>
+            <div class="flex gap-4">
+              <Switch size="sm" color="green" passiveColor="green">
                 Small
-              </button>
-            </Tooltip>
-            <Tooltip size="md" label="Medium tooltip" multilined>
-              <button class="bg-gray-700 text-white px-3 py-1 rounded">
+              </Switch>
+              <Switch size="md" color="yellow" passiveColor="yellow">
                 Medium
-              </button>
-            </Tooltip>
-            <Tooltip size="lg" label="Large tooltip" multilined>
-              <button class="bg-gray-700 text-white px-3 py-1 rounded">
+              </Switch>
+              <Switch size="lg" color="red" passiveColor="red">
                 Large
-              </button>
-            </Tooltip>
+              </Switch>
+            </div>
+            <div class="space-y-3">
+              <Switch
+                checked
+                onChange={(val: boolean) => console.log("Switched to", val)}
+                color="gray"
+              >
+                Value
+              </Switch>
+              <Switch color="blue" passiveColor="red">
+                Blue / Passive Red
+              </Switch>
+              <Switch color="red" passiveColor="blue">
+                Red / Passive Blue
+              </Switch>
+            </div>
           </div>
+        </div>
 
-          <div class="flex gap-4 flex-wrap items-center">
-            <Tooltip label="Squared tooltip" rounded={false}>
-              <button class="bg-blue-500 text-white px-3 py-1 rounded">
-                Squared
-              </button>
-            </Tooltip>
-            <Tooltip label="Dashed tooltip" dashed>
-              <button class="bg-green-500 text-white px-3 py-1 rounded">
-                Dashed
-              </button>
-            </Tooltip>
-            <Tooltip label="Multilined\nTooltip with\nline breaks" multilined>
-              <button class="bg-yellow-500 text-white px-3 py-1 rounded">
-                Multilined
-              </button>
-            </Tooltip>
+        <div class="bg-white rounded-lg shadow-sm p-6">
+          <h2 class="text-xl font-semibold text-gray-800 border-b pb-2 mb-4">
+            Tag
+          </h2>
+          <div class="space-y-4">
+            <div class="flex flex-wrap gap-2">
+              <Tag type="primary">Primary</Tag>
+              <Tag type="success">Success</Tag>
+              <Tag type="warning">Warning</Tag>
+              <Tag type="danger">Danger</Tag>
+              <Tag type="info">Info</Tag>
+              <Tag type="dark">Dark</Tag>
+            </div>
+
+            <div class="flex flex-wrap gap-2">
+              <Tag size="normal" type="dark">
+                Default
+              </Tag>
+              <Tag size="medium" type="primary">
+                Medium
+              </Tag>
+              <Tag size="large" type="info">
+                Large
+              </Tag>
+            </div>
+
+            <div class="flex flex-wrap gap-2">
+              <Tag disabled type="info">
+                Disabled
+              </Tag>
+            </div>
+
+            <div class="flex flex-wrap gap-2">
+              <Tag closable onClose={() => console.log("Closed")}>
+                Closable
+              </Tag>
+              <Tag
+                attached
+                closable
+                onClose={() => console.log("Attached closed")}
+              >
+                Attached
+              </Tag>
+            </div>
           </div>
+        </div>
 
-          <div class="flex gap-4 flex-wrap items-center">
-            <Tooltip label="Always visible" always position="right">
-              <button class="bg-green-500 text-white px-3 py-1 rounded">
-                Always
-              </button>
-            </Tooltip>
-          </div>
-
-          <div class="flex gap-4 flex-wrap items-center">
-            <Tooltip label="Appears after 500ms" delay={500}>
-              <button class="bg-red-500 text-white px-3 py-1 rounded">
-                Delay
-              </button>
-            </Tooltip>
-            <Tooltip label="Animated tooltip" animated position="right">
-              <button class="bg-blue-500 text-white px-3 py-1 rounded">
-                Animated
-              </button>
-            </Tooltip>
-          </div>
-        </section>
-
-        <section class="space-y-2">
-          <h2 class="text-lg font-semibold">Breadcrumb</h2>
-
-          <Breadcrumb>
-            <BreadcrumbItem href="#">Home</BreadcrumbItem>
-            <BreadcrumbItem href="#">Docs</BreadcrumbItem>
-            <BreadcrumbItem active>Breadcrumb</BreadcrumbItem>
-          </Breadcrumb>
-
-          <Breadcrumb separator="arrow">
-            <BreadcrumbItem href="#">Home</BreadcrumbItem>
-            <BreadcrumbItem href="#">Docs</BreadcrumbItem>
-            <BreadcrumbItem active>Arrow →</BreadcrumbItem>
-          </Breadcrumb>
-
-          <Breadcrumb separator="dot">
-            <BreadcrumbItem href="#">Home</BreadcrumbItem>
-            <BreadcrumbItem href="#">Docs</BreadcrumbItem>
-            <BreadcrumbItem active>Dot ·</BreadcrumbItem>
-          </Breadcrumb>
-
-          <Breadcrumb separator="bullet">
-            <BreadcrumbItem href="#">Home</BreadcrumbItem>
-            <BreadcrumbItem href="#">Docs</BreadcrumbItem>
-            <BreadcrumbItem active>Bullet •</BreadcrumbItem>
-          </Breadcrumb>
-
-          <Breadcrumb separator="succeeds">
-            <BreadcrumbItem href="#">Home</BreadcrumbItem>
-            <BreadcrumbItem href="#">Docs</BreadcrumbItem>
-            <BreadcrumbItem active>Succeeds »</BreadcrumbItem>
-          </Breadcrumb>
-
-          <Breadcrumb size="sm">
-            <BreadcrumbItem href="#">Home</BreadcrumbItem>
-            <BreadcrumbItem active>Small</BreadcrumbItem>
-          </Breadcrumb>
-
-          <Breadcrumb size="lg">
-            <BreadcrumbItem href="#">Home</BreadcrumbItem>
-            <BreadcrumbItem active>Large</BreadcrumbItem>
-          </Breadcrumb>
-
-          <Breadcrumb alignment="center">
-            <BreadcrumbItem href="#">Center</BreadcrumbItem>
-            <BreadcrumbItem active>Item</BreadcrumbItem>
-          </Breadcrumb>
-
-          <Breadcrumb alignment="right">
-            <BreadcrumbItem href="#">Right</BreadcrumbItem>
-            <BreadcrumbItem active>Item</BreadcrumbItem>
-          </Breadcrumb>
-        </section>
-
-        <section class="space-y-2">
-          <h2 class="text-lg font-semibold">Switch</h2>
-          <div class="space-y-2">
-            <Switch>Default</Switch>
-            <Switch color="green" outlined>
-              Success
-            </Switch>
-            <Switch color="red" disabled>
-              Disabled
-            </Switch>
-            <Switch color="yellow" rounded={false}>
-              Square
-            </Switch>
-          </div>
-          <div>
-            <Switch size="sm" color="green" passiveColor="green">
-              Small
-            </Switch>
-            <Switch size="md" color="yellow" passiveColor="yellow">
-              Medium
-            </Switch>
-            <Switch size="lg" color="red" passiveColor="red">
-              Large
-            </Switch>
-          </div>
-          <div class="space-y-2">
-            <Switch
-              checked
-              onChange={(val) => console.log("Switched to", val)}
-              color="gray"
-            >
-              Value
-            </Switch>
-            <Switch color="blue" passiveColor="red">
-              Blue / Passive Red
-            </Switch>
-            <Switch color="red" passiveColor="blue">
-              Red / Passive Blue
-            </Switch>
-          </div>
-        </section>
-
-        <section class="space-y-2">
-          <h2 class="text-lg font-semibold">Tag</h2>
-          <div class="flex flex-wrap gap-2">
-            <Tag type="primary">Primary</Tag>
-            <Tag type="success">Success</Tag>
-            <Tag type="warning">Warning</Tag>
-            <Tag type="danger">Danger</Tag>
-            <Tag type="info">Info</Tag>
-            <Tag type="dark">Dark</Tag>
-          </div>
-
-          <div class="flex flex-wrap gap-2">
-            <Tag size="normal" type="dark">
-              Default
-            </Tag>
-            <Tag size="medium" type="primary">
-              Medium
-            </Tag>
-            <Tag size="large" type="info">
-              Large
-            </Tag>
-          </div>
-
-          <div class="flex flex-wrap gap-2">
-            <Tag disabled type="info">
-              Disabled
-            </Tag>
-          </div>
-
-          <div class="flex flex-wrap gap-2">
-            <Tag closable onClose={() => console.log("Closed")}>
-              Closable
-            </Tag>
-            <Tag
-              attached
-              closable
-              onClose={() => console.log("Attached closed")}
-            >
-              Attached
-            </Tag>
-          </div>
-        </section>
-
-        <section class="space-y-2">
-          <h2 class="text-lg font-semibold">Checkbox</h2>
+        <div class="bg-white rounded-lg shadow-sm p-6">
+          <h2 class="text-xl font-semibold text-gray-800 border-b pb-2 mb-4">
+            Checkbox
+          </h2>
           <div class="flex flex-col gap-3">
             <Checkbox
               label="Accept Terms"
-              onChange={(e) => console.log("Checked:", e.currentTarget.checked)}
+              onChange={(e: { currentTarget: { checked: boolean } }) =>
+                console.log("Checked:", e.currentTarget.checked)
+              }
             />
             <Checkbox label="Indeterminate" indeterminate />
             <Checkbox label="Disabled checkbox" checked disabled />
           </div>
-        </section>
+        </div>
 
-        <section class="space-y-2">
-          <h2 class="text-lg font-semibold">Select</h2>
-          <div class="flex flex-col gap-2">
+        <div class="bg-white rounded-lg shadow-sm p-6">
+          <h2 class="text-xl font-semibold text-gray-800 border-b pb-2 mb-4">
+            Select
+          </h2>
+          <div class="grid grid-cols-2 gap-3">
             <Select placeholder="Choose a color" color="info">
               <option value="info">Info</option>
             </Select>
@@ -364,12 +402,17 @@ export default function App() {
             <Select placeholder="Rounded select" color="warning" rounded>
               <option value="rounded">Rounded</option>
             </Select>
-            <Select placeholder="Expanded select" color="danger" expanded>
+            <Select
+              placeholder="Expanded select"
+              color="danger"
+              expanded
+              class="col-span-2"
+            >
               <option value="expanded">Expanded</option>
             </Select>
           </div>
-        </section>
-      </main>
-    </>
+        </div>
+      </div>
+    </main>
   );
 }

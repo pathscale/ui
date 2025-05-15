@@ -6,6 +6,7 @@ import {
   mergeProps,
   Show,
   splitProps,
+  untrack,
 } from "solid-js";
 import { inputVariants } from "./Input.styles";
 import type { ClassProps, VariantProps } from "@src/lib/style";
@@ -30,8 +31,16 @@ const Input = (props: InputProps) => {
   const [showPassword, setShowPassword] = createSignal(false);
 
   const computedType = createMemo(() =>
-    localProps.passwordReveal && showPassword() ? "text" : defaultedProps.type
+    untrack(() =>
+      localProps.passwordReveal && showPassword() ? "text" : defaultedProps.type
+    )
   );
+
+  const classes = createMemo(() => inputVariants(variantProps));
+
+  const handlePasswordToggle = () => {
+    untrack(() => setShowPassword((prev) => !prev));
+  };
 
   return (
     <div class="relative flex items-center">
@@ -42,7 +51,7 @@ const Input = (props: InputProps) => {
       </Show>
 
       <input
-        class={inputVariants(variantProps)}
+        class={classes()}
         type={computedType()}
         aria-invalid={variantProps.color === "danger" ? "true" : undefined}
         {...otherProps}
@@ -51,8 +60,9 @@ const Input = (props: InputProps) => {
       <Show when={localProps.passwordReveal && localProps.rightIcon}>
         <button
           type="button"
-          onClick={() => setShowPassword((prev) => !prev)}
+          onClick={handlePasswordToggle}
           class="absolute right-3 top-1/2 -translate-y-1/2 outline-none"
+          aria-label={showPassword() ? "Hide password" : "Show password"}
         >
           {localProps.rightIcon}
         </button>

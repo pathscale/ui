@@ -1,9 +1,10 @@
 import {
   type Component,
   createSignal,
-  onCleanup,
   splitProps,
   type JSX,
+  createMemo,
+  untrack,
 } from "solid-js";
 import { switchVariants, checkVariants } from "./Switch.styles";
 import type { VariantProps } from "@src/lib/style";
@@ -16,9 +17,11 @@ export type SwitchProps = {
   name?: string;
   required?: boolean;
   disabled?: boolean;
+  "aria-label"?: string;
+  "aria-describedby"?: string;
 } & VariantProps<typeof switchVariants> &
   VariantProps<typeof checkVariants> &
-  JSX.InputHTMLAttributes<HTMLInputElement>;
+  Omit<JSX.InputHTMLAttributes<HTMLInputElement>, "onChange">;
 
 const Switch: Component<SwitchProps> = (props) => {
   const [localProps, variantProps, otherProps] = splitProps(
@@ -31,6 +34,8 @@ const Switch: Component<SwitchProps> = (props) => {
       "name",
       "required",
       "disabled",
+      "aria-label",
+      "aria-describedby",
     ],
     ["size", "rounded", "outlined", "color", "passiveColor"]
   );
@@ -40,17 +45,38 @@ const Switch: Component<SwitchProps> = (props) => {
     localProps.defaultChecked ?? false
   );
 
-  const checkedValue = () =>
-    isControlled ? localProps.checked : internalChecked();
+  const checkedValue = createMemo(() =>
+    untrack(() => (isControlled ? localProps.checked : internalChecked()))
+  );
 
-  const handleChange = (e: Event) => {
-    const next = (e.currentTarget as HTMLInputElement).checked;
-    if (!isControlled) setInternalChecked(next);
-    localProps.onChange?.(next);
+  const switchClasses = createMemo(() => switchVariants(variantProps));
+
+  const checkClasses = createMemo(() =>
+    checkVariants({
+      size: variantProps.size,
+      color: variantProps.color,
+      passiveColor: variantProps.passiveColor,
+      rounded: variantProps.rounded,
+      outlined: variantProps.outlined,
+    })
+  );
+
+  const handleChange = (e: Event & { currentTarget: HTMLInputElement }) => {
+    const next = e.currentTarget.checked;
+    untrack(() => {
+      if (!isControlled) setInternalChecked(next);
+      localProps.onChange?.(next);
+    });
   };
 
   return (
-    <label class={switchVariants(variantProps)}>
+    <label
+      class={switchClasses()}
+      role="switch"
+      aria-checked={checkedValue()}
+      aria-label={localProps["aria-label"]}
+      aria-describedby={localProps["aria-describedby"]}
+    >
       <input
         type="checkbox"
         class="sr-only peer"
@@ -59,18 +85,11 @@ const Switch: Component<SwitchProps> = (props) => {
         name={localProps.name}
         required={localProps.required}
         disabled={localProps.disabled}
+        aria-hidden="true"
         {...otherProps}
       />
 
-      <span
-        class={checkVariants({
-          size: variantProps.size,
-          color: variantProps.color,
-          passiveColor: variantProps.passiveColor,
-          rounded: variantProps.rounded,
-          outlined: variantProps.outlined,
-        })}
-      />
+      <span class={checkClasses()} />
       <span class="control-label">{localProps.children}</span>
     </label>
   );

@@ -6,6 +6,7 @@ import {
   mergeProps,
   splitProps,
   Show,
+  untrack,
 } from "solid-js";
 import { avatarVariants } from "./Avatar.styles";
 import type { VariantProps } from "@src/lib/style";
@@ -35,17 +36,17 @@ const Avatar: Component<AvatarProps> = (rawProps) => {
   const [source, setSource] = createSignal(props.src || props.dataSrc);
 
   createEffect(() => {
-    if (import.meta.env.PROD && props.dataSrc) {
-      setSource(props.dataSrc);
-    }
+    untrack(() => {
+      if (import.meta.env.PROD && props.dataSrc) {
+        setSource(props.dataSrc);
+      }
+    });
   });
 
-  const backgroundColor = createMemo(() =>
-    source() ? "" : (props.class ?? "bg-blue-500")
-  );
-  const textColor = createMemo(() =>
-    source() ? "" : (props.text ?? "text-white")
-  );
+  const styles = createMemo(() => ({
+    background: untrack(() => (source() ? "" : props.class ?? "bg-blue-500")),
+    text: untrack(() => (source() ? "" : props.text ?? "text-white")),
+  }));
 
   const caption = createMemo(() => parseCaption(props.alt));
 
@@ -53,7 +54,7 @@ const Avatar: Component<AvatarProps> = (rawProps) => {
     <figure class={avatarVariants(variantProps)}>
       <Show
         when={source()}
-        fallback={<figcaption class="text-lg">{caption()}</figcaption>}
+        fallback={<figcaption class={styles().text}>{caption()}</figcaption>}
       >
         <img
           src={source()}
