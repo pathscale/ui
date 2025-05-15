@@ -10,6 +10,7 @@ import Select from "../../src/components/select";
 import Avatar from "../../src/components/Avatar";
 import Progress from "../../src/components/Progress";
 import Tooltip from "../../src/components/tooltip";
+import { Dropdown, DropdownItem } from "../../src/components/Dropdown/index";
 
 export default function App() {
   const [color, setColor] =
@@ -411,6 +412,40 @@ export default function App() {
               <option value="expanded">Expanded</option>
             </Select>
           </div>
+        </div>
+        <div class="bg-black rounded-lg shadow-sm p-6">
+        <Dropdown label="Click me" trigger="click" position="bottom-left" color="default">
+            <DropdownItem value="blue">Blue</DropdownItem>
+            <DropdownItem value="green">Green</DropdownItem>
+          </Dropdown>
+
+          <Dropdown label="Up/Left" trigger="click" position="top-left" color="secondary">
+            <DropdownItem value="pidgey">Pidgey</DropdownItem>
+            <DropdownItem value="meowth">Meowth</DropdownItem>
+          </Dropdown>
+
+          <Dropdown label="Hover Up/Right" trigger="hover" position="top-right">
+            <DropdownItem hasLink>
+              <a href="https://google.com" target="_blank" rel="noopener noreferrer">
+                Link to Google
+              </a>
+            </DropdownItem>
+            <DropdownItem hasLink>
+              <a href="https://solidjs.com" target="_blank" rel="noopener noreferrer">
+                Link to Solid
+              </a>
+            </DropdownItem>
+          </Dropdown>
+
+          <Dropdown
+            label="Can't click me"
+            trigger="click"
+            position="bottom-left"
+            disabledLabel="I really can't!"
+            disabled
+          >
+            <DropdownItem value="none">This shouldn't open</DropdownItem>
+          </Dropdown>
         </div>
       </div>
     </main>
