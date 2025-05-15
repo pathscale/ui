@@ -46,14 +46,10 @@ const Pagination: Component<PaginationProps> = (props) => {
     const before = local.rangeBefore ?? 1;
     const after = local.rangeAfter ?? 1;
 
-    const left = Math.max(1, local.current - before);
-    const right = Math.min(local.current + after, pageCount());
+    const start = Math.max(1, local.current - before);
+    const end = Math.min(local.current + after, pageCount());
 
-    const pages: number[] = [];
-    for (let i = left; i <= right; i++) {
-      pages.push(i);
-    }
-    return pages;
+    return Array.from({ length: end - start + 1 }, (_, i) => start + i);
   });
 
   const changePage = (page: number) => {
@@ -75,33 +71,34 @@ const Pagination: Component<PaginationProps> = (props) => {
         &laquo;
       </button>
 
-      <Show when={local.simple}>
-        <span class="text-sm text-gray-600 dark:text-gray-300 px-2">
-          {perPage() === 1
-            ? `${(local.current - 1) * perPage() + 1} / ${local.total}`
-            : `${(local.current - 1) * perPage() + 1}-${Math.min(
-                local.current * perPage(),
-                local.total
-              )} / ${local.total}`}
-        </span>
-      </Show>
+      <Show when={pageCount() > 1}>
+        <Show when={local.simple}>
+          <span class="text-sm text-gray-600 dark:text-gray-300 px-2">
+            {perPage() === 1
+              ? `${(local.current - 1) * perPage() + 1} / ${local.total}`
+              : `${(local.current - 1) * perPage() + 1}-${Math.min(
+                  local.current * perPage(),
+                  local.total
+                )} / ${local.total}`}
+          </span>
+        </Show>
 
-      <Show when={!local.simple}>
-        <For each={pagesInRange()}>
-          {(page) => (
-            <button
-              class={paginationItemVariants({
-                ...variantProps,
-                active: page === local.current,
-              })}
-              onClick={() => changePage(page)}
-            >
-              {page}
-            </button>
-          )}
-        </For>
+        <Show when={!local.simple}>
+          <For each={pagesInRange()}>
+            {(page) => (
+              <button
+                class={paginationItemVariants({
+                  ...variantProps,
+                  active: page === local.current,
+                })}
+                onClick={() => changePage(page)}
+              >
+                {page}
+              </button>
+            )}
+          </For>
+        </Show>
       </Show>
-
       <button
         class={paginationItemVariants({
           ...variantProps,

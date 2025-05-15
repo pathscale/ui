@@ -513,6 +513,16 @@ export default function App() {
               );
             })()}
           </div>
+
+          <div class="space-y-2">
+            <h3 class="font-medium">Single page (hidden nav)</h3>
+            {(() => {
+              const [page, setPage] = createSignal(1);
+              return (
+                <Pagination total={10} current={page()} onChange={setPage} />
+              );
+            })()}
+          </div>
         </div>
       </div>
     </main>
