@@ -5,6 +5,7 @@ import {
   splitProps,
   For,
   Show,
+  createMemo,
 } from "solid-js";
 import { tabsNavVariants, tabTriggerVariants } from "./Tabs.styles";
 import type { VariantProps } from "@src/lib/style";
@@ -15,7 +16,7 @@ type TabItem = {
   disabled?: boolean;
 };
 
-type TabsProps = {
+export type TabsProps = {
   items: TabItem[];
   value?: number;
   onChange?: (index: number) => void;
@@ -28,13 +29,21 @@ const Tabs: Component<TabsProps> = (props) => {
     ["size", "type", "alignment", "expanded"]
   );
 
-  const [active, setActive] = createSignal(local.value ?? 0);
+  const [internalActive, setInternalActive] = createSignal(local.value ?? 0);
+  const isControlled = () => local.value !== undefined;
+  const active = createMemo(() =>
+    isControlled() ? local.value! : internalActive()
+  );
 
   const handleChange = (i: number) => {
-    if (local.items[i] && !local.items[i].disabled) {
-      setActive(i);
-      local.onChange?.(i);
+    const item = local.items[i];
+    if (!item || item.disabled) return;
+
+    if (!isControlled()) {
+      setInternalActive(i);
     }
+
+    local.onChange?.(i);
   };
 
   return (
