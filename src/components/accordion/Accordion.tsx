@@ -34,6 +34,17 @@ const Accordion: Component<AccordionProps> = (props) => {
     if (!local.disabled) setIsOpen((prev) => !prev);
   };
 
+  const handleKeyDown:
+    | JSX.EventHandlerUnion<HTMLElement, KeyboardEvent>
+    | undefined = local.headerIsTrigger
+    ? (e) => {
+        if (e.key === "Enter" || e.key === " ") {
+          e.preventDefault();
+          handleToggle();
+        }
+      }
+    : undefined;
+
   return (
     <div
       class={accordionContainerVariants({
@@ -41,6 +52,11 @@ const Accordion: Component<AccordionProps> = (props) => {
         expanded: isOpen(),
         disabled: local.disabled,
       })}
+      onKeyDown={handleKeyDown}
+      role={local.headerIsTrigger ? "button" : undefined}
+      tabindex={local.headerIsTrigger ? "0" : undefined}
+      aria-expanded={local.headerIsTrigger ? isOpen() : undefined}
+      aria-disabled={local.disabled}
       {...otherProps}
     >
       <div
