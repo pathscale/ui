@@ -1,8 +1,9 @@
 import Button, { type ButtonVariantProps } from "../../src/components/button";
 import Input from "../../src/components/input";
 import Textarea from "../../src/components/textarea";
+import { Breadcrumb, BreadcrumbItem } from "../../src/components/breadcrumb";
 import Switch from "../../src/components/switch";
-import { createSignal, For } from "solid-js";
+import { createSignal } from "solid-js";
 import Tag from "../../src/components/tag";
 import Checkbox from "../../src/components/checkbox";
 import Select from "../../src/components/select";
@@ -91,6 +92,57 @@ export default function App() {
         </section>
 
         <section class="space-y-2">
+          <h2 class="text-lg font-semibold">Breadcrumb</h2>
+
+          <Breadcrumb>
+            <BreadcrumbItem href="#">Home</BreadcrumbItem>
+            <BreadcrumbItem href="#">Docs</BreadcrumbItem>
+            <BreadcrumbItem active>Breadcrumb</BreadcrumbItem>
+          </Breadcrumb>
+
+          <Breadcrumb separator="arrow">
+            <BreadcrumbItem href="#">Home</BreadcrumbItem>
+            <BreadcrumbItem href="#">Docs</BreadcrumbItem>
+            <BreadcrumbItem active>Arrow →</BreadcrumbItem>
+          </Breadcrumb>
+
+          <Breadcrumb separator="dot">
+            <BreadcrumbItem href="#">Home</BreadcrumbItem>
+            <BreadcrumbItem href="#">Docs</BreadcrumbItem>
+            <BreadcrumbItem active>Dot ·</BreadcrumbItem>
+          </Breadcrumb>
+
+          <Breadcrumb separator="bullet">
+            <BreadcrumbItem href="#">Home</BreadcrumbItem>
+            <BreadcrumbItem href="#">Docs</BreadcrumbItem>
+            <BreadcrumbItem active>Bullet •</BreadcrumbItem>
+          </Breadcrumb>
+
+          <Breadcrumb separator="succeeds">
+            <BreadcrumbItem href="#">Home</BreadcrumbItem>
+            <BreadcrumbItem href="#">Docs</BreadcrumbItem>
+            <BreadcrumbItem active>Succeeds »</BreadcrumbItem>
+          </Breadcrumb>
+
+          <Breadcrumb size="sm">
+            <BreadcrumbItem href="#">Home</BreadcrumbItem>
+            <BreadcrumbItem active>Small</BreadcrumbItem>
+          </Breadcrumb>
+
+          <Breadcrumb size="lg">
+            <BreadcrumbItem href="#">Home</BreadcrumbItem>
+            <BreadcrumbItem active>Large</BreadcrumbItem>
+          </Breadcrumb>
+
+          <Breadcrumb alignment="center">
+            <BreadcrumbItem href="#">Center</BreadcrumbItem>
+            <BreadcrumbItem active>Item</BreadcrumbItem>
+          </Breadcrumb>
+
+          <Breadcrumb alignment="right">
+            <BreadcrumbItem href="#">Right</BreadcrumbItem>
+            <BreadcrumbItem active>Item</BreadcrumbItem>
+          </Breadcrumb>
           <h2 class="text-lg font-semibold">Switch</h2>
           <div class="space-y-2">
             <Switch>Default</Switch>
