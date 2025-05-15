@@ -18,6 +18,8 @@ import Tooltip from "../../src/components/tooltip";
 import Steps, { type StepItem } from "../../src/components/steps";
 import { inputVariants } from "../../src/components/input/Input.styles";
 import { Menu, MenuItem, MenuList } from "../../src/components/menu";
+import Table, { type Column } from "../../src/components/table/index";
+import { Dropdown, DropdownItem } from "../../src/components/Dropdown/index";
 
 export default function App() {
   const [color, setColor] =
@@ -1054,6 +1056,61 @@ export default function App() {
           />
           <h1>Step variant 2</h1>
           <Steps animated initial={0} steps={steps} />
+        </div>
+        <div class="bg-white rounded-lg shadow-sm p-6">
+          <h2 class="text-xl font-semibold text-gray-800 border-b pb-2 mb-4">
+            Dropdown
+          </h2>
+          <Dropdown
+            label="Click me"
+            trigger="click"
+            position="bottom-left"
+            color="default"
+          >
+            <DropdownItem>Blue</DropdownItem>
+            <DropdownItem>Green</DropdownItem>
+          </Dropdown>
+
+          <Dropdown
+            label="Up/Left"
+            trigger="click"
+            position="top-left"
+            color="secondary"
+          >
+            <DropdownItem>Pidgey</DropdownItem>
+            <DropdownItem>Meowth</DropdownItem>
+          </Dropdown>
+
+          <Dropdown label="Hover Up/Right" trigger="hover" position="top-right">
+            <DropdownItem hasLink>
+              <a
+                href="https://google.com"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                Link to Google
+              </a>
+            </DropdownItem>
+            <DropdownItem hasLink>
+              <a
+                href="https://solidjs.com"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                Link to Solid
+              </a>
+            </DropdownItem>
+          </Dropdown>
+
+          <Dropdown
+            label="Can't click me"
+            trigger="click"
+            position="bottom-left"
+            disabledLabel="I really can't!"
+            disabled
+          >
+            <DropdownItem>This shouldn't open</DropdownItem>
+          </Dropdown>
         </div>
       </div>
     </main>
