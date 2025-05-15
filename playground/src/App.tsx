@@ -15,14 +15,70 @@ import Upload from "../../src/components/upload";
 import Avatar from "../../src/components/Avatar";
 import Progress from "../../src/components/Progress";
 import Tooltip from "../../src/components/tooltip";
-import Table, { type Column } from "../../src/components/table/index";
-import { Menu, MenuList, MenuItem } from "../../src/components/menu";
-import { Steps } from "../../src/components/steps";
+import Steps, { type StepItem } from "../../src/components/steps";
 import { inputVariants } from "../../src/components/input/Input.styles";
+import { Menu, MenuItem, MenuList } from "../../src/components/menu";
 
 export default function App() {
   const [color, setColor] =
     createSignal<ButtonVariantProps["color"]>("primary");
+
+  // steps data:
+  const [data, setData] = createSignal({
+    name: "",
+    email: "",
+  });
+
+  const steps: StepItem[] = [
+    {
+      title: "Contact",
+      marker: "1",
+      content: (
+        <>
+          <div>
+            <label>Name</label>
+            <input
+              class={inputVariants()}
+              value={data().name}
+              onInput={(e) =>
+                setData({ ...data(), name: e.currentTarget.value })
+              }
+            />
+          </div>
+          <div>
+            <label>Email</label>
+            <input
+              class={inputVariants()}
+              type="email"
+              maxlength="30"
+              value={data().email}
+              onInput={(e) =>
+                setData({ ...data(), email: e.currentTarget.value })
+              }
+            />
+          </div>
+        </>
+      ),
+    },
+    {
+      title: "Account",
+      marker: "2",
+      subtitle: "You can click me",
+      clickable: true,
+      content: <div>Account form…</div>,
+    },
+    {
+      title: "Recovery",
+      marker: "3",
+      content: <div>Recovery form…</div>,
+    },
+    {
+      title: "Finish",
+      marker: "4",
+      content: <div>Done!</div>,
+    },
+  ];
+
   const [username, setUsername] = createSignal("the_boogeyman");
   const [password, setPassword] = createSignal("Daisy");
   const [files, setFiles] = createSignal<File[]>([]);
@@ -866,6 +922,138 @@ export default function App() {
               <MenuItem label="Logout" />
             </MenuList>
           </Menu>
+        </div>
+        <div class="bg-white rounded-lg shadow-sm p-6">
+          <h2 class="text-xl font-semibold text-gray-800 border-b pb-2 mb-4">
+            Steps
+          </h2>
+          <Steps
+            animated
+            initial={0}
+            steps={[
+              {
+                title: "Contact",
+                marker: "1",
+                content: (
+                  <>
+                    <div>
+                      <label>Name</label>
+                      <input
+                        class={inputVariants()}
+                        value={formData().name}
+                        onInput={(e) =>
+                          setFormData({
+                            ...formData(),
+                            name: e.currentTarget.value,
+                          })
+                        }
+                      />
+                    </div>
+                    <div>
+                      <label>Email</label>
+                      <input
+                        class={inputVariants()}
+                        value={formData().email}
+                        onInput={(e) =>
+                          setFormData({
+                            ...formData(),
+                            email: e.currentTarget.value,
+                          })
+                        }
+                        type="email"
+                        maxlength="30"
+                      />
+                    </div>
+                  </>
+                ),
+              },
+              {
+                title: "Account",
+                marker: "2",
+                subtitle: "You can click me",
+                content: (
+                  <>
+                    <div>
+                      <label>Username</label>
+                      <input
+                        class={inputVariants()}
+                        value={formData().username}
+                        onInput={(e) =>
+                          setFormData({
+                            ...formData(),
+                            username: e.currentTarget.value,
+                          })
+                        }
+                        maxlength="30"
+                      />
+                    </div>
+                    <div>
+                      <label>Password</label>
+                      <input
+                        class={inputVariants()}
+                        type="password"
+                        value={formData().password}
+                        onInput={(e) =>
+                          setFormData({
+                            ...formData(),
+                            password: e.currentTarget.value,
+                          })
+                        }
+                      />
+                    </div>
+                  </>
+                ),
+              },
+              {
+                title: "Recovery",
+                marker: "3",
+                content: (
+                  <>
+                    <div>
+                      <label>Recovery passphrase</label>
+                      <textarea
+                        class={inputVariants()}
+                        maxlength="144"
+                        value={formData().message}
+                        onInput={(e) =>
+                          setFormData({
+                            ...formData(),
+                            message: e.currentTarget.value,
+                          })
+                        }
+                      />
+                    </div>
+                    <div>
+                      <label>Amount</label>
+                      <input
+                        class={inputVariants()}
+                        type="number"
+                        min="0"
+                        value={formData().amount}
+                        onInput={(e) =>
+                          setFormData({
+                            ...formData(),
+                            amount: +e.currentTarget.value,
+                          })
+                        }
+                      />
+                    </div>
+                  </>
+                ),
+              },
+              {
+                title: "Finish",
+                class: "centered",
+                content: (
+                  <h1 class="text-lg font-bold">
+                    Your account is now created!
+                  </h1>
+                ),
+              },
+            ]}
+          />
+          <h1>Step variant 2</h1>
+          <Steps animated initial={0} steps={steps} />
         </div>
       </div>
     </main>
