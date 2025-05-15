@@ -413,7 +413,7 @@ export default function App() {
             </Select>
           </div>
         </div>
-        <div class="bg-black rounded-lg shadow-sm p-6">
+        <div class="bg-white rounded-lg shadow-sm p-6">
         <Dropdown label="Click me" trigger="click" position="bottom-left" color="default">
             <DropdownItem value="blue">Blue</DropdownItem>
             <DropdownItem value="green">Green</DropdownItem>
