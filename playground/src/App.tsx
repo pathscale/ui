@@ -28,6 +28,7 @@ import {
 import { imageStyles } from "../../src/components/navbar/Navbar.styles";
 import Field from "../../src/components/field";
 import Timeline from "../../src/components/timeline";
+import Autocomplete from "../../src/components/autocomplete";
 
 export default function App() {
   const [color, setColor] =
@@ -1276,6 +1277,41 @@ export default function App() {
                 stages={stages}
                 renderStage={(stage) => <p class="text-sm">{stage.title}</p>}
               />
+            );
+          })()}
+        </div>
+
+        <div class="bg-white rounded-lg shadow-sm p-6">
+          <h2 class="text-xl font-semibold text-gray-800 border-b pb-2 mb-4">
+            Autocomplete
+          </h2>
+          {(() => {
+            const items = [
+              "Apple",
+              "Banana",
+              "Orange",
+              "Mango",
+              "Pear",
+              "Peach",
+              "Grape",
+              "Tangerine",
+              "Pineapple",
+            ];
+
+            const [selected, setSelected] = createSignal<string | number>("");
+
+            return (
+              <>
+                <p class="text-sm text-gray-700">
+                  Selected: <span class="font-medium">{selected()}</span>
+                </p>
+
+                <Autocomplete
+                  items={items}
+                  value={selected()}
+                  onChange={setSelected}
+                />
+              </>
             );
           })()}
         </div>
