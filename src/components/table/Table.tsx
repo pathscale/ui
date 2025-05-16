@@ -1,6 +1,6 @@
-import { splitProps, createMemo, createSignal } from "solid-js";
+import { splitProps, createMemo, createSignal, type JSX, Index } from "solid-js";
 import type { ComponentProps } from "solid-js";
-import type { VariantProps, ClassProps } from "@src/lib/style";
+import type { VariantProps } from "@src/lib/style";
 import { classes } from "@src/lib/style";
 import { tableWrapper, tableVariants } from "./Table.styles";
 
@@ -13,6 +13,7 @@ export type Column<Row> = {
 export type TableProps<Row> = {
   columns: Column<Row>[];
   rows: Row[];
+  className: string;
   /** Unique key-per-row extractor (e.g. row => row.id) */
   rowKey: (row: Row) => string | number;
   /** Called when selection changes */
@@ -21,14 +22,13 @@ export type TableProps<Row> = {
   renderDetail?: (row: Row) => JSX.Element;
   onSort?: (key: keyof Row, direction: "asc" | "desc") => void;
 } & VariantProps<typeof tableVariants> &
-  ClassProps &
   ComponentProps<"table">;
 
 const Table = <Row extends Record<string, any>>(props: TableProps<Row>) => {
 
   const [localProps, variantProps, otherProps] = splitProps(
     props,
-    ["columns", "rows", "onSort", "class", "className", "rowKey"] as const,
+    ["columns", "rows", "onSort", "className", "rowKey"] as const,
     Object.keys(tableVariants.variantKeys ?? {}) as any,
   );
 
@@ -48,19 +48,16 @@ const Table = <Row extends Record<string, any>>(props: TableProps<Row>) => {
       return dir === "asc" ? res : -res;
     });
   });
-  const cols = createMemo(() => localProps.columns);
   const baseVars = () => variantProps as VariantProps<typeof tableVariants>;
 
   const wrapperClass = classes(
     tableWrapper(),
-    localProps.class,
     localProps.className
   );
 
   const tableClass = classes(
     tableVariants(baseVars()),
-    otherProps.class,
-    otherProps.className
+    localProps.className
   );
   // click handler
   const handleHeaderClick = (colKey: keyof Row, isSortable?: boolean) => {
@@ -69,7 +66,7 @@ const Table = <Row extends Record<string, any>>(props: TableProps<Row>) => {
     if (sortKey() === colKey) {
       setSortDir(dir => (dir === "asc" ? "desc" : "asc"));
     } else {
-      setSortKey(colKey);
+      setSortKey(() => colKey);
       setSortDir("asc");
     }
     // notify parent if provided
@@ -98,27 +95,29 @@ const Table = <Row extends Record<string, any>>(props: TableProps<Row>) => {
           </tr>
         </thead>
         <tbody>
-          <For each={data()}>
-            {(row:string | number, rowIndex) => (
-              <tr
-                key={rowIndex}                                         // ← key on each row
-                class={tableVariants({ ...baseVars(), row: variantProps.row })}
-              >
-                {localProps.columns.map((col, ci) => (
-                  <td
-                    key={`${rowIndex()}-${String(col.key)}`}               // ← key per cell
-                    class={tableVariants({
-                      ...baseVars(),
-                      cell: variantProps.cell,
-                      divider: ci === localProps.columns.length - 1 ? "off" : "on",
-                    })}
-                  >
-                    {String(row[col.key] ?? "")}
-                  </td>
-                ))}
-              </tr>
-            )}
-          </For>
+          <Index each={data()}>
+            {(rowAccessor) => {
+              const row = rowAccessor();
+              return (
+                <tr
+                  class={tableVariants({ ...baseVars(), row: variantProps.row })}
+                >
+                  {localProps.columns.map((col, ci) => (
+                    <td
+                      class={tableVariants({
+                        ...baseVars(),
+                        cell: variantProps.cell,
+                        divider:
+                          ci === localProps.columns.length - 1 ? "off" : "on",
+                      })}
+                    >
+                      {String(row[col.key] ?? "")}
+                    </td>
+                  ))}
+                </tr>
+              );
+            }}
+          </Index>
         </tbody>
       </table>
     </div>
