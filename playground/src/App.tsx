@@ -928,6 +928,52 @@ export default function App() {
                 )}
               </For>
             </div>
+
+          </div>
+
+        </div>
+        <div class="bg-white rounded-lg shadow-sm p-6">
+          <h1 class="text-2xl font-bold mb-4">Product Search Showcase</h1>
+          <h1 class="text-2xl font-bold mb-4">Normal Search</h1>
+
+          <div class="grid grid-cols-2 gap-3 mb-4">
+            <Search horizontal size="lg" value={email()} />
+          </div>
+          <h1 class="text-2xl font-bold mb-4">Error Search</h1>
+
+          <div class="grid grid-cols-2 gap-3 mb-4">
+            <Search
+              label="Message"
+              type="danger"
+              message="Message is required!"
+              value={msg()}
+              onInput={e => setMsg(e.currentTarget.value)}
+              onSearch={handleMsgSearch}
+              buttonLabel="Send"
+            />
+
+          </div>
+          <h1 class="text-2xl font-bold mb-4">Search from to</h1>
+          <div class="grid grid-cols-2 gap-3 mb-4">
+          
+            <Search
+              horizontal
+              label="From"
+              size="sm"
+              value={name()}
+              onInput={e => setName(e.currentTarget.value)}
+              onSearch={handleNameSearch}
+              buttonLabel="Go"
+            />
+            <Search
+              horizontal
+              label="To"
+              size="sm"
+              value={email()}
+              onInput={e => setEmail(e.currentTarget.value)}
+              onSearch={handleEmailSearch}
+              buttonLabel="Submit"
+            />
           </div>
         </div>
         <div class="bg-white rounded-lg shadow-sm p-6">
