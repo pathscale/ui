@@ -40,30 +40,26 @@ export default function App() {
   };
 
   // Table handlers:
-   // 1. Define your columns (with sortable flags if you want per‑column sorting)
-   const columns: Column<Person>[] = [
-    { key: "id",   header: "ID",   sortable: true },
+  const columns: Column<Person>[] = [
+    { key: "id", header: "ID", sortable: true },
     { key: "name", header: "Name", sortable: true },
-    { key: "age",  header: "Age",  sortable: true },
+    { key: "age", header: "Age", sortable: true },
   ];
 
-  // 2. Prepare some data rows
   const [rows, setRows] = createSignal<Person[]>([
     { id: 1, name: "Alice", age: 30 },
-    { id: 2, name: "Bob",   age: 24 },
+    { id: 2, name: "Bob", age: 24 },
     { id: 3, name: "Carol", age: 29 },
   ]);
 
-  // 3. Optional: handle sort events
   const onSort = (key: keyof Person, direction: "asc" | "desc") => {
-    console.log(`Sorting by ${String(key)} (${direction})`);
-    // If you want the parent to actually sort, do it here:
     const sorted = [...rows()].sort((a, b) => {
       const aVal = a[key]!;
       const bVal = b[key]!;
       if (aVal === bVal) return 0;
-      const cmp = aVal > bVal ? 1 : -1;
-      return direction === "asc" ? cmp : -cmp;
+      return direction === "asc"
+        ? (aVal > bVal ? 1 : -1)
+        : (aVal < bVal ? 1 : -1);
     });
     setRows(sorted);
   };
@@ -832,17 +828,18 @@ export default function App() {
           </div>
         </div>
         <div class="bg-white rounded-lg shadow-sm p-6">
-        <h1 class="text-xl font-bold mb-4">User Data</h1>
-          <Table
+          <h1 class="text-xl font-bold mb-4">User Data</h1>
+          <Table<Person>
             columns={columns}
             rows={rows()}
+            rowKey={(r) => r.id}    
             onSort={onSort}
             header="default"
             row="default"
             cell="default"
             class="my-wrapper-class"
             className="another-wrapper-class"
-            data-testid="user-table" // any <table> prop
+            data-testid="user-table"
             style="background: white;"
           />
         </div>
