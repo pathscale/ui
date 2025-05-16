@@ -6,7 +6,11 @@ import {
   Show,
   For,
 } from "solid-js";
-import { paginationItemVariants } from "./Pagination.styles";
+import {
+  paginationItemVariants,
+  paginationInfoVariants,
+  paginationContainerVariants,
+} from "./Pagination.styles";
 import type { VariantProps } from "@src/lib/style";
 
 export type PaginationProps = {
@@ -59,7 +63,10 @@ const Pagination: Component<PaginationProps> = (props) => {
   };
 
   return (
-    <nav class="flex items-center gap-1 flex-wrap" {...otherProps}>
+    <nav
+      class={paginationContainerVariants({ align: "start", wrap: true })}
+      {...otherProps}
+    >
       <button
         class={paginationItemVariants({
           ...variantProps,
@@ -73,7 +80,7 @@ const Pagination: Component<PaginationProps> = (props) => {
 
       <Show when={pageCount() > 1}>
         <Show when={local.simple}>
-          <span class="text-sm text-gray-600 dark:text-gray-300 px-2">
+          <span class={paginationInfoVariants({ simple: true })}>
             {perPage() === 1
               ? `${(local.current - 1) * perPage() + 1} / ${local.total}`
               : `${(local.current - 1) * perPage() + 1}-${Math.min(

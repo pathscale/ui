@@ -40,3 +40,39 @@ export const paginationItemVariants = cva(
     },
   }
 );
+
+export const paginationInfoVariants = cva(
+  "inline-block font-medium transition-colors",
+  {
+    variants: {
+      simple: {
+        true: "text-sm text-gray-600 dark:text-gray-300 px-2",
+        false: "text-sm text-gray-700 dark:text-gray-200 px-2",
+      },
+    },
+    defaultVariants: {
+      simple: false,
+    },
+  }
+);
+
+export const paginationContainerVariants = cva(
+  "flex items-center gap-1 flex-wrap",
+  {
+    variants: {
+      align: {
+        start: "justify-start",
+        center: "justify-center",
+        end: "justify-end",
+      },
+      wrap: {
+        true: "flex-wrap",
+        false: "flex-nowrap",
+      },
+    },
+    defaultVariants: {
+      align: "start",
+      wrap: true,
+    },
+  }
+);
