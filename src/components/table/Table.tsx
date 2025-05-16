@@ -3,7 +3,7 @@ import {
   createMemo,
   createSignal,
   type JSX,
-  Index,
+  For,
 } from "solid-js";
 import type { ComponentProps } from "solid-js";
 import type { VariantProps } from "@src/lib/style";
@@ -54,10 +54,10 @@ const Table = <Row extends Record<string, any>>(props: TableProps<Row>) => {
     if (!isSortable) return;
     const newDir =
       sortKey() === colKey && sortDir() === "asc" ? "desc" : "asc";
-  
+
     setSortKey(() => colKey);
     setSortDir(newDir);
-  
+
     props.onSort?.(colKey, newDir);
   };
 
@@ -87,28 +87,26 @@ const Table = <Row extends Record<string, any>>(props: TableProps<Row>) => {
           </tr>
         </thead>
         <tbody>
-          <Index each={data()}>
-            {(rowAccessor) => {
-              const row = rowAccessor();
-              return (
-                <tr
-                  class={tableVariants({ ...baseVars(), row: variantProps.row })}
-                >
-                  {localProps.columns.map((col, ci) => (
-                    <td
-                      class={tableVariants({
-                        ...baseVars(),
-                        cell: variantProps.cell,
-                        divider: ci === localProps.columns.length - 1 ? "off" : "on",
-                      })}
-                    >
-                      {String(row[col.key] ?? "")}
-                    </td>
-                  ))}
-                </tr>
-              );
-            }}
-          </Index>
+          <For each={data()}>
+            {(row:any) => (
+              <tr
+                class={tableVariants({ ...baseVars(), row: variantProps.row })}
+              >
+                {localProps.columns.map((col, ci) => (
+                  <td
+                    class={tableVariants({
+                      ...baseVars(),
+                      cell: variantProps.cell,
+                      divider:
+                        ci === localProps.columns.length - 1 ? "off" : "on",
+                    })}
+                  >
+                    {String(row[col.key] ?? "")}
+                  </td>
+                ))}
+              </tr>
+            )}
+          </For>
         </tbody>
       </table>
     </div>
