@@ -6,7 +6,7 @@ import {
   type ComponentProps,
 } from "solid-js";
 import { classes } from "@src/lib/style";
-import type { VariantProps, ClassProps } from "@src/lib/style";
+import type { VariantProps } from "@src/lib/style";
 import {
   progressContainer,
   progressWrapper,
@@ -18,14 +18,11 @@ export interface ProgressProps
   extends VariantProps<typeof progressContainer>,
     VariantProps<typeof progressWrapper>,
     VariantProps<typeof progressFill>,
-    ClassProps,
-    ComponentProps<"div"> {
-  /** 0–100 for determinate, null for indeterminate */
+    Omit<ComponentProps<"div">, "class" | "color"> {
   value?: number | null;
-  /** Show the numeric label */
   showValue?: boolean;
-  /** percent (e.g. “70%”) or raw (“70”) */
   format?: "percent" | "raw";
+  className?: string;
 }
 
 const Progress: Component<ProgressProps> = (props) => {
@@ -37,11 +34,9 @@ const Progress: Component<ProgressProps> = (props) => {
     "color",
     "showValue",
     "format",
-    "class",
     "className",
   ] as const);
 
-  // Ensure a number or null
   const val = createMemo(() =>
     typeof local.value === "number"
       ? Math.max(0, Math.min(100, local.value))
@@ -57,11 +52,7 @@ const Progress: Component<ProgressProps> = (props) => {
   return (
     <div
       {...rest}
-      class={classes(
-        progressContainer({ size: local.size }),
-        local.class,
-        local.className
-      )}
+      class={classes(progressContainer({ size: local.size }), local.className)}
       aria-busy={!isDeterminate()}
     >
       <div
@@ -82,7 +73,10 @@ const Progress: Component<ProgressProps> = (props) => {
           }
         >
           <div
-            class={progressFill({ color: local.color, variant: local.variant })}
+            class={progressFill({
+              color: local.color,
+              variant: local.variant,
+            })}
             style={{ width: `${val()}%` }}
           />
         </Show>
