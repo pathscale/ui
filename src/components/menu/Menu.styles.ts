@@ -57,3 +57,6 @@ export const itemVariants = cva(
     },
   }
 );
+export const itemDetailWrapper = cva(
+  "ml-4 border-l border-gray-200 mt-1 pl-2"
+);

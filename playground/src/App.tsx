@@ -867,11 +867,9 @@ export default function App() {
                 <MenuItem label="Addresses" />
               </MenuItem>
             </MenuList>
-
             <MenuList>
               <MenuItem label="Expo" tag="a" to="/" target="_blank" />
             </MenuList>
-
             <MenuList label="Actions">
               <MenuItem label="Logout" />
             </MenuList>
