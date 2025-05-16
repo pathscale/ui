@@ -25,6 +25,7 @@ export type StepItem = {
   clickable?: boolean;
   /** render this JSX when active */
   content: JSX.Element;
+  className?: string;
 };
 
 export type StepsProps = {
@@ -32,6 +33,7 @@ export type StepsProps = {
   animated?: boolean;
   /** which step to start on */
   initial?: number;
+  className?: string;
 } & VariantProps<typeof stepsContainer>
   & ClassProps;
 
