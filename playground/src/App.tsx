@@ -828,11 +828,11 @@ export default function App() {
           </div>
         </div>
         <div class="bg-white rounded-lg shadow-sm p-6">
-          <h1 class="text-xl font-bold mb-4">User Data</h1>
+          <h2 class="text-xl font-semibold text-gray-800 border-b pb-2 mb-4">User Data</h2>
           <Table<Person>
             columns={columns}
             rows={rows()}
-            rowKey={(r) => r.id}    
+            rowKey={(r) => r.id}
             onSort={onSort}
             header="default"
             row="default"
