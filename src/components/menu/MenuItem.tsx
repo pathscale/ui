@@ -1,13 +1,14 @@
+// components/MenuItem.tsx
 import {
   type Component,
   splitProps,
   Show,
-  type JSX,
   createSignal,
   createMemo,
+  type JSX,
 } from "solid-js";
 import { classes, type VariantProps, type ClassProps } from "@src/lib/style";
-import { itemVariants } from "./Menu.styles";
+import { itemVariants, itemDetailWrapper } from "./Menu.styles";
 import { Dynamic } from "solid-js/web";
 
 export type MenuItemProps = {
@@ -52,20 +53,33 @@ const MenuItem: Component<MenuItemProps> = (props) => {
 
   const toggleExpand = () => {
     if (!isControlled() && hasChildren() && !local.disabled) {
-      setInternalExpanded(prev => !prev);
+      setInternalExpanded((prev) => !prev);
     }
   };
 
-  const tagName = local.to ? "a" : (local.tag ?? "div");
+  const onKeyDown: JSX.EventHandlerUnion<HTMLElement, KeyboardEvent> = (e) => {
+    if (local.disabled) return;
+    if (e.key === "Enter" || e.key === " ") {
+      e.preventDefault();   // especially prevent page scroll on Space
+      toggleExpand();
+    }
+  };
+
+  // if it's not a link, make it focusable
+  const tagName = local.to ? "a" : local.tag ?? "div";
+  const focusableProps =
+    !local.to && !local.disabled ? { tabIndex: 0 } : {};
 
   return (
     <Dynamic
-    component={tagName}
+      component={tagName}
       class={classes(local.class, local.className, "w-full")}
       href={local.to}
       target={local.target}
       aria-disabled={local.disabled}
       onClick={toggleExpand}
+      onKeyDown={onKeyDown}
+      {...focusableProps}
       {...rest}
     >
       <div
@@ -86,7 +100,7 @@ const MenuItem: Component<MenuItemProps> = (props) => {
       </div>
 
       <Show when={isExpanded()}>
-        <div class="ml-4 border-l border-gray-200 mt-1 pl-2">
+        <div class={itemDetailWrapper()}>
           {local.children}
         </div>
       </Show>
