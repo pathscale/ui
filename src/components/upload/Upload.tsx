@@ -7,7 +7,7 @@ import {
 } from "./Upload.styles";
 import { classes, type VariantProps } from "@src/lib/style";
 
-type UploadProps = {
+export type UploadProps = {
   icon?: JSX.Element;
   label?: string;
   multiple?: boolean;
@@ -39,7 +39,9 @@ const Upload: Component<UploadProps> = (props) => {
     const files = (e.target as HTMLInputElement).files;
     if (!files || files.length === 0) return;
     const result = local.multiple ? Array.from(files) : files[0];
-    local.onChange?.(result);
+    if (result) {
+      local.onChange?.(result);
+    }
   };
 
   const handleDrop = (e: DragEvent) => {
@@ -48,7 +50,9 @@ const Upload: Component<UploadProps> = (props) => {
     const files = e.dataTransfer?.files;
     if (!files || files.length === 0) return;
     const result = local.multiple ? Array.from(files) : files[0];
-    local.onChange?.(result);
+    if (result) {
+      local.onChange?.(result);
+    }
   };
 
   const handleDragOver = (e: DragEvent) => {

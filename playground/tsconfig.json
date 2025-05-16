@@ -5,7 +5,7 @@
     "newLine": "LF",
     "lib": ["DOM", "DOM.Iterable", "ESNext"],
     "paths": {
-      "@src/*": ["./src/*"]
+      "@src/*": ["../src/*"]
     },
     "types": ["vite/client"],
     "moduleResolution": "Bundler",
