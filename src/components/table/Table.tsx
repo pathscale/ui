@@ -16,7 +16,7 @@ export type TableProps<Row> = {
   /** Unique key-per-row extractor (e.g. row => row.id) */
   rowKey: (row: Row) => string | number;
   /** Called when selection changes */
-  onSelectionChange?: (selectedKeys: Array<string|number>) => void;
+  onSelectionChange?: (selectedKeys: Array<string | number>) => void;
   /** Render “expanded” content for a given row */
   renderDetail?: (row: Row) => JSX.Element;
   onSort?: (key: keyof Row, direction: "asc" | "desc") => void;
@@ -28,7 +28,7 @@ const Table = <Row extends Record<string, any>>(props: TableProps<Row>) => {
 
   const [localProps, variantProps, otherProps] = splitProps(
     props,
-    ["columns", "rows", "onSort", "class", "className"] as const,
+    ["columns", "rows", "onSort", "class", "className", "rowKey"] as const,
     Object.keys(tableVariants.variantKeys ?? {}) as any,
   );
 
@@ -36,11 +36,14 @@ const Table = <Row extends Record<string, any>>(props: TableProps<Row>) => {
   const [sortDir, setSortDir] = createSignal<"asc" | "desc">("asc");
 
   const data = createMemo(() => {
-    const key = sortKey(), dir = sortDir();
+    const key = sortKey();
+    const dir = sortDir();
+    // if no sort key, return the original rows array (identity stable)
     if (!key) return localProps.rows;
+
+    // otherwise return a new, sorted copy
     return [...localProps.rows].sort((a, b) => {
-      if (a[key] == b[key]) return 0;
-      // Basic string/number compare
+      if (a[key] === b[key]) return 0;
       const res = a[key]! > b[key]! ? 1 : -1;
       return dir === "asc" ? res : -res;
     });
@@ -84,6 +87,8 @@ const Table = <Row extends Record<string, any>>(props: TableProps<Row>) => {
                 class={tableVariants({ ...baseVars(), cell: variantProps.cell, divider: "on" })}
                 onClick={() => handleHeaderClick(col.key, col.sortable)}
                 style={col.sortable ? { cursor: "pointer" } : {}}
+                role="columnheader"
+                aria-sort={sortKey() === col.key ? sortDir() : undefined}
               >
                 {col.header}
                 {/* show arrow if sorted */}
@@ -94,9 +99,9 @@ const Table = <Row extends Record<string, any>>(props: TableProps<Row>) => {
         </thead>
         <tbody>
           <For each={data()}>
-            {(row, rowIndex) => (
+            {(row:string | number, rowIndex) => (
               <tr
-                key={rowIndex()}                                            // ← key on each row
+                key={rowIndex}                                         // ← key on each row
                 class={tableVariants({ ...baseVars(), row: variantProps.row })}
               >
                 {localProps.columns.map((col, ci) => (
