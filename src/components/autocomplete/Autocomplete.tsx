@@ -16,7 +16,7 @@ import {
 } from "./Autocomplete.styles";
 import { classes, type VariantProps } from "@src/lib/style";
 
-type AutocompleteProps = {
+export type AutocompleteProps = {
   items: Array<string | number>;
   label?: string;
   value?: string | number;
