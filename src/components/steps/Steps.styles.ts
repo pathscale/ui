@@ -58,4 +58,6 @@ export const title = cva("mt-2 text-sm", {
   defaultVariants: { active: false },
 });
 
-export const subtitle = cva("text-xs text-gray-500 mt-1");
+export const subtitle = cva("text-xs text-blue-500 mt-1");
+
+export const buttonSteps = cva("px-4 py-2 bg-blue-600 text-white rounded")

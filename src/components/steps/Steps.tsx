@@ -1,9 +1,11 @@
+// components/Steps.tsx
 import {
   type Component,
   createSignal,
   splitProps,
   For,
   Show,
+  createMemo,
   type JSX,
 } from "solid-js";
 import {
@@ -14,16 +16,15 @@ import {
   line,
   title,
   subtitle,
+  buttonSteps,
 } from "./Steps.styles";
-import { classes, type VariantProps, type ClassProps } from "@src/lib/style";
+import { classes, type VariantProps } from "@src/lib/style";
 
 export type StepItem = {
   title: string;
   marker?: string;
   subtitle?: string;
-  /** clicking the circle lets you jump to that step */
   clickable?: boolean;
-  /** render this JSX when active */
   content: JSX.Element;
   className?: string;
 };
@@ -31,46 +32,49 @@ export type StepItem = {
 export type StepsProps = {
   steps: StepItem[];
   animated?: boolean;
-  /** which step to start on */
   initial?: number;
+  /** Controlled active index */
+  value?: number;
+  /** Fired on step change */
+  onStepChange?: (stepIndex: number) => void;
   className?: string;
-} & VariantProps<typeof stepsContainer>
-  & ClassProps;
+} & VariantProps<typeof stepsContainer>;
 
 const Steps: Component<StepsProps> = (props) => {
   const [local, variantProps, otherProps] = splitProps(
     props,
-    ["steps", "animated", "initial", "class", "className"] as const,
+    ["steps", "animated", "initial", "value", "onStepChange", "className"] as const,
     ["animated"] as const
   );
 
-  // Internal active index, starting at `initial` or 0
-  const [activeIndex, setActiveIndex] = createSignal(
-    local.initial ?? 0
+  const isControlled = () => local.value !== undefined;
+  const [internalIndex, setInternalIndex] = createSignal(local.initial ?? 0);
+  const activeIndex = createMemo(() =>
+    isControlled() ? (local.value as number) : internalIndex()
   );
 
-  // clamp helper
-  const clamp = (i: number) =>
-    Math.max(0, Math.min(i, local.steps.length - 1));
+  const clamp = (i: number) => Math.max(0, Math.min(i, local.steps.length - 1));
 
-  // next/back handlers
-  const next = () => setActiveIndex((i) => clamp(i + 1));
-  const back = () => setActiveIndex((i) => clamp(i - 1));
+  const changeIndex = (i: number) => {
+    const idx = clamp(i);
+    if (isControlled()) local.onStepChange?.(idx);
+    else setInternalIndex(idx);
+  };
 
-  // expose the entire step array and active value
+  const next = () => changeIndex(activeIndex() + 1);
+  const back = () => changeIndex(activeIndex() - 1);
+
   const isActive = (i: number) => i === activeIndex();
-  const isPast   = (i: number) => i < activeIndex();
+  const isPast = (i: number) => i < activeIndex();
 
   return (
     <div
       class={classes(
-        stepsContainer({ animated: !!variantProps.animated }),
-        local.class,
+        stepsContainer({ animated: local.animated }),
         local.className
       )}
       {...otherProps}
     >
-      {/* Navigation */}
       <nav class={navBar()}>
         <For each={local.steps}>
           {(step, idx) => {
@@ -78,7 +82,7 @@ const Steps: Component<StepsProps> = (props) => {
             return (
               <div
                 class={navItem({ clickable: !!step.clickable })}
-                onClick={() => step.clickable && setActiveIndex(i)}
+                onClick={() => step.clickable && changeIndex(i)}
               >
                 <div class={marker({ active: isActive(i) || isPast(i) })}>
                   {step.marker ?? String(i + 1)}
@@ -97,8 +101,6 @@ const Steps: Component<StepsProps> = (props) => {
           }}
         </For>
       </nav>
-
-      {/* Content & Controls */}
       <div>
         <For each={local.steps}>
           {(step, idx) => {
@@ -120,7 +122,7 @@ const Steps: Component<StepsProps> = (props) => {
                     <Show when={i < local.steps.length - 1}>
                       <button
                         type="button"
-                        class="px-4 py-2 bg-blue-600 text-white rounded"
+                        class={buttonSteps()}
                         onClick={next}
                       >
                         Next
@@ -130,7 +132,7 @@ const Steps: Component<StepsProps> = (props) => {
                       <button
                         type="button"
                         class="px-4 py-2 bg-green-600 text-white rounded"
-                        onClick={() => setActiveIndex(0)}
+                        onClick={() => changeIndex(0)}
                       >
                         Restart
                       </button>
