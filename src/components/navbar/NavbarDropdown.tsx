@@ -16,6 +16,7 @@ import {
     align?: "left" | "right";
     className?: string;
     children: JSX.Element;
+    className?: string;
   } & VariantProps<typeof navbarDropdownStyles> &
     VariantProps<typeof dropdownMenuStyles> &
     ClassProps;
