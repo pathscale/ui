@@ -5,7 +5,7 @@ included, but optimized and shiny.
 
 ## Building
 
-To build this package, use the following command:
+To build this package, use the following command
 
 ```sh
 bun run build
