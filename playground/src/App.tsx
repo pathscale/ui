@@ -29,6 +29,7 @@ import { imageStyles } from "../../src/components/navbar/Navbar.styles";
 import Field from "../../src/components/field";
 import Timeline from "../../src/components/timeline";
 import Autocomplete from "../../src/components/autocomplete";
+import { toast, Toaster } from "../../src/components/toast";
 
 export default function App() {
   const [color, setColor] =
@@ -1280,7 +1281,6 @@ export default function App() {
             );
           })()}
         </div>
-
         <div class="bg-white rounded-lg shadow-sm p-6">
           <h2 class="text-xl font-semibold text-gray-800 border-b pb-2 mb-4">
             Autocomplete
@@ -1314,6 +1314,51 @@ export default function App() {
               </>
             );
           })()}
+        </div>
+        <div class="bg-white rounded-lg shadow-sm p-6">
+          <h2 class="text-xl font-semibold text-gray-800 border-b pb-2 mb-4">
+            Toast Notifications
+          </h2>
+
+          <Toaster />
+
+          <div class="flex flex-wrap gap-3">
+            <button
+              class="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded"
+              onClick={() => toast.success("Operation successful!")}
+            >
+              Success
+            </button>
+            <button
+              class="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded"
+              onClick={() => toast.error("Something went wrong")}
+            >
+              Error
+            </button>
+            <button
+              class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded"
+              onClick={() => toast.info("Just so you know...")}
+            >
+              Info
+            </button>
+            <button
+              class="bg-yellow-500 hover:bg-yellow-600 text-black px-4 py-2 rounded"
+              onClick={() => toast.warning("Careful with that!")}
+            >
+              Warning
+            </button>
+            <button
+              class="bg-gray-800 hover:bg-gray-900 text-white px-4 py-2 rounded"
+              onClick={() =>
+                toast.show("Custom toast with 10s duration", {
+                  duration: 10000,
+                  dismissible: false,
+                })
+              }
+            >
+              Custom
+            </button>
+          </div>
         </div>
       </div>
     </main>
