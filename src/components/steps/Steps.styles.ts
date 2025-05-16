@@ -20,8 +20,12 @@ export const navItem = cva(
         true: "cursor-pointer",
         false: "pointer-events-none",
       },
+      disabled: {
+        true: "opacity-50 pointer-events-none",
+        false: "",
+      },
     },
-    defaultVariants: { clickable: false },
+    defaultVariants: { clickable: false, disabled: false },
   }
 );
 
@@ -58,6 +62,15 @@ export const title = cva("mt-2 text-sm", {
   defaultVariants: { active: false },
 });
 
-export const subtitle = cva("text-xs text-blue-500 mt-1");
+export const subtitle = cva("text-xs mt-1", {
+  variants: {
+    color: {
+      default: "text-blue-500",
+      muted: "text-gray-500",
+      accent: "text-green-500",
+    },
+  },
+  defaultVariants: { color: "default" },
+});
 
-export const buttonSteps = cva("px-4 py-2 bg-blue-600 text-white rounded")
+export const buttonSteps = cva("px-4 py-2 bg-blue-600 text-white rounded");
