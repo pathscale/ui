@@ -27,6 +27,7 @@ import {
 } from "../../src/components/navbar";
 import { imageStyles } from "../../src/components/navbar/Navbar.styles";
 import Field from "../../src/components/field";
+import Timeline from "../../src/components/timeline";
 
 export default function App() {
   const [color, setColor] =
@@ -234,7 +235,14 @@ export default function App() {
             Progress
           </h2>
           <div class="flex gap-4 mb-2">
-            <Progress value={40} size="sm" shape="circle" variant="filled" showValue format="percent" />
+            <Progress
+              value={40}
+              size="sm"
+              shape="circle"
+              variant="filled"
+              showValue
+              format="percent"
+            />
           </div>
           <div class="flex gap-4 mb-2">
             <Progress value={70} variant="outlined" showValue />
@@ -1250,6 +1258,26 @@ export default function App() {
               </Button>
             </Field>
           </div>
+        </div>
+        <div class="bg-white rounded-lg shadow-sm p-6">
+          <h2 class="text-xl font-semibold text-gray-800 border-b pb-2 mb-4">
+            Timeline
+          </h2>
+
+          {(() => {
+            const stages = [
+              { title: "Create Account" },
+              { title: "Complete profile", active: true },
+              { title: "Apply to jobs" },
+            ];
+
+            return (
+              <Timeline
+                stages={stages}
+                renderStage={(stage) => <p class="text-sm">{stage.title}</p>}
+              />
+            );
+          })()}
         </div>
       </div>
     </main>
