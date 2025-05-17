@@ -26,7 +26,7 @@ import {
   NavbarDropdown,
 } from "../../src/components/navbar";
 import { imageStyles } from "../../src/components/navbar/Navbar.styles";
-import Search from "../../src/components/search/index";
+import Field from "../../src/components/field";
 
 export default function App() {
   const [color, setColor] =
@@ -144,27 +144,28 @@ export default function App() {
     setRows(sorted);
   };
   // search controller
-  const [value, setValue] = createSignal("");
   // 1️⃣ Error‑message instance
   const [msg, setMsg] = createSignal("");
   const handleMsgSearch = () => {
-    // your custom search logic for the “Message” field
     console.log("Searching message for:", msg());
+    // if empty, show an error
+    if (!msg()) {
+      alert("Please type a message first");
+    }
   };
 
   // 2️⃣ “From” horizontal/size=sm instance
   const [name, setName] = createSignal("");
   const handleNameSearch = () => {
-    // your custom search logic for the “From” field
     console.log("Searching from:", name());
   };
 
   // 3️⃣ “To” horizontal/size=lg instance
   const [email, setEmail] = createSignal("");
   const handleEmailSearch = () => {
-    // your custom search logic for the “To” field
     console.log("Searching to:", email());
   };
+
   return (
     <main class="min-h-screen bg-gray-50 p-8">
       <div class="max-w-4xl mx-auto space-y-6">
@@ -1190,43 +1191,52 @@ export default function App() {
           <h2 class="text-xl font-semibold text-gray-800 border-b pb-2 mb-4">
             Field
           </h2>
-          <h1 class="text-2xl font-bold mb-4">Normal Search</h1>
           <div class="grid grid-cols-2 gap-3 mb-4">
-            <Search horizontal size="lg" value={email()} />
-          </div>
-          <h1 class="text-2xl font-bold mb-4">Error Search</h1>
-
-          <div class="grid grid-cols-2 gap-3 mb-4">
-            <Search
+            <Field
+              horizontal
+              size="md"
               label="Message"
-              type="danger"
-              message="Message is required!"
-              value={msg()}
-              onInput={(e) => setMsg(e.currentTarget.value)}
-              onSearch={handleMsgSearch}
-              buttonLabel="Send"
-            />
+              type={msg() ? "default" : "danger"}
+              message={msg() ? "" : "This field cannot be empty"}
+            >
+              <Input
+                placeholder="Enter a message…"
+                value={msg()}
+                onInput={(e) => setMsg(e.currentTarget.value)}
+                size="md"
+              />
+              <Button onClick={handleMsgSearch} color="primary">
+                Search
+              </Button>
+            </Field>
           </div>
           <h1 class="text-2xl font-bold mb-4">Search from to</h1>
           <div class="grid grid-cols-2 gap-3 mb-4">
-            <Search
-              horizontal
-              label="From"
-              size="sm"
-              value={name()}
-              onInput={(e) => setName(e.currentTarget.value)}
-              onSearch={handleNameSearch}
-              buttonLabel="Go"
-            />
-            <Search
-              horizontal
-              label="To"
-              size="sm"
-              value={email()}
-              onInput={(e) => setEmail(e.currentTarget.value)}
-              onSearch={handleEmailSearch}
-              buttonLabel="Submit"
-            />
+            <Field horizontal size="sm" label="From">
+              <Input
+                placeholder="Sender…"
+                value={name()}
+                onInput={(e) => setName(e.currentTarget.value)}
+                size="sm"
+              />
+              <Button onClick={handleNameSearch} color="secondary">
+                Go
+              </Button>
+            </Field>
+          </div>
+          <h1 class="text-2xl font-bold mb-4">Search Different sizes</h1>
+          <div class="grid grid-cols-2 gap-3 mb-4">
+            <Field horizontal size="lg" label="To">
+              <Input
+                placeholder="Recipient…"
+                value={email()}
+                onInput={(e) => setEmail(e.currentTarget.value)}
+                size="lg"
+              />
+              <Button onClick={handleEmailSearch} color="primary">
+                Send
+              </Button>
+            </Field>
           </div>
         </div>
       </div>
