@@ -12,14 +12,14 @@ import Pagination from "../../src/components/pagination";
 import Accordion from "../../src/components/accordion";
 import Tabs from "../../src/components/tabs";
 import Upload from "../../src/components/upload";
-import Avatar from "../../src/components/Avatar";
-import Progress from "../../src/components/Progress";
+import Avatar from "../../src/components/avatar";
+import Progress from "../../src/components/progress";
 import Tooltip from "../../src/components/tooltip";
 import Steps, { type StepItem } from "../../src/components/steps";
 import { inputVariants } from "../../src/components/input/Input.styles";
 import { Menu, MenuItem, MenuList } from "../../src/components/menu";
 import Table, { type Column } from "../../src/components/table/index";
-import { Dropdown, DropdownItem } from "../../src/components/Dropdown/index";
+import { Dropdown, DropdownItem } from "../../src/components/dropdown/index";
 import {
   Navbar,
   NavbarItem,
