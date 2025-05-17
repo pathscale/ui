@@ -18,8 +18,8 @@ import Tooltip from "../../src/components/tooltip";
 import Steps, { type StepItem } from "../../src/components/steps";
 import { inputVariants } from "../../src/components/input/Input.styles";
 import { Menu, MenuItem, MenuList } from "../../src/components/menu";
-import Table, { type Column } from "../../src/components/table/index";
-import { Dropdown, DropdownItem } from "../../src/components/dropdown/index";
+import Table, { type Column } from "../../src/components/table/";
+import { Dropdown, DropdownItem } from "../../src/components/Dropdown";
 import {
   Navbar,
   NavbarItem,
