@@ -17,7 +17,10 @@ export type UploadProps = {
   name?: string;
   onChange?: (files: File | File[]) => void;
 } & VariantProps<typeof uploadWrapperVariants> &
-  JSX.InputHTMLAttributes<HTMLInputElement>;
+  Omit<
+    JSX.InputHTMLAttributes<HTMLInputElement>,
+    "onChange" | "multiple" | "accept" | "disabled"
+  >;
 
 const Upload: Component<UploadProps> = (props) => {
   const [local, variantProps, otherProps] = splitProps(
@@ -36,11 +39,16 @@ const Upload: Component<UploadProps> = (props) => {
   );
 
   const handleChange = (e: Event) => {
-    const files = (e.target as HTMLInputElement).files;
+    const input = e.target as HTMLInputElement;
+    const files = input.files;
     if (!files || files.length === 0) return;
-    const result = local.multiple ? Array.from(files) : files[0];
-    if (result) {
-      local.onChange?.(result);
+
+    if (local.onChange) {
+      if (local.multiple) {
+        local.onChange(Array.from(files));
+      } else if (files[0]) {
+        local.onChange(files[0]);
+      }
     }
   };
 
@@ -49,9 +57,13 @@ const Upload: Component<UploadProps> = (props) => {
     e.preventDefault();
     const files = e.dataTransfer?.files;
     if (!files || files.length === 0) return;
-    const result = local.multiple ? Array.from(files) : files[0];
-    if (result) {
-      local.onChange?.(result);
+
+    if (local.onChange) {
+      if (local.multiple) {
+        local.onChange(Array.from(files));
+      } else if (files[0]) {
+        local.onChange(files[0]);
+      }
     }
   };
 
