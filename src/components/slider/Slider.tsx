@@ -50,13 +50,14 @@ const Slider: Component<SliderProps> = (props) => {
   );
 
   return (
-    <div class={containerClass()}>
-      <Show when={local.label}>
-        <label class="mb-1 block text-sm font-medium text-gray-700">
-          {local.label}
-        </label>
-      </Show>
+    <div class="w-full">
+    <Show when={local.label}>
+      <label class="mb-1 block text-sm font-medium text-gray-700">
+        {local.label}
+      </label>
+    </Show>
 
+    <div class={containerClass()}>
       <input
         type="range"
         class={inputClass()}
@@ -68,6 +69,7 @@ const Slider: Component<SliderProps> = (props) => {
         <div class={thumbClass()} />
       </Show>
     </div>
+  </div>
   );
 };
 
