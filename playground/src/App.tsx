@@ -30,6 +30,7 @@ import Field from "../../src/components/field";
 import Timeline from "../../src/components/timeline";
 import Autocomplete from "../../src/components/autocomplete";
 import { toast, Toaster } from "../../src/components/toast";
+import Slider from "../../src/components/slider";
 
 export default function App() {
   const [color, setColor] =
@@ -141,8 +142,8 @@ export default function App() {
           ? 1
           : -1
         : aVal < bVal
-        ? 1
-        : -1;
+          ? 1
+          : -1;
     });
     setRows(sorted);
   };
@@ -169,6 +170,8 @@ export default function App() {
     console.log("Searching to:", email());
   };
 
+  // slider 
+  const [valueSlider, setValueSlider] = createSignal(50);
   return (
     <main class="min-h-screen bg-gray-50 p-8">
       <div class="max-w-4xl mx-auto space-y-6">
@@ -1359,6 +1362,23 @@ export default function App() {
               Custom
             </button>
           </div>
+        </div>
+
+        <div class="bg-white rounded-lg shadow-sm p-6">
+          <h2 class="text-xl font-semibold text-gray-800 border-b pb-2 mb-4">
+            Slider
+          </h2>
+          <label class="block font-medium text-gray-700">Volume: {valueSlider()}</label>
+          <Slider
+            label="Volume"
+            min={0}
+            max={100}
+            value={valueSlider()}
+            onInput={(e) => setValueSlider(Number(e.currentTarget.value))}
+            size="lg"
+            color="primary"
+            showThumb
+          />
         </div>
       </div>
     </main>
