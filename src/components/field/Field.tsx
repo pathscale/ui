@@ -37,27 +37,26 @@ const Field: Component<FieldProps> = (props) => {
   );
 
   return (
-    <div
-      class={classes(
-        fieldWrapper(variantProps),
-        local.className
-      )}
-      {...rest}
-    >
-      {local.label && (
-        <label class={labelStyles(variantProps)}>
-          {local.label}
-        </label>
-      )}
+    <div class={classes(fieldWrapper(variantProps), local.className)} {...rest}>
+    {local.label && (
+      <label class={labelStyles(variantProps)}>
+        {local.label}
+      </label>
+    )}
 
-      <div>{local.children}</div>
-
-      {local.message && (
-        <span class={messageStyles(variantProps)}>
-          {local.message}
-        </span>
-      )}
+    {/* CONTENT SLOT: now flex when horizontal */}
+    <div class={classes(
+      variantProps.horizontal ? "flex items-center gap-2" : ""
+    )}>
+      {local.children}
     </div>
+
+    {local.message && (
+      <span class={messageStyles(variantProps)}>
+        {local.message}
+      </span>
+    )}
+  </div>
   );
 };
 
