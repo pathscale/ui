@@ -1,14 +1,19 @@
 import {
   type ComponentProps,
-  createMemo,
   createSignal,
   type JSX,
   mergeProps,
   Show,
   splitProps,
-  untrack,
 } from "solid-js";
-import { inputVariants } from "./Input.styles";
+import {
+  inputWrapperClass,
+  inputVariants,
+  iconLeftClass,
+  iconButtonClass,
+  iconRightClass,
+} from "./Input.styles";
+import EyeIcon from "./EyeIcon";
 import type { ClassProps, VariantProps } from "@src/lib/style";
 
 export type InputProps = Partial<
@@ -24,48 +29,62 @@ const Input = (props: InputProps) => {
 
   const [localProps, variantProps, otherProps] = splitProps(
     defaultedProps,
-    ["type", "passwordReveal", "leftIcon", "rightIcon"],
-    ["class", ...inputVariants.variantKeys]
+    [
+      "type",
+      "passwordReveal",
+      "leftIcon",
+      "rightIcon",
+      "class",
+      "value",
+      "onInput",
+      "placeholder",
+      "name",
+    ],
+    ["color", "rounded", "expanded", "loading", "hasLeftIcon", "hasRightIcon"]
   );
 
   const [showPassword, setShowPassword] = createSignal(false);
 
-  const computedType = createMemo(() =>
-    untrack(() =>
-      localProps.passwordReveal && showPassword() ? "text" : defaultedProps.type
-    )
-  );
+  const resolvedType = () =>
+    localProps.passwordReveal && showPassword()
+      ? "text"
+      : localProps.type ?? "text";
 
-  const classes = createMemo(() => inputVariants(variantProps));
-
-  const handlePasswordToggle = () => {
-    untrack(() => setShowPassword((prev) => !prev));
-  };
+  const inputClass = inputVariants({
+    ...variantProps,
+    hasLeftIcon: !!localProps.leftIcon,
+    hasRightIcon: !!(localProps.rightIcon || localProps.passwordReveal),
+    class: localProps.class,
+  });
 
   return (
-    <div class="relative flex items-center">
+    <div class={inputWrapperClass}>
       <Show when={localProps.leftIcon}>
-        <span class="absolute left-3 top-1/2 -translate-y-1/2">
-          {localProps.leftIcon}
-        </span>
+        <span class={iconLeftClass}>{localProps.leftIcon}</span>
       </Show>
 
       <input
-        class={classes()}
-        type={computedType()}
+        type={resolvedType()}
+        class={inputClass}
         aria-invalid={variantProps.color === "danger" ? "true" : undefined}
-        {...otherProps}
+        value={localProps.value}
+        onInput={localProps.onInput}
+        placeholder={localProps.placeholder}
+        name={localProps.name}
       />
 
-      <Show when={localProps.passwordReveal && localProps.rightIcon}>
+      <Show when={localProps.passwordReveal && !localProps.rightIcon}>
         <button
           type="button"
-          onClick={handlePasswordToggle}
-          class="absolute right-3 top-1/2 -translate-y-1/2 outline-none"
-          aria-label={showPassword() ? "Hide password" : "Show password"}
+          onClick={() => setShowPassword((p) => !p)}
+          class={iconButtonClass}
         >
-          {localProps.rightIcon}
+          <EyeIcon invisible={showPassword()} />
         </button>
+      </Show>
+
+      <Show when={localProps.rightIcon && !localProps.passwordReveal}>
+        <span class={iconRightClass}>{localProps.rightIcon}</span>
       </Show>
     </div>
   );
