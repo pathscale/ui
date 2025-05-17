@@ -22,4 +22,4 @@ export { Polymorphic, PolymorphicButton } from "./components/polymorphic";
 export { default as Steps } from "./components/steps";
 export { default as Table } from "./components/table";
 export { default as Timeline } from "./components/timeline";
-export { default as Toast } from "./components/toast";
+export { default as toast, Toaster } from "./components/toast";
