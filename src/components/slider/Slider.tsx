@@ -10,7 +10,7 @@ import {
   sliderTrack,
   sliderThumb,
 } from "./Slider.styles";
-import { classes, type ClassProps, type VariantProps } from "@src/lib/style";
+import { classes, type VariantProps } from "@src/lib/style";
 
 type NativeInputProps = ComponentProps<"input">;
 
@@ -20,8 +20,7 @@ export type SliderProps = {
   className?: string;
 } & NativeInputProps &
   VariantProps<typeof sliderTrack> &
-  VariantProps<typeof sliderThumb> &
-  ClassProps;
+  VariantProps<typeof sliderThumb>
 
 const Slider: Component<SliderProps> = (props) => {
   const [local, variantProps, otherProps] = splitProps(

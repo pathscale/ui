@@ -1,4 +1,5 @@
 import { cva } from "@src/lib/style";
+import { type VariantProps } from "@src/lib/style";
 
 export const sliderTrack = cva(
   "w-full appearance-none h-2 bg-gray-200 rounded focus:outline-none focus:ring-2 focus:ring-blue-500",
