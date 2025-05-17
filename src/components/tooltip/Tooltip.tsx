@@ -34,7 +34,11 @@ const Tooltip: Component<TooltipProps> = (props) => {
             "pointer-events": "none",
           }}
         >
-          {local.label}
+          {variantProps.multilined
+            ? local.label
+                .split("\n")
+                .map((line, index) => <div class="block">{line}</div>)
+            : local.label}
         </span>
       </Show>
     </span>
