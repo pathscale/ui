@@ -10,7 +10,7 @@ export const switchVariants = cva(
         lg: "text-lg",
       },
       disabled: {
-        true: "opacity-50 cursor-not-allowed",
+        true: "opacity-50",
         false: "",
       },
       rounded: {
@@ -34,7 +34,7 @@ export const switchVariants = cva(
 export const checkVariants = cva(
   [
     "relative transition-colors duration-200",
-    "after:content-[''] after:absolute after:bg-white after:transition-transform after:duration-700 after:ease-in-out",
+    "after:content-[''] after:absolute after:bg-white after:transition-transform after:duration-700 after:ease-in-out after:shadow-sm",
   ].join(" "),
   {
     variants: {
@@ -43,32 +43,42 @@ export const checkVariants = cva(
         md: "w-10 h-6 after:w-4 after:h-4 after:left-1 after:top-1 peer-checked:after:translate-x-4",
         lg: "w-12 h-7 after:w-5 after:h-5 after:left-1 after:top-1 peer-checked:after:translate-x-5",
       },
+
       color: {
-        blue: "peer-checked:bg-blue-500",
-        green: "peer-checked:bg-green-500",
-        red: "peer-checked:bg-red-500",
-        yellow: "peer-checked:bg-yellow-400",
-        gray: "peer-checked:bg-gray-500",
+        primary: "peer-checked:bg-blue-500",
+        success: "peer-checked:bg-green-500",
+        danger: "peer-checked:bg-red-500",
+        warning: "peer-checked:bg-yellow-400",
+        gray: "peer-checked:bg-gray-400",
       },
+
       passiveColor: {
-        blue: "bg-blue-200",
-        green: "bg-green-200",
-        red: "bg-red-200",
-        yellow: "bg-yellow-200",
-        gray: "bg-gray-300",
+        primary: "bg-blue-500",
+        success: "bg-green-500",
+        danger: "bg-red-500",
+        warning: "bg-yellow-400",
+        gray: "bg-gray-400",
       },
+
       rounded: {
         true: "rounded-full after:rounded-full",
         false: "rounded-md after:rounded-sm",
       },
+
       outlined: {
-        true: "ring-2 ring-inset ring-white",
+        true: "bg-transparent ring border-current",
+        false: "",
+      },
+
+      disabled: {
+        true: "bg-gray-200 border border-gray-300 after:bg-gray-100",
         false: "",
       },
     },
+
     defaultVariants: {
       size: "md",
-      color: "blue",
+      color: "primary",
       passiveColor: "gray",
       rounded: true,
       outlined: false,
