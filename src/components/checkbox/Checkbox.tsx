@@ -5,6 +5,7 @@ import {
   createMemo,
   Show,
   untrack,
+  createEffect,
 } from "solid-js";
 import type { JSX } from "solid-js";
 import {
@@ -50,13 +51,31 @@ const Checkbox: Component<CheckboxProps> = (props) => {
 
   let inputRef: HTMLInputElement | undefined;
 
+  const isControlled = localProps.checked !== undefined;
+
   const [status, setStatus] = createSignal<CheckboxVisualState>(
     localProps.indeterminate
       ? "indeterminate"
+      : isControlled
+      ? localProps.checked
+        ? "checked"
+        : "unchecked"
       : localProps.defaultChecked
       ? "checked"
       : "unchecked"
   );
+
+  createEffect(() => {
+    if (isControlled) {
+      setStatus(
+        localProps.indeterminate
+          ? "indeterminate"
+          : localProps.checked
+          ? "checked"
+          : "unchecked"
+      );
+    }
+  });
 
   const handleChange: JSX.EventHandler<HTMLInputElement, Event> = (e) => {
     const input = e.currentTarget;
@@ -102,7 +121,13 @@ const Checkbox: Component<CheckboxProps> = (props) => {
         onBlur={localProps.onBlur}
       />
 
-      <span class={checkboxMarkerVariants()}>
+      <span
+        class={checkboxMarkerVariants({
+          size: variantProps.size,
+          color: status() !== "unchecked" ? variantProps.color : undefined,
+          variant: status() !== "unchecked" ? "colored" : "default",
+        })}
+      >
         <Show when={status() !== "unchecked"}>
           {status() === "indeterminate" ? <MinusIcon /> : <CheckIcon />}
         </Show>
