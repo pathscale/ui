@@ -37,7 +37,7 @@ const Switch: Component<SwitchProps> = (props) => {
       "aria-label",
       "aria-describedby",
     ],
-    ["size", "rounded", "outlined", "color", "passiveColor"]
+    ["size", "rounded", "outlined", "color", "passiveColor", "disabled"]
   );
 
   const isControlled = localProps.checked !== undefined;
@@ -58,10 +58,13 @@ const Switch: Component<SwitchProps> = (props) => {
       passiveColor: variantProps.passiveColor,
       rounded: variantProps.rounded,
       outlined: variantProps.outlined,
+      disabled: localProps.disabled,
     })
   );
 
   const handleChange = (e: Event & { currentTarget: HTMLInputElement }) => {
+    if (localProps.disabled) return;
+
     const next = e.currentTarget.checked;
     untrack(() => {
       if (!isControlled) setInternalChecked(next);
@@ -90,7 +93,9 @@ const Switch: Component<SwitchProps> = (props) => {
       />
 
       <span class={checkClasses()} />
-      <span class="control-label">{localProps.children}</span>
+      <span class="control-label text-gray-800 dark:text-gray-200">
+        {localProps.children}
+      </span>
     </label>
   );
 };

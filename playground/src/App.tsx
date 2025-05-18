@@ -435,27 +435,34 @@ export default function App() {
           <div class="space-y-6">
             <div class="space-y-3">
               <Switch>Default</Switch>
-              <Switch color="green" outlined>
+
+              <Switch color="success" outlined>
                 Success
               </Switch>
-              <Switch color="red" disabled>
+
+              <Switch color="danger" disabled>
                 Disabled
               </Switch>
-              <Switch color="yellow" rounded={false}>
+
+              <Switch color="warning" rounded={false}>
                 Square
               </Switch>
             </div>
+
             <div class="flex gap-4">
-              <Switch size="sm" color="green" passiveColor="green">
+              <Switch size="sm" color="success" passiveColor="success">
                 Small
               </Switch>
-              <Switch size="md" color="yellow" passiveColor="yellow">
+
+              <Switch size="md" color="warning" passiveColor="warning">
                 Medium
               </Switch>
-              <Switch size="lg" color="red" passiveColor="red">
+
+              <Switch size="lg" color="danger" passiveColor="danger">
                 Large
               </Switch>
             </div>
+
             <div class="space-y-3">
               <Switch
                 checked
@@ -464,15 +471,18 @@ export default function App() {
               >
                 Value
               </Switch>
-              <Switch color="blue" passiveColor="red">
+
+              <Switch color="primary" passiveColor="danger">
                 Blue / Passive Red
               </Switch>
-              <Switch color="red" passiveColor="blue">
+
+              <Switch color="danger" passiveColor="primary">
                 Red / Passive Blue
               </Switch>
             </div>
           </div>
         </div>
+
         <div class="bg-white rounded-lg shadow-sm p-6">
           <h2 class="text-xl font-semibold text-gray-800 border-b pb-2 mb-4">
             Tag
