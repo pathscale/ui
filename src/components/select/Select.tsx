@@ -6,7 +6,17 @@ import {
   type JSX,
   untrack,
 } from "solid-js";
-import { selectVariants } from "./Select.styles";
+import {
+  selectVariants,
+  wrapperClass,
+  selectPaddingClass,
+  caretIconBaseClass,
+  spinnerIconBaseClass,
+  getIconColor,
+  getSpinnerColor,
+} from "./Select.styles";
+import CaretDownIcon from "./CaretDownIcon";
+import SpinnerIcon from "./SpinnerIcon";
 import { type VariantProps, type ClassProps, classes } from "@src/lib/style";
 import type { ComponentProps } from "solid-js";
 
@@ -24,7 +34,7 @@ export type SelectProps = VariantProps<typeof selectVariants> &
 const Select: Component<SelectProps> = (props) => {
   const [localProps, variantProps, otherProps] = splitProps(
     props,
-    ["placeholder", "value", "nativeSize", "onChange", "onBlur", "onFocus"],
+    ["placeholder", "value", "nativeSize", "onChange", "onFocus", "onBlur"],
     ["class", ...selectVariants.variantKeys]
   );
 
@@ -32,27 +42,47 @@ const Select: Component<SelectProps> = (props) => {
     untrack(() => localProps.value === null || localProps.value === undefined)
   );
 
-  const selectClasses = createMemo(() =>
-    classes(selectVariants(variantProps), variantProps.class)
+  const selectClass = createMemo(() =>
+    classes(
+      selectVariants(variantProps),
+      variantProps.class,
+      selectPaddingClass
+    )
   );
 
   return (
-    <select
-      class={selectClasses()}
-      size={localProps.nativeSize}
-      value={localProps.value}
-      onChange={localProps.onChange}
-      onFocus={localProps.onFocus}
-      onBlur={localProps.onBlur}
-      {...otherProps}
-    >
-      <Show when={localProps.placeholder && empty()}>
-        <option value="" disabled hidden>
-          {localProps.placeholder}
-        </option>
+    <div class={wrapperClass}>
+      <select
+        class={selectClass()}
+        size={localProps.nativeSize}
+        value={localProps.value}
+        onChange={localProps.onChange}
+        onFocus={localProps.onFocus}
+        onBlur={localProps.onBlur}
+        {...otherProps}
+      >
+        <Show when={localProps.placeholder && empty()}>
+          <option value="" disabled hidden>
+            {localProps.placeholder}
+          </option>
+        </Show>
+        {props.children}
+      </select>
+
+      <Show when={variantProps.loading}>
+        <SpinnerIcon
+          class={`${spinnerIconBaseClass} ${getSpinnerColor(
+            variantProps.color
+          )}`}
+        />
       </Show>
-      {props.children}
-    </select>
+
+      <Show when={!variantProps.loading}>
+        <CaretDownIcon
+          class={`${caretIconBaseClass} ${getIconColor(variantProps.color)}`}
+        />
+      </Show>
+    </div>
   );
 };
 
