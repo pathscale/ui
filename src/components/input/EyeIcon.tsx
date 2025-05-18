@@ -12,7 +12,7 @@ const EyeIcon: Component<{ invisible?: boolean }> = (props) => {
 const EyeInvisible = () => (
   <svg
     viewBox="64 64 896 896"
-    focusable="false"
+    tabIndex="-1"
     width="1em"
     height="1em"
     fill="currentColor"
@@ -26,7 +26,7 @@ const EyeInvisible = () => (
 const EyeOpen = () => (
   <svg
     viewBox="64 64 896 896"
-    focusable="false"
+    tabIndex="-1"
     width="1em"
     height="1em"
     fill="currentColor"
