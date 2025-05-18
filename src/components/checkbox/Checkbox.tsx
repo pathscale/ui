@@ -1,26 +1,35 @@
 import {
   type Component,
   splitProps,
-  Show,
-  createEffect,
+  createSignal,
   createMemo,
+  Show,
   untrack,
 } from "solid-js";
 import type { JSX } from "solid-js";
-import { checkboxVariants } from "./Checkbox.styles";
+import {
+  checkboxVariants,
+  checkboxMarkerVariants,
+  checkboxInputClass,
+  checkboxLabelClass,
+} from "./Checkbox.styles";
 import { type VariantProps, type ClassProps, classes } from "@src/lib/style";
 import type { ComponentProps } from "solid-js";
+import CheckIcon from "./CheckIcon";
+import MinusIcon from "./MinusIcon";
+
+type CheckboxVisualState = "indeterminate" | "checked" | "unchecked";
 
 export type CheckboxProps = VariantProps<typeof checkboxVariants> &
   ClassProps &
   Omit<ComponentProps<"input">, "onChange" | "onFocus" | "onBlur"> & {
     indeterminate?: boolean;
+    defaultChecked?: boolean;
+    disabled?: boolean;
     label?: JSX.Element;
     onChange?: JSX.EventHandlerUnion<HTMLInputElement, Event>;
     onFocus?: JSX.EventHandlerUnion<HTMLInputElement, FocusEvent>;
     onBlur?: JSX.EventHandlerUnion<HTMLInputElement, FocusEvent>;
-    "aria-label"?: string;
-    "aria-describedby"?: string;
   };
 
 const Checkbox: Component<CheckboxProps> = (props) => {
@@ -29,30 +38,37 @@ const Checkbox: Component<CheckboxProps> = (props) => {
     [
       "label",
       "indeterminate",
-      "type",
+      "defaultChecked",
+      "checked",
       "onChange",
       "onFocus",
       "onBlur",
-      "checked",
       "disabled",
-      "aria-label",
-      "aria-describedby",
     ],
     ["class", ...checkboxVariants.variantKeys]
   );
 
   let inputRef: HTMLInputElement | undefined;
 
-  const checkboxClasses = createMemo(() => checkboxVariants(variantProps));
-
-  const markerClasses = createMemo(() =>
-    classes(
-      "inline-block w-4 h-4 border border-gray-400 rounded-sm peer-checked:bg-current",
-      localProps.indeterminate ? "bg-gray-400 relative" : ""
-    )
+  const [status, setStatus] = createSignal<CheckboxVisualState>(
+    localProps.indeterminate
+      ? "indeterminate"
+      : localProps.defaultChecked
+      ? "checked"
+      : "unchecked"
   );
 
   const handleChange: JSX.EventHandler<HTMLInputElement, Event> = (e) => {
+    const input = e.currentTarget;
+
+    if (input.indeterminate) {
+      input.indeterminate = false;
+      input.checked = true;
+      setStatus("checked");
+    } else {
+      setStatus(input.checked ? "checked" : "unchecked");
+    }
+
     untrack(() => {
       if (typeof localProps.onChange === "function") {
         localProps.onChange(e);
@@ -60,62 +76,40 @@ const Checkbox: Component<CheckboxProps> = (props) => {
     });
   };
 
-  const handleFocus: JSX.EventHandler<HTMLInputElement, FocusEvent> = (e) => {
-    untrack(() => {
-      if (typeof localProps.onFocus === "function") {
-        localProps.onFocus(e);
-      }
-    });
-  };
-
-  const handleBlur: JSX.EventHandler<HTMLInputElement, FocusEvent> = (e) => {
-    untrack(() => {
-      if (typeof localProps.onBlur === "function") {
-        localProps.onBlur(e);
-      }
-    });
-  };
-
-  createEffect(() => {
-    if (inputRef) {
-      untrack(() => {
-        inputRef.indeterminate = !!localProps.indeterminate;
-      });
-    }
-  });
-
   return (
     <label
-      class={checkboxClasses()}
+      class={checkboxVariants()}
       role="checkbox"
-      aria-checked={localProps.indeterminate ? "mixed" : localProps.checked}
-      aria-label={localProps["aria-label"]}
-      aria-describedby={localProps["aria-describedby"]}
+      aria-checked={
+        status() === "indeterminate" ? "mixed" : status() === "checked"
+      }
     >
       <input
-        ref={inputRef}
+        ref={(el) => {
+          inputRef = el;
+          if (status() === "indeterminate") {
+            el.indeterminate = true;
+          }
+        }}
         type="checkbox"
-        class="peer absolute opacity-0 w-4 h-4"
-        checked={localProps.checked}
+        class={checkboxInputClass}
+        checked={status() === "checked"}
         disabled={localProps.disabled}
         aria-hidden="true"
         {...otherProps}
         onChange={handleChange}
-        onFocus={handleFocus}
-        onBlur={handleBlur}
+        onFocus={localProps.onFocus}
+        onBlur={localProps.onBlur}
       />
 
-      <span class={markerClasses()}>
-        <Show when={localProps.indeterminate}>
-          <span
-            class="absolute top-1/2 left-1/2 w-2 h-0.5 bg-white -translate-x-1/2 -translate-y-1/2"
-            aria-hidden="true"
-          />
+      <span class={checkboxMarkerVariants()}>
+        <Show when={status() !== "unchecked"}>
+          {status() === "indeterminate" ? <MinusIcon /> : <CheckIcon />}
         </Show>
       </span>
 
       <Show when={localProps.label}>
-        <span class="ml-2">{localProps.label}</span>
+        <span class={checkboxLabelClass}>{localProps.label}</span>
       </Show>
     </label>
   );
