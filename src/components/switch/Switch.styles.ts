@@ -85,3 +85,15 @@ export const checkVariants = cva(
     },
   }
 );
+
+export const switchLabelClass = cva("control-label", {
+  variants: {
+    disabled: {
+      true: "text-gray-400 dark:text-gray-500",
+      false: "text-gray-800 dark:text-gray-200",
+    },
+  },
+  defaultVariants: {
+    disabled: false,
+  },
+});

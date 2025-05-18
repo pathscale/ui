@@ -6,7 +6,11 @@ import {
   createMemo,
   untrack,
 } from "solid-js";
-import { switchVariants, checkVariants } from "./Switch.styles";
+import {
+  switchVariants,
+  checkVariants,
+  switchLabelClass,
+} from "./Switch.styles";
 import type { VariantProps } from "@src/lib/style";
 
 export type SwitchProps = {
@@ -93,7 +97,7 @@ const Switch: Component<SwitchProps> = (props) => {
       />
 
       <span class={checkClasses()} />
-      <span class="control-label text-gray-800 dark:text-gray-200">
+      <span class={switchLabelClass({ disabled: localProps.disabled })}>
         {localProps.children}
       </span>
     </label>
