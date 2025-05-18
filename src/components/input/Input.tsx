@@ -25,7 +25,7 @@ export type InputProps = Partial<
 };
 
 const Input = (props: InputProps) => {
-  const defaultedProps = mergeProps({ type: "text" }, props);
+  const defaultedProps = mergeProps({ type: "text", placeholder: "" }, props);
 
   const [localProps, variantProps, otherProps] = splitProps(
     defaultedProps,
@@ -37,7 +37,6 @@ const Input = (props: InputProps) => {
       "class",
       "value",
       "onInput",
-      "placeholder",
       "name",
     ],
     ["color", "rounded", "expanded", "loading", "hasLeftIcon", "hasRightIcon"]
@@ -69,8 +68,8 @@ const Input = (props: InputProps) => {
         aria-invalid={variantProps.color === "danger" ? "true" : undefined}
         value={localProps.value}
         onInput={localProps.onInput}
-        placeholder={localProps.placeholder}
         name={localProps.name}
+        {...otherProps}
       />
 
       <Show when={localProps.passwordReveal && !localProps.rightIcon}>
