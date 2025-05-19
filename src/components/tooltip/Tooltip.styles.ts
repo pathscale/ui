@@ -33,7 +33,7 @@ export const tooltipVariants = cva(
       },
       multilined: {
         true: "whitespace-pre-wrap",
-        false: "whitespace-nowrap",
+        false: "whitespace-nowrap overflow-hidden text-ellipsis",
       },
       animated: {
         true: "transition-opacity duration-300 ease-in-out",
