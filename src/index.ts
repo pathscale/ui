@@ -14,7 +14,12 @@ export { default as Switch } from "./components/switch";
 export { default as Checkbox } from "./components/checkbox";
 export { Breadcrumb, BreadcrumbItem } from "./components/breadcrumb";
 export { default as Autocomplete } from "./components/autocomplete";
-export { Dropdown, DropdownItem, DropdownMenu } from "./components/dropdown";
+export {
+  Dropdown,
+  DropdownItem,
+  DropdownMenu,
+  DropdownTrigger,
+} from "./components/dropdown";
 export { default as Field } from "./components/field";
 export { Menu, MenuItem, MenuList } from "./components/menu";
 export { Navbar, NavbarItem, NavbarDropdown } from "./components/navbar";

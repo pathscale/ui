@@ -1,24 +1,16 @@
-import { splitProps, type Component, type JSX } from "solid-js";
-import type { VariantProps } from "@src/lib/style";
-import { dropdownVariants } from "./Dropdown.styles";
+import { Show, useContext, type Component, type JSX } from "solid-js";
+import { DropdownContext } from "./DropdownContext";
+import { dropdownMenuClass } from "./Dropdown.styles";
 
-export interface DropdownMenuProps
-  extends VariantProps<typeof dropdownVariants>, // open + position only
-    JSX.HTMLAttributes<HTMLDivElement> {
-  children: JSX.Element;
-}
+const DropdownMenu: Component<{ children: JSX.Element }> = (props) => {
+  const context = useContext(DropdownContext);
 
-const DropdownMenu: Component<DropdownMenuProps> = (props) => {
-  const [local, other] = splitProps(props, ["open", "position", "children"]);
   return (
-    <div
-      class={dropdownVariants({ open: local.open, position: local.position })}
-      {...other}
-      id="dropdown-menu"
-      role="menu"
-    >
-      {local.children}
-    </div>
+    <Show when={context?.open?.()}>
+      <div class={dropdownMenuClass({ position: context?.position })}>
+        {props.children}
+      </div>
+    </Show>
   );
 };
 

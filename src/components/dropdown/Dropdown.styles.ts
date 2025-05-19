@@ -1,38 +1,54 @@
 import { cva } from "@src/lib/style";
 
-export const dropdownVariants = cva(
-  [
-    "absolute mt-2 shadow-lg z-10",
-    "w-max rounded-md bg-white border border-gray-300",
-    "transition-all duration-150 ease-in-out",
-    "flex flex-col",
-  ],
+export const dropdownMenuClass = cva(
+  "absolute z-10 w-max bg-white rounded shadow border border-gray-200 flex flex-col",
   {
     variants: {
       position: {
-        "bottom-left": "left-0 top-full text-black",
-        "bottom-right": "right-0 top-full text-black",
-        "top-left": "left-0 bottom-full text-black",
-        "top-right": "right-0 bottom-full text-black",
-      },
-      open: {
-        true: "block",
-        false: "hidden",
+        "top-left": "bottom-full left-0 mb-2",
+        "top-right": "bottom-full right-0 mb-2",
+        left: "right-full top-0 mr-2",
+        right: "left-full top-0 ml-2",
+        "bottom-left": "top-full left-0 mt-2",
+        "bottom-right": "top-full right-0 mt-2",
       },
     },
     defaultVariants: {
       position: "bottom-left",
-      open: false,
     },
   }
 );
 
-export const dropdownItemVariants = cva(
-  "px-4 py-2 cursor-pointer transition-colors duration-150 ease-in-out hover:bg-gray-100",
+export const dropdownItemClass = cva(
+  "px-4 py-2 text-sm cursor-pointer transition-colors",
   {
     variants: {
-      hasLink: { true: "p-0 text-blue-600 hover:underline", false: "" },
+      disabled: {
+        true: "text-gray-400 cursor-not-allowed",
+        false: "hover:bg-gray-100 text-gray-800",
+      },
     },
-    defaultVariants: { hasLink: false },
+    defaultVariants: {
+      disabled: false,
+    },
   }
 );
+
+export const dropdownRootClass = cva("relative inline-block");
+
+export const dropdownTriggerClass = cva("cursor-pointer w-fit", {
+  variants: {
+    disabled: {
+      true: "pointer-events-none opacity-50",
+      false: "",
+    },
+    hoverable: {
+      true: "",
+      false: "",
+    },
+  },
+  defaultVariants: {
+    disabled: false,
+    hoverable: false,
+  },
+});
