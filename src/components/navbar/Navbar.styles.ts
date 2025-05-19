@@ -1,58 +1,123 @@
-// src/components/navbar/Navbar.styles.ts
 import { cva } from "@src/lib/style";
 
-export const navbarStyles = cva("flex items-center px-4", {
+export const navbarClass = cva("flex items-center px-4", {
   variants: {
     color: {
-      info:    "bg-blue-500 text-white",
       primary: "bg-indigo-600 text-white",
+      info: "bg-blue-500 text-white",
       success: "bg-green-500 text-white",
-      light:   "bg-white text-gray-800",
+      danger: "bg-red-600 text-white",
+      warning: "bg-yellow-500 text-white",
+      light: "bg-white text-gray-800",
     },
-  },
-  defaultVariants: {
-    color: "info",
-  },
-});
-
-export const navbarItemStyles = cva(
-  "px-3 py-2 rounded transition-colors",
-  {
-    variants: {
-      active: {
-        true:  "font-semibold border-b-2 border-current",
-        false: "hover:bg-gray-200",
-      },
-      tag: {
-        div: "",
-        a:   "",
-      },
+    spaced: {
+      true: "py-4",
+      false: "",
     },
-    defaultVariants: {
-      active: false,
-      tag: "div",
+    shadow: {
+      true: "shadow-md",
+      false: "",
     },
-  }
-);
-
-export const navbarDropdownStyles = cva("relative", {
-  variants: {
-    hoverable: {
-      true:  "group",
+    transparent: {
+      true: "bg-transparent",
+      false: "",
+    },
+    fixedTop: {
+      true: "fixed top-0 left-0 right-0 z-50",
+      false: "",
+    },
+    fixedBottom: {
+      true: "fixed bottom-0 left-0 right-0 z-50",
       false: "",
     },
   },
   defaultVariants: {
-    hoverable: false,
+    color: "primary",
+    spaced: false,
+    shadow: false,
+    transparent: false,
+    fixedTop: false,
+    fixedBottom: false,
   },
 });
 
-export const dropdownMenuStyles = cva(
+export const navbarItemClass = cva(
+  "px-4 py-2 rounded transition-colors cursor-pointer",
+  {
+    variants: {
+      active: {
+        true: "",
+        false: "",
+      },
+      color: {
+        primary: "",
+        success: "",
+        info: "",
+        danger: "",
+        warning: "",
+        light: "",
+      },
+    },
+    defaultVariants: {
+      active: false,
+      color: "primary",
+    },
+    compoundVariants: [
+      { color: "primary", active: true, class: "bg-white/20 text-white" },
+      {
+        color: "primary",
+        active: false,
+        class: "hover:bg-white/10 text-white",
+      },
+
+      { color: "success", active: true, class: "bg-white/20 text-white" },
+      {
+        color: "success",
+        active: false,
+        class: "hover:bg-white/10 text-white",
+      },
+
+      { color: "info", active: true, class: "bg-white/20 text-white" },
+      { color: "info", active: false, class: "hover:bg-white/10 text-white" },
+
+      { color: "danger", active: true, class: "bg-white/20 text-white" },
+      { color: "danger", active: false, class: "hover:bg-white/10 text-white" },
+
+      { color: "warning", active: true, class: "bg-white/20 text-white" },
+      {
+        color: "warning",
+        active: false,
+        class: "hover:bg-white/10 text-white",
+      },
+
+      { color: "light", active: true, class: "bg-gray-300 text-gray-900" },
+      {
+        color: "light",
+        active: false,
+        class: "hover:bg-gray-100 text-gray-800",
+      },
+    ],
+  }
+);
+
+export const navbarDropdownClass = cva("relative", {
+  variants: {
+    hoverable: {
+      true: "group",
+      false: "",
+    },
+  },
+  defaultVariants: {
+    hoverable: true,
+  },
+});
+
+export const dropdownMenuClass = cva(
   "absolute mt-2 bg-white text-gray-800 rounded shadow-lg hidden group-hover:block",
   {
     variants: {
       align: {
-        left:  "left-0",
+        left: "left-0",
         right: "right-0",
       },
     },
@@ -61,27 +126,3 @@ export const dropdownMenuStyles = cva(
     },
   }
 );
-
-// -- NEW: imageStyles for logos, avatars, etc. --
-export const imageStyles = cva("", {
-  variants: {
-    rounded: {
-      true:  "rounded-full",
-      false: "",
-    },
-    size: {
-      sm: "w-6 h-6",
-      md: "w-8 h-8",
-      lg: "w-12 h-12",
-    },
-    bordered: {
-      true: "border border-gray-200",
-      false: "",
-    },
-  },
-  defaultVariants: {
-    rounded: false,
-    size: "md",
-    bordered: false,
-  },
-});

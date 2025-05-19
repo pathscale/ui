@@ -1,51 +1,71 @@
-import {
-    type Component,
-    splitProps,
-    type JSX,
-} from "solid-js";
-import { classes, type VariantProps, type ClassProps } from "@src/lib/style";
-import { navbarItemStyles } from "./Navbar.styles";
+import { type Component, splitProps, type JSX, useContext } from "solid-js";
 import { Dynamic } from "solid-js/web";
+import { NavbarContext } from "./NavbarContext";
+import { navbarItemClass } from "./Navbar.styles";
+import { classes, type ClassProps } from "@src/lib/style";
 
-export type NavbarItemProps = {
-    active?: boolean;
-    href?: string;
-    tag?: "a" | "div";
-    to?: string;            // for router-link style
-    className?: string;
-    children: JSX.Element;
-} & VariantProps<typeof navbarItemStyles> &
-    ClassProps &
-    Omit<JSX.HTMLAttributes<HTMLElement>, "children">;
+type NavbarColor =
+  | "primary"
+  | "info"
+  | "success"
+  | "danger"
+  | "warning"
+  | "light";
+const allowedColors: NavbarColor[] = [
+  "primary",
+  "info",
+  "success",
+  "danger",
+  "warning",
+  "light",
+];
+
+type NavbarItemProps = {
+  label: string;
+  tag?: "a" | "div";
+  href?: string;
+  children: JSX.Element;
+  color?: NavbarColor;
+} & ClassProps;
 
 const NavbarItem: Component<NavbarItemProps> = (props) => {
-    const [local, variantProps, other] = splitProps(
-        props,
-        [
-            "class", "className", "active", "href", "tag", "to", "children"
-        ] as const,
-        Object.keys(navbarItemStyles.variantKeys ?? {}) as any
-    );
+  const context = useContext(NavbarContext);
 
-    const Tag = local.tag === "a" || local.href || local.to ? "a" : "div";
+  const [local, rest] = splitProps(props, [
+    "tag",
+    "href",
+    "label",
+    "children",
+    "class",
+    "color",
+  ]);
 
-    return (
-        <Dynamic
-            component={Tag}
-            class={classes(
-                navbarItemStyles({
-                    active: !!local.active,
-                    tag: local.tag ?? (Tag === "a" ? "a" : "div"),
-                }),
-                local.class,
-                local.className
-            )}
-            href={local.href ?? local.to}
-            {...other}
-        >
-            {local.children}
-        </Dynamic>
-    );
+  const Tag = local.tag || (local.href ? "a" : "div");
+  const isActive = () => context?.selected?.() === local.label;
+
+  const resolveColor = (input?: string): NavbarColor | undefined => {
+    return allowedColors.includes(input as NavbarColor)
+      ? (input as NavbarColor)
+      : undefined;
+  };
+
+  return (
+    <Dynamic
+      component={Tag}
+      href={local.href}
+      onClick={() => context?.setSelected?.(local.label)}
+      class={classes(
+        navbarItemClass({
+          active: isActive(),
+          color: resolveColor(local.color ?? context?.color),
+        }),
+        local.class
+      )}
+      {...rest}
+    >
+      {local.children}
+    </Dynamic>
+  );
 };
 
 export default NavbarItem;
