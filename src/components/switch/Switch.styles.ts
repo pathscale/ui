@@ -53,11 +53,11 @@ export const checkVariants = cva(
       },
 
       passiveColor: {
-        primary: "bg-blue-500",
-        success: "bg-green-500",
-        danger: "bg-red-500",
-        warning: "bg-yellow-400",
-        gray: "bg-gray-400",
+        primary: "bg-blue-200",
+        success: "bg-green-200",
+        danger: "bg-red-200",
+        warning: "bg-yellow-200",
+        gray: "bg-gray-200",
       },
 
       rounded: {
