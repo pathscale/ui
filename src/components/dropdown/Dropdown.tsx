@@ -1,85 +1,35 @@
-import {
-  type Component,
-  splitProps,
-  type JSX,
-  createMemo,
-  Show,
-} from "solid-js";
-import type { ComponentProps } from "solid-js";
-import { useDropdown } from "./useDropdown";
-import DropdownMenu from "./DropdownMenu";
-import { dropdownVariants } from "./Dropdown.styles";
-import { buttonVariants } from "../button/Button.styles";
-import { classes, type VariantProps, type ClassProps } from "@src/lib/style";
+import { createSignal, type Component, type JSX } from "solid-js";
+import { DropdownContext } from "./DropdownContext";
+import { dropdownRootClass } from "./Dropdown.styles";
 
 type DropdownProps = {
-  label?: string | JSX.Element;
-  disabledLabel?: string | JSX.Element;
-  trigger?: "click" | "hover";
   children: JSX.Element;
-  color?: "primary" | "secondary" | "default";
+  hoverable?: boolean;
   disabled?: boolean;
-  className?: string;
-} & VariantProps<typeof dropdownVariants> &
-  ClassProps &
-  ComponentProps<"div">;
+  position?: "left" | "right" | "top-left" | "top-right";
+};
 
 const Dropdown: Component<DropdownProps> = (props) => {
-  const [localProps, variantProps, restProps] = splitProps(
-    props,
-    ["label", "disabledLabel", "trigger", "children", "disabled", "color", "class", "className"],
-    Object.keys(dropdownVariants.variantKeys ?? {}) as (keyof VariantProps<typeof dropdownVariants>)[]
-  );
+  const [open, setOpen] = createSignal(false);
 
-  const { open, ref, toggle, onEnter, onLeave } = useDropdown(
-    localProps.trigger ?? "click",
-    !!localProps.disabled
-  );
-
-  const labelContent = createMemo(() =>
-    localProps.disabled
-      ? localProps.disabledLabel ?? localProps.label
-      : localProps.label ?? "Toggle"
-  );
-
-  const containerClass = createMemo(() =>
-    classes("relative inline-block", localProps.class, localProps.className)
-  );
-
-  const buttonClass = createMemo(() =>
-    buttonVariants({
-      color: "primary",
-    })
-  );
+  const context = {
+    open,
+    setOpen,
+    disabled: props.disabled,
+    hoverable: props.hoverable,
+    position: props.position ?? "left",
+  };
 
   return (
-    <div
-      ref={ref}
-      onMouseEnter={onEnter}
-      onMouseLeave={onLeave}
-      class={containerClass()}
-      {...restProps}
-    >
-      <button
-        type="button"
-        onClick={(e) => {
-          e.preventDefault();
-          if (localProps.trigger === "click") toggle();
-        }}
-        class={buttonClass()}
-        aria-disabled={localProps.disabled}
-        disabled={localProps.disabled}
-        aria-controls="dropdown-menu"
+    <DropdownContext.Provider value={context}>
+      <div
+        class={dropdownRootClass()}
+        onMouseEnter={props.hoverable ? () => setOpen(true) : undefined}
+        onMouseLeave={props.hoverable ? () => setOpen(false) : undefined}
       >
-        {labelContent()}
-      </button>
-
-      <Show when={open()}>
-        <DropdownMenu open {...variantProps}>
-          {localProps.children}
-        </DropdownMenu>
-      </Show>
-    </div>
+        {props.children}
+      </div>
+    </DropdownContext.Provider>
   );
 };
 
