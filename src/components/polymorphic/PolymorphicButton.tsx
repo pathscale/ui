@@ -11,7 +11,6 @@ import Polymorphic, { type PolymorphicProps } from "./Polymorphic";
 export type PolymorphicButtonSharedProps<T extends ValidComponent = "button"> =
   {
     ref: Ref<ElementOf<T>>;
-    type: string | undefined;
   };
 
 export type PolymorphicButtonElementProps = PolymorphicButtonSharedProps & {
@@ -26,27 +25,23 @@ export type PolymorphicButtonProps<T extends ValidComponent = "button"> =
  * if it's a native button.
  */
 const PolymorphicButton = <T extends ValidComponent = "button">(
-  props: PolymorphicProps<T, PolymorphicButtonProps<T>>,
+  props: PolymorphicProps<T, PolymorphicButtonProps<T>>
 ) => {
   const [ref, setRef] = createSignal<HTMLElement | null>(null);
 
   const [localProps, otherProps] = splitProps(props as PolymorphicButtonProps, [
     "ref",
-    "type",
   ]);
 
   const isButton = createIsButton({
     element: ref,
-    type: localProps.type,
+    type: props.type,
   });
 
   return (
     <Polymorphic<PolymorphicButtonElementProps>
       as="button"
-      // === SharedProps ===
       ref={mergeRefs(setRef, localProps.ref)}
-      type={isButton() ? "button" : undefined}
-      // === ElementProps ===
       role={!isButton() ? "button" : undefined}
       {...otherProps}
     />

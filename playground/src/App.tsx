@@ -53,6 +53,12 @@ export default function App() {
             </div>
 
             <div class="flex flex-col gap-4">
+              <Button type="submit">Submit</Button>
+              <Button type="reset">Reset</Button>
+              <Button type="button">Button</Button>
+            </div>
+
+            <div class="flex flex-col gap-4">
               {switchColors.map((color) => (
                 <div class="flex items-center gap-4">
                   <Switch color={color} passiveColor={color}>
