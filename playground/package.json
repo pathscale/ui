@@ -8,10 +8,9 @@
     "build": "vite build",
     "preview": "vite preview"
   },
-  "dependencies": {
-    "solid-js": "^1.8.15"
-  },
   "devDependencies": {
+    "daisyui": "^5.0.37",
+    "solid-js": "^1.8.15",
     "vite": "^5.0.0",
     "vite-plugin-solid": "^2.9.1",
     "vite-tsconfig-paths": "^4.3.1",

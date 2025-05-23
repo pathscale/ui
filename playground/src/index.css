@@ -1,4 +1,5 @@
 @import "tailwindcss";
+@plugin "daisyui";
 @import "../../src/index.css";
 @source "../../src";
 

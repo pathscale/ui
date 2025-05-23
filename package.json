@@ -17,7 +17,9 @@
     "typescript": "^5.8.3",
     "vite": "^6.3.5",
     "vite-plugin-solid": "^2.11.6",
-    "vite-tsconfig-paths": "^5.1.4"
+    "vite-tsconfig-paths": "^5.1.4",
+    "clsx": "^2.1.1",
+    "tailwind-merge": "^3.3.0"
   },
   "peerDependencies": {
     "solid-js": "^1.8"
