@@ -1,9 +1,9 @@
-import ButtonShowcase from "../../src/components/button/ButtonShowcase";
+import BadgeShowcase from "../../src/components/badge/BadgeShowcase";
 
 export default function App() {
   return (
     <main class="min-h-screen">
-      <ButtonShowcase />
+      <BadgeShowcase />
     </main>
   );
 }
