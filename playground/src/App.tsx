@@ -1,9 +1,9 @@
-import ButtonShowcase from "../../src/components/button/ButtonShowcase";
+import ToggleShowcase from "../../src/components/toggle/ToggleShowcase";
 
 export default function App() {
   return (
     <main class="min-h-screen">
-      <ButtonShowcase />
+      <ToggleShowcase />
     </main>
   );
 }
