@@ -2,9 +2,7 @@ import { type JSX, splitProps } from "solid-js";
 import { Dynamic } from "solid-js/web";
 import { twMerge } from "tailwind-merge";
 import { clsx } from "clsx";
-
 import type { IComponentBaseProps } from "../types";
-import DropdownDetails from "./DropdownDetails";
 import DropdownMenu from "./DropdownMenu";
 import DropdownItem from "./DropdownItem";
 import DropdownToggle from "./DropdownToggle";
@@ -64,7 +62,7 @@ export function dropdownClassName({
   );
 }
 
-const Dropdown = <E extends ElementType = "div">(
+export const Dropdown = <E extends ElementType = "div">(
   props: DropdownProps<E>
 ): JSX.Element => {
   const [local, others] = splitProps(props as DropdownProps, [
@@ -116,7 +114,6 @@ const Dropdown = <E extends ElementType = "div">(
 };
 
 export default Object.assign(Dropdown, {
-  Details: DropdownDetails,
   Toggle: DropdownToggle,
   Menu: DropdownMenu,
   Item: DropdownItem,
