@@ -1,9 +1,9 @@
-import TooltipShowcase from "../../src/components/tooltip/TooltipShowcase";
+import PaginationShowcase from "../../src/components/pagination/PaginationShowcase";
 
 export default function App() {
   return (
     <main class="min-h-screen">
-      <TooltipShowcase />
+      <PaginationShowcase />
     </main>
   );
 }
