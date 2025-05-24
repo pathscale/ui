@@ -1,6 +1,5 @@
 import { createSignal, onMount } from "solid-js";
-
-import SkeletonShowcase from "../../src/components/skeleton/SkeletonShowcase";
+import NavbarShowcase from "../../src/components/navbar/NavbarShowcase";
 
 export default function App() {
   const [theme, setTheme] = createSignal<"light" | "dark">("light");
@@ -32,7 +31,7 @@ export default function App() {
       </aside>
 
       <main class="flex-1 p-8 space-y-16 scroll-smooth">
-        <SkeletonShowcase />
+        <NavbarShowcase />
       </main>
     </div>
   );
