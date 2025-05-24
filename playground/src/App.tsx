@@ -1,5 +1,4 @@
-import ToggleShowcase from "../../src/components/toggle/ToggleShowcase";
-import BadgeShowcase from "../../src/components/badge/BadgeShowcase";
+import BreadcrumbShowcase from "../../src/components/breadcrumbs/BreadcrumbShowcase";
 
 
 export default function App() {
@@ -22,7 +21,7 @@ export default function App() {
 
   return (
     <main class="min-h-screen">
-      <ToggleShowcase />
+      <BreadcrumbShowcase />
     </main>
   );
 }
