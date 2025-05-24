@@ -1,4 +1,4 @@
-import PaginationShowcase from "../../src/components/pagination/PaginationShowcase";
+import AccordionShowcase from "../../src/components/accordion/AccordionShowcase";
 
 
 export default function App() {
@@ -21,7 +21,7 @@ export default function App() {
 
   return (
     <main class="min-h-screen">
-      <PaginationShowcase />
+      <AccordionShowcase />
     </main>
   );
 }
