@@ -1,69 +1,109 @@
-import {
-  type Component,
-  createSignal,
-  createMemo,
-  createEffect,
-  mergeProps,
-  splitProps,
-  Show,
-  untrack,
-} from "solid-js";
-import { avatarVariants } from "./Avatar.styles";
-import type { VariantProps } from "@src/lib/style";
-import type { ComponentProps, JSX } from "solid-js";
-import type { ClassProps } from "@src/lib/style";
+import { type JSX, splitProps, Show } from "solid-js";
+import { Dynamic } from "solid-js/web";
+import { twMerge } from "tailwind-merge";
+import { clsx } from "clsx";
+
+import type { IComponentBaseProps, ComponentSize, ComponentShape, ComponentVariant } from "../types";
 import { parseCaption } from "./utils";
 
-export type AvatarVariantProps = VariantProps<typeof avatarVariants>;
+type ElementType = keyof JSX.IntrinsicElements;
 
-export type AvatarProps = AvatarVariantProps &
-  ClassProps &
-  ComponentProps<"img"> & {
-    src?: string;
-    dataSrc?: string;
-    alt?: string;
-    text?: string;
-  };
+export type AvatarProps<E extends ElementType = "figure"> = {
+  src?: string;
+  dataSrc?: string;
+  alt?: string;
+  text?: string;
+  size?: ComponentSize;
+  shape?: ComponentShape;
+  variant?: ComponentVariant;
+  as?: ElementType;
+  class?: string;
+  className?: string;
+  style?: JSX.CSSProperties;
+  children?: JSX.Element;
+} & Omit<JSX.IntrinsicElements[E], "size" | "class" | "className"> &
+  IComponentBaseProps;
 
-const Avatar: Component<AvatarProps> = (rawProps) => {
-  const props = mergeProps({ alt: "User Avatar" }, rawProps);
+const VoidElementList: ElementType[] = [
+  "area",
+  "base",
+  "br",
+  "col",
+  "embed",
+  "hr",
+  "img",
+  "input",
+  "link",
+  "keygen",
+  "meta",
+  "param",
+  "source",
+  "track",
+  "wbr",
+];
 
-  const [variantProps, otherProps] = splitProps(props, [
+const Avatar = <E extends ElementType = "figure">(props: AvatarProps<E>) => {
+  const [local, others] = splitProps(props as AvatarProps, [
+    "src",
+    "dataSrc",
+    "alt",
+    "text",
+    "size",
+    "shape",
+    "variant",
+    "as",
     "class",
-    ...avatarVariants.variantKeys,
+    "className",
+    "style",
+    "children",
   ]);
 
-  const [source, setSource] = createSignal(props.src || props.dataSrc);
+  const Tag = local.as || "figure";
 
-  createEffect(() => {
-    untrack(() => {
-      if (import.meta.env.PROD && props.dataSrc) {
-        setSource(props.dataSrc);
-      }
-    });
-  });
+  const imageSource = () => local.src || local.dataSrc;
+  const showFallback = !imageSource();
+  const fallbackText = () => local.text || parseCaption(local.alt);
 
-  const styles = createMemo(() => ({
-    background: untrack(() => (source() ? "" : props.class ?? "bg-blue-500")),
-    text: untrack(() => (source() ? "" : props.text ?? "text-white")),
-  }));
+  const classes = () =>
+    twMerge(
+      clsx(
+        "flex items-center justify-center font-medium overflow-hidden",
+        {
+          "size-8 text-sm": local.size === "sm",
+          "size-16 text-base": local.size === "md",
+          "size-24 text-lg": local.size === "lg",
+          "rounded-full": local.shape === "circle",
+          "rounded-lg": local.shape === "rounded",
+          "bg-gray-200 text-gray-800": local.variant === "filled",
+          "border-2 border-gray-300 text-gray-800": local.variant === "outlined",
+          "text-gray-800": local.variant === "ghost",
+        },
+        local.class,
+        local.className
+      )
+    );
 
-  const caption = createMemo(() => parseCaption(props.alt));
+  if (VoidElementList.includes(Tag as ElementType)) {
+    return (
+      <Dynamic
+        component={Tag}
+        {...others}
+        data-src={local.dataSrc}
+        src={imageSource()}
+        alt={local.alt}
+        class={classes()}
+        style={local.style}
+      />
+    );
+  }
 
   return (
-    <figure class={avatarVariants(variantProps)}>
-      <Show
-        when={source()}
-        fallback={<figcaption class={styles().text}>{caption()}</figcaption>}
-      >
-        <img
-          src={source()}
-          data-src={props.dataSrc}
-          class="size-full object-cover"
-          {...otherProps}
-        />
+    <Dynamic component={Tag} {...others} class={classes()} style={local.style}>
+      <Show when={imageSource()} fallback={<figcaption>{fallbackText()}</figcaption>}>
+        <img src={imageSource()} alt={local.alt} data-src={local.dataSrc} class="size-full object-cover" />
       </Show>
-    </figure>
+      {local.children}
+    </Dynamic>
   );
 };
 
