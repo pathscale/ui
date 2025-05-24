@@ -21,7 +21,7 @@ export {
   DropdownTrigger,
 } from "./components/dropdown";
 export { default as Field } from "./components/field";
-export { Menu, MenuItem, MenuList } from "./components/menu";
+export { Menu } from "./components/menu";
 export { Navbar, NavbarItem, NavbarDropdown } from "./components/navbar";
 export { Polymorphic, PolymorphicButton } from "./components/polymorphic";
 export { default as Steps } from "./components/steps";
