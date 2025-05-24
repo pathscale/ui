@@ -1,91 +1,65 @@
-import {
-  type ComponentProps,
-  createSignal,
-  type JSX,
-  mergeProps,
-  Show,
-  splitProps,
-} from "solid-js";
-import {
-  inputWrapperClass,
-  inputVariants,
-  iconLeftClass,
-  iconButtonClass,
-  iconRightClass,
-} from "./Input.styles";
-import EyeIcon from "./EyeIcon";
-import type { ClassProps, VariantProps } from "@src/lib/style";
+import { splitProps, type JSX } from "solid-js";
+import { twMerge } from "tailwind-merge";
+import { clsx } from "clsx";
 
-export type InputProps = Partial<
-  VariantProps<typeof inputVariants> & ClassProps & ComponentProps<"input">
-> & {
-  leftIcon?: JSX.Element;
-  rightIcon?: JSX.Element;
-  passwordReveal?: boolean;
+import type {
+  ComponentColor,
+  ComponentSize,
+  IComponentBaseProps,
+} from "../types";
+
+type InputBaseProps = {
+  size?: ComponentSize;
+  color?: ComponentColor;
+  dataTheme?: string;
+  class?: string;
+  className?: string;
+  style?: JSX.CSSProperties;
 };
 
-const Input = (props: InputProps) => {
-  const defaultedProps = mergeProps({ type: "text", placeholder: "" }, props);
+export type InputProps = InputBaseProps &
+  IComponentBaseProps &
+  Omit<JSX.InputHTMLAttributes<HTMLInputElement>, keyof InputBaseProps>;
 
-  const [localProps, variantProps, otherProps] = splitProps(
-    defaultedProps,
-    [
-      "type",
-      "passwordReveal",
-      "leftIcon",
-      "rightIcon",
-      "class",
-      "value",
-      "onInput",
-      "name",
-    ],
-    ["color", "rounded", "expanded", "loading", "hasLeftIcon", "hasRightIcon"]
-  );
+const Input = (props: InputProps): JSX.Element => {
+  const [local, others] = splitProps(props, [
+    "size",
+    "color",
+    "dataTheme",
+    "class",
+    "className",
+    "style",
+  ]);
 
-  const [showPassword, setShowPassword] = createSignal(false);
-
-  const resolvedType = () =>
-    localProps.passwordReveal && showPassword()
-      ? "text"
-      : localProps.type ?? "text";
-
-  const inputClass = inputVariants({
-    ...variantProps,
-    hasLeftIcon: !!localProps.leftIcon,
-    hasRightIcon: !!(localProps.rightIcon || localProps.passwordReveal),
-    class: localProps.class,
-  });
+  const classes = () =>
+    twMerge(
+      "input",
+      local.class,
+      local.className,
+      clsx({
+        "input-xl": local.size === "xl",
+        "input-lg": local.size === "lg",
+        "input-md": local.size === "md",
+        "input-sm": local.size === "sm",
+        "input-xs": local.size === "xs",
+        "input-primary": local.color === "primary",
+        "input-secondary": local.color === "secondary",
+        "input-accent": local.color === "accent",
+        "input-ghost": local.color === "ghost",
+        "input-info": local.color === "info",
+        "input-success": local.color === "success",
+        "input-warning": local.color === "warning",
+        "input-error": local.color === "error",
+      })
+    );
 
   return (
-    <div class={inputWrapperClass}>
-      <Show when={localProps.leftIcon}>
-        <span class={iconLeftClass}>{localProps.leftIcon}</span>
-      </Show>
-
-      <input
-        type={resolvedType()}
-        class={inputClass}
-        aria-invalid={variantProps.color === "danger" ? "true" : undefined}
-        value={localProps.value}
-        onInput={localProps.onInput}
-        name={localProps.name}
-        {...otherProps}
-      />
-
-      <Show when={localProps.passwordReveal && !localProps.rightIcon}>
-        <button
-          type="button"
-          onClick={() => setShowPassword((p) => !p)}
-          class={iconButtonClass}
-        >
-          <EyeIcon invisible={showPassword()} />
-        </button>
-      </Show>
-
-      <Show when={localProps.rightIcon && !localProps.passwordReveal}>
-        <span class={iconRightClass}>{localProps.rightIcon}</span>
-      </Show>
-    </div>
+    <input
+      {...others}
+      data-theme={local.dataTheme}
+      class={classes()}
+      style={local.style}
+    />
   );
 };
 
