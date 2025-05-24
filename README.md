@@ -15,7 +15,7 @@ bun run build
 
 ## Actions
 - [x] Button  
-- [x] Dropdown  
+- [ ] Dropdown (A)
 - [ ] Modal  
 - [ ] Swap  
 
@@ -38,10 +38,10 @@ bun run build
 - [ ] Bottom Navigation  
 - [x] Breadcrumbs  
 - [ ] Link  
-- [ ] Menu  
-- [ ] Navbar  
+- [ ] Menu  (A)
+- [ ] Navbar (A)
 - [x] Pagination  
-- [ ] Steps  
+- [ ] Steps (A) 
 - [ ] Tabs  
 
 ## Feedback
