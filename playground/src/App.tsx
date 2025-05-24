@@ -1,9 +1,9 @@
-import ButtonShowcase from "../../src/components/button/ButtonShowcase";
+import FileInputShowcase from "../../src/components/fileinput/FileInputShowcase";
 
 export default function App() {
   return (
     <main class="min-h-screen">
-      <ButtonShowcase />
+      <FileInputShowcase />
     </main>
   );
 }
