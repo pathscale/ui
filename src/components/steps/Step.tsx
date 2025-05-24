@@ -3,14 +3,16 @@ import { Dynamic } from "solid-js/web";
 import { twMerge } from "tailwind-merge";
 import { clsx } from "clsx";
 
-import type { IComponentBaseProps } from "../types";
-import Step from "./Step";
+import type { IComponentBaseProps, ComponentColor } from "../types";
 
 type ElementType = keyof JSX.IntrinsicElements;
 
-type StepsBaseProps = {
-  vertical?: boolean;
-  horizontal?: boolean;
+type StepBaseProps = {
+  /** Label for the step indicator */
+  value?: string;
+  /** Color variant */
+  color?: "neutral" | ComponentColor;
+  /** Custom element tag */
   as?: ElementType;
   class?: string;
   className?: string;
@@ -21,55 +23,62 @@ type StepsBaseProps = {
 
 type PropsOf<E extends ElementType> = JSX.IntrinsicElements[E];
 
-export type StepsProps<E extends ElementType = "ul"> = Omit<
+export type StepProps<E extends ElementType = "li"> = Omit<
   PropsOf<E>,
-  keyof StepsBaseProps
+  keyof StepBaseProps | "color"
 > &
-  StepsBaseProps &
+  StepBaseProps &
   IComponentBaseProps;
 
-// Void elements rarely used here, but included for completeness
+// Common void elements, unlikely for <li>
 const VoidElementList: ElementType[] = [
   "area","base","br","col","embed","hr","img","input","link","keygen",
   "meta","param","source","track","wbr",
 ];
 
-const Steps = <E extends ElementType = "ul">(props: StepsProps<E>): JSX.Element => {
+const Step = <E extends ElementType = "li">(props: StepProps<E>): JSX.Element => {
   const [local, others] = splitProps(
-    props as StepsBaseProps & Record<string, unknown>,
+    props as StepBaseProps & Record<string, unknown>,
     [
-      "children",
-      "vertical",
-      "horizontal",
+      "value",
+      "color",
       "as",
       "class",
       "className",
       "style",
+      "children",
       "data-theme",
     ]
   );
 
-  const Tag = local.as || ("ul" as ElementType);
+  const Tag = local.as || ("li" as ElementType);
 
   const classes = () =>
     twMerge(
-      "steps",
+      "step",
       local.class,
       local.className,
       clsx({
-        "steps-vertical": local.vertical,
-        "steps-horizontal": local.horizontal,
+        "step-neutral": local.color === "neutral",
+        "step-primary": local.color === "primary",
+        "step-secondary": local.color === "secondary",
+        "step-accent": local.color === "accent",
+        "step-info": local.color === "info",
+        "step-success": local.color === "success",
+        "step-warning": local.color === "warning",
+        "step-error": local.color === "error",
       })
     );
 
+  // Even if Tag is a void element, render without children
   if (VoidElementList.includes(Tag)) {
     return (
       <Dynamic
         component={Tag}
         {...others}
-        role="group"
-        aria-label="Steps"
+        aria-label="Step"
         data-theme={local["data-theme"]}
+        data-content={local.value}
         class={classes()}
         style={local.style}
       />
@@ -80,9 +89,9 @@ const Steps = <E extends ElementType = "ul">(props: StepsProps<E>): JSX.Element 
     <Dynamic
       component={Tag}
       {...others}
-      role="group"
-      aria-label="Steps"
+      aria-label="Step"
       data-theme={local["data-theme"]}
+      data-content={local.value}
       class={classes()}
       style={local.style}
     >
@@ -91,4 +100,4 @@ const Steps = <E extends ElementType = "ul">(props: StepsProps<E>): JSX.Element 
   );
 };
 
-export default Object.assign(Steps, { Step });
+export default Step;

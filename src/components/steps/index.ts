@@ -1,5 +1,3 @@
-import Steps, { type StepItem } from "./Steps";
-
-export { type StepItem }
+import Steps from "./Steps";
 
 export default Steps;
