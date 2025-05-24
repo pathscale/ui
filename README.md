@@ -21,7 +21,7 @@ bun run build
 
 ## Data Display
 - [x] Accordion  
-- [ ] Avatar  
+- [x] Avatar  
 - [x] Badge  
 - [ ] Card  
 - [ ] Carousel  
