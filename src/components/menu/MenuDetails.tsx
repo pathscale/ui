@@ -1,6 +1,7 @@
 import { type JSX, splitProps, type Component } from "solid-js";
+import type { IComponentBaseProps } from "../types";
 
-export type MenuDetailsProps = JSX.DetailsHTMLAttributes<HTMLDetailsElement> &
+export type MenuDetailsProps = JSX.DetailsHtmlAttributes<HTMLDetailsElement> &
   IComponentBaseProps & {
     label: JSX.Element;
     open?: boolean;

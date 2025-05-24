@@ -1,5 +1,5 @@
-import Menu, {type MenuProps as TMenuProps } from './Menu'
+import Menu, { type MenuProps as TMenuProps } from './Menu'
 
 export type MenuProps = TMenuProps
 
-export default Menu
+export { Menu }

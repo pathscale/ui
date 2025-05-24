@@ -20,7 +20,7 @@ const MenuItem: Component<MenuItemProps> = (props) => {
     "disabled",
     "children",
     "style",
-    "data-theme",
+    "dataTheme",
   ]);
 
   const classes = () =>
@@ -39,7 +39,7 @@ const MenuItem: Component<MenuItemProps> = (props) => {
       role="menuitem"
       class={classes()}
       style={local.style}
-      data-theme={local["data-theme"]}
+      data-theme={local.dataTheme}
       {...others}
     >
       {local.children}

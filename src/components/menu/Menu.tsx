@@ -26,7 +26,7 @@ export type MenuProps = JSX.HTMLAttributes<HTMLUListElement> &
     size?: ComponentSize;
   };
 
-export const Menu = (props: MenuProps): JSX.Element => {
+const Menu = (props: MenuProps): JSX.Element => {
   const [local, others] = splitProps(props, [
     "responsive",
     "horizontal",
@@ -69,4 +69,5 @@ export default Object.assign(Menu, {
   Item: MenuItem,
   Dropdown: MenuDropdown,
   Details: MenuDetails,
+  Menu: Menu,
 });
