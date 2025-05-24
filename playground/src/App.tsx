@@ -1,5 +1,4 @@
-import AccordionShowcase from "../../src/components/accordion/AccordionShowcase";
-
+import FileInputShowcase from "../../src/components/fileinput/FileInputShowcase";
 
 export default function App() {
   const [theme, setTheme] = createSignal<"light" | "dark">("light");
@@ -21,7 +20,7 @@ export default function App() {
 
   return (
     <main class="min-h-screen">
-      <AccordionShowcase />
+      <FileInputShowcase />
     </main>
   );
 }
