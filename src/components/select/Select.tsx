@@ -1,88 +1,67 @@
-import {
-  type Component,
-  splitProps,
-  Show,
-  createMemo,
-  type JSX,
-  untrack,
-} from "solid-js";
-import {
-  selectVariants,
-  wrapperClass,
-  selectPaddingClass,
-  caretIconBaseClass,
-  spinnerIconBaseClass,
-  getIconColor,
-  getSpinnerColor,
-} from "./Select.styles";
-import CaretDownIcon from "./CaretDownIcon";
-import SpinnerIcon from "./SpinnerIcon";
-import { type VariantProps, type ClassProps, classes } from "@src/lib/style";
-import type { ComponentProps } from "solid-js";
+import { splitProps, type JSX, type Component } from "solid-js";
+import { twMerge } from "tailwind-merge";
+import { clsx } from "clsx";
 
-export type SelectProps = VariantProps<typeof selectVariants> &
-  ClassProps &
-  ComponentProps<"select"> & {
-    placeholder?: string;
-    nativeSize?: string | number;
-    value?: string | number | null;
-    onChange?: JSX.EventHandlerUnion<HTMLSelectElement, Event>;
-    onFocus?: JSX.EventHandlerUnion<HTMLSelectElement, FocusEvent>;
-    onBlur?: JSX.EventHandlerUnion<HTMLSelectElement, FocusEvent>;
-  };
+import type {
+  ComponentColor,
+  ComponentSize,
+  IComponentBaseProps,
+} from "../types";
+
+type SelectBaseProps = {
+  color?: ComponentColor;
+  size?: ComponentSize;
+  dataTheme?: string;
+  class?: string;
+  className?: string;
+  style?: JSX.CSSProperties;
+};
+
+export type SelectProps = SelectBaseProps &
+  IComponentBaseProps &
+  Omit<JSX.SelectHTMLAttributes<HTMLSelectElement>, keyof SelectBaseProps>;
 
 const Select: Component<SelectProps> = (props) => {
-  const [localProps, variantProps, otherProps] = splitProps(
-    props,
-    ["placeholder", "value", "nativeSize", "onChange", "onFocus", "onBlur"],
-    ["class", ...selectVariants.variantKeys]
-  );
+  const [local, others] = splitProps(props, [
+    "color",
+    "size",
+    "dataTheme",
+    "class",
+    "className",
+    "style",
+  ]);
 
-  const empty = createMemo(() =>
-    untrack(() => localProps.value === null || localProps.value === undefined)
-  );
-
-  const selectClass = createMemo(() =>
-    classes(
-      selectVariants(variantProps),
-      variantProps.class,
-      selectPaddingClass
-    )
-  );
+  const classes = () =>
+    twMerge(
+      "select",
+      local.class,
+      local.className,
+      clsx({
+        "select-xl": local.size === "xl",
+        "select-lg": local.size === "lg",
+        "select-md": local.size === "md",
+        "select-sm": local.size === "sm",
+        "select-xs": local.size === "xs",
+        "select-primary": local.color === "primary",
+        "select-secondary": local.color === "secondary",
+        "select-accent": local.color === "accent",
+        "select-ghost": local.color === "ghost",
+        "select-info": local.color === "info",
+        "select-success": local.color === "success",
+        "select-warning": local.color === "warning",
+        "select-error": local.color === "error",
+      })
+    );
 
   return (
-    <div class={wrapperClass}>
-      <select
-        class={selectClass()}
-        size={localProps.nativeSize}
-        value={localProps.value}
-        onChange={localProps.onChange}
-        onFocus={localProps.onFocus}
-        onBlur={localProps.onBlur}
-        {...otherProps}
-      >
-        <Show when={localProps.placeholder && empty()}>
-          <option value="" disabled hidden>
-            {localProps.placeholder}
-          </option>
-        </Show>
-        {props.children}
-      </select>
-
-      <Show when={variantProps.loading}>
-        <SpinnerIcon
-          class={`${spinnerIconBaseClass} ${getSpinnerColor(
-            variantProps.color
-          )}`}
-        />
-      </Show>
-
-      <Show when={!variantProps.loading}>
-        <CaretDownIcon
-          class={`${caretIconBaseClass} ${getIconColor(variantProps.color)}`}
-        />
-      </Show>
-    </div>
+    <select
+      {...others}
+      data-theme={local.dataTheme}
+      class={classes()}
+      style={local.style}
+    >
+      {props.children}
+    </select>
   );
 };
 

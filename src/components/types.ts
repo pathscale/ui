@@ -23,3 +23,5 @@ export type ComponentColor =
   | "ghost";
 
 export type ComponentVariant = "soft" | "dash" | "outline";
+
+export type ComponentPosition = "top" | "bottom" | "left" | "right";
