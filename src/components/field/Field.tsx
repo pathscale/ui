@@ -1,16 +1,20 @@
-import {
-  type Component,
-  splitProps,
-  type JSX,
-} from "solid-js";
-import { classes, type VariantProps, type ClassProps } from "@src/lib/style";
+import { type JSX, splitProps, Show } from "solid-js";
+import { Dynamic } from "solid-js/web";
+import { twMerge } from "tailwind-merge";
+import { clsx } from "clsx";
+
+import type {
+  IComponentBaseProps,
+} from "../types";
 import {
   fieldWrapper,
   labelStyles,
   messageStyles,
 } from "./Field.styles";
 
-export type FieldProps = {
+type ElementType = keyof JSX.IntrinsicElements;
+
+type FieldBaseProps = {
   /** Label text */
   label?: string;
   /** Helper or error message */
@@ -21,43 +25,97 @@ export type FieldProps = {
   horizontal?: boolean;
   /** Font/control size */
   size?: "sm" | "md" | "lg";
-  /** Extra wrapper classes */
+  /** Grouped inputs */
+  grouped?: boolean;
+  /** Multiline grouping */
+  groupMultiline?: boolean;
+  /** Root element */
+  as?: ElementType;
+  children: JSX.Element;
+  class?: string;
   className?: string;
-} & VariantProps<typeof fieldWrapper>
-  & ClassProps
-  & Omit<JSX.HTMLAttributes<HTMLDivElement>, "children"> & {
-    children: JSX.Element;
-  };
+  style?: JSX.CSSProperties;
+};
 
-const Field: Component<FieldProps> = (props) => {
-  const [local, variantProps, rest] = splitProps(
-    props,
-    ["label", "message", "className", "children"],
-    ["horizontal", "size", "type", "grouped", "groupMultiline"]
+type PropsOf<E extends ElementType> = JSX.IntrinsicElements[E];
+
+export type FieldProps<E extends ElementType = "div"> = Omit<
+  PropsOf<E>,
+  keyof FieldBaseProps
+> &
+  FieldBaseProps &
+  IComponentBaseProps;
+
+const VoidElementList: ElementType[] = [
+  "area","base","br","col","embed","hr","img","input","link","keygen",
+  "meta","param","source","track","wbr",
+];
+
+const Field = <E extends ElementType = "div">(props: FieldProps<E>): JSX.Element => {
+  const [local, others] = splitProps(
+    props as FieldBaseProps & Record<string, unknown>,
+    [
+      "label",
+      "message",
+      "type",
+      "horizontal",
+      "size",
+      "grouped",
+      "groupMultiline",
+      "as",
+      "children",
+      "class",
+      "className",
+      "style",
+    ]
   );
 
-  return (
-    <div class={classes(fieldWrapper(variantProps), local.className)} {...rest}>
-    {local.label && (
-      <label class={labelStyles(variantProps)}>
-        {local.label}
-      </label>
-    )}
+  const Tag = local.as || "div";
 
-    {/* CONTENT SLOT: now flex when horizontal */}
-    <div class={classes(
-      variantProps.horizontal ? "flex items-center gap-2" : ""
-    )}>
-      {local.children}
-    </div>
+  const wrapperClass = () =>
+    twMerge(
+      fieldWrapper({
+        type: local.type,
+        horizontal: local.horizontal,
+        size: local.size,
+        grouped: local.grouped,
+        groupMultiline: local.groupMultiline,
+      }),
+      local.class,
+      local.className
+    );
 
-    {local.message && (
-      <span class={messageStyles(variantProps)}>
-        {local.message}
-      </span>
-    )}
-  </div>
-  );
+  return VoidElementList.includes(Tag)
+    ? (
+      <Dynamic
+        component={Tag}
+        {...others}
+        class={wrapperClass()}
+        style={local.style}
+      />
+    )
+    : (
+      <Dynamic component={Tag} {...others} class={wrapperClass()} style={local.style}>
+        <Show when={local.label}>
+          <label class={labelStyles({
+            type: local.type,
+            size: local.size,
+          })}>
+            {local.label}
+          </label>
+        </Show>
+
+        <div class={clsx(local.horizontal && "flex items-center gap-2")}>
+          {local.children}
+        </div>
+
+        <Show when={local.message}>
+          <span class={messageStyles({ type: local.type })}>
+            {local.message}
+          </span>
+        </Show>
+      </Dynamic>
+    );
 };
 
 export default Field;
