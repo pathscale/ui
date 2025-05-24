@@ -6,7 +6,6 @@ import type {
   IComponentBaseProps,
 } from "../types";
 import Button from "../button/Button";
-import type { ButtonProps } from "../Button/Button";
 
 export type DropdownToggleProps = JSX.LabelHTMLAttributes<HTMLLabelElement> &
   IComponentBaseProps & {
