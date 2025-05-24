@@ -1,70 +1,183 @@
 import {
-  type Component,
-  createSignal,
-  createMemo,
-  createEffect,
-  mergeProps,
+  type JSX,
   splitProps,
   Show,
-  untrack,
+  children as getSolidChildren,
 } from "solid-js";
-import { avatarVariants } from "./Avatar.styles";
-import type { VariantProps } from "@src/lib/style";
-import type { ComponentProps, JSX } from "solid-js";
-import type { ClassProps } from "@src/lib/style";
-import { parseCaption } from "./utils";
+import { Dynamic } from "solid-js/web";
+import { twMerge } from "tailwind-merge";
+import { clsx } from "clsx";
+import AvatarGroup from "./AvatarGroup";
+import type {
+  IComponentBaseProps,
+  ComponentColor,
+  ComponentShape,
+  ComponentSize,
+} from "../types";
 
-export type AvatarVariantProps = VariantProps<typeof avatarVariants>;
+type ElementType = keyof JSX.IntrinsicElements;
 
-export type AvatarProps = AvatarVariantProps &
-  ClassProps &
-  ComponentProps<"img"> & {
-    src?: string;
-    dataSrc?: string;
-    alt?: string;
-    text?: string;
+type AvatarBaseProps = {
+  src?: string;
+  letters?: string;
+  size?: ComponentSize | number;
+  shape?: ComponentShape;
+  color?: Exclude<ComponentColor, "ghost">;
+  border?: boolean;
+  borderColor?: Exclude<ComponentColor, "ghost">;
+  online?: boolean;
+  offline?: boolean;
+  innerClass?: string;
+  as?: ElementType;
+  class?: string;
+  className?: string;
+  style?: JSX.CSSProperties;
+  children?: JSX.Element;
+};
+
+type PropsOf<E extends ElementType> = JSX.IntrinsicElements[E];
+
+export type AvatarProps<E extends ElementType = "div"> = Omit<
+  PropsOf<E>,
+  "color"
+> &
+  AvatarBaseProps &
+  IComponentBaseProps;
+
+// Void elements rarely used here, but we'll allow generic `as`
+const VoidElementList: ElementType[] = [
+  "area", "base", "br", "col", "embed", "hr", "img", "input", "link", "keygen",
+  "meta", "param", "source", "track", "wbr",
+];
+
+const Avatar = <E extends ElementType = "div">(
+  props: AvatarProps<E>
+): JSX.Element => {
+  const [local, others] = splitProps(
+    props as AvatarBaseProps & Record<string, unknown>,
+    [
+      "src",
+      "letters",
+      "size",
+      "shape",
+      "color",
+      "border",
+      "borderColor",
+      "online",
+      "offline",
+      "innerClass",
+      "as",
+      "class",
+      "className",
+      "style",
+      "children",
+    ]
+  );
+
+  const Tag = local.as || "div";
+
+  // Container classes
+  const containerClass = () =>
+    twMerge(
+      "avatar",
+      local.class,
+      local.className,
+      clsx({
+        "avatar-online": local.online,
+        "avatar-offline": local.offline,
+        "avatar-placeholder": !local.src,
+      })
+    );
+
+  // Inner element dimensions
+  const customSizeStyle =
+    typeof local.size === "number"
+      ? { width: `${local.size}px`, height: `${local.size}px` }
+      : undefined;
+
+  // Shared inner classes
+  const baseInner = () => twMerge(local.innerClass);
+
+  // Image wrapper classes
+  const imgClasses = () =>
+    clsx(baseInner(), {
+      ring: local.border,
+      "ring-offset-base-100 ring-offset-2": local.border,
+      [`ring-${local.borderColor}`]: local.border && local.borderColor,
+      "rounded-full": local.shape === "circle",
+      "rounded-btn": local.shape === "square",
+      "w-32 h-32": local.size === "lg",
+      "w-24 h-24": local.size === "md",
+      "w-14 h-14": local.size === "sm",
+      "w-10 h-10": local.size === "xs",
+    });
+
+  // Placeholder wrapper classes
+  const placeholderClasses = () =>
+    clsx(baseInner(), {
+      "bg-neutral-focus": !local.color,
+      "text-neutral-content": !local.color || local.color === "neutral",
+      [`bg-${local.color}`]: !!local.color,
+      [`text-${local.color}-content`]: !!local.color,
+      ring: local.border,
+      "ring-offset-base-100 ring-offset-2": local.border,
+      [`ring-${local.borderColor}`]: local.border && local.borderColor,
+      "rounded-full": local.shape === "circle",
+      "rounded-btn": local.shape === "square",
+      "w-32 h-32 text-3xl": local.size === "lg",
+      "w-24 h-24 text-xl": local.size === "md",
+      "w-14 h-14": local.size === "sm",
+      "w-10 h-10": local.size === "xs",
+    });
+
+  // Resolve children to detect single-string
+  const resolved = getSolidChildren(() => local.children)();
+  const isStringChild = typeof resolved === "string";
+
+  const renderContents = () => {
+    // If src => image avatar
+    return local.src ? (
+      <div class={imgClasses()} style={customSizeStyle}>
+        <img src={local.src} />
+      </div>
+    ) : local.letters || isStringChild ? (
+      <div class={placeholderClasses()} style={customSizeStyle}>
+        <span>{local.letters ?? resolved}</span>
+      </div>
+    ) : (
+      <div class={imgClasses()} style={customSizeStyle}>
+        {local.children}
+      </div>
+    );
   };
 
-const Avatar: Component<AvatarProps> = (rawProps) => {
-  const props = mergeProps({ alt: "User Avatar" }, rawProps);
-
-  const [variantProps, otherProps] = splitProps(props, [
-    "class",
-    ...avatarVariants.variantKeys,
-  ]);
-
-  const [source, setSource] = createSignal(props.src || props.dataSrc);
-
-  createEffect(() => {
-    untrack(() => {
-      if (import.meta.env.PROD && props.dataSrc) {
-        setSource(props.dataSrc);
-      }
-    });
-  });
-
-  const styles = createMemo(() => ({
-    background: untrack(() => (source() ? "" : props.class ?? "bg-blue-500")),
-    text: untrack(() => (source() ? "" : props.text ?? "text-white")),
-  }));
-
-  const caption = createMemo(() => parseCaption(props.alt));
+  // Render void tags (unlikely) or normal
+  if (VoidElementList.includes(Tag)) {
+    return (
+      <Dynamic
+        component={Tag}
+        {...others}
+        data-theme={(others as any)["dataTheme"]}
+        class={containerClass()}
+        style={local.style}
+      />
+    );
+  }
 
   return (
-    <figure class={avatarVariants(variantProps)}>
-      <Show
-        when={source()}
-        fallback={<figcaption class={styles().text}>{caption()}</figcaption>}
-      >
-        <img
-          src={source()}
-          data-src={props.dataSrc}
-          class="size-full object-cover"
-          {...otherProps}
-        />
-      </Show>
-    </figure>
+    <Dynamic
+      component={Tag}
+      {...others}
+      data-theme={(others as any)["dataTheme"]}
+      class={containerClass()}
+      style={local.style}
+    >
+      {renderContents()}
+    </Dynamic>
   );
 };
 
-export default Avatar;
+// Attach Group
+export default Object.assign(Avatar, {
+  Group: AvatarGroup,
+});

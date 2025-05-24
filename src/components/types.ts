@@ -9,7 +9,7 @@ export interface IComponentBaseProps {
 
 export type ComponentSize = "xs" | "sm" | "md" | "lg" | "xl";
 
-export type ComponentShape = "circle" | "square";
+export type ComponentShape = "circle" | "square" | "rounded";
 
 export type ComponentColor =
   | "neutral"
@@ -22,6 +22,6 @@ export type ComponentColor =
   | "error"
   | "ghost";
 
-export type ComponentVariant = "soft" | "dash" | "outline";
-
+export type ComponentVariant = "soft" | "dash" | "outline" | "filled" | "ghost" | "outlined";
 export type ComponentPosition = "top" | "bottom" | "left" | "right";
+

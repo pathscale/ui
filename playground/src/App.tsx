@@ -1,4 +1,5 @@
-import FileInputShowcase from "../../src/components/fileinput/FileInputShowcase";
+
+import AvatarShowcase from "../../src/components/avatar/AvatarShowcase";
 
 export default function App() {
   const [theme, setTheme] = createSignal<"light" | "dark">("light");
@@ -20,7 +21,7 @@ export default function App() {
 
   return (
     <main class="min-h-screen">
-      <FileInputShowcase />
+      <AvatarShowcase/>
     </main>
   );
 }
