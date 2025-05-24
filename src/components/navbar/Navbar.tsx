@@ -71,4 +71,5 @@ export default Object.assign(Navbar, {
   Start: NavbarStart,
   Center: NavbarCenter,
   End: NavbarEnd,
+  Navbar: Navbar,
 });
