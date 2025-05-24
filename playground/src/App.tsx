@@ -1,6 +1,5 @@
-import TooltipShowcase from "../../src/components/tooltip/TooltipShowcase";
+import PaginationShowcase from "../../src/components/pagination/PaginationShowcase";
 
-import BreadcrumbShowcase from "../../src/components/breadcrumbs/BreadcrumbShowcase";
 
 export default function App() {
   const [theme, setTheme] = createSignal<"light" | "dark">("light");
@@ -22,7 +21,7 @@ export default function App() {
 
   return (
     <main class="min-h-screen">
-      <TooltipShowcase />
+      <PaginationShowcase />
     </main>
   );
 }
