@@ -8,7 +8,7 @@ export { default as Accordion } from "./components/accordion";
 export { default as Pagination } from "./components/pagination";
 export { default as Tabs } from "./components/tabs";
 export { default as Tooltip } from "./components/tooltip";
-export { default as Tag } from "./components/tag";
+export { default as Badge } from "./components/badge";
 export { default as Select } from "./components/select";
 export { default as Toggle } from "./components/toggle";
 export { default as Checkbox } from "./components/checkbox";
