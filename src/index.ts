@@ -10,7 +10,7 @@ export { default as Tabs } from "./components/tabs";
 export { default as Tooltip } from "./components/tooltip";
 export { default as Badge } from "./components/badge";
 export { default as Select } from "./components/select";
-export { default as Switch } from "./components/switch";
+export { default as Toggle } from "./components/toggle";
 export { default as Checkbox } from "./components/checkbox";
 export { Breadcrumb, BreadcrumbItem } from "./components/breadcrumb";
 export { default as Autocomplete } from "./components/autocomplete";
