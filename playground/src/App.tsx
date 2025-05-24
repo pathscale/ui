@@ -1,3 +1,4 @@
+import SelectShowcase from "../../src/components/select/SelectShowcase";
 import CheckboxShowcase from "../../src/components/checkbox/CheckboxShowcase";
 
 import { createSignal, onMount } from "solid-js";
@@ -9,6 +10,7 @@ const NAV_ITEMS = [
   { id: "button", label: "Button" },
   { id: "input", label: "Input" },
 ];
+
 
 export default function App() {
   const [theme, setTheme] = createSignal<"light" | "dark">("light");
@@ -30,7 +32,7 @@ export default function App() {
 
   return (
     <main class="min-h-screen">
-      <CheckboxShowcase />
+      <SelectShowcase />
     </main>
   );
 }
