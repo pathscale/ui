@@ -1,9 +1,9 @@
-import ButtonShowcase from "../../src/components/button/ButtonShowcase";
+import AccordionShowcase from "../../src/components/accordion/AccordionShowcase";
 
 export default function App() {
   return (
     <main class="min-h-screen">
-      <ButtonShowcase />
+      <AccordionShowcase />
     </main>
   );
 }

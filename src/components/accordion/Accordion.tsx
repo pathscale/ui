@@ -1,79 +1,53 @@
-import {
-  type Component,
-  type JSX,
-  createSignal,
-  splitProps,
-  Show,
-} from "solid-js";
-import {
-  accordionContainerVariants,
-  accordionHeaderVariants,
-  accordionContentVariants,
-} from "./Accordion.styles";
-import type { VariantProps } from "@src/lib/style";
+import { splitProps, type JSX } from "solid-js";
+import { twMerge } from "tailwind-merge";
+import { clsx } from "clsx";
 
-export type AccordionProps = {
-  expanded?: boolean;
-  disabled?: boolean;
-  headerIsTrigger?: boolean;
-  header: JSX.Element;
-  content: JSX.Element;
-} & VariantProps<typeof accordionContainerVariants> &
-  JSX.HTMLAttributes<HTMLDivElement>;
+import type { IComponentBaseProps } from "../types";
+import { CollapseTitle, CollapseContent } from "../collapse";
 
-const Accordion: Component<AccordionProps> = (props) => {
-  const [local, variantProps, otherProps] = splitProps(
-    props,
-    ["expanded", "disabled", "headerIsTrigger", "header", "content"],
-    ["expanded", "disabled"]
-  );
+type AccordionBaseProps = {
+  name?: string;
+  icon?: "arrow" | "plus";
+  dataTheme?: string;
+  class?: string;
+  className?: string;
+  style?: JSX.CSSProperties;
+};
 
-  const [isOpen, setIsOpen] = createSignal(local.expanded ?? false);
+export type AccordionProps = AccordionBaseProps &
+  IComponentBaseProps &
+  Omit<JSX.InputHTMLAttributes<HTMLInputElement>, keyof AccordionBaseProps>;
 
-  const handleToggle = () => {
-    if (!local.disabled) setIsOpen((prev) => !prev);
-  };
+const Accordion = (props: AccordionProps): JSX.Element => {
+  const [local, others] = splitProps(props, [
+    "name",
+    "icon",
+    "dataTheme",
+    "class",
+    "className",
+    "style",
+  ]);
 
-  const handleKeyDown:
-    | JSX.EventHandlerUnion<HTMLElement, KeyboardEvent>
-    | undefined = local.headerIsTrigger
-    ? (e) => {
-        if (e.key === "Enter" || e.key === " ") {
-          e.preventDefault();
-          handleToggle();
-        }
-      }
-    : undefined;
+  const classes = () =>
+    twMerge(
+      "collapse",
+      clsx({
+        "collapse-arrow": local.icon === "arrow",
+        "collapse-plus": local.icon === "plus",
+      }),
+      local.class,
+      local.className
+    );
 
   return (
-    <div
-      class={accordionContainerVariants({
-        ...variantProps,
-        expanded: isOpen(),
-        disabled: local.disabled,
-      })}
-      onKeyDown={handleKeyDown}
-      role={local.headerIsTrigger ? "button" : undefined}
-      tabindex={local.headerIsTrigger ? "0" : undefined}
-      aria-expanded={local.headerIsTrigger ? isOpen() : undefined}
-      aria-disabled={local.disabled}
-      {...otherProps}
-    >
-      <div
-        class={accordionHeaderVariants({
-          headerIsTrigger: local.headerIsTrigger,
-        })}
-        onClick={local.headerIsTrigger ? handleToggle : undefined}
-        role={local.headerIsTrigger ? "button" : undefined}
-      >
-        {local.header}
-      </div>
-
-      <Show when={isOpen()}>
-        <div class={accordionContentVariants()}>{local.content}</div>
-      </Show>
+    <div class={classes()} data-theme={local.dataTheme} style={local.style}>
+      <input type="radio" name={local.name ?? "accordion"} {...others} />
+      {props.children}
     </div>
   );
 };
+
+Accordion.Title = CollapseTitle;
+Accordion.Content = CollapseContent;
 
 export default Accordion;
