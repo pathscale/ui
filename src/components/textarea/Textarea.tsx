@@ -1,68 +1,68 @@
-import {
-  type Component,
-  createMemo,
-  createSignal,
-  splitProps,
-  Show,
-} from "solid-js";
-import { textareaVariants } from "./Textarea.styles";
-import type { VariantProps, ClassProps } from "@src/lib/style";
-import type { ComponentProps } from "solid-js";
-import { classes } from "@src/lib/style";
+import { splitProps, type JSX } from "solid-js";
+import { twMerge } from "tailwind-merge";
+import { clsx } from "clsx";
 
-export type TextareaProps = VariantProps<typeof textareaVariants> &
-  ClassProps &
-  ComponentProps<"textarea"> & {
-    hasCounter?: boolean;
-  };
+import type {
+  ComponentColor,
+  ComponentSize,
+  IComponentBaseProps,
+} from "../types";
 
-const Textarea: Component<TextareaProps> = (props) => {
-  const [localProps, variantProps, otherProps] = splitProps(
-    props,
-    ["hasCounter", "value", "onInput", "onFocus", "onBlur", "maxLength"],
-    ["class", ...textareaVariants.variantKeys]
-  );
+type TextareaBaseProps = {
+  color?: ComponentColor;
+  size?: ComponentSize;
+  dataTheme?: string;
+  class?: string;
+  className?: string;
+  style?: JSX.CSSProperties;
+};
 
-  const [isFocused, setFocused] = createSignal(false);
+export type TextareaProps = TextareaBaseProps &
+  IComponentBaseProps &
+  Omit<
+    JSX.TextareaHTMLAttributes<HTMLTextAreaElement>,
+    keyof TextareaBaseProps
+  >;
 
-  const valueLength = createMemo(() =>
-    typeof localProps.value === "string" ? localProps.value.length : 0
-  );
+const Textarea = (props: TextareaProps): JSX.Element => {
+  const [local, others] = splitProps(props, [
+    "color",
+    "size",
+    "dataTheme",
+    "class",
+    "className",
+    "style",
+  ]);
 
-  const showCounter = createMemo(
-    () => localProps.maxLength && localProps.hasCounter
-  );
+  const classes = () =>
+    twMerge(
+      "textarea",
+      local.class,
+      local.className,
+      clsx({
+        "textarea-xl": local.size === "xl",
+        "textarea-lg": local.size === "lg",
+        "textarea-md": local.size === "md",
+        "textarea-sm": local.size === "sm",
+        "textarea-xs": local.size === "xs",
+        "textarea-primary": local.color === "primary",
+        "textarea-secondary": local.color === "secondary",
+        "textarea-accent": local.color === "accent",
+        "textarea-ghost": local.color === "ghost",
+        "textarea-info": local.color === "info",
+        "textarea-success": local.color === "success",
+        "textarea-warning": local.color === "warning",
+        "textarea-error": local.color === "error",
+      })
+    );
 
   return (
-    <div class="relative w-full">
-      <textarea
-        class={textareaVariants(variantProps)}
-        value={localProps.value}
-        maxLength={localProps.maxLength}
-        onInput={localProps.onInput}
-        onFocus={(e) => {
-          setFocused(true);
-          typeof localProps.onFocus === "function" && localProps.onFocus(e);
-        }}
-        onBlur={(e) => {
-          setFocused(false);
-          typeof localProps.onBlur === "function" && localProps.onBlur(e);
-        }}
-        aria-invalid={variantProps.color === "danger" ? "true" : undefined}
-        {...otherProps}
-      />
-
-      <Show when={showCounter()}>
-        <small
-          class={classes(
-            "absolute bottom-1 right-2 text-xs text-gray-500 transition-opacity",
-            isFocused() ? "opacity-100" : "opacity-0"
-          )}
-        >
-          {valueLength()} / {localProps.maxLength}
-        </small>
-      </Show>
-    </div>
+    <textarea
+      {...others}
+      data-theme={local.dataTheme}
+      class={classes()}
+      style={local.style}
+    />
   );
 };
 
