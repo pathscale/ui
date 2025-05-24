@@ -1,36 +1,123 @@
-import { createSignal, type Component, type JSX } from "solid-js";
-import { DropdownContext } from "./DropdownContext";
-import { dropdownRootClass } from "./Dropdown.styles";
+import { type JSX, splitProps } from "solid-js";
+import { Dynamic } from "solid-js/web";
+import { twMerge } from "tailwind-merge";
+import { clsx } from "clsx";
 
-type DropdownProps = {
-  children: JSX.Element;
-  hoverable?: boolean;
-  disabled?: boolean;
-  position?: "left" | "right" | "top-left" | "top-right";
-};
+import type { IComponentBaseProps } from "../types";
+import DropdownDetails from "./DropdownDetails";
+import DropdownMenu from "./DropdownMenu";
+import DropdownItem from "./DropdownItem";
+import DropdownToggle from "./DropdownToggle";
 
-const Dropdown: Component<DropdownProps> = (props) => {
-  const [open, setOpen] = createSignal(false);
+type ElementType = keyof JSX.IntrinsicElements;
 
-  const context = {
-    open,
-    setOpen,
-    disabled: props.disabled,
-    hoverable: props.hoverable,
-    position: props.position ?? "left",
+export type DropdownProps<E extends ElementType = "div"> = Omit<
+  JSX.IntrinsicElements[E],
+  | "item"
+  | "horizontal"
+  | "vertical"
+  | "end"
+  | "hover"
+  | "open"
+  | "class"
+  | "className"
+> &
+  IComponentBaseProps & {
+    /** custom trigger content or menu items */
+    item?: JSX.Element;
+    horizontal?: "left" | "right";
+    vertical?: "top" | "bottom";
+    end?: boolean;
+    hover?: boolean;
+    open?: boolean;
+    as?: E;
+    class?: string;
+    className?: string;
+    style?: JSX.CSSProperties;
+    children?: JSX.Element;
   };
 
+// helper for computing classes
+export function dropdownClassName({
+  className,
+  horizontal,
+  vertical,
+  end,
+  hover,
+  open,
+}: Pick<
+  DropdownProps,
+  "className" | "horizontal" | "vertical" | "end" | "hover" | "open"
+>) {
+  return twMerge(
+    "dropdown",
+    className,
+    clsx({
+      "dropdown-left": horizontal === "left",
+      "dropdown-right": horizontal === "right",
+      "dropdown-top": vertical === "top",
+      "dropdown-bottom": vertical === "bottom",
+      "dropdown-end": end,
+      "dropdown-hover": hover,
+      "dropdown-open": open,
+    })
+  );
+}
+
+const Dropdown = <E extends ElementType = "div">(
+  props: DropdownProps<E>
+): JSX.Element => {
+  const [local, others] = splitProps(props as DropdownProps, [
+    "children",
+    "item",
+    "horizontal",
+    "vertical",
+    "end",
+    "hover",
+    "open",
+    "as",
+    "class",
+    "className",
+    "style",
+    "dataTheme",
+  ]);
+
+  const Tag = (local.as || "div") as ElementType;
+
+  const classes = () =>
+    dropdownClassName({
+      className: local.class ?? local.className,
+      horizontal: local.horizontal,
+      vertical: local.vertical,
+      end: local.end,
+      hover: local.hover,
+      open: local.open,
+    });
+
   return (
-    <DropdownContext.Provider value={context}>
-      <div
-        class={dropdownRootClass()}
-        onMouseEnter={props.hoverable ? () => setOpen(true) : undefined}
-        onMouseLeave={props.hoverable ? () => setOpen(false) : undefined}
-      >
-        {props.children}
-      </div>
-    </DropdownContext.Provider>
+    <Dynamic
+      component={Tag}
+      {...others}
+      role="listbox"
+      data-theme={local.dataTheme}
+      class={classes()}
+      style={local.style}
+    >
+      {local.item ? (
+        <>
+          <label tabIndex={0}>{local.children}</label>
+          <ul class="dropdown-content">{local.item}</ul>
+        </>
+      ) : (
+        <>{local.children}</>
+      )}
+    </Dynamic>
   );
 };
 
-export default Dropdown;
+export default Object.assign(Dropdown, {
+  Details: DropdownDetails,
+  Toggle: DropdownToggle,
+  Menu: DropdownMenu,
+  Item: DropdownItem,
+});

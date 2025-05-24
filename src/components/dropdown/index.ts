@@ -1,6 +1,3 @@
-import Dropdown from "./Dropdown";
-import DropdownTrigger from "./DropdownTrigger";
-import DropdownMenu from "./DropdownMenu";
-import DropdownItem from "./DropdownItem";
+import Dropdown from './Dropdown'
 
-export { Dropdown, DropdownItem, DropdownMenu, DropdownTrigger };
+export default Dropdown
