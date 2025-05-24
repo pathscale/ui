@@ -39,7 +39,7 @@ const VoidElementList: ElementType[] = [
   "meta","param","source","track","wbr",
 ];
 
-const Table = <E extends ElementType = "table">(
+const TableComponent = <E extends ElementType = "table">(
   props: TableProps<E>
 ): JSX.Element => {
   const [local, others] = splitProps(
@@ -102,9 +102,12 @@ const Table = <E extends ElementType = "table">(
   );
 };
 
-export default Object.assign(Table, {
+// Assign subcomponents and type them
+const Table = Object.assign(TableComponent, {
   Head: TableHead,
   Body: TableBody,
   Row: TableRow,
   Footer: TableFooter,
 });
+
+export default Table;
