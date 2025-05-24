@@ -1,5 +1,5 @@
 import { createSignal, onMount } from "solid-js";
-
+import TableShowcase from "../../src/components/table/TableShowcase";
 import AccordionShowcase from "../../src/components/accordion/AccordionShowcase";
 import AvatarShowcase from "../../src/components/avatar/AvatarShowcase";
 import BadgeShowcase from "../../src/components/badge/BadgeShowcase";
@@ -146,6 +146,9 @@ export default function App() {
         </section>
         <section id="tooltip">
           <TooltipShowcase />
+        </section>
+        <section id="table">
+          <TableShowcase />
         </section>
       </main>
     </div>
