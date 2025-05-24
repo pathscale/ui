@@ -1,3 +1,4 @@
+import { createSignal, onMount } from "solid-js";
 
 import AvatarShowcase from "../../src/components/avatar/AvatarShowcase";
 
@@ -21,7 +22,7 @@ export default function App() {
 
   return (
     <main class="min-h-screen">
-      <AvatarShowcase/>
+      <AvatarShowcase />
     </main>
   );
 }
