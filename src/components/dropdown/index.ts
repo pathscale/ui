@@ -1,6 +1,4 @@
-import Dropdown from "./Dropdown";
-import DropdownTrigger from "./DropdownTrigger";
-import DropdownMenu from "./DropdownMenu";
-import DropdownItem from "./DropdownItem";
+import Dropdown, { DropdownProps as TDropdownProps } from './Dropdown'
 
-export { Dropdown, DropdownItem, DropdownMenu, DropdownTrigger };
+export type DropdownProps = TDropdownProps
+export default Dropdown

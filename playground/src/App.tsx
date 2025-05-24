@@ -1,5 +1,6 @@
 
-import AvatarShowcase from "../../src/components/avatar/AvatarShowcase";
+import DropdownShowcase from "../../src/components/dropdown/DropdownShowcase";
+import {createSignal, onMount}  from "solid-js"
 
 export default function App() {
   const [theme, setTheme] = createSignal<"light" | "dark">("light");
@@ -21,7 +22,7 @@ export default function App() {
 
   return (
     <main class="min-h-screen">
-      <AvatarShowcase/>
+      <DropdownShowcase/>
     </main>
   );
 }
