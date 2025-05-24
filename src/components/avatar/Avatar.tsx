@@ -64,24 +64,24 @@ const Avatar = <E extends ElementType = "figure">(props: AvatarProps<E>) => {
   const showFallback = !imageSource();
   const fallbackText = () => local.text || parseCaption(local.alt);
 
-  const classes = () =>
-    twMerge(
-      clsx(
-        "flex items-center justify-center font-medium overflow-hidden",
-        {
-          "size-8 text-sm": local.size === "sm",
-          "size-16 text-base": local.size === "md",
-          "size-24 text-lg": local.size === "lg",
-          "rounded-full": local.shape === "circle",
-          "rounded-lg": local.shape === "rounded",
-          "bg-gray-200 text-gray-800": local.variant === "filled",
-          "border-2 border-gray-300 text-gray-800": local.variant === "outlined",
-          "text-gray-800": local.variant === "ghost",
-        },
-        local.class,
-        local.className
-      )
-    );
+const classes = () =>
+  twMerge(
+    clsx(
+      "flex items-center justify-center font-medium overflow-hidden",
+      {
+        "size-8 text-sm": local.size === "sm",
+        "size-16 text-base": local.size === "md",
+        "size-24 text-lg": local.size === "lg",
+        "rounded-full": local.shape === "circle",
+        "rounded-lg": local.shape === "rounded",
+        "bg-gray-200 text-gray-800": local.variant === "filled",
+        "border-2 border-gray-300 text-gray-800": local.variant === "outlined",
+        "text-gray-800": local.variant === "ghost",
+      },
+      local.class,
+      local.className
+    )
+  );
 
   if (VoidElementList.includes(Tag as ElementType)) {
     return (
