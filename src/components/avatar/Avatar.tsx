@@ -46,8 +46,8 @@ export type AvatarProps<E extends ElementType = "div"> = Omit<
 
 // Void elements rarely used here, but we'll allow generic `as`
 const VoidElementList: ElementType[] = [
-  "area","base","br","col","embed","hr","img","input","link","keygen",
-  "meta","param","source","track","wbr",
+  "area", "base", "br", "col", "embed", "hr", "img", "input", "link", "keygen",
+  "meta", "param", "source", "track", "wbr",
 ];
 
 const Avatar = <E extends ElementType = "div">(
@@ -92,8 +92,8 @@ const Avatar = <E extends ElementType = "div">(
   // Inner element dimensions
   const customSizeStyle =
     typeof local.size === "number"
-      ? { width: local.size, height: local.size }
-      : {};
+      ? { width: `${local.size}px`, height: `${local.size}px` }
+      : undefined;
 
   // Shared inner classes
   const baseInner = () => twMerge(local.innerClass);
