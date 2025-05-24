@@ -1,3 +1,1 @@
-import Tooltip, { type TooltipProps } from "./Tooltip";
-export type { TooltipProps };
-export default Tooltip;
+export { default } from "./Tooltip";

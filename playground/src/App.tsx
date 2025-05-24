@@ -1,5 +1,6 @@
-import BreadcrumbShowcase from "../../src/components/breadcrumbs/BreadcrumbShowcase";
+import TooltipShowcase from "../../src/components/tooltip/TooltipShowcase";
 
+import BreadcrumbShowcase from "../../src/components/breadcrumbs/BreadcrumbShowcase";
 
 export default function App() {
   const [theme, setTheme] = createSignal<"light" | "dark">("light");
@@ -21,7 +22,7 @@ export default function App() {
 
   return (
     <main class="min-h-screen">
-      <BreadcrumbShowcase />
+      <TooltipShowcase />
     </main>
   );
 }
