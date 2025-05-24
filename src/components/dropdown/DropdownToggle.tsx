@@ -1,13 +1,11 @@
 import { type JSX, splitProps, Show } from "solid-js";
 import { twMerge } from "tailwind-merge";
-
 import type {
   ComponentColor,
   ComponentSize,
   IComponentBaseProps,
 } from "../types";
-
-import Button from "../Button/Button";
+import Button from "../button/Button";
 import type { ButtonProps } from "../Button/Button";
 
 export type DropdownToggleProps = JSX.LabelHTMLAttributes<HTMLLabelElement> &
