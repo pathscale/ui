@@ -1,5 +1,5 @@
+import { createSignal, onMount } from "solid-js";
 import BreadcrumbShowcase from "../../src/components/breadcrumbs/BreadcrumbShowcase";
-
 
 export default function App() {
   const [theme, setTheme] = createSignal<"light" | "dark">("light");
