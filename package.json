@@ -6,6 +6,19 @@
     "type": "git",
     "url": "https://github.com/pathscale/ui"
   },
+  "license": "MIT",
+  "description": "Highly opinionated SolidJS component library — batteries and kitchen sink included, but optimized and shiny.",
+  "files": [
+    "dist"
+  ],
+  "homepage": "https://github.com/pathscale/ui",
+  "keywords": [
+    "solid",
+    "solidjs"
+  ],
+  "bugs": {
+    "url": "https://github.com/pathscale/ui/issues"
+  },
   "main": "./dist/index.js",
   "module": "./dist/index.js",
   "devDependencies": {
@@ -20,7 +33,9 @@
     "tailwindcss": "^4.1.6",
     "typescript": "^5.8.3",
     "vite": "^6.3.5",
-    "vite-plugin-solid": "^2.11.6"
+    "vite-plugin-solid": "^2.11.6",
+    "clsx": "^2.1.1",
+    "tailwind-merge": "^3.3.0"
   },
   "dependencies": {
     "@solid-primitives/event-listener": "^2.3.0",
@@ -33,12 +48,19 @@
     "@solid-primitives/scroll": "^2.0.20",
     "@solid-primitives/storage": "^2.1.1",
     "@solid-primitives/utils": "^6.2.1",
-    "clsx": "^2.1.0",
     "solid-js": "^1.8.15"
+  },
+  "peerDependencies": {
+    "solid-js": "^1.8"
   },
   "scripts": {
     "dev": "bun rsbuild dev",
     "build": "bun rsbuild build",
-    "preview": "bun rsbuild preview"
-  }
+    "preview": "bun rsbuild preview",
+    "clean": "rm -rf dist node_modules",
+    "format": "bun biome format --write",
+    "lint": "bun biome lint --write"
+  },
+  "sideEffects": false,
+  "type": "module"
 }
