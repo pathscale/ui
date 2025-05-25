@@ -1,63 +1,52 @@
-import { type Component, For, type JSX } from "solid-js";
-import {
-  timelineWrapperClass,
-  timelineLineClass,
-  timelineItemClass,
-  timelineMarkerWrapperClass,
-  timelineMarkerClass,
-  timelineContentClass,
-  timelineNumberClass,
-} from "./Timeline.styles";
-import { classes } from "@src/lib/style";
+import { type JSX, splitProps } from "solid-js";
+import { twMerge } from "tailwind-merge";
+import type { IComponentBaseProps } from "../types";
+import clsx from "clsx";
 
-type TimelineStage = {
-  active?: boolean;
-  error?: boolean;
-  [key: string]: any;
-};
+type TimelineProps = IComponentBaseProps &
+  JSX.HTMLAttributes<HTMLUListElement> & {
+    vertical?: boolean;
+    horizontal?: boolean;
+    responsive?: boolean;
+    snap?: boolean;
+    compact?: boolean;
+  };
 
-export type TimelineProps<T = TimelineStage> = {
-  stages: T[];
-  renderStage?: (stage: T, index: number) => JSX.Element;
-};
+const Timeline = (props: TimelineProps): JSX.Element => {
+  const [local, others] = splitProps(props, [
+    "vertical",
+    "horizontal",
+    "responsive",
+    "snap",
+    "compact",
+    "class",
+    "className",
+    "style",
+    "dataTheme",
+  ]);
 
-const Timeline: Component<TimelineProps> = (props) => {
+  const classes = twMerge(
+    "timeline",
+    clsx({
+      "timeline-vertical": local.vertical,
+      "timeline-horizontal": local.horizontal,
+      "timeline-vertical lg:timeline-horizontal": local.responsive,
+      "timeline-snap-icon": local.snap,
+      "timeline-compact": local.compact,
+    }),
+    local.class,
+    local.className
+  );
+
   return (
-    <ol class={timelineWrapperClass}>
-      <For each={props.stages}>
-        {(stage, index) => {
-          const state =
-            stage.error === true
-              ? "error"
-              : stage.active === true
-              ? "active"
-              : "default";
-
-          return (
-            <li class={timelineItemClass({ state })}>
-              <div class={timelineMarkerWrapperClass}>
-                <div class={timelineLineClass} />
-                <span
-                  class={classes(
-                    timelineMarkerClass,
-                    state === "active" && "bg-green-500",
-                    state === "error" && "bg-red-500"
-                  )}
-                />
-                <span class={timelineNumberClass({ state })}>
-                  {index() + 1}.
-                </span>
-              </div>
-              <div class={timelineContentClass}>
-                {props.renderStage
-                  ? props.renderStage(stage, index())
-                  : stage.title}
-              </div>
-            </li>
-          );
-        }}
-      </For>
-    </ol>
+    <ul
+      {...others}
+      class={classes}
+      data-theme={local.dataTheme}
+      style={local.style}
+    >
+      {props.children}
+    </ul>
   );
 };
 

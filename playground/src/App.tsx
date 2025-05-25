@@ -17,6 +17,7 @@ import StepsShowcase from "../../src/components/steps/StepsShowcase";
 import SwapShowcase from "../../src/components/swap/SwapShowcase";
 import TextareaShowcase from "../../src/components/textarea/TextareaShowcase";
 import ToastShowcase from "../../src/components/toast/ToastShowcase";
+import TimelineShowcase from "../../src/components/timeline/TimelineShowcase";
 import ToggleShowcase from "../../src/components/toggle/ToggleShowcase";
 import TooltipShowcase from "../../src/components/tooltip/TooltipShowcase";
 import CoutndownShowcase from "../../src/components/countdown/CountdownShowcase";
@@ -160,6 +161,9 @@ export default function App() {
         </section>
         <section id="toast">
           <ToastShowcase />
+        </section>
+        <section id="timeline">
+          <TimelineShowcase />
         </section>
         <section id="toggle">
           <ToggleShowcase />
