@@ -11,7 +11,7 @@ function getAllComponentDirs() {
   try {
     return readdirSync(join(process.cwd(), "src/components"));
   } catch (e) {
-    console.error("Ошибка чтения директории компонентов:", e);
+    console.error("Error reading components directory:", e);
     return [];
   }
 }
