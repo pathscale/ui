@@ -25,6 +25,7 @@ export { Menu } from "./components/menu";
 export { Navbar, NavbarItem, NavbarDropdown } from "./components/navbar";
 export { Polymorphic, PolymorphicButton } from "./components/polymorphic";
 export { default as Steps } from "./components/steps";
+export { default as Swap } from "./components/swap";
 export { default as Table } from "./components/table";
 export { default as Timeline } from "./components/timeline";
 export { default as toast, Toaster } from "./components/toast";
