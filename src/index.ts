@@ -30,6 +30,7 @@ export { default as Timeline } from "./components/timeline";
 export { default as toast, Toaster } from "./components/toast";
 export { default as Mask } from "./components/mask";
 export { default as Join } from "./components/join";
+export { default as Loading } from "./components/loading";
 export {
   CollapseContent,
   CollapseDetails,
