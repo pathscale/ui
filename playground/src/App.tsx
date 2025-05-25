@@ -1,6 +1,7 @@
 import { createSignal, onMount } from "solid-js";
 
 import AccordionShowcase from "../../src/components/accordion/AccordionShowcase";
+import AlertShowcase from "../../src/components/alert/AlertShowcase";
 import AvatarShowcase from "../../src/components/avatar/AvatarShowcase";
 import BadgeShowcase from "../../src/components/badge/BadgeShowcase";
 import BreadcrumbsShowcase from "../../src/components/breadcrumbs/BreadcrumbShowcase";
@@ -104,6 +105,9 @@ export default function App() {
       <main class="flex-1 p-8 space-y-16 scroll-smooth">
         <section id="accordion">
           <AccordionShowcase />
+        </section>
+        <section id="alert">
+          <AlertShowcase />
         </section>
         <section id="avatar">
           <AvatarShowcase />
