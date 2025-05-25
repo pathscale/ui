@@ -25,7 +25,7 @@ bun run build
 - [x] Accordion
 - [x] Avatar
 - [x] Badge
-- [ ] Card
+- [x] Card
 - [ ] Carousel
 - [ ] Chat Bubble
 - [x] Collapse
