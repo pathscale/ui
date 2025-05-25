@@ -1,3 +1,4 @@
+import { createSignal, onMount } from "solid-js";
 
 import StepsShowcase from "../../src/components/steps/StepsShowcase";
 import {
