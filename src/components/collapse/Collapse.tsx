@@ -1,4 +1,4 @@
-import { type JSX, splitProps, createSignal, createEffect } from "solid-js";
+import { type JSX, splitProps, createSignal } from "solid-js";
 import { twMerge } from "tailwind-merge";
 import { clsx } from "clsx";
 
@@ -50,13 +50,21 @@ const Collapse = (props: CollapseProps): JSX.Element => {
   ]);
 
   let checkboxRef: HTMLInputElement | undefined;
-  const [isChecked, setIsChecked] = createSignal(local.open ?? false);
+  const [internalOpen, setInternalOpen] = createSignal(false);
+  const isControlled = local.open !== undefined;
+  const isChecked = () => (isControlled ? local.open : internalOpen());
 
   const handleCheckboxChange = () => {
-    local.onToggle?.();
-    const checked = checkboxRef?.checked ?? false;
-    setIsChecked(checked);
-    checked ? local.onOpen?.() : local.onClose?.();
+    if (local.onToggle) local.onToggle();
+    if (isControlled) {
+      if (local.open && local.onClose) local.onClose();
+      if (!local.open && local.onOpen) local.onOpen();
+    } else {
+      const next = !internalOpen();
+      setInternalOpen(next);
+      if (next && local.onOpen) local.onOpen();
+      if (!next && local.onClose) local.onClose();
+    }
   };
 
   const handleBlur: JSX.FocusEventHandlerUnion<HTMLDivElement, FocusEvent> = (
@@ -83,12 +91,6 @@ const Collapse = (props: CollapseProps): JSX.Element => {
     }
   };
 
-  createEffect(() => {
-    if (local.open !== undefined) {
-      setIsChecked(local.open);
-    }
-  });
-
   return (
     <div
       aria-expanded={local.open}
@@ -100,7 +102,7 @@ const Collapse = (props: CollapseProps): JSX.Element => {
         open: local.open,
       })}
       style={local.style}
-      tabIndex={isChecked() ? undefined : 0}
+      tabIndex={!local.checkbox && !isChecked() ? 0 : undefined}
       onBlur={handleBlur}
       onFocus={handleFocus}
     >
