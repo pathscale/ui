@@ -6,6 +6,7 @@ import AvatarShowcase from "../../src/components/avatar/AvatarShowcase";
 import BadgeShowcase from "../../src/components/badge/BadgeShowcase";
 import BreadcrumbsShowcase from "../../src/components/breadcrumbs/BreadcrumbShowcase";
 import ButtonShowcase from "../../src/components/button/ButtonShowcase";
+import CardShowcase from "../../src/components/card/CardShowcase";
 import CheckboxShowcase from "../../src/components/checkbox/CheckboxShowcase";
 import FileInputShowcase from "../../src/components/fileinput/FileInputShowcase";
 import InputShowcase from "../../src/components/input/InputShowcase";
@@ -125,6 +126,9 @@ export default function App() {
         </section>
         <section id="button">
           <ButtonShowcase />
+        </section>
+        <section id="card">
+          <CardShowcase />
         </section>
         <section id="checkbox">
           <CheckboxShowcase />
