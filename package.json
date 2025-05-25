@@ -6,39 +6,7 @@
     "type": "git",
     "url": "https://github.com/pathscale/ui"
   },
-  "main": "./dist/index.js",
-  "module": "./dist/index.js",
-  "types": "./dist/index.d.ts",
-  "devDependencies": {
-    "@biomejs/biome": "1.9.4",
-    "@tailwindcss/vite": "^4.1.6",
-    "@types/bun": "^1.2.12",
-    "esbuild-plugin-solid": "^0.6.0",
-    "tailwindcss": "^4.1.6",
-    "tsup": "^8.4.0",
-    "typescript": "^5.8.3",
-    "vite": "^6.3.5",
-    "vite-plugin-solid": "^2.11.6",
-    "vite-tsconfig-paths": "^5.1.4",
-    "clsx": "^2.1.1",
-    "tailwind-merge": "^3.3.0"
-  },
-  "peerDependencies": {
-    "solid-js": "^1.8"
-  },
-  "exports": {
-    ".": {
-      "types": "./dist/index.d.ts",
-      "import": "./dist/index.js"
-    },
-    "./*": {
-      "types": "./dist/components/*/index.d.ts",
-      "import": "./dist/components/*/index.js"
-    }
-  },
-  "bugs": {
-    "url": "https://github.com/pathscale/ui/issues"
-  },
+  "license": "MIT",
   "description": "Highly opinionated SolidJS component library — batteries and kitchen sink included, but optimized and shiny.",
   "files": [
     "dist"
@@ -48,27 +16,49 @@
     "solid",
     "solidjs"
   ],
-  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/pathscale/ui/issues"
+  },
+  "main": "./dist/index.js",
+  "module": "./dist/index.js",
+  "devDependencies": {
+    "@biomejs/biome": "1.9.4",
+    "@rsbuild/core": "^0.5.1",
+    "@rsbuild/plugin-babel": "^0.5.1",
+    "@rsbuild/plugin-solid": "^0.5.1",
+    "@tailwindcss/vite": "^4.1.6",
+    "@types/bun": "^1.2.12",
+    "compression-webpack-plugin": "^11.0.0",
+    "esbuild-plugin-solid": "^0.6.0",
+    "tailwindcss": "^4.1.6",
+    "typescript": "^5.8.3",
+    "clsx": "^2.1.1",
+    "tailwind-merge": "^3.3.0"
+  },
+  "dependencies": {
+    "@solid-primitives/event-listener": "^2.3.0",
+    "@solid-primitives/intersection-observer": "^2.1.3",
+    "@solid-primitives/keyboard": "^1.2.5",
+    "@solid-primitives/media": "^2.2.5",
+    "@solid-primitives/props": "^3.1.8",
+    "@solid-primitives/resize-observer": "^2.0.22",
+    "@solid-primitives/scheduled": "^1.4.1",
+    "@solid-primitives/scroll": "^2.0.20",
+    "@solid-primitives/storage": "^2.1.1",
+    "@solid-primitives/utils": "^6.2.1",
+    "solid-js": "^1.8.15"
+  },
+  "peerDependencies": {
+    "solid-js": "^1.8"
+  },
   "scripts": {
-    "build": "bun run build:code && bun run build:types",
-    "build:code": "bun run tsup",
-    "build:types": "bun run build:types:core && bun run build:types:group1 && bun run build:types:group2 && bun run build:types:group3",
-    "build:types:core": "TSUP_TYPE_GEN=true TSUP_TYPE_PART=core bun run tsup",
-    "build:types:group1": "TSUP_TYPE_GEN=true TSUP_TYPE_PART=group1 bun run tsup",
-    "build:types:group2": "TSUP_TYPE_GEN=true TSUP_TYPE_PART=group2 bun run tsup",
-    "build:types:group3": "TSUP_TYPE_GEN=true TSUP_TYPE_PART=group3 bun run tsup",
+    "dev": "bun rsbuild dev",
+    "build": "bun rsbuild build",
+    "preview": "bun rsbuild preview",
     "clean": "rm -rf dist node_modules",
-    "dev": "bun vite serve playground --host",
     "format": "bun biome format --write",
     "lint": "bun biome lint --write"
   },
   "sideEffects": false,
-  "type": "module",
-  "typesVersions": {
-    "*": {
-      "*": [
-        "./dist/index.d.ts"
-      ]
-    }
-  }
+  "type": "module"
 }
