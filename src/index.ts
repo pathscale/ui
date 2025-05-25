@@ -32,6 +32,7 @@ export { default as Mask } from "./components/mask";
 export { default as Join } from "./components/join";
 export { default as Loading } from "./components/loading";
 export {
+  Collapse,
   CollapseContent,
   CollapseDetails,
   CollapseTitle,
