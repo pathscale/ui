@@ -38,3 +38,4 @@ export {
   CollapseTitle,
   Summary,
 } from "./components/collapse";
+export { default as ChatBubble } from "./components/chatbubble";

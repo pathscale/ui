@@ -15,6 +15,7 @@ import StepsShowcase from "../../src/components/steps/StepsShowcase";
 import TextareaShowcase from "../../src/components/textarea/TextareaShowcase";
 import ToggleShowcase from "../../src/components/toggle/ToggleShowcase";
 import TooltipShowcase from "../../src/components/tooltip/TooltipShowcase";
+import ChatBubbleShowcase from "../../src/components/chatbubble/ChatBubbleShowcase";
 
 export default function App() {
   const [theme, setTheme] = createSignal<"light" | "dark">("light");
@@ -119,6 +120,9 @@ export default function App() {
         </section>
         <section id="checkbox">
           <CheckboxShowcase />
+        </section>
+        <section id="chat-bubble">
+          <ChatBubbleShowcase />
         </section>
         <section id="file-input">
           <FileInputShowcase />
