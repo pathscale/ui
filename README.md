@@ -34,7 +34,7 @@ bun run build
 - [ ] Kbd
 - [ ] Stats
 - [ ] Table
-- [ ] Timeline
+- [x] Timeline
 
 ## Navigation
 
