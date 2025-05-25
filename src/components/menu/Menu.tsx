@@ -1,37 +1,73 @@
-import {
-  type Component,
-  splitProps,
-  type JSX,
-} from "solid-js";
-import { classes, type VariantProps, type ClassProps } from "@src/lib/style";
-import { menuWrapper } from "./Menu.styles";
+import { type JSX, splitProps } from "solid-js";
+import { twMerge } from "tailwind-merge";
+import { clsx } from "clsx";
 
-export type MenuProps = {
-  inline?: boolean;
-  className?: string;
-  children: JSX.Element;
-} & VariantProps<typeof menuWrapper>
-  & ClassProps;
+import type { IComponentBaseProps, ComponentSize } from "../types";
+import MenuTitle from "./MenuTitle";
+import type { MenuTitleProps } from "./MenuTitle";
+import MenuItem from "./MenuItem";
+import type { MenuItemProps } from "./MenuItem";
+import MenuDropdown from "./MenuDropdown";
+import type { MenuDropdownProps } from "./MenuDropdown";
+import MenuDetails from "./MenuDetails";
+import type { MenuDetailsProps } from "./MenuDetails";
 
-const Menu: Component<MenuProps> = (props) => {
-  const [local, variantProps, otherProps] = splitProps(
-    props,
-    ["class", "className", "children", "inline"] as const,
-    Object.keys(menuWrapper.variantKeys ?? {}) as any
-  );
+export type {
+  MenuTitleProps,
+  MenuItemProps,
+  MenuDropdownProps,
+  MenuDetailsProps,
+};
+export type MenuProps = JSX.HTMLAttributes<HTMLUListElement> &
+  IComponentBaseProps & {
+    vertical?: boolean; // Vertical menu (default)
+    horizontal?: boolean; // Horizontal menu
+    responsive?: boolean;
+    size?: ComponentSize;
+  };
+
+const Menu = (props: MenuProps): JSX.Element => {
+  const [local, others] = splitProps(props, [
+    "responsive",
+    "horizontal",
+    "vertical",
+    "size",
+    "class",
+    "className",
+    "dataTheme",
+  ]);
+
+  const classes = () =>
+    twMerge(
+      "menu",
+      local.class,
+      local.className,
+      clsx({
+        "menu-vertical lg:menu-horizontal": local.responsive,
+        "menu-xl": local.size === "xl",
+        "menu-lg": local.size === "lg",
+        "menu-md": local.size === "md",
+        "menu-sm": local.size === "sm",
+        "menu-xs": local.size === "xs",
+        "menu-vertical": local.vertical,
+        "menu-horizontal": local.horizontal,
+      })
+    );
 
   return (
-    <div
-      class={classes(
-        menuWrapper({ inline: !!variantProps.inline }),
-        local.class,
-        local.className
-      )}
-      {...otherProps}
-    >
-      {local.children}
-    </div>
+    <ul
+      role="menu"
+      data-theme={local.dataTheme}
+      class={classes()}
+      {...others}
+    />
   );
 };
 
-export default Menu;
+export default Object.assign(Menu, {
+  Title: MenuTitle,
+  Item: MenuItem,
+  Dropdown: MenuDropdown,
+  Details: MenuDetails,
+  Menu: Menu,
+});
