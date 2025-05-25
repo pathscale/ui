@@ -1,25 +1,22 @@
 {
   "compilerOptions": {
-    "module": "ESNext",
     "target": "ESNext",
-    "newLine": "LF",
-    "lib": ["DOM", "DOM.Iterable", "ESNext"],
-    "paths": {
-      "@src/*": ["./src/*"]
-    },
-    "moduleResolution": "Bundler",
-    "noEmit": true,
+    "module": "ESNext",
+    "moduleResolution": "bundler",
     "allowSyntheticDefaultImports": true,
-    "strict": true,
-    "strictNullChecks": true,
     "esModuleInterop": true,
-    "isolatedModules": true,
-    "forceConsistentCasingInFileNames": true,
-    "noUncheckedIndexedAccess": true,
-    "skipLibCheck": true,
     "jsx": "preserve",
     "jsxImportSource": "solid-js",
-    "verbatimModuleSyntax": true
+    "strict": true,
+    "noEmit": true,
+    "skipLibCheck": true,
+    "types": ["bun-types"],
+    "baseUrl": ".",
+    "paths": {
+      "~/*": ["src/*"],
+      "@src/*": ["src/*"]
+    }
   },
-  "exclude": ["node_modules", "dist"]
+  "include": ["src/**/*.ts", "src/**/*.tsx"],
+  "exclude": ["node_modules", "playground", "dist"]
 }
