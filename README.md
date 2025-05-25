@@ -14,52 +14,57 @@ bun run build
 # Components Checklist
 
 ## Actions
-- [x] Button  
+
+- [x] Button
 - [ ] Dropdown (A)
-- [ ] Modal  
-- [ ] Swap  
+- [x] Modal
+- [ ] Swap
 
 ## Data Display
-- [x] Accordion  
-- [x] Avatar  
-- [x] Badge  
-- [ ] Card  
-- [ ] Carousel  
-- [ ] Chat Bubble  
-- [x] Collapse  
-- [ ] Countdown  
-- [ ] Diff  
-- [ ] Kbd  
-- [ ] Stats  
-- [ ] Table  
-- [ ] Timeline  
+
+- [x] Accordion
+- [x] Avatar
+- [x] Badge
+- [ ] Card
+- [ ] Carousel
+- [ ] Chat Bubble
+- [x] Collapse
+- [ ] Countdown
+- [ ] Diff
+- [ ] Kbd
+- [ ] Stats
+- [ ] Table
+- [ ] Timeline
 
 ## Navigation
-- [ ] Bottom Navigation  
-- [x] Breadcrumbs  
-- [ ] Link  
+
+- [ ] Bottom Navigation
+- [x] Breadcrumbs
+- [ ] Link
 - [x] Menu
 - [ ] Navbar (A)
-- [x] Pagination  
+- [x] Pagination
 - [x] Steps
-- [ ] Tabs  
+- [ ] Tabs
 
 ## Feedback
-- [ ] Alert  
-- [x] Loading  
-- [ ] Progress  
-- [ ] Radial Progress  
-- [ ] Skeleton  
-- [x] Tooltip  
-- [ ] Toast  
+
+- [ ] Alert
+- [x] Loading
+- [ ] Progress
+- [ ] Radial Progress
+- [ ] Skeleton
+- [x] Tooltip
+- [ ] Toast
 
 ## Data Input
-- [x] Checkbox  
-- [x] File Input  
-- [x] Input  
-- [ ] Radio  
-- [ ] Range  
-- [ ] Rating  
-- [x] Select  
-- [x] Textarea  
-- [x] Toggle  
+
+- [x] Checkbox
+- [x] File Input
+- [x] Input
+- [ ] Radio
+- [ ] Range
+- [ ] Rating
+- [x] Select
+- [x] Textarea
+- [x] Toggle
