@@ -7,6 +7,8 @@
     "url": "https://github.com/pathscale/ui"
   },
   "main": "./dist/index.js",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
   "devDependencies": {
     "@biomejs/biome": "1.9.4",
     "@tailwindcss/vite": "^4.1.6",
@@ -27,13 +29,11 @@
   "exports": {
     ".": {
       "types": "./dist/index.d.ts",
-      "solid": "./dist/index.jsx",
-      "default": "./dist/index.js"
+      "import": "./dist/index.js"
     },
     "./*": {
       "types": "./dist/components/*/index.d.ts",
-      "solid": "./dist/components/*/index.jsx",
-      "default": "./dist/components/*/index.js"
+      "import": "./dist/components/*/index.js"
     }
   },
   "bugs": {
@@ -50,15 +50,20 @@
   ],
   "license": "MIT",
   "scripts": {
-    "build": "tsup",
+    "build": "bun run build:code && bun run build:types",
+    "build:code": "bun run tsup",
+    "build:types": "bun run build:types:core && bun run build:types:group1 && bun run build:types:group2 && bun run build:types:group3",
+    "build:types:core": "TSUP_TYPE_GEN=true TSUP_TYPE_PART=core bun run tsup",
+    "build:types:group1": "TSUP_TYPE_GEN=true TSUP_TYPE_PART=group1 bun run tsup",
+    "build:types:group2": "TSUP_TYPE_GEN=true TSUP_TYPE_PART=group2 bun run tsup",
+    "build:types:group3": "TSUP_TYPE_GEN=true TSUP_TYPE_PART=group3 bun run tsup",
     "clean": "rm -rf dist node_modules",
-    "dev": "vite serve playground --host",
-    "format": "biome format --write",
-    "lint": "biome lint --write"
+    "dev": "bun vite serve playground --host",
+    "format": "bun biome format --write",
+    "lint": "bun biome lint --write"
   },
   "sideEffects": false,
   "type": "module",
-  "types": "./dist/index.d.ts",
   "typesVersions": {
     "*": {
       "*": [
