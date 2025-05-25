@@ -27,7 +27,6 @@ export { Polymorphic, PolymorphicButton } from "./components/polymorphic";
 export { default as Steps } from "./components/steps";
 export { default as Table } from "./components/table";
 export { default as Timeline } from "./components/timeline";
-export { default as toast, Toaster } from "./components/toast";
 export { default as Mask } from "./components/mask";
 export { default as Join } from "./components/join";
 export { default as Loading } from "./components/loading";
@@ -38,3 +37,4 @@ export {
   CollapseTitle,
   Summary,
 } from "./components/collapse";
+export { default as Toast } from "./components/toast";
