@@ -26,7 +26,7 @@ bun run build
 - [ ] Card  
 - [ ] Carousel  
 - [ ] Chat Bubble  
-- [ ] Collapse  
+- [x] Collapse  
 - [ ] Countdown  
 - [ ] Diff  
 - [ ] Kbd  
@@ -38,15 +38,15 @@ bun run build
 - [ ] Bottom Navigation  
 - [x] Breadcrumbs  
 - [ ] Link  
-- [ ] Menu  (A)
+- [x] Menu
 - [ ] Navbar (A)
 - [x] Pagination  
-- [ ] Steps (A) 
+- [x] Steps
 - [ ] Tabs  
 
 ## Feedback
 - [ ] Alert  
-- [ ] Loading  
+- [x] Loading  
 - [ ] Progress  
 - [ ] Radial Progress  
 - [ ] Skeleton  
