@@ -40,4 +40,4 @@ export {
   CollapseTitle,
   Summary,
 } from "./components/collapse";
-export { default as Toast } from "./components/toast";
+export { default as ChatBubble } from "./components/chatbubble";
