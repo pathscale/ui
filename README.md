@@ -17,8 +17,8 @@ bun run build
 
 - [x] Button
 - [ ] Dropdown (A)
-- [x] Modal
-- [ ] Swap
+- [ ] Modal
+- [x] Swap
 
 ## Data Display
 
