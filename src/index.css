@@ -1,6 +1,6 @@
-@import './styles/base/index.css';
-@import './styles/themes/dark.css';
-@import './styles/themes/light.css';
+@import "./styles/base/index.css";
+@import "./styles/themes/dark.css";
+@import "./styles/themes/light.css";
 
 @theme {
 	--color-light: var(--color-zinc-100);
