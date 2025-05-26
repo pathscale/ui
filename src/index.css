@@ -1,26 +1,51 @@
-@import "./styles/base/index.css";
-@import "./styles/themes/dark.css";
-@import "./styles/themes/light.css";
+@import './styles/base/index.css';
+@import './styles/themes/dark.css';
+@import './styles/themes/light.css';
 
 @theme {
-  --color-light: var(--color-zinc-100);
-  --color-dark: var(--color-zinc-900);
+	--color-light: var(--color-zinc-100);
+	--color-dark: var(--color-zinc-900);
 
-  --color-bg-body: var(--color-bg-body);
-  --color-bg-inverse: var(--color-bg-inverse);
-  --color-bg-primary: var(--color-bg-primary);
-  --color-bg-secondary: var(--color-bg-secondary);
-  --color-bg-tertiary: var(--color-bg-tertiary);
-  --color-bg-accent: var(--color-bg-accent);
-  --color-bg-positive: var(--color-bg-positive);
-  --color-bg-destructive: var(--color-bg-destructive);
+	/* Base colors */
+	--color-primary: var(--color-primary);
+	--color-primary-content: var(--color-primary-content);
+	--color-secondary: var(--color-secondary);
+	--color-secondary-content: var(--color-secondary-content);
+	--color-accent: var(--color-accent);
+	--color-accent-content: var(--color-accent-content);
+	--color-neutral: var(--color-neutral);
+	--color-neutral-content: var(--color-neutral-content);
 
-  --color-fg-body: var(--color-fg-body);
-  --color-fg-inverse: var(--color-fg-inverse);
-  --color-fg-primary: var(--color-fg-primary);
-  --color-fg-secondary: var(--color-fg-secondary);
-  --color-fg-tertiary: var(--color-fg-tertiary);
-  --color-fg-accent: var(--color-fg-accent);
-  --color-fg-positive: var(--color-fg-positive);
-  --color-fg-destructive: var(--color-fg-destructive);
+	/* Semantic colors */
+	--color-info: var(--color-info);
+	--color-info-content: var(--color-info-content);
+	--color-success: var(--color-success);
+	--color-success-content: var(--color-success-content);
+	--color-warning: var(--color-warning);
+	--color-warning-content: var(--color-warning-content);
+	--color-error: var(--color-error);
+	--color-error-content: var(--color-error-content);
+
+	/* Base background colors */
+	--color-base-100: var(--color-base-100);
+	--color-base-200: var(--color-base-200);
+	--color-base-300: var(--color-base-300);
+	--color-base-content: var(--color-base-content);
+
+	/* Legacy support */
+	--color-bg-body: var(--color-base-100);
+	--color-bg-primary: var(--color-base-200);
+	--color-bg-secondary: var(--color-base-300);
+	--color-bg-tertiary: var(--color-neutral);
+	--color-bg-accent: var(--color-accent);
+	--color-bg-positive: var(--color-success);
+	--color-bg-destructive: var(--color-error);
+
+	--color-fg-body: var(--color-base-content);
+	--color-fg-primary: var(--color-base-content);
+	--color-fg-secondary: var(--color-neutral-content);
+	--color-fg-tertiary: var(--color-neutral-content);
+	--color-fg-accent: var(--color-accent-content);
+	--color-fg-positive: var(--color-success-content);
+	--color-fg-destructive: var(--color-error-content);
 }
