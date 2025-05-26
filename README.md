@@ -49,13 +49,14 @@ bun run build
 
 ## Feedback
 
-- [ ] Alert
+- [x] Alert
 - [x] Loading
 - [ ] Progress
 - [ ] Radial Progress
 - [ ] Skeleton
+- [ ] Skeleton
 - [x] Tooltip
-- [x] Toast
+- [ ] Toast
 
 ## Data Input
 
