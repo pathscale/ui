@@ -1,5 +1,5 @@
 @layer theme {
-	[data-theme='light'] {
+	[data-theme="light"] {
 		/* Base colors */
 		--color-primary: var(--color-blue-600);
 		--color-primary-content: var(--color-white);
@@ -46,7 +46,7 @@
 }
 
 @layer base {
-	[data-theme='light'] {
+	[data-theme="light"] {
 		color-scheme: only light;
 	}
 }
