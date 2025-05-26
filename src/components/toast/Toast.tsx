@@ -1,4 +1,4 @@
-import { type JSX, splitProps } from "solid-js";
+import { children, createMemo, type JSX, splitProps } from "solid-js";
 import { twMerge } from "tailwind-merge";
 
 import type { IComponentBaseProps } from "../types";
@@ -21,8 +21,10 @@ type ToastPosition = {
 };
 
 export type ToastProps = ToastPosition &
-  IComponentBaseProps &
-  Omit<JSX.HTMLAttributes<HTMLDivElement>, keyof ToastPosition>;
+  IComponentBaseProps & {
+    max?: number;
+  } &
+  Omit<JSX.HTMLAttributes<HTMLDivElement>, keyof ToastPosition | "max">;
 
 const Toast = (props: ToastProps): JSX.Element => {
   const [local, others] = splitProps(props, [
@@ -32,12 +34,23 @@ const Toast = (props: ToastProps): JSX.Element => {
     "className",
     "style",
     "dataTheme",
+    "max",
   ]);
 
   const positionClasses = [
     horizontalOptions[local.horizontal || "end"],
     verticalOptions[local.vertical || "bottom"],
   ];
+
+  const limitedChildren = createMemo(() => {
+    const childrenArray = children(() => props.children).toArray();
+
+    if (local.max && local.max > 0) {
+      return childrenArray.slice(-local.max);
+    }
+
+    return childrenArray;
+  });
 
   return (
     <div
@@ -47,7 +60,7 @@ const Toast = (props: ToastProps): JSX.Element => {
       data-theme={local.dataTheme}
       style={local.style}
     >
-      {props.children}
+      {limitedChildren()}
     </div>
   );
 };
