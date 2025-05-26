@@ -17,7 +17,7 @@ bun run build
 
 - [x] Button
 - [ ] Dropdown (A)
-- [ ] Modal
+- [x] Modal
 - [x] Swap
 
 ## Data Display
@@ -49,13 +49,13 @@ bun run build
 
 ## Feedback
 
-- [ ] Alert
+- [x] Alert
 - [x] Loading
 - [ ] Progress
 - [ ] Radial Progress
 - [ ] Skeleton
 - [x] Tooltip
-- [ ] Toast
+- [x] Toast
 
 ## Data Input
 
