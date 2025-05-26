@@ -1,5 +1,5 @@
 @layer theme {
-	[data-theme='dark'] {
+	[data-theme="dark"] {
 		/* Base colors */
 		--color-primary: var(--color-blue-500);
 		--color-primary-content: var(--color-white);
