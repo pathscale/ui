@@ -54,6 +54,7 @@ bun run build
 - [ ] Progress
 - [ ] Radial Progress
 - [ ] Skeleton
+- [ ] Skeleton
 - [x] Tooltip
 - [ ] Toast
 
