@@ -1,17 +1,17 @@
 @layer base {
-  html {
-    scrollbar-color: var(--color-bg-tertiary) transparent;
-  }
+	html {
+		scrollbar-color: var(--color-base-300) transparent;
+	}
 
-  body {
-    color: var(--color-fg-body);
-    background: var(--color-bg-body);
-    overflow-x: clip;
-    touch-action: manipulation;
-  }
+	body {
+		color: var(--color-base-content);
+		background: var(--color-base-100);
+		overflow-x: clip;
+		touch-action: manipulation;
+	}
 
-  *::selection {
-    color: var(--color-fg-inverse);
-    background: var(--color-bg-accent);
-  }
+	*::selection {
+		color: var(--color-primary-content);
+		background: var(--color-primary);
+	}
 }
