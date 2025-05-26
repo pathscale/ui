@@ -1,28 +1,29 @@
-import { createSignal, onMount } from "solid-js";
+import { createSignal, onMount } from "solid-js"
 
-import AccordionShowcase from "../../src/components/accordion/AccordionShowcase";
-import AlertShowcase from "../../src/components/alert/AlertShowcase";
-import AvatarShowcase from "../../src/components/avatar/AvatarShowcase";
-import BadgeShowcase from "../../src/components/badge/BadgeShowcase";
-import BreadcrumbsShowcase from "../../src/components/breadcrumbs/BreadcrumbShowcase";
-import ButtonShowcase from "../../src/components/button/ButtonShowcase";
-import CheckboxShowcase from "../../src/components/checkbox/CheckboxShowcase";
-import FileInputShowcase from "../../src/components/fileinput/FileInputShowcase";
-import InputShowcase from "../../src/components/input/InputShowcase";
-import MenuShowcase from "../../src/components/menu/MenuShowcase";
-import ModalShowcase from "../../src/components/modal/ModalShowcase";
-import PaginationShowcase from "../../src/components/pagination/PaginationShowcase";
-import SelectShowcase from "../../src/components/select/SelectShowcase";
-import StepsShowcase from "../../src/components/steps/StepsShowcase";
-import SwapShowcase from "../../src/components/swap/SwapShowcase";
-import TextareaShowcase from "../../src/components/textarea/TextareaShowcase";
-import ToastShowcase from "../../src/components/toast/ToastShowcase";
-import ToggleShowcase from "../../src/components/toggle/ToggleShowcase";
-import TooltipShowcase from "../../src/components/tooltip/TooltipShowcase";
-import CoutndownShowcase from "../../src/components/countdown/CountdownShowcase";
+import AccordionShowcase from "../../src/components/accordion/AccordionShowcase"
+import AlertShowcase from "../../src/components/alert/AlertShowcase"
+import AvatarShowcase from "../../src/components/avatar/AvatarShowcase"
+import BadgeShowcase from "../../src/components/badge/BadgeShowcase"
+import BreadcrumbsShowcase from "../../src/components/breadcrumbs/BreadcrumbShowcase"
+import ButtonShowcase from "../../src/components/button/ButtonShowcase"
+import CheckboxShowcase from "../../src/components/checkbox/CheckboxShowcase"
+import CoutndownShowcase from "../../src/components/countdown/CountdownShowcase"
+import FileInputShowcase from "../../src/components/fileinput/FileInputShowcase"
+import InputShowcase from "../../src/components/input/InputShowcase"
+import MenuShowcase from "../../src/components/menu/MenuShowcase"
+import ModalShowcase from "../../src/components/modal/ModalShowcase"
+import PaginationShowcase from "../../src/components/pagination/PaginationShowcase"
+import SelectShowcase from "../../src/components/select/SelectShowcase"
+import StepsShowcase from "../../src/components/steps/StepsShowcase"
+import SwapShowcase from "../../src/components/swap/SwapShowcase"
+import TabsShowcase from "../../src/components/tabs/TabsShowcase"
+import TextareaShowcase from "../../src/components/textarea/TextareaShowcase"
+import ToastShowcase from "../../src/components/toast/ToastShowcase"
+import ToggleShowcase from "../../src/components/toggle/ToggleShowcase"
+import TooltipShowcase from "../../src/components/tooltip/TooltipShowcase"
 
 export default function App() {
-  const [theme, setTheme] = createSignal<"light" | "dark">("light");
+  const [theme, setTheme] = createSignal<"light" | "dark">("light")
 
   const items = [
     { id: "accordion", label: "Accordion" },
@@ -67,22 +68,22 @@ export default function App() {
     { id: "toast", label: "Toast" },
     { id: "toggle", label: "Toggle" },
     { id: "tooltip", label: "Tooltip" },
-  ];
+  ]
 
   onMount(() => {
-    const stored = localStorage.getItem("theme");
+    const stored = localStorage.getItem("theme")
     if (stored === "dark" || stored === "light") {
-      setTheme(stored);
-      document.documentElement.setAttribute("data-theme", stored);
+      setTheme(stored)
+      document.documentElement.setAttribute("data-theme", stored)
     }
-  });
+  })
 
   const toggleTheme = () => {
-    const next = theme() === "light" ? "dark" : "light";
-    setTheme(next);
-    localStorage.setItem("theme", next);
-    document.documentElement.setAttribute("data-theme", next);
-  };
+    const next = theme() === "light" ? "dark" : "light"
+    setTheme(next)
+    localStorage.setItem("theme", next)
+    document.documentElement.setAttribute("data-theme", next)
+  }
 
   return (
     <div class="flex min-h-screen bg-base-100 text-base-content">
@@ -158,6 +159,9 @@ export default function App() {
         <section id="textarea">
           <TextareaShowcase />
         </section>
+        <section id="tabs">
+          <TabsShowcase />
+        </section>
         <section id="toast">
           <ToastShowcase />
         </section>
@@ -169,5 +173,5 @@ export default function App() {
         </section>
       </main>
     </div>
-  );
+  )
 }

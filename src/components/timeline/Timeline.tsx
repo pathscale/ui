@@ -1,25 +1,25 @@
-import { type Component, For, type JSX } from "solid-js";
+import { classes } from "@src/lib/style"
+import { type Component, For, type JSX } from "solid-js"
 import {
-  timelineWrapperClass,
-  timelineLineClass,
-  timelineItemClass,
-  timelineMarkerWrapperClass,
-  timelineMarkerClass,
   timelineContentClass,
+  timelineItemClass,
+  timelineLineClass,
+  timelineMarkerClass,
+  timelineMarkerWrapperClass,
   timelineNumberClass,
-} from "./Timeline.styles";
-import { classes } from "@src/lib/style";
+  timelineWrapperClass,
+} from "./Timeline.styles"
 
 type TimelineStage = {
-  active?: boolean;
+  active?: boolean
   error?: boolean;
-  [key: string]: any;
-};
+  [key: string]: any
+}
 
 export type TimelineProps<T = TimelineStage> = {
-  stages: T[];
-  renderStage?: (stage: T, index: number) => JSX.Element;
-};
+  stages: T[]
+  renderStage?: (stage: T, index: number) => JSX.Element
+}
 
 const Timeline: Component<TimelineProps> = (props) => {
   return (
@@ -30,8 +30,8 @@ const Timeline: Component<TimelineProps> = (props) => {
             stage.error === true
               ? "error"
               : stage.active === true
-              ? "active"
-              : "default";
+                ? "active"
+                : "default"
 
           return (
             <li class={timelineItemClass({ state })}>
@@ -40,8 +40,8 @@ const Timeline: Component<TimelineProps> = (props) => {
                 <span
                   class={classes(
                     timelineMarkerClass,
-                    state === "active" && "bg-green-500",
-                    state === "error" && "bg-red-500"
+                    state === "active" && "bg-[var(--color-bg-success)]",
+                    state === "error" && "bg-[var(--color-bg-error)]"
                   )}
                 />
                 <span class={timelineNumberClass({ state })}>
@@ -54,11 +54,11 @@ const Timeline: Component<TimelineProps> = (props) => {
                   : stage.title}
               </div>
             </li>
-          );
+          )
         }}
       </For>
     </ol>
-  );
-};
+  )
+}
 
-export default Timeline;
+export default Timeline

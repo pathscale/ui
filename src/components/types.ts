@@ -1,15 +1,15 @@
-import type { JSX } from "solid-js";
+import type { JSX } from "solid-js"
 
 export interface IComponentBaseProps {
-  dataTheme?: string;
-  class?: string;
-  className?: string;
-  style?: JSX.CSSProperties;
+  dataTheme?: string
+  class?: string
+  className?: string
+  style?: JSX.CSSProperties
 }
 
-export type ComponentSize = "xs" | "sm" | "md" | "lg" | "xl";
+export type ComponentSize = "xs" | "sm" | "md" | "lg" | "xl"
 
-export type ComponentShape = "circle" | "square" | "rounded";
+export type ComponentShape = "circle" | "square" | "rounded"
 
 export type ComponentColor =
   | "neutral"
@@ -20,8 +20,10 @@ export type ComponentColor =
   | "success"
   | "warning"
   | "error"
-  | "ghost";
+  | "ghost"
+  | "positive"
+  | "destructive"
 
-export type ComponentVariant = "soft" | "dash" | "outline" | "filled" | "ghost" | "outlined";
+export type ComponentVariant = "soft" | "dash" | "outline" | "filled" | "ghost" | "outlined"
 export type ComponentPosition = "top" | "bottom" | "left" | "right";
 
