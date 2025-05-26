@@ -40,4 +40,4 @@ export {
   CollapseTitle,
   Summary,
 } from "./components/collapse";
-export { default as ChatBubble } from "./components/chatbubble";
+export { default as Countdown } from "./components/countdown";
