@@ -1,7 +1,7 @@
-import { cva } from "@src/lib/style";
+import { cva } from "@src/lib/style"
 
 export const tabsNavVariants = cva(
-  "flex text-sm font-medium text-gray-600 dark:text-gray-300",
+  "flex text-sm font-medium text-[var(--color-fg-secondary)]",
   {
     variants: {
       type: {
@@ -32,7 +32,7 @@ export const tabsNavVariants = cva(
       expanded: false,
     },
   }
-);
+)
 
 export const tabTriggerVariants = cva(
   "inline-flex items-center justify-center whitespace-nowrap font-medium text-sm transition-colors",
@@ -44,8 +44,8 @@ export const tabTriggerVariants = cva(
         lg: "text-base px-4 py-3",
       },
       type: {
-        basic: "border-b-2 transition-colors hover:text-blue-600",
-        boxed: "rounded-t px-4 py-2 hover:text-blue-600",
+        basic: "border-b-2 transition-colors hover:text-[var(--color-fg-accent)]",
+        boxed: "rounded-t px-4 py-2 hover:text-[var(--color-fg-accent)]",
         toggle:
           "border -ml-px px-4 py-2 transition-colors first:ml-0 first:rounded-l-md last:rounded-r-md",
         "toggle-rounded":
@@ -64,46 +64,46 @@ export const tabTriggerVariants = cva(
       {
         type: "basic",
         active: true,
-        class: "border-blue-600 text-blue-600",
+        class: "border-[var(--color-bg-accent)] text-[var(--color-fg-accent)]",
       },
       {
         type: "basic",
         active: false,
-        class: "border-transparent text-gray-500 dark:text-gray-400",
+        class: "border-transparent text-[var(--color-fg-secondary)]",
       },
       {
         type: "boxed",
         active: true,
         class:
-          "border-x border-t border-b-0 border-gray-400 dark:border-gray-600 text-blue-600",
+          "border-x border-t border-b-0 border-[var(--color-bg-tertiary)] text-[var(--color-fg-accent)]",
       },
       {
         type: "boxed",
         active: false,
         class:
-          "border-b border-transparent text-gray-500 dark:text-gray-400 hover:text-blue-600",
+          "border-b border-transparent text-[var(--color-fg-secondary)] hover:text-[var(--color-fg-accent)]",
       },
       {
         type: "toggle",
         active: true,
-        class: "bg-blue-600 text-white border-blue-600",
+        class: "bg-[var(--color-bg-accent)] text-white border-[var(--color-bg-accent)]",
       },
       {
         type: "toggle",
         active: false,
         class:
-          "bg-transparent text-gray-600 dark:text-gray-300 border-gray-300 dark:border-gray-600",
+          "bg-transparent text-[var(--color-fg-secondary)] border-[var(--color-bg-tertiary)]",
       },
       {
         type: "toggle-rounded",
         active: true,
-        class: "bg-blue-600 text-white border-blue-600",
+        class: "bg-[var(--color-bg-accent)] text-white border-[var(--color-bg-accent)]",
       },
       {
         type: "toggle-rounded",
         active: false,
         class:
-          "bg-transparent text-gray-600 dark:text-gray-300 border-gray-300 dark:border-gray-600",
+          "bg-transparent text-[var(--color-fg-secondary)] border-[var(--color-bg-tertiary)]",
       },
     ],
     defaultVariants: {
@@ -111,4 +111,4 @@ export const tabTriggerVariants = cva(
       disabled: false,
     },
   }
-);
+)
