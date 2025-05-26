@@ -1,7 +1,7 @@
 import { cva } from "@src/lib/style";
 
 export const dropdownMenuClass = cva(
-  "absolute z-10 w-max bg-white rounded shadow border border-gray-200 flex flex-col",
+  "absolute z-10 w-max bg-[var(--color-base-100)] rounded shadow border border-[var(--color-base-300)] flex flex-col",
   {
     variants: {
       position: {
@@ -24,8 +24,9 @@ export const dropdownItemClass = cva(
   {
     variants: {
       disabled: {
-        true: "text-gray-400 cursor-not-allowed",
-        false: "hover:bg-gray-100 text-gray-800",
+        true: "text-[var(--color-fg-secondary)] cursor-not-allowed",
+        false:
+          "hover:bg-[var(--color-base-200)] text-[var(--color-fg-primary)]",
       },
     },
     defaultVariants: {

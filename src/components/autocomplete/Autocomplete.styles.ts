@@ -3,13 +3,14 @@ import { cva } from "@src/lib/style";
 export const autocompleteWrapperClass = "relative w-full";
 
 export const inputBoxClass = cva(
-  "w-full rounded-md border border-gray-300 px-4 py-2 text-sm outline-none transition-colors",
+  "w-full rounded-md border border-[var(--color-base-300)] px-4 py-2 text-sm outline-none transition-colors",
   {
     variants: {
       state: {
         default:
-          "bg-white text-gray-800 hover:border-gray-400 focus:border-blue-500 focus:ring-1 focus:ring-blue-500",
-        disabled: "bg-gray-100 text-gray-400 cursor-not-allowed",
+          "bg-[var(--color-base-100)] text-[var(--color-fg-primary)] hover:border-[var(--color-base-400)] focus:border-[var(--color-primary)] focus:ring-1 focus:ring-[var(--color-primary)]",
+        disabled:
+          "bg-[var(--color-base-200)] text-[var(--color-fg-secondary)] cursor-not-allowed",
       },
       size: {
         sm: "text-sm py-1 px-2",
@@ -25,7 +26,7 @@ export const inputBoxClass = cva(
 );
 
 export const dropdownMenuClass = cva(
-  "absolute left-0 right-0 z-10 mt-1 rounded-md border border-gray-200 bg-white shadow-md max-h-60 overflow-auto text-sm",
+  "absolute left-0 right-0 z-10 mt-1 rounded-md border border-[var(--color-base-300)] bg-[var(--color-base-100)] shadow-md max-h-60 overflow-auto text-sm",
   {
     variants: {
       isOpen: {
@@ -44,8 +45,9 @@ export const dropdownItemClass = cva(
   {
     variants: {
       active: {
-        true: "bg-blue-500 text-white",
-        false: "hover:bg-gray-100 text-gray-800",
+        true: "bg-[var(--color-primary)] text-[var(--color-primary-content)]",
+        false:
+          "hover:bg-[var(--color-base-200)] text-[var(--color-fg-primary)]",
       },
     },
     defaultVariants: {
@@ -54,6 +56,8 @@ export const dropdownItemClass = cva(
   }
 );
 
-export const dropdownEmptyClass = "px-4 py-2 text-sm text-gray-500";
+export const dropdownEmptyClass =
+  "px-4 py-2 text-sm text-[var(--color-fg-secondary)]";
 
-export const labelClass = "block text-sm font-medium text-gray-700 mb-1";
+export const labelClass =
+  "block text-sm font-medium text-[var(--color-fg-primary)] mb-1";

@@ -2,20 +2,26 @@ import { createSignal, onMount } from "solid-js";
 
 import AccordionShowcase from "../../src/components/accordion/AccordionShowcase";
 import AlertShowcase from "../../src/components/alert/AlertShowcase";
+import AutocompleteShowcase from "../../src/components/autocomplete/AutocompleteShowcase";
 import AvatarShowcase from "../../src/components/avatar/AvatarShowcase";
 import BadgeShowcase from "../../src/components/badge/BadgeShowcase";
 import BreadcrumbsShowcase from "../../src/components/breadcrumbs/BreadcrumbShowcase";
 import ButtonShowcase from "../../src/components/button/ButtonShowcase";
 import CardShowcase from "../../src/components/card/CardShowcase";
 import CheckboxShowcase from "../../src/components/checkbox/CheckboxShowcase";
+import DropdownShowcase from "../../src/components/dropdown/DropdownShowcase";
+import FieldShowcase from "../../src/components/field/FieldShowcase";
 import FileInputShowcase from "../../src/components/fileinput/FileInputShowcase";
 import InputShowcase from "../../src/components/input/InputShowcase";
 import MenuShowcase from "../../src/components/menu/MenuShowcase";
 import ModalShowcase from "../../src/components/modal/ModalShowcase";
+import NavbarShowcase from "../../src/components/navbar/NavbarShowcase";
 import PaginationShowcase from "../../src/components/pagination/PaginationShowcase";
+import ProgressShowcase from "../../src/components/progress/ProgressShowcase";
 import SelectShowcase from "../../src/components/select/SelectShowcase";
 import StepsShowcase from "../../src/components/steps/StepsShowcase";
 import SwapShowcase from "../../src/components/swap/SwapShowcase";
+import TableShowcase from "../../src/components/table/TableShowcase";
 import TextareaShowcase from "../../src/components/textarea/TextareaShowcase";
 import ToastShowcase from "../../src/components/toast/ToastShowcase";
 import TimelineShowcase from "../../src/components/timeline/TimelineShowcase";
@@ -29,6 +35,7 @@ export default function App() {
   const items = [
     { id: "accordion", label: "Accordion" },
     { id: "alert", label: "Alert" },
+    { id: "autocomplete", label: "Autocomplete" },
     { id: "avatar", label: "Avatar" },
     { id: "badge", label: "Badge" },
     { id: "bottom-navigation", label: "Bottom Navigation" },
@@ -39,10 +46,12 @@ export default function App() {
     { id: "chat-bubble", label: "Chat Bubble" },
     { id: "checkbox", label: "Checkbox" },
     { id: "countdown", label: "Countdown" },
+    { id: "dropdown", label: "Dropdown" },
     { id: "data-display", label: "Data Display" },
     { id: "data-input", label: "Data Input" },
     { id: "diff", label: "Diff" },
     { id: "dropdown-a", label: "Dropdown" },
+    { id: "field", label: "Field" },
     { id: "file-input", label: "File Input" },
     { id: "feedback", label: "Feedback" },
     { id: "input", label: "Input" },
@@ -50,7 +59,7 @@ export default function App() {
     { id: "link", label: "Link" },
     { id: "menu", label: "Menu" },
     { id: "modal", label: "Modal" },
-    { id: "navbar-a", label: "Navbar" },
+    { id: "navbar", label: "Navbar" },
     { id: "pagination", label: "Pagination" },
     { id: "progress", label: "Progress" },
     { id: "radio", label: "Radio" },
@@ -115,6 +124,9 @@ export default function App() {
         <section id="alert">
           <AlertShowcase />
         </section>
+        <section id="autocomplete">
+          <AutocompleteShowcase />
+        </section>
         <section id="avatar">
           <AvatarShowcase />
         </section>
@@ -136,6 +148,12 @@ export default function App() {
         <section id="countdown">
           <CoutndownShowcase />
         </section>
+        <section id="dropdown">
+          <DropdownShowcase />
+        </section>
+        <section id="field">
+          <FieldShowcase />
+        </section>
         <section id="file-input">
           <FileInputShowcase />
         </section>
@@ -148,8 +166,14 @@ export default function App() {
         <section id="modal">
           <ModalShowcase />
         </section>
+        <section id="navbar">
+          <NavbarShowcase />
+        </section>
         <section id="pagination">
           <PaginationShowcase />
+        </section>
+        <section id="progress">
+          <ProgressShowcase />
         </section>
         <section id="select">
           <SelectShowcase />
@@ -159,6 +183,9 @@ export default function App() {
         </section>
         <section id="swap">
           <SwapShowcase />
+        </section>
+        <section id="table">
+          <TableShowcase />
         </section>
         <section id="textarea">
           <TextareaShowcase />

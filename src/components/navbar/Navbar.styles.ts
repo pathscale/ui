@@ -3,12 +3,12 @@ import { cva } from "@src/lib/style";
 export const navbarClass = cva("flex items-center px-4", {
   variants: {
     color: {
-      primary: "bg-indigo-600 text-white",
-      info: "bg-blue-500 text-white",
-      success: "bg-green-500 text-white",
-      danger: "bg-red-600 text-white",
-      warning: "bg-yellow-500 text-white",
-      light: "bg-white text-gray-800",
+      primary: "bg-[var(--color-primary)] text-[var(--color-primary-content)]",
+      info: "bg-[var(--color-info)] text-[var(--color-info-content)]",
+      success: "bg-[var(--color-success)] text-[var(--color-success-content)]",
+      danger: "bg-[var(--color-error)] text-[var(--color-error-content)]",
+      warning: "bg-[var(--color-warning)] text-[var(--color-warning-content)]",
+      light: "bg-[var(--color-base-100)] text-[var(--color-base-content)]",
     },
     spaced: {
       true: "py-4",
@@ -63,38 +63,76 @@ export const navbarItemClass = cva(
       color: "primary",
     },
     compoundVariants: [
-      { color: "primary", active: true, class: "bg-white/20 text-white" },
+      {
+        color: "primary",
+        active: true,
+        class:
+          "bg-[var(--color-primary-content)]/[.2] text-[var(--color-primary-content)]",
+      },
       {
         color: "primary",
         active: false,
-        class: "hover:bg-white/10 text-white",
+        class:
+          "hover:bg-[var(--color-primary-content)]/[.1] text-[var(--color-primary-content)]",
       },
-
-      { color: "success", active: true, class: "bg-white/20 text-white" },
+      {
+        color: "success",
+        active: true,
+        class:
+          "bg-[var(--color-success-content)]/[.2] text-[var(--color-success-content)]",
+      },
       {
         color: "success",
         active: false,
-        class: "hover:bg-white/10 text-white",
+        class:
+          "hover:bg-[var(--color-success-content)]/[.1] text-[var(--color-success-content)]",
       },
-
-      { color: "info", active: true, class: "bg-white/20 text-white" },
-      { color: "info", active: false, class: "hover:bg-white/10 text-white" },
-
-      { color: "danger", active: true, class: "bg-white/20 text-white" },
-      { color: "danger", active: false, class: "hover:bg-white/10 text-white" },
-
-      { color: "warning", active: true, class: "bg-white/20 text-white" },
+      {
+        color: "info",
+        active: true,
+        class:
+          "bg-[var(--color-info-content)]/[.2] text-[var(--color-info-content)]",
+      },
+      {
+        color: "info",
+        active: false,
+        class:
+          "hover:bg-[var(--color-info-content)]/[.1] text-[var(--color-info-content)]",
+      },
+      {
+        color: "danger",
+        active: true,
+        class:
+          "bg-[var(--color-error-content)]/[.2] text-[var(--color-error-content)]",
+      },
+      {
+        color: "danger",
+        active: false,
+        class:
+          "hover:bg-[var(--color-error-content)]/[.1] text-[var(--color-error-content)]",
+      },
+      {
+        color: "warning",
+        active: true,
+        class:
+          "bg-[var(--color-warning-content)]/[.2] text-[var(--color-warning-content)]",
+      },
       {
         color: "warning",
         active: false,
-        class: "hover:bg-white/10 text-white",
+        class:
+          "hover:bg-[var(--color-warning-content)]/[.1] text-[var(--color-warning-content)]",
       },
-
-      { color: "light", active: true, class: "bg-gray-300 text-gray-900" },
+      {
+        color: "light",
+        active: true,
+        class: "bg-[var(--color-base-300)] text-[var(--color-base-content)]",
+      },
       {
         color: "light",
         active: false,
-        class: "hover:bg-gray-100 text-gray-800",
+        class:
+          "hover:bg-[var(--color-base-200)] text-[var(--color-base-content)]",
       },
     ],
   }
@@ -113,7 +151,7 @@ export const navbarDropdownClass = cva("relative", {
 });
 
 export const dropdownMenuClass = cva(
-  "absolute mt-2 bg-white text-gray-800 rounded shadow-lg hidden group-hover:block",
+  "absolute mt-2 bg-[var(--color-base-100)] text-[var(--color-base-content)] rounded shadow-lg hidden group-hover:block",
   {
     variants: {
       align: {
