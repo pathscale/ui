@@ -1,13 +1,8 @@
-import { type JSX, splitProps, Show } from "solid-js";
-import { twMerge } from "tailwind-merge";
-import type {
-  ComponentColor,
-  ComponentSize,
-  IComponentBaseProps,
-} from "../types";
-import Button from "../button/Button";
+import { JSX, splitProps, Show } from "solid-js";
+import Button, { type ButtonProps } from "../button/Button";
+import type { ComponentColor, ComponentSize, IComponentBaseProps } from "../types";
 
-export type DropdownToggleProps = JSX.LabelHTMLAttributes<HTMLLabelElement> &
+export type DropdownToggleProps = Omit<JSX.LabelHTMLAttributes<HTMLLabelElement>, "color"> &
   IComponentBaseProps & {
     color?: ComponentColor;
     size?: ComponentSize;
@@ -15,33 +10,25 @@ export type DropdownToggleProps = JSX.LabelHTMLAttributes<HTMLLabelElement> &
     disabled?: boolean;
   };
 
-const DropdownToggle = (props: DropdownToggleProps): JSX.Element => {
-  const [local, rest] = splitProps(props, [
+const DropdownToggle = (props: DropdownToggleProps) => {
+  const [local, others] = splitProps(props, [
     "children",
     "color",
     "size",
     "button",
     "dataTheme",
     "class",
-    "className",
     "disabled",
   ]);
 
-  const classAttr = () => twMerge(local.class, local.className);
-
   return (
-    <label
-      tabindex={0}
-      class={classAttr()}
-      {...rest}
-      data-theme={local.dataTheme}
-    >
+    <label tabIndex={0} {...others} class={local.class}>
       <Show when={local.button} fallback={local.children}>
         <Button
           type="button"
+          dataTheme={local.dataTheme}
           color={local.color}
           size={local.size}
-          dataTheme={local.dataTheme}
           disabled={local.disabled}
         >
           {local.children}
@@ -49,6 +36,12 @@ const DropdownToggle = (props: DropdownToggleProps): JSX.Element => {
       </Show>
     </label>
   );
+};
+
+export type SummaryProps = Omit<ButtonProps, "tag">;
+
+export const Summary = (props: SummaryProps) => {
+  return <Button {...props} tag="summary" />;
 };
 
 export default DropdownToggle;

@@ -1,42 +1,24 @@
-import { type JSX, splitProps } from "solid-js";
-import { Dynamic } from "solid-js/web";
+// components/dropdown/Dropdown.tsx
+import { type JSX, splitProps, Show } from "solid-js";
 import { twMerge } from "tailwind-merge";
 import { clsx } from "clsx";
 import type { IComponentBaseProps } from "../types";
+import DropdownDetails from "./DropdownDetails";
 import DropdownMenu from "./DropdownMenu";
 import DropdownItem from "./DropdownItem";
 import DropdownToggle from "./DropdownToggle";
 
-type ElementType = keyof JSX.IntrinsicElements;
-
-export type DropdownProps<E extends ElementType = "div"> = Omit<
-  JSX.IntrinsicElements[E],
-  | "item"
-  | "horizontal"
-  | "vertical"
-  | "end"
-  | "hover"
-  | "open"
-  | "class"
-  | "className"
-> &
+export type DropdownProps = JSX.HTMLAttributes<HTMLDivElement> &
   IComponentBaseProps & {
-    /** custom trigger content or menu items */
     item?: JSX.Element;
     horizontal?: "left" | "right";
     vertical?: "top" | "bottom";
     end?: boolean;
     hover?: boolean;
     open?: boolean;
-    as?: E;
-    class?: string;
-    className?: string;
-    style?: JSX.CSSProperties;
-    children?: JSX.Element;
   };
 
-// helper for computing classes
-export function dropdownClassName({
+export const classesFn = ({
   className,
   horizontal,
   vertical,
@@ -46,8 +28,8 @@ export function dropdownClassName({
 }: Pick<
   DropdownProps,
   "className" | "horizontal" | "vertical" | "end" | "hover" | "open"
->) {
-  return twMerge(
+>) =>
+  twMerge(
     "dropdown",
     className,
     clsx({
@@ -60,31 +42,23 @@ export function dropdownClassName({
       "dropdown-open": open,
     })
   );
-}
 
-export const Dropdown = <E extends ElementType = "div">(
-  props: DropdownProps<E>
-): JSX.Element => {
-  const [local, others] = splitProps(props as DropdownProps, [
+const Dropdown = (props: DropdownProps): JSX.Element => {
+  const [local, others] = splitProps(props, [
     "children",
+    "className",
     "item",
     "horizontal",
     "vertical",
     "end",
     "hover",
     "open",
-    "as",
-    "class",
-    "className",
-    "style",
     "dataTheme",
   ]);
 
-  const Tag = (local.as || "div") as ElementType;
-
   const classes = () =>
-    dropdownClassName({
-      className: local.class ?? local.className,
+    classesFn({
+      className: local.className,
       horizontal: local.horizontal,
       vertical: local.vertical,
       end: local.end,
@@ -93,27 +67,22 @@ export const Dropdown = <E extends ElementType = "div">(
     });
 
   return (
-    <Dynamic
-      component={Tag}
-      {...others}
+    <div
       role="listbox"
+      {...others}
       data-theme={local.dataTheme}
       class={classes()}
-      style={local.style}
     >
-      {local.item ? (
-        <>
-          <label tabIndex={0}>{local.children}</label>
-          <ul class="dropdown-content">{local.item}</ul>
-        </>
-      ) : (
-        <>{local.children}</>
-      )}
-    </Dynamic>
+      <Show when={local.item} fallback={<>{local.children}</>}>
+        <label tabIndex={0}>{local.children}</label>
+        <ul class="dropdown-content">{local.item}</ul>
+      </Show>
+    </div>
   );
 };
 
 export default Object.assign(Dropdown, {
+  Details: DropdownDetails,
   Toggle: DropdownToggle,
   Menu: DropdownMenu,
   Item: DropdownItem,

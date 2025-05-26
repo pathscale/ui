@@ -16,6 +16,7 @@ import TextareaShowcase from "../../src/components/textarea/TextareaShowcase";
 import ToggleShowcase from "../../src/components/toggle/ToggleShowcase";
 import TooltipShowcase from "../../src/components/tooltip/TooltipShowcase";
 import DropdownShowcase from "../../src/components/dropdown/DropdownShowcase";
+import DropdownDetailsShowcase from "../../src/components/dropdown/DropdownDetailsShowcase";
 
 export default function App() {
   const [theme, setTheme] = createSignal<"light" | "dark">("light");
@@ -150,6 +151,9 @@ export default function App() {
         </section>
         <section id="dropdown-a">
           <DropdownShowcase />
+        </section>
+        <section>
+          <DropdownDetailsShowcase />
         </section>
       </main>
     </div>
