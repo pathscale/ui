@@ -46,7 +46,7 @@
 }
 
 @layer base {
-	[data-theme='dark'] {
+	[data-theme="dark"] {
 		color-scheme: only dark;
 	}
 }
