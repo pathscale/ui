@@ -1,74 +1,49 @@
 import type { JSX, Component } from "solid-js";
-import { splitProps, useContext } from "solid-js";
+import { splitProps } from "solid-js";
+import clsx from "clsx";
 import { twMerge } from "tailwind-merge";
-import { IComponentBaseProps, ComponentColor } from "../types";
-import { DockContext } from "./DockContext";
-import { dockItemClass } from "./Dock.styles";
+import { IComponentBaseProps } from "../types";
+import { ComponentColor } from "../types";
 
 export type DockItemProps = JSX.ButtonHTMLAttributes<HTMLButtonElement> &
   IComponentBaseProps & {
-    value: string;
     color?: ComponentColor;
-    size?: "xs" | "sm" | "md" | "lg"; 
     active?: boolean;
-    disabled?: boolean;
   };
 
 const DockItem: Component<DockItemProps> = (props) => {
-  const context = useContext(DockContext);
-
   const [local, others] = splitProps(props, [
-    "value",
-    "color",
-    "size", 
-    "active",
-    "disabled",
-    "dataTheme",
+    "children",
     "class",
     "className",
-    "children",
-    "onClick",
+    "color",
+    "dataTheme",
+    "active",
+    "disabled",
   ]);
 
-  const isActive = () => {
-    if (local.active !== undefined) return local.active;
-    return context?.selected?.() === local.value;
-  };
-
-  const itemColor = () => local.color || context?.color || "neutral";
-
-  const handleClick = (
-    e: MouseEvent & { currentTarget: HTMLButtonElement; target: Element }
-  ) => {
-    
-    if (typeof local.onClick === "function") {
-      local.onClick(e);
-    }
-
-    
-    if (!local.disabled && context?.setSelected) {
-      context.setSelected(local.value);
-    }
-  };
-
-  const classes = () =>
-    twMerge(
-      dockItemClass({
-        active: isActive(),
-        color: itemColor(), 
-        size: local.size, 
-        disabled: local.disabled,
-      }),
-      local.class,
-      local.className
-    );
+  const classes = twMerge(
+    local.class,
+    local.className,
+    clsx({
+      "text-neutral": local.color === "neutral",
+      "text-primary": local.color === "primary",
+      "text-secondary": local.color === "secondary",
+      "text-accent": local.color === "accent",
+      "text-info": local.color === "info",
+      "text-success": local.color === "success",
+      "text-warning": local.color === "warning",
+      "text-error": local.color === "error",
+      active: local.active,
+      disabled: local.disabled,
+    })
+  );
 
   return (
     <button
       {...others}
+      class={classes}
       data-theme={local.dataTheme}
-      class={classes()}
-      onClick={handleClick}
       disabled={local.disabled}
     >
       {local.children}
