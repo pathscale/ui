@@ -1,5 +1,4 @@
 import {
-  type Component,
   splitProps,
   type JSX,
   children as resolveChildren,
@@ -19,7 +18,7 @@ export type RatingProps = IComponentBaseProps &
     onChange?: (newRating: number) => void;
   };
 
-const Rating: Component<RatingProps> = (props) => {
+const Rating = (props: RatingProps) => {
   const [local, rest] = splitProps(props, [
     "class",
     "size",
@@ -53,25 +52,22 @@ const Rating: Component<RatingProps> = (props) => {
       data-theme={local.dataTheme}
       class={baseClass}
     >
-      {local.value === 0 && (
-        <input type="checkbox" checked readOnly class="hidden" />
-      )}
-
       <For each={resolvedChildren.toArray()}>
-        {(child, index) => {
-          const isChecked = local.value === index() + 1;
-          const isReadOnly = local.onChange == null;
-
-          return (
-            <input
-              type="checkbox"
-              checked={isChecked}
-              readOnly={isReadOnly}
-              onChange={() => local.onChange?.(index() + 1)}
-              class={(child as any)?.props?.class}
-            />
-          );
-        }}
+        {(child, index) =>
+          typeof child === "object" && child !== null && "props" in child
+            ? {
+                ...child,
+                props: {
+                  ...(typeof child.props === "object" && child.props !== null
+                    ? child.props
+                    : {}),
+                  index: index(),
+                  selected: local.value === index() + 1,
+                  onSelect: () => local.onChange?.(index() + 1),
+                },
+              }
+            : child
+        }
       </For>
     </div>
   );
