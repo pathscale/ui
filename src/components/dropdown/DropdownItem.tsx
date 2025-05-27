@@ -1,32 +1,27 @@
-import { useContext, type Component, type JSX } from "solid-js";
-import { DropdownContext } from "./DropdownContext";
-import { dropdownItemClass } from "./Dropdown.styles";
+import { type JSX, splitProps } from "solid-js";
 
-type DropdownItemProps = {
-  children: JSX.Element;
-  onClick?: () => void;
-  value?: string;
-  disabled?: boolean;
+type AnchorProps = JSX.AnchorHTMLAttributes<HTMLAnchorElement> & {
+  anchor?: true;
 };
 
-const DropdownItem: Component<DropdownItemProps> = (props) => {
-  const context = useContext(DropdownContext);
+type NoAnchorProps = {
+  children?: JSX.Element;
+  anchor?: false;
+};
 
-  const handleClick = () => {
-    if (!props.disabled) {
-      props.onClick?.();
-      context?.setOpen(false);
-    }
-  };
+export type DropdownItemProps = AnchorProps | NoAnchorProps;
+
+const DropdownItem = (props: DropdownItemProps): JSX.Element => {
+  const [local, others] = splitProps(props, ["anchor", "children"]);
 
   return (
-    <div
-      role="menuitem"
-      onClick={handleClick}
-      class={dropdownItemClass({ disabled: props.disabled })}
-    >
-      {props.children}
-    </div>
+    <li role="menuitem">
+      {local.anchor ?? true ? (
+        <a {...(others as AnchorProps)}>{local.children}</a>
+      ) : (
+        local.children
+      )}
+    </li>
   );
 };
 

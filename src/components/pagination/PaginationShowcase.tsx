@@ -1,4 +1,4 @@
-import { type Component } from "solid-js";
+import type { Component } from "solid-js";
 import Pagination from "./Pagination";
 
 const PaginationShowcase: Component = () => {

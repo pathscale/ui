@@ -17,12 +17,7 @@ export { default as Toggle } from "./components/toggle";
 export { default as Checkbox } from "./components/checkbox";
 export { Breadcrumbs, BreadcrumbsItem } from "./components/breadcrumbs";
 export { default as Autocomplete } from "./components/autocomplete";
-export {
-  Dropdown,
-  DropdownItem,
-  DropdownMenu,
-  DropdownTrigger,
-} from "./components/dropdown";
+export { default as Dropdown } from "./components/dropdown";
 export { default as Field } from "./components/field";
 export { Menu } from "./components/menu";
 export { default as Modal } from "./components/modal";

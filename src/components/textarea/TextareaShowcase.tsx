@@ -1,4 +1,4 @@
-import { type Component } from "solid-js";
+import type { Component } from "solid-js";
 import Textarea from "./Textarea";
 
 const TextareaShowcase: Component = () => {

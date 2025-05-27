@@ -1,4 +1,4 @@
-import { type Component } from "solid-js";
+import type { Component } from "solid-js";
 import Checkbox from "./Checkbox";
 
 const CheckboxShowcase: Component = () => {

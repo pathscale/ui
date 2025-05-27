@@ -1,8 +1,6 @@
 import { createSignal, onMount } from "solid-js";
 
-import RangeShowcase from "../../src/components/range/RangeShowcase";
-
-
+import DropdownShowcase from "../../src/components/dropdown/DropdownShowcase";
 
 export default function App() {
   const [theme, setTheme] = createSignal<"light" | "dark">("light");
@@ -34,7 +32,7 @@ export default function App() {
       </aside>
       
       <main class="flex-1 p-8 space-y-16 scroll-smooth">
-          <RangeShowcase />
+          <DropdownShowcase />
       </main>
     </div>
   );

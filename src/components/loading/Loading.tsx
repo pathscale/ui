@@ -2,10 +2,10 @@ import { type Component, type JSX, splitProps } from "solid-js";
 import { twMerge } from "tailwind-merge";
 import { clsx } from "clsx";
 
-import {
-  type IComponentBaseProps,
-  type ComponentColor,
-  type ComponentSize,
+import type {
+  IComponentBaseProps,
+  ComponentColor,
+  ComponentSize,
 } from "../types";
 
 export type LoadingProps = {
