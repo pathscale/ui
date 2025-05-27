@@ -1,7 +1,6 @@
 import { createSignal, onMount } from "solid-js";
-import TableShowcase from "../../src/components/table/TableShowcase";
-import DiffShowcase from "../../src/components/diff/DiffShowcase";
 
+import DiffShowcase from "../../src/components/diff/DiffShowcase";
 
 export default function App() {
   const [theme, setTheme] = createSignal<"light" | "dark">("light");

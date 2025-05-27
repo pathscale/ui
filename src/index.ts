@@ -3,6 +3,7 @@ export { default as Alert } from "./components/alert";
 export { default as Button } from "./components/button";
 export { default as Diff } from "./components/diff";
 export { default as Input } from "./components/input";
+export { default as Link } from "./components/link";
 export { default as Textarea } from "./components/textarea";
 export { default as Progress } from "./components/progress";
 export { default as Stats } from "./components/stats";
@@ -17,12 +18,7 @@ export { default as Toggle } from "./components/toggle";
 export { default as Checkbox } from "./components/checkbox";
 export { Breadcrumbs, BreadcrumbsItem } from "./components/breadcrumbs";
 export { default as Autocomplete } from "./components/autocomplete";
-export {
-  Dropdown,
-  DropdownItem,
-  DropdownMenu,
-  DropdownTrigger,
-} from "./components/dropdown";
+export { default as Dropdown } from "./components/dropdown";
 export { default as Field } from "./components/field";
 export { Menu } from "./components/menu";
 export { default as Modal } from "./components/modal";
@@ -51,4 +47,7 @@ export {
 } from "./components/collapse";
 export { default as Countdown } from "./components/countdown";
 export { default as Card } from "./components/card";
+export { default as Range } from "./components/range";
+export { default as Radio } from "./components/radio";
 export { default as Kbd } from "./components/kbd";
+
