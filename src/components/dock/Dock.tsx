@@ -1,15 +1,9 @@
 import type { JSX } from "solid-js";
-import { splitProps } from "solid-js";
+import { splitProps, createSignal } from "solid-js";
 import { twMerge } from "tailwind-merge";
-import { IComponentBaseProps } from "../types";
-import {
-  DockItemProps as ItemProps
-  // DockLabelProps as LabelProps,
-} from "./DockItem";
+import { IComponentBaseProps, ComponentColor } from "../types";
+import { DockContext } from "./DockContext";
 import { dockClass } from "./Dock.styles";
-
-export type DockItemProps = ItemProps;
-// export type DockLabelProps = LabelProps;
 
 type DockSize = "xs" | "sm" | "md" | "lg";
 
@@ -18,40 +12,65 @@ export type DockProps = JSX.HTMLAttributes<HTMLDivElement> &
     size?: DockSize;
     position?: "top" | "bottom" | "left" | "right";
     variant?: "default" | "floating" | "minimal";
-    spacing?: "compact" | "normal" | "relaxed";
+    color?: ComponentColor; 
+    selected?: string; 
+    onSelectionChange?: (value: string) => void; 
   };
 
 const Dock = (props: DockProps): JSX.Element => {
+  const [internalSelected, setInternalSelected] = createSignal(props.selected);
+
   const [local, others] = splitProps(props, [
     "size",
     "position",
     "variant",
-    "spacing",
+    "color",
+    "selected",
+    "onSelectionChange",
     "dataTheme",
     "class",
     "className",
     "children",
   ]);
 
+  const handleSelectionChange = (value: string) => {
+    if (local.onSelectionChange) {
+      local.onSelectionChange(value);
+    } else {
+      setInternalSelected(value);
+    }
+  };
+
+  const currentSelected = () => {
+    return local.selected !== undefined ? local.selected : internalSelected();
+  };
+
   const classes = twMerge(
     dockClass({
       size: local.size,
       position: local.position,
-      variant: local.variant,
     }),
     local.class,
     local.className
   );
 
+  const contextValue = {
+    color: local.color || "neutral",
+    selected: currentSelected,
+    setSelected: handleSelectionChange,
+  };
+
   return (
-    <div
-      {...others}
-      role="navigation"
-      data-theme={local.dataTheme}
-      class={classes}
-    >
-      {local.children}
-    </div>
+    <DockContext.Provider value={contextValue}>
+      <div
+        {...others}
+        role="navigation"
+        data-theme={local.dataTheme}
+        class={classes}
+      >
+        {local.children}
+      </div>
+    </DockContext.Provider>
   );
 };
 
