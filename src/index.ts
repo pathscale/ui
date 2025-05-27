@@ -49,3 +49,4 @@ export {
 } from "./components/collapse";
 export { default as Countdown } from "./components/countdown";
 export { default as Card } from "./components/card";
+export { default as Range } from "./components/range";
