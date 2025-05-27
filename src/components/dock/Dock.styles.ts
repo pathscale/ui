@@ -1,22 +1,22 @@
-import { cva } from "@src/lib/style";
+import { cva } from "~/lib/style";
 
-export const dockClass = cva("dock flex items-center justify-center", {
+export const dockClass = cva("flex items-center justify-center", {
   variants: {
     size: {
-      xs: "dock-xs gap-0.5 p-0.5",
-      sm: "dock-sm gap-1 p-1",
-      md: "dock-md gap-2 p-2",
-      lg: "dock-lg gap-4 p-4",
+      xs: "gap-0.5 p-0.5",
+      sm: "gap-1 p-1",
+      md: "gap-2 p-2",
+      lg: "gap-4 p-4",
     },
     position: {
-      top: "dock-top",
-      bottom: "dock-bottom",
-      left: "dock-left flex-col",
-      right: "dock-right flex-col",
+      top: "",
+      bottom: "",
+      left: "flex-col",
+      right: "flex-col",
     },
     variant: {
-      default: "rounded-box bg-base-300",
-      floating: "shadow-lg rounded-full border bg-base-100 border-base-300",
+      default: "rounded-lg bg-gray-200",
+      floating: "shadow-lg rounded-full border bg-white border-gray-300",
       minimal: "bg-transparent",
     },
   },
@@ -26,7 +26,6 @@ export const dockClass = cva("dock flex items-center justify-center", {
     variant: "default",
   },
   compoundVariants: [
-    // Floating positioning
     {
       variant: "floating",
       position: "bottom",
@@ -47,20 +46,11 @@ export const dockClass = cva("dock flex items-center justify-center", {
       position: "right",
       class: "fixed right-4 top-1/2 -translate-y-1/2",
     },
-    // Size overrides for extreme cases
-    {
-      size: "xs",
-      class: "gap-0.5 p-0.5",
-    },
-    {
-      size: "lg",
-      class: "gap-6 p-6",
-    },
   ],
 });
 
 export const dockItemClass = cva(
-  "dock-item flex items-center justify-center transition-all duration-200 cursor-pointer rounded-md",
+  "flex items-center justify-center transition-all duration-200 cursor-pointer rounded-md",
   {
     variants: {
       active: {
@@ -68,15 +58,15 @@ export const dockItemClass = cva(
         false: "hover:scale-105",
       },
       color: {
-        neutral: "text-neutral hover:text-neutral-focus",
-        primary: "text-primary hover:text-primary-focus",
-        secondary: "text-secondary hover:text-secondary-focus",
-        accent: "text-accent hover:text-accent-focus",
-        info: "text-info hover:text-info-focus",
-        success: "text-success hover:text-success-focus",
-        warning: "text-warning hover:text-warning-focus",
-        error: "text-error hover:text-error-focus",
-        ghost: "text-base-content/50 hover:text-base-content",
+        neutral: "text-gray-700",
+        primary: "text-blue-600",
+        secondary: "text-purple-600",
+        accent: "text-pink-600",
+        info: "text-cyan-600",
+        success: "text-green-600",
+        warning: "text-yellow-600",
+        error: "text-red-600",
+        ghost: "text-gray-500 hover:text-gray-700",
       },
       size: {
         xs: "p-1 text-xs",
@@ -96,59 +86,56 @@ export const dockItemClass = cva(
       disabled: false,
     },
     compoundVariants: [
-      // Active states with background colors
       {
         active: true,
         color: "neutral",
-        class: "bg-base-200",
+        class: "bg-gray-100",
       },
       {
         active: true,
         color: "primary",
-        class: "bg-primary/20 text-primary",
+        class: "bg-blue-100 text-blue-700",
       },
       {
         active: true,
         color: "secondary",
-        class: "bg-secondary/20 text-secondary",
+        class: "bg-purple-100 text-purple-700",
       },
       {
         active: true,
         color: "accent",
-        class: "bg-accent/20 text-accent",
+        class: "bg-pink-100 text-pink-700",
       },
       {
         active: true,
         color: "info",
-        class: "bg-info/20 text-info",
+        class: "bg-cyan-100 text-cyan-700",
       },
       {
         active: true,
         color: "success",
-        class: "bg-success/20 text-success",
+        class: "bg-green-100 text-green-700",
       },
       {
         active: true,
         color: "warning",
-        class: "bg-warning/20 text-warning",
+        class: "bg-yellow-100 text-yellow-700",
       },
       {
         active: true,
         color: "error",
-        class: "bg-error/20 text-error",
+        class: "bg-red-100 text-red-700",
       },
       {
         active: true,
         color: "ghost",
-        class: "bg-base-content/10 text-base-content",
+        class: "bg-gray-100 text-gray-700",
       },
-      // Hover states for inactive items
       {
         active: false,
         disabled: false,
-        class: "hover:bg-base-100/50",
+        class: "hover:bg-gray-50",
       },
-      // Disabled overrides
       {
         disabled: true,
         class: "hover:scale-100 hover:bg-transparent",
@@ -156,7 +143,102 @@ export const dockItemClass = cva(
       {
         disabled: true,
         active: true,
-        class: "scale-100 bg-base-200/50",
+        class: "scale-100 bg-gray-100/50",
+      },
+    ],
+  }
+);
+
+export const dockLabelClass = cva(
+  "text-xs font-medium transition-all duration-200",
+  {
+    variants: {
+      position: {
+        top: "mb-1",
+        bottom: "mt-1",
+        left: "mr-2",
+        right: "ml-2",
+      },
+      color: {
+        neutral: "text-gray-600",
+        primary: "text-blue-600",
+        secondary: "text-purple-600",
+        accent: "text-pink-600",
+        info: "text-cyan-600",
+        success: "text-green-600",
+        warning: "text-yellow-600",
+        error: "text-red-600",
+        ghost: "text-gray-500",
+      },
+      size: {
+        xs: "text-xs",
+        sm: "text-xs",
+        md: "text-sm",
+        lg: "text-base",
+      },
+      variant: {
+        default: "opacity-80 hover:opacity-100",
+        tooltip:
+          "absolute z-10 px-2 py-1 bg-gray-900 text-white rounded-md shadow-lg opacity-0 pointer-events-none group-hover:opacity-100 transition-opacity duration-200",
+        badge: "px-1.5 py-0.5 bg-gray-100 rounded-full",
+      },
+    },
+    defaultVariants: {
+      position: "bottom",
+      color: "neutral",
+      size: "md",
+      variant: "default",
+    },
+    compoundVariants: [
+      {
+        variant: "tooltip",
+        position: "top",
+        class: "bottom-full left-1/2 -translate-x-1/2 mb-2",
+      },
+      {
+        variant: "tooltip",
+        position: "bottom",
+        class: "top-full left-1/2 -translate-x-1/2 mt-2",
+      },
+      {
+        variant: "tooltip",
+        position: "left",
+        class: "right-full top-1/2 -translate-y-1/2 mr-2",
+      },
+      {
+        variant: "tooltip",
+        position: "right",
+        class: "left-full top-1/2 -translate-y-1/2 ml-2",
+      },
+      {
+        variant: "badge",
+        color: "primary",
+        class: "bg-blue-100 text-blue-700",
+      },
+      {
+        variant: "badge",
+        color: "secondary",
+        class: "bg-purple-100 text-purple-700",
+      },
+      {
+        variant: "badge",
+        color: "accent",
+        class: "bg-pink-100 text-pink-700",
+      },
+      {
+        variant: "badge",
+        color: "success",
+        class: "bg-green-100 text-green-700",
+      },
+      {
+        variant: "badge",
+        color: "warning",
+        class: "bg-yellow-100 text-yellow-700",
+      },
+      {
+        variant: "badge",
+        color: "error",
+        class: "bg-red-100 text-red-700",
       },
     ],
   }
