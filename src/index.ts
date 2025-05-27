@@ -50,4 +50,4 @@ export { default as Card } from "./components/card";
 export { default as Range } from "./components/range";
 export { default as Radio } from "./components/radio";
 export { default as Kbd } from "./components/kbd";
-export { default as RadialProgress } from "./components/radialprogress";
+export { default as Skeleton } from "./components/skeleton";

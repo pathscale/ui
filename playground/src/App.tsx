@@ -1,6 +1,6 @@
 import { createSignal, onMount } from "solid-js";
 
-import RadialProgressShowcase from "../../src/components/radialprogress/RadialProgressShowcase";
+import SkeletonShowcase from "../../src/components/skeleton/SkeletonShowcase";
 
 export default function App() {
   const [theme, setTheme] = createSignal<"light" | "dark">("light");
@@ -32,7 +32,7 @@ export default function App() {
       </aside>
 
       <main class="flex-1 p-8 space-y-16 scroll-smooth">
-        <RadialProgressShowcase />
+        <SkeletonShowcase />
       </main>
     </div>
   );
