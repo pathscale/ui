@@ -9,6 +9,7 @@ export type DockItemProps = JSX.ButtonHTMLAttributes<HTMLButtonElement> &
   IComponentBaseProps & {
     value: string;
     color?: ComponentColor;
+    size?: "xs" | "sm" | "md" | "lg"; 
     active?: boolean;
     disabled?: boolean;
   };
@@ -19,6 +20,7 @@ const DockItem: Component<DockItemProps> = (props) => {
   const [local, others] = splitProps(props, [
     "value",
     "color",
+    "size", 
     "active",
     "disabled",
     "dataTheme",
@@ -38,11 +40,14 @@ const DockItem: Component<DockItemProps> = (props) => {
   const handleClick = (
     e: MouseEvent & { currentTarget: HTMLButtonElement; target: Element }
   ) => {
+    
+    if (typeof local.onClick === "function") {
+      local.onClick(e);
+    }
+
+    
     if (!local.disabled && context?.setSelected) {
       context.setSelected(local.value);
-      if (typeof local.onClick === "function") {
-        local.onClick(e);
-      }
     }
   };
 
@@ -50,7 +55,8 @@ const DockItem: Component<DockItemProps> = (props) => {
     twMerge(
       dockItemClass({
         active: isActive(),
-        color: itemColor() as any,
+        color: itemColor(), 
+        size: local.size, 
         disabled: local.disabled,
       }),
       local.class,

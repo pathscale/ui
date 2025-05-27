@@ -1,5 +1,5 @@
 import type { JSX, Component } from "solid-js";
-import { splitProps, useContext } from "solid-js";
+import { splitProps, useContext, createMemo } from "solid-js";
 import { twMerge } from "tailwind-merge";
 import { IComponentBaseProps, ComponentColor } from "../types";
 import { DockContext } from "./DockContext";
@@ -27,10 +27,10 @@ const DockLabel: Component<DockLabelProps> = (props) => {
     "children",
   ]);
 
-  const labelColor = () => local.color || "neutral";
+  const labelColor = () => local.color || context?.color || "neutral";
   const labelSize = () => local.size || "md";
 
-  const classes = () =>
+  const classes = createMemo(() =>
     twMerge(
       dockLabelClass({
         position: local.position,
@@ -40,10 +40,26 @@ const DockLabel: Component<DockLabelProps> = (props) => {
       }),
       local.class,
       local.className
-    );
+    )
+  );
+
+  const accessibilityProps = () => {
+    if (local.variant === "tooltip") {
+      return {
+        role: "tooltip" as const,
+        "aria-hidden": true,
+      };
+    }
+    return {};
+  };
 
   return (
-    <span {...others} data-theme={local.dataTheme} class={classes()}>
+    <span
+      {...others}
+      {...accessibilityProps()}
+      data-theme={local.dataTheme}
+      class={classes()}
+    >
       {local.children}
     </span>
   );
