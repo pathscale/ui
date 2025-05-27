@@ -2,8 +2,10 @@ export { default as Avatar } from "./components/avatar";
 export { default as Alert } from "./components/alert";
 export { default as Button } from "./components/button";
 export { default as Input } from "./components/input";
+export { default as Link } from "./components/link";
 export { default as Textarea } from "./components/textarea";
 export { default as Progress } from "./components/progress";
+export { default as Stats } from "./components/stats";
 export { default as FileInput } from "./components/fileinput";
 export { default as Accordion } from "./components/accordion";
 export { default as Pagination } from "./components/pagination";
@@ -50,3 +52,5 @@ export {
 export { default as Countdown } from "./components/countdown";
 export { default as Card } from "./components/card";
 export { default as Radio } from "./components/radio";
+export { default as Kbd } from "./components/kbd";
+
