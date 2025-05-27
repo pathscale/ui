@@ -1,79 +1,53 @@
 import type { JSX } from "solid-js";
-import { splitProps, createSignal } from "solid-js";
+import { splitProps } from "solid-js";
 import { twMerge } from "tailwind-merge";
-import { IComponentBaseProps, ComponentColor } from "../types";
-import { DockContext } from "./DockContext";
-import { dockClass } from "./Dock.styles";
-import DockLabel from "./DockLabel";
-import DockItem from "./DockItem";
+import clsx from "clsx";
+import { IComponentBaseProps, ComponentSize } from "../types";
+import DockItem, { type DockItemProps as ItemProps } from "./DockItem";
+import DockLabel, { type DockLabelProps as LabelProps } from "./DockLabel";
 
-type DockSize = "xs" | "sm" | "md" | "lg";
+export type DockItemProps = ItemProps;
+export type DockLabelProps = LabelProps;
 
 export type DockProps = JSX.HTMLAttributes<HTMLDivElement> &
   IComponentBaseProps & {
-    size?: DockSize;
-    position?: "top" | "bottom" | "left" | "right";
-    variant?: "default" | "floating" | "minimal";
-    color?: ComponentColor;
-    selected?: string;
-    onSelectionChange?: (value: string) => void;
+    size?: ComponentSize;
   };
 
 const Dock = (props: DockProps): JSX.Element => {
-  const [internalSelected, setInternalSelected] = createSignal(props.selected);
-
   const [local, others] = splitProps(props, [
     "size",
-    "position",
-    "variant",
-    "color",
-    "selected",
-    "onSelectionChange",
     "dataTheme",
     "class",
     "className",
     "children",
   ]);
 
-  const handleSelectionChange = (value: string) => {
-    if (local.onSelectionChange) {
-      local.onSelectionChange(value);
-    } else {
-      setInternalSelected(value);
-    }
-  };
-
-  const currentSelected = () => {
-    return local.selected !== undefined ? local.selected : internalSelected();
-  };
-
   const classes = twMerge(
-    dockClass({
-      size: local.size,
-      position: local.position,
+    "dock",
+    clsx({
+      "dock-lg": local.size === "lg",
+      "dock-md": local.size === "md",
+      "dock-sm": local.size === "sm",
+      "dock-xs": local.size === "xs",
     }),
     local.class,
     local.className
   );
 
-  const contextValue = {
-    color: local.color || "neutral",
-    selected: currentSelected,
-    setSelected: handleSelectionChange,
-  };
-
   return (
-    <DockContext.Provider value={contextValue}>
-      <div
-        {...others}
-        role="navigation"
-        data-theme={local.dataTheme}
-        class={classes}
-      >
-        {local.children}
-      </div>
-    </DockContext.Provider>
+    <div
+      {...others}
+      role="navigation"
+      data-theme={local.dataTheme}
+      class={classes}
+    >
+      {local.children}
+    </div>
   );
 };
 
-export default Object.assign(Dock, { Item: DockItem, Label: DockLabel });
+export default Object.assign(Dock, {
+  Item: DockItem,
+  Label: DockLabel,
+});
