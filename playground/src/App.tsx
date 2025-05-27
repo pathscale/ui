@@ -1,6 +1,7 @@
 import { createSignal, onMount } from "solid-js";
 
-import RadioShowcase from "../../src/components/radio/RadioShowcase";
+import RangeShowcase from "../../src/components/range/RangeShowcase";
+
 
 
 export default function App() {
@@ -33,7 +34,7 @@ export default function App() {
       </aside>
       
       <main class="flex-1 p-8 space-y-16 scroll-smooth">
-          <RadioShowcase />
+          <RangeShowcase />
       </main>
     </div>
   );
