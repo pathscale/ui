@@ -22,7 +22,7 @@ export { default as Dropdown } from "./components/dropdown";
 export { default as Field } from "./components/field";
 export { Menu } from "./components/menu";
 export { default as Modal } from "./components/modal";
-export { Navbar } from "./components/navbar";
+export { default as Navbar } from "./components/navbar";
 export { Polymorphic, PolymorphicButton } from "./components/polymorphic";
 export { default as Steps } from "./components/steps";
 export { default as Swap } from "./components/swap";

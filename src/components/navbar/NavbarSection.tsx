@@ -1,11 +1,11 @@
 import { type JSX, splitProps } from "solid-js";
-import { twMerge } from "tailwind-merge";
 import { clsx } from "clsx";
+import { twMerge } from "tailwind-merge";
 
-import type { NavbarProps } from "./Navbar";
-
-export type NavbarSectionProps = NavbarProps & {
+export type NavbarSectionProps = JSX.HTMLAttributes<HTMLDivElement> & {
   section: "start" | "center" | "end";
+  dataTheme?: string;
+  className?: string;
 };
 
 const NavbarSection = (props: NavbarSectionProps): JSX.Element => {

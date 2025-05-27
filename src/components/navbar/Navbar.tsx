@@ -1,43 +1,27 @@
 import { type JSX, splitProps } from "solid-js";
-import { twMerge } from "tailwind-merge";
-
-import type { IComponentBaseProps } from "../types";
-import NavbarSection, { type NavbarSectionProps } from "./NavbarSection";
 import { Dynamic } from "solid-js/web";
+import { twMerge } from "tailwind-merge";
+import NavbarSection from "./NavbarSection";
+import type { IComponentBaseProps } from "../types";
 
-type ElementType = keyof JSX.IntrinsicElements;
+export type NavbarProps = JSX.HTMLAttributes<HTMLElement> &
+  IComponentBaseProps & {
+    as?: keyof JSX.IntrinsicElements;
+    dataTheme?: string;
+    className?: string;
+  };
 
-type NavbarBaseProps = {
-  as?: ElementType;
-  class?: string;
-  className?: string;
-  style?: JSX.CSSProperties;
-  "data-theme"?: string;
-  children?: JSX.Element;
-};
-
-type PropsOf<E extends ElementType> = JSX.IntrinsicElements[E];
-
-export type NavbarProps<E extends ElementType = "div"> = Omit<
-  PropsOf<E>,
-  keyof NavbarBaseProps
-> &
-  NavbarBaseProps &
-  IComponentBaseProps;
-
-const Navbar = <E extends ElementType = "div">(
-  props: NavbarProps<E>
-): JSX.Element => {
-  const [local, others] = splitProps(props as NavbarBaseProps & Record<string, unknown>, [
+const Navbar = (props: NavbarProps): JSX.Element => {
+  const [local, others] = splitProps(props, [
     "as",
     "class",
     "className",
     "style",
     "children",
-    "data-theme",
+    "dataTheme",
   ]);
 
-  const Tag = (local.as || "div") as ElementType;
+  const Tag = (local.as || "div") as keyof JSX.IntrinsicElements;
   const classes = () => twMerge("navbar", local.class, local.className);
 
   return (
@@ -46,7 +30,7 @@ const Navbar = <E extends ElementType = "div">(
       role="navigation"
       aria-label="Navbar"
       {...others}
-      data-theme={local["data-theme"]}
+      data-theme={local.dataTheme}
       class={classes()}
       style={local.style}
     >
@@ -55,21 +39,20 @@ const Navbar = <E extends ElementType = "div">(
   );
 };
 
-const NavbarStart = (props: Omit<NavbarSectionProps, "section">): JSX.Element => (
-  <NavbarSection {...props} section="start" />
-);
+const NavbarStart = (
+  props: JSX.HTMLAttributes<HTMLDivElement>
+): JSX.Element => <NavbarSection section="start" {...props} />;
 
-const NavbarCenter = (props: Omit<NavbarSectionProps, "section">): JSX.Element => (
-  <NavbarSection {...props} section="center" />
-);
+const NavbarCenter = (
+  props: JSX.HTMLAttributes<HTMLDivElement>
+): JSX.Element => <NavbarSection section="center" {...props} />;
 
-const NavbarEnd = (props: Omit<NavbarSectionProps, "section">): JSX.Element => (
-  <NavbarSection {...props} section="end" />
+const NavbarEnd = (props: JSX.HTMLAttributes<HTMLDivElement>): JSX.Element => (
+  <NavbarSection section="end" {...props} />
 );
 
 export default Object.assign(Navbar, {
   Start: NavbarStart,
   Center: NavbarCenter,
   End: NavbarEnd,
-  Navbar: Navbar,
 });
