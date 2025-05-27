@@ -16,6 +16,7 @@ export {
 } from "./components/collapse";
 export { default as Countdown } from "./components/countdown";
 export { default as Diff } from "./components/diff";
+export { default as Divider } from "./components/divider";
 export { default as Dropdown } from "./components/dropdown";
 export { default as Field } from "./components/field";
 export { default as FileInput } from "./components/fileinput";
