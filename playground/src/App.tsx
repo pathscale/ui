@@ -3,6 +3,7 @@ import { createSignal, onMount } from "solid-js";
 import RangeShowcase from "../../src/components/range/RangeShowcase";
 
 
+
 export default function App() {
   const [theme, setTheme] = createSignal<"light" | "dark">("light");
 
