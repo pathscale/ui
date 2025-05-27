@@ -1,9 +1,6 @@
 import { createSignal, onMount } from "solid-js";
 
-
 import DropdownShowcase from "../../src/components/dropdown/DropdownShowcase";
-import DropdownDetailsShowcase from "../../src/components/dropdown/DropdownDetailsShowcase";
-
 
 export default function App() {
   const [theme, setTheme] = createSignal<"light" | "dark">("light");
@@ -36,7 +33,6 @@ export default function App() {
       
       <main class="flex-1 p-8 space-y-16 scroll-smooth">
           <DropdownShowcase />
-          <DropdownDetailsShowcase />
       </main>
     </div>
   );
