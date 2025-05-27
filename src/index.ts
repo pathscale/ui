@@ -5,6 +5,7 @@ export { default as Diff } from "./components/diff";
 export { default as Input } from "./components/input";
 export { default as Textarea } from "./components/textarea";
 export { default as Progress } from "./components/progress";
+export { default as Stats } from "./components/stats";
 export { default as FileInput } from "./components/fileinput";
 export { default as Accordion } from "./components/accordion";
 export { default as Pagination } from "./components/pagination";
@@ -50,3 +51,4 @@ export {
 } from "./components/collapse";
 export { default as Countdown } from "./components/countdown";
 export { default as Card } from "./components/card";
+export { default as Kbd } from "./components/kbd";
