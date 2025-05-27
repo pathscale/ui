@@ -1,92 +1,42 @@
-import {
-  type Component,
-  splitProps,
-  Show,
-  createMemo,
-  type ComponentProps,
-} from "solid-js";
-import { classes } from "@src/lib/style";
-import type { VariantProps } from "@src/lib/style";
-import {
-  progressContainer,
-  progressWrapper,
-  progressFill,
-  progressLabel,
-} from "./Progress.styles";
+import type { JSX } from "solid-js";
+import { splitProps } from "solid-js";
+import { twMerge } from "tailwind-merge";
+import clsx from "clsx";
+import type { ComponentColor, IComponentBaseProps } from "../types";
 
-export interface ProgressProps
-  extends VariantProps<typeof progressContainer>,
-    VariantProps<typeof progressWrapper>,
-    VariantProps<typeof progressFill>,
-    Omit<ComponentProps<"div">, "class" | "color"> {
-  value?: number | null;
-  showValue?: boolean;
-  format?: "percent" | "raw";
-  className?: string;
-}
+export type ProgressProps = Omit<
+  JSX.ProgressHTMLAttributes<HTMLProgressElement>,
+  "color"
+> &
+  IComponentBaseProps & {
+    color?: ComponentColor;
+  };
 
-const Progress: Component<ProgressProps> = (props) => {
-  const [local, rest] = splitProps(props, [
-    "value",
-    "size",
-    "shape",
-    "variant",
+const Progress = (props: ProgressProps) => {
+  const [local, others] = splitProps(props, [
     "color",
-    "showValue",
-    "format",
+    "class",
     "className",
-  ] as const);
+    "dataTheme",
+  ]);
 
-  const val = createMemo(() =>
-    typeof local.value === "number"
-      ? Math.max(0, Math.min(100, local.value))
-      : null
+  const classes = twMerge(
+    "progress",
+    clsx({
+      "progress-primary": local.color === "primary",
+      "progress-secondary": local.color === "secondary",
+      "progress-accent": local.color === "accent",
+      "progress-info": local.color === "info",
+      "progress-success": local.color === "success",
+      "progress-warning": local.color === "warning",
+      "progress-error": local.color === "error",
+      "progress-ghost": local.color === "ghost",
+    }),
+    local.class,
+    local.className
   );
-  const isDeterminate = () => val() !== null;
 
-  const labelText = createMemo(() => {
-    if (!local.showValue || val() == null) return "";
-    return local.format === "percent" ? `${val()}%` : String(val());
-  });
-
-  return (
-    <div
-      {...rest}
-      class={classes(progressContainer({ size: local.size }), local.className)}
-      aria-busy={!isDeterminate()}
-    >
-      <div
-        class={classes(
-          progressWrapper({ size: local.size, shape: local.shape })
-        )}
-      >
-        <Show
-          when={isDeterminate()}
-          fallback={
-            <div
-              class={classes(
-                progressFill({ color: local.color, variant: local.variant }),
-                "animate-pulse"
-              )}
-              style={{ width: "100%" }}
-            />
-          }
-        >
-          <div
-            class={progressFill({
-              color: local.color,
-              variant: local.variant,
-            })}
-            style={{ width: `${val()}%` }}
-          />
-        </Show>
-      </div>
-
-      <Show when={local.showValue && labelText()}>
-        <div class={progressLabel()}>{labelText()}</div>
-      </Show>
-    </div>
-  );
+  return <progress {...others} class={classes} data-theme={local.dataTheme} />;
 };
 
 export default Progress;
