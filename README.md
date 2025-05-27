@@ -16,7 +16,7 @@ bun run build
 ## Actions
 
 - [x] Button
-- [ ] Dropdown (A)
+- [x] Dropdown
 - [x] Modal
 - [x] Swap
 
@@ -30,17 +30,17 @@ bun run build
 - [ ] Chat Bubble
 - [x] Collapse
 - [ ] Countdown
-- [ ] Diff
-- [ ] Kbd
-- [ ] Stats
-- [ ] Table
+- [x] Diff
+- [x] Kbd
+- [x] Stats
+- [x] Table
 - [x] Timeline
 
 ## Navigation
 
 - [ ] Bottom Navigation
 - [x] Breadcrumbs
-- [ ] Link
+- [x] Link
 - [x] Menu
 - [ ] Navbar (A)
 - [x] Pagination
@@ -62,8 +62,8 @@ bun run build
 - [x] Checkbox
 - [x] File Input
 - [x] Input
-- [ ] Radio
-- [ ] Range
+- [x] Radio
+- [x] Range
 - [ ] Rating
 - [x] Select
 - [x] Textarea
