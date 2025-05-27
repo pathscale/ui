@@ -14,6 +14,7 @@ import MenuShowcase from "../../src/components/menu/MenuShowcase";
 import ModalShowcase from "../../src/components/modal/ModalShowcase";
 import PaginationShowcase from "../../src/components/pagination/PaginationShowcase";
 import SelectShowcase from "../../src/components/select/SelectShowcase";
+import StatsShowcase from "../../src/components/stats/StatsShowcase";
 import StepsShowcase from "../../src/components/steps/StepsShowcase";
 import SwapShowcase from "../../src/components/swap/SwapShowcase";
 import TextareaShowcase from "../../src/components/textarea/TextareaShowcase";
@@ -153,6 +154,9 @@ export default function App() {
         </section>
         <section id="select">
           <SelectShowcase />
+        </section>
+        <section id="stats">
+          <StatsShowcase />
         </section>
         <section id="steps">
           <StepsShowcase />
