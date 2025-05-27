@@ -35,6 +35,7 @@ export { Polymorphic, PolymorphicButton } from "./components/polymorphic";
 export { default as Progress } from "./components/progress";
 export { default as Radio } from "./components/radio";
 export { default as Range } from "./components/range";
+export { default as Rating } from "./components/rating";
 export { default as Select } from "./components/select";
 export { default as Skeleton } from "./components/skeleton";
 export { default as Stack } from "./components/stack";
