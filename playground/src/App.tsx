@@ -1,7 +1,7 @@
 import { createSignal, onMount } from "solid-js";
 import TableShowcase from "../../src/components/table/TableShowcase";
 
-import KbdShowcase from "../../src/components/button/ButtonShowcase";
+import StatsShowcase from "../../src/components/stats/StatsShowcase";
 
 
 export default function App() {
@@ -35,7 +35,7 @@ export default function App() {
       
       <main class="flex-1 p-8 space-y-16 scroll-smooth">
         <section id="button">
-          <TableShowcase />
+          <ButtonShowcase />
         </section>
       </main>
     </div>
