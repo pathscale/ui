@@ -1,70 +1,58 @@
-import {
-  type Component,
-  createSignal,
-  splitProps,
-  type JSX,
-  createEffect,
-} from "solid-js";
-import { NavbarContext } from "./NavbarContext";
-import { navbarClass } from "./Navbar.styles";
+import { type JSX, splitProps } from "solid-js";
+import { Dynamic } from "solid-js/web";
+import { twMerge } from "tailwind-merge";
+import NavbarSection from "./NavbarSection";
+import type { IComponentBaseProps } from "../types";
 
-export type NavbarProps = {
-  color?: "primary" | "info" | "success" | "danger" | "warning" | "light";
-  modelValue?: string;
-  spaced?: boolean;
-  shadow?: boolean;
-  transparent?: boolean;
-  fixedTop?: boolean;
-  fixedBottom?: boolean;
-  children?: JSX.Element;
-  onChange?: (val: string) => void;
-};
+export type NavbarProps = JSX.HTMLAttributes<HTMLElement> &
+  IComponentBaseProps & {
+    as?: keyof JSX.IntrinsicElements;
+    dataTheme?: string;
+    className?: string;
+  };
 
-const Navbar: Component<NavbarProps> = (props) => {
-  const [local] = splitProps(props, [
-    "color",
-    "modelValue",
+const Navbar = (props: NavbarProps): JSX.Element => {
+  const [local, others] = splitProps(props, [
+    "as",
+    "class",
+    "className",
+    "style",
     "children",
-    "spaced",
-    "shadow",
-    "transparent",
-    "fixedTop",
-    "fixedBottom",
+    "dataTheme",
   ]);
 
-  const [selected, setSelected] = createSignal(props.modelValue);
-
-  createEffect(() => {
-    if (props.modelValue !== undefined) {
-      setSelected(props.modelValue);
-    }
-  });
+  const Tag = (local.as || "div") as keyof JSX.IntrinsicElements;
+  const classes = () => twMerge("navbar", local.class, local.className);
 
   return (
-    <NavbarContext.Provider
-      value={{
-        color: local.color ?? "primary",
-        selected,
-        setSelected: (val: string) => {
-          props.onChange?.(val);
-          setSelected(val);
-        },
-      }}
+    <Dynamic
+      component={Tag}
+      role="navigation"
+      aria-label="Navbar"
+      {...others}
+      data-theme={local.dataTheme}
+      class={classes()}
+      style={local.style}
     >
-      <nav
-        class={navbarClass({
-          color: local.color,
-          spaced: local.spaced,
-          shadow: local.shadow,
-          transparent: local.transparent,
-          fixedTop: local.fixedTop,
-          fixedBottom: local.fixedBottom,
-        })}
-      >
-        {local.children}
-      </nav>
-    </NavbarContext.Provider>
+      {local.children}
+    </Dynamic>
   );
 };
 
-export default Navbar;
+const NavbarStart = (
+  props: JSX.HTMLAttributes<HTMLDivElement>
+): JSX.Element => <NavbarSection section="start" {...props} />;
+
+const NavbarCenter = (
+  props: JSX.HTMLAttributes<HTMLDivElement>
+): JSX.Element => <NavbarSection section="center" {...props} />;
+
+const NavbarEnd = (props: JSX.HTMLAttributes<HTMLDivElement>): JSX.Element => (
+  <NavbarSection section="end" {...props} />
+);
+
+export default Object.assign(Navbar, {
+  Start: NavbarStart,
+  Center: NavbarCenter,
+  End: NavbarEnd,
+});
