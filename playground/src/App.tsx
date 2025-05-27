@@ -8,6 +8,7 @@ import BreadcrumbsShowcase from "../../src/components/breadcrumbs/BreadcrumbShow
 import ButtonShowcase from "../../src/components/button/ButtonShowcase";
 import CardShowcase from "../../src/components/card/CardShowcase";
 import CheckboxShowcase from "../../src/components/checkbox/CheckboxShowcase";
+import DiffShowcase from "../../src/components/diff/DiffShowcase";
 import FileInputShowcase from "../../src/components/fileinput/FileInputShowcase";
 import InputShowcase from "../../src/components/input/InputShowcase";
 import MenuShowcase from "../../src/components/menu/MenuShowcase";
@@ -135,6 +136,9 @@ export default function App() {
         </section>
         <section id="countdown">
           <CoutndownShowcase />
+        </section>
+        <section id="diff">
+          <DiffShowcase />
         </section>
         <section id="file-input">
           <FileInputShowcase />
