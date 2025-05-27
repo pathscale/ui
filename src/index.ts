@@ -36,6 +36,7 @@ export { default as Radio } from "./components/radio";
 export { default as Range } from "./components/range";
 export { default as Select } from "./components/select";
 export { default as Skeleton } from "./components/skeleton";
+export { default as Stack } from "./components/stack";
 export { default as Stats } from "./components/stats";
 export { default as Steps } from "./components/steps";
 export { default as Swap } from "./components/swap";
