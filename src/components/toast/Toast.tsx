@@ -1,66 +1,66 @@
-import {
-  createSignal,
-  onMount,
-  onCleanup,
-  Show,
-  type Component,
-} from "solid-js";
-import { removeElement } from "./utils/remove-element";
-import Timer from "./utils/timer";
-import { toastWrapperClass } from "./Toast.styles";
+import { children, createMemo, type JSX, splitProps } from "solid-js";
+import { twMerge } from "tailwind-merge";
 
-export interface ToastProps {
-  message: string;
-  type?: "success" | "error" | "info" | "warning" | "default";
-  duration?: number | false;
-  dismissible?: boolean;
-  onClose?: () => void;
-}
+import type { IComponentBaseProps } from "../types";
 
-const Toast: Component<ToastProps> = (props) => {
-  const [visible, setVisible] = createSignal(false);
-  let rootRef: HTMLDivElement | undefined;
-  let timer: Timer | null = null;
+const horizontalOptions = {
+  start: "toast-start",
+  center: "toast-center",
+  end: "toast-end",
+} as const;
 
-  const close = () => {
-    timer?.stop();
-    setVisible(false);
-    setTimeout(() => {
-      props.onClose?.();
-      if (rootRef) removeElement(rootRef);
-    }, 150);
-  };
+const verticalOptions = {
+  top: "toast-top",
+  middle: "toast-middle",
+  bottom: "toast-bottom",
+} as const;
 
-  onMount(() => {
-    setVisible(true);
-    if (props.duration !== false) {
-      timer = new Timer(close, props.duration || 4000);
+type ToastPosition = {
+  horizontal?: keyof typeof horizontalOptions;
+  vertical?: keyof typeof verticalOptions;
+};
+
+export type ToastProps = ToastPosition &
+  IComponentBaseProps & {
+    max?: number;
+  } &
+  Omit<JSX.HTMLAttributes<HTMLDivElement>, keyof ToastPosition | "max">;
+
+const Toast = (props: ToastProps): JSX.Element => {
+  const [local, others] = splitProps(props, [
+    "horizontal",
+    "vertical",
+    "class",
+    "className",
+    "style",
+    "dataTheme",
+    "max",
+  ]);
+
+  const positionClasses = [
+    horizontalOptions[local.horizontal || "end"],
+    verticalOptions[local.vertical || "bottom"],
+  ];
+
+  const limitedChildren = createMemo(() => {
+    const childrenArray = children(() => props.children).toArray();
+
+    if (local.max && local.max > 0) {
+      return childrenArray.slice(-local.max);
     }
-  });
 
-  onCleanup(() => {
-    timer?.stop();
+    return childrenArray;
   });
 
   return (
     <div
-      ref={rootRef}
-      class={toastWrapperClass({
-        type: props.type || "default",
-        visible: visible(),
-      })}
-      role="alert"
-      onClick={() => props.dismissible && close()}
-      innerHTML={props.message}
+      {...others}
+      role="status"
+      class={twMerge("toast", ...positionClasses, local.class, local.className)}
+      data-theme={local.dataTheme}
+      style={local.style}
     >
-      <Show when={props.dismissible}>
-        <button
-          class="absolute top-2 right-2 text-white/80 hover:text-white transition"
-          aria-label="Close toast"
-        >
-          ×
-        </button>
-      </Show>
+      {limitedChildren()}
     </div>
   );
 };

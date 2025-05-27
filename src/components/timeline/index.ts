@@ -1,3 +1,5 @@
-import Timeline, { type TimelineProps } from "./Timeline";
-export type { TimelineProps };
-export default Timeline;
+export { default as Timeline } from "./Timeline";
+export { default as TimelineItem } from "./TimelineItem";
+export { default as TimelineStart } from "./TimelineStart";
+export { default as TimelineMiddle } from "./TimelineMiddle";
+export { default as TimelineEnd } from "./TimelineEnd";
