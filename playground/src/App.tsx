@@ -1,7 +1,8 @@
 import { createSignal, onMount } from "solid-js";
 import TableShowcase from "../../src/components/table/TableShowcase";
 
-import ButtonShowcase from "../../src/components/button/ButtonShowcase";
+import KbdShowcase from "../../src/components/button/ButtonShowcase";
+
 
 export default function App() {
   const [theme, setTheme] = createSignal<"light" | "dark">("light");
@@ -31,7 +32,7 @@ export default function App() {
           {theme() === "light" ? "Dark" : "Light"}
         </button>
       </aside>
-
+      
       <main class="flex-1 p-8 space-y-16 scroll-smooth">
         <section id="button">
           <TableShowcase />
