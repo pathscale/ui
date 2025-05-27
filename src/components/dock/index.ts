@@ -1,3 +1,4 @@
-export { default as Dock } from "./Dock";
-export { default as DockItem } from "./DockItem";
-export { default as DockLabel } from "./DockLabel";
+import Dock, { type DockProps } from "./Dock";
+
+export type { DockProps };
+export default Dock;
