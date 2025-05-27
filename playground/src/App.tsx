@@ -22,6 +22,7 @@ import TimelineShowcase from "../../src/components/timeline/TimelineShowcase";
 import ToggleShowcase from "../../src/components/toggle/ToggleShowcase";
 import TooltipShowcase from "../../src/components/tooltip/TooltipShowcase";
 import CoutndownShowcase from "../../src/components/countdown/CountdownShowcase";
+import RadioShowcase from "../../src/components/radio/RadioShowcase";
 
 export default function App() {
   const [theme, setTheme] = createSignal<"light" | "dark">("light");
@@ -150,6 +151,9 @@ export default function App() {
         </section>
         <section id="pagination">
           <PaginationShowcase />
+        </section>
+        <section id="radio">
+          <RadioShowcase />
         </section>
         <section id="select">
           <SelectShowcase />
