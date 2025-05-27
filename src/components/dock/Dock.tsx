@@ -4,6 +4,8 @@ import { twMerge } from "tailwind-merge";
 import { IComponentBaseProps, ComponentColor } from "../types";
 import { DockContext } from "./DockContext";
 import { dockClass } from "./Dock.styles";
+import DockLabel from "./DockLabel";
+import DockItem from "./DockItem";
 
 type DockSize = "xs" | "sm" | "md" | "lg";
 
@@ -12,9 +14,9 @@ export type DockProps = JSX.HTMLAttributes<HTMLDivElement> &
     size?: DockSize;
     position?: "top" | "bottom" | "left" | "right";
     variant?: "default" | "floating" | "minimal";
-    color?: ComponentColor; 
-    selected?: string; 
-    onSelectionChange?: (value: string) => void; 
+    color?: ComponentColor;
+    selected?: string;
+    onSelectionChange?: (value: string) => void;
   };
 
 const Dock = (props: DockProps): JSX.Element => {
@@ -74,4 +76,4 @@ const Dock = (props: DockProps): JSX.Element => {
   );
 };
 
-export default Dock;
+export default Object.assign(Dock, { Item: DockItem, Label: DockLabel });
