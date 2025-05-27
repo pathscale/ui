@@ -10,6 +10,7 @@ import CardShowcase from "../../src/components/card/CardShowcase";
 import CheckboxShowcase from "../../src/components/checkbox/CheckboxShowcase";
 import FileInputShowcase from "../../src/components/fileinput/FileInputShowcase";
 import InputShowcase from "../../src/components/input/InputShowcase";
+import LinkShowcase from "../../src/components/link/LinkShowcase";
 import MenuShowcase from "../../src/components/menu/MenuShowcase";
 import ModalShowcase from "../../src/components/modal/ModalShowcase";
 import PaginationShowcase from "../../src/components/pagination/PaginationShowcase";
@@ -141,6 +142,9 @@ export default function App() {
         </section>
         <section id="input">
           <InputShowcase />
+        </section>
+        <section id="link">
+          <LinkShowcase />
         </section>
         <section id="menu">
           <MenuShowcase />
