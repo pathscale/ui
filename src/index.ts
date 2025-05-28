@@ -12,8 +12,9 @@ export {
   CollapseContent,
   CollapseDetails,
   CollapseTitle,
-  Summary,
+  Summary
 } from "./components/collapse";
+export { default as CopyButton } from "./components/copy-button";
 export { default as Countdown } from "./components/countdown";
 export { default as Diff } from "./components/diff";
 export { default as Divider } from "./components/divider";
@@ -37,6 +38,7 @@ export { default as Radio } from "./components/radio";
 export { default as Range } from "./components/range";
 export { default as Rating } from "./components/rating";
 export { default as Select } from "./components/select";
+export { default as ShowcaseBlock } from "./components/showcase/ShowcaseBlock";
 export { default as Skeleton } from "./components/skeleton";
 export { default as Stack } from "./components/stack";
 export { default as Stats } from "./components/stats";
@@ -46,11 +48,7 @@ export { default as Table } from "./components/table";
 export { default as Tabs } from "./components/tabs";
 export { default as Textarea } from "./components/textarea";
 export {
-  Timeline,
-  TimelineItem,
-  TimelineStart,
-  TimelineMiddle,
-  TimelineEnd,
+  Timeline, TimelineEnd, TimelineItem, TimelineMiddle, TimelineStart
 } from "./components/timeline";
 export { default as Toast } from "./components/toast";
 export { default as Toggle } from "./components/toggle";
