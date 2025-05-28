@@ -1,8 +1,6 @@
 import { JSX, splitProps } from "solid-js";
 import { twMerge } from "tailwind-merge";
-import { useSidebarContext } from "./SidebarContext";
 
-// Sidebar Header
 export type SidebarHeaderProps = JSX.HTMLAttributes<HTMLDivElement> & {
   className?: string;
   children: JSX.Element;
