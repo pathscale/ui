@@ -2,6 +2,7 @@ import { ParentComponent, Show, splitProps } from "solid-js";
 import { twMerge } from "tailwind-merge";
 
 import type { IComponentBaseProps } from "../types";
+import "./ShowcaseBlock.css";
 
 export interface ShowcaseBlockProps extends IComponentBaseProps {
 	title: string;
@@ -26,20 +27,20 @@ const ShowcaseBlock: ParentComponent<ShowcaseBlockProps> = (props) => {
 		<div
 			{...others}
 			data-theme={local.dataTheme}
-			class={twMerge("space-y-4", local.class, local.className)}
+			class={twMerge("showcase-block", local.class, local.className)}
 		>
-			<div class="p-6 bg-base-200 rounded-lg shadow-sm">
-				<h3 class="text-xl font-semibold mb-2 text-base-content">
+			<div class="showcase-block__container">
+				<h3 class="showcase-block__title">
 					{local.title}
 				</h3>
 				<Show when={local.description}>
-					<p class="text-base-content/70 mb-4">{local.description}</p>
+					<p class="showcase-block__description">{local.description}</p>
 				</Show>
 				<div
 					class={
 						local.preview
-							? "p-8 border border-base-content/15 rounded-lg bg-base-100"
-							: ""
+							? "showcase-block__content showcase-block__content--preview"
+							: "showcase-block__content"
 					}
 				>
 					{local.children}
@@ -49,4 +50,4 @@ const ShowcaseBlock: ParentComponent<ShowcaseBlockProps> = (props) => {
 	);
 };
 
-export default ShowcaseBlock; 
+export default ShowcaseBlock;

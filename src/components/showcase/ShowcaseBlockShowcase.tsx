@@ -1,12 +1,13 @@
 import { Component } from "solid-js";
 import Button from '../button';
 import ShowcaseBlock from './ShowcaseBlock';
+import "./ShowcaseBlockShowcase.css";
 
 const ShowcaseBlockShowcase: Component = () => {
 	return (
-		<div class="space-y-12 p-8">
-			<section>
-				<h2 class="text-xl font-semibold border-b pb-2 mb-4">Basic ShowcaseBlock</h2>
+		<div class="showcase-demo">
+			<section class="showcase-demo__section">
+				<h2 class="showcase-demo__section-title">Basic ShowcaseBlock</h2>
 				<ShowcaseBlock
 					title="Basic Example"
 					description="This is a basic example of a ShowcaseBlock component."
@@ -15,33 +16,33 @@ const ShowcaseBlockShowcase: Component = () => {
 				</ShowcaseBlock>
 			</section>
 
-			<section>
-				<h2 class="text-xl font-semibold border-b pb-2 mb-4">With Preview</h2>
+			<section class="showcase-demo__section">
+				<h2 class="showcase-demo__section-title">With Preview</h2>
 				<ShowcaseBlock
 					title="Preview Example"
 					description="This ShowcaseBlock has the preview prop set to true."
 					preview
 				>
-					<div class="flex flex-col items-center justify-center gap-4">
+					<div class="showcase-demo__preview-content">
 						<Button>Click Me</Button>
 						<p>This content is displayed inside a preview container.</p>
 					</div>
 				</ShowcaseBlock>
 			</section>
 
-			<section>
-				<h2 class="text-xl font-semibold border-b pb-2 mb-4">Custom Styles</h2>
+			<section class="showcase-demo__section">
+				<h2 class="showcase-demo__section-title">Custom Styles</h2>
 				<ShowcaseBlock
 					title="Custom Styles Example"
 					description="This ShowcaseBlock has custom classes applied."
-					class="border-2 border-primary p-2"
+					class="showcase-demo__custom-showcase"
 				>
 					<p>Content with custom parent styles.</p>
 				</ShowcaseBlock>
 			</section>
 
-			<section>
-				<h2 class="text-xl font-semibold border-b pb-2 mb-4">With Different Theme</h2>
+			<section class="showcase-demo__section">
+				<h2 class="showcase-demo__section-title">With Different Theme</h2>
 				<ShowcaseBlock
 					title="Themed Example"
 					description="This ShowcaseBlock uses a different theme."
@@ -54,4 +55,4 @@ const ShowcaseBlockShowcase: Component = () => {
 	);
 };
 
-export default ShowcaseBlockShowcase; 
+export default ShowcaseBlockShowcase;
