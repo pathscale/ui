@@ -1,5 +1,6 @@
 import { createSignal, onMount } from "solid-js";
 
+import Background from "../../src/components/background";
 import CopyButtonShowcase from "../../src/components/copy-button/CopyButtonShowcase";
 
 export default function App() {
@@ -10,6 +11,8 @@ export default function App() {
     if (stored === "dark" || stored === "light") {
       setTheme(stored);
       document.documentElement.setAttribute("data-theme", stored);
+    } else {
+      document.documentElement.setAttribute("data-theme", "light");
     }
   });
 
@@ -21,19 +24,21 @@ export default function App() {
   };
 
   return (
-    <div class="flex min-h-screen bg-base-100 text-base-content">
-      <aside class="w-48 border-r border-base-300 p-4 flex flex-col sticky top-0 h-screen bg-base-200">
-        <button
-          onClick={toggleTheme}
-          class="mt-4 px-3 py-2 rounded bg-base-300 hover:bg-base-100 transition-colors"
-        >
-          {theme() === "light" ? "Dark" : "Light"}
-        </button>
-      </aside>
+    <Background>
+      <div class="flex min-h-screen">
+        <aside class="w-48 border-r border-base-300 p-4 flex flex-col sticky top-0 h-screen bg-base-200">
+          <button
+            onClick={toggleTheme}
+            class="mt-4 px-3 py-2 rounded bg-base-300 hover:bg-base-100 transition-colors"
+          >
+            {theme() === "light" ? "Dark" : "Light"}
+          </button>
+        </aside>
 
-      <main class="flex-1 p-8 space-y-16 scroll-smooth">
-        <CopyButtonShowcase />
-      </main>
-    </div>
+        <main class="flex-1 p-8 space-y-16 scroll-smooth">
+          <CopyButtonShowcase />
+        </main>
+      </div>
+    </Background>
   );
 }
