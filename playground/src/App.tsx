@@ -1,7 +1,8 @@
 import { createSignal, onMount } from "solid-js";
 
 import Background from "../../src/components/background";
-import CopyButtonShowcase from "../../src/components/copy-button/CopyButtonShowcase";
+import Flex from "../../src/components/flex/Flex";
+import FlexShowcase from "../../src/components/flex/FlexShowcase";
 
 export default function App() {
   const [theme, setTheme] = createSignal<"light" | "dark">("light");
@@ -25,7 +26,7 @@ export default function App() {
 
   return (
     <Background>
-      <div class="flex min-h-screen">
+      <Flex class="min-h-screen">
         <aside class="w-48 border-r border-base-300 p-4 flex flex-col sticky top-0 h-screen bg-base-200">
           <button
             onClick={toggleTheme}
@@ -36,9 +37,9 @@ export default function App() {
         </aside>
 
         <main class="flex-1 p-8 space-y-16 scroll-smooth">
-          <CopyButtonShowcase />
+          <FlexShowcase />
         </main>
-      </div>
+      </Flex>
     </Background>
   );
 }
