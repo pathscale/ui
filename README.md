@@ -27,9 +27,9 @@ bun run build
 - [x] Badge
 - [x] Card
 - [ ] Carousel
-- [ ] Chat Bubble
+- [x] Chat Bubble
 - [x] Collapse
-- [ ] Countdown
+- [x] Countdown
 - [x] Diff
 - [x] Kbd
 - [x] Stats
@@ -38,11 +38,11 @@ bun run build
 
 ## Navigation
 
-- [ ] Bottom Navigation
+- [x] Dock
 - [x] Breadcrumbs
 - [x] Link
 - [x] Menu
-- [ ] Navbar (A)
+- [x] Navbar
 - [x] Pagination
 - [x] Steps
 - [ ] Tabs
@@ -51,9 +51,9 @@ bun run build
 
 - [x] Alert
 - [x] Loading
-- [ ] Progress
-- [ ] Radial Progress
-- [ ] Skeleton
+- [x] Progress
+- [x] Radial Progress
+- [x] Skeleton
 - [x] Tooltip
 - [x] Toast
 
@@ -64,7 +64,7 @@ bun run build
 - [x] Input
 - [x] Radio
 - [x] Range
-- [ ] Rating
+- [x] Rating
 - [x] Select
 - [x] Textarea
 - [x] Toggle
