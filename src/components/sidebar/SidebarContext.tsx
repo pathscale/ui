@@ -10,8 +10,6 @@ import { IComponentBaseProps } from "../types";
 
 interface SidebarContextValue {
   isOpen: () => boolean;
-  position: () => "left" | "right";
-  variant: () => "default" | "inset";
 }
 
 const SidebarContext = createContext<SidebarContextValue>();
@@ -28,7 +26,6 @@ export type SidebarProviderProps = JSX.HTMLAttributes<HTMLDivElement> &
   IComponentBaseProps & {
     open?: boolean;
     position?: "left" | "right";
-    variant?: "default" | "inset";
     className?: string;
     children: JSX.Element;
   };
@@ -38,7 +35,6 @@ export const SidebarProvider = (props: SidebarProviderProps) => {
     {
       open: false,
       position: "left" as const,
-      variant: "default" as const,
     },
     props
   );
@@ -47,7 +43,6 @@ export const SidebarProvider = (props: SidebarProviderProps) => {
     "children",
     "open",
     "position",
-    "variant",
     "dataTheme",
     "class",
     "className",
@@ -55,14 +50,11 @@ export const SidebarProvider = (props: SidebarProviderProps) => {
 
   const contextValue: SidebarContextValue = {
     isOpen: () => local.open!,
-    position: () => local.position!,
-    variant: () => local.variant!,
   };
 
   const containerClasses = () =>
     twMerge(
-      "flex h-screen w-full",
-      local.variant === "inset" && "p-2 gap-2",
+      "flex h-screen w-full overflow-hidden",
       local.class || local.className
     );
 
