@@ -1,7 +1,6 @@
 import { type JSX, splitProps, Show, For } from "solid-js";
 import { twMerge } from "tailwind-merge";
 import { clsx } from "clsx";
-import "./Sidenav.css";
 
 import type { IComponentBaseProps } from "../types";
 
