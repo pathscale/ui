@@ -1,4 +1,4 @@
-import { splitProps, type JSX } from "solid-js";
+import { type JSX, splitProps, Show, createSignal, createMemo } from "solid-js";
 import { twMerge } from "tailwind-merge";
 import { clsx } from "clsx";
 
@@ -15,6 +15,8 @@ type InputBaseProps = {
   class?: string;
   className?: string;
   style?: JSX.CSSProperties;
+  rightIcon?: JSX.Element;
+  leftIcon?: JSX.Element;
 };
 
 export type InputProps = InputBaseProps &
@@ -29,7 +31,17 @@ const Input = (props: InputProps): JSX.Element => {
     "class",
     "className",
     "style",
+    "leftIcon",
+    "rightIcon",
+    "type",
   ]);
+  const [passwordVisible, setPasswordVisible] = createSignal(false);
+  const inputType = createMemo(() => {
+    if (local.type === "password") {
+      return passwordVisible() ? "text" : "password";
+    }
+    return local.type;
+  });
 
   const classes = () =>
     twMerge(
@@ -54,12 +66,18 @@ const Input = (props: InputProps): JSX.Element => {
     );
 
   return (
-    <input
-      {...others}
-      data-theme={local.dataTheme}
-      class={classes()}
-      style={local.style}
-    />
+    <label class={classes()} style={local.style} data-theme={local.dataTheme}>
+      <Show when={local.leftIcon}>{local.leftIcon}</Show>
+      <input {...others} type={inputType()} />
+      <Show when={local.rightIcon}>
+        <span
+          onClick={() => setPasswordVisible(!passwordVisible())}
+          class={local.type === "password" ? "cursor-pointer" : ""}
+        >
+          {local.rightIcon}
+        </span>
+      </Show>
+    </label>
   );
 };
 

@@ -14,11 +14,11 @@ export type DockItemProps = JSX.ButtonHTMLAttributes<HTMLButtonElement> &
 const DockItem: Component<DockItemProps> = (props) => {
   const [local, others] = splitProps(props, [
     "children",
+    "active",
     "class",
     "className",
     "color",
     "dataTheme",
-    "active",
     "disabled",
   ]);
 
@@ -34,6 +34,9 @@ const DockItem: Component<DockItemProps> = (props) => {
       "text-success": local.color === "success",
       "text-warning": local.color === "warning",
       "text-error": local.color === "error",
+
+      "border-t-2 rounded-none": local.active,
+
       active: local.active,
       disabled: local.disabled,
     })
@@ -42,9 +45,9 @@ const DockItem: Component<DockItemProps> = (props) => {
   return (
     <button
       {...others}
-      class={classes}
       data-theme={local.dataTheme}
       disabled={local.disabled}
+      class={classes}
     >
       {local.children}
     </button>
