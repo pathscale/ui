@@ -4,8 +4,6 @@ import Background from "../../src/components/background";
 import Flex from "../../src/components/flex/Flex";
 import { Sidebar, SidebarItem } from "../../src/components/sidebar";
 import BackgroundShowcase from "../../src/components/background/BackgroundShowcase";
-import FlexShowcase from "../../src/components/flex/FlexShowcase";
-import GridShowcase from "../../src/components/grid/GridShowcase";
 
 export default function App() {
   const [theme, setTheme] = createSignal<"light" | "dark">("light");
@@ -43,8 +41,6 @@ export default function App() {
 
         <main class="flex-1 p-8 space-y-16 scroll-smooth">
           <BackgroundShowcase />
-          <FlexShowcase />
-          <GridShowcase />
         </main>
       </Flex>
     </Background>
