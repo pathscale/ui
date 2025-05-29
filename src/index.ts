@@ -31,6 +31,8 @@ export { default as Dock } from "./components/dock";
 export { default as Dropdown } from "./components/dropdown";
 export { default as Field } from "./components/field";
 export { default as FileInput } from "./components/fileinput";
+export { default as Footer } from "./components/footer";
+export type { FooterProps, FooterTitleProps } from "./components/footer";
 export { default as Indicator } from "./components/indicator";
 export { default as Input } from "./components/input";
 export { default as Join } from "./components/join";
