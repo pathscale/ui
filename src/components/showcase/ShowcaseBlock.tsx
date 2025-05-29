@@ -1,8 +1,7 @@
 import { ParentComponent, Show, splitProps } from "solid-js";
 import { twMerge } from "tailwind-merge";
-import Flex from "../flex";
 import type { IComponentBaseProps } from "../types";
-import "./ShowcaseBlock.css";
+import Flex from "../flex";
 
 export interface ShowcaseBlockProps extends IComponentBaseProps {
   title: string;
@@ -23,6 +22,10 @@ const ShowcaseBlock: ParentComponent<ShowcaseBlockProps> = (props) => {
     "dataTheme",
   ]);
 
+  const previewClass = local.preview
+    ? "border bg-base-100 border-base-content/15 p-8 rounded-lg"
+    : "";
+
   return (
     <Flex
       direction="col"
@@ -31,23 +34,16 @@ const ShowcaseBlock: ParentComponent<ShowcaseBlockProps> = (props) => {
       data-theme={local.dataTheme}
       class={twMerge(local.class, local.className)}
     >
-      <div class="showcase-block__container">
-        <h3 class="showcase-block__title">{local.title}</h3>
+      <div class="bg-base-200 shadow-sm p-6 rounded-lg">
+        <h3 class="text-lg font-semibold mb-2 text-base-content">
+          {local.title}
+        </h3>
         <Show when={local.description}>
-          <p class="showcase-block__description">{local.description}</p>
+          <p class="text-base-content/70 mb-4">{local.description}</p>
         </Show>
-        <div
-          class={
-            local.preview
-              ? "showcase-block__content showcase-block__content--preview"
-              : "showcase-block__content"
-          }
-        >
-          {local.children}
-        </div>
+        <div class={previewClass}>{local.children}</div>
       </div>
     </Flex>
   );
 };
-
 export default ShowcaseBlock;
