@@ -1,9 +1,6 @@
 import { createSignal, onMount } from "solid-js";
 
-import Background from "../../src/components/background";
-import Flex from "../../src/components/flex/Flex";
-import { Sidebar, SidebarItem } from "../../src/components/sidebar";
-import BackgroundShowcase from "../../src/components/background/BackgroundShowcase";
+import ChatBubbleShowcase from "../../src/components/chatbubble/ChatBubbleShowcase";
 
 export default function App() {
   const [theme, setTheme] = createSignal<"light" | "dark">("light");
@@ -26,23 +23,8 @@ export default function App() {
   };
 
   return (
-    <Background>
-      <Flex class="min-h-screen">
-        <Sidebar class="sticky top-0 h-screen w-52 p-4 border-r border-base-300 bg-base-200">
-          <SidebarItem>
-            <button
-              onClick={toggleTheme}
-              class="w-full text-left px-2 py-1 rounded hover:bg-base-100 transition-colors"
-            >
-              {theme() === "light" ? "Dark" : "Light"}
-            </button>
-          </SidebarItem>
-        </Sidebar>
-
-        <main class="flex-1 p-8 space-y-16 scroll-smooth">
-          <BackgroundShowcase />
-        </main>
-      </Flex>
-    </Background>
+    <main class="flex-1 p-8 space-y-16 scroll-smooth">
+      <ChatBubbleShowcase />
+    </main>
   );
 }
