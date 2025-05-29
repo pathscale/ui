@@ -9,12 +9,14 @@
     "preview": "vite preview"
   },
   "devDependencies": {
+    "@iconify/json": "^2.2.342",
+    "@iconify/tailwind4": "^1.0.6",
+    "@tailwindcss/vite": "^4.0.0",
     "daisyui": "^5.0.37",
     "solid-js": "^1.8.15",
+    "typescript": "^5.2.2",
     "vite": "^5.0.0",
     "vite-plugin-solid": "^2.9.1",
-    "vite-tsconfig-paths": "^4.3.1",
-    "@tailwindcss/vite": "^4.0.0",
-    "typescript": "^5.2.2"
+    "vite-tsconfig-paths": "^4.3.1"
   }
 }
