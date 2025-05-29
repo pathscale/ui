@@ -6,6 +6,7 @@ export { default as Badge } from "./components/badge";
 export { Breadcrumbs, BreadcrumbsItem } from "./components/breadcrumbs";
 export { default as Button } from "./components/button";
 export { default as Card } from "./components/card";
+export { default as ChatBubble } from "./components/chatbubble";
 export { default as Checkbox } from "./components/checkbox";
 export { CodeMockup, CodeMockupLine } from "./components/codemockup";
 export {
@@ -15,9 +16,11 @@ export {
   CollapseTitle,
   Summary
 } from "./components/collapse";
+export { default as CopyButton } from "./components/copy-button";
 export { default as Countdown } from "./components/countdown";
 export { default as Diff } from "./components/diff";
 export { default as Divider } from "./components/divider";
+export { default as Dock } from "./components/dock";
 export { default as Dropdown } from "./components/dropdown";
 export { default as Field } from "./components/field";
 export { default as FileInput } from "./components/fileinput";
@@ -35,9 +38,11 @@ export { default as Pagination } from "./components/pagination";
 export { Polymorphic, PolymorphicButton } from "./components/polymorphic";
 export { default as Progress } from "./components/progress";
 export { default as Radio } from "./components/radio";
+export { default as RadialProgress } from "./components/radialprogress";
 export { default as Range } from "./components/range";
 export { default as Rating } from "./components/rating";
 export { default as Select } from "./components/select";
+export { default as ShowcaseBlock } from "./components/showcase/ShowcaseBlock";
 export { default as Skeleton } from "./components/skeleton";
 export { default as Stack } from "./components/stack";
 export { default as Stats } from "./components/stats";
@@ -48,8 +53,12 @@ export { default as Tabs } from "./components/tabs";
 export { default as Textarea } from "./components/textarea";
 export {
   Timeline, TimelineEnd, TimelineItem, TimelineMiddle, TimelineStart
+  Timeline,
+  TimelineEnd,
+  TimelineItem,
+  TimelineMiddle,
+  TimelineStart,
 } from "./components/timeline";
 export { default as Toast } from "./components/toast";
 export { default as Toggle } from "./components/toggle";
 export { default as Tooltip } from "./components/tooltip";
-
