@@ -37,11 +37,13 @@ export { default as Navbar } from "./components/navbar";
 export { default as Pagination } from "./components/pagination";
 export { Polymorphic, PolymorphicButton } from "./components/polymorphic";
 export { default as Progress } from "./components/progress";
-export { default as Radio } from "./components/radio";
+export { PropsTable } from "./components/props-table";
 export { default as RadialProgress } from "./components/radialprogress";
+export { default as Radio } from "./components/radio";
 export { default as Range } from "./components/range";
 export { default as Rating } from "./components/rating";
 export { default as Select } from "./components/select";
+export { ShowcaseSection } from "./components/showcase-section";
 export { default as ShowcaseBlock } from "./components/showcase/ShowcaseBlock";
 export { default as Skeleton } from "./components/skeleton";
 export { default as Stack } from "./components/stack";
@@ -56,8 +58,9 @@ export {
   TimelineEnd,
   TimelineItem,
   TimelineMiddle,
-  TimelineStart,
+  TimelineStart
 } from "./components/timeline";
 export { default as Toast } from "./components/toast";
 export { default as Toggle } from "./components/toggle";
 export { default as Tooltip } from "./components/tooltip";
+
