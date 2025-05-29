@@ -19,6 +19,9 @@ export type FlexProps = IComponentBaseProps &
     gap?: ResponsiveProp<"none" | "sm" | "md" | "lg" | "xl">;
     gapX?: ResponsiveProp<"none" | "sm" | "md" | "lg" | "xl">;
     gapY?: ResponsiveProp<"none" | "sm" | "md" | "lg" | "xl">;
+    grow?: ResponsiveProp<boolean>;
+    shrink?: ResponsiveProp<boolean>;
+    basis?: ResponsiveProp<"none" | "sm" | "md" | "lg" | "xl">;
   };
 
 const directionMap = {
@@ -75,20 +78,38 @@ const gapYMap = {
   xl: "gap-y-8",
 };
 
+const growMap = {
+  true: "flex-grow",
+  false: "flex-grow-0",
+};
+
+const shrinkMap = {
+  true: "flex-shrink",
+  false: "flex-shrink-0",
+};
+
+const basisMap = {
+  none: "basis-0",
+  sm: "basis-8",
+  md: "basis-16",
+  lg: "basis-24",
+  xl: "basis-32",
+};
+
 const breakpoints = ["base", "sm", "md", "lg", "xl"] as const;
 
-function mapResponsiveProp<T extends string>(
+function mapResponsiveProp<T extends string | boolean>(
   prop: ResponsiveProp<T> | undefined,
-  map: Record<T, string>
+  map: Record<string, string>
 ) {
-  if (!prop) return [];
-
-  if (typeof prop === "string") return [map[prop]];
-
+  if (prop === undefined) return [];
+  if (typeof prop === "string" || typeof prop === "boolean") {
+    return [map[String(prop)]];
+  }
   return breakpoints.flatMap((bp) => {
     const value = prop[bp];
-    if (!value) return [];
-    const className = map[value];
+    if (value === undefined) return [];
+    const className = map[String(value)];
     return bp === "base" ? className : `${bp}:${className}`;
   });
 }
@@ -105,6 +126,9 @@ const Flex = (props: FlexProps) => {
     "gap",
     "gapX",
     "gapY",
+    "grow",
+    "shrink",
+    "basis",
   ]);
 
   const tag = local.as || "div";
@@ -119,6 +143,9 @@ const Flex = (props: FlexProps) => {
     mapResponsiveProp(local.gap, gapMap),
     mapResponsiveProp(local.gapX, gapXMap),
     mapResponsiveProp(local.gapY, gapYMap),
+    mapResponsiveProp(local.grow, growMap),
+    mapResponsiveProp(local.shrink, shrinkMap),
+    mapResponsiveProp(local.basis, basisMap),
     local.class
   );
 
