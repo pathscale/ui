@@ -2,46 +2,47 @@ import Flex from "./Flex";
 
 export default function FlexShowcase() {
   return (
-    <section class="space-y-8 p-6">
-      <div>
-        <h3 class="text-lg font-semibold mb-2">Row direction with gap</h3>
-        <Flex direction="row" gap="md" class="bg-base-200 p-4 rounded">
-          <Box>Item 1</Box>
-          <Box>Item 2</Box>
-          <Box>Item 3</Box>
+    <section class="space-y-6">
+      <div class="bg-base-200 p-4 rounded">
+        <h2 class="text-lg font-bold mb-2">Default Flex Row</h2>
+        <Flex class="bg-base-100 p-2 rounded">
+          <div class="bg-primary text-white p-2 rounded">Item 1</div>
+          <div class="bg-secondary text-white p-2 rounded">Item 2</div>
+          <div class="bg-accent text-white p-2 rounded">Item 3</div>
         </Flex>
       </div>
 
-      <div>
-        <h3 class="text-lg font-semibold mb-2">Column direction, centered</h3>
+      <div class="bg-base-200 p-4 rounded">
+        <h2 class="text-lg font-bold mb-2">Flex Column with Gap</h2>
+        <Flex direction="col" gap="md" class="bg-base-100 p-2 rounded">
+          <div class="bg-primary text-white p-2 rounded">Item 1</div>
+          <div class="bg-secondary text-white p-2 rounded">Item 2</div>
+          <div class="bg-accent text-white p-2 rounded">Item 3</div>
+        </Flex>
+      </div>
+
+      <div class="bg-base-200 p-4 rounded">
+        <h2 class="text-lg font-bold mb-2">Justify and Align</h2>
         <Flex
-          direction="col"
-          justify="center"
+          justify="between"
           align="center"
-          gap="sm"
-          class="bg-base-200 p-4 rounded h-64"
+          class="bg-base-100 p-2 rounded h-24"
         >
-          <Box>Item A</Box>
-          <Box>Item B</Box>
+          <div class="bg-primary text-white p-2 rounded">Start</div>
+          <div class="bg-secondary text-white p-2 rounded">End</div>
         </Flex>
       </div>
 
-      <div>
-        <h3 class="text-lg font-semibold mb-2">Wrap and gap</h3>
-        <Flex wrap="wrap" gap="lg" class="bg-base-200 p-4 rounded">
-          {Array.from({ length: 6 }).map((_, i) => (
-            <Box>{`Item ${i + 1}`}</Box>
+      <div class="bg-base-200 p-4 rounded">
+        <h2 class="text-lg font-bold mb-2">Flex Wrap</h2>
+        <Flex wrap="wrap" gap="sm" class="bg-base-100 p-2 rounded">
+          {Array.from({ length: 10 }).map((_, i) => (
+            <div class="bg-primary text-white p-2 rounded w-24 text-center">
+              Item {i + 1}
+            </div>
           ))}
         </Flex>
       </div>
     </section>
-  );
-}
-
-function Box(props: { children: string }) {
-  return (
-    <div class="bg-primary text-primary-content px-4 py-2 rounded shadow text-sm">
-      {props.children}
-    </div>
   );
 }
