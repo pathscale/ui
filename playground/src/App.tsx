@@ -2,6 +2,7 @@ import { createSignal, onMount } from "solid-js";
 
 import Background from "../../src/components/background";
 import Flex from "../../src/components/flex/Flex";
+import { Sidebar, SidebarItem } from "../../src/components/sidebar";
 import FlexShowcase from "../../src/components/flex/FlexShowcase";
 import GridShowcase from "../../src/components/grid/GridShowcase";
 
@@ -28,14 +29,16 @@ export default function App() {
   return (
     <Background>
       <Flex class="min-h-screen">
-        <aside class="w-48 border-r border-base-300 p-4 flex flex-col sticky top-0 h-screen bg-base-200">
-          <button
-            onClick={toggleTheme}
-            class="mt-4 px-3 py-2 rounded bg-base-300 hover:bg-base-100 transition-colors"
-          >
-            {theme() === "light" ? "Dark" : "Light"}
-          </button>
-        </aside>
+        <Sidebar class="sticky top-0 h-screen w-52 p-4 border-r border-base-300 bg-base-200">
+          <SidebarItem>
+            <button
+              onClick={toggleTheme}
+              class="w-full text-left px-2 py-1 rounded hover:bg-base-100 transition-colors"
+            >
+              {theme() === "light" ? "Dark" : "Light"}
+            </button>
+          </SidebarItem>
+        </Sidebar>
 
         <main class="flex-1 p-8 space-y-16 scroll-smooth">
           <FlexShowcase />
