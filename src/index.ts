@@ -1,10 +1,3 @@
-// Core components
-export { default as Background } from "./components/background";
-export { default as Flex } from "./components/flex";
-export { default as Grid } from "./components/grid";
-export { Sidebar, SidebarItem } from "./components/sidebar";
-
-// UI Components
 export { default as Accordion } from "./components/accordion";
 export { default as Alert } from "./components/alert";
 export { default as Autocomplete } from "./components/autocomplete";
@@ -21,7 +14,7 @@ export {
   CollapseContent,
   CollapseDetails,
   CollapseTitle,
-  Summary,
+  Summary
 } from "./components/collapse";
 export { default as CopyButton } from "./components/copy-button";
 export { default as Countdown } from "./components/countdown";
@@ -31,7 +24,7 @@ export { default as Dock } from "./components/dock";
 export { default as Dropdown } from "./components/dropdown";
 export { default as Field } from "./components/field";
 export { default as FileInput } from "./components/fileinput";
-export { default as Footer } from "./components/footer";
+export { Footer, FooterTitle } from "./components/footer";
 export type { FooterProps, FooterTitleProps } from "./components/footer";
 export { default as Indicator } from "./components/indicator";
 export { default as Input } from "./components/input";
@@ -58,6 +51,8 @@ export { Sidenav } from "./components/sidenav";
 export { default as Skeleton } from "./components/skeleton";
 export { default as Stack } from "./components/stack";
 export { default as Stats } from "./components/stats";
+export { Status } from "./components/status";
+export type { StatusProps } from "./components/status";
 export { default as Steps } from "./components/steps";
 export { default as Swap } from "./components/swap";
 export { default as Table } from "./components/table";
@@ -68,8 +63,9 @@ export {
   TimelineEnd,
   TimelineItem,
   TimelineMiddle,
-  TimelineStart,
+  TimelineStart
 } from "./components/timeline";
 export { default as Toast } from "./components/toast";
 export { default as Toggle } from "./components/toggle";
 export { default as Tooltip } from "./components/tooltip";
+
