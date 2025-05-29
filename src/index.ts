@@ -3,6 +3,7 @@ export { default as Alert } from "./components/alert";
 export { default as Autocomplete } from "./components/autocomplete";
 export { default as Avatar } from "./components/avatar";
 export { default as Badge } from "./components/badge";
+export { default as PhoneMockup } from "./components/phonemockup";
 export { Breadcrumbs, BreadcrumbsItem } from "./components/breadcrumbs";
 export { default as Button } from "./components/button";
 export { default as Card } from "./components/card";

@@ -6,7 +6,7 @@ import { IComponentBaseProps, ComponentColor } from "../types";
 export type PhoneMockupProps = JSX.HTMLAttributes<HTMLDivElement> &
   IComponentBaseProps & {
     color?: Exclude<ComponentColor, "ghost">;
-    innerProps?: JSX.HTMLAttributes<HTMLDivElement> & { className: string };
+    innerProps?: JSX.HTMLAttributes<HTMLDivElement> & IComponentBaseProps;
   };
 
 const PhoneMockup: ParentComponent<PhoneMockupProps> = (props) => {
