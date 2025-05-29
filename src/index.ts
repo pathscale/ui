@@ -3,7 +3,14 @@ export { default as Alert } from "./components/alert";
 export { default as Autocomplete } from "./components/autocomplete";
 export { default as Avatar } from "./components/avatar";
 export { default as Badge } from "./components/badge";
-export { default as PhoneMockup } from "./components/phonemockup";
+export {
+  default as PhoneMockup,
+  type PhoneMockupProps,
+} from "./components/phonemockup";
+export {
+  default as WindowMockup,
+  type WindowMockupProps,
+} from "./components/windowmockup";
 export { Breadcrumbs, BreadcrumbsItem } from "./components/breadcrumbs";
 export { default as Button } from "./components/button";
 export { default as Card } from "./components/card";
@@ -15,7 +22,7 @@ export {
   CollapseContent,
   CollapseDetails,
   CollapseTitle,
-  Summary
+  Summary,
 } from "./components/collapse";
 export { default as CopyButton } from "./components/copy-button";
 export { default as Countdown } from "./components/countdown";
@@ -28,7 +35,11 @@ export { default as FileInput } from "./components/fileinput";
 export { default as Footer } from "./components/footer";
 export type { FooterProps, FooterTitleProps } from "./components/footer";
 export { default as Hero } from "./components/hero";
-export type { HeroContentProps, HeroOverlayProps, HeroProps } from "./components/hero";
+export type {
+  HeroContentProps,
+  HeroOverlayProps,
+  HeroProps,
+} from "./components/hero";
 export { default as Indicator } from "./components/indicator";
 export { default as Input } from "./components/input";
 export { default as Join } from "./components/join";
@@ -66,9 +77,8 @@ export {
   TimelineEnd,
   TimelineItem,
   TimelineMiddle,
-  TimelineStart
+  TimelineStart,
 } from "./components/timeline";
 export { default as Toast } from "./components/toast";
 export { default as Toggle } from "./components/toggle";
 export { default as Tooltip } from "./components/tooltip";
-
