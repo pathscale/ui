@@ -13,7 +13,7 @@ export {
   CollapseContent,
   CollapseDetails,
   CollapseTitle,
-  Summary
+  Summary,
 } from "./components/collapse";
 export { default as CopyButton } from "./components/copy-button";
 export { default as Countdown } from "./components/countdown";
@@ -50,9 +50,13 @@ export { default as Table } from "./components/table";
 export { default as Tabs } from "./components/tabs";
 export { default as Textarea } from "./components/textarea";
 export {
-  Timeline, TimelineEnd, TimelineItem, TimelineMiddle, TimelineStart
+  Timeline,
+  TimelineEnd,
+  TimelineItem,
+  TimelineMiddle,
+  TimelineStart,
 } from "./components/timeline";
 export { default as Toast } from "./components/toast";
 export { default as Toggle } from "./components/toggle";
 export { default as Tooltip } from "./components/tooltip";
-
+export { default as Sidenav } from "./components/sidenav";
