@@ -7,6 +7,9 @@ export interface IComponentBaseProps {
   style?: JSX.CSSProperties;
 }
 
+export type ResponsiveBreakpoints = "base" | "sm" | "md" | "lg" | "xl";
+export type ResponsiveProp<T> = T | Partial<Record<ResponsiveBreakpoints, T>>;
+
 export type ComponentSize = "xs" | "sm" | "md" | "lg" | "xl";
 
 export type ComponentShape = "circle" | "square" | "rounded";
@@ -22,6 +25,11 @@ export type ComponentColor =
   | "error"
   | "ghost";
 
-export type ComponentVariant = "soft" | "dash" | "outline" | "filled" | "ghost" | "outlined";
+export type ComponentVariant =
+  | "soft"
+  | "dash"
+  | "outline"
+  | "filled"
+  | "ghost"
+  | "outlined";
 export type ComponentPosition = "top" | "bottom" | "left" | "right";
-
