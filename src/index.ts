@@ -8,12 +8,13 @@ export { default as Button } from "./components/button";
 export { default as Card } from "./components/card";
 export { default as ChatBubble } from "./components/chatbubble";
 export { default as Checkbox } from "./components/checkbox";
+export { CodeMockup, CodeMockupLine } from "./components/codemockup";
 export {
   Collapse,
   CollapseContent,
   CollapseDetails,
   CollapseTitle,
-  Summary,
+  Summary
 } from "./components/collapse";
 export { default as CopyButton } from "./components/copy-button";
 export { default as Countdown } from "./components/countdown";
@@ -60,4 +61,3 @@ export {
 export { default as Toast } from "./components/toast";
 export { default as Toggle } from "./components/toggle";
 export { default as Tooltip } from "./components/tooltip";
-export { default as Sidenav } from "./components/sidenav";
