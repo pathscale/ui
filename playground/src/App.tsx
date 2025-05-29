@@ -1,6 +1,6 @@
 import { createSignal, onMount } from "solid-js";
 
-import InputShowcase from "../../src/components/input/InputShowcase";
+import ShowcaseBlockShowcase from "../../src/components/showcase/ShowcaseBlockShowcase";
 
 export default function App() {
   const [theme, setTheme] = createSignal<"light" | "dark">("light");
@@ -32,7 +32,7 @@ export default function App() {
       </aside>
 
       <main class="flex-1 p-8 space-y-16 scroll-smooth">
-        <InputShowcase />
+        <ShowcaseBlockShowcase />
       </main>
     </div>
   );

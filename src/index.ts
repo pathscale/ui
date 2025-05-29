@@ -41,6 +41,7 @@ export { default as RadialProgress } from "./components/radialprogress";
 export { default as Range } from "./components/range";
 export { default as Rating } from "./components/rating";
 export { default as Select } from "./components/select";
+export { default as ShowcaseBlock } from "./components/showcase/ShowcaseBlock";
 export { default as Skeleton } from "./components/skeleton";
 export { default as Stack } from "./components/stack";
 export { default as Stats } from "./components/stats";
