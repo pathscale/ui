@@ -2,6 +2,7 @@ import { ParentComponent, splitProps } from "solid-js";
 import { twMerge } from "tailwind-merge";
 import clsx from "clsx";
 import type { IComponentBaseProps } from "../types";
+import { FooterTitle } from "./FooterTitle";
 
 export type FooterProps = IComponentBaseProps & {
   center?: boolean;
@@ -39,23 +40,6 @@ const Footer: ParentComponent<FooterProps> = (props) => {
   );
 };
 
-export interface FooterTitleProps extends IComponentBaseProps {}
+const FooterNamespaces = Object.assign(Footer, { Title: FooterTitle });
 
-export const FooterTitle: ParentComponent<FooterTitleProps> = (props) => {
-  const [local, others] = splitProps(props, [
-    "children",
-    "class",
-    "className",
-    "dataTheme",
-  ]);
-
-  const classes = () => twMerge("footer-title", local.class, local.className);
-
-  return (
-    <h6 {...others} data-theme={local.dataTheme} class={classes()}>
-      {local.children}
-    </h6>
-  );
-};
-
-export default Footer;
+export default FooterNamespaces;

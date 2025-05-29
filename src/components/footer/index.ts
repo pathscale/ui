@@ -1,3 +1,3 @@
-export { default as Footer, FooterTitle } from "./Footer";
-export type { FooterProps, FooterTitleProps } from "./Footer";
-
+export { default as Footer } from "./Footer";
+export type { FooterProps } from "./Footer";
+export type { FooterTitleProps } from "./FooterTitle";
