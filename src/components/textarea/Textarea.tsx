@@ -15,6 +15,7 @@ type TextareaBaseProps = {
   class?: string;
   className?: string;
   style?: JSX.CSSProperties;
+  resize?: "none" | "x" | "y" | "both";
 };
 
 export type TextareaProps = TextareaBaseProps &
@@ -32,6 +33,7 @@ const Textarea = (props: TextareaProps): JSX.Element => {
     "class",
     "className",
     "style",
+    "resize",
   ]);
 
   const classes = () =>
@@ -53,6 +55,10 @@ const Textarea = (props: TextareaProps): JSX.Element => {
         "textarea-success": local.color === "success",
         "textarea-warning": local.color === "warning",
         "textarea-error": local.color === "error",
+        "resize-y": local.resize === "y",
+        "resize-x": local.resize === "x",
+        "resize-none": local.resize === "none",
+        "resize-both": local.resize === "both",
       })
     );
 

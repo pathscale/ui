@@ -46,6 +46,16 @@ const TextareaShowcase: Component = () => {
           />
         </div>
       </section>
+
+      <section>
+        <h2 class="text-xl font-semibold border-b pb-2 mb-4">Resize</h2>
+        <div class="flex flex-col gap-2 w-full max-w-md">
+          <Textarea placeholder="Verical resize" resize="y" />
+          <Textarea placeholder="Horizontal resize" resize="x" />
+          <Textarea placeholder="Both resize" resize="both" />
+          <Textarea placeholder="None resize" resize="none" />
+        </div>
+      </section>
     </div>
   );
 };
