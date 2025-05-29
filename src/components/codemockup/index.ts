@@ -1,4 +1,2 @@
-import { CodeMockup } from "./CodeMockup";
-import { CodeMockupLine } from "./CodeMockupLine";
-
-export { CodeMockup, CodeMockupLine };
+export { default as CodeMockup } from "./CodeMockup";
+export { default as CodeMockupLine } from "./CodeMockupLine";

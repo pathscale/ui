@@ -1,5 +1,5 @@
-import { JSX, splitProps, mergeProps } from "solid-js";
 import clsx from "clsx";
+import { JSX, mergeProps, splitProps } from "solid-js";
 import { twMerge } from "tailwind-merge";
 
 type ComponentStatus = "info" | "success" | "warning" | "error";
@@ -13,7 +13,7 @@ type CodeMockupLineProps = JSX.HTMLAttributes<HTMLPreElement> & {
   dataTheme?: AppTheme;
 };
 
-export function CodeMockupLine(props: CodeMockupLineProps): JSX.Element {
+const CodeMockupLine = (props: CodeMockupLineProps): JSX.Element => {
   const merged = mergeProps(
     {
       dataPrefix: ">",
@@ -64,4 +64,6 @@ export function CodeMockupLine(props: CodeMockupLineProps): JSX.Element {
       </code>
     </pre>
   );
-}
+};
+
+export default CodeMockupLine;
