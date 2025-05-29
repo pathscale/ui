@@ -37,6 +37,7 @@ export { default as Navbar } from "./components/navbar";
 export { default as Pagination } from "./components/pagination";
 export { Polymorphic, PolymorphicButton } from "./components/polymorphic";
 export { default as Progress } from "./components/progress";
+export { PropsTable } from "./components/props-table";
 export { default as RadialProgress } from "./components/radialprogress";
 export { default as Radio } from "./components/radio";
 export { default as Range } from "./components/range";
