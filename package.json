@@ -1,6 +1,6 @@
 {
   "name": "@pathscale/ui",
-  "version": "0.0.16",
+  "version": "0.0.17",
   "author": "pathscale",
   "repository": {
     "type": "git",
@@ -50,7 +50,7 @@
     "solid-js": "^1.9"
   },
   "scripts": {
-    "build": "rslib build",
+    "build": "rslib build && bun scripts/copy-css.js",
     "build:watch": "rslib build --watch",
     "dev": "rslib dev",
     "preview": "rslib preview",
