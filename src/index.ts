@@ -52,7 +52,6 @@ export { default as Table } from "./components/table";
 export { default as Tabs } from "./components/tabs";
 export { default as Textarea } from "./components/textarea";
 export {
-  Timeline, TimelineEnd, TimelineItem, TimelineMiddle, TimelineStart
   Timeline,
   TimelineEnd,
   TimelineItem,
