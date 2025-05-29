@@ -1,3 +1,10 @@
+// Core components
+export { default as Background } from "./components/background";
+export { default as Flex } from "./components/flex";
+export { default as Grid } from "./components/grid";
+export { Sidebar, SidebarItem } from "./components/sidebar";
+
+// UI Components
 export { default as Accordion } from "./components/accordion";
 export { default as Alert } from "./components/alert";
 export { default as Autocomplete } from "./components/autocomplete";
@@ -14,7 +21,7 @@ export {
   CollapseContent,
   CollapseDetails,
   CollapseTitle,
-  Summary
+  Summary,
 } from "./components/collapse";
 export { default as CopyButton } from "./components/copy-button";
 export { default as Countdown } from "./components/countdown";
@@ -45,6 +52,7 @@ export { default as Rating } from "./components/rating";
 export { default as Select } from "./components/select";
 export { ShowcaseSection } from "./components/showcase-section";
 export { default as ShowcaseBlock } from "./components/showcase/ShowcaseBlock";
+export { Sidenav } from "./components/sidenav";
 export { default as Skeleton } from "./components/skeleton";
 export { default as Stack } from "./components/stack";
 export { default as Stats } from "./components/stats";
@@ -58,9 +66,8 @@ export {
   TimelineEnd,
   TimelineItem,
   TimelineMiddle,
-  TimelineStart
+  TimelineStart,
 } from "./components/timeline";
 export { default as Toast } from "./components/toast";
 export { default as Toggle } from "./components/toggle";
 export { default as Tooltip } from "./components/tooltip";
-
