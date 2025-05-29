@@ -1,6 +1,6 @@
 import { createSignal, onMount } from "solid-js";
 
-import TextareaShowcase from "../../src/components/textarea/TextareaShowcase";
+import InputShowcase from "../../src/components/input/InputShowcase";
 
 export default function App() {
   const [theme, setTheme] = createSignal<"light" | "dark">("light");
@@ -32,7 +32,7 @@ export default function App() {
       </aside>
 
       <main class="flex-1 p-8 space-y-16 scroll-smooth">
-        <TextareaShowcase />
+        <InputShowcase />
       </main>
     </div>
   );
