@@ -1,4 +1,4 @@
-import { splitProps, type JSX } from "solid-js";
+import { type JSX, splitProps, Show } from "solid-js";
 import { twMerge } from "tailwind-merge";
 import { clsx } from "clsx";
 
@@ -15,6 +15,8 @@ type InputBaseProps = {
   class?: string;
   className?: string;
   style?: JSX.CSSProperties;
+  rightIcon?: JSX.Element;
+  leftIcon?: JSX.Element;
 };
 
 export type InputProps = InputBaseProps &
@@ -29,6 +31,8 @@ const Input = (props: InputProps): JSX.Element => {
     "class",
     "className",
     "style",
+    "leftIcon",
+    "rightIcon",
   ]);
 
   const classes = () =>
@@ -54,12 +58,11 @@ const Input = (props: InputProps): JSX.Element => {
     );
 
   return (
-    <input
-      {...others}
-      data-theme={local.dataTheme}
-      class={classes()}
-      style={local.style}
-    />
+    <label class={classes()} style={local.style} data-theme={local.dataTheme}>
+      <Show when={local.leftIcon}>{local.leftIcon}</Show>
+      <input {...others} />
+      <Show when={local.rightIcon}>{local.rightIcon}</Show>
+    </label>
   );
 };
 
