@@ -3,9 +3,7 @@ import { Dynamic } from "solid-js/web";
 import { twMerge } from "tailwind-merge";
 import type { IComponentBaseProps } from "../types";
 import clsx from "clsx";
-
-type ResponsiveBreakpoints = "base" | "sm" | "md" | "lg" | "xl";
-type ResponsiveProp<T> = T | Partial<Record<ResponsiveBreakpoints, T>>;
+import { ResponsiveProp } from "../types";
 
 type GridFlow = "row" | "col" | "row-dense" | "col-dense";
 type GridSize =

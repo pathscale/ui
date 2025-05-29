@@ -3,9 +3,7 @@ import { Dynamic } from "solid-js/web";
 import clsx from "clsx";
 import { twMerge } from "tailwind-merge";
 import type { IComponentBaseProps } from "../types";
-
-type ResponsiveBreakpoints = "base" | "sm" | "md" | "lg" | "xl";
-type ResponsiveProp<T> = T | Partial<Record<ResponsiveBreakpoints, T>>;
+import { ResponsiveProp } from "../types";
 
 export type FlexProps = IComponentBaseProps &
   Omit<JSX.HTMLAttributes<HTMLElement>, "ref"> & {
