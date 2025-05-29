@@ -51,6 +51,8 @@ export { Sidenav } from "./components/sidenav";
 export { default as Skeleton } from "./components/skeleton";
 export { default as Stack } from "./components/stack";
 export { default as Stats } from "./components/stats";
+export { Status } from "./components/status";
+export type { StatusProps } from "./components/status";
 export { default as Steps } from "./components/steps";
 export { default as Swap } from "./components/swap";
 export { default as Table } from "./components/table";
