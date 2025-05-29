@@ -45,6 +45,7 @@ export { default as Rating } from "./components/rating";
 export { default as Select } from "./components/select";
 export { ShowcaseSection } from "./components/showcase-section";
 export { default as ShowcaseBlock } from "./components/showcase/ShowcaseBlock";
+export { Sidenav } from "./components/sidenav";
 export { default as Skeleton } from "./components/skeleton";
 export { default as Stack } from "./components/stack";
 export { default as Stats } from "./components/stats";
