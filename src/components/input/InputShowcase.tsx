@@ -107,7 +107,11 @@ const InputShowcase: Component = () => {
         </h2>
         <div class="flex flex-col gap-2 w-full max-w-xs">
           <Input leftIcon={lenseIcon} type="text" placeholder="Left Icon" />
-          <Input rightIcon={fileIcon} type="text" placeholder="Right Icon" />
+          <Input
+            rightIcon={fileIcon}
+            type="password"
+            placeholder="Right Icon"
+          />
         </div>
       </section>
     </div>
