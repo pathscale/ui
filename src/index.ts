@@ -28,7 +28,10 @@ export {
 } from "./components/collapse";
 export { default as CopyButton } from "./components/copy-button";
 export { default as Countdown } from "./components/countdown";
-export { default as BrowserMockup } from "./components/browsermockup";
+export {
+  default as BrowserMockup,
+  type BrowserMockupProps,
+} from "./components/browsermockup";
 export { default as Diff } from "./components/diff";
 export { default as Divider } from "./components/divider";
 export { default as Dock } from "./components/dock";
