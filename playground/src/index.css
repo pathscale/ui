@@ -2,6 +2,7 @@
 @plugin "daisyui";
 @import "../../src/index.css";
 @source "../../src";
+@plugin "@iconify/tailwind4";
 
 [data-theme="custom"] {
   --color-bg-body: #1a1a1a;
