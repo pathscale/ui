@@ -2,6 +2,7 @@ export { default as Accordion } from "./components/accordion";
 export { default as Alert } from "./components/alert";
 export { default as Autocomplete } from "./components/autocomplete";
 export { default as Avatar } from "./components/avatar";
+export { default as Background } from "./components/background";
 export { default as Badge } from "./components/badge";
 export {
   default as PhoneMockup,
@@ -32,8 +33,10 @@ export { default as Dock } from "./components/dock";
 export { default as Dropdown } from "./components/dropdown";
 export { default as Field } from "./components/field";
 export { default as FileInput } from "./components/fileinput";
+export { default as Flex } from "./components/flex";
 export { default as Footer } from "./components/footer";
 export type { FooterProps, FooterTitleProps } from "./components/footer";
+export { default as Grid } from "./components/grid";
 export { default as Hero } from "./components/hero";
 export type {
   HeroContentProps,
@@ -51,6 +54,7 @@ export { Menu } from "./components/menu";
 export { default as Modal } from "./components/modal";
 export { default as Navbar } from "./components/navbar";
 export { default as Pagination } from "./components/pagination";
+export { default as PhoneMockup } from "./components/phonemockup";
 export { Polymorphic, PolymorphicButton } from "./components/polymorphic";
 export { default as Progress } from "./components/progress";
 export { PropsTable } from "./components/props-table";
