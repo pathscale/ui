@@ -1,5 +1,4 @@
-import type { JSX } from "solid-js";
-import { splitProps } from "solid-js";
+import { createMemo, type JSX, splitProps } from "solid-js";
 import { clsx } from "clsx";
 import { twMerge } from "tailwind-merge";
 
@@ -34,7 +33,7 @@ export default function Swap(props: SwapProps): JSX.Element {
     "onChange",
   ]);
 
-  const classes = () =>
+  const className = createMemo(() =>
     twMerge(
       "swap",
       clsx({
@@ -44,25 +43,30 @@ export default function Swap(props: SwapProps): JSX.Element {
       }),
       local.class,
       local.className
-    );
+    )
+  );
 
-  const onEl = wrapWithElementIfInvalid({
-    node: local.onElement,
-    wrapper: "div",
-    className: "swap-on",
-  });
+  const onEl = createMemo(() =>
+    wrapWithElementIfInvalid({
+      node: local.onElement,
+      wrapper: "div",
+      className: "swap-on",
+    })
+  );
 
-  const offEl = wrapWithElementIfInvalid({
-    node: local.offElement,
-    wrapper: "div",
-    className: "swap-off",
-  });
+  const offEl = createMemo(() =>
+    wrapWithElementIfInvalid({
+      node: local.offElement,
+      wrapper: "div",
+      className: "swap-off",
+    })
+  );
 
   return (
     <label
       {...others}
       data-theme={local.dataTheme}
-      class={classes()}
+      class={className()}
       role="switch"
     >
       <input
@@ -70,8 +74,8 @@ export default function Swap(props: SwapProps): JSX.Element {
         onClick={local.onClick}
         onChange={local.onChange}
       />
-      {onEl}
-      {offEl}
+      {onEl()}
+      {offEl()}
     </label>
   );
 }
