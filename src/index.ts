@@ -4,6 +4,15 @@ export { default as Autocomplete } from "./components/autocomplete";
 export { default as Avatar } from "./components/avatar";
 export { default as Background } from "./components/background";
 export { default as Badge } from "./components/badge";
+export {
+  default as PhoneMockup,
+  type PhoneMockupProps,
+} from "./components/phonemockup";
+export {
+  default as WindowMockup,
+  type WindowMockupProps,
+} from "./components/windowmockup";
+export { default as Drawer, type DrawerProps } from "./components/drawer";
 export { Breadcrumbs, BreadcrumbsItem } from "./components/breadcrumbs";
 export { default as Button } from "./components/button";
 export { default as Card } from "./components/card";
@@ -19,6 +28,10 @@ export {
 } from "./components/collapse";
 export { default as CopyButton } from "./components/copy-button";
 export { default as Countdown } from "./components/countdown";
+export {
+  default as BrowserMockup,
+  type BrowserMockupProps,
+} from "./components/browsermockup";
 export { default as Diff } from "./components/diff";
 export { default as Divider } from "./components/divider";
 export { default as Dock } from "./components/dock";
