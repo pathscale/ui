@@ -6,31 +6,36 @@ const TableShowcase: Component = () => {
     <div class="space-y-12 p-8">
       {/* Default Table */}
       <section>
-        <h2 class="text-xl font-semibold border-b pb-2 mb-4">
-          Default Table
-        </h2>
+        <h2 class="text-xl font-semibold border-b pb-2 mb-4">Default Table</h2>
         <div class="overflow-x-auto">
           <Table>
             <Table.Head>
-              <span>#</span>
+              <span />
               <span>Name</span>
-              <span>Role</span>
+              <span>Job</span>
+              <span>Favorite Color</span>
             </Table.Head>
+
             <Table.Body>
               <Table.Row>
                 <span>1</span>
-                <span>Alice</span>
-                <span>Engineer</span>
+                <span>Cy Ganderton</span>
+                <span>Quality Control Specialist</span>
+                <span>Blue</span>
               </Table.Row>
+
               <Table.Row>
                 <span>2</span>
-                <span>Bob</span>
-                <span>Designer</span>
+                <span>Hart Hagerty</span>
+                <span>Desktop Support Technician</span>
+                <span>Purple</span>
               </Table.Row>
+
               <Table.Row>
                 <span>3</span>
-                <span>Carol</span>
-                <span>Product</span>
+                <span>Brice Swyre</span>
+                <span>Tax Accountant</span>
+                <span>Red</span>
               </Table.Row>
             </Table.Body>
           </Table>
