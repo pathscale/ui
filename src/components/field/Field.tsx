@@ -1,6 +1,15 @@
-import { type Component, splitProps, type JSX, createMemo } from "solid-js";
+import {
+  type Component,
+  splitProps,
+  type JSX,
+  createMemo,
+} from "solid-js";
 import { classes, type VariantProps, type ClassProps } from "@src/lib/style";
-import { fieldWrapper, labelStyles, messageStyles } from "./Field.styles";
+import {
+  fieldWrapper,
+  labelStyles,
+  messageStyles,
+} from "./Field.styles";
 
 export type FieldProps = {
   /** Label text */
@@ -15,9 +24,9 @@ export type FieldProps = {
   size?: "sm" | "md" | "lg";
   /** Extra wrapper classes */
   className?: string;
-} & VariantProps<typeof fieldWrapper> &
-  ClassProps &
-  Omit<JSX.HTMLAttributes<HTMLDivElement>, "children"> & {
+} & VariantProps<typeof fieldWrapper>
+  & ClassProps
+  & Omit<JSX.HTMLAttributes<HTMLDivElement>, "children"> & {
     children: JSX.Element;
   };
 
@@ -32,9 +41,13 @@ const Field: Component<FieldProps> = (props) => {
     classes(fieldWrapper(variantProps), local.className)
   );
 
-  const labelClass = createMemo(() => labelStyles(variantProps));
+  const labelClass = createMemo(() =>
+    labelStyles(variantProps)
+  );
 
-  const messageClass = createMemo(() => messageStyles(variantProps));
+  const messageClass = createMemo(() =>
+    messageStyles(variantProps)
+  );
 
   const contentClass = createMemo(() =>
     variantProps.horizontal ? "flex items-center gap-2" : ""
@@ -42,12 +55,22 @@ const Field: Component<FieldProps> = (props) => {
 
   return (
     <div class={wrapperClass()} {...rest}>
-      {local.label && <label class={labelClass()}>{local.label}</label>}
+      {local.label && (
+        <label class={labelClass()}>
+          {local.label}
+        </label>
+      )}
 
       {/* CONTENT SLOT: now flex when horizontal */}
-      <div class={contentClass()}>{local.children}</div>
+      <div class={contentClass()}>
+        {local.children}
+      </div>
 
-      {local.message && <span class={messageClass()}>{local.message}</span>}
+      {local.message && (
+        <span class={messageClass()}>
+          {local.message}
+        </span>
+      )}
     </div>
   );
 };
