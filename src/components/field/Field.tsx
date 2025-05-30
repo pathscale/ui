@@ -2,6 +2,7 @@ import {
   type Component,
   splitProps,
   type JSX,
+  createMemo,
 } from "solid-js";
 import { classes, type VariantProps, type ClassProps } from "@src/lib/style";
 import {
@@ -36,27 +37,41 @@ const Field: Component<FieldProps> = (props) => {
     ["horizontal", "size", "type", "grouped", "groupMultiline"]
   );
 
+  const wrapperClass = createMemo(() =>
+    classes(fieldWrapper(variantProps), local.className)
+  );
+
+  const labelClass = createMemo(() =>
+    labelStyles(variantProps)
+  );
+
+  const messageClass = createMemo(() =>
+    messageStyles(variantProps)
+  );
+
+  const contentClass = createMemo(() =>
+    variantProps.horizontal ? "flex items-center gap-2" : ""
+  );
+
   return (
-    <div class={classes(fieldWrapper(variantProps), local.className)} {...rest}>
-    {local.label && (
-      <label class={labelStyles(variantProps)}>
-        {local.label}
-      </label>
-    )}
+    <div class={wrapperClass()} {...rest}>
+      {local.label && (
+        <label class={labelClass()}>
+          {local.label}
+        </label>
+      )}
 
-    {/* CONTENT SLOT: now flex when horizontal */}
-    <div class={classes(
-      variantProps.horizontal ? "flex items-center gap-2" : ""
-    )}>
-      {local.children}
+      {/* CONTENT SLOT: now flex when horizontal */}
+      <div class={contentClass()}>
+        {local.children}
+      </div>
+
+      {local.message && (
+        <span class={messageClass()}>
+          {local.message}
+        </span>
+      )}
     </div>
-
-    {local.message && (
-      <span class={messageStyles(variantProps)}>
-        {local.message}
-      </span>
-    )}
-  </div>
   );
 };
 
