@@ -4,15 +4,6 @@ export { default as Autocomplete } from "./components/autocomplete";
 export { default as Avatar } from "./components/avatar";
 export { default as Background } from "./components/background";
 export { default as Badge } from "./components/badge";
-export {
-  default as PhoneMockup,
-  type PhoneMockupProps,
-} from "./components/phonemockup";
-export {
-  default as WindowMockup,
-  type WindowMockupProps,
-} from "./components/windowmockup";
-export {default as Drawer, type DrawerProps} from "./components/drawer"
 export { Breadcrumbs, BreadcrumbsItem } from "./components/breadcrumbs";
 export { default as Button } from "./components/button";
 export { default as Card } from "./components/card";
@@ -24,13 +15,14 @@ export {
   CollapseContent,
   CollapseDetails,
   CollapseTitle,
-  Summary,
+  Summary
 } from "./components/collapse";
 export { default as CopyButton } from "./components/copy-button";
 export { default as Countdown } from "./components/countdown";
 export { default as Diff } from "./components/diff";
 export { default as Divider } from "./components/divider";
 export { default as Dock } from "./components/dock";
+export { default as Drawer, type DrawerProps } from "./components/drawer";
 export { default as Dropdown } from "./components/dropdown";
 export { default as Field } from "./components/field";
 export { default as FileInput } from "./components/fileinput";
@@ -42,7 +34,7 @@ export { default as Hero } from "./components/hero";
 export type {
   HeroContentProps,
   HeroOverlayProps,
-  HeroProps,
+  HeroProps
 } from "./components/hero";
 export { default as Indicator } from "./components/indicator";
 export { default as Input } from "./components/input";
@@ -55,13 +47,18 @@ export { Menu } from "./components/menu";
 export { default as Modal } from "./components/modal";
 export { default as Navbar } from "./components/navbar";
 export { default as Pagination } from "./components/pagination";
+export {
+  default as PhoneMockup,
+  type PhoneMockupProps
+} from "./components/phonemockup";
 export { Polymorphic, PolymorphicButton } from "./components/polymorphic";
 export { default as Progress } from "./components/progress";
 export { PropsTable } from "./components/props-table";
 export { default as RadialProgress } from "./components/radialprogress";
 export { default as Radio } from "./components/radio";
 export { default as Range } from "./components/range";
-export { default as Rating } from "./components/rating";
+export { Rating } from "./components/rating";
+export type { RatingHiddenProps, RatingItemProps, RatingProps } from "./components/rating";
 export { default as Select } from "./components/select";
 export { ShowcaseSection } from "./components/showcase-section";
 export { default as ShowcaseBlock } from "./components/showcase/ShowcaseBlock";
@@ -81,8 +78,13 @@ export {
   TimelineEnd,
   TimelineItem,
   TimelineMiddle,
-  TimelineStart,
+  TimelineStart
 } from "./components/timeline";
 export { default as Toast } from "./components/toast";
 export { default as Toggle } from "./components/toggle";
 export { default as Tooltip } from "./components/tooltip";
+export {
+  default as WindowMockup,
+  type WindowMockupProps
+} from "./components/windowmockup";
+
