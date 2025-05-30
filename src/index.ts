@@ -12,6 +12,7 @@ export {
   default as WindowMockup,
   type WindowMockupProps,
 } from "./components/windowmockup";
+export {default as Drawer, type DrawerProps} from "./components/drawer"
 export { Breadcrumbs, BreadcrumbsItem } from "./components/breadcrumbs";
 export { default as Button } from "./components/button";
 export { default as Card } from "./components/card";
@@ -54,7 +55,6 @@ export { Menu } from "./components/menu";
 export { default as Modal } from "./components/modal";
 export { default as Navbar } from "./components/navbar";
 export { default as Pagination } from "./components/pagination";
-export { default as PhoneMockup } from "./components/phonemockup";
 export { Polymorphic, PolymorphicButton } from "./components/polymorphic";
 export { default as Progress } from "./components/progress";
 export { PropsTable } from "./components/props-table";
