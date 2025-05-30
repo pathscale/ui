@@ -4,7 +4,7 @@ import Icon from "./Icon";
 const IconShowcase: Component = () => {
   return (
     <div class="space-y-12 p-8">
-      <Icon name="mdi-light--home" />
+      <Icon name="icon-[mdi-light--home]" />
     </div>
   );
 };
