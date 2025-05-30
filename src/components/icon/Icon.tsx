@@ -2,47 +2,25 @@ import { type JSX, splitProps } from "solid-js";
 import { twMerge } from "tailwind-merge";
 import clsx from "clsx";
 import type { IComponentBaseProps } from "../types";
+import { ComponentColor } from "../types";
 
-type ElementType = keyof JSX.IntrinsicElements;
-
-type ColorType =
-  | "default"
-  | "neutral"
-  | "primary"
-  | "secondary"
-  | "accent"
-  | "success"
-  | "warning"
-  | "info"
-  | "error";
-
-type IconBaseProps = {
+export type IconProps = IComponentBaseProps & {
   width?: number;
   height?: number;
-  dataTheme?: string;
-  class?: string;
-  className?: string;
-  style?: JSX.CSSProperties;
-  color?: ColorType;
+  color?: ComponentColor;
   name?: string;
 };
 
-type PropsOf<E extends ElementType> = JSX.IntrinsicElements[E];
-
-export type IconProps<E extends ElementType = "span"> = Omit<
-  PropsOf<E>,
-  keyof IconBaseProps
-> &
-  IconBaseProps &
-  IComponentBaseProps;
-
-const Icon = <E extends ElementType = "span">(
-  props: IconProps<E>
-): JSX.Element => {
-  const [local, others] = splitProps(
-    props as IconBaseProps & Record<string, unknown>,
-    ["width", "height", "className", "class", "name", "style", "dataTheme"]
-  );
+const Icon = (props: IconProps): JSX.Element => {
+  const [local, others] = splitProps(props, [
+    "width",
+    "height",
+    "className",
+    "class",
+    "name",
+    "style",
+    "dataTheme",
+  ]);
 
   const width = local.width ?? 24;
   const height = local.height ?? 24;
