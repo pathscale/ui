@@ -87,4 +87,4 @@ export {
   default as WindowMockup,
   type WindowMockupProps
 } from "./components/windowmockup";
-
+export {default as Artboard, type ArtboardProps} from "./components/artboard"
