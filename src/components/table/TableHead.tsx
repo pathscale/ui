@@ -1,16 +1,16 @@
-import { type JSX, splitProps } from "solid-js";
+import { type JSX, splitProps, children as resolveChildren } from "solid-js";
 import { Dynamic } from "solid-js/web";
+import type { ValidComponent } from "solid-js";
 
 type ElementType = keyof JSX.IntrinsicElements;
 
 type TableHeadBaseProps = {
-  /** don't wrap children in th/td */
   noCell?: boolean;
   as?: ElementType;
   class?: string;
   className?: string;
   style?: JSX.CSSProperties;
-  children?: JSX.Element[];
+  children?: JSX.Element;
   "data-theme"?: string;
 };
 
@@ -23,35 +23,53 @@ export type TableHeadProps<E extends ElementType = "thead"> = Omit<
   TableHeadBaseProps;
 
 const VoidElementList: ElementType[] = [
-  "area","base","br","col","embed","hr","img","input","link","keygen",
-  "meta","param","source","track","wbr",
+  "area",
+  "base",
+  "br",
+  "col",
+  "embed",
+  "hr",
+  "img",
+  "input",
+  "link",
+  "keygen",
+  "meta",
+  "param",
+  "source",
+  "track",
+  "wbr",
 ];
 
 const TableHead = <E extends ElementType = "thead">(
   props: TableHeadProps<E>
 ): JSX.Element => {
-  const [local, others] = splitProps(
-    props as TableHeadBaseProps & Record<string, unknown>,
-    ["children", "noCell", "as", "class", "className", "style", "data-theme"]
-  );
+  const [local, others] = splitProps(props, [
+    "children",
+    "noCell",
+    "as",
+    "class",
+    "className",
+    "style",
+    "data-theme",
+  ]);
 
-  const Tag = local.as || ("thead" as E);
+  const Tag = (local.as || "thead") as ValidComponent;
+  const resolved = resolveChildren(() => local.children);
+  const childrenArray = resolved.toArray();
 
   const cells = local.noCell
-    ? local.children
-    : local.children?.map((child, i) =>
-        i === 0
-          ? <th>{child}</th>
-          : <td>{child}</td>
+    ? childrenArray
+    : childrenArray.map((child, i) =>
+        i === 0 ? <th>{child}</th> : <td>{child}</td>
       );
 
   const classAttr = local.class ?? local.className;
 
-  if (VoidElementList.includes(Tag)) {
+  if (VoidElementList.includes(Tag as ElementType)) {
     return (
       <Dynamic
         component={Tag}
-        {...others}
+        {...(others as Record<string, any>)}
         class={classAttr}
         style={local.style}
         data-theme={local["data-theme"]}
@@ -62,7 +80,7 @@ const TableHead = <E extends ElementType = "thead">(
   return (
     <Dynamic
       component={Tag}
-      {...others}
+      {...(others as Record<string, any>)}
       class={classAttr}
       style={local.style}
       data-theme={local["data-theme"]}

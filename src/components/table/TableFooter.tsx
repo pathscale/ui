@@ -1,19 +1,18 @@
-import { type JSX, splitProps } from "solid-js";
+import { type JSX, splitProps, children as resolveChildren } from "solid-js";
 import { Dynamic } from "solid-js/web";
+import type { ValidComponent } from "solid-js";
 
 import type { IComponentBaseProps } from "../types";
 
 type ElementType = keyof JSX.IntrinsicElements;
 
 type TableFooterBaseProps = {
-  /** don't wrap children in th/td */
   noCell?: boolean;
   as?: ElementType;
   class?: string;
   className?: string;
   style?: JSX.CSSProperties;
-  /** expect an array of cells or raw content */
-  children?: JSX.Element[];
+  children?: JSX.Element;
   "data-theme"?: string;
 };
 
@@ -27,35 +26,53 @@ export type TableFooterProps<E extends ElementType = "tfoot"> = Omit<
   IComponentBaseProps;
 
 const VoidElementList: ElementType[] = [
-  "area", "base", "br", "col", "embed", "hr", "img", "input",
-  "link", "keygen", "meta", "param", "source", "track", "wbr",
+  "area",
+  "base",
+  "br",
+  "col",
+  "embed",
+  "hr",
+  "img",
+  "input",
+  "link",
+  "keygen",
+  "meta",
+  "param",
+  "source",
+  "track",
+  "wbr",
 ];
 
 const TableFooter = <E extends ElementType = "tfoot">(
   props: TableFooterProps<E>
 ): JSX.Element => {
-  const [local, others] = splitProps(
-    props as TableFooterBaseProps & Record<string, unknown>,
-    ["children", "noCell", "as", "class", "className", "style", "data-theme"]
-  );
+  const [local, others] = splitProps(props, [
+    "children",
+    "noCell",
+    "as",
+    "class",
+    "className",
+    "style",
+    "data-theme",
+  ]);
 
-  const Tag = local.as || ("tfoot" as E);
+  const Tag = (local.as || "tfoot") as ValidComponent;
+  const resolved = resolveChildren(() => local.children);
+  const childrenArray = resolved.toArray();
 
   const cells = local.noCell
-    ? local.children
-    : local.children?.map((child, i) =>
-        i === 0
-          ? <th key={i}>{child}</th>
-          : <td key={i}>{child}</td>
+    ? childrenArray
+    : childrenArray.map((child, i) =>
+        i === 0 ? <th>{child}</th> : <td>{child}</td>
       );
 
   const classAttr = local.class ?? local.className;
 
-  if (VoidElementList.includes(Tag)) {
+  if (VoidElementList.includes(Tag as ElementType)) {
     return (
       <Dynamic
         component={Tag}
-        {...others}
+        {...(others as Record<string, any>)}
         class={classAttr}
         style={local.style}
         data-theme={local["data-theme"]}
@@ -66,7 +83,7 @@ const TableFooter = <E extends ElementType = "tfoot">(
   return (
     <Dynamic
       component={Tag}
-      {...others}
+      {...(others as Record<string, any>)}
       class={classAttr}
       style={local.style}
       data-theme={local["data-theme"]}
