@@ -32,6 +32,7 @@ export default defineConfig({
     pluginIconify({
       targetDir: 'src/styles/icons',
       includeSets: ['mdi-light', 'material-symbols'],
+      forceIncludeSets: false,
       maxIconsPerSet: 1000,
     }),
   ],
