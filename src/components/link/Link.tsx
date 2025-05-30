@@ -1,6 +1,5 @@
 import { splitProps, type JSX } from "solid-js";
 import { twMerge } from "tailwind-merge";
-import clsx from "clsx";
 
 export type ComponentColor =
   | "primary"
@@ -9,38 +8,51 @@ export type ComponentColor =
   | "info"
   | "success"
   | "warning"
-  | "error";
+  | "error"
+  | "neutral";
 
 export type LinkProps = JSX.AnchorHTMLAttributes<HTMLAnchorElement> & {
   "data-theme"?: string;
-  color?: ComponentColor | "neutral";
+  color?: ComponentColor;
   hover?: boolean;
+  className?: string;
 };
 
+const colorClassMap = {
+  neutral: "link-neutral",
+  primary: "link-primary",
+  secondary: "link-secondary",
+  accent: "link-accent",
+  info: "link-info",
+  success: "link-success",
+  warning: "link-warning",
+  error: "link-error",
+} as const;
+
 const Link = (props: LinkProps) => {
-  const [local, rest] = splitProps(props, [
+  const mergedProps = {
+    hover: true,
+    ...props,
+  };
+
+  const [local, rest] = splitProps(mergedProps, [
     "children",
     "href",
     "color",
     "hover",
     "class",
+    "className",
     "data-theme",
   ]);
 
+  const colorClass = colorClassMap[local.color ?? "neutral"];
+
   const classes = twMerge(
     "link",
-    clsx({
-      "link-hover": local.hover !== false,
-      "link-neutral": local.color === "neutral",
-      "link-primary": local.color === "primary",
-      "link-secondary": local.color === "secondary",
-      "link-accent": local.color === "accent",
-      "link-info": local.color === "info",
-      "link-success": local.color === "success",
-      "link-warning": local.color === "warning",
-      "link-error": local.color === "error",
-    }),
-    local.class
+    local.hover ? "link-hover" : "",
+    colorClass,
+    local.class,
+    local.className
   );
 
   return (
