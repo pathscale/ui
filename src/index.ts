@@ -4,18 +4,11 @@ export { default as Autocomplete } from "./components/autocomplete";
 export { default as Avatar } from "./components/avatar";
 export { default as Background } from "./components/background";
 export { default as Badge } from "./components/badge";
-export {
-  default as PhoneMockup,
-  type PhoneMockupProps,
-} from "./components/phonemockup";
-export {
-  default as WindowMockup,
-  type WindowMockupProps,
-} from "./components/windowmockup";
-export { default as Drawer, type DrawerProps } from "./components/drawer";
 export { Breadcrumbs, BreadcrumbsItem } from "./components/breadcrumbs";
 export { default as Button } from "./components/button";
 export { default as Card } from "./components/card";
+export { Carousel } from "./components/carousel";
+export type { CarouselItemProps, CarouselProps } from "./components/carousel";
 export { default as ChatBubble } from "./components/chatbubble";
 export { default as Checkbox } from "./components/checkbox";
 export { CodeMockup, CodeMockupLine } from "./components/codemockup";
