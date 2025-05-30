@@ -1,4 +1,4 @@
-import { ParentComponent, splitProps } from "solid-js";
+import { createMemo, ParentComponent, splitProps } from "solid-js";
 import { twMerge } from "tailwind-merge";
 
 import type { ComponentColor, IComponentBaseProps } from "../types";
@@ -18,17 +18,21 @@ const Status: ParentComponent<StatusProps> = (props) => {
 		"size"
 	]);
 
+	const className = createMemo(() =>
+		twMerge(
+			"status",
+			local.color && `status-${local.color}`,
+			local.size && `status-${local.size}`,
+			local.class,
+			local.className
+		)
+	);
+
 	return (
 		<span
 			{...others}
 			data-theme={local.dataTheme}
-			class={twMerge(
-				"status",
-				local.color && `status-${local.color}`,
-				local.size && `status-${local.size}`,
-				local.class,
-				local.className
-			)}
+			class={className()}
 		>
 			{local.children}
 		</span>

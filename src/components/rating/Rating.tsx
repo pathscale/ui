@@ -1,76 +1,76 @@
-import {
-  splitProps,
-  type JSX,
-  children as resolveChildren,
-  For,
-} from "solid-js";
 import clsx from "clsx";
+import { createContext, splitProps, useContext, type JSX, type ParentProps } from "solid-js";
 import { twMerge } from "tailwind-merge";
-import type { ComponentSize, IComponentBaseProps } from "../types";
+
+import RatingHidden from "./RatingHidden";
 import RatingItem from "./RatingItem";
 
-export type RatingProps = IComponentBaseProps &
-  Omit<JSX.HTMLAttributes<HTMLDivElement>, "onChange"> & {
-    size?: ComponentSize;
-    half?: boolean;
-    hidden?: boolean;
-    value: number;
-    onChange?: (newRating: number) => void;
-  };
+export type ComponentSize = "xs" | "sm" | "md" | "lg" | "xl";
 
-const Rating = (props: RatingProps) => {
-  const [local, rest] = splitProps(props, [
-    "class",
-    "size",
-    "half",
-    "hidden",
-    "dataTheme",
-    "value",
-    "onChange",
-    "children",
-  ]);
-
-  const resolvedChildren = resolveChildren(() => local.children);
-
-  const baseClass = twMerge(
-    "rating",
-    clsx(local.class, {
-      "rating-xs": local.size === "xs",
-      "rating-sm": local.size === "sm",
-      "rating-md": local.size === "md",
-      "rating-lg": local.size === "lg",
-      "rating-half": local.half,
-      "rating-hidden": local.hidden || local.value === 0,
-    })
-  );
-
-  return (
-    <div
-      {...rest}
-      aria-label="Rating"
-      role="radiogroup"
-      data-theme={local.dataTheme}
-      class={baseClass}
-    >
-      <For each={resolvedChildren.toArray()}>
-        {(child, index) =>
-          typeof child === "object" && child !== null && "props" in child
-            ? {
-                ...child,
-                props: {
-                  ...(typeof child.props === "object" && child.props !== null
-                    ? child.props
-                    : {}),
-                  index: index(),
-                  selected: local.value === index() + 1,
-                  onSelect: () => local.onChange?.(index() + 1),
-                },
-              }
-            : child
-        }
-      </For>
-    </div>
-  );
+export type RatingProps = Omit<JSX.HTMLAttributes<HTMLDivElement>, "onChange"> & {
+	name?: string;
+	value?: number;
+	onChange?: (value: number) => void;
+	size?: ComponentSize;
+	half?: boolean;
+	readonly?: boolean;
 };
 
-export default Object.assign(Rating, { Item: RatingItem });
+interface RatingContextValue {
+	name?: string;
+	value?: number;
+	onChange?: (value: number) => void;
+	half?: boolean;
+	readonly?: boolean;
+}
+
+const RatingContext = createContext<RatingContextValue>({});
+
+const Rating = (props: ParentProps<RatingProps>) => {
+	const [local, rest] = splitProps(props, [
+		"class",
+		"children",
+		"name",
+		"value",
+		"onChange",
+		"size",
+		"half",
+		"readonly",
+	]);
+
+	const classes = twMerge(
+		"rating",
+		local.class,
+		clsx({
+			"rating-xs": local.size === "xs",
+			"rating-sm": local.size === "sm",
+			"rating-md": local.size === "md",
+			"rating-lg": local.size === "lg",
+			"rating-xl": local.size === "xl",
+			"rating-half": local.half,
+		})
+	);
+
+	return (
+		<RatingContext.Provider
+			value={{
+				name: local.name,
+				value: local.value,
+				onChange: local.onChange,
+				half: local.half,
+				readonly: local.readonly,
+			}}
+		>
+			<div {...rest} class={classes}>
+				{local.children}
+			</div>
+		</RatingContext.Provider>
+	);
+};
+
+export const useRatingContext = () => useContext(RatingContext);
+
+export default Object.assign(Rating, {
+	Item: RatingItem,
+	Hidden: RatingHidden,
+}); 
