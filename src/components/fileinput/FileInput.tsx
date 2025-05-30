@@ -1,4 +1,4 @@
-import { splitProps, type JSX } from "solid-js";
+import { splitProps, type JSX, createMemo } from "solid-js";
 import { twMerge } from "tailwind-merge";
 import { clsx } from "clsx";
 
@@ -33,7 +33,7 @@ const FileInput = (props: FileInputProps): JSX.Element => {
     "style",
   ]);
 
-  const classes = () =>
+  const classes = createMemo(() =>
     twMerge(
       "file-input",
       local.class,
@@ -54,12 +54,12 @@ const FileInput = (props: FileInputProps): JSX.Element => {
         "file-input-error": local.color === "error",
         "file-input-bordered": local.bordered,
       })
-    );
+    )
+  );
 
   return (
     <input
       {...others}
-      ref={others.ref}
       type="file"
       data-theme={local.dataTheme}
       class={classes()}
