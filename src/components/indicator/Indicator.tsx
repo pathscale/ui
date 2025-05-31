@@ -8,128 +8,124 @@ import type { IComponentBaseProps } from "../types";
 type ElementType = keyof JSX.IntrinsicElements;
 
 type IndicatorBaseProps = {
-	horizontal?: "start" | "center" | "end";
-	vertical?: "top" | "middle" | "bottom";
-	as?: ElementType;
-	children?: JSX.Element;
-	dataTheme?: string;
-	class?: string;
-	className?: string;
-	style?: JSX.CSSProperties;
+  horizontal?: "start" | "center" | "end";
+  vertical?: "top" | "middle" | "bottom";
+  as?: ElementType;
+  children?: JSX.Element;
+  dataTheme?: string;
+  class?: string;
+  className?: string;
+  style?: JSX.CSSProperties;
 };
 
 type PropsOf<E extends ElementType> = JSX.IntrinsicElements[E];
 
 export type IndicatorProps<E extends ElementType = "div"> = Omit<
-	PropsOf<E>,
-	keyof IndicatorBaseProps
+  PropsOf<E>,
+  keyof IndicatorBaseProps
 > &
-	IndicatorBaseProps &
-	IComponentBaseProps;
+  IndicatorBaseProps &
+  IComponentBaseProps;
 
 const Indicator = <E extends ElementType = "div">(
-	props: IndicatorProps<E>
+  props: IndicatorProps<E>
 ): JSX.Element => {
-	const [local, others] = splitProps(
-		props as IndicatorBaseProps & Record<string, unknown>,
-		[
-			"children",
-			"horizontal",
-			"vertical",
-			"dataTheme",
-			"class",
-			"className",
-			"style",
-			"as",
-		]
-	);
+  const [local, others] = splitProps(
+    props as IndicatorBaseProps & Record<string, unknown>,
+    [
+      "children",
+      "horizontal",
+      "vertical",
+      "dataTheme",
+      "class",
+      "className",
+      "style",
+      "as",
+    ]
+  );
 
-	const classes = () =>
-		twMerge(
-			"indicator",
-			local.class,
-			local.className
-		);
+  const classes = () => twMerge("indicator", local.class, local.className);
 
-	const Tag = local.as || "div";
+  const Tag = local.as || "div";
 
-	return (
-		<Dynamic
-			component={Tag}
-			{...others}
-			data-theme={local.dataTheme}
-			class={classes()}
-			style={local.style}
-		>
-			{local.children}
-		</Dynamic>
-	);
+  return (
+    <Dynamic
+      component={Tag}
+      {...others}
+      data-theme={local.dataTheme}
+      class={classes()}
+      style={local.style}
+    >
+      {local.children}
+    </Dynamic>
+  );
 };
 
 type IndicatorItemBaseProps = {
-	horizontal?: "start" | "center" | "end";
-	vertical?: "top" | "middle" | "bottom";
-	as?: ElementType;
-	children?: JSX.Element;
-	dataTheme?: string;
-	class?: string;
-	className?: string;
-	style?: JSX.CSSProperties;
+  horizontal?: "start" | "center" | "end";
+  vertical?: "top" | "middle" | "bottom";
+  as?: ElementType;
+  children?: JSX.Element;
+  dataTheme?: string;
+  class?: string;
+  className?: string;
+  style?: JSX.CSSProperties;
 };
 
 export type IndicatorItemProps<E extends ElementType = "span"> = Omit<
-	PropsOf<E>,
-	keyof IndicatorItemBaseProps
+  PropsOf<E>,
+  keyof IndicatorItemBaseProps
 > &
-	IndicatorItemBaseProps &
-	IComponentBaseProps;
+  IndicatorItemBaseProps &
+  IComponentBaseProps;
 
 const IndicatorItem = <E extends ElementType = "span">(
-	props: IndicatorItemProps<E>
+  props: IndicatorItemProps<E>
 ): JSX.Element => {
-	const [local, others] = splitProps(
-		props as IndicatorItemBaseProps & Record<string, unknown>,
-		[
-			"children",
-			"horizontal",
-			"vertical",
-			"dataTheme",
-			"class",
-			"className",
-			"style",
-			"as",
-		]
-	);
+  const [local, others] = splitProps(
+    props as IndicatorItemBaseProps & Record<string, unknown>,
+    [
+      "children",
+      "horizontal",
+      "vertical",
+      "dataTheme",
+      "class",
+      "className",
+      "style",
+      "as",
+    ]
+  );
 
-	const classes = () =>
-		twMerge(
-			"indicator-item",
-			local.class,
-			local.className,
-			clsx({
-				"indicator-start": local.horizontal === "start",
-				"indicator-center": local.horizontal === "center",
-				"indicator-end": local.horizontal === "end",
-				"indicator-top": local.vertical === "top",
-				"indicator-middle": local.vertical === "middle",
-				"indicator-bottom": local.vertical === "bottom",
-			})
-		);
+  const classes = () =>
+    twMerge(
+      "indicator-item",
+      local.class,
+      local.className,
+      clsx({
+        "indicator-start": local.horizontal === "start",
+        "indicator-center": local.horizontal === "center",
+        "indicator-end": local.horizontal === "end",
+        "indicator-top": local.vertical === "top",
+        "indicator-middle": local.vertical === "middle",
+        "indicator-bottom": local.vertical === "bottom",
+      })
+    );
 
-	const Tag = local.as || "span";
+  const Tag = local.as || "span";
 
-	return (
-		<Dynamic
-			component={Tag}
-			{...others}
-			data-theme={local.dataTheme}
-			class={classes()}
-			style={local.style}
-		>
-			{local.children}
-		</Dynamic>
-	);
+  return (
+    <Dynamic
+      component={Tag}
+      {...others}
+      data-theme={local.dataTheme}
+      class={classes()}
+      style={local.style}
+    >
+      {local.children}
+    </Dynamic>
+  );
 };
 
-export { Indicator, IndicatorItem };
-export default Indicator; 
+export default Object.assign(Indicator, {
+  Item: IndicatorItem,
+});

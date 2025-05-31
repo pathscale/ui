@@ -1,4 +1,2 @@
-export { default, Indicator, IndicatorItem } from "./Indicator";
+export { default } from "./Indicator";
 export type { IndicatorItemProps, IndicatorProps } from "./Indicator";
-export { default as IndicatorShowcase } from "./IndicatorShowcase";
-
