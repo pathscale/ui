@@ -33,8 +33,12 @@ export { default as FileInput } from "./components/fileinput";
 export { default as Flex } from "./components/flex";
 export { default as Footer } from "./components/footer";
 export type { FooterProps, FooterTitleProps } from "./components/footer";
-export { default as Form } from "./components/form";
-export type { FormProps, LabelProps } from "./components/form";
+export { default as Form, useFormValidation } from "./components/form";
+export type {
+  FormProps,
+  LabelProps,
+  ValidatedFormProps,
+} from "./components/form";
 export { default as Grid } from "./components/grid";
 export { default as Hero } from "./components/hero";
 export type {

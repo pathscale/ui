@@ -1,4 +1,9 @@
-import { type JSX, type ParentComponent, splitProps } from "solid-js";
+import {
+  createMemo,
+  type JSX,
+  type ParentComponent,
+  splitProps,
+} from "solid-js";
 import { twMerge } from "tailwind-merge";
 import { IComponentBaseProps } from "../types";
 
@@ -16,7 +21,9 @@ const Label: ParentComponent<LabelProps> = (props) => {
     "className",
   ]);
 
-  const classes = () => twMerge("label", local.class, local.className);
+  const classes = createMemo(() =>
+    twMerge("label", local.class, local.className)
+  );
 
   return (
     <label {...others} data-theme={local.dataTheme} class={classes()}>
