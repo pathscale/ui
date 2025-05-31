@@ -1,8 +1,13 @@
-import { type JSX, type ParentComponent, splitProps } from "solid-js";
+import {
+  createMemo,
+  type JSX,
+  type ParentComponent,
+  splitProps,
+} from "solid-js";
 import { twMerge } from "tailwind-merge";
 import { IComponentBaseProps } from "../types";
 import FormLabel from "./Label";
-import ValidatedForm from "./ValidatedForm";
+import ValidatedForm, { useFormValidation } from "./ValidatedForm";
 export { type ValidatedFormProps } from "./ValidatedForm";
 
 export type FormProps = Omit<JSX.HTMLAttributes<HTMLFormElement>, "ref"> &
@@ -16,7 +21,9 @@ const Form: ParentComponent<FormProps> = (props) => {
     "className",
   ]);
 
-  const classes = () => twMerge("form-control", local.class, local.className);
+  const classes = createMemo(() =>
+    twMerge("form-control", local.class, local.className)
+  );
 
   return (
     <form
@@ -30,6 +37,7 @@ const Form: ParentComponent<FormProps> = (props) => {
   );
 };
 
+export { useFormValidation };
 export default Object.assign(Form, {
   Label: FormLabel,
   Validated: ValidatedForm,

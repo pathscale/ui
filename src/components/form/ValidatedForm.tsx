@@ -1,4 +1,10 @@
-import { type JSX, splitProps, createMemo } from "solid-js";
+import {
+  createContext,
+  createMemo,
+  splitProps,
+  useContext,
+  type JSX,
+} from "solid-js";
 import { createForm } from "@felte/solid";
 import { validator } from "@felte/validator-zod";
 import { z } from "zod";
@@ -10,9 +16,26 @@ export type ValidatedFormProps<T extends z.ZodTypeAny> = Omit<
 > & {
   schema: T;
   onSubmit: (values: z.infer<T>) => void | Promise<void>;
-  onError?: (errors: Record<string, string>) => void;
   initialValues?: z.infer<T>;
 };
+
+interface FormValidationContext {
+  errors: (path?: string | ((data: any) => any)) => any;
+  touched: (path?: string | ((data: any) => any)) => any;
+  data: (path?: string | ((data: any) => any)) => any;
+  isValid: () => boolean;
+  isSubmitting: () => boolean;
+}
+
+const FormValidationContext = createContext<FormValidationContext>();
+
+export function useFormValidation() {
+  const context = useContext(FormValidationContext);
+  if (!context) {
+    throw new Error("useFormValidation must be used within a ValidatedForm");
+  }
+  return context;
+}
 
 function ValidatedForm<T extends z.ZodTypeAny>(
   props: ValidatedFormProps<T>
@@ -21,45 +44,33 @@ function ValidatedForm<T extends z.ZodTypeAny>(
     "children",
     "schema",
     "onSubmit",
-    "onError",
     "initialValues",
   ]);
 
-  const formConfig = createMemo(() => ({
+  const { form, errors, touched, data, isValid, isSubmitting } = createForm<
+    z.infer<T>
+  >({
     initialValues: local.initialValues,
     extend: [validator({ schema: local.schema })],
-    onSubmit: (values: any) => local.onSubmit(values),
-    onError: (errors: unknown) => {
-      if (local.onError) {
-        const flatErrors: Record<string, string> = {};
+    onSubmit: local.onSubmit,
+  });
 
-        function flattenErrors(obj: any, prefix = "") {
-          for (const key in obj) {
-            const value = obj[key];
-            const newKey = prefix ? `${prefix}.${key}` : key;
-
-            if (typeof value === "string") {
-              flatErrors[newKey] = value;
-            } else if (Array.isArray(value)) {
-              flatErrors[newKey] = value.join(", ");
-            } else if (typeof value === "object" && value !== null) {
-              flattenErrors(value, newKey);
-            }
-          }
-        }
-
-        flattenErrors(errors);
-        local.onError(flatErrors);
-      }
-    },
-  }));
-
-  const { form } = createForm(formConfig());
+  const contextValue = createMemo(
+    (): FormValidationContext => ({
+      errors,
+      touched,
+      data,
+      isValid,
+      isSubmitting,
+    })
+  );
 
   return (
-    <Form {...others} ref={form}>
-      {local.children}
-    </Form>
+    <FormValidationContext.Provider value={contextValue()}>
+      <Form {...others} ref={form}>
+        {local.children}
+      </Form>
+    </FormValidationContext.Provider>
   );
 }
 
