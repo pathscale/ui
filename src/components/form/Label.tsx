@@ -1,5 +1,5 @@
 import {
-  createMemo,
+  children as resolveChildren,
   type JSX,
   type ParentComponent,
   splitProps,
@@ -21,14 +21,14 @@ const Label: ParentComponent<LabelProps> = (props) => {
     "className",
   ]);
 
-  const classes = createMemo(() =>
-    twMerge("label", local.class, local.className)
-  );
+  const resolvedChildren = resolveChildren(() => local.children);
+
+  const classes = () => twMerge("label", local.class, local.className);
 
   return (
     <label {...others} data-theme={local.dataTheme} class={classes()}>
       <span class="label-text cursor-pointer">{local.title}</span>
-      {local.children}
+      {resolvedChildren()}
     </label>
   );
 };

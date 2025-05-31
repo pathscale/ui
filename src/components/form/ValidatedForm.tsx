@@ -1,4 +1,5 @@
 import {
+  children as resolveChildren,
   createContext,
   createMemo,
   splitProps,
@@ -55,6 +56,8 @@ function ValidatedForm<T extends z.ZodTypeAny>(
     onSubmit: local.onSubmit,
   });
 
+  const resolvedChildren = resolveChildren(() => local.children);
+
   const contextValue = createMemo(
     (): FormValidationContext => ({
       errors,
@@ -68,7 +71,7 @@ function ValidatedForm<T extends z.ZodTypeAny>(
   return (
     <FormValidationContext.Provider value={contextValue()}>
       <Form {...others} ref={form}>
-        {local.children}
+        {resolvedChildren()}
       </Form>
     </FormValidationContext.Provider>
   );

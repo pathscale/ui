@@ -1,4 +1,5 @@
 import {
+  children as resolveChildren,
   createMemo,
   type JSX,
   type ParentComponent,
@@ -21,9 +22,9 @@ const Form: ParentComponent<FormProps> = (props) => {
     "className",
   ]);
 
-  const classes = createMemo(() =>
-    twMerge("form-control", local.class, local.className)
-  );
+  const resolvedChildren = resolveChildren(() => local.children);
+
+  const classes = () => twMerge("form-control", local.class, local.className);
 
   return (
     <form
@@ -32,7 +33,7 @@ const Form: ParentComponent<FormProps> = (props) => {
       data-theme={local.dataTheme}
       class={classes()}
     >
-      {local.children}
+      {resolvedChildren()}
     </form>
   );
 };
