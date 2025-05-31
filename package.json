@@ -24,6 +24,8 @@
   "types": "./dist/index.d.ts",
   "devDependencies": {
     "@biomejs/biome": "1.9.4",
+    "@felte/solid": "^1.2.11",
+    "@felte/validator-zod": "^1.0.15",
     "@iconify/json": "^2.2.342",
     "@iconify/utils": "^2.3.0",
     "@rsbuild/core": "^1.3.20",
@@ -37,7 +39,8 @@
     "postcss-cli": "^11.0.1",
     "svgo": "^3.3.2",
     "tailwind-merge": "^3.3.0",
-    "typescript": "^5.8.3"
+    "typescript": "^5.8.3",
+    "zod": "^3.22.4"
   },
   "dependencies": {
     "@iconify/tailwind4": "^1.0.6",
@@ -55,7 +58,10 @@
     "solid-js": "^1.9.7"
   },
   "peerDependencies": {
-    "solid-js": "^1.9"
+    "@felte/solid": "^1.2.0",
+    "@felte/validator-zod": "^1.0.0",
+    "solid-js": "^1.9",
+    "zod": "^3.22.0"
   },
   "scripts": {
     "build": "rslib build && bun scripts/copy-css.js",

@@ -1,7 +1,9 @@
 import { type JSX, type ParentComponent, splitProps } from "solid-js";
 import { twMerge } from "tailwind-merge";
 import { IComponentBaseProps } from "../types";
-import Label from "./Label";
+import FormLabel from "./Label";
+import ValidatedForm from "./ValidatedForm";
+export { type ValidatedFormProps } from "./ValidatedForm";
 
 export type FormProps = Omit<JSX.HTMLAttributes<HTMLFormElement>, "ref"> &
   IComponentBaseProps;
@@ -28,4 +30,7 @@ const Form: ParentComponent<FormProps> = (props) => {
   );
 };
 
-export default Object.assign(Form, { Label });
+export default Object.assign(Form, {
+  Label: FormLabel,
+  Validated: ValidatedForm,
+});
