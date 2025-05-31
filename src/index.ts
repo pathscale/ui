@@ -29,11 +29,12 @@ export { default as Divider } from "./components/divider";
 export { default as Dock } from "./components/dock";
 export { default as Drawer, type DrawerProps } from "./components/drawer";
 export { default as Dropdown } from "./components/dropdown";
-export { default as Field } from "./components/field";
 export { default as FileInput } from "./components/fileinput";
 export { default as Flex } from "./components/flex";
 export { default as Footer } from "./components/footer";
 export type { FooterProps, FooterTitleProps } from "./components/footer";
+export { default as Form } from "./components/form";
+export type { FormProps, LabelProps } from "./components/form";
 export { default as Grid } from "./components/grid";
 export { default as Hero } from "./components/hero";
 export type {
