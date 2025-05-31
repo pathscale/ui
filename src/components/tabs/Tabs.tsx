@@ -1,81 +1,56 @@
-import {
-  type Component,
-  type JSX,
-  createSignal,
-  splitProps,
-  For,
-  Show,
-  createMemo,
-} from "solid-js";
-import { tabsNavVariants, tabTriggerVariants } from "./Tabs.styles";
-import type { VariantProps } from "@src/lib/style";
+import { splitProps, type JSX } from "solid-js";
+import { twMerge } from "tailwind-merge";
+import { clsx } from "clsx";
+import type {
+  IComponentBaseProps,
+  ComponentSize,
+  ComponentPosition,
+} from "../types";
 
-type TabItem = {
-  label: string;
-  content: JSX.Element;
-  disabled?: boolean;
-};
+import Tab from "./Tab";
+import RadioTab from "./RadioTab";
 
-export type TabsProps = {
-  items: TabItem[];
-  value?: number;
-  onChange?: (index: number) => void;
-} & VariantProps<typeof tabsNavVariants>;
-
-const Tabs: Component<TabsProps> = (props) => {
-  const [local, variantProps, otherProps] = splitProps(
-    props,
-    ["items", "value", "onChange"],
-    ["size", "type", "alignment", "expanded"]
-  );
-
-  const [internalActive, setInternalActive] = createSignal(local.value ?? 0);
-  const isControlled = () => local.value !== undefined;
-  const active = createMemo(() =>
-    isControlled() ? local.value! : internalActive()
-  );
-
-  const handleChange = (i: number) => {
-    const item = local.items[i];
-    if (!item || item.disabled) return;
-
-    if (!isControlled()) {
-      setInternalActive(i);
-    }
-
-    local.onChange?.(i);
+export type TabsProps = JSX.HTMLAttributes<HTMLDivElement> &
+  IComponentBaseProps & {
+    variant?: "bordered" | "lift" | "boxed";
+    size?: ComponentSize;
+    position?: Extract<ComponentPosition, "top" | "bottom">;
   };
 
+const Tabs = (props: TabsProps): JSX.Element => {
+  const [local, others] = splitProps(props, [
+    "children",
+    "class",
+    "className",
+    "variant",
+    "size",
+    "position",
+  ]);
+
+  const classes = () =>
+    twMerge(
+      "tabs",
+      local.class,
+      local.className,
+      clsx({
+        "tabs-boxed": local.variant === "boxed",
+        "tabs-bordered": local.variant === "bordered",
+        "tabs-lift": local.variant === "lift",
+        "tabs-xl": local.size === "xl",
+        "tabs-lg": local.size === "lg",
+        "tabs-md": local.size === "md",
+        "tabs-sm": local.size === "sm",
+        "tabs-xs": local.size === "xs",
+        "tabs-top": local.position === "top",
+        "tabs-bottom": local.position === "bottom",
+      })
+    );
+
   return (
-    <div {...otherProps}>
-      <nav class={tabsNavVariants(variantProps)}>
-        <ul class="flex gap-0">
-          <For each={local.items}>
-            {(tab, i) => (
-              <li>
-                <button
-                  class={tabTriggerVariants({
-                    type: variantProps.type ?? "basic",
-                    size: variantProps.size ?? "md",
-                    active: i() === active(),
-                    disabled: tab.disabled,
-                  })}
-                  onClick={() => handleChange(i())}
-                >
-                  {tab.label}
-                </button>
-              </li>
-            )}
-          </For>
-        </ul>
-      </nav>
-      <div class="pt-4">
-        <Show when={local.items[active()]}>
-          {local.items[active()]?.content}
-        </Show>
-      </div>
+    <div role="tablist" class={classes()} {...others}>
+      {local.children}
     </div>
   );
 };
 
-export default Tabs;
+export default Object.assign(Tabs, { Tab, RadioTab });
