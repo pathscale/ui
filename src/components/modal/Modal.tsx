@@ -19,7 +19,7 @@ export type ModalProps = IComponentBaseProps &
 
 export type DialogProps = Omit<ModalProps, "ref">;
 
-export default function Modal(props: ModalProps): JSX.Element {
+export function Modal(props: ModalProps): JSX.Element {
   const [local, others] = splitProps(props, [
     "children",
     "open",
@@ -75,7 +75,9 @@ export default function Modal(props: ModalProps): JSX.Element {
   );
 }
 
-Modal.Header = ModalHeader;
-Modal.Body = ModalBody;
-Modal.Actions = ModalActions;
-Modal.Legacy = ModalLegacy;
+export default Object.assign(Modal, {
+  Header: ModalHeader,
+  Body: ModalBody,
+  Actions: ModalActions,
+  Legacy: ModalLegacy,
+});
