@@ -1,4 +1,11 @@
-import { type JSX, splitProps } from "solid-js";
+import {
+  type JSX,
+  splitProps,
+  createEffect,
+  onCleanup,
+  createMemo,
+  children as resolveChildren,
+} from "solid-js";
 import { twMerge } from "tailwind-merge";
 import clsx from "clsx";
 
@@ -15,11 +22,12 @@ export type ModalProps = IComponentBaseProps &
     responsive?: boolean;
     backdrop?: boolean;
     ariaHidden?: boolean;
+    onClose?: () => void;
   };
 
 export type DialogProps = Omit<ModalProps, "ref">;
 
-export default function Modal(props: ModalProps): JSX.Element {
+export function Modal(props: ModalProps): JSX.Element {
   const [local, others] = splitProps(props, [
     "children",
     "open",
@@ -30,52 +38,96 @@ export default function Modal(props: ModalProps): JSX.Element {
     "dataTheme",
     "class",
     "className",
+    "onClose",
+    "tabindex",
+    "tabIndex",
   ]);
 
-  const containerClasses = twMerge(
-    "modal",
-    clsx({
-      "modal-open": local.open,
-      "modal-end": local.position === "end",
-      "modal-start": local.position === "start",
-      "modal-top": local.position === "top",
-      "modal-middle": local.position === "middle",
-      "modal-bottom": local.position === "bottom",
-      "modal-bottom sm:modal-middle": local.responsive,
-    })
+  const resolvedChildren = resolveChildren(() => local.children);
+
+  let dialogRef: HTMLDialogElement | undefined;
+
+  createEffect(() => {
+    if (!dialogRef) return;
+
+    if (local.open && !dialogRef.open) {
+      dialogRef.showModal();
+    } else if (!local.open && dialogRef.open) {
+      dialogRef.close();
+    }
+  });
+
+  createEffect(() => {
+    if (!dialogRef) return;
+
+    const handleClose = () => {
+      local.onClose?.();
+    };
+
+    const handleCancel = (event: Event) => {
+      event.preventDefault();
+      local.onClose?.();
+    };
+
+    dialogRef.addEventListener("close", handleClose);
+    dialogRef.addEventListener("cancel", handleCancel);
+
+    onCleanup(() => {
+      dialogRef?.removeEventListener("close", handleClose);
+      dialogRef?.removeEventListener("cancel", handleCancel);
+    });
+  });
+
+  const containerClasses = createMemo(() =>
+    twMerge(
+      "modal",
+      clsx({
+        "modal-open": local.open,
+        "modal-end": local.position === "end",
+        "modal-start": local.position === "start",
+        "modal-top": local.position === "top",
+        "modal-middle": local.position === "middle",
+        "modal-bottom": local.position === "bottom",
+        "modal-bottom sm:modal-middle": local.responsive,
+      })
+    )
   );
 
-  const bodyClasses = twMerge("modal-box", local.class, local.className);
-
-  const { tabindex, tabIndex, ...rest } = others;
-  const normalizedProps = {
-    ...rest,
-    tabIndex: tabIndex ?? tabindex,
-  };
+  const bodyClasses = createMemo(() =>
+    twMerge("modal-box", local.class, local.className)
+  );
 
   return (
     <dialog
-      {...normalizedProps}
+      {...others}
       aria-label="Modal"
       aria-hidden={local.ariaHidden ?? !local.open}
       aria-modal={local.open}
-      open={local.open}
       data-theme={local.dataTheme}
-      class={containerClasses}
+      class={containerClasses()}
+      tabIndex={local.tabIndex ?? local.tabindex}
+      ref={(el: HTMLDialogElement) => {
+        dialogRef = el;
+        if (typeof others.ref === "function") {
+          others.ref(el);
+        }
+      }}
     >
-      <div data-theme={local.dataTheme} class={bodyClasses}>
-        {local.children}
+      <div data-theme={local.dataTheme} class={bodyClasses()}>
+        {resolvedChildren()}
       </div>
       {local.backdrop && (
         <form method="dialog" class="modal-backdrop">
-          <button>close</button>
+          <button type="submit">close</button>
         </form>
       )}
     </dialog>
   );
 }
 
-Modal.Header = ModalHeader;
-Modal.Body = ModalBody;
-Modal.Actions = ModalActions;
-Modal.Legacy = ModalLegacy;
+export default Object.assign(Modal, {
+  Header: ModalHeader,
+  Body: ModalBody,
+  Actions: ModalActions,
+  Legacy: ModalLegacy,
+});

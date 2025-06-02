@@ -1,7 +1,7 @@
 import type { JSX } from "solid-js";
 
-export type ModalBodyProps = JSX.HTMLAttributes<HTMLDivElement>;
+export type ModalActionsProps = JSX.HTMLAttributes<HTMLDivElement>;
 
-export default function ModalBody(props: ModalBodyProps): JSX.Element {
+export default function ModalActions(props: ModalActionsProps): JSX.Element {
   return <div {...props} class={props.class} />;
 }
