@@ -10,6 +10,7 @@ export {
   type BrowserMockupProps
 } from "./components/browsermockup";
 export { default as Button } from "./components/button";
+export { default as Calendar, type CalendarProps } from "./components/calendar";
 export { default as Card } from "./components/card";
 export { Carousel } from "./components/carousel";
 export type { CarouselItemProps, CarouselProps } from "./components/carousel";
@@ -104,3 +105,4 @@ export {
   default as WindowMockup,
   type WindowMockupProps
 } from "./components/windowmockup";
+
