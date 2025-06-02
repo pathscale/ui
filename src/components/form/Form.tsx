@@ -8,8 +8,10 @@ import {
 import { twMerge } from "tailwind-merge";
 import { IComponentBaseProps } from "../types";
 import FormLabel from "./Label";
-import ValidatedForm, { useFormValidation } from "./ValidatedForm";
-export { type ValidatedFormProps } from "./ValidatedForm";
+import ValidatedForm, { type ValidatedFormProps } from "./ValidatedForm";
+import { useFormValidation } from "./FormValidationContext";
+
+export { type ValidatedFormProps };
 
 export type FormProps = Omit<JSX.HTMLAttributes<HTMLFormElement>, "ref"> &
   IComponentBaseProps;
