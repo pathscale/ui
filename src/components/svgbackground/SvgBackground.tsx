@@ -1,4 +1,4 @@
-import { JSX, createMemo, createSignal, onCleanup, onMount } from 'solid-js';
+import { JSX, createEffect, createMemo, createSignal, onCleanup, onMount } from 'solid-js';
 
 export interface SvgBackgroundProps {
 	/** Primary gradient color (CSS color value) */
@@ -16,7 +16,6 @@ export interface SvgBackgroundProps {
 	class?: string;
 	style?: JSX.CSSProperties;
 	children?: JSX.Element;
-	/** Darkness overlay (0 = fully light, 1 = fully dark) */
 	darkness?: number;
 }
 
@@ -42,6 +41,11 @@ function interpolateHue(h1: number, h2: number, t: number): number {
 	return ((h1 + (h2 - h1) * t) + 360) % 360;
 }
 
+let instanceCounter = 0;
+function generateStableId() {
+	return `svg-bg-${++instanceCounter}-${Date.now()}`;
+}
+
 export default function SvgBackground(props: SvgBackgroundProps) {
 	const {
 		colorStart = 'hsl(129, 100%, 72%)',
@@ -59,6 +63,12 @@ export default function SvgBackground(props: SvgBackgroundProps) {
 
 	const [animationTime, setAnimationTime] = createSignal(0);
 	let animationFrame: number | null = null;
+	let gradientStop1Ref: SVGStopElement | undefined;
+	let gradientStop2Ref: SVGStopElement | undefined;
+	let turbulenceRef: SVGFETurbulenceElement | undefined;
+
+	const gradientId = `gradient-${generateStableId()}`;
+	const filterId = `filter-${generateStableId()}`;
 
 	onMount(() => {
 		if (animated) {
@@ -76,13 +86,10 @@ export default function SvgBackground(props: SvgBackgroundProps) {
 		}
 	});
 
-	const gradientId = createMemo(() => `svg-bg-gradient-${Math.random().toString(36).substr(2, 9)}`, undefined, { equals: false });
-	const filterId = createMemo(() => `svg-bg-filter-${Math.random().toString(36).substr(2, 9)}`, undefined, { equals: false });
-
 	const startHSL = createMemo(() => parseHSL(colorStart));
 	const endHSL = createMemo(() => parseHSL(colorEnd));
 
-	const animatedValues = createMemo(() => {
+	const animatedColors = createMemo(() => {
 		if (!animated) {
 			return {
 				color1: colorStart,
@@ -93,7 +100,6 @@ export default function SvgBackground(props: SvgBackgroundProps) {
 		}
 
 		const time = animationTime();
-
 		const baseSpeed = 0.001 * animationSpeed;
 
 		const freq1 = time * baseSpeed * 7;
@@ -145,41 +151,27 @@ export default function SvgBackground(props: SvgBackgroundProps) {
 		const turbFreq1 = turbulenceFrequency + (turbulenceFrequency * 0.01 * turbMix1);
 		const turbFreq2 = (turbulenceFrequency * 0.4) + (turbulenceFrequency * 0.01 * turbMix2);
 
-		if (Math.floor(time * 10) % 50 === 0) {
-			console.log(`Time: ${time.toFixed(2)}, Mix1: ${colorMix.toFixed(3)}, Mix2: ${colorMix2.toFixed(3)}, Combined: ${combinedWave.toFixed(3)}, C1: ${color1}, C2: ${color2}`);
-		}
-
 		return { color1, color2, turbFreq1, turbFreq2 };
 	});
 
-	const staticSvg = createMemo(() => {
-		const values = animatedValues();
+	createEffect(() => {
+		const colors = animatedColors();
 
-		const svg = `
-      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 700 700" width="700" height="700">
-        <defs>
-          <linearGradient gradientTransform="rotate(63, 0.5, 0.5)" x1="50%" y1="0%" x2="50%" y2="100%" id="${gradientId()}">
-            <stop stop-color="${values.color1}" stop-opacity="1" offset="0%"></stop>
-            <stop stop-color="${values.color2}" stop-opacity="1" offset="100%"></stop>
-          </linearGradient>
-          <filter id="${filterId()}" x="-20%" y="-20%" width="140%" height="140%" filterUnits="objectBoundingBox" primitiveUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
-            <feTurbulence type="fractalNoise" baseFrequency="${values.turbFreq1} ${values.turbFreq2}" numOctaves="2" seed="10" stitchTiles="stitch" result="turbulence"></feTurbulence>
-            <feGaussianBlur stdDeviation="${blurIntensity} ${blurIntensity}" in="turbulence" edgeMode="duplicate" result="blur"></feGaussianBlur>
-            <feBlend mode="color-dodge" in="SourceGraphic" in2="blur" result="blend"></feBlend>
-          </filter>
-        </defs>
-        <rect width="700" height="700" fill="url(#${gradientId()})" filter="url(#${filterId()})"></rect>
-      </svg>
-    `;
-
-		return `data:image/svg+xml;base64,${btoa(svg)}`;
+		if (gradientStop1Ref) {
+			gradientStop1Ref.setAttribute('stop-color', colors.color1);
+		}
+		if (gradientStop2Ref) {
+			gradientStop2Ref.setAttribute('stop-color', colors.color2);
+		}
+		if (turbulenceRef) {
+			turbulenceRef.setAttribute('baseFrequency', `${colors.turbFreq1} ${colors.turbFreq2}`);
+		}
 	});
 
 	const backgroundStyle = createMemo((): JSX.CSSProperties => {
 		return {
 			position: 'relative',
 			...style,
-			'--svg-bg': `url("${staticSvg()}")`,
 		};
 	});
 
@@ -190,18 +182,68 @@ export default function SvgBackground(props: SvgBackgroundProps) {
 			class={`relative ${className}`}
 			style={backgroundStyle()}
 		>
-			<div
-				class="absolute inset-0 z-0"
-				style={{
-					'background-image': `var(--svg-bg)`,
-					'background-size': 'cover',
-					'background-position': 'center',
-					'background-repeat': 'no-repeat',
-					opacity: opacity.toString(),
-				}}
-			/>
+			<svg
+				class="absolute inset-0 w-full h-full z-0"
+				style={{ opacity: opacity.toString() }}
+				viewBox="0 0 700 700"
+				xmlns="http://www.w3.org/2000/svg"
+			>
+				<defs>
+					<linearGradient
+						gradientTransform="rotate(63, 0.5, 0.5)"
+						x1="50%" y1="0%" x2="50%" y2="100%"
+						id={gradientId}
+					>
+						<stop
+							ref={gradientStop1Ref}
+							stop-color={animatedColors().color1}
+							stop-opacity="1"
+							offset="0%"
+						/>
+						<stop
+							ref={gradientStop2Ref}
+							stop-color={animatedColors().color2}
+							stop-opacity="1"
+							offset="100%"
+						/>
+					</linearGradient>
+					<filter
+						id={filterId}
+						x="-20%" y="-20%" width="140%" height="140%"
+						filterUnits="objectBoundingBox"
+						primitiveUnits="userSpaceOnUse"
+						color-interpolation-filters="sRGB"
+					>
+						<feTurbulence
+							ref={turbulenceRef}
+							type="fractalNoise"
+							baseFrequency={`${animatedColors().turbFreq1} ${animatedColors().turbFreq2}`}
+							numOctaves="2"
+							seed="10"
+							stitchTiles="stitch"
+							result="turbulence"
+						/>
+						<feGaussianBlur
+							stdDeviation={`${blurIntensity} ${blurIntensity}`}
+							in="turbulence"
+							result="blur"
+						/>
+						<feBlend
+							mode={"color-dodge" as any}
+							in="SourceGraphic"
+							in2="blur"
+							result="blend"
+						/>
+					</filter>
+				</defs>
+				<rect
+					width="700"
+					height="700"
+					fill={`url(#${gradientId})`}
+					filter={`url(#${filterId})`}
+				/>
+			</svg>
 
-			{/* Darkness overlay */}
 			{darkness > 0 && (
 				<div
 					class="absolute inset-0 z-5"
