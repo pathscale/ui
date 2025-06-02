@@ -1,9 +1,14 @@
 export { default as Accordion } from "./components/accordion";
 export { default as Alert } from "./components/alert";
+export { default as Artboard, type ArtboardProps } from "./components/artboard";
 export { default as Avatar } from "./components/avatar";
 export { default as Background } from "./components/background";
 export { default as Badge } from "./components/badge";
 export { Breadcrumbs, BreadcrumbsItem } from "./components/breadcrumbs";
+export {
+  default as BrowserMockup,
+  type BrowserMockupProps
+} from "./components/browsermockup";
 export { default as Button } from "./components/button";
 export { default as Card } from "./components/card";
 export { Carousel } from "./components/carousel";
@@ -16,14 +21,10 @@ export {
   CollapseContent,
   CollapseDetails,
   CollapseTitle,
-  Summary,
+  Summary
 } from "./components/collapse";
 export { default as CopyButton } from "./components/copy-button";
 export { default as Countdown } from "./components/countdown";
-export {
-  default as BrowserMockup,
-  type BrowserMockupProps,
-} from "./components/browsermockup";
 export { default as Diff } from "./components/diff";
 export { default as Divider } from "./components/divider";
 export { default as Dock } from "./components/dock";
@@ -37,14 +38,14 @@ export { default as Form, useFormValidation } from "./components/form";
 export type {
   FormProps,
   LabelProps,
-  ValidatedFormProps,
+  ValidatedFormProps
 } from "./components/form";
 export { default as Grid } from "./components/grid";
 export { default as Hero } from "./components/hero";
 export type {
   HeroContentProps,
   HeroOverlayProps,
-  HeroProps,
+  HeroProps
 } from "./components/hero";
 export { default as Icon } from "./components/icon";
 export { default as Indicator } from "./components/indicator";
@@ -60,7 +61,7 @@ export { default as Navbar } from "./components/navbar";
 export { default as Pagination } from "./components/pagination";
 export {
   default as PhoneMockup,
-  type PhoneMockupProps,
+  type PhoneMockupProps
 } from "./components/phonemockup";
 export { default as Progress } from "./components/progress";
 export { PropsTable } from "./components/props-table";
@@ -71,7 +72,7 @@ export { Rating } from "./components/rating";
 export type {
   RatingHiddenProps,
   RatingItemProps,
-  RatingProps,
+  RatingProps
 } from "./components/rating";
 export { default as Select } from "./components/select";
 export { ShowcaseSection } from "./components/showcase-section";
@@ -83,23 +84,23 @@ export { default as Stats } from "./components/stats";
 export { Status } from "./components/status";
 export type { StatusProps } from "./components/status";
 export { default as Steps } from "./components/steps";
+export { SvgBackground, type SvgBackgroundProps } from "./components/svgbackground";
 export { default as Swap } from "./components/swap";
 export { default as Table } from "./components/table";
 export { default as Tabs } from "./components/tabs";
-export type { TabsProps, TabProps, RadioTabProps } from "./components/tabs";
+export type { RadioTabProps, TabProps, TabsProps } from "./components/tabs";
 export { default as Textarea } from "./components/textarea";
 export {
   Timeline,
   TimelineEnd,
   TimelineItem,
   TimelineMiddle,
-  TimelineStart,
+  TimelineStart
 } from "./components/timeline";
 export { default as Toast } from "./components/toast";
 export { default as Toggle } from "./components/toggle";
 export { default as Tooltip } from "./components/tooltip";
 export {
   default as WindowMockup,
-  type WindowMockupProps,
+  type WindowMockupProps
 } from "./components/windowmockup";
-export { default as Artboard, type ArtboardProps } from "./components/artboard";
