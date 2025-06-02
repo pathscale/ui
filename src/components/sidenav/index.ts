@@ -1,3 +1,12 @@
 export { default as Sidenav } from "./Sidenav";
+export { default as SidenavMenu } from "./SidenavMenu";
+export { default as SidenavItem } from "./SidenavItem";
+export { default as SidenavGroup } from "./SidenavGroup";
+export { default as SidenavLink } from "./SidenavLink";
+export { default as SidenavButton } from "./SidenavButton";
 export type { SidenavProps } from "./Sidenav";
-
+export type { SidenavMenuProps } from "./SidenavMenu";
+export type { SidenavItemProps } from "./SidenavItem";
+export type { SidenavGroupProps } from "./SidenavGroup";
+export type { SidenavLinkProps } from "./SidenavLink";
+export type { SidenavButtonProps } from "./SidenavButton";
