@@ -1,4 +1,4 @@
-export { default as Modal } from "./Modal";
+export { default } from "./Modal";
 export {
   type ModalProps as TModalProps,
   type DialogProps as TDialogProps,
