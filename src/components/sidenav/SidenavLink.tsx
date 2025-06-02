@@ -33,8 +33,6 @@ const SidenavLink = (props: SidenavLinkProps): JSX.Element => {
   );
 
   if (local.asChild) {
-    // For asChild, we need to manually apply the class to the child
-    // This is a limitation - the consumer needs to apply the class themselves
     return resolvedChildren() as JSX.Element;
   }
 
