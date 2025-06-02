@@ -102,7 +102,7 @@ function mapResponsiveProp<T extends string>(
   return Object.entries(prop).flatMap(([key, val]) => {
     const className = classMap[val as T];
     if (!className) return [];
-    return key === "base" ? className : `${key}:${className}`;
+    return key === "base" ? [className] : [`${key}:${className}`];
   });
 }
 
