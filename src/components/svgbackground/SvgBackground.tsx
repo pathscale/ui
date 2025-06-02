@@ -185,7 +185,8 @@ export default function SvgBackground(props: SvgBackgroundProps) {
 			<svg
 				class="absolute inset-0 w-full h-full z-0"
 				style={{ opacity: opacity.toString() }}
-				viewBox="0 0 700 700"
+				viewBox="0 0 400 400"
+				preserveAspectRatio="xMidYMid slice"
 				xmlns="http://www.w3.org/2000/svg"
 			>
 				<defs>
@@ -237,8 +238,8 @@ export default function SvgBackground(props: SvgBackgroundProps) {
 					</filter>
 				</defs>
 				<rect
-					width="700"
-					height="700"
+					width="400"
+					height="400"
 					fill={`url(#${gradientId})`}
 					filter={`url(#${filterId})`}
 				/>
