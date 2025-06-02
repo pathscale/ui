@@ -3,7 +3,7 @@ import { Dynamic } from "solid-js/web";
 import clsx from "clsx";
 import { twMerge } from "tailwind-merge";
 import type { IComponentBaseProps } from "../types";
-import { ResponsiveProp } from "../types";
+import { ResponsiveProp, mapResponsiveProp } from "../types";
 
 export type FlexProps = IComponentBaseProps &
   Omit<JSX.HTMLAttributes<HTMLElement>, "ref"> & {
@@ -93,24 +93,6 @@ const basisMap = {
   lg: "basis-24",
   xl: "basis-32",
 };
-
-const breakpoints = ["base", "sm", "md", "lg", "xl"] as const;
-
-function mapResponsiveProp<T extends string | boolean>(
-  prop: ResponsiveProp<T> | undefined,
-  map: Record<string, string>
-) {
-  if (prop === undefined) return [];
-  if (typeof prop === "string" || typeof prop === "boolean") {
-    return [map[String(prop)]];
-  }
-  return breakpoints.flatMap((bp) => {
-    const value = prop[bp];
-    if (value === undefined) return [];
-    const className = map[String(value)];
-    return bp === "base" ? className : `${bp}:${className}`;
-  });
-}
 
 const Flex = (props: FlexProps) => {
   const [local, rest] = splitProps(props, [

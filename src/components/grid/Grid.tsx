@@ -3,7 +3,7 @@ import { Dynamic } from "solid-js/web";
 import { twMerge } from "tailwind-merge";
 import type { IComponentBaseProps } from "../types";
 import clsx from "clsx";
-import { ResponsiveProp } from "../types";
+import { ResponsiveProp, mapResponsiveProp } from "../types";
 
 type GridFlow = "row" | "col" | "row-dense" | "col-dense";
 type GridSize =
@@ -89,22 +89,6 @@ const autoRowsMap = {
   max: "auto-rows-max",
   fr: "auto-rows-fr",
 } as const;
-
-function mapResponsiveProp<T extends string>(
-  prop: ResponsiveProp<T> | undefined,
-  classMap: Record<T, string>
-): string[] {
-  if (!prop) return [];
-  if (typeof prop === "string") {
-    return classMap[prop] ? [classMap[prop]] : [];
-  }
-
-  return Object.entries(prop).flatMap(([key, val]) => {
-    const className = classMap[val as T];
-    if (!className) return [];
-    return key === "base" ? [className] : [`${key}:${className}`];
-  });
-}
 
 const Grid = (props: GridProps) => {
   const merged = mergeProps({ as: "div" }, props);
