@@ -1,90 +1,50 @@
-import { type JSX, splitProps, children as resolveChildren } from "solid-js";
-import { Dynamic } from "solid-js/web";
-import type { ValidComponent } from "solid-js";
+import {
+  type Component,
+  splitProps,
+  children as resolveChildren,
+  JSX,
+  For,
+  Show,
+} from "solid-js";
+import clsx from "clsx";
+import { twMerge } from "tailwind-merge";
+import { type IComponentBaseProps } from "../types";
 
-type ElementType = keyof JSX.IntrinsicElements;
+export type TableRowProps = JSX.HTMLAttributes<HTMLTableRowElement> &
+  IComponentBaseProps & {
+    active?: boolean;
+    noCell?: boolean;
+  };
 
-type TableRowBaseProps = {
-  noCell?: boolean;
-  as?: ElementType;
-  class?: string;
-  className?: string;
-  style?: JSX.CSSProperties;
-  children?: JSX.Element;
-  "data-theme"?: string;
-};
-
-type PropsOf<E extends ElementType> = JSX.IntrinsicElements[E];
-
-export type TableRowProps<E extends ElementType = "tr"> = Omit<
-  PropsOf<E>,
-  keyof TableRowBaseProps
-> &
-  TableRowBaseProps;
-
-const VoidElementList: ElementType[] = [
-  "area",
-  "base",
-  "br",
-  "col",
-  "embed",
-  "hr",
-  "img",
-  "input",
-  "link",
-  "keygen",
-  "meta",
-  "param",
-  "source",
-  "track",
-  "wbr",
-];
-
-const TableRow = <E extends ElementType = "tr">(
-  props: TableRowProps<E>
-): JSX.Element => {
-  const [local, others] = splitProps(props, [
+const TableRow: Component<TableRowProps> = (props) => {
+  const [local, rest] = splitProps(props, [
     "children",
-    "noCell",
-    "as",
     "class",
-    "className",
-    "style",
-    "data-theme",
+    "active",
+    "noCell",
   ]);
-
-  const Tag = (local.as || "tr") as ValidComponent;
-  const resolved = resolveChildren(() => local.children);
-  const childrenArray = resolved.toArray();
-
-  const cells = local.noCell
-    ? childrenArray
-    : childrenArray.map((child) => <td>{child}</td>);
-
-  const classAttr = local.class ?? local.className;
-
-  if (VoidElementList.includes(Tag as ElementType)) {
-    return (
-      <Dynamic
-        component={Tag}
-        {...(others as Record<string, any>)}
-        class={classAttr}
-        style={local.style}
-        data-theme={local["data-theme"]}
-      />
+  const classAttr = () =>
+    twMerge(
+      clsx(local.class, {
+        active: local.active,
+      })
     );
-  }
+
+  const resolved = resolveChildren(() => local.children);
 
   return (
-    <Dynamic
-      component={Tag}
-      {...(others as Record<string, any>)}
-      class={classAttr}
-      style={local.style}
-      data-theme={local["data-theme"]}
-    >
-      {cells}
-    </Dynamic>
+    <tr {...rest} class={classAttr()}>
+      <Show
+        when={local.noCell}
+        fallback={
+          <For each={resolved.toArray()}>
+            {(child, i) => (i() === 0 ? <th>{child}</th> : <td>{child}</td>)}
+          </For>
+        }
+      >
+        {resolved()}
+      </Show>
+    </tr>
   );
 };
 
