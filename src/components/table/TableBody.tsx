@@ -1,60 +1,11 @@
-import { type JSX, splitProps } from "solid-js";
-import { Dynamic } from "solid-js/web";
+import { type Component, splitProps, JSX } from "solid-js";
 
-export type TableBodyProps<E extends keyof JSX.IntrinsicElements = "tbody"> = Omit<
-  JSX.IntrinsicElements[E],
-  "class" | "className"
-> & {
-  as?: E;
-  class?: string;
-  className?: string;
-  style?: JSX.CSSProperties;
-  children?: JSX.Element;
-  "data-theme"?: string;
-};
+export type TableBodyProps = JSX.HTMLAttributes<HTMLTableSectionElement>;
 
-const VoidElementList: (keyof JSX.IntrinsicElements)[] = [
-  "area","base","br","col","embed","hr","img","input","link","keygen",
-  "meta","param","source","track","wbr",
-];
+const TableBody: Component<TableBodyProps> = (props) => {
+  const [local, rest] = splitProps(props, ["children"]);
 
-const TableBody = <E extends keyof JSX.IntrinsicElements = "tbody">(
-  props: TableBodyProps<E>
-): JSX.Element => {
-  const [local, others] = splitProps(props as TableBodyProps, [
-    "as",
-    "class",
-    "className",
-    "style",
-    "children",
-    "data-theme",
-  ]);
-
-  const Tag = local.as || ("tbody" as E);
-
-  if (VoidElementList.includes(Tag)) {
-    return (
-      <Dynamic
-        component={Tag}
-        {...others}
-        class={local.class ?? local.className}
-        style={local.style}
-        data-theme={local["data-theme"]}
-      />
-    );
-  }
-
-  return (
-    <Dynamic
-      component={Tag}
-      {...others}
-      class={local.class ?? local.className}
-      style={local.style}
-      data-theme={local["data-theme"]}
-    >
-      {local.children}
-    </Dynamic>
-  );
+  return <tbody {...rest}>{local.children}</tbody>;
 };
 
 export default TableBody;

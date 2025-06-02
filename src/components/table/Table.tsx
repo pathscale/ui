@@ -1,7 +1,6 @@
-import { type JSX, splitProps } from "solid-js";
-import { Dynamic } from "solid-js/web";
+import { type Component, splitProps, type JSX } from "solid-js";
+import clsx from "clsx";
 import { twMerge } from "tailwind-merge";
-import { clsx } from "clsx";
 
 import type { IComponentBaseProps, ComponentSize } from "../types";
 import TableHead from "./TableHead";
@@ -9,62 +8,29 @@ import TableBody from "./TableBody";
 import TableRow from "./TableRow";
 import TableFooter from "./TableFooter";
 
-type ElementType = keyof JSX.IntrinsicElements;
+export type TableProps = JSX.HTMLAttributes<HTMLTableElement> &
+  IComponentBaseProps & {
+    size?: ComponentSize;
+    zebra?: boolean;
+    pinRows?: boolean;
+    pinCols?: boolean;
+  };
 
-type TableBaseProps = {
-  size?: ComponentSize;
-  zebra?: boolean;
-  pinRows?: boolean;
-  pinCols?: boolean;
-  as?: ElementType;
-  class?: string;
-  className?: string;
-  style?: JSX.CSSProperties;
-  dataTheme?: string;
-  children?: JSX.Element;
-};
-
-type PropsOf<E extends ElementType> = JSX.IntrinsicElements[E];
-
-export type TableProps<E extends ElementType = "table"> = Omit<
-  PropsOf<E>,
-  keyof TableBaseProps
-> &
-  TableBaseProps &
-  IComponentBaseProps;
-
-// Void elements (though tables rarely use these)
-const VoidElementList: ElementType[] = [
-  "area","base","br","col","embed","hr","img","input","link","keygen",
-  "meta","param","source","track","wbr",
-];
-
-const TableComponent = <E extends ElementType = "table">(
-  props: TableProps<E>
-): JSX.Element => {
-  const [local, others] = splitProps(
-    props as TableBaseProps & Record<string, unknown>,
-    [
-      "children",
-      "size",
-      "zebra",
-      "pinRows",
-      "pinCols",
-      "as",
-      "class",
-      "className",
-      "style",
-      "dataTheme",
-    ]
-  );
-
-  const Tag = local.as || ("table" as ElementType);
+const Table: Component<TableProps> = (props) => {
+  const [local, rest] = splitProps(props, [
+    "children",
+    "size",
+    "zebra",
+    "pinRows",
+    "pinCols",
+    "dataTheme",
+    "class",
+  ]);
 
   const classes = () =>
     twMerge(
       "table",
       local.class,
-      local.className,
       clsx({
         "table-zebra": local.zebra,
         "table-xl": local.size === "xl",
@@ -77,37 +43,16 @@ const TableComponent = <E extends ElementType = "table">(
       })
     );
 
-  if (VoidElementList.includes(Tag)) {
-    return (
-      <Dynamic
-        component={Tag}
-        {...others}
-        data-theme={local.dataTheme}
-        class={classes()}
-        style={local.style}
-      />
-    );
-  }
-
   return (
-    <Dynamic
-      component={Tag}
-      {...others}
-      data-theme={local.dataTheme}
-      class={classes()}
-      style={local.style}
-    >
+    <table data-theme={local.dataTheme} class={classes()} {...rest}>
       {local.children}
-    </Dynamic>
+    </table>
   );
 };
 
-// Assign subcomponents and type them
-const Table = Object.assign(TableComponent, {
+export default Object.assign(Table, {
   Head: TableHead,
   Body: TableBody,
   Row: TableRow,
   Footer: TableFooter,
 });
-
-export default Table;
