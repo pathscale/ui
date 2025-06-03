@@ -1,15 +1,17 @@
 import {
   type JSX,
   splitProps,
-  children as resolveChildren,
   createMemo,
+  children as resolveChildren,
 } from "solid-js";
 import { twMerge } from "tailwind-merge";
+import { Dynamic } from "solid-js/web";
 
 import type { IComponentBaseProps } from "../types";
 
 type SidenavLinkBaseProps = {
   asChild?: boolean;
+  as?: string;
 };
 
 export type SidenavLinkProps = JSX.HTMLAttributes<HTMLDivElement> &
@@ -20,6 +22,7 @@ const SidenavLink = (props: SidenavLinkProps): JSX.Element => {
   const [local, others] = splitProps(props, [
     "children",
     "asChild",
+    "as",
     "class",
     "className",
     "dataTheme",
@@ -36,15 +39,18 @@ const SidenavLink = (props: SidenavLinkProps): JSX.Element => {
     return resolvedChildren() as JSX.Element;
   }
 
+  const Tag = local.as || "div";
+
   return (
-    <div
+    <Dynamic
+      component={Tag}
       {...others}
       class={classes()}
       data-theme={local.dataTheme}
       style={local.style}
     >
       {resolvedChildren()}
-    </div>
+    </Dynamic>
   );
 };
 
