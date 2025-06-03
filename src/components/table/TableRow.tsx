@@ -26,7 +26,7 @@ const TableRow: Component<TableRowProps> = (props) => {
   const classAttr = () =>
     twMerge(
       clsx(local.class, {
-        "bg-primary text-primary-content": local.active,
+        active: local.active,
       })
     );
 
