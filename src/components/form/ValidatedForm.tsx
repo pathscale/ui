@@ -1,16 +1,15 @@
 import {
   children as resolveChildren,
+  createContext,
   createMemo,
   splitProps,
+  useContext,
   type JSX,
 } from "solid-js";
 import { createForm } from "@felte/solid";
 import { validator } from "@felte/validator-zod";
 import { z } from "zod";
 import Form, { type FormProps } from "./Form";
-import FormValidationContext, {
-  type FormValidationContext as FormValidationContextType,
-} from "./FormValidationContext";
 
 export type ValidatedFormProps<T extends z.ZodTypeAny> = Omit<
   FormProps,
@@ -18,9 +17,26 @@ export type ValidatedFormProps<T extends z.ZodTypeAny> = Omit<
 > & {
   schema: T;
   onSubmit: (values: z.infer<T>) => void | Promise<void>;
-  initialValues?: Partial<z.infer<T>>;
+  initialValues?: z.infer<T>;
 };
 
+interface FormValidationContext {
+  errors: (path?: string | ((data: any) => any)) => any;
+  touched: (path?: string | ((data: any) => any)) => any;
+  data: (path?: string | ((data: any) => any)) => any;
+  isValid: () => boolean;
+  isSubmitting: () => boolean;
+}
+
+const FormValidationContext = createContext<FormValidationContext>();
+
+export function useFormValidation() {
+  const context = useContext(FormValidationContext);
+  if (!context) {
+    throw new Error("useFormValidation must be used within a ValidatedForm");
+  }
+  return context;
+}
 
 function ValidatedForm<T extends z.ZodTypeAny>(
   props: ValidatedFormProps<T>
@@ -32,81 +48,23 @@ function ValidatedForm<T extends z.ZodTypeAny>(
     "initialValues",
   ]);
 
-  const felteForm = createForm<z.infer<T>>({
+  const { form, errors, touched, data, isValid, isSubmitting } = createForm<
+    z.infer<T>
+  >({
     initialValues: local.initialValues,
     extend: [validator({ schema: local.schema })],
     onSubmit: local.onSubmit,
   });
 
-  const {
-    form,
-    data,
-    errors,
-    warnings,
-    touched,
-    isValid,
-    isSubmitting,
-    isDirty,
-    isValidating,
-    interacted,
-    reset,
-    validate,
-    setData,
-    setFields,
-    setTouched,
-    setErrors,
-    setWarnings,
-    setIsDirty,
-    setIsSubmitting,
-    setInteracted,
-    createSubmitHandler,
-    setInitialValues,
-    addField,
-    unsetField,
-    resetField,
-    swapFields,
-    moveField,
-  } = felteForm;
-
   const resolvedChildren = resolveChildren(() => local.children);
 
   const contextValue = createMemo(
-    (): FormValidationContextType<z.infer<T>> => ({
-      // Form state stores
-      data,
+    (): FormValidationContext => ({
       errors,
-      warnings,
       touched,
+      data,
       isValid,
       isSubmitting,
-      isDirty,
-      isValidating,
-      interacted,
-
-      // Form control functions
-      reset,
-      validate,
-
-      // Setter functions
-      setData,
-      setFields,
-      setTouched,
-      setErrors,
-      setWarnings,
-      setIsDirty,
-      setIsSubmitting,
-      setInteracted,
-
-      // Form manipulation functions
-      createSubmitHandler: createSubmitHandler as any,
-      setInitialValues,
-
-      // Dynamic field management
-      addField: addField as any,
-      unsetField: unsetField as any,
-      resetField: resetField as any,
-      swapFields: swapFields as any,
-      moveField: moveField as any,
     })
   );
 
