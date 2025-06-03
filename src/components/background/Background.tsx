@@ -10,7 +10,7 @@ const Background = (props: BackgroundProps) => {
   const { class: className, className: classNameAlt, ...rest } = props;
   return (
     <div
-      class={twMerge("bg-base-200 min-h-screen", clsx(className, classNameAlt))}
+      class={twMerge("bg-base-100 min-h-screen", clsx(className, classNameAlt))}
       {...rest}
     />
   );

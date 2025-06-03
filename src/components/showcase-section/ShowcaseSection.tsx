@@ -32,7 +32,7 @@ const ShowcaseSection: ParentComponent<ShowcaseSectionProps> = (props) => {
       data-theme={local.dataTheme}
       {...others}
       class={twMerge(
-        "p-3 bg-base-200 rounded-lg shadow-sm scroll-mt-6",
+        "p-3 bg-base-100 rounded-lg shadow-sm scroll-mt-6",
         local.class,
         local.className
       )}
