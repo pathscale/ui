@@ -33,12 +33,13 @@ export default function SidenavDebugShowcase() {
     }
   });
 
-  const routes = [
-    { id: "/", label: "Home" },
-    { id: "/about", label: "About" },
-    { id: "/services", label: "Services" },
-    { id: "/contact", label: "Contact" },
-  ];
+  const handleNavClick = (path: string) => (e: MouseEvent) => {
+    e.preventDefault();
+    setActivePath(path);
+    if (!isDesktop()) {
+      setIsOpen(false);
+    }
+  };
 
   return (
     <div class="flex h-screen">
@@ -61,22 +62,53 @@ export default function SidenavDebugShowcase() {
         }
       >
         <SidenavMenu>
-          {routes.map((route) => (
-            <SidenavItem active={activePath() === route.id}>
-              <SidenavLink asChild>
-                <a
-                  href="#"
-                  class="sidenav-item-link"
-                  onClick={(e) => {
-                    e.preventDefault();
-                    setActivePath(route.id);
-                  }}
-                >
-                  {route.label}
-                </a>
-              </SidenavLink>
-            </SidenavItem>
-          ))}
+          <SidenavItem active={activePath() === "/"}>
+            <SidenavLink asChild>
+              <a
+                href="#"
+                class="sidenav-item-link"
+                onClick={handleNavClick("/")}
+              >
+                Home
+              </a>
+            </SidenavLink>
+          </SidenavItem>
+
+          <SidenavItem active={activePath() === "/about"}>
+            <SidenavLink asChild>
+              <a
+                href="#"
+                class="sidenav-item-link"
+                onClick={handleNavClick("/about")}
+              >
+                About
+              </a>
+            </SidenavLink>
+          </SidenavItem>
+
+          <SidenavItem active={activePath() === "/services"}>
+            <SidenavLink asChild>
+              <a
+                href="#"
+                class="sidenav-item-link"
+                onClick={handleNavClick("/services")}
+              >
+                Services
+              </a>
+            </SidenavLink>
+          </SidenavItem>
+
+          <SidenavItem active={activePath() === "/contact"}>
+            <SidenavLink asChild>
+              <a
+                href="#"
+                class="sidenav-item-link"
+                onClick={handleNavClick("/contact")}
+              >
+                Contact
+              </a>
+            </SidenavLink>
+          </SidenavItem>
         </SidenavMenu>
       </Sidenav>
 
