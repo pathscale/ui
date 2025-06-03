@@ -1,4 +1,9 @@
-import { splitProps, type JSX, mergeProps, createMemo } from "solid-js";
+import {
+  splitProps,
+  type JSX,
+  mergeProps,
+  children as resolveChildren,
+} from "solid-js";
 import { Dynamic } from "solid-js/web";
 import { twMerge } from "tailwind-merge";
 import type { IComponentBaseProps } from "../types";
@@ -96,6 +101,7 @@ const Grid = (props: GridProps) => {
     "as",
     "class",
     "className",
+    "children",
     "cols",
     "rows",
     "flow",
@@ -104,21 +110,25 @@ const Grid = (props: GridProps) => {
     "autoRows",
   ]);
 
-  const classes = createMemo(() => {
-    return twMerge(
-      "grid",
-      ...mapResponsiveProp(local.cols, colsMap),
-      ...mapResponsiveProp(local.rows, rowsMap),
-      ...mapResponsiveProp(local.flow, flowMap),
-      ...mapResponsiveProp(local.gap, gapMap),
-      ...mapResponsiveProp(local.autoCols, autoColsMap),
-      ...mapResponsiveProp(local.autoRows, autoRowsMap),
-      local.class,
-      local.className
-    );
-  });
+  const resolvedChildren = resolveChildren(() => local.children);
 
-  return <Dynamic component={local.as} class={classes()} {...rest} />;
+  const classes = clsx(
+    "grid",
+    mapResponsiveProp(local.cols, colsMap),
+    mapResponsiveProp(local.rows, rowsMap),
+    mapResponsiveProp(local.flow, flowMap),
+    mapResponsiveProp(local.gap, gapMap),
+    mapResponsiveProp(local.autoCols, autoColsMap),
+    mapResponsiveProp(local.autoRows, autoRowsMap),
+    local.class,
+    local.className
+  );
+
+  return (
+    <Dynamic component={local.as} class={twMerge(classes)} {...rest}>
+      {resolvedChildren()}
+    </Dynamic>
+  );
 };
 
 export default Grid;
