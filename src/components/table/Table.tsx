@@ -15,6 +15,7 @@ export type TableProps = JSX.HTMLAttributes<HTMLTableElement> &
     zebra?: boolean;
     pinRows?: boolean;
     pinCols?: boolean;
+    hover?: boolean;
   };
 
 const Table: Component<TableProps> = (props) => {
@@ -24,6 +25,7 @@ const Table: Component<TableProps> = (props) => {
     "zebra",
     "pinRows",
     "pinCols",
+    "hover",
     "dataTheme",
     "class",
   ]);
@@ -34,6 +36,7 @@ const Table: Component<TableProps> = (props) => {
       local.class,
       clsx({
         "table-zebra": local.zebra,
+        "table-hover": local.hover,
         "table-xl": local.size === "xl",
         "table-lg": local.size === "lg",
         "table-md": local.size === "md",
