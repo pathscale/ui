@@ -118,7 +118,7 @@ export function Modal(props: ModalProps): JSX.Element {
       </div>
       {local.backdrop && (
         <form method="dialog" class="modal-backdrop">
-          <button type="submit">close</button>
+          <button onClick={local.onClose} type="submit"></button>
         </form>
       )}
     </dialog>
