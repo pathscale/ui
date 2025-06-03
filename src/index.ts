@@ -95,6 +95,8 @@ export { default as Steps } from "./components/steps";
 export { SvgBackground, type SvgBackgroundProps } from "./components/svgbackground";
 export { default as Swap } from "./components/swap";
 export { default as Table } from "./components/table";
+export type { TableProps } from "./components/table";
+export type { EnhancedTableProps } from "./components/table/EnhancedTable";
 export { default as Tabs } from "./components/tabs";
 export type { RadioTabProps, TabProps, TabsProps } from "./components/tabs";
 export { default as Textarea } from "./components/textarea";
