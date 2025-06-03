@@ -19,6 +19,87 @@ export interface SvgBackgroundProps {
 	darkness?: number;
 }
 
+function hexToHsl(hex: string) {
+	hex = hex.replace('#', '');
+
+	const r = parseInt(hex.substr(0, 2), 16) / 255;
+	const g = parseInt(hex.substr(2, 2), 16) / 255;
+	const b = parseInt(hex.substr(4, 2), 16) / 255;
+
+	const max = Math.max(r, g, b);
+	const min = Math.min(r, g, b);
+	let h = 0;
+	let s = 0;
+	const l = (max + min) / 2;
+
+	if (max !== min) {
+		const d = max - min;
+		s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
+
+		switch (max) {
+			case r: h = (g - b) / d + (g < b ? 6 : 0); break;
+			case g: h = (b - r) / d + 2; break;
+			case b: h = (r - g) / d + 4; break;
+		}
+		h /= 6;
+	}
+
+	return {
+		h: Math.round(h * 360),
+		s: Math.round(s * 100),
+		l: Math.round(l * 100)
+	};
+}
+
+function parseColor(colorString: string) {
+	const hslMatch = colorString.match(/hsl\((\d+),\s*(\d+)%,\s*(\d+)%\)/);
+	if (hslMatch) {
+		return {
+			h: parseInt(hslMatch[1]),
+			s: parseInt(hslMatch[2]),
+			l: parseInt(hslMatch[3])
+		};
+	}
+
+	const hexMatch = colorString.match(/^#?([a-fA-F0-9]{6})$/);
+	if (hexMatch) {
+		return hexToHsl(colorString);
+	}
+
+	const rgbMatch = colorString.match(/rgb\((\d+),\s*(\d+),\s*(\d+)\)/);
+	if (rgbMatch) {
+		const r = parseInt(rgbMatch[1]) / 255;
+		const g = parseInt(rgbMatch[2]) / 255;
+		const b = parseInt(rgbMatch[3]) / 255;
+
+		const max = Math.max(r, g, b);
+		const min = Math.min(r, g, b);
+		let h = 0;
+		let s = 0;
+		const l = (max + min) / 2;
+
+		if (max !== min) {
+			const d = max - min;
+			s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
+
+			switch (max) {
+				case r: h = (g - b) / d + (g < b ? 6 : 0); break;
+				case g: h = (b - r) / d + 2; break;
+				case b: h = (r - g) / d + 4; break;
+			}
+			h /= 6;
+		}
+
+		return {
+			h: Math.round(h * 360),
+			s: Math.round(s * 100),
+			l: Math.round(l * 100)
+		};
+	}
+
+	return { h: 0, s: 0, l: 0 };
+}
+
 function parseHSL(hslString: string) {
 	const match = hslString.match(/hsl\((\d+),\s*(\d+)%,\s*(\d+)%\)/);
 	if (!match) return null;
@@ -48,8 +129,8 @@ function generateStableId() {
 
 export default function SvgBackground(props: SvgBackgroundProps) {
 	const {
-		colorStart = 'hsl(129, 100%, 72%)',
-		colorEnd = 'hsl(227, 100%, 50%)',
+		colorStart = '#000000',
+		colorEnd = '#333333',
 		opacity = 1,
 		blurIntensity = 36,
 		turbulenceFrequency = 0.007,
@@ -70,6 +151,16 @@ export default function SvgBackground(props: SvgBackgroundProps) {
 	const gradientId = `gradient-${generateStableId()}`;
 	const filterId = `filter-${generateStableId()}`;
 
+	const shouldUseFilters = createMemo(() => {
+		return blurIntensity > 0 && turbulenceFrequency > 0.001;
+	});
+
+	const isGrayscaleColors = createMemo(() => {
+		const startHSL = parseColor(colorStart);
+		const endHSL = parseColor(colorEnd);
+		return startHSL.s < 15 && endHSL.s < 15;
+	});
+
 	onMount(() => {
 		if (animated) {
 			const animate = () => {
@@ -86,8 +177,8 @@ export default function SvgBackground(props: SvgBackgroundProps) {
 		}
 	});
 
-	const startHSL = createMemo(() => parseHSL(colorStart));
-	const endHSL = createMemo(() => parseHSL(colorEnd));
+	const startHSL = createMemo(() => parseColor(colorStart));
+	const endHSL = createMemo(() => parseColor(colorEnd));
 
 	const animatedColors = createMemo(() => {
 		if (!animated) {
@@ -135,18 +226,16 @@ export default function SvgBackground(props: SvgBackgroundProps) {
 		const start = startHSL();
 		const end = endHSL();
 
-		if (start && end) {
-			const h1 = interpolateHue(start.h, end.h, colorMix);
-			const s1 = start.s + (end.s - start.s) * colorMix;
-			const l1 = start.l + (end.l - start.l) * colorMix;
+		const h1 = interpolateHue(start.h, end.h, colorMix);
+		const s1 = start.s + (end.s - start.s) * colorMix;
+		const l1 = start.l + (end.l - start.l) * colorMix;
 
-			const h2 = interpolateHue(start.h, end.h, colorMix2);
-			const s2 = start.s + (end.s - start.s) * colorMix2;
-			const l2 = start.l + (end.l - start.l) * colorMix2;
+		const h2 = interpolateHue(start.h, end.h, colorMix2);
+		const s2 = start.s + (end.s - start.s) * colorMix2;
+		const l2 = start.l + (end.l - start.l) * colorMix2;
 
-			color1 = `hsl(${Math.round(h1)}, ${Math.round(s1)}%, ${Math.round(l1)}%)`;
-			color2 = `hsl(${Math.round(h2)}, ${Math.round(s2)}%, ${Math.round(l2)}%)`;
-		}
+		color1 = `hsl(${Math.round(h1)}, ${Math.round(s1)}%, ${Math.round(l1)}%)`;
+		color2 = `hsl(${Math.round(h2)}, ${Math.round(s2)}%, ${Math.round(l2)}%)`;
 
 		const turbFreq1 = turbulenceFrequency + (turbulenceFrequency * 0.01 * turbMix1);
 		const turbFreq2 = (turbulenceFrequency * 0.4) + (turbulenceFrequency * 0.01 * turbMix2);
@@ -208,40 +297,52 @@ export default function SvgBackground(props: SvgBackgroundProps) {
 							offset="100%"
 						/>
 					</linearGradient>
-					<filter
-						id={filterId}
-						x="-20%" y="-20%" width="140%" height="140%"
-						filterUnits="objectBoundingBox"
-						primitiveUnits="userSpaceOnUse"
-						color-interpolation-filters="sRGB"
-					>
-						<feTurbulence
-							ref={turbulenceRef}
-							type="fractalNoise"
-							baseFrequency={`${animatedColors().turbFreq1} ${animatedColors().turbFreq2}`}
-							numOctaves="2"
-							seed="10"
-							stitchTiles="stitch"
-							result="turbulence"
-						/>
-						<feGaussianBlur
-							stdDeviation={`${blurIntensity} ${blurIntensity}`}
-							in="turbulence"
-							result="blur"
-						/>
-						<feBlend
-							mode={"color-dodge" as any}
-							in="SourceGraphic"
-							in2="blur"
-							result="blend"
-						/>
-					</filter>
+					{shouldUseFilters() && (
+						<filter
+							id={filterId}
+							x="-20%" y="-20%" width="140%" height="140%"
+							filterUnits="objectBoundingBox"
+							primitiveUnits="userSpaceOnUse"
+							color-interpolation-filters="sRGB"
+						>
+							{isGrayscaleColors() ? (
+								<feGaussianBlur
+									stdDeviation={`${blurIntensity * 0.3} ${blurIntensity * 0.3}`}
+									in="SourceGraphic"
+									result="blur"
+								/>
+							) : (
+								<>
+									<feTurbulence
+										ref={turbulenceRef}
+										type="fractalNoise"
+										baseFrequency={`${animatedColors().turbFreq1} ${animatedColors().turbFreq2}`}
+										numOctaves="2"
+										seed="10"
+										stitchTiles="stitch"
+										result="turbulence"
+									/>
+									<feGaussianBlur
+										stdDeviation={`${blurIntensity} ${blurIntensity}`}
+										in="turbulence"
+										result="blur"
+									/>
+									<feBlend
+										mode={"color-dodge" as any}
+										in="SourceGraphic"
+										in2="blur"
+										result="blend"
+									/>
+								</>
+							)}
+						</filter>
+					)}
 				</defs>
 				<rect
 					width="400"
 					height="400"
 					fill={`url(#${gradientId})`}
-					filter={`url(#${filterId})`}
+					filter={shouldUseFilters() ? `url(#${filterId})` : 'none'}
 				/>
 			</svg>
 
