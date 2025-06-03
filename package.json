@@ -1,78 +1,80 @@
 {
-	"name": "@pathscale/ui",
-	"version": "0.0.44",
-	"author": "pathscale",
-	"repository": {
-		"type": "git",
-		"url": "https://github.com/pathscale/ui"
-	},
-	"license": "MIT",
-	"description": "Highly opinionated SolidJS component library — batteries and kitchen sink included, but optimized and shiny.",
-	"files": [
-		"dist"
-	],
-	"homepage": "https://github.com/pathscale/ui",
-	"keywords": [
-		"solid",
-		"solidjs"
-	],
-	"bugs": {
-		"url": "https://github.com/pathscale/ui/issues"
-	},
-	"main": "./dist/index.js",
-	"module": "./dist/index.js",
-	"types": "./dist/index.d.ts",
-	"devDependencies": {
-		"@biomejs/biome": "1.9.4",
-		"@felte/solid": "^1.2.11",
-		"@felte/validator-zod": "^1.0.15",
-		"@iconify/json": "^2.2.342",
-		"@iconify/utils": "^2.3.0",
-		"@rsbuild/core": "^1.3.20",
-		"@rsbuild/plugin-solid": "^1.0.5",
-		"@rslib/core": "^0.9.0",
-		"@types/bun": "^1.2.12",
-		"babel-preset-solid": "^1.9.6",
-		"clsx": "^2.1.1",
-		"cssnano": "^7.0.7",
-		"postcss": "^8.5.4",
-		"postcss-cli": "^11.0.1",
-		"svgo": "^3.3.2",
-		"tailwind-merge": "^3.3.0",
-		"typescript": "^5.8.3",
-		"zod": "^3.22.4",
-		"cally": "^0.8.0"
-	},
-	"dependencies": {
-		"@iconify/tailwind4": "^1.0.6",
-		"@solid-primitives/event-listener": "^2.3.0",
-		"@solid-primitives/intersection-observer": "^2.1.3",
-		"@solid-primitives/keyboard": "^1.2.5",
-		"@solid-primitives/media": "^2.2.5",
-		"@solid-primitives/props": "^3.1.8",
-		"@solid-primitives/resize-observer": "^2.0.22",
-		"@solid-primitives/scheduled": "^1.4.1",
-		"@solid-primitives/scroll": "^2.0.20",
-		"@solid-primitives/storage": "^2.1.1",
-		"@solid-primitives/utils": "^6.2.1",
-		"rsbuild-plugin-iconify": "^1.0.3",
-		"solid-js": "^1.9.7"
-	},
-	"peerDependencies": {
-		"@felte/solid": "^1.2.0",
-		"@felte/validator-zod": "^1.0.0",
-		"solid-js": "^1.9",
-		"zod": "^3.22.0"
-	},
-	"scripts": {
-		"build": "rslib build && bun scripts/copy-css.js",
-		"build:watch": "rslib build --watch",
-		"dev": "rslib dev",
-		"preview": "rslib preview",
-		"clean": "rm -rf dist node_modules",
-		"format": "bun biome format --write",
-		"lint": "bun biome lint --write"
-	},
-	"sideEffects": false,
-	"type": "module"
+  "name": "@pathscale/ui",
+  "version": "0.0.44",
+  "author": "pathscale",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/pathscale/ui"
+  },
+  "license": "MIT",
+  "description": "Highly opinionated SolidJS component library — batteries and kitchen sink included, but optimized and shiny.",
+  "files": [
+    "dist"
+  ],
+  "homepage": "https://github.com/pathscale/ui",
+  "keywords": [
+    "solid",
+    "solidjs"
+  ],
+  "bugs": {
+    "url": "https://github.com/pathscale/ui/issues"
+  },
+  "main": "./dist/index.js",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "devDependencies": {
+    "@biomejs/biome": "1.9.4",
+    "@felte/solid": "^1.2.11",
+    "@felte/validator-zod": "^1.0.15",
+    "@iconify/json": "^2.2.342",
+    "@iconify/utils": "^2.3.0",
+    "@rsbuild/core": "^1.3.20",
+    "@rsbuild/plugin-solid": "^1.0.5",
+    "@rslib/core": "^0.9.0",
+    "@tanstack/solid-table": "^8.21.3",
+    "@types/bun": "^1.2.12",
+    "babel-preset-solid": "^1.9.6",
+    "clsx": "^2.1.1",
+    "cssnano": "^7.0.7",
+    "postcss": "^8.5.4",
+    "postcss-cli": "^11.0.1",
+    "svgo": "^3.3.2",
+    "tailwind-merge": "^3.3.0",
+    "typescript": "^5.8.3",
+    "zod": "^3.22.4",
+    "cally": "^0.8.0"
+  },
+  "dependencies": {
+    "@iconify/tailwind4": "^1.0.6",
+    "@solid-primitives/event-listener": "^2.3.0",
+    "@solid-primitives/intersection-observer": "^2.1.3",
+    "@solid-primitives/keyboard": "^1.2.5",
+    "@solid-primitives/media": "^2.2.5",
+    "@solid-primitives/props": "^3.1.8",
+    "@solid-primitives/resize-observer": "^2.0.22",
+    "@solid-primitives/scheduled": "^1.4.1",
+    "@solid-primitives/scroll": "^2.0.20",
+    "@solid-primitives/storage": "^2.1.1",
+    "@solid-primitives/utils": "^6.2.1",
+    "rsbuild-plugin-iconify": "^1.0.3",
+    "solid-js": "^1.9.7"
+  },
+  "peerDependencies": {
+    "@felte/solid": "^1.2.0",
+    "@felte/validator-zod": "^1.0.0",
+    "@tanstack/solid-table": "^8.0.0",
+    "solid-js": "^1.9",
+    "zod": "^3.22.0"
+  },
+  "scripts": {
+    "build": "rslib build && bun scripts/copy-css.js",
+    "build:watch": "rslib build --watch",
+    "dev": "rslib dev",
+    "preview": "rslib preview",
+    "clean": "rm -rf dist node_modules",
+    "format": "bun biome format --write",
+    "lint": "bun biome lint --write"
+  },
+  "sideEffects": false,
+  "type": "module"
 }
