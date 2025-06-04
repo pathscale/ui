@@ -7,6 +7,8 @@ import TableHead from "./TableHead";
 import TableBody from "./TableBody";
 import TableRow from "./TableRow";
 import TableFooter from "./TableFooter";
+import TableCell from "./TableCell";
+import TableHeadCell from "./TableHeadCell";
 import EnhancedTable from "./EnhancedTable";
 
 export type TableProps = JSX.HTMLAttributes<HTMLTableElement> &
@@ -59,5 +61,7 @@ export default Object.assign(Table, {
   Body: TableBody,
   Row: TableRow,
   Footer: TableFooter,
+  Cell: TableCell,
+  HeadCell: TableHeadCell,
   Enhanced: EnhancedTable,
 });

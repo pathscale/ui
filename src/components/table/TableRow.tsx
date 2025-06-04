@@ -9,6 +9,8 @@ import {
 import clsx from "clsx";
 import { twMerge } from "tailwind-merge";
 import { type IComponentBaseProps } from "../types";
+import TableCell from "./TableCell";
+import TableHeadCell from "./TableHeadCell";
 
 export type TableRowProps = JSX.HTMLAttributes<HTMLTableRowElement> &
   IComponentBaseProps & {
@@ -34,7 +36,20 @@ const TableRow: Component<TableRowProps> = (props) => {
 
   return (
     <tr {...rest} class={classAttr()}>
-      <Show when={local.noCell} fallback={resolved()}>
+      <Show
+        when={local.noCell}
+        fallback={
+          <For each={resolved.toArray()}>
+            {(child, i) =>
+              i() === 0 ? (
+                <TableHeadCell>{child}</TableHeadCell>
+              ) : (
+                <TableCell>{child}</TableCell>
+              )
+            }
+          </For>
+        }
+      >
         {resolved()}
       </Show>
     </tr>
