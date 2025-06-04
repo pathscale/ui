@@ -1,6 +1,6 @@
-import { type JSX, splitProps, Show, createSignal, createMemo } from "solid-js";
-import { twMerge } from "tailwind-merge";
 import { clsx } from "clsx";
+import { type JSX, Show, createMemo, createSignal, splitProps } from "solid-js";
+import { twMerge } from "tailwind-merge";
 
 import type {
   ComponentColor,
@@ -17,6 +17,12 @@ type InputBaseProps = {
   style?: JSX.CSSProperties;
   rightIcon?: JSX.Element;
   leftIcon?: JSX.Element;
+  // ARIA attributes
+  "aria-label"?: string;
+  "aria-describedby"?: string;
+  "aria-invalid"?: boolean;
+  "aria-required"?: boolean;
+  "aria-placeholder"?: string;
 };
 
 export type InputProps = InputBaseProps &
@@ -34,6 +40,11 @@ const Input = (props: InputProps): JSX.Element => {
     "leftIcon",
     "rightIcon",
     "type",
+    "aria-label",
+    "aria-describedby",
+    "aria-invalid",
+    "aria-required",
+    "aria-placeholder",
   ]);
   const [passwordVisible, setPasswordVisible] = createSignal(false);
   const inputType = createMemo(() => {
@@ -68,11 +79,23 @@ const Input = (props: InputProps): JSX.Element => {
   return (
     <label class={classes()} style={local.style} data-theme={local.dataTheme}>
       <Show when={local.leftIcon}>{local.leftIcon}</Show>
-      <input {...others} type={inputType()} />
+      <input
+        {...others}
+        type={inputType()}
+        aria-label={local["aria-label"]}
+        aria-describedby={local["aria-describedby"]}
+        aria-invalid={local["aria-invalid"]}
+        aria-required={local["aria-required"]}
+        aria-placeholder={local["aria-placeholder"]}
+      />
       <Show when={local.rightIcon}>
         <span
           onClick={() => setPasswordVisible(!passwordVisible())}
           class={local.type === "password" ? "cursor-pointer" : ""}
+          role={local.type === "password" ? "button" : undefined}
+          aria-label={local.type === "password" ?
+            (passwordVisible() ? "Hide password" : "Show password") : undefined}
+          tabIndex={local.type === "password" ? 0 : undefined}
         >
           {local.rightIcon}
         </span>
