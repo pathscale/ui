@@ -1,13 +1,13 @@
+import clsx from "clsx";
 import {
-  type JSX,
-  splitProps,
   createEffect,
-  onCleanup,
   createMemo,
+  type JSX,
+  onCleanup,
   children as resolveChildren,
+  splitProps,
 } from "solid-js";
 import { twMerge } from "tailwind-merge";
-import clsx from "clsx";
 
 import type { IComponentBaseProps } from "../types";
 import ModalActions from "./ModalActions";
@@ -23,8 +23,6 @@ export type ModalProps = IComponentBaseProps &
     backdrop?: boolean;
     ariaHidden?: boolean;
     onClose?: () => void;
-    closeOnEsc?: boolean;
-    closeOnOutsideClick?: boolean;
   };
 
 export type DialogProps = Omit<ModalProps, "ref">;
@@ -43,8 +41,6 @@ export function Modal(props: ModalProps): JSX.Element {
     "onClose",
     "tabindex",
     "tabIndex",
-    "closeOnEsc",
-    "closeOnOutsideClick",
   ]);
 
   const resolvedChildren = resolveChildren(() => local.children);
@@ -69,33 +65,16 @@ export function Modal(props: ModalProps): JSX.Element {
     };
 
     const handleCancel = (event: Event) => {
-      if (local.closeOnEsc === false) {
-        event.preventDefault();
-      } else {
-        local.onClose?.();
-      }
-    };
-
-    const handleClick = (event: MouseEvent) => {
-      if (local.closeOnOutsideClick === false) return;
-
-      const target = event.target as HTMLElement;
-
-      if (!dialogRef) return;
-
-      if (target === dialogRef || target.closest(".modal-backdrop")) {
-        local.onClose?.();
-      }
+      event.preventDefault();
+      local.onClose?.();
     };
 
     dialogRef.addEventListener("close", handleClose);
     dialogRef.addEventListener("cancel", handleCancel);
-    dialogRef.addEventListener("click", handleClick);
 
     onCleanup(() => {
       dialogRef?.removeEventListener("close", handleClose);
       dialogRef?.removeEventListener("cancel", handleCancel);
-      dialogRef?.removeEventListener("click", handleClick);
     });
   });
 
@@ -138,10 +117,16 @@ export function Modal(props: ModalProps): JSX.Element {
         {resolvedChildren()}
       </div>
       {local.backdrop && (
-        <form method="dialog" class="modal-backdrop">
-          <button type="submit" class="sr-only">
-            Close
-          </button>
+        <form
+          method="dialog"
+          class="modal-backdrop"
+          onClick={(e) => {
+            if (e.target === e.currentTarget) {
+              local.onClose?.();
+            }
+          }}
+        >
+          <button type="submit">close</button>
         </form>
       )}
     </dialog>
