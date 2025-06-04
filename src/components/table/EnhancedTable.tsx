@@ -100,7 +100,7 @@ function EnhancedTable<TData>(props: EnhancedTableProps<TData>): JSX.Element {
             <Table.Row>
               <For each={headerGroup.headers}>
                 {(header) => (
-                  <th
+                  <Table.HeadCell
                     class={
                       header.column.getCanSort()
                         ? "cursor-pointer select-none"
@@ -120,7 +120,7 @@ function EnhancedTable<TData>(props: EnhancedTableProps<TData>): JSX.Element {
                       {header.column.getIsSorted() === "asc" && <span>↑</span>}
                       {header.column.getIsSorted() === "desc" && <span>↓</span>}
                     </div>
-                  </th>
+                  </Table.HeadCell>
                 )}
               </For>
             </Table.Row>
@@ -129,11 +129,14 @@ function EnhancedTable<TData>(props: EnhancedTableProps<TData>): JSX.Element {
       </Table.Head>
       <Table.Body>
         {tableRows().length === 0 && local.renderEmpty ? (
-          <tr>
-            <td colSpan={table.getAllColumns().length} class="text-center py-4">
+          <Table.Row>
+            <Table.Cell
+              colSpan={table.getAllColumns().length}
+              class="text-center py-4"
+            >
               {local.renderEmpty()}
-            </td>
-          </tr>
+            </Table.Cell>
+          </Table.Row>
         ) : (
           <For each={tableRows()}>
             {(row) => (
@@ -141,20 +144,20 @@ function EnhancedTable<TData>(props: EnhancedTableProps<TData>): JSX.Element {
                 <Table.Row class={row.getIsExpanded() ? "bg-base-200" : ""}>
                   <For each={row.getVisibleCells()}>
                     {(cell) => (
-                      <td>
+                      <Table.Cell>
                         {flexRender(
                           cell.column.columnDef.cell,
                           cell.getContext()
                         )}
-                      </td>
+                      </Table.Cell>
                     )}
                   </For>
                 </Table.Row>
                 {row.getIsExpanded() && local.renderRowSubComponent && (
                   <Table.Row>
-                    <td colSpan={row.getVisibleCells().length}>
+                    <Table.Cell colSpan={row.getVisibleCells().length}>
                       {local.renderRowSubComponent({ row })}
-                    </td>
+                    </Table.Cell>
                   </Table.Row>
                 )}
               </>

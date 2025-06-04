@@ -5,8 +5,13 @@ import {
   JSX,
   For,
   Show,
+  createMemo,
 } from "solid-js";
 import { type IComponentBaseProps } from "../types";
+import TableCell from "./TableCell";
+import TableHeadCell from "./TableHeadCell";
+import clsx from "clsx";
+import { twMerge } from "tailwind-merge";
 
 export type TableFooterProps = JSX.HTMLAttributes<HTMLTableSectionElement> &
   IComponentBaseProps & {
@@ -14,17 +19,31 @@ export type TableFooterProps = JSX.HTMLAttributes<HTMLTableSectionElement> &
   };
 
 const TableFooter: Component<TableFooterProps> = (props) => {
-  const [local, rest] = splitProps(props, ["children", "noCell"]);
+  const [local, rest] = splitProps(props, [
+    "children",
+    "noCell",
+    "class",
+    "className",
+    "dataTheme",
+  ]);
+
   const resolved = resolveChildren(() => local.children);
+  const classes = createMemo(() => twMerge(clsx(local.class, local.className)));
 
   return (
-    <tfoot {...rest}>
+    <tfoot class={classes()} data-theme={local.dataTheme} {...rest}>
       <tr>
         <Show
           when={local.noCell}
           fallback={
             <For each={resolved.toArray()}>
-              {(child, i) => (i() === 0 ? <th>{child}</th> : <td>{child}</td>)}
+              {(child, i) =>
+                i() === 0 ? (
+                  <TableHeadCell>{child}</TableHeadCell>
+                ) : (
+                  <TableCell>{child}</TableCell>
+                )
+              }
             </For>
           }
         >
