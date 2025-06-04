@@ -1,5 +1,7 @@
 import { type JSX } from "solid-js";
 import { Dynamic } from "solid-js/web";
+import { breakpoints } from "./types";
+import { ResponsiveProp } from "./types";
 
 function isJSXElement(node: unknown): node is JSX.Element {
   return typeof node === "object" && node !== null;
@@ -33,4 +35,20 @@ export function wrapWithElementIfInvalid({
       {node}
     </Dynamic>
   );
+}
+
+export function mapResponsiveProp<T extends string | boolean>(
+  prop: ResponsiveProp<T> | undefined,
+  classMap: Record<string, string>
+) {
+  if (prop === undefined) return [];
+  if (typeof prop === "string" || typeof prop === "boolean") {
+    return [classMap[String(prop)]];
+  }
+  return breakpoints.flatMap((bp) => {
+    const value = prop[bp];
+    if (value === undefined) return [];
+    const className = classMap[String(value)];
+    return bp === "base" ? [className] : [`${bp}:${className}`];
+  });
 }
