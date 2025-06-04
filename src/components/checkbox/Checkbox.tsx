@@ -1,6 +1,6 @@
-import { splitProps, createEffect, onMount, type JSX } from "solid-js";
-import { twMerge } from "tailwind-merge";
 import { clsx } from "clsx";
+import { createEffect, onMount, splitProps, type JSX } from "solid-js";
+import { twMerge } from "tailwind-merge";
 
 import type {
   ComponentColor,
@@ -16,6 +16,12 @@ type CheckboxBaseProps = {
   class?: string;
   className?: string;
   style?: JSX.CSSProperties;
+  // ARIA attributes
+  "aria-label"?: string;
+  "aria-describedby"?: string;
+  "aria-invalid"?: boolean;
+  "aria-required"?: boolean;
+  "aria-labelledby"?: string;
 };
 
 export type CheckboxProps = CheckboxBaseProps &
@@ -33,6 +39,11 @@ const Checkbox = (props: CheckboxProps): JSX.Element => {
     "class",
     "className",
     "style",
+    "aria-label",
+    "aria-describedby",
+    "aria-invalid",
+    "aria-required",
+    "aria-labelledby",
   ]);
 
   const classes = () =>
@@ -77,6 +88,11 @@ const Checkbox = (props: CheckboxProps): JSX.Element => {
       data-theme={local.dataTheme}
       class={classes()}
       style={local.style}
+      aria-label={local["aria-label"]}
+      aria-describedby={local["aria-describedby"]}
+      aria-invalid={local["aria-invalid"]}
+      aria-required={local["aria-required"]}
+      aria-labelledby={local["aria-labelledby"]}
     />
   );
 };
