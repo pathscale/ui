@@ -1,6 +1,6 @@
+import clsx from "clsx";
 import { splitProps, type JSX } from "solid-js";
 import { twMerge } from "tailwind-merge";
-import clsx from "clsx";
 
 export type ComponentColor =
   | "primary"
@@ -20,6 +20,12 @@ export type RadioProps = Omit<
   color?: ComponentColor;
   size?: ComponentSize;
   "data-theme"?: string;
+  // ARIA attributes
+  "aria-label"?: string;
+  "aria-describedby"?: string;
+  "aria-invalid"?: boolean;
+  "aria-required"?: boolean;
+  "aria-labelledby"?: string;
 };
 
 const Radio = (props: RadioProps) => {
@@ -30,6 +36,11 @@ const Radio = (props: RadioProps) => {
     "name",
     "type",
     "data-theme",
+    "aria-label",
+    "aria-describedby",
+    "aria-invalid",
+    "aria-required",
+    "aria-labelledby",
   ]);
 
   const classes = twMerge(
@@ -58,6 +69,11 @@ const Radio = (props: RadioProps) => {
       type="radio"
       class={classes}
       data-theme={local["data-theme"]}
+      aria-label={local["aria-label"]}
+      aria-describedby={local["aria-describedby"]}
+      aria-invalid={local["aria-invalid"]}
+      aria-required={local["aria-required"]}
+      aria-labelledby={local["aria-labelledby"]}
     />
   );
 };
