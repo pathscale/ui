@@ -1,15 +1,15 @@
-import { type JSX, splitProps, Show } from "solid-js";
+import { clsx } from "clsx";
+import { type JSX, Show, splitProps } from "solid-js";
 import { Dynamic } from "solid-js/web";
 import { twMerge } from "tailwind-merge";
-import { clsx } from "clsx";
 
 import Loading from "../loading/Loading";
 import type {
-  IComponentBaseProps,
   ComponentColor,
   ComponentShape,
-  ComponentVariant,
   ComponentSize,
+  ComponentVariant,
+  IComponentBaseProps,
 } from "../types";
 
 type ElementType = keyof JSX.IntrinsicElements;
@@ -35,6 +35,13 @@ type ButtonBaseProps = {
   class?: string;
   className?: string;
   style?: JSX.CSSProperties;
+  // ARIA attributes
+  "aria-label"?: string;
+  "aria-describedby"?: string;
+  "aria-pressed"?: boolean;
+  "aria-expanded"?: boolean;
+  "aria-controls"?: string;
+  "aria-haspopup"?: boolean | "false" | "true" | "menu" | "listbox" | "tree" | "grid" | "dialog";
 };
 
 type PropsOf<E extends ElementType> = JSX.IntrinsicElements[E];
@@ -91,6 +98,12 @@ const Button = <E extends ElementType = "button">(
       "className",
       "style",
       "as",
+      "aria-label",
+      "aria-describedby",
+      "aria-pressed",
+      "aria-expanded",
+      "aria-controls",
+      "aria-haspopup",
     ]
   );
 
@@ -141,6 +154,13 @@ const Button = <E extends ElementType = "button">(
         class={classes()}
         style={local.style}
         disabled={local.disabled}
+        aria-label={local["aria-label"]}
+        aria-describedby={local["aria-describedby"]}
+        aria-pressed={local["aria-pressed"]}
+        aria-expanded={local["aria-expanded"]}
+        aria-controls={local["aria-controls"]}
+        aria-haspopup={local["aria-haspopup"]}
+        aria-disabled={local.disabled}
       />
     );
   }
@@ -153,6 +173,13 @@ const Button = <E extends ElementType = "button">(
       class={classes()}
       style={local.style}
       disabled={local.disabled}
+      aria-label={local["aria-label"]}
+      aria-describedby={local["aria-describedby"]}
+      aria-pressed={local["aria-pressed"]}
+      aria-expanded={local["aria-expanded"]}
+      aria-controls={local["aria-controls"]}
+      aria-haspopup={local["aria-haspopup"]}
+      aria-disabled={local.disabled}
     >
       <Show when={local.loading}>
         <Loading size={local.size} color={local.color} variant="spinner" />
