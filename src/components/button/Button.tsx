@@ -41,7 +41,7 @@ type ButtonBaseProps = {
   "aria-pressed"?: boolean;
   "aria-expanded"?: boolean;
   "aria-controls"?: string;
-  "aria-haspopup"?: boolean | "false" | "true" | "menu" | "listbox" | "tree" | "grid" | "dialog";
+  "aria-haspopup"?: string;
   "aria-role"?: string;
 };
 
