@@ -1,4 +1,4 @@
-import { splitProps, type JSX } from "solid-js";
+import { splitProps, type JSX, createSignal, createMemo } from "solid-js";
 import { twMerge } from "tailwind-merge";
 import { clsx } from "clsx";
 
@@ -12,6 +12,9 @@ type AccordionBaseProps = {
   class?: string;
   className?: string;
   style?: JSX.CSSProperties;
+  mode?: "radio" | "checkbox" | "controlled";
+  expanded?: boolean;
+  onToggle?: () => void;
 };
 
 export type AccordionProps = AccordionBaseProps &
@@ -26,7 +29,29 @@ const Accordion = (props: AccordionProps): JSX.Element => {
     "class",
     "className",
     "style",
+    "mode",
+    "expanded",
+    "onToggle",
+    "children",
   ]);
+
+  const [isExpanded, setIsExpanded] = createSignal(local.expanded || false);
+
+  const isControlled = createMemo(
+    () => local.mode === "controlled" || local.expanded !== undefined
+  );
+  const expanded = createMemo(() =>
+    isControlled() ? local.expanded : isExpanded()
+  );
+
+  const handleToggle = () => {
+    if (!isControlled()) {
+      setIsExpanded(!isExpanded());
+    }
+    if (local.onToggle) {
+      local.onToggle();
+    }
+  };
 
   const classes = () =>
     twMerge(
@@ -34,6 +59,8 @@ const Accordion = (props: AccordionProps): JSX.Element => {
       clsx({
         "collapse-arrow": local.icon === "arrow",
         "collapse-plus": local.icon === "plus",
+        "collapse-open": expanded(),
+        "collapse-close": !expanded(),
       }),
       local.class,
       local.className
@@ -41,8 +68,19 @@ const Accordion = (props: AccordionProps): JSX.Element => {
 
   return (
     <div class={classes()} data-theme={local.dataTheme} style={local.style}>
-      <input type="radio" name={local.name ?? "accordion"} {...others} />
-      {props.children}
+      {local.mode !== "controlled" && (
+        <input
+          type={local.mode === "checkbox" ? "checkbox" : "radio"}
+          name={local.name ?? "accordion"}
+          checked={expanded()}
+          onChange={handleToggle}
+          {...others}
+        />
+      )}
+      {local.mode === "controlled" && (
+        <div class="hidden" onClick={handleToggle} />
+      )}
+      {local.children}
     </div>
   );
 };
