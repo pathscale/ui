@@ -42,6 +42,7 @@ type ButtonBaseProps = {
   "aria-expanded"?: boolean;
   "aria-controls"?: string;
   "aria-haspopup"?: boolean | "false" | "true" | "menu" | "listbox" | "tree" | "grid" | "dialog";
+  "aria-role"?: string;
 };
 
 type PropsOf<E extends ElementType> = JSX.IntrinsicElements[E];
@@ -104,6 +105,7 @@ const Button = <E extends ElementType = "button">(
       "aria-expanded",
       "aria-controls",
       "aria-haspopup",
+      "aria-role",
     ]
   );
 
@@ -175,11 +177,12 @@ const Button = <E extends ElementType = "button">(
       disabled={local.disabled}
       aria-label={local["aria-label"]}
       aria-describedby={local["aria-describedby"]}
-      aria-pressed={local["aria-pressed"]}
-      aria-expanded={local["aria-expanded"]}
+      aria-pressed={typeof local["aria-pressed"] === "boolean" ? local["aria-pressed"] : undefined}
+      aria-expanded={typeof local["aria-expanded"] === "boolean" ? local["aria-expanded"] : undefined}
       aria-controls={local["aria-controls"]}
-      aria-haspopup={local["aria-haspopup"]}
+      aria-haspopup={typeof local["aria-haspopup"] === "boolean" ? local["aria-haspopup"] : undefined}
       aria-disabled={local.disabled}
+      role={local["aria-role"]}
     >
       <Show when={local.loading}>
         <Loading size={local.size} color={local.color} variant="spinner" />
