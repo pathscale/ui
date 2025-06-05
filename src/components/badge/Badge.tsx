@@ -82,6 +82,11 @@ const Badge = (props: BadgeProps): JSX.Element => {
       aria-label={local["aria-label"]}
       aria-describedby={local["aria-describedby"]}
       aria-labelledby={local["aria-labelledby"]}
+      aria-hidden={
+        local.role === "presentation" || local.role === "none"
+          ? true
+          : undefined
+      }
     >
       {props.children}
     </div>
