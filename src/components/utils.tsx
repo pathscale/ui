@@ -1,4 +1,4 @@
-import { type JSX } from "solid-js";
+import { createSignal, onCleanup, onMount, type JSX } from "solid-js";
 import { Dynamic } from "solid-js/web";
 import { breakpoints } from "./types";
 import { ResponsiveProp } from "./types";
@@ -52,3 +52,23 @@ export function mapResponsiveProp<T extends string | boolean>(
     return bp === "base" ? [className] : [`${bp}:${className}`];
   });
 }
+
+export function useDesktop(breakpoint = 1024) {
+  const [isDesktop, setIsDesktop] = createSignal(false);
+
+  const checkIfDesktop = () => {
+    const width = window.innerWidth;
+    setIsDesktop(width >= breakpoint);
+  };
+
+  onMount(() => {
+    checkIfDesktop();
+    window.addEventListener("resize", checkIfDesktop);
+  });
+
+  onCleanup(() => {
+    window.removeEventListener("resize", checkIfDesktop);
+  });
+
+  return isDesktop;
+} 
