@@ -1,6 +1,6 @@
+import { clsx } from "clsx";
 import { splitProps, type JSX } from "solid-js";
 import { twMerge } from "tailwind-merge";
-import { clsx } from "clsx";
 
 import type {
   ComponentSize,
@@ -19,6 +19,10 @@ export type CardProps = IComponentBaseProps &
     variant?: Exclude<ComponentVariant, "soft"> | "border";
     imageFull?: boolean;
     side?: ComponentSize | boolean;
+    "aria-label"?: string;
+    "aria-describedby"?: string;
+    "aria-labelledby"?: string;
+    role?: string;
   };
 
 const DYNAMIC_MODIFIERS = {
@@ -42,6 +46,10 @@ const Card = (props: CardProps): JSX.Element => {
     "className",
     "dataTheme",
     "style",
+    "aria-label",
+    "aria-describedby",
+    "aria-labelledby",
+    "role",
   ]);
 
   const classes = twMerge(
@@ -69,10 +77,13 @@ const Card = (props: CardProps): JSX.Element => {
   return (
     <div
       {...others}
-      aria-label="Card"
       class={classes}
       data-theme={local.dataTheme}
       style={local.style}
+      role={local.role}
+      aria-label={local["aria-label"]}
+      aria-describedby={local["aria-describedby"]}
+      aria-labelledby={local["aria-labelledby"]}
     />
   );
 };
