@@ -1,4 +1,3 @@
-// components/dropdown/Dropdown.tsx
 import { type JSX, splitProps, Show } from "solid-js";
 import { twMerge } from "tailwind-merge";
 import { clsx } from "clsx";
@@ -7,6 +6,8 @@ import DropdownDetails from "./DropdownDetails";
 import DropdownMenu from "./DropdownMenu";
 import DropdownItem from "./DropdownItem";
 import DropdownToggle from "./DropdownToggle";
+import DropdownDivider from "./DropdownDivider";
+import DropdownHeader from "./DropdownHeader";
 
 export type DropdownProps = JSX.HTMLAttributes<HTMLDivElement> &
   IComponentBaseProps & {
@@ -86,4 +87,6 @@ export default Object.assign(Dropdown, {
   Toggle: DropdownToggle,
   Menu: DropdownMenu,
   Item: DropdownItem,
+  Divider: DropdownDivider,
+  Header: DropdownHeader,
 });
