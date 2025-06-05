@@ -16,6 +16,10 @@ export type CollapseProps = IComponentBaseProps &
     onOpen?: () => void;
     onClose?: () => void;
     onToggle?: () => void;
+    "aria-label"?: string;
+    "aria-controls"?: string;
+    "aria-labelledby"?: string;
+    "aria-describedby"?: string;
   };
 
 export const classesFn = ({
@@ -47,6 +51,10 @@ const Collapse = (props: CollapseProps): JSX.Element => {
     "class",
     "className",
     "style",
+    "aria-label",
+    "aria-controls",
+    "aria-labelledby",
+    "aria-describedby",
   ]);
 
   let checkboxRef: HTMLInputElement | undefined;
@@ -91,18 +99,38 @@ const Collapse = (props: CollapseProps): JSX.Element => {
     }
   };
 
+  const collapseId =
+    others.id || `collapse-${Math.random().toString(36).slice(2, 11)}`;
+
+  const ariaExpanded = isChecked();
+  const ariaControls = local["aria-controls"] || `${collapseId}-content`;
+  const ariaLabel = local["aria-label"];
+  const ariaLabelledby = local["aria-labelledby"];
+  const ariaDescribedby = local["aria-describedby"];
+
+  const tabIndex = !local.checkbox && !isChecked() ? 0 : undefined;
+  const role = "region";
+
+  const className = classesFn({
+    className: twMerge(local.class, local.className),
+    icon: local.icon,
+    open: local.open,
+  });
+
   return (
     <div
-      aria-expanded={local.open}
+      id={collapseId}
+      aria-expanded={ariaExpanded}
+      aria-controls={ariaControls}
+      aria-label={ariaLabel}
+      aria-labelledby={ariaLabelledby}
+      aria-describedby={ariaDescribedby}
+      role={role}
       {...others}
       data-theme={local.dataTheme}
-      class={classesFn({
-        className: twMerge(local.class, local.className),
-        icon: local.icon,
-        open: local.open,
-      })}
+      class={className}
       style={local.style}
-      tabIndex={!local.checkbox && !isChecked() ? 0 : undefined}
+      tabIndex={tabIndex}
       onBlur={handleBlur}
       onFocus={handleFocus}
     >
@@ -113,6 +141,8 @@ const Collapse = (props: CollapseProps): JSX.Element => {
           class="peer"
           ref={(el) => (checkboxRef = el)}
           onChange={handleCheckboxChange}
+          checked={isChecked()}
+          aria-hidden="true"
         />
       )}
       {local.children}
