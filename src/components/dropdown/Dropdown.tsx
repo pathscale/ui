@@ -1,11 +1,11 @@
 // components/dropdown/Dropdown.tsx
-import { type JSX, splitProps, Show } from "solid-js";
-import { twMerge } from "tailwind-merge";
 import { clsx } from "clsx";
+import { type JSX, Show, splitProps } from "solid-js";
+import { twMerge } from "tailwind-merge";
 import type { IComponentBaseProps } from "../types";
 import DropdownDetails from "./DropdownDetails";
-import DropdownMenu from "./DropdownMenu";
 import DropdownItem from "./DropdownItem";
+import DropdownMenu from "./DropdownMenu";
 import DropdownToggle from "./DropdownToggle";
 
 export type DropdownProps = JSX.HTMLAttributes<HTMLDivElement> &
@@ -16,6 +16,12 @@ export type DropdownProps = JSX.HTMLAttributes<HTMLDivElement> &
     end?: boolean;
     hover?: boolean;
     open?: boolean;
+    // ARIA attributes
+    "aria-label"?: string;
+    "aria-describedby"?: string;
+    "aria-expanded"?: boolean;
+    "aria-haspopup"?: boolean | "false" | "true" | "menu" | "listbox" | "tree" | "grid" | "dialog";
+    "aria-labelledby"?: string;
   };
 
 export const classesFn = ({
@@ -54,6 +60,11 @@ const Dropdown = (props: DropdownProps): JSX.Element => {
     "hover",
     "open",
     "dataTheme",
+    "aria-label",
+    "aria-describedby",
+    "aria-expanded",
+    "aria-haspopup",
+    "aria-labelledby",
   ]);
 
   const classes = () =>
@@ -68,14 +79,23 @@ const Dropdown = (props: DropdownProps): JSX.Element => {
 
   return (
     <div
-      role="listbox"
+      role={local.item ? "combobox" : "listbox"}
       {...others}
       data-theme={local.dataTheme}
       class={classes()}
+      aria-label={local["aria-label"]}
+      aria-describedby={local["aria-describedby"]}
+      aria-expanded={local["aria-expanded"] ?? local.open}
+      aria-haspopup={
+        local["aria-haspopup"] === true ? "true" :
+          local["aria-haspopup"] === false ? "false" :
+            local["aria-haspopup"] || (local.item ? "listbox" : "true")
+      }
+      aria-labelledby={local["aria-labelledby"]}
     >
       <Show when={local.item} fallback={<>{local.children}</>}>
         <label tabIndex={0}>{local.children}</label>
-        <ul class="dropdown-content">{local.item}</ul>
+        <ul class="dropdown-content" role="listbox">{local.item}</ul>
       </Show>
     </div>
   );
