@@ -1,4 +1,4 @@
-import { type JSX, type Component, splitProps } from "solid-js";
+import { type JSX, type Component, splitProps, createMemo } from "solid-js";
 import { twMerge } from "tailwind-merge";
 import { clsx } from "clsx";
 import type { IComponentBaseProps } from "../types";
@@ -13,6 +13,11 @@ export type AlertProps = IComponentBaseProps &
     layout?: ComponentLayout;
     status?: ComponentStatus;
     variant?: ComponentVariant;
+    "aria-atomic"?: boolean;
+    "aria-live"?: "off" | "polite" | "assertive";
+    "aria-relevant"?: string;
+    "aria-label"?: string;
+    "aria-labelledby"?: string;
   };
 
 const Alert: Component<AlertProps> = (props) => {
@@ -25,9 +30,14 @@ const Alert: Component<AlertProps> = (props) => {
     "class",
     "className",
     "style",
+    "aria-atomic",
+    "aria-live",
+    "aria-relevant",
+    "aria-label",
+    "aria-labelledby",
   ]);
 
-  const classes = () =>
+  const classes = createMemo(() =>
     twMerge(
       "alert",
       local.class,
@@ -43,15 +53,30 @@ const Alert: Component<AlertProps> = (props) => {
         "alert-dash": local.variant === "dash",
         "alert-outline": local.variant === "outline",
       })
-    );
+    )
+  );
+
+  const role = "alert";
+  const ariaAtomic = createMemo(() =>
+    local["aria-atomic"] === undefined ? true : local["aria-atomic"]
+  );
+  const ariaLive = createMemo(() => local["aria-live"] || "assertive");
+  const ariaRelevant = createMemo(() => local["aria-relevant"]);
+  const ariaLabel = createMemo(() => local["aria-label"]);
+  const ariaLabelledby = createMemo(() => local["aria-labelledby"]);
 
   return (
     <div
-      role="alert"
+      role={role}
       {...others}
       data-theme={local.dataTheme}
       class={classes()}
       style={local.style}
+      aria-atomic={ariaAtomic()}
+      aria-live={ariaLive()}
+      aria-relevant={ariaRelevant()}
+      aria-label={ariaLabel()}
+      aria-labelledby={ariaLabelledby()}
     >
       {local.icon}
       {props.children}
