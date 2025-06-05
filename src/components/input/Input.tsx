@@ -17,12 +17,12 @@ type InputBaseProps = {
   style?: JSX.CSSProperties;
   rightIcon?: JSX.Element;
   leftIcon?: JSX.Element;
+  placeholder?: string;
   // ARIA attributes
   "aria-label"?: string;
   "aria-describedby"?: string;
   "aria-invalid"?: boolean;
   "aria-required"?: boolean;
-  "aria-placeholder"?: string;
 };
 
 export type InputProps = InputBaseProps &
@@ -39,12 +39,12 @@ const Input = (props: InputProps): JSX.Element => {
     "style",
     "leftIcon",
     "rightIcon",
+    "placeholder",
     "type",
     "aria-label",
     "aria-describedby",
     "aria-invalid",
     "aria-required",
-    "aria-placeholder",
   ]);
   const [passwordVisible, setPasswordVisible] = createSignal(false);
   const inputType = createMemo(() => {
@@ -86,15 +86,20 @@ const Input = (props: InputProps): JSX.Element => {
         aria-describedby={local["aria-describedby"]}
         aria-invalid={local["aria-invalid"]}
         aria-required={local["aria-required"]}
-        aria-placeholder={local["aria-placeholder"]}
+        placeholder={local["placeholder"]}
       />
       <Show when={local.rightIcon}>
         <span
           onClick={() => setPasswordVisible(!passwordVisible())}
           class={local.type === "password" ? "cursor-pointer" : ""}
           role={local.type === "password" ? "button" : undefined}
-          aria-label={local.type === "password" ?
-            (passwordVisible() ? "Hide password" : "Show password") : undefined}
+          aria-label={
+            local.type === "password"
+              ? passwordVisible()
+                ? "Hide password"
+                : "Show password"
+              : undefined
+          }
           tabIndex={local.type === "password" ? 0 : undefined}
         >
           {local.rightIcon}
