@@ -1,5 +1,12 @@
 import { clsx } from "clsx";
-import { createMemo, createSignal, createUniqueId, splitProps, type JSX } from "solid-js";
+import {
+  createMemo,
+  createSignal,
+  createUniqueId,
+  splitProps,
+  type JSX,
+  children as resolveChildren,
+} from "solid-js";
 import { twMerge } from "tailwind-merge";
 
 import { CollapseContent, CollapseTitle } from "../collapse";
@@ -58,9 +65,7 @@ const Accordion = (props: AccordionProps): JSX.Element => {
     if (!isControlled()) {
       setIsExpanded(!isExpanded());
     }
-    if (local.onToggle) {
-      local.onToggle();
-    }
+    local.onToggle?.();
   };
 
   const classes = () =>
@@ -75,6 +80,69 @@ const Accordion = (props: AccordionProps): JSX.Element => {
       local.class,
       local.className
     );
+
+  const resolvedChildren = resolveChildren(() => local.children);
+
+  const childrenWithAria = createMemo(() => {
+    const children = resolvedChildren();
+    const arr = Array.isArray(children) ? children : [children];
+    return arr.map((child) => {
+      if (child == null || typeof child !== "object" || !("props" in child))
+        return child;
+
+      if (
+        child.props &&
+        typeof child.props === "object" &&
+        "class" in child.props &&
+        typeof child.props.class === "string" &&
+        child.props.class.includes("collapse-title")
+      ) {
+        return {
+          ...child,
+          props: {
+            ...child.props,
+            id: titleId,
+            role: "button",
+            tabIndex: 0,
+            "aria-expanded": expanded(),
+            "aria-controls": contentId,
+            onClick: handleToggle,
+            onKeyDown: (e: KeyboardEvent) => {
+              if (e.key === "Enter" || e.key === " ") {
+                e.preventDefault();
+                handleToggle();
+              }
+              const origOnKeyDown =
+                child.props &&
+                (child.props as { onKeyDown?: (e: KeyboardEvent) => void })
+                  .onKeyDown;
+              if (typeof origOnKeyDown === "function") {
+                origOnKeyDown(e);
+              }
+            },
+          },
+        };
+      }
+
+      if (
+        child.props &&
+        typeof child.props === "object" &&
+        "class" in child.props &&
+        typeof child.props.class === "string" &&
+        child.props.class.includes("collapse-content")
+      ) {
+        return {
+          ...child,
+          props: {
+            ...child.props,
+            id: contentId,
+          },
+        };
+      }
+
+      return child;
+    });
+  });
 
   return (
     <div
@@ -94,32 +162,20 @@ const Accordion = (props: AccordionProps): JSX.Element => {
           onChange={handleToggle}
           aria-expanded={expanded()}
           aria-controls={contentId}
+          aria-checked={
+            local.mode === "checkbox" || local.mode === "radio"
+              ? expanded()
+              : undefined
+          }
           {...others}
         />
       )}
-      {local.mode === "controlled" && (
-        <div
-          class="hidden"
-          onClick={handleToggle}
-          role="button"
-          tabIndex={0}
-          aria-expanded={expanded()}
-          aria-controls={contentId}
-          onKeyDown={(e) => {
-            if (e.key === 'Enter' || e.key === ' ') {
-              e.preventDefault();
-              handleToggle();
-            }
-          }}
-        />
-      )}
-      {local.children}
+      {childrenWithAria()}
     </div>
   );
 };
 
 const AccordionTitle = CollapseTitle;
-
 const AccordionContent = CollapseContent;
 
 Accordion.Title = AccordionTitle;
