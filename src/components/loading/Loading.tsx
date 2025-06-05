@@ -1,17 +1,23 @@
+import { clsx } from "clsx";
 import { type Component, type JSX, splitProps } from "solid-js";
 import { twMerge } from "tailwind-merge";
-import { clsx } from "clsx";
 
 import type {
-  IComponentBaseProps,
   ComponentColor,
   ComponentSize,
+  IComponentBaseProps,
 } from "../types";
 
 export type LoadingProps = {
   size?: ComponentSize;
   color?: ComponentColor;
   variant?: "spinner" | "dots" | "ring" | "ball" | "bars" | "infinity";
+  // ARIA attributes
+  "aria-label"?: string;
+  "aria-describedby"?: string;
+  "aria-live"?: string;
+  "aria-busy"?: boolean;
+  role?: string;
 } & IComponentBaseProps &
   JSX.HTMLAttributes<HTMLSpanElement>;
 
@@ -24,6 +30,11 @@ const Loading: Component<LoadingProps> = (props) => {
     "class",
     "className",
     "style",
+    "aria-label",
+    "aria-describedby",
+    "aria-live",
+    "aria-busy",
+    "role",
   ]);
 
   const classes = () =>
@@ -60,6 +71,11 @@ const Loading: Component<LoadingProps> = (props) => {
       data-theme={local.dataTheme}
       class={classes()}
       style={local.style}
+      role={local.role || "status"}
+      aria-label={local["aria-label"] || "Loading"}
+      aria-describedby={local["aria-describedby"]}
+      aria-live={local["aria-live"] || "polite"}
+      aria-busy={local["aria-busy"] ?? true}
     />
   );
 };
