@@ -26,6 +26,7 @@ export type RadioProps = Omit<
   "aria-invalid"?: boolean;
   "aria-required"?: boolean;
   "aria-labelledby"?: string;
+  "aria-checked"?: boolean;
 };
 
 const Radio = (props: RadioProps) => {
@@ -41,6 +42,7 @@ const Radio = (props: RadioProps) => {
     "aria-invalid",
     "aria-required",
     "aria-labelledby",
+    "aria-checked",
   ]);
 
   const classes = twMerge(
@@ -74,6 +76,7 @@ const Radio = (props: RadioProps) => {
       aria-invalid={local["aria-invalid"]}
       aria-required={local["aria-required"]}
       aria-labelledby={local["aria-labelledby"]}
+      aria-checked={local["aria-checked"]}
     />
   );
 };
