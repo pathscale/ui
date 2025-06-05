@@ -1,9 +1,9 @@
-import { splitProps, type JSX, createSignal, createMemo } from "solid-js";
-import { twMerge } from "tailwind-merge";
 import { clsx } from "clsx";
+import { createMemo, createSignal, createUniqueId, splitProps, type JSX } from "solid-js";
+import { twMerge } from "tailwind-merge";
 
+import { CollapseContent, CollapseTitle } from "../collapse";
 import type { IComponentBaseProps } from "../types";
-import { CollapseTitle, CollapseContent } from "../collapse";
 
 type AccordionBaseProps = {
   name?: string;
@@ -15,6 +15,10 @@ type AccordionBaseProps = {
   mode?: "radio" | "checkbox" | "controlled";
   expanded?: boolean;
   onToggle?: () => void;
+  // ARIA attributes
+  "aria-label"?: string;
+  "aria-describedby"?: string;
+  "aria-labelledby"?: string;
 };
 
 export type AccordionProps = AccordionBaseProps &
@@ -33,9 +37,15 @@ const Accordion = (props: AccordionProps): JSX.Element => {
     "expanded",
     "onToggle",
     "children",
+    "aria-label",
+    "aria-describedby",
+    "aria-labelledby",
   ]);
 
   const [isExpanded, setIsExpanded] = createSignal(local.expanded || false);
+  const uniqueId = createUniqueId();
+  const contentId = `accordion-content-${uniqueId}`;
+  const titleId = `accordion-title-${uniqueId}`;
 
   const isControlled = createMemo(
     () => local.mode === "controlled" || local.expanded !== undefined
@@ -67,25 +77,52 @@ const Accordion = (props: AccordionProps): JSX.Element => {
     );
 
   return (
-    <div class={classes()} data-theme={local.dataTheme} style={local.style}>
+    <div
+      class={classes()}
+      data-theme={local.dataTheme}
+      style={local.style}
+      role="region"
+      aria-label={local["aria-label"]}
+      aria-describedby={local["aria-describedby"]}
+      aria-labelledby={local["aria-labelledby"] || titleId}
+    >
       {local.mode !== "controlled" && (
         <input
           type={local.mode === "checkbox" ? "checkbox" : "radio"}
           name={local.name ?? "accordion"}
           checked={expanded()}
           onChange={handleToggle}
+          aria-expanded={expanded()}
+          aria-controls={contentId}
           {...others}
         />
       )}
       {local.mode === "controlled" && (
-        <div class="hidden" onClick={handleToggle} />
+        <div
+          class="hidden"
+          onClick={handleToggle}
+          role="button"
+          tabIndex={0}
+          aria-expanded={expanded()}
+          aria-controls={contentId}
+          onKeyDown={(e) => {
+            if (e.key === 'Enter' || e.key === ' ') {
+              e.preventDefault();
+              handleToggle();
+            }
+          }}
+        />
       )}
       {local.children}
     </div>
   );
 };
 
-Accordion.Title = CollapseTitle;
-Accordion.Content = CollapseContent;
+const AccordionTitle = CollapseTitle;
+
+const AccordionContent = CollapseContent;
+
+Accordion.Title = AccordionTitle;
+Accordion.Content = AccordionContent;
 
 export default Accordion;
