@@ -6,6 +6,7 @@ import {
   splitProps,
   type JSX,
   children as resolveChildren,
+  createEffect,
 } from "solid-js";
 import { twMerge } from "tailwind-merge";
 
@@ -15,6 +16,7 @@ import type { IComponentBaseProps } from "../types";
 type AccordionBaseProps = {
   name?: string;
   icon?: "arrow" | "plus";
+  checked?: boolean;
   dataTheme?: string;
   class?: string;
   className?: string;
@@ -32,10 +34,13 @@ export type AccordionProps = AccordionBaseProps &
   IComponentBaseProps &
   Omit<JSX.InputHTMLAttributes<HTMLInputElement>, keyof AccordionBaseProps>;
 
+const accordionGroups = new Map<string, Set<() => void>>();
+
 const Accordion = (props: AccordionProps): JSX.Element => {
   const [local, others] = splitProps(props, [
     "name",
     "icon",
+    "checked",
     "dataTheme",
     "class",
     "className",
@@ -49,21 +54,71 @@ const Accordion = (props: AccordionProps): JSX.Element => {
     "aria-labelledby",
   ]);
 
-  const [isExpanded, setIsExpanded] = createSignal(local.expanded || false);
   const uniqueId = createUniqueId();
   const contentId = `accordion-content-${uniqueId}`;
   const titleId = `accordion-title-${uniqueId}`;
+  const isControlled = createMemo(() => local.mode === "controlled");
 
-  const isControlled = createMemo(
-    () => local.mode === "controlled" || local.expanded !== undefined
+  const [isExpanded, setIsExpanded] = createSignal(
+    local.checked || local.expanded || false
   );
-  const expanded = createMemo(() =>
-    isControlled() ? local.expanded : isExpanded()
-  );
+
+  const expanded = createMemo(() => {
+    if (isControlled()) {
+      return local.expanded ?? false;
+    }
+    return isExpanded();
+  });
+
+  const groupName = () => local.name ?? "accordion";
+  const isRadioMode = () =>
+    local.mode !== "checkbox" && local.mode !== "controlled";
+
+  const closeAccordion = () => {
+    if (!isControlled()) {
+      setIsExpanded(false);
+    }
+  };
+
+  createEffect(() => {
+    if (isRadioMode()) {
+      const name = groupName();
+
+      if (!accordionGroups.has(name)) {
+        accordionGroups.set(name, new Set());
+      }
+
+      const group = accordionGroups.get(name)!;
+      group.add(closeAccordion);
+
+      return () => {
+        group.delete(closeAccordion);
+        if (group.size === 0) {
+          accordionGroups.delete(name);
+        }
+      };
+    }
+  });
 
   const handleToggle = () => {
+    const wasExpanded = expanded();
+
     if (!isControlled()) {
-      setIsExpanded(!isExpanded());
+      if (isRadioMode() && !wasExpanded) {
+        const group = accordionGroups.get(groupName());
+        if (group) {
+          group.forEach((closeFunc) => {
+            if (closeFunc !== closeAccordion) {
+              closeFunc();
+            }
+          });
+        }
+        setIsExpanded(true);
+      } else if (local.mode === "checkbox") {
+        setIsExpanded(!wasExpanded);
+      } else if (isRadioMode() && wasExpanded) {
+        setIsExpanded(false);
+      }
     }
     local.onToggle?.();
   };
@@ -157,7 +212,7 @@ const Accordion = (props: AccordionProps): JSX.Element => {
       {local.mode !== "controlled" && (
         <input
           type={local.mode === "checkbox" ? "checkbox" : "radio"}
-          name={local.name ?? "accordion"}
+          name={groupName()}
           checked={expanded()}
           onChange={handleToggle}
           aria-expanded={expanded()}
