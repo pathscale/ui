@@ -16,6 +16,7 @@ type CheckboxBaseProps = {
   class?: string;
   className?: string;
   style?: JSX.CSSProperties;
+  defaultChecked?: boolean;
   // ARIA attributes
   "aria-label"?: string;
   "aria-describedby"?: string;
@@ -93,6 +94,11 @@ const Checkbox = (props: CheckboxProps): JSX.Element => {
       aria-invalid={local["aria-invalid"]}
       aria-required={local["aria-required"]}
       aria-labelledby={local["aria-labelledby"]}
+      aria-checked={
+        local.indeterminate
+          ? "mixed"
+          : props.checked ?? props.defaultChecked ?? undefined
+      }
     />
   );
 };
