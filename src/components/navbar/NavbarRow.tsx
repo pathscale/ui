@@ -39,7 +39,8 @@ const NavbarRow = (props: NavbarRowProps): JSX.Element => {
       clsx({
         "border-b border-gray-200": local.bordered === true,
         "px-4 py-2": local.padded !== false,
-        "bg-neutral text-neutral-content": local.color === "neutral" || !local.color,
+        "bg-base-100": !local.color || local.color === "ghost", // Default to base-100 (usually light bg, dark text)
+        "bg-neutral text-neutral-content": local.color === "neutral",
         "bg-primary text-primary-content": local.color === "primary",
         "bg-secondary text-secondary-content": local.color === "secondary",
         "bg-accent text-accent-content": local.color === "accent",
@@ -47,7 +48,6 @@ const NavbarRow = (props: NavbarRowProps): JSX.Element => {
         "bg-success text-success-content": local.color === "success",
         "bg-warning text-warning-content": local.color === "warning",
         "bg-error text-error-content": local.color === "error",
-        "bg-base-100": local.color === "ghost",
       })
     )
   );
