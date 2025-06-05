@@ -9,13 +9,19 @@ type NoAnchorProps = {
   anchor?: false;
 };
 
-export type DropdownItemProps = AnchorProps | NoAnchorProps;
+export type DropdownItemProps = (AnchorProps | NoAnchorProps) & {
+  "aria-selected"?: boolean;
+};
 
 const DropdownItem = (props: DropdownItemProps): JSX.Element => {
-  const [local, others] = splitProps(props, ["anchor", "children"]);
+  const [local, others] = splitProps(props, [
+    "anchor",
+    "children",
+    "aria-selected",
+  ]);
 
   return (
-    <li role="menuitem">
+    <li role="menuitem" aria-selected={local["aria-selected"]}>
       {local.anchor ?? true ? (
         <a {...(others as AnchorProps)}>{local.children}</a>
       ) : (

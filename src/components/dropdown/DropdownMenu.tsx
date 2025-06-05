@@ -1,14 +1,15 @@
 import { type JSX, splitProps } from "solid-js";
 import { twMerge } from "tailwind-merge";
-
 import type { IComponentBaseProps } from "../types";
 
 export type DropdownMenuProps = JSX.HTMLAttributes<HTMLUListElement> &
   IComponentBaseProps & {
+    id?: string;
     class?: string;
     className?: string;
     style?: JSX.CSSProperties;
     "data-theme"?: string;
+    "aria-labelledby"?: string;
   };
 
 const DropdownMenu = (props: DropdownMenuProps): JSX.Element => {
@@ -17,6 +18,8 @@ const DropdownMenu = (props: DropdownMenuProps): JSX.Element => {
     "className",
     "data-theme",
     "style",
+    "id",
+    "aria-labelledby",
   ]);
 
   const classes = () =>
@@ -29,6 +32,8 @@ const DropdownMenu = (props: DropdownMenuProps): JSX.Element => {
   return (
     <ul
       {...others}
+      id={local.id}
+      aria-labelledby={local["aria-labelledby"]}
       tabindex={0}
       data-theme={local["data-theme"]}
       class={classes()}
