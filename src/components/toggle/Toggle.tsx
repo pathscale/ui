@@ -1,6 +1,6 @@
+import { clsx } from "clsx";
 import { splitProps, type JSX } from "solid-js";
 import { twMerge } from "tailwind-merge";
-import { clsx } from "clsx";
 
 import type {
   ComponentColor,
@@ -15,6 +15,13 @@ type ToggleBaseProps = {
   class?: string;
   className?: string;
   style?: JSX.CSSProperties;
+  // ARIA attributes
+  "aria-label"?: string;
+  "aria-describedby"?: string;
+  "aria-invalid"?: boolean;
+  "aria-required"?: boolean;
+  "aria-labelledby"?: string;
+  "aria-checked"?: boolean;
 };
 
 export type ToggleProps = ToggleBaseProps &
@@ -29,6 +36,12 @@ const Toggle = (props: ToggleProps): JSX.Element => {
     "class",
     "className",
     "style",
+    "aria-label",
+    "aria-describedby",
+    "aria-invalid",
+    "aria-required",
+    "aria-labelledby",
+    "aria-checked",
   ]);
 
   const classes = () =>
@@ -57,9 +70,16 @@ const Toggle = (props: ToggleProps): JSX.Element => {
     <input
       {...others}
       type="checkbox"
+      role="switch"
       data-theme={local.dataTheme}
       class={classes()}
       style={local.style}
+      aria-label={local["aria-label"]}
+      aria-describedby={local["aria-describedby"]}
+      aria-invalid={local["aria-invalid"]}
+      aria-required={local["aria-required"]}
+      aria-labelledby={local["aria-labelledby"]}
+      aria-checked={local["aria-checked"]}
     />
   );
 };
