@@ -7,6 +7,7 @@ import {
 } from "solid-js";
 import { twMerge } from "tailwind-merge";
 import { clsx } from "clsx";
+import { useDesktop } from "../utils";
 
 import type { IComponentBaseProps } from "../types";
 
@@ -17,6 +18,7 @@ type SidenavBaseProps = {
   collapsed?: boolean;
   children?: JSX.Element;
   footer?: JSX.Element;
+  desktopBreakpoint?: number;
 };
 
 export type SidenavProps = JSX.HTMLAttributes<HTMLElement> &
@@ -35,9 +37,11 @@ const Sidenav = (props: SidenavProps): JSX.Element => {
     "className",
     "dataTheme",
     "style",
+    "desktopBreakpoint",
   ]);
 
   const resolvedChildren = resolveChildren(() => local.children);
+  const isDesktop = useDesktop(local.desktopBreakpoint || 1024);
 
   const classes = createMemo(() =>
     twMerge(
@@ -47,6 +51,7 @@ const Sidenav = (props: SidenavProps): JSX.Element => {
       clsx({
         "sidenav-collapsed": local.collapsed,
         "sidenav-closed": !local.isOpen,
+        "sidenav-desktop": isDesktop(),
       })
     )
   );
