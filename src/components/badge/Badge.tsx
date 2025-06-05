@@ -1,5 +1,5 @@
-import { type JSX, splitProps } from "solid-js";
 import { clsx } from "clsx";
+import { type JSX, splitProps } from "solid-js";
 import { twMerge } from "tailwind-merge";
 
 import type {
@@ -18,6 +18,11 @@ type BadgeBaseProps = {
   class?: string;
   className?: string;
   style?: JSX.CSSProperties;
+  // ARIA attributes
+  "aria-label"?: string;
+  "aria-describedby"?: string;
+  "aria-labelledby"?: string;
+  role?: "status" | "alert" | "img" | "presentation" | "none";
 };
 
 export type BadgeProps = BadgeBaseProps &
@@ -34,6 +39,10 @@ const Badge = (props: BadgeProps): JSX.Element => {
     "class",
     "className",
     "style",
+    "aria-label",
+    "aria-describedby",
+    "aria-labelledby",
+    "role",
   ]);
 
   const classes = () =>
@@ -69,7 +78,10 @@ const Badge = (props: BadgeProps): JSX.Element => {
       data-theme={local.dataTheme}
       class={classes()}
       style={local.style}
-      aria-label="Badge"
+      role={local.role || "status"}
+      aria-label={local["aria-label"]}
+      aria-describedby={local["aria-describedby"]}
+      aria-labelledby={local["aria-labelledby"]}
     >
       {props.children}
     </div>
