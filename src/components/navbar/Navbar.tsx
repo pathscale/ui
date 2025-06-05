@@ -2,6 +2,8 @@ import { type JSX, splitProps } from "solid-js";
 import { Dynamic } from "solid-js/web";
 import { twMerge } from "tailwind-merge";
 import NavbarSection from "./NavbarSection";
+import NavbarStack from "./NavbarStack";
+import NavbarRow from "./NavbarRow";
 import type { IComponentBaseProps } from "../types";
 
 export type NavbarProps = JSX.HTMLAttributes<HTMLElement> &
@@ -55,4 +57,6 @@ export default Object.assign(Navbar, {
   Start: NavbarStart,
   Center: NavbarCenter,
   End: NavbarEnd,
+  Stack: NavbarStack,
+  Row: NavbarRow,
 });

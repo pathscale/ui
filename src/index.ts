@@ -60,6 +60,9 @@ export { default as Mask } from "./components/mask";
 export { Menu } from "./components/menu";
 export { default as Modal } from "./components/modal";
 export { default as Navbar } from "./components/navbar";
+export type { NavbarProps } from "./components/navbar";
+export type { NavbarStackProps } from "./components/navbar/NavbarStack";
+export type { NavbarRowProps } from "./components/navbar/NavbarRow";
 export { default as Pagination } from "./components/pagination";
 export {
   default as PhoneMockup,
