@@ -1,13 +1,26 @@
 import { JSX, splitProps, Show } from "solid-js";
 import Button, { type ButtonProps } from "../button/Button";
-import type { ComponentColor, ComponentSize, IComponentBaseProps } from "../types";
+import type {
+  ComponentColor,
+  ComponentSize,
+  IComponentBaseProps,
+} from "../types";
 
-export type DropdownToggleProps = Omit<JSX.LabelHTMLAttributes<HTMLLabelElement>, "color"> &
+export type DropdownToggleProps = Omit<
+  JSX.LabelHTMLAttributes<HTMLLabelElement>,
+  "color"
+> &
   IComponentBaseProps & {
     color?: ComponentColor;
     size?: ComponentSize;
     button?: boolean;
     disabled?: boolean;
+    id?: string;
+    role?: string;
+    // ARIA attributes
+    "aria-haspopup"?: boolean | "menu" | "listbox" | "dialog" | "grid" | "tree";
+    "aria-expanded"?: boolean;
+    "aria-controls"?: string;
   };
 
 const DropdownToggle = (props: DropdownToggleProps) => {
@@ -16,13 +29,26 @@ const DropdownToggle = (props: DropdownToggleProps) => {
     "color",
     "size",
     "button",
+    "disabled",
     "dataTheme",
     "class",
-    "disabled",
+    "id",
+    "role",
+    "aria-haspopup",
+    "aria-expanded",
+    "aria-controls",
   ]);
 
+  const commonAriaProps = {
+    id: local.id,
+    role: local.role,
+    "aria-haspopup": local["aria-haspopup"],
+    "aria-expanded": local["aria-expanded"],
+    "aria-controls": local["aria-controls"],
+  };
+
   return (
-    <label tabIndex={0} {...others} class={local.class}>
+    <label tabIndex={0} {...others} {...commonAriaProps} class={local.class}>
       <Show when={local.button} fallback={local.children}>
         <Button
           type="button"
@@ -30,6 +56,7 @@ const DropdownToggle = (props: DropdownToggleProps) => {
           color={local.color}
           size={local.size}
           disabled={local.disabled}
+          {...commonAriaProps}
         >
           {local.children}
         </Button>
@@ -38,10 +65,10 @@ const DropdownToggle = (props: DropdownToggleProps) => {
   );
 };
 
-export type SummaryProps = Omit<ButtonProps, "tag">;
+export type SummaryProps = JSX.HTMLAttributes<HTMLElement>;
 
 export const Summary = (props: SummaryProps) => {
-  return <Button {...props} tag="summary" />;
+  return <summary {...props}>{props.children}</summary>;
 };
 
 export default DropdownToggle;
