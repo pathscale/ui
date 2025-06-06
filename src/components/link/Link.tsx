@@ -1,6 +1,7 @@
 import { splitProps, type JSX, children as resolveChildren } from "solid-js";
 import { twMerge } from "tailwind-merge";
 import clsx from "clsx";
+import { createMemo } from "solid-js";
 
 import type { ComponentColor, IComponentBaseProps } from "../types";
 
@@ -32,22 +33,24 @@ const Link = (props: LinkProps) => {
 
   const resolvedChildren = resolveChildren(() => local.children);
 
-  const classes = twMerge(
-    "link",
-    clsx({
-      "link-hover": local.hover !== false,
-      "link-neutral": local.color === "neutral",
-      "link-primary": local.color === "primary",
-      "link-secondary": local.color === "secondary",
-      "link-accent": local.color === "accent",
-      "link-info": local.color === "info",
-      "link-success": local.color === "success",
-      "link-warning": local.color === "warning",
-      "link-error": local.color === "error",
-      "link-ghost": local.color === "ghost",
-    }),
-    local.class,
-    local.className
+  const classes = createMemo(() =>
+    twMerge(
+      "link",
+      clsx({
+        "link-hover": local.hover !== false,
+        "link-neutral": local.color === "neutral",
+        "link-primary": local.color === "primary",
+        "link-secondary": local.color === "secondary",
+        "link-accent": local.color === "accent",
+        "link-info": local.color === "info",
+        "link-success": local.color === "success",
+        "link-warning": local.color === "warning",
+        "link-error": local.color === "error",
+        "link-ghost": local.color === "ghost",
+      }),
+      local.class,
+      local.className
+    )
   );
 
   if (local.asChild) {
@@ -58,7 +61,7 @@ const Link = (props: LinkProps) => {
     <a
       {...rest}
       href={local.href}
-      class={classes}
+      class={classes()}
       style={local.style}
       data-theme={local.dataTheme}
       aria-current={local["aria-current"]}
