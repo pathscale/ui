@@ -1,11 +1,11 @@
 import { type JSX, type Component, splitProps, createMemo } from "solid-js";
 import { twMerge } from "tailwind-merge";
 import { clsx } from "clsx";
-import type { IComponentBaseProps } from "../types";
+import type { IComponentBaseProps, ComponentVariant } from "../types";
+import { children as resolveChildren } from "solid-js";
 
 export type ComponentStatus = "info" | "success" | "warning" | "error";
 export type ComponentLayout = "vertical" | "horizontal";
-export type ComponentVariant = "soft" | "dash" | "outline";
 
 export type AlertProps = IComponentBaseProps &
   JSX.HTMLAttributes<HTMLDivElement> & {
@@ -30,12 +30,15 @@ const Alert: Component<AlertProps> = (props) => {
     "class",
     "className",
     "style",
+    "children",
     "aria-atomic",
     "aria-live",
     "aria-relevant",
     "aria-label",
     "aria-labelledby",
   ]);
+
+  const resolvedChildren = resolveChildren(() => local.children);
 
   const classes = createMemo(() =>
     twMerge(
@@ -79,7 +82,7 @@ const Alert: Component<AlertProps> = (props) => {
       aria-labelledby={ariaLabelledby()}
     >
       {local.icon}
-      {props.children}
+      {resolvedChildren()}
     </div>
   );
 };
