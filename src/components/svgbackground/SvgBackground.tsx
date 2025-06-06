@@ -1,4 +1,4 @@
-import { JSX } from 'solid-js';
+import { JSX, createEffect, createSignal, onMount } from 'solid-js';
 
 export interface SvgBackgroundProps {
 	/** Primary gradient color (CSS color value) */
@@ -13,6 +13,8 @@ export interface SvgBackgroundProps {
 	blurIntensity?: number;
 	/** Density of shapes (any positive number) */
 	density?: number;
+	/** Darkness overlay (0-1) */
+	darkness?: number;
 	class?: string;
 	style?: JSX.CSSProperties;
 	children?: JSX.Element;
@@ -42,10 +44,17 @@ export default function SvgBackground(props: SvgBackgroundProps) {
 		opacity = 1,
 		blurIntensity = 40,
 		density = 5,
+		darkness = 0,
 		class: className = '',
 		style = {},
 		children,
 	} = props;
+
+	let containerRef: HTMLDivElement | undefined;
+	let svgRef: SVGSVGElement | undefined;
+	let canvasRef: HTMLCanvasElement | undefined;
+
+	const [isBackgroundReady, setBackgroundReady] = createSignal(false);
 
 	const getIntermediateColor = (t: number) => {
 		const start = hexToRgb(colorStart);
@@ -277,12 +286,88 @@ export default function SvgBackground(props: SvgBackgroundProps) {
 		return [...edgeShapes, ...baseShapes, ...accentShapes];
 	};
 
+	const renderSvgToCanvas = () => {
+		if (!svgRef || !canvasRef) return;
+
+		const svgData = new XMLSerializer().serializeToString(svgRef);
+		const svgBlob = new Blob([svgData], { type: 'image/svg+xml' });
+		const svgUrl = URL.createObjectURL(svgBlob);
+
+		const img = new Image();
+		img.src = svgUrl;
+
+		img.onload = () => {
+			if (!canvasRef) return;
+
+			if (containerRef) {
+				const rect = containerRef.getBoundingClientRect();
+				const blurPadding = Math.ceil(blurIntensity * 2);
+				canvasRef.width = rect.width + blurPadding * 2;
+				canvasRef.height = rect.height + blurPadding * 2;
+			}
+
+			const ctx = canvasRef.getContext('2d');
+			if (!ctx) return;
+
+			ctx.clearRect(0, 0, canvasRef.width, canvasRef.height);
+
+			ctx.fillStyle = backgroundColor;
+			ctx.fillRect(0, 0, canvasRef.width, canvasRef.height);
+
+			ctx.drawImage(img, -blurIntensity * 2, -blurIntensity * 2, canvasRef.width + blurIntensity * 4, canvasRef.height + blurIntensity * 4);
+
+			URL.revokeObjectURL(svgUrl);
+
+			setBackgroundReady(true);
+		};
+	};
+
+	onMount(() => {
+		if (window && 'ResizeObserver' in window) {
+			const observer = new ResizeObserver(() => {
+				renderSvgToCanvas();
+			});
+
+			if (containerRef) {
+				observer.observe(containerRef);
+			}
+
+			return () => {
+				if (containerRef) {
+					observer.unobserve(containerRef);
+				}
+			};
+		}
+
+		renderSvgToCanvas();
+	});
+
+	createEffect(() => {
+		const _ = [colorStart, colorEnd, backgroundColor, opacity, blurIntensity, density];
+
+		setTimeout(() => {
+			renderSvgToCanvas();
+		}, 0);
+	});
+
 	const backgroundStyle = (): JSX.CSSProperties => {
 		return {
 			position: 'relative',
 			overflow: 'hidden',
-			filter: `blur(${blurIntensity}px)`,
 			...style,
+		};
+	};
+
+	const canvasStyle = (): JSX.CSSProperties => {
+		return {
+			position: 'absolute',
+			top: `-${blurIntensity * 2}px`,
+			left: `-${blurIntensity * 2}px`,
+			width: `calc(100% + ${blurIntensity * 4}px)`,
+			height: `calc(100% + ${blurIntensity * 4}px)`,
+			'z-index': '0',
+			opacity: opacity.toString(),
+			filter: `blur(${blurIntensity}px)`,
 		};
 	};
 
@@ -290,20 +375,35 @@ export default function SvgBackground(props: SvgBackgroundProps) {
 
 	return (
 		<div
+			ref={containerRef}
 			class={`relative flex items-center justify-center ${className}`}
 			style={backgroundStyle()}
 		>
-			<svg
-				class="absolute inset-0 w-full h-full z-0"
-				style={{ opacity: opacity.toString() }}
-				viewBox="0 0 400 400"
-				preserveAspectRatio="xMidYMid slice"
-				xmlns="http://www.w3.org/2000/svg"
-			>
-				<rect width="400" height="400" fill={backgroundColor} />
+			<div style={{ display: 'none' }}>
+				<svg
+					ref={svgRef}
+					viewBox="0 0 400 400"
+					xmlns="http://www.w3.org/2000/svg"
+				>
+					<rect width="400" height="400" fill={backgroundColor} />
+					{generateShapes()}
+				</svg>
+			</div>
 
-				{generateShapes()}
-			</svg>
+			<canvas
+				ref={canvasRef}
+				style={canvasStyle()}
+			/>
+
+			{darkness > 0 && (
+				<div
+					class="absolute inset-0 z-5"
+					style={{
+						'background-color': `rgba(0, 0, 0, ${darkness})`,
+						'pointer-events': 'none',
+					}}
+				/>
+			)}
 
 			<div class={contentClasses}>
 				{children}
