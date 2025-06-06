@@ -1,125 +1,21 @@
-import { JSX, createEffect, createMemo, createSignal, onCleanup, onMount } from 'solid-js';
+import { JSX } from 'solid-js';
 
 export interface SvgBackgroundProps {
 	/** Primary gradient color (CSS color value) */
 	colorStart?: string;
 	/** Secondary gradient color (CSS color value) */
 	colorEnd?: string;
+	/** Background color */
+	backgroundColor?: string;
 	/** Background opacity (0-1) */
 	opacity?: number;
 	/** Blur intensity (0-100) */
 	blurIntensity?: number;
-	/** Turbulence frequency for noise effect */
-	turbulenceFrequency?: number;
-	animated?: boolean;
-	animationSpeed?: number;
+	/** Density of shapes (any positive number) */
+	density?: number;
 	class?: string;
 	style?: JSX.CSSProperties;
 	children?: JSX.Element;
-	darkness?: number;
-}
-
-function hexToHsl(hex: string) {
-	hex = hex.replace('#', '');
-
-	const r = parseInt(hex.substr(0, 2), 16) / 255;
-	const g = parseInt(hex.substr(2, 2), 16) / 255;
-	const b = parseInt(hex.substr(4, 2), 16) / 255;
-
-	const max = Math.max(r, g, b);
-	const min = Math.min(r, g, b);
-	let h = 0;
-	let s = 0;
-	const l = (max + min) / 2;
-
-	if (max !== min) {
-		const d = max - min;
-		s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
-
-		switch (max) {
-			case r: h = (g - b) / d + (g < b ? 6 : 0); break;
-			case g: h = (b - r) / d + 2; break;
-			case b: h = (r - g) / d + 4; break;
-		}
-		h /= 6;
-	}
-
-	return {
-		h: Math.round(h * 360),
-		s: Math.round(s * 100),
-		l: Math.round(l * 100)
-	};
-}
-
-function parseColor(colorString: string) {
-	const hslMatch = colorString.match(/hsl\((\d+),\s*(\d+)%,\s*(\d+)%\)/);
-	if (hslMatch) {
-		return {
-			h: parseInt(hslMatch[1]),
-			s: parseInt(hslMatch[2]),
-			l: parseInt(hslMatch[3])
-		};
-	}
-
-	const hexMatch = colorString.match(/^#?([a-fA-F0-9]{6})$/);
-	if (hexMatch) {
-		return hexToHsl(colorString);
-	}
-
-	const rgbMatch = colorString.match(/rgb\((\d+),\s*(\d+),\s*(\d+)\)/);
-	if (rgbMatch) {
-		const r = parseInt(rgbMatch[1]) / 255;
-		const g = parseInt(rgbMatch[2]) / 255;
-		const b = parseInt(rgbMatch[3]) / 255;
-
-		const max = Math.max(r, g, b);
-		const min = Math.min(r, g, b);
-		let h = 0;
-		let s = 0;
-		const l = (max + min) / 2;
-
-		if (max !== min) {
-			const d = max - min;
-			s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
-
-			switch (max) {
-				case r: h = (g - b) / d + (g < b ? 6 : 0); break;
-				case g: h = (b - r) / d + 2; break;
-				case b: h = (r - g) / d + 4; break;
-			}
-			h /= 6;
-		}
-
-		return {
-			h: Math.round(h * 360),
-			s: Math.round(s * 100),
-			l: Math.round(l * 100)
-		};
-	}
-
-	return { h: 0, s: 0, l: 0 };
-}
-
-function parseHSL(hslString: string) {
-	const match = hslString.match(/hsl\((\d+),\s*(\d+)%,\s*(\d+)%\)/);
-	if (!match) return null;
-	return {
-		h: parseInt(match[1]),
-		s: parseInt(match[2]),
-		l: parseInt(match[3])
-	};
-}
-
-function interpolateHue(h1: number, h2: number, t: number): number {
-	const diff = h2 - h1;
-	if (Math.abs(diff) > 180) {
-		if (diff > 0) {
-			h1 += 360;
-		} else {
-			h2 += 360;
-		}
-	}
-	return ((h1 + (h2 - h1) * t) + 360) % 360;
 }
 
 let instanceCounter = 0;
@@ -127,148 +23,274 @@ function generateStableId() {
 	return `svg-bg-${++instanceCounter}-${Date.now()}`;
 }
 
+function hexToRgb(hex: string) {
+	hex = hex.replace(/^#/, '');
+
+	const bigint = parseInt(hex, 16);
+	const r = (bigint >> 16) & 255;
+	const g = (bigint >> 8) & 255;
+	const b = bigint & 255;
+
+	return { r, g, b };
+}
+
 export default function SvgBackground(props: SvgBackgroundProps) {
 	const {
-		colorStart = '#000000',
-		colorEnd = '#333333',
+		colorStart = '#6366f1',
+		colorEnd = '#4f46e5',
+		backgroundColor = '#000000',
 		opacity = 1,
-		blurIntensity = 36,
-		turbulenceFrequency = 0.007,
-		animated = false,
-		animationSpeed = 1,
+		blurIntensity = 40,
+		density = 5,
 		class: className = '',
 		style = {},
 		children,
-		darkness = 0,
 	} = props;
 
-	const [animationTime, setAnimationTime] = createSignal(0);
-	let animationFrame: number | null = null;
-	let gradientStop1Ref: SVGStopElement | undefined;
-	let gradientStop2Ref: SVGStopElement | undefined;
-	let turbulenceRef: SVGFETurbulenceElement | undefined;
+	const getIntermediateColor = (t: number) => {
+		const start = hexToRgb(colorStart);
+		const end = hexToRgb(colorEnd);
 
-	const gradientId = `gradient-${generateStableId()}`;
-	const filterId = `filter-${generateStableId()}`;
+		const r = Math.round(start.r + (end.r - start.r) * t);
+		const g = Math.round(start.g + (end.g - start.g) * t);
+		const b = Math.round(start.b + (end.b - start.b) * t);
 
-	const shouldUseFilters = createMemo(() => {
-		return blurIntensity > 0 && turbulenceFrequency > 0.001;
-	});
+		return `#${r.toString(16).padStart(2, '0')}${g.toString(16).padStart(2, '0')}${b.toString(16).padStart(2, '0')}`;
+	};
 
-	const isGrayscaleColors = createMemo(() => {
-		const startHSL = parseColor(colorStart);
-		const endHSL = parseColor(colorEnd);
-		return startHSL.s < 15 && endHSL.s < 15;
-	});
+	const generateShapes = () => {
+		const normalizedDensity = Math.max(1, density);
 
-	onMount(() => {
-		if (animated) {
-			const animate = () => {
-				setAnimationTime(prev => prev + (0.008 * animationSpeed));
-				animationFrame = requestAnimationFrame(animate);
-			};
-			animate();
-		}
-	});
+		const maxShapes = Math.min(200, Math.max(10, Math.ceil(15 + Math.sqrt(normalizedDensity) * 8)));
 
-	onCleanup(() => {
-		if (animationFrame) {
-			cancelAnimationFrame(animationFrame);
-		}
-	});
-
-	const startHSL = createMemo(() => parseColor(colorStart));
-	const endHSL = createMemo(() => parseColor(colorEnd));
-
-	const animatedColors = createMemo(() => {
-		if (!animated) {
-			return {
-				color1: colorStart,
-				color2: colorEnd,
-				turbFreq1: turbulenceFrequency,
-				turbFreq2: turbulenceFrequency * 0.4,
-			};
+		const colors = [];
+		for (let i = 0; i < maxShapes; i++) {
+			const randomOffset = (Math.sin(i * 0.1) * 0.1);
+			const t = (i / (maxShapes - 1)) + randomOffset;
+			colors.push(getIntermediateColor(Math.max(0, Math.min(1, t))));
 		}
 
-		const time = animationTime();
-		const baseSpeed = 0.001 * animationSpeed;
+		const seed = 42;
+		const random = (i: number) => {
+			const x = Math.sin(seed + i * 100) * 10000;
+			return x - Math.floor(x);
+		};
 
-		const freq1 = time * baseSpeed * 7;
-		const freq2 = time * baseSpeed * 11;
-		const freq3 = time * baseSpeed * 13;
-		const freq4 = time * baseSpeed * 17;
-		const freq5 = time * baseSpeed * 19;
+		const gridSize = Math.ceil(Math.sqrt(maxShapes / 1.5));
+		const cellWidth = 400 / gridSize;
+		const cellHeight = 400 / gridSize;
 
-		const wave1 = Math.sin(freq1) * 0.3;
-		const wave2 = Math.sin(freq2) * 0.25;
-		const wave3 = Math.sin(freq3) * 0.2;
-		const wave4 = Math.sin(freq4) * 0.15;
-		const wave5 = Math.sin(freq5) * 0.1;
+		const minRadius = 40;
 
-		const combinedWave = wave1 + wave2 + wave3 + wave4 + wave5;
-		const colorMix = (combinedWave + 1) / 2;
+		const baseCount = Math.ceil(gridSize * gridSize * 0.8);
+		const baseShapes = [];
 
-		const wave1b = Math.cos(freq2) * 0.3;
-		const wave2b = Math.cos(freq3) * 0.25;
-		const wave3b = Math.cos(freq4) * 0.2;
-		const wave4b = Math.cos(freq5) * 0.15;
-		const wave5b = Math.cos(freq1) * 0.1;
+		const coveredGrid = Array(gridSize).fill(0).map(() => Array(gridSize).fill(false));
 
-		const combinedWave2 = wave1b + wave2b + wave3b + wave4b + wave5b;
-		const colorMix2 = (combinedWave2 + 1) / 2;
+		for (let i = 0; i < gridSize; i++) {
+			for (let j = 0; j < gridSize; j++) {
+				if (baseShapes.length >= baseCount) continue;
 
-		const turbMix1 = (Math.sin(freq1 * 0.3) * 0.5 + Math.cos(freq2 * 0.2) * 0.5 + 1) / 2;
-		const turbMix2 = (Math.cos(freq3 * 0.2) * 0.5 + Math.sin(freq4 * 0.3) * 0.5 + 1) / 2;
+				const isLeftSide = i < gridSize / 3;
 
-		let color1 = colorStart;
-		let color2 = colorEnd;
+				const leftSideMultiplier = isLeftSide ? 3 : 1;
+				const skipChance = Math.max(0, (0.2 - (normalizedDensity / 100)) * leftSideMultiplier);
+				if (random(i * 100 + j) < skipChance) continue;
 
-		const start = startHSL();
-		const end = endHSL();
+				coveredGrid[i][j] = true;
 
-		const h1 = interpolateHue(start.h, end.h, colorMix);
-		const s1 = start.s + (end.s - start.s) * colorMix;
-		const l1 = start.l + (end.l - start.l) * colorMix;
+				const randomOffsetMultiplier = isLeftSide ? 1.5 : 1;
+				const randomOffset = Math.min(cellWidth, cellHeight) * 0.4 * (1 - Math.min(1, normalizedDensity / 50)) * randomOffsetMultiplier;
+				const cx = (i * cellWidth) + (cellWidth / 2) + (random(i * 200 + j) * 2 - 1) * randomOffset;
+				const cy = (j * cellHeight) + (cellHeight / 2) + (random(i * 300 + j) * 2 - 1) * randomOffset;
 
-		const h2 = interpolateHue(start.h, end.h, colorMix2);
-		const s2 = start.s + (end.s - start.s) * colorMix2;
-		const l2 = start.l + (end.l - start.l) * colorMix2;
+				const sizeRatioBase = Math.max(0.6, 1.2 - (Math.log10(normalizedDensity + 1) * 0.15));
+				const sizeRatio = isLeftSide ? sizeRatioBase * 0.8 : sizeRatioBase;
+				const baseRadius = Math.min(cellWidth, cellHeight) * sizeRatio;
 
-		color1 = `hsl(${Math.round(h1)}, ${Math.round(s1)}%, ${Math.round(l1)}%)`;
-		color2 = `hsl(${Math.round(h2)}, ${Math.round(s2)}%, ${Math.round(l2)}%)`;
+				const sizeVariationBase = Math.max(0.2, 0.5 - (normalizedDensity / 200));
+				const sizeVariation = isLeftSide ? sizeVariationBase * 1.5 : sizeVariationBase;
+				const radius = Math.max(minRadius, baseRadius * (0.8 + random(i * 400 + j) * sizeVariation));
 
-		const turbFreq1 = turbulenceFrequency + (turbulenceFrequency * 0.01 * turbMix1);
-		const turbFreq2 = (turbulenceFrequency * 0.4) + (turbulenceFrequency * 0.01 * turbMix2);
+				const colorIndexBase = Math.floor(random(i * 500 + j) * colors.length);
+				const colorIndex = isLeftSide ?
+					Math.floor((colorIndexBase + random(i * 600 + j) * colors.length) / 2) :
+					colorIndexBase;
+				const color = colors[colorIndex];
 
-		return { color1, color2, turbFreq1, turbFreq2 };
-	});
+				const opacity = isLeftSide && random(i * 700 + j) > 0.6 ?
+					0.7 + random(i * 800 + j) * 0.3 :
+					1;
 
-	createEffect(() => {
-		const colors = animatedColors();
+				const ellipseChance = isLeftSide ? 0.6 : 0.4;
+				if (random(i * 600 + j) > (1 - ellipseChance)) {
+					const rx = radius;
+					const ry = Math.max(minRadius, radius * (0.6 + random(i * 700 + j) * 0.8));
+					const rotation = random(i * 800 + j) * 360;
 
-		if (gradientStop1Ref) {
-			gradientStop1Ref.setAttribute('stop-color', colors.color1);
+					baseShapes.push(
+						<ellipse
+							cx={cx.toString()}
+							cy={cy.toString()}
+							rx={rx.toString()}
+							ry={ry.toString()}
+							fill={color}
+							opacity={opacity.toString()}
+							transform={`rotate(${rotation} ${cx} ${cy})`}
+						/>
+					);
+				} else {
+					baseShapes.push(
+						<circle
+							cx={cx.toString()}
+							cy={cy.toString()}
+							r={radius.toString()}
+							fill={color}
+							opacity={opacity.toString()}
+						/>
+					);
+				}
+			}
 		}
-		if (gradientStop2Ref) {
-			gradientStop2Ref.setAttribute('stop-color', colors.color2);
-		}
-		if (turbulenceRef) {
-			turbulenceRef.setAttribute('baseFrequency', `${colors.turbFreq1} ${colors.turbFreq2}`);
-		}
-	});
 
-	const backgroundStyle = createMemo((): JSX.CSSProperties => {
+		for (let i = 0; i < gridSize; i++) {
+			for (let j = 0; j < gridSize; j++) {
+				if (!coveredGrid[i][j]) {
+					const isLeftSide = i < gridSize / 3;
+
+					if (isLeftSide && random(i * 900 + j) < 0.3) continue;
+
+					const cx = (i * cellWidth) + (cellWidth / 2);
+					const cy = (j * cellHeight) + (cellHeight / 2);
+
+					const radiusBase = Math.min(cellWidth, cellHeight) * 0.7;
+					const radius = Math.max(minRadius, isLeftSide ? radiusBase * 0.8 : radiusBase);
+
+					const colorIndex = Math.floor(random(i * 900 + j) * colors.length);
+					const opacity = isLeftSide ? 0.7 + random(i * 950 + j) * 0.3 : 1;
+
+					baseShapes.push(
+						<circle
+							cx={cx.toString()}
+							cy={cy.toString()}
+							r={radius.toString()}
+							fill={colors[colorIndex]}
+							opacity={opacity.toString()}
+						/>
+					);
+				}
+			}
+		}
+
+		const edgeShapes = [
+			<circle cx="0" cy="0" r="100" fill={colorStart} opacity="0.7" />,
+			<circle cx="400" cy="0" r="120" fill={getIntermediateColor(0.25)} />,
+			<circle cx="0" cy="400" r="100" fill={getIntermediateColor(0.75)} opacity="0.7" />,
+			<circle cx="400" cy="400" r="120" fill={colorEnd} />,
+
+			<circle cx="0" cy="200" r="70" fill={getIntermediateColor(0.65)} opacity="0.6" />,
+			<circle cx="200" cy="0" r="100" fill={getIntermediateColor(0.15)} />,
+			<circle cx="400" cy="200" r="100" fill={getIntermediateColor(0.4)} />,
+			<circle cx="200" cy="400" r="100" fill={getIntermediateColor(0.85)} />
+		];
+
+		const accentShapes = [];
+		const accentCount = Math.max(0, maxShapes - baseShapes.length - edgeShapes.length);
+
+		const leftSideAccentCount = Math.floor(accentCount * 0.6);
+		const rightSideAccentCount = accentCount - leftSideAccentCount;
+
+		for (let i = 0; i < leftSideAccentCount; i++) {
+			const cx = 20 + random(1000 + i) * 120;
+			const cy = 20 + random(2000 + i) * 360;
+
+			const radius = minRadius * (0.5 + random(3000 + i) * 0.6);
+
+			const colorIndex = Math.floor(random(4000 + i) * colors.length);
+
+			const opacity = 0.6 + random(5500 + i) * 0.4;
+
+			if (random(5000 + i) > 0.4) {
+				accentShapes.push(
+					<circle
+						cx={cx.toString()}
+						cy={cy.toString()}
+						r={radius.toString()}
+						fill={colors[colorIndex]}
+						opacity={opacity.toString()}
+					/>
+				);
+			} else {
+				const rx = radius;
+				const ry = radius * (0.4 + random(6000 + i) * 0.6);
+				const rotation = random(7000 + i) * 360;
+
+				accentShapes.push(
+					<ellipse
+						cx={cx.toString()}
+						cy={cy.toString()}
+						rx={rx.toString()}
+						ry={ry.toString()}
+						fill={colors[colorIndex]}
+						opacity={opacity.toString()}
+						transform={`rotate(${rotation} ${cx} ${cy})`}
+					/>
+				);
+			}
+		}
+
+		for (let i = 0; i < rightSideAccentCount; i++) {
+			const cx = 140 + random(8000 + i) * 260;
+			const cy = 20 + random(9000 + i) * 360;
+
+			const radius = minRadius * (0.7 + random(10000 + i) * 0.8);
+
+			const colorIndex = Math.floor(random(11000 + i) * colors.length);
+
+			if (random(12000 + i) > 0.3) {
+				accentShapes.push(
+					<circle
+						cx={cx.toString()}
+						cy={cy.toString()}
+						r={radius.toString()}
+						fill={colors[colorIndex]}
+					/>
+				);
+			} else {
+				const rx = radius;
+				const ry = radius * (0.5 + random(13000 + i) * 0.8);
+				const rotation = random(14000 + i) * 360;
+
+				accentShapes.push(
+					<ellipse
+						cx={cx.toString()}
+						cy={cy.toString()}
+						rx={rx.toString()}
+						ry={ry.toString()}
+						fill={colors[colorIndex]}
+						transform={`rotate(${rotation} ${cx} ${cy})`}
+					/>
+				);
+			}
+		}
+
+		return [...edgeShapes, ...baseShapes, ...accentShapes];
+	};
+
+	const backgroundStyle = (): JSX.CSSProperties => {
 		return {
 			position: 'relative',
+			overflow: 'hidden',
+			filter: `blur(${blurIntensity}px)`,
 			...style,
 		};
-	});
+	};
 
 	const contentClasses = "relative z-10 h-full w-full";
 
 	return (
 		<div
-			class={`relative ${className}`}
+			class={`relative flex items-center justify-center ${className}`}
 			style={backgroundStyle()}
 		>
 			<svg
@@ -278,83 +300,10 @@ export default function SvgBackground(props: SvgBackgroundProps) {
 				preserveAspectRatio="xMidYMid slice"
 				xmlns="http://www.w3.org/2000/svg"
 			>
-				<defs>
-					<linearGradient
-						gradientTransform="rotate(63, 0.5, 0.5)"
-						x1="50%" y1="0%" x2="50%" y2="100%"
-						id={gradientId}
-					>
-						<stop
-							ref={gradientStop1Ref}
-							stop-color={animatedColors().color1}
-							stop-opacity="1"
-							offset="0%"
-						/>
-						<stop
-							ref={gradientStop2Ref}
-							stop-color={animatedColors().color2}
-							stop-opacity="1"
-							offset="100%"
-						/>
-					</linearGradient>
-					{shouldUseFilters() && (
-						<filter
-							id={filterId}
-							x="-20%" y="-20%" width="140%" height="140%"
-							filterUnits="objectBoundingBox"
-							primitiveUnits="userSpaceOnUse"
-							color-interpolation-filters="sRGB"
-						>
-							{isGrayscaleColors() ? (
-								<feGaussianBlur
-									stdDeviation={`${blurIntensity * 0.3} ${blurIntensity * 0.3}`}
-									in="SourceGraphic"
-									result="blur"
-								/>
-							) : (
-								<>
-									<feTurbulence
-										ref={turbulenceRef}
-										type="fractalNoise"
-										baseFrequency={`${animatedColors().turbFreq1} ${animatedColors().turbFreq2}`}
-										numOctaves="2"
-										seed="10"
-										stitchTiles="stitch"
-										result="turbulence"
-									/>
-									<feGaussianBlur
-										stdDeviation={`${blurIntensity} ${blurIntensity}`}
-										in="turbulence"
-										result="blur"
-									/>
-									<feBlend
-										mode={"color-dodge" as any}
-										in="SourceGraphic"
-										in2="blur"
-										result="blend"
-									/>
-								</>
-							)}
-						</filter>
-					)}
-				</defs>
-				<rect
-					width="400"
-					height="400"
-					fill={`url(#${gradientId})`}
-					filter={shouldUseFilters() ? `url(#${filterId})` : 'none'}
-				/>
-			</svg>
+				<rect width="400" height="400" fill={backgroundColor} />
 
-			{darkness > 0 && (
-				<div
-					class="absolute inset-0 z-5"
-					style={{
-						'background-color': `rgba(0, 0, 0, ${darkness})`,
-						'pointer-events': 'none',
-					}}
-				/>
-			)}
+				{generateShapes()}
+			</svg>
 
 			<div class={contentClasses}>
 				{children}
