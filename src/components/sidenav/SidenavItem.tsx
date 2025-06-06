@@ -18,8 +18,6 @@ export type SidenavItemProps = JSX.HTMLAttributes<HTMLLIElement> &
   IComponentBaseProps;
 
 const SidenavItem = (props: SidenavItemProps): JSX.Element => {
-  console.log("SidenavItem component rendered with active:", props.active);
-
   const [local, others] = splitProps(props, [
     "children",
     "active",
@@ -32,9 +30,6 @@ const SidenavItem = (props: SidenavItemProps): JSX.Element => {
   const resolvedChildren = resolveChildren(() => local.children);
 
   const classes = createMemo(() => {
-    console.log(
-      `SidenavItem createMemo running - active prop: ${local.active}`
-    );
     return twMerge(
       "sidenav-item",
       local.class,
