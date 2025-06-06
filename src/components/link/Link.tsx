@@ -1,21 +1,18 @@
-import { splitProps, type JSX } from "solid-js";
+import { splitProps, type JSX, children as resolveChildren } from "solid-js";
 import { twMerge } from "tailwind-merge";
 import clsx from "clsx";
 
-export type ComponentColor =
-  | "primary"
-  | "secondary"
-  | "accent"
-  | "info"
-  | "success"
-  | "warning"
-  | "error";
+import type { ComponentColor, IComponentBaseProps } from "../types";
 
-export type LinkProps = JSX.AnchorHTMLAttributes<HTMLAnchorElement> & {
-  "data-theme"?: string;
-  color?: ComponentColor | "neutral";
-  hover?: boolean;
-};
+export type LinkProps = JSX.AnchorHTMLAttributes<HTMLAnchorElement> &
+  IComponentBaseProps & {
+    color?: ComponentColor;
+    hover?: boolean;
+    asChild?: boolean;
+    "aria-current"?: "page" | "step" | "location" | "date" | "time" | boolean;
+    "aria-label"?: string;
+    "aria-describedby"?: string;
+  };
 
 const Link = (props: LinkProps) => {
   const [local, rest] = splitProps(props, [
@@ -24,8 +21,16 @@ const Link = (props: LinkProps) => {
     "color",
     "hover",
     "class",
-    "data-theme",
+    "className",
+    "dataTheme",
+    "style",
+    "asChild",
+    "aria-current",
+    "aria-label",
+    "aria-describedby",
   ]);
+
+  const resolvedChildren = resolveChildren(() => local.children);
 
   const classes = twMerge(
     "link",
@@ -39,19 +44,29 @@ const Link = (props: LinkProps) => {
       "link-success": local.color === "success",
       "link-warning": local.color === "warning",
       "link-error": local.color === "error",
+      "link-ghost": local.color === "ghost",
     }),
-    local.class
+    local.class,
+    local.className
   );
+
+  if (local.asChild) {
+    return resolvedChildren() as JSX.Element;
+  }
 
   return (
     <a
       {...rest}
       href={local.href}
       class={classes}
-      data-theme={local["data-theme"]}
+      style={local.style}
+      data-theme={local.dataTheme}
+      aria-current={local["aria-current"]}
+      aria-label={local["aria-label"]}
+      aria-describedby={local["aria-describedby"]}
       rel="noopener noreferrer"
     >
-      {local.children}
+      {resolvedChildren()}
     </a>
   );
 };
