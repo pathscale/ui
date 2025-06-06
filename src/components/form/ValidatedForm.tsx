@@ -18,6 +18,7 @@ export type ValidatedFormProps<T extends z.ZodTypeAny> = Omit<
   schema: T;
   onSubmit: (values: z.infer<T>) => void | Promise<void>;
   initialValues?: z.infer<T>;
+  children?: JSX.Element | (() => JSX.Element);
 };
 
 interface FormValidationContext {
@@ -56,8 +57,6 @@ function ValidatedForm<T extends z.ZodTypeAny>(
     onSubmit: local.onSubmit,
   });
 
-  const resolvedChildren = resolveChildren(() => local.children);
-
   const contextValue = createMemo(
     (): FormValidationContext => ({
       errors,
@@ -71,7 +70,9 @@ function ValidatedForm<T extends z.ZodTypeAny>(
   return (
     <FormValidationContext.Provider value={contextValue()}>
       <Form {...others} ref={form}>
-        {resolvedChildren()}
+        {typeof local.children === "function"
+          ? local.children()
+          : local.children}
       </Form>
     </FormValidationContext.Provider>
   );
