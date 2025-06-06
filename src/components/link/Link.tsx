@@ -1,7 +1,11 @@
-import { splitProps, type JSX, children as resolveChildren } from "solid-js";
+import {
+  splitProps,
+  type JSX,
+  children as resolveChildren,
+  createMemo,
+} from "solid-js";
 import { twMerge } from "tailwind-merge";
 import clsx from "clsx";
-import { createMemo } from "solid-js";
 
 import type { ComponentColor, IComponentBaseProps } from "../types";
 
@@ -53,6 +57,10 @@ const Link = (props: LinkProps) => {
     )
   );
 
+  const ariaCurrent = createMemo(() => local["aria-current"]);
+  const ariaLabel = createMemo(() => local["aria-label"]);
+  const ariaDescribedby = createMemo(() => local["aria-describedby"]);
+
   if (local.asChild) {
     return resolvedChildren() as JSX.Element;
   }
@@ -64,9 +72,9 @@ const Link = (props: LinkProps) => {
       class={classes()}
       style={local.style}
       data-theme={local.dataTheme}
-      aria-current={local["aria-current"]}
-      aria-label={local["aria-label"]}
-      aria-describedby={local["aria-describedby"]}
+      aria-current={ariaCurrent()}
+      aria-label={ariaLabel()}
+      aria-describedby={ariaDescribedby()}
       rel="noopener noreferrer"
     >
       {resolvedChildren()}
