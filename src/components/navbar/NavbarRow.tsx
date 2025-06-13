@@ -13,8 +13,6 @@ export type NavbarRowProps = JSX.HTMLAttributes<HTMLDivElement> &
     bordered?: boolean;
     padded?: boolean;
     color?: ComponentColor;
-    className?: string;
-    dataTheme?: string;
   };
 
 const NavbarRow = (props: NavbarRowProps): JSX.Element => {
@@ -34,8 +32,6 @@ const NavbarRow = (props: NavbarRowProps): JSX.Element => {
   const classes = createMemo(() =>
     twMerge(
       "flex items-center",
-      local.class,
-      local.className,
       clsx({
         "border-b border-gray-200": local.bordered === true,
         "px-4 py-2": local.padded !== false,
@@ -48,7 +44,9 @@ const NavbarRow = (props: NavbarRowProps): JSX.Element => {
         "bg-success text-success-content": local.color === "success",
         "bg-warning text-warning-content": local.color === "warning",
         "bg-error text-error-content": local.color === "error",
-      })
+      }),
+      local.class,
+      local.className
     )
   );
 
