@@ -56,7 +56,7 @@ const Input = (props: InputProps): JSX.Element => {
 
   const classes = () =>
     twMerge(
-      "input",
+      "input input-bordered w-full focus:outline-none focus:ring-1 focus:ring-primary",
       local.class,
       local.className,
       clsx({
@@ -77,7 +77,7 @@ const Input = (props: InputProps): JSX.Element => {
     );
 
   return (
-    <label class={classes()} style={local.style} data-theme={local.dataTheme}>
+    <label class="flex items-center gap-2 w-full" data-theme={local.dataTheme}>
       <Show when={local.leftIcon}>{local.leftIcon}</Show>
       <input
         {...others}
@@ -87,6 +87,8 @@ const Input = (props: InputProps): JSX.Element => {
         aria-invalid={local["aria-invalid"]}
         aria-required={local["aria-required"]}
         placeholder={local["placeholder"]}
+        style={local.style}
+        class={classes()}
       />
       <Show when={local.rightIcon}>
         <span
