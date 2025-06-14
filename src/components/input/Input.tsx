@@ -1,4 +1,3 @@
-import { clsx } from "clsx";
 import { type JSX, Show, createMemo, createSignal, splitProps } from "solid-js";
 import { twMerge } from "tailwind-merge";
 
@@ -47,6 +46,7 @@ const Input = (props: InputProps): JSX.Element => {
     "aria-required",
   ]);
   const [passwordVisible, setPasswordVisible] = createSignal(false);
+
   const inputType = createMemo(() => {
     if (local.type === "password") {
       return passwordVisible() ? "text" : "password";
@@ -54,30 +54,27 @@ const Input = (props: InputProps): JSX.Element => {
     return local.type;
   });
 
-  const classes = () =>
+  const colorFocusMap: Record<string, string> = {
+    primary: "focus-within:border-primary",
+    success: "focus-within:border-success",
+    warning: "focus-within:border-warning",
+    error: "focus-within:border-error",
+    info: "focus-within:border-info",
+    default: "focus-within:border-base-content",
+  };
+
+  const labelClasses = () =>
     twMerge(
-      "input input-bordered w-full focus:outline-none focus:ring-1 focus:ring-primary",
+      "input input-bordered w-full items-center gap-2 focus-within:outline-none",
+      colorFocusMap[local.color || "default"],
       local.class,
-      local.className,
-      clsx({
-        "input-xl": local.size === "xl",
-        "input-lg": local.size === "lg",
-        "input-md": local.size === "md",
-        "input-sm": local.size === "sm",
-        "input-xs": local.size === "xs",
-        "input-primary": local.color === "primary",
-        "input-secondary": local.color === "secondary",
-        "input-accent": local.color === "accent",
-        "input-ghost": local.color === "ghost",
-        "input-info": local.color === "info",
-        "input-success": local.color === "success",
-        "input-warning": local.color === "warning",
-        "input-error": local.color === "error",
-      })
+      local.className
     );
 
+  const inputClasses = () => "grow bg-transparent focus:outline-none";
+
   return (
-    <label class="flex items-center gap-2 w-full" data-theme={local.dataTheme}>
+    <label class={labelClasses()} data-theme={local.dataTheme}>
       <Show when={local.leftIcon}>{local.leftIcon}</Show>
       <input
         {...others}
@@ -88,7 +85,7 @@ const Input = (props: InputProps): JSX.Element => {
         aria-required={local["aria-required"]}
         placeholder={local["placeholder"]}
         style={local.style}
-        class={classes()}
+        class={inputClasses()}
       />
       <Show when={local.rightIcon}>
         <span
