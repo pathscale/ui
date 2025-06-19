@@ -112,8 +112,6 @@ const Button = <E extends ElementType = "button">(
   const classes = () =>
     twMerge(
       "btn",
-      local.class,
-      local.className,
       clsx(((local.startIcon && !local.loading) || local.endIcon) && "gap-2", {
         "btn-xl": local.size === "xl",
         "btn-lg": local.size === "lg",
@@ -142,7 +140,9 @@ const Button = <E extends ElementType = "button">(
         "no-animation": !local.animation,
         "btn-active": local.active,
         "btn-disabled": local.disabled,
-      })
+      }),
+      local.class,
+      local.className
     );
 
   const Tag = local.as || "button";
@@ -158,8 +158,16 @@ const Button = <E extends ElementType = "button">(
         disabled={local.disabled}
         aria-label={local["aria-label"]}
         aria-describedby={local["aria-describedby"]}
-        aria-pressed={typeof local["aria-pressed"] === "boolean" ? local["aria-pressed"] : undefined}
-        aria-expanded={typeof local["aria-expanded"] === "boolean" ? local["aria-expanded"] : undefined}
+        aria-pressed={
+          typeof local["aria-pressed"] === "boolean"
+            ? local["aria-pressed"]
+            : undefined
+        }
+        aria-expanded={
+          typeof local["aria-expanded"] === "boolean"
+            ? local["aria-expanded"]
+            : undefined
+        }
         aria-controls={local["aria-controls"]}
         aria-haspopup={
           typeof local["aria-haspopup"] === "boolean"
@@ -182,10 +190,24 @@ const Button = <E extends ElementType = "button">(
       disabled={local.disabled}
       aria-label={local["aria-label"]}
       aria-describedby={local["aria-describedby"]}
-      aria-pressed={typeof local["aria-pressed"] === "boolean" ? local["aria-pressed"] : undefined}
-      aria-expanded={typeof local["aria-expanded"] === "boolean" ? local["aria-expanded"] : undefined}
+      aria-pressed={
+        typeof local["aria-pressed"] === "boolean"
+          ? local["aria-pressed"]
+          : undefined
+      }
+      aria-expanded={
+        typeof local["aria-expanded"] === "boolean"
+          ? local["aria-expanded"]
+          : undefined
+      }
       aria-controls={local["aria-controls"]}
-      aria-haspopup={local["aria-haspopup"] === true ? "true" : local["aria-haspopup"] === false ? "false" : local["aria-haspopup"]}
+      aria-haspopup={
+        local["aria-haspopup"] === true
+          ? "true"
+          : local["aria-haspopup"] === false
+          ? "false"
+          : local["aria-haspopup"]
+      }
       aria-disabled={local.disabled}
       role={local["aria-role"]}
     >
