@@ -1,6 +1,12 @@
-import { splitProps, type JSX, type Component } from "solid-js";
+import {
+  splitProps,
+  type JSX,
+  type Component,
+  createMemo,
+} from "solid-js";
 import { twMerge } from "tailwind-merge";
 import { clsx } from "clsx";
+import { mergeProps } from "solid-js";
 
 import type {
   ComponentColor,
@@ -15,6 +21,8 @@ type SelectBaseProps = {
   class?: string;
   className?: string;
   style?: JSX.CSSProperties;
+  placeholder?: string;
+  value?: string | string[] | number;
 };
 
 export type SelectProps = SelectBaseProps &
@@ -22,16 +30,20 @@ export type SelectProps = SelectBaseProps &
   Omit<JSX.SelectHTMLAttributes<HTMLSelectElement>, keyof SelectBaseProps>;
 
 const Select: Component<SelectProps> = (props) => {
-  const [local, others] = splitProps(props, [
+  const merged = mergeProps({ value: "", placeholder: "Please, select an option" }, props);
+  const [local, others] = splitProps(merged, [
     "color",
     "size",
     "dataTheme",
     "class",
     "className",
     "style",
+    "placeholder",
+    "value",
+    "children",
   ]);
 
-  const classes = () =>
+  const classes = createMemo(() =>
     twMerge(
       "select",
       local.class,
@@ -51,7 +63,12 @@ const Select: Component<SelectProps> = (props) => {
         "select-warning": local.color === "warning",
         "select-error": local.color === "error",
       })
-    );
+    )
+  );
+
+  const hasValue = createMemo(
+    () => local.value !== undefined && local.value !== ""
+  );
 
   return (
     <select
@@ -59,8 +76,12 @@ const Select: Component<SelectProps> = (props) => {
       data-theme={local.dataTheme}
       class={classes()}
       style={local.style}
+      value={local.value}
     >
-      {props.children}
+      <option value="" disabled hidden selected={true}>
+        {local.placeholder}
+      </option>
+      {local.children}
     </select>
   );
 };
