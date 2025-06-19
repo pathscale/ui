@@ -27,6 +27,10 @@ interface FormValidationContext {
   data: (path?: string | ((data: any) => any)) => any;
   isValid: () => boolean;
   isSubmitting: () => boolean;
+  setData: (data: any) => void;
+  setErrors: (errors: any) => void;
+  setWarnings: (warnings: any) => void;
+  setTouched: (touched: any) => void;
 }
 
 const FormValidationContext = createContext<FormValidationContext>();
@@ -49,9 +53,18 @@ function ValidatedForm<T extends z.ZodTypeAny>(
     "initialValues",
   ]);
 
-  const { form, errors, touched, data, isValid, isSubmitting } = createForm<
-    z.infer<T>
-  >({
+  const {
+    form,
+    errors,
+    touched,
+    data,
+    isValid,
+    isSubmitting,
+    setData,
+    setErrors,
+    setWarnings,
+    setTouched,
+  } = createForm<z.infer<T>>({
     initialValues: local.initialValues,
     extend: [validator({ schema: local.schema })],
     onSubmit: local.onSubmit,
@@ -64,6 +77,10 @@ function ValidatedForm<T extends z.ZodTypeAny>(
       data,
       isValid,
       isSubmitting,
+      setData,
+      setErrors,
+      setWarnings,
+      setTouched,
     })
   );
 
