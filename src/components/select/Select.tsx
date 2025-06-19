@@ -1,9 +1,4 @@
-import {
-  splitProps,
-  type JSX,
-  type Component,
-  createMemo,
-} from "solid-js";
+import { splitProps, type JSX, type Component, createMemo } from "solid-js";
 import { twMerge } from "tailwind-merge";
 import { clsx } from "clsx";
 import { mergeProps } from "solid-js";
@@ -30,7 +25,10 @@ export type SelectProps = SelectBaseProps &
   Omit<JSX.SelectHTMLAttributes<HTMLSelectElement>, keyof SelectBaseProps>;
 
 const Select: Component<SelectProps> = (props) => {
-  const merged = mergeProps({ value: "", placeholder: "Please, select an option" }, props);
+  const merged = mergeProps(
+    { value: "", placeholder: "Please, select an option" },
+    props
+  );
   const [local, others] = splitProps(merged, [
     "color",
     "size",
@@ -78,7 +76,7 @@ const Select: Component<SelectProps> = (props) => {
       style={local.style}
       value={local.value}
     >
-      <option value="" disabled hidden selected={true}>
+      <option value="" disabled hidden selected={!hasValue()}>
         {local.placeholder}
       </option>
       {local.children}
