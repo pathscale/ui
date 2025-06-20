@@ -31,6 +31,7 @@ interface FormValidationContext {
   setErrors: (errors: any) => void;
   setWarnings: (warnings: any) => void;
   setTouched: (touched: any) => void;
+  reset: () => void;
 }
 
 const FormValidationContext = createContext<FormValidationContext>();
@@ -64,6 +65,7 @@ function ValidatedForm<T extends z.ZodTypeAny>(
     setErrors,
     setWarnings,
     setTouched,
+    reset
   } = createForm<z.infer<T>>({
     initialValues: local.initialValues,
     extend: [validator({ schema: local.schema })],
@@ -81,6 +83,7 @@ function ValidatedForm<T extends z.ZodTypeAny>(
       setErrors,
       setWarnings,
       setTouched,
+      reset
     })
   );
 
