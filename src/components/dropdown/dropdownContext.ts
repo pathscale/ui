@@ -13,12 +13,12 @@ export function useDropdown(
   trigger: "click" | "hover",
   disabled = false
 ): DropdownContextType {
-  const [open, setOpen] = createSignal(false);
+  const [open, setOpenState] = createSignal(false);
   let ref: HTMLDivElement | undefined;
 
   const toggle = () => {
     if (!disabled && trigger === "click") {
-      setOpen((v) => !v);
+      setOpen(!open());
     }
   };
 
@@ -32,6 +32,31 @@ export function useDropdown(
   const onClickOutside = (e: MouseEvent) => {
     if (trigger === "click" && ref && !ref.contains(e.target as Node)) {
       setOpen(false);
+    }
+  };
+
+  // Custom setOpen function that handles blur when closing
+  const setOpen = (value: boolean) => {
+    if (value === false) {
+      // When closing, first remove focus
+      if (ref) {
+        // Remove focus from any focusable elements within the dropdown
+        const focusableElements = ref.querySelectorAll(
+          'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
+        );
+        focusableElements.forEach((el) => {
+          (el as HTMLElement).blur();
+        });
+
+        // Also blur the dropdown element itself
+        ref.blur();
+      }
+
+      // Then set state to closed
+      setOpenState(false);
+    } else {
+      // When opening, set state immediately
+      setOpenState(true);
     }
   };
 
