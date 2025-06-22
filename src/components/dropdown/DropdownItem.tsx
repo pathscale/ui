@@ -37,13 +37,10 @@ const DropdownItem = (props: DropdownItemProps): JSX.Element => {
       originalOnClick(e as any);
     }
 
-    // Close the dropdown - use setTimeout to ensure this runs after the current event cycle
+    // Close the dropdown
     if (dropdownContext) {
       console.log("closing dropdown");
-      setTimeout(() => {
-        dropdownContext.setOpen(false);
-        console.log("dropdown closed via setTimeout");
-      }, 0);
+      dropdownContext.setOpen(false);
     }
   };
 
