@@ -6,7 +6,6 @@ import {
   createMemo,
   createContext,
   createEffect,
-  onMount,
 } from "solid-js";
 import { twMerge } from "tailwind-merge";
 import type { IComponentBaseProps } from "../types";
@@ -93,25 +92,9 @@ const Dropdown = (props: DropdownProps): JSX.Element => {
   // Create dropdown context with appropriate trigger based on hover prop
   const dropdownCtx = useDropdown(local.hover ? "hover" : "click");
 
-  let dropdownRef: HTMLDivElement | undefined;
-
   // Debug effect to track open state changes
   createEffect(() => {
     console.log("Dropdown open state:", dropdownCtx.open());
-
-    // Directly manipulate the dropdown content visibility
-    if (dropdownRef) {
-      const dropdownContent = dropdownRef.querySelector(".dropdown-content");
-      if (dropdownContent) {
-        if (dropdownCtx.open()) {
-          (dropdownContent as HTMLElement).style.visibility = "visible";
-          (dropdownContent as HTMLElement).style.opacity = "1";
-        } else {
-          (dropdownContent as HTMLElement).style.visibility = "hidden";
-          (dropdownContent as HTMLElement).style.opacity = "0";
-        }
-      }
-    }
   });
 
   const classes = createMemo(() => {
@@ -141,10 +124,7 @@ const Dropdown = (props: DropdownProps): JSX.Element => {
         data-theme={local.dataTheme}
         class={classes()}
         style={local.style}
-        ref={(el) => {
-          dropdownRef = el;
-          dropdownCtx.ref(el);
-        }}
+        ref={dropdownCtx.ref}
         onClick={dropdownCtx.toggle}
         onMouseEnter={dropdownCtx.onEnter}
         onMouseLeave={dropdownCtx.onLeave}
