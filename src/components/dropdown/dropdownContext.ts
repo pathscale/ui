@@ -1,13 +1,24 @@
-// src/hooks/useDropdown.ts
 import { createSignal, onMount, onCleanup } from "solid-js";
 
-export function useDropdown(trigger: "click" | "hover", disabled = false) {
+export type DropdownContextType = {
+  setOpen: (open: boolean) => void;
+  open: () => boolean;
+  ref: (el: HTMLDivElement) => void;
+  toggle: () => void;
+  onEnter: () => void;
+  onLeave: () => void;
+};
+
+export function useDropdown(
+  trigger: "click" | "hover",
+  disabled = false
+): DropdownContextType {
   const [open, setOpen] = createSignal(false);
   let ref: HTMLDivElement | undefined;
 
   const toggle = () => {
     if (!disabled && trigger === "click") {
-      setOpen(v => !v);
+      setOpen((v) => !v);
     }
   };
 
@@ -30,6 +41,7 @@ export function useDropdown(trigger: "click" | "hover", disabled = false) {
   });
 
   return {
+    setOpen,
     open,
     ref: (el: HTMLDivElement) => (ref = el),
     toggle,

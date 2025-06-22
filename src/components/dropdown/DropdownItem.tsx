@@ -1,7 +1,12 @@
-import { type JSX, splitProps } from "solid-js";
+import { type JSX, splitProps, useContext } from "solid-js";
+import { DropdownContext } from "./Dropdown";
 
 type AnchorProps = JSX.AnchorHTMLAttributes<HTMLAnchorElement> & {
   anchor?: true;
+};
+
+type ButtonProps = JSX.ButtonHTMLAttributes<HTMLButtonElement> & {
+  anchor?: false;
 };
 
 type NoAnchorProps = {
@@ -9,23 +14,53 @@ type NoAnchorProps = {
   anchor?: false;
 };
 
-export type DropdownItemProps = (AnchorProps | NoAnchorProps) & {
+export type DropdownItemProps = (AnchorProps | ButtonProps | NoAnchorProps) & {
   "aria-selected"?: boolean;
 };
 
 const DropdownItem = (props: DropdownItemProps): JSX.Element => {
+  const dropdownContext = useContext(DropdownContext);
+
   const [local, others] = splitProps(props, [
     "anchor",
     "children",
     "aria-selected",
   ]);
 
+  const handleClick = (e: MouseEvent) => {
+    // Stop propagation to prevent the dropdown toggle from being triggered
+    e.stopPropagation();
+
+    // Execute the original onClick if provided
+    const originalOnClick = (others as AnchorProps | ButtonProps).onClick;
+    if (typeof originalOnClick === "function") {
+      originalOnClick(e as any);
+    }
+
+    // Close the dropdown - use setTimeout to ensure this runs after the current event cycle
+    if (dropdownContext) {
+      console.log("closing dropdown");
+      setTimeout(() => {
+        dropdownContext.setOpen(false);
+        console.log("dropdown closed via setTimeout");
+      }, 0);
+    }
+  };
+
   return (
     <li role="menuitem" aria-selected={local["aria-selected"]}>
       {local.anchor ?? true ? (
-        <a {...(others as AnchorProps)}>{local.children}</a>
+        <a {...(others as AnchorProps)} onClick={handleClick}>
+          {local.children}
+        </a>
       ) : (
-        local.children
+        <button
+          {...(others as ButtonProps)}
+          onClick={handleClick}
+          type="button"
+        >
+          {local.children}
+        </button>
       )}
     </li>
   );
