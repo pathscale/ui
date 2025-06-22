@@ -46,7 +46,7 @@ const DropdownItem = (props: DropdownItemProps): JSX.Element => {
 
   return (
     <li role="menuitem" aria-selected={local["aria-selected"]}>
-      {local.anchor ?? true ? (
+      {local.anchor ? (
         <a {...(others as AnchorProps)} onClick={handleClick}>
           {local.children}
         </a>

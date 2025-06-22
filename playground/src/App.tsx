@@ -4,18 +4,22 @@ import Dropdown from "../../src/components/dropdown/Dropdown";
 import DropdownItem from "../../src/components/dropdown/DropdownItem";
 import DropdownToggle from "../../src/components/dropdown/DropdownToggle";
 import DropdownMenu from "@src/components/dropdown/DropdownMenu";
+import { createSignal } from "solid-js";
 
 export default function App() {
+  const [open, setOpen] = createSignal(false);
+
   return (
     <Background>
       <Flex class="min-h-screen">
         <main class="flex-1 p-8 space-y-16 scroll-smooth">
-          <Dropdown
-            class="dropdown-end dropdown-top"
-          >
+          <p>{open() ? "Open" : "Closed"}</p>
+          <Dropdown>
             <DropdownToggle>Click me</DropdownToggle>
             <DropdownMenu>
-              <DropdownItem>Hello</DropdownItem>
+              <DropdownItem onClick={() => setOpen(!open())}>
+                Hello
+              </DropdownItem>
             </DropdownMenu>
           </Dropdown>
         </main>
