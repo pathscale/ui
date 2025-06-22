@@ -17,7 +17,7 @@ export default function App() {
           <Dropdown>
             <DropdownToggle>Click me</DropdownToggle>
             <DropdownMenu>
-              <DropdownItem onClick={() => setOpen(!open())}>
+              <DropdownItem closeOnClick={false} onClick={() => setOpen(!open())}>
                 Hello
               </DropdownItem>
             </DropdownMenu>

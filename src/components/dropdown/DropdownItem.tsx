@@ -1,17 +1,20 @@
-import { type JSX, splitProps, useContext } from "solid-js";
+import { type JSX, mergeProps, splitProps, useContext } from "solid-js";
 import { DropdownContext } from "./Dropdown";
 
 type AnchorProps = JSX.AnchorHTMLAttributes<HTMLAnchorElement> & {
+  closeOnClick?: boolean;
   anchor?: true;
 };
 
 type ButtonProps = JSX.ButtonHTMLAttributes<HTMLButtonElement> & {
+  closeOnClick?: boolean;
   anchor?: false;
 };
 
 type NoAnchorProps = {
   children?: JSX.Element;
   anchor?: false;
+  closeOnClick?: boolean;
 };
 
 export type DropdownItemProps = (AnchorProps | ButtonProps | NoAnchorProps) & {
@@ -21,25 +24,28 @@ export type DropdownItemProps = (AnchorProps | ButtonProps | NoAnchorProps) & {
 const DropdownItem = (props: DropdownItemProps): JSX.Element => {
   const dropdownContext = useContext(DropdownContext);
 
-  const [local, others] = splitProps(props, [
+  const defaultProps = mergeProps({
+    closeOnClick: true,
+  }, props);
+
+  const [local, others] = splitProps(defaultProps, [
     "anchor",
     "children",
     "aria-selected",
+    "closeOnClick",
   ]);
 
+
+
   const handleClick = (e: MouseEvent) => {
-    // Stop propagation to prevent the dropdown toggle from being triggered
     e.stopPropagation();
 
-    // Execute the original onClick if provided
     const originalOnClick = (others as AnchorProps | ButtonProps).onClick;
     if (typeof originalOnClick === "function") {
       originalOnClick(e as any);
     }
 
-    // Close the dropdown
-    if (dropdownContext) {
-      console.log("closing dropdown");
+    if (dropdownContext && local.closeOnClick) {
       dropdownContext.setOpen(false);
     }
   };
