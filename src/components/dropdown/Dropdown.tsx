@@ -1,12 +1,20 @@
-// components/dropdown/Dropdown.tsx
 import { clsx } from "clsx";
-import { type JSX, Show, splitProps, createMemo } from "solid-js";
+import {
+  type JSX,
+  Show,
+  splitProps,
+  createMemo,
+  createContext,
+  createEffect,
+  onMount,
+} from "solid-js";
 import { twMerge } from "tailwind-merge";
 import type { IComponentBaseProps } from "../types";
 import DropdownDetails from "./DropdownDetails";
 import DropdownItem from "./DropdownItem";
 import DropdownMenu from "./DropdownMenu";
 import DropdownToggle from "./DropdownToggle";
+import { useDropdown, type DropdownContextType } from "./dropdownContext";
 
 export type DropdownProps = JSX.HTMLAttributes<HTMLDivElement> &
   IComponentBaseProps & {
@@ -57,6 +65,11 @@ export const classesFn = ({
     })
   );
 
+// Create a dropdown context for this component
+export const DropdownContext = createContext<DropdownContextType | undefined>(
+  undefined
+);
+
 const Dropdown = (props: DropdownProps): JSX.Element => {
   const [local, others] = splitProps(props, [
     "children",
@@ -77,8 +90,34 @@ const Dropdown = (props: DropdownProps): JSX.Element => {
     "aria-labelledby",
   ]);
 
-  const classes = createMemo(() =>
-    twMerge(
+  // Create dropdown context with appropriate trigger based on hover prop
+  const dropdownCtx = useDropdown(local.hover ? "hover" : "click");
+
+  let dropdownRef: HTMLDivElement | undefined;
+
+  // Debug effect to track open state changes
+  createEffect(() => {
+    console.log("Dropdown open state:", dropdownCtx.open());
+
+    // Directly manipulate the dropdown content visibility
+    if (dropdownRef) {
+      const dropdownContent = dropdownRef.querySelector(".dropdown-content");
+      if (dropdownContent) {
+        if (dropdownCtx.open()) {
+          (dropdownContent as HTMLElement).style.visibility = "visible";
+          (dropdownContent as HTMLElement).style.opacity = "1";
+        } else {
+          (dropdownContent as HTMLElement).style.visibility = "hidden";
+          (dropdownContent as HTMLElement).style.opacity = "0";
+        }
+      }
+    }
+  });
+
+  const classes = createMemo(() => {
+    const isOpen = local.open ?? dropdownCtx.open();
+    console.log("Computing dropdown classes, open:", isOpen);
+    return twMerge(
       "dropdown",
       local.class,
       local.className,
@@ -89,37 +128,46 @@ const Dropdown = (props: DropdownProps): JSX.Element => {
         "dropdown-bottom": local.vertical === "bottom",
         "dropdown-end": local.end,
         "dropdown-hover": local.hover,
-        "dropdown-open": local.open,
+        "dropdown-open": isOpen,
       })
-    )
-  );
+    );
+  });
 
   return (
-    <div
-      role={local.item ? "combobox" : "listbox"}
-      {...others}
-      data-theme={local.dataTheme}
-      class={classes()}
-      style={local.style}
-      aria-label={local["aria-label"]}
-      aria-describedby={local["aria-describedby"]}
-      aria-expanded={local["aria-expanded"] ?? local.open}
-      aria-haspopup={
-        local["aria-haspopup"] === true
-          ? "true"
-          : local["aria-haspopup"] === false
-          ? "false"
-          : local["aria-haspopup"] || (local.item ? "listbox" : "true")
-      }
-      aria-labelledby={local["aria-labelledby"]}
-    >
-      <Show when={local.item} fallback={<>{local.children}</>}>
-        <label tabIndex={0}>{local.children}</label>
-        <ul class="dropdown-content" role="listbox">
-          {local.item}
-        </ul>
-      </Show>
-    </div>
+    <DropdownContext.Provider value={dropdownCtx}>
+      <div
+        role={local.item ? "combobox" : "listbox"}
+        {...others}
+        data-theme={local.dataTheme}
+        class={classes()}
+        style={local.style}
+        ref={(el) => {
+          dropdownRef = el;
+          dropdownCtx.ref(el);
+        }}
+        onClick={dropdownCtx.toggle}
+        onMouseEnter={dropdownCtx.onEnter}
+        onMouseLeave={dropdownCtx.onLeave}
+        aria-label={local["aria-label"]}
+        aria-describedby={local["aria-describedby"]}
+        aria-expanded={local["aria-expanded"] ?? dropdownCtx.open()}
+        aria-haspopup={
+          local["aria-haspopup"] === true
+            ? "true"
+            : local["aria-haspopup"] === false
+            ? "false"
+            : local["aria-haspopup"] || (local.item ? "listbox" : "true")
+        }
+        aria-labelledby={local["aria-labelledby"]}
+      >
+        <Show when={local.item} fallback={<>{local.children}</>}>
+          <label tabIndex={0}>{local.children}</label>
+          <ul class="dropdown-content" role="listbox">
+            {local.item}
+          </ul>
+        </Show>
+      </div>
+    </DropdownContext.Provider>
   );
 };
 
