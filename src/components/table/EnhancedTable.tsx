@@ -97,33 +97,31 @@ function EnhancedTable<TData>(props: EnhancedTableProps<TData>): JSX.Element {
       <Table.Head>
         <For each={table.getHeaderGroups()}>
           {(headerGroup) => (
-            <Table.Row>
-              <For each={headerGroup.headers}>
-                {(header) => (
-                  <Table.HeadCell
-                    class={
-                      header.column.getCanSort()
-                        ? "cursor-pointer select-none"
-                        : ""
-                    }
-                    onClick={
-                      header.column.getCanSort()
-                        ? header.column.getToggleSortingHandler()
-                        : undefined
-                    }
-                  >
-                    <div class="flex items-center gap-2">
-                      {flexRender(
-                        header.column.columnDef.header,
-                        header.getContext()
-                      )}
-                      {header.column.getIsSorted() === "asc" && <span>↑</span>}
-                      {header.column.getIsSorted() === "desc" && <span>↓</span>}
-                    </div>
-                  </Table.HeadCell>
-                )}
-              </For>
-            </Table.Row>
+            <For each={headerGroup.headers}>
+              {(header) => (
+                <Table.HeadCell
+                  class={
+                    header.column.getCanSort()
+                      ? "cursor-pointer select-none"
+                      : ""
+                  }
+                  onClick={
+                    header.column.getCanSort()
+                      ? header.column.getToggleSortingHandler()
+                      : undefined
+                  }
+                >
+                  <div class="flex items-center gap-2">
+                    {flexRender(
+                      header.column.columnDef.header,
+                      header.getContext()
+                    )}
+                    {header.column.getIsSorted() === "asc" && <span>↑</span>}
+                    {header.column.getIsSorted() === "desc" && <span>↓</span>}
+                  </div>
+                </Table.HeadCell>
+              )}
+            </For>
           )}
         </For>
       </Table.Head>
