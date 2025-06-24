@@ -28,6 +28,7 @@ const ChatBubble = (props: ChatBubbleProps): JSX.Element => {
       "chat",
       clsx({
         "chat-end": local.end,
+        "chat-start": !local.end,
       }),
       local.class,
       local.className
