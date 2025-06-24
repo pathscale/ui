@@ -1,9 +1,8 @@
-import { splitProps, type JSX } from "solid-js";
+import { createMemo, splitProps, type JSX } from "solid-js";
 import { twMerge } from "tailwind-merge";
-import clsx from "clsx";
+import { IComponentBaseProps } from "../types";
 
-export type DiffProps = JSX.HTMLAttributes<HTMLDivElement> & {
-  "data-theme"?: string;
+export type DiffProps = JSX.HTMLAttributes<HTMLDivElement> & IComponentBaseProps & {
   secondItem: JSX.Element;
 };
 
@@ -12,14 +11,15 @@ const Diff = (props: DiffProps) => {
     "class",
     "children",
     "secondItem",
-    "data-theme",
+    "className"
   ]);
+
+const classes = createMemo(() => twMerge("diff aspect-[16/9]", local.class, local.className))
 
   return (
     <div
       {...rest}
-      class={twMerge("diff aspect-[16/9]", clsx(local.class))}
-      data-theme={local["data-theme"]}
+      class={classes()}
     >
       <div class="diff-item-1">{local.children}</div>
       <div class="diff-item-2">{local.secondItem}</div>
