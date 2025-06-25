@@ -19,7 +19,9 @@ export type WindowMockupProps = JSX.HTMLAttributes<HTMLDivElement> &
     borderColor?: WindowMockupColors;
   };
 
-const WindowMockup: ParentComponent<WindowMockupProps> = (props) => {
+const WindowMockup: ParentComponent<WindowMockupProps> = (
+  props
+): JSX.Element => {
   const [local, others] = splitProps(props, [
     "children",
     "class",
@@ -31,10 +33,13 @@ const WindowMockup: ParentComponent<WindowMockupProps> = (props) => {
     "frameColor",
   ]);
 
-  const borderColorValue = () =>
-    local.borderColor || local.frameColor || "neutral";
+  const resolvedChildren = resolveChildren(() => local.children);
 
-  const classes = () =>
+  const borderColorValue = createMemo(
+    () => local.borderColor || local.frameColor || "neutral"
+  );
+
+  const classes = createMemo(() =>
     twMerge(
       "mockup-window",
       local.class,
@@ -58,9 +63,10 @@ const WindowMockup: ParentComponent<WindowMockupProps> = (props) => {
         "bg-warning": local.frameColor === "warning",
         "bg-error": local.frameColor === "error",
       })
-    );
+    )
+  );
 
-  const innerClasses = () =>
+  const innerClasses = createMemo(() =>
     twMerge(
       "p-4",
       local.backgroundColor && `bg-${local.backgroundColor}`,
@@ -75,9 +81,8 @@ const WindowMockup: ParentComponent<WindowMockupProps> = (props) => {
         "bg-warning": local.backgroundColor === "warning",
         "bg-error": local.backgroundColor === "error",
       })
-    );
-
-  const resolvedChildren = resolveChildren(() => local.children);
+    )
+  );
 
   const innerElement = createMemo(() => {
     const childrenArray = Array.isArray(resolvedChildren())

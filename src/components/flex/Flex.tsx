@@ -1,4 +1,9 @@
-import { type JSX, splitProps, children as resolveChildren } from "solid-js";
+import {
+  type JSX,
+  splitProps,
+  children as resolveChildren,
+  createMemo,
+} from "solid-js";
 import { Dynamic } from "solid-js/web";
 import clsx from "clsx";
 import { twMerge } from "tailwind-merge";
@@ -149,7 +154,7 @@ const basisMap = {
   xl: "basis-32",
 };
 
-const Flex = (props: FlexProps) => {
+const Flex = (props: FlexProps): JSX.Element => {
   const [local, rest] = splitProps(props, [
     "as",
     "class",
@@ -166,26 +171,30 @@ const Flex = (props: FlexProps) => {
     "basis",
   ]);
 
-  const tag = local.as || "div";
+  const tag = createMemo(() => local.as || "div");
   const resolvedChildren = resolveChildren(() => local.children);
 
-  const classes = clsx(
-    "flex",
-    mapResponsiveProp(local.direction, directionMap),
-    mapResponsiveProp(local.justify, justifyMap),
-    mapResponsiveProp(local.align, alignMap),
-    mapResponsiveProp(local.wrap, wrapMap),
-    mapResponsiveProp(local.gap, gapMap),
-    mapResponsiveProp(local.gapX, gapXMap),
-    mapResponsiveProp(local.gapY, gapYMap),
-    mapResponsiveProp(local.grow, growMap),
-    mapResponsiveProp(local.shrink, shrinkMap),
-    mapResponsiveProp(local.basis, basisMap),
-    local.class
+  const classes = createMemo(() =>
+    twMerge(
+      clsx(
+        "flex",
+        mapResponsiveProp(local.direction, directionMap),
+        mapResponsiveProp(local.justify, justifyMap),
+        mapResponsiveProp(local.align, alignMap),
+        mapResponsiveProp(local.wrap, wrapMap),
+        mapResponsiveProp(local.gap, gapMap),
+        mapResponsiveProp(local.gapX, gapXMap),
+        mapResponsiveProp(local.gapY, gapYMap),
+        mapResponsiveProp(local.grow, growMap),
+        mapResponsiveProp(local.shrink, shrinkMap),
+        mapResponsiveProp(local.basis, basisMap),
+        local.class
+      )
+    )
   );
 
   return (
-    <Dynamic component={tag} class={twMerge(classes)} {...rest}>
+    <Dynamic component={tag()} class={classes()} {...rest}>
       {resolvedChildren()}
     </Dynamic>
   );

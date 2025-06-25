@@ -2,7 +2,8 @@ import {
   type JSX,
   splitProps,
   Show,
-  children as getSolidChildren,
+  children as resolveChildren,
+  createMemo,
 } from "solid-js";
 import { Dynamic } from "solid-js/web";
 import { twMerge } from "tailwind-merge";
@@ -46,8 +47,21 @@ export type AvatarProps<E extends ElementType = "div"> = Omit<
 
 // Void elements rarely used here, but we'll allow generic `as`
 const VoidElementList: ElementType[] = [
-  "area", "base", "br", "col", "embed", "hr", "img", "input", "link", "keygen",
-  "meta", "param", "source", "track", "wbr",
+  "area",
+  "base",
+  "br",
+  "col",
+  "embed",
+  "hr",
+  "img",
+  "input",
+  "link",
+  "keygen",
+  "meta",
+  "param",
+  "source",
+  "track",
+  "wbr",
 ];
 
 const Avatar = <E extends ElementType = "div">(
@@ -74,10 +88,11 @@ const Avatar = <E extends ElementType = "div">(
     ]
   );
 
-  const Tag = local.as || "div";
+  const resolvedChildren = resolveChildren(() => local.children);
+  const Tag = createMemo(() => local.as || "div");
 
   // Container classes
-  const containerClass = () =>
+  const containerClass = createMemo(() =>
     twMerge(
       "avatar",
       local.class,
@@ -87,19 +102,21 @@ const Avatar = <E extends ElementType = "div">(
         "avatar-offline": local.offline,
         "avatar-placeholder": !local.src,
       })
-    );
+    )
+  );
 
   // Inner element dimensions
-  const customSizeStyle =
+  const customSizeStyle = createMemo(() =>
     typeof local.size === "number"
       ? { width: `${local.size}px`, height: `${local.size}px` }
-      : undefined;
+      : undefined
+  );
 
   // Shared inner classes
-  const baseInner = () => twMerge(local.innerClass);
+  const baseInner = createMemo(() => twMerge(local.innerClass));
 
   // Image wrapper classes
-  const imgClasses = () =>
+  const imgClasses = createMemo(() =>
     clsx(baseInner(), {
       ring: local.border,
       "ring-offset-base-100 ring-offset-2": local.border,
@@ -110,10 +127,11 @@ const Avatar = <E extends ElementType = "div">(
       "w-24 h-24": local.size === "md",
       "w-14 h-14": local.size === "sm",
       "w-10 h-10": local.size === "xs",
-    });
+    })
+  );
 
   // Placeholder wrapper classes
-  const placeholderClasses = () =>
+  const placeholderClasses = createMemo(() =>
     clsx(baseInner(), {
       "bg-neutral-focus": !local.color,
       "text-neutral-content": !local.color || local.color === "neutral",
@@ -128,34 +146,37 @@ const Avatar = <E extends ElementType = "div">(
       "w-24 h-24 text-xl": local.size === "md",
       "w-14 h-14": local.size === "sm",
       "w-10 h-10": local.size === "xs",
-    });
+    })
+  );
 
-  // Resolve children to detect single-string
-  const resolved = getSolidChildren(() => local.children)();
-  const isStringChild = typeof resolved === "string";
+  // Check if child is a single string
+  const isStringChild = createMemo(() => {
+    const child = resolvedChildren();
+    return typeof child === "string";
+  });
 
   const renderContents = () => {
     // If src => image avatar
     return local.src ? (
-      <div class={imgClasses()} style={customSizeStyle}>
+      <div class={imgClasses()} style={customSizeStyle()}>
         <img src={local.src} />
       </div>
-    ) : local.letters || isStringChild ? (
-      <div class={placeholderClasses()} style={customSizeStyle}>
-        <span>{local.letters ?? resolved}</span>
+    ) : local.letters || isStringChild() ? (
+      <div class={placeholderClasses()} style={customSizeStyle()}>
+        <span>{local.letters ?? resolvedChildren()}</span>
       </div>
     ) : (
-      <div class={imgClasses()} style={customSizeStyle}>
-        {local.children}
+      <div class={imgClasses()} style={customSizeStyle()}>
+        {resolvedChildren()}
       </div>
     );
   };
 
   // Render void tags (unlikely) or normal
-  if (VoidElementList.includes(Tag)) {
+  if (VoidElementList.includes(Tag())) {
     return (
       <Dynamic
-        component={Tag}
+        component={Tag()}
         {...others}
         data-theme={(others as any)["dataTheme"]}
         class={containerClass()}
@@ -166,7 +187,7 @@ const Avatar = <E extends ElementType = "div">(
 
   return (
     <Dynamic
-      component={Tag}
+      component={Tag()}
       {...others}
       data-theme={(others as any)["dataTheme"]}
       class={containerClass()}
