@@ -1,27 +1,35 @@
 import {
-  children as getChildren,
+  children as resolveChildren,
   JSX,
-  mergeProps,
-  ParentProps,
   splitProps,
+  createMemo,
+  ParentProps,
 } from "solid-js";
 import { twMerge } from "tailwind-merge";
+import { IComponentBaseProps } from "../types";
 
-type AppTheme = "light" | "dark";
-type CodeMockupProps = JSX.HTMLAttributes<HTMLDivElement> & {
-  dataTheme?: AppTheme;
-};
+type CodeMockupProps = JSX.HTMLAttributes<HTMLDivElement> & IComponentBaseProps;
 
 const CodeMockup = (props: ParentProps<CodeMockupProps>): JSX.Element => {
-  const merged = mergeProps({ class: "", "aria-label": "Code mockup" }, props);
-  const [local, rest] = splitProps(merged, ["class", "children", "dataTheme"]);
+  const [local, rest] = splitProps(props, [
+    "class",
+    "className",
+    "children",
+    "dataTheme",
+    "aria-label",
+  ]);
 
-  const resolvedChildren = getChildren(() => local.children);
+  const resolvedChildren = resolveChildren(() => local.children);
+
+  const classes = createMemo(() =>
+    twMerge("mockup-code w-full", local.class, local.className)
+  );
 
   return (
     <div
-      class={twMerge("mockup-code w-full", local.class)}
+      class={classes()}
       data-theme={local.dataTheme}
+      aria-label={local["aria-label"] || "Code mockup"}
       {...rest}
     >
       {resolvedChildren()}

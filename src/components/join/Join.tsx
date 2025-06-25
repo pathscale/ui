@@ -1,4 +1,9 @@
-import { splitProps, type JSX } from "solid-js";
+import {
+  splitProps,
+  type JSX,
+  createMemo,
+  children as resolveChildren,
+} from "solid-js";
 import { clsx } from "clsx";
 import { twMerge } from "tailwind-merge";
 import type { IComponentBaseProps } from "../types";
@@ -19,9 +24,12 @@ const Join = (props: JoinProps): JSX.Element => {
     "className",
     "dataTheme",
     "style",
+    "children",
   ]);
 
-  const classes = () =>
+  const resolvedChildren = resolveChildren(() => local.children);
+
+  const classes = createMemo(() =>
     twMerge(
       "join",
       clsx({
@@ -31,7 +39,8 @@ const Join = (props: JoinProps): JSX.Element => {
       }),
       local.class,
       local.className
-    );
+    )
+  );
 
   return (
     <div
@@ -40,7 +49,7 @@ const Join = (props: JoinProps): JSX.Element => {
       data-theme={local.dataTheme}
       style={local.style}
     >
-      {props.children}
+      {resolvedChildren()}
     </div>
   );
 };

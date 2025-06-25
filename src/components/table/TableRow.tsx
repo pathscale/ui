@@ -15,14 +15,14 @@ export type TableRowProps = JSX.HTMLAttributes<HTMLTableRowElement> &
     noCell?: boolean;
   };
 
-const TableRow: Component<TableRowProps> = (props) => {
+const TableRow: Component<TableRowProps> = (props): JSX.Element => {
   const [local, rest] = splitProps(props, [
     "children",
     "class",
     "active",
     "noCell",
     "className",
-    "class",
+    "dataTheme",
   ]);
   const classes = createMemo(() =>
     twMerge(
@@ -37,7 +37,7 @@ const TableRow: Component<TableRowProps> = (props) => {
   const resolved = resolveChildren(() => local.children);
 
   return (
-    <tr {...rest} class={classes()}>
+    <tr {...rest} class={classes()} data-theme={local.dataTheme}>
       {resolved()}
     </tr>
   );
