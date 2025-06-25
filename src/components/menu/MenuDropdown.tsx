@@ -1,4 +1,4 @@
-import { type JSX, splitProps, type Component } from "solid-js";
+import { type JSX, splitProps, type Component, createMemo } from "solid-js";
 import { twMerge } from "tailwind-merge";
 import { clsx } from "clsx";
 
@@ -12,10 +12,9 @@ export type MenuDropdownProps = JSX.HTMLAttributes<HTMLSpanElement> &
     className?: string;
     style?: JSX.CSSProperties;
     children?: JSX.Element;
-    "data-theme"?: string;
   };
 
-const MenuDropdown: Component<MenuDropdownProps> = (props) => {
+const MenuDropdown: Component<MenuDropdownProps> = (props): JSX.Element => {
   const [local, others] = splitProps(props, [
     "label",
     "open",
@@ -23,19 +22,21 @@ const MenuDropdown: Component<MenuDropdownProps> = (props) => {
     "className",
     "style",
     "children",
-    "data-theme",
+    "dataTheme",
   ]);
 
-  const spanClasses = () =>
+  const spanClasses = createMemo(() =>
     twMerge(
       "menu-dropdown-toggle",
       local.class,
       local.className,
       clsx({ "menu-dropdown-show": local.open })
-    );
+    )
+  );
 
-  const ulClasses = () =>
-    clsx("menu-dropdown", { "menu-dropdown-show": local.open });
+  const ulClasses = createMemo(() =>
+    clsx("menu-dropdown", { "menu-dropdown-show": local.open })
+  );
 
   return (
     <>
@@ -43,7 +44,7 @@ const MenuDropdown: Component<MenuDropdownProps> = (props) => {
         {...others}
         class={spanClasses()}
         style={local.style}
-        data-theme={local["data-theme"]}
+        data-theme={local.dataTheme}
       >
         {local.label}
       </span>
