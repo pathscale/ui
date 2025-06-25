@@ -85,6 +85,7 @@ const Avatar = <E extends ElementType = "div">(
       "className",
       "style",
       "children",
+      "dataTheme",
     ]
   );
 
@@ -178,7 +179,7 @@ const Avatar = <E extends ElementType = "div">(
       <Dynamic
         component={Tag()}
         {...others}
-        data-theme={(others as any)["dataTheme"]}
+        data-theme={local.dataTheme}
         class={containerClass()}
         style={local.style}
       />
@@ -189,7 +190,7 @@ const Avatar = <E extends ElementType = "div">(
     <Dynamic
       component={Tag()}
       {...others}
-      data-theme={(others as any)["dataTheme"]}
+      data-theme={local.dataTheme}
       class={containerClass()}
       style={local.style}
     >

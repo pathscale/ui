@@ -1,6 +1,7 @@
 import clsx from "clsx";
-import { splitProps, type JSX } from "solid-js";
+import { splitProps, type JSX, createMemo } from "solid-js";
 import { twMerge } from "tailwind-merge";
+import { IComponentBaseProps } from "../types";
 
 export type ComponentColor =
   | "primary"
@@ -16,27 +17,28 @@ export type ComponentSize = "xs" | "sm" | "md" | "lg" | "xl";
 export type RadioProps = Omit<
   JSX.InputHTMLAttributes<HTMLInputElement>,
   "size"
-> & {
-  color?: ComponentColor;
-  size?: ComponentSize;
-  "data-theme"?: string;
-  // ARIA attributes
-  "aria-label"?: string;
-  "aria-describedby"?: string;
-  "aria-invalid"?: boolean;
-  "aria-required"?: boolean;
-  "aria-labelledby"?: string;
-  "aria-checked"?: boolean;
-};
+> &
+  IComponentBaseProps & {
+    color?: ComponentColor;
+    size?: ComponentSize;
+    // ARIA attributes
+    "aria-label"?: string;
+    "aria-describedby"?: string;
+    "aria-invalid"?: boolean;
+    "aria-required"?: boolean;
+    "aria-labelledby"?: string;
+    "aria-checked"?: boolean;
+  };
 
-const Radio = (props: RadioProps) => {
+const Radio = (props: RadioProps): JSX.Element => {
   const [local, rest] = splitProps(props, [
     "class",
+    "className",
     "color",
     "size",
     "name",
     "type",
-    "data-theme",
+    "dataTheme",
     "aria-label",
     "aria-describedby",
     "aria-invalid",
@@ -45,23 +47,26 @@ const Radio = (props: RadioProps) => {
     "aria-checked",
   ]);
 
-  const classes = twMerge(
-    "radio",
-    local.class,
-    clsx({
-      "radio-xs": local.size === "xs",
-      "radio-sm": local.size === "sm",
-      "radio-md": local.size === "md",
-      "radio-lg": local.size === "lg",
-      "radio-xl": local.size === "xl",
-      "radio-primary": local.color === "primary",
-      "radio-secondary": local.color === "secondary",
-      "radio-accent": local.color === "accent",
-      "radio-info": local.color === "info",
-      "radio-success": local.color === "success",
-      "radio-warning": local.color === "warning",
-      "radio-error": local.color === "error",
-    })
+  const classes = createMemo(() =>
+    twMerge(
+      "radio",
+      local.class,
+      local.className,
+      clsx({
+        "radio-xs": local.size === "xs",
+        "radio-sm": local.size === "sm",
+        "radio-md": local.size === "md",
+        "radio-lg": local.size === "lg",
+        "radio-xl": local.size === "xl",
+        "radio-primary": local.color === "primary",
+        "radio-secondary": local.color === "secondary",
+        "radio-accent": local.color === "accent",
+        "radio-info": local.color === "info",
+        "radio-success": local.color === "success",
+        "radio-warning": local.color === "warning",
+        "radio-error": local.color === "error",
+      })
+    )
   );
 
   return (
@@ -69,8 +74,8 @@ const Radio = (props: RadioProps) => {
       {...rest}
       name={local.name}
       type="radio"
-      class={classes}
-      data-theme={local["data-theme"]}
+      class={classes()}
+      data-theme={local.dataTheme}
       aria-label={local["aria-label"]}
       aria-describedby={local["aria-describedby"]}
       aria-invalid={local["aria-invalid"]}

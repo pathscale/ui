@@ -1,4 +1,4 @@
-import { type JSX, splitProps } from "solid-js";
+import { type JSX, splitProps, createMemo } from "solid-js";
 import { Dynamic } from "solid-js/web";
 import { twMerge } from "tailwind-merge";
 import { clsx } from "clsx";
@@ -18,7 +18,6 @@ type StepBaseProps = {
   className?: string;
   style?: JSX.CSSProperties;
   children?: JSX.Element;
-  "data-theme"?: string;
 };
 
 type PropsOf<E extends ElementType> = JSX.IntrinsicElements[E];
@@ -32,11 +31,26 @@ export type StepProps<E extends ElementType = "li"> = Omit<
 
 // Common void elements, unlikely for <li>
 const VoidElementList: ElementType[] = [
-  "area","base","br","col","embed","hr","img","input","link","keygen",
-  "meta","param","source","track","wbr",
+  "area",
+  "base",
+  "br",
+  "col",
+  "embed",
+  "hr",
+  "img",
+  "input",
+  "link",
+  "keygen",
+  "meta",
+  "param",
+  "source",
+  "track",
+  "wbr",
 ];
 
-const Step = <E extends ElementType = "li">(props: StepProps<E>): JSX.Element => {
+const Step = <E extends ElementType = "li">(
+  props: StepProps<E>
+): JSX.Element => {
   const [local, others] = splitProps(
     props as StepBaseProps & Record<string, unknown>,
     [
@@ -47,13 +61,13 @@ const Step = <E extends ElementType = "li">(props: StepProps<E>): JSX.Element =>
       "className",
       "style",
       "children",
-      "data-theme",
+      "dataTheme",
     ]
   );
 
-  const Tag = local.as || ("li" as ElementType);
+  const Tag = createMemo(() => local.as || ("li" as ElementType));
 
-  const classes = () =>
+  const classes = createMemo(() =>
     twMerge(
       "step",
       local.class,
@@ -68,16 +82,17 @@ const Step = <E extends ElementType = "li">(props: StepProps<E>): JSX.Element =>
         "step-warning": local.color === "warning",
         "step-error": local.color === "error",
       })
-    );
+    )
+  );
 
   // Even if Tag is a void element, render without children
-  if (VoidElementList.includes(Tag)) {
+  if (VoidElementList.includes(Tag())) {
     return (
       <Dynamic
-        component={Tag}
+        component={Tag()}
         {...others}
         aria-label="Step"
-        data-theme={local["data-theme"]}
+        data-theme={local.dataTheme}
         data-content={local.value}
         class={classes()}
         style={local.style}
@@ -87,10 +102,10 @@ const Step = <E extends ElementType = "li">(props: StepProps<E>): JSX.Element =>
 
   return (
     <Dynamic
-      component={Tag}
+      component={Tag()}
       {...others}
       aria-label="Step"
-      data-theme={local["data-theme"]}
+      data-theme={local.dataTheme}
       data-content={local.value}
       class={classes()}
       style={local.style}

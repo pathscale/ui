@@ -1,6 +1,7 @@
 import { splitProps, createMemo, JSX, Show, For } from "solid-js";
 import clsx from "clsx";
 import { twMerge } from "tailwind-merge";
+import { IComponentBaseProps } from "../types";
 
 export type ComponentColor =
   | "primary"
@@ -16,17 +17,18 @@ export type ComponentSize = "xs" | "sm" | "md" | "lg" | "xl";
 export type RangeProps = Omit<
   JSX.InputHTMLAttributes<HTMLInputElement>,
   "size"
-> & {
-  color?: ComponentColor;
-  size?: ComponentSize;
-  displayTicks?: boolean;
-  ticksStep?: number;
-  "data-theme"?: string;
-};
+> &
+  IComponentBaseProps & {
+    color?: ComponentColor;
+    size?: ComponentSize;
+    displayTicks?: boolean;
+    ticksStep?: number;
+  };
 
-const Range = (props: RangeProps) => {
+const Range = (props: RangeProps): JSX.Element => {
   const [local, rest] = splitProps(props, [
     "class",
+    "className",
     "color",
     "size",
     "step",
@@ -34,26 +36,29 @@ const Range = (props: RangeProps) => {
     "ticksStep",
     "min",
     "max",
-    "data-theme",
+    "dataTheme",
   ]);
 
-  const classes = twMerge(
-    "range",
-    local.class,
-    clsx({
-      "range-xs": local.size === "xs",
-      "range-sm": local.size === "sm",
-      "range-md": local.size === "md",
-      "range-lg": local.size === "lg",
-      "range-xl": local.size === "xl",
-      "range-primary": local.color === "primary",
-      "range-secondary": local.color === "secondary",
-      "range-accent": local.color === "accent",
-      "range-info": local.color === "info",
-      "range-success": local.color === "success",
-      "range-warning": local.color === "warning",
-      "range-error": local.color === "error",
-    })
+  const classes = createMemo(() =>
+    twMerge(
+      "range",
+      local.class,
+      local.className,
+      clsx({
+        "range-xs": local.size === "xs",
+        "range-sm": local.size === "sm",
+        "range-md": local.size === "md",
+        "range-lg": local.size === "lg",
+        "range-xl": local.size === "xl",
+        "range-primary": local.color === "primary",
+        "range-secondary": local.color === "secondary",
+        "range-accent": local.color === "accent",
+        "range-info": local.color === "info",
+        "range-success": local.color === "success",
+        "range-warning": local.color === "warning",
+        "range-error": local.color === "error",
+      })
+    )
   );
 
   const ticks = createMemo(() => {
@@ -75,8 +80,8 @@ const Range = (props: RangeProps) => {
         {...rest}
         type="range"
         step={local.step}
-        class={classes}
-        data-theme={local["data-theme"]}
+        class={classes()}
+        data-theme={local.dataTheme}
       />
       <Show when={ticks().length > 0}>
         <div class="relative mt-2 h-4 w-full max-w-xs">

@@ -1,21 +1,21 @@
-import { splitProps, type JSX } from "solid-js";
+import { splitProps, type JSX, createMemo } from "solid-js";
 import { twMerge } from "tailwind-merge";
 import { clsx } from "clsx";
 import StatSection, { type StatSectionProps } from "./StatSection";
+import { IComponentBaseProps } from "../types";
 
-export type StatProps = JSX.HTMLAttributes<HTMLDivElement> & {
-  "data-theme"?: string;
-};
+export type StatProps = JSX.HTMLAttributes<HTMLDivElement> &
+  IComponentBaseProps;
 
-const Stat = (props: StatProps) => {
-  const [local, rest] = splitProps(props, ["class", "data-theme"]);
+const Stat = (props: StatProps): JSX.Element => {
+  const [local, rest] = splitProps(props, ["class", "className", "dataTheme"]);
+
+  const classes = createMemo(() =>
+    twMerge("stat", clsx(local.class, local.className))
+  );
 
   return (
-    <div
-      {...rest}
-      class={twMerge("stat", clsx(local.class))}
-      data-theme={local["data-theme"]}
-    >
+    <div {...rest} class={classes()} data-theme={local.dataTheme}>
       {props.children}
     </div>
   );

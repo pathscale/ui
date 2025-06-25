@@ -1,4 +1,4 @@
-import { type JSX, splitProps } from "solid-js";
+import { type JSX, splitProps, createMemo } from "solid-js";
 import { Dynamic } from "solid-js/web";
 import { twMerge } from "tailwind-merge";
 import { clsx } from "clsx";
@@ -16,7 +16,6 @@ type StepsBaseProps = {
   className?: string;
   style?: JSX.CSSProperties;
   children?: JSX.Element;
-  "data-theme"?: string;
 };
 
 type PropsOf<E extends ElementType> = JSX.IntrinsicElements[E];
@@ -30,11 +29,26 @@ export type StepsProps<E extends ElementType = "ul"> = Omit<
 
 // Void elements rarely used here, but included for completeness
 const VoidElementList: ElementType[] = [
-  "area","base","br","col","embed","hr","img","input","link","keygen",
-  "meta","param","source","track","wbr",
+  "area",
+  "base",
+  "br",
+  "col",
+  "embed",
+  "hr",
+  "img",
+  "input",
+  "link",
+  "keygen",
+  "meta",
+  "param",
+  "source",
+  "track",
+  "wbr",
 ];
 
-const Steps = <E extends ElementType = "ul">(props: StepsProps<E>): JSX.Element => {
+const Steps = <E extends ElementType = "ul">(
+  props: StepsProps<E>
+): JSX.Element => {
   const [local, others] = splitProps(
     props as StepsBaseProps & Record<string, unknown>,
     [
@@ -45,13 +59,13 @@ const Steps = <E extends ElementType = "ul">(props: StepsProps<E>): JSX.Element 
       "class",
       "className",
       "style",
-      "data-theme",
+      "dataTheme",
     ]
   );
 
-  const Tag = local.as || ("ul" as ElementType);
+  const Tag = createMemo(() => local.as || ("ul" as ElementType));
 
-  const classes = () =>
+  const classes = createMemo(() =>
     twMerge(
       "steps",
       local.class,
@@ -60,16 +74,17 @@ const Steps = <E extends ElementType = "ul">(props: StepsProps<E>): JSX.Element 
         "steps-vertical": local.vertical,
         "steps-horizontal": local.horizontal,
       })
-    );
+    )
+  );
 
-  if (VoidElementList.includes(Tag)) {
+  if (VoidElementList.includes(Tag())) {
     return (
       <Dynamic
-        component={Tag}
+        component={Tag()}
         {...others}
         role="group"
         aria-label="Steps"
-        data-theme={local["data-theme"]}
+        data-theme={local.dataTheme}
         class={classes()}
         style={local.style}
       />
@@ -78,11 +93,11 @@ const Steps = <E extends ElementType = "ul">(props: StepsProps<E>): JSX.Element 
 
   return (
     <Dynamic
-      component={Tag}
+      component={Tag()}
       {...others}
       role="group"
       aria-label="Steps"
-      data-theme={local["data-theme"]}
+      data-theme={local.dataTheme}
       class={classes()}
       style={local.style}
     >
