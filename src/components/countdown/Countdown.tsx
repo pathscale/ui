@@ -1,4 +1,4 @@
-import type { JSX } from "solid-js";
+import { createEffect, createMemo, type JSX } from "solid-js";
 import { twMerge } from "tailwind-merge";
 
 import type { IComponentBaseProps } from "../types";
@@ -9,17 +9,15 @@ export type CountdownProps = IComponentBaseProps &
   };
 const Countdown = (props: CountdownProps): JSX.Element => {
   const {
-    value,
     class: className,
     className: classNameAlt,
     dataTheme,
     ...rest
   } = props;
 
-  const displayedValue = Math.min(99, Math.max(0, value));
-  const countdownStyle: JSX.CSSProperties = {
-    "--value": displayedValue,
-  };
+  const displayedValue = createMemo(() =>
+    Math.min(99, Math.max(0, props.value))
+  );
 
   return (
     <span
@@ -28,7 +26,10 @@ const Countdown = (props: CountdownProps): JSX.Element => {
       data-theme={dataTheme}
       class={twMerge("countdown", className, classNameAlt)}
     >
-      <span style={countdownStyle} />
+      <span
+        style={`--value: ${displayedValue()}`}
+        data-content={displayedValue()}
+      />
     </span>
   );
 };
