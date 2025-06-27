@@ -5,7 +5,6 @@ import {
   splitProps,
   createMemo,
   createContext,
-  createEffect,
 } from "solid-js";
 import { twMerge } from "tailwind-merge";
 import type { IComponentBaseProps } from "../types";
@@ -89,17 +88,11 @@ const Dropdown = (props: DropdownProps): JSX.Element => {
     "aria-labelledby",
   ]);
 
-  // Create dropdown context with appropriate trigger based on hover prop
   const dropdownCtx = useDropdown(local.hover ? "hover" : "click");
-
-  // Debug effect to track open state changes
-  createEffect(() => {
-    console.log("Dropdown open state:", dropdownCtx.open());
-  });
 
   const classes = createMemo(() => {
     const isOpen = local.open ?? dropdownCtx.open();
-    console.log("Computing dropdown classes, open:", isOpen);
+
     return twMerge(
       "dropdown",
       local.class,
