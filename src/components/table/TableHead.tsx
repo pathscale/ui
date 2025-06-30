@@ -6,8 +6,6 @@ import {
   createMemo,
   children as resolveChildren,
 } from "solid-js";
-import TableCell from "./TableCell";
-import TableHeadCell from "./TableHeadCell";
 import clsx from "clsx";
 import { twMerge } from "tailwind-merge";
 import { type IComponentBaseProps } from "../types";
@@ -31,19 +29,7 @@ const TableHead: Component<TableHeadProps> = (props) => {
 
   return (
     <thead class={classes()} data-theme={local.dataTheme} {...rest}>
-      <tr>
-        <For each={resolved.toArray()}>
-          {(child, index) =>
-            local.noCell ? (
-              child
-            ) : index() < 1 ? (
-              <TableHeadCell>{child}</TableHeadCell>
-            ) : (
-              <TableCell>{child}</TableCell>
-            )
-          }
-        </For>
-      </tr>
+      <tr>{resolved()}</tr>
     </thead>
   );
 };
