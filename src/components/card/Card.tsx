@@ -5,6 +5,7 @@ import { twMerge } from "tailwind-merge";
 import type {
   ComponentSize,
   ComponentVariant,
+  ComponentColor,
   IComponentBaseProps,
 } from "../types";
 import CardActions from "./CardActions";
@@ -19,6 +20,9 @@ export type CardProps = IComponentBaseProps &
     variant?: Exclude<ComponentVariant, "soft"> | "border";
     imageFull?: boolean;
     side?: ComponentSize | boolean;
+    background?: ComponentColor | 'base-100' | 'base-200' | 'base-300';
+    shadow?: 'none' | 'sm' | 'md' | 'lg' | 'xl';
+    fullWidth?: boolean;
     "aria-label"?: string;
     "aria-describedby"?: string;
     "aria-labelledby"?: string;
@@ -42,6 +46,9 @@ const Card = (props: CardProps): JSX.Element => {
     "variant",
     "imageFull",
     "side",
+    "background",
+    "shadow",
+    "fullWidth",
     "class",
     "className",
     "dataTheme",
@@ -54,7 +61,26 @@ const Card = (props: CardProps): JSX.Element => {
 
   const classes = twMerge(
     "card",
+    local.class,
+    local.className,
     clsx({
+      "w-full": local.fullWidth,
+      "shadow-sm": local.shadow === "sm",
+      "shadow-md": local.shadow === "md",
+      "shadow-lg": local.shadow === "lg",
+      "shadow-xl": local.shadow === "xl",
+      "shadow-none": local.shadow === "none",
+      "bg-base-100": local.background === "base-100",
+      "bg-base-200": local.background === "base-200",
+      "bg-base-300": local.background === "base-300",
+      "bg-primary": local.background === "primary",
+      "bg-secondary": local.background === "secondary",
+      "bg-accent": local.background === "accent",
+      "bg-neutral": local.background === "neutral",
+      "bg-info": local.background === "info",
+      "bg-success": local.background === "success",
+      "bg-warning": local.background === "warning",
+      "bg-error": local.background === "error",
       "card-xl": local.size === "xl",
       "card-lg": local.size === "lg",
       "card-md": local.size === "md",
@@ -69,9 +95,7 @@ const Card = (props: CardProps): JSX.Element => {
       [DYNAMIC_MODIFIERS.side[
         local.side?.toString() as keyof typeof DYNAMIC_MODIFIERS.side
       ] ?? ""]: !!local.side,
-    }),
-    local.class,
-    local.className
+    })
   );
 
   return (

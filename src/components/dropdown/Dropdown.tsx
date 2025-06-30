@@ -22,6 +22,7 @@ export type DropdownProps = JSX.HTMLAttributes<HTMLDivElement> &
     end?: boolean;
     hover?: boolean;
     open?: boolean;
+    fullWidth?: boolean;
     // ARIA attributes
     "aria-label"?: string;
     "aria-describedby"?: string;
@@ -79,6 +80,7 @@ const Dropdown = (props: DropdownProps): JSX.Element => {
     "end",
     "hover",
     "open",
+    "fullWidth",
     "dataTheme",
     "style",
     "aria-label",
@@ -98,6 +100,7 @@ const Dropdown = (props: DropdownProps): JSX.Element => {
       local.class,
       local.className,
       clsx({
+        "w-full": local.fullWidth,
         "dropdown-left": local.horizontal === "left",
         "dropdown-right": local.horizontal === "right",
         "dropdown-top": local.vertical === "top",

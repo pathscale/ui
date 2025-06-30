@@ -1,5 +1,6 @@
 import { type JSX, Show, createMemo, createSignal, splitProps } from "solid-js";
 import { twMerge } from "tailwind-merge";
+import { clsx } from "clsx";
 
 import type {
   ComponentColor,
@@ -10,6 +11,8 @@ import type {
 type InputBaseProps = {
   size?: ComponentSize;
   color?: ComponentColor;
+  variant?: 'bordered' | 'ghost' | 'flushed';
+  fullWidth?: boolean;
   dataTheme?: string;
   class?: string;
   className?: string;
@@ -32,6 +35,8 @@ const Input = (props: InputProps): JSX.Element => {
   const [local, others] = splitProps(props, [
     "size",
     "color",
+    "variant",
+    "fullWidth",
     "dataTheme",
     "class",
     "className",
@@ -65,10 +70,28 @@ const Input = (props: InputProps): JSX.Element => {
 
   const labelClasses = () =>
     twMerge(
-      "input input-bordered w-full items-center gap-2 focus-within:outline-none",
-      colorFocusMap[local.color || "default"],
+      "input",
+      "items-center gap-2 focus-within:outline-none",
       local.class,
-      local.className
+      local.className,
+      colorFocusMap[local.color || "default"],
+      clsx({
+        "input-bordered": local.variant === "bordered" || !local.variant,
+        "input-ghost": local.variant === "ghost" || local.color === "ghost",
+        "w-full": local.fullWidth !== false,
+        "input-xl": local.size === "xl",
+        "input-lg": local.size === "lg",
+        "input-md": local.size === "md",
+        "input-sm": local.size === "sm",
+        "input-xs": local.size === "xs",
+        "input-primary": local.color === "primary",
+        "input-secondary": local.color === "secondary",
+        "input-accent": local.color === "accent",
+        "input-info": local.color === "info",
+        "input-success": local.color === "success",
+        "input-warning": local.color === "warning",
+        "input-error": local.color === "error",
+      })
     );
 
   const inputClasses = () => "grow bg-transparent focus:outline-none";

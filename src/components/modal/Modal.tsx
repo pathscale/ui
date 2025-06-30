@@ -9,7 +9,7 @@ import {
 import { twMerge } from "tailwind-merge";
 import clsx from "clsx";
 
-import type { IComponentBaseProps } from "../types";
+import type { IComponentBaseProps, ComponentSize } from "../types";
 import ModalActions from "./ModalActions";
 import ModalBody from "./ModalBody";
 import ModalHeader from "./ModalHeader";
@@ -25,6 +25,7 @@ export type ModalProps = IComponentBaseProps &
     onClose?: () => void;
     closeOnEsc?: boolean;
     closeOnOutsideClick?: boolean;
+    size?: ComponentSize | 'full';
   };
 
 export type DialogProps = Omit<ModalProps, "ref">;
@@ -45,6 +46,7 @@ export function Modal(props: ModalProps): JSX.Element {
     "tabIndex",
     "closeOnEsc",
     "closeOnOutsideClick",
+    "size",
   ]);
 
   const resolvedChildren = resolveChildren(() => local.children);
@@ -115,7 +117,19 @@ export function Modal(props: ModalProps): JSX.Element {
   );
 
   const bodyClasses = createMemo(() =>
-    twMerge("modal-box", local.class, local.className)
+    twMerge(
+      "modal-box",
+      local.class,
+      local.className,
+      clsx({
+        "max-w-none w-11/12 max-w-7xl": local.size === "xl",
+        "max-w-none w-11/12 max-w-4xl": local.size === "lg",
+        "max-w-none w-11/12 max-w-2xl": local.size === "md",
+        "max-w-none w-80": local.size === "sm",
+        "max-w-none w-64": local.size === "xs",
+        "max-w-none w-full h-full": local.size === "full",
+      })
+    )
   );
 
   return (
