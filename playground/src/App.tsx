@@ -1,5 +1,6 @@
 import Background from "../../src/components/background";
 import Flex from "../../src/components/flex/Flex";
+import CopyButton from "../../src/components/copy-button/CopyButton";
 
 export default function App() {
   return (
@@ -18,6 +19,7 @@ export default function App() {
           You can start editing <code class="font-mono">App.tsx</code> to try
           out any component from <code>@pathscale/ui</code>.
         </p>
+        <CopyButton text="Copy" copiedToken={"jiohiohiohjioj"} >hiohoho</CopyButton>
       </Flex>
     </Background>
   );
