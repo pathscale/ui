@@ -1,5 +1,6 @@
 import { createSignal, splitProps, type Component, type JSX } from "solid-js";
 import { twMerge } from "tailwind-merge";
+import { Show } from "solid-js";
 
 import type { IComponentBaseProps } from "../types";
 
@@ -35,7 +36,9 @@ const CopyButton: Component<CopyButtonProps> = (props) => {
   const getContent = () => {
     if (local.children) return local.children;
     if (!copied()) return "Copy";
+  };
 
+  const getCopiedContent = () => {
     if (typeof local.copiedToken === "string") return local.copiedToken;
     if (local.copiedToken) return <local.copiedToken />;
     return "Copied!";
@@ -55,7 +58,12 @@ const CopyButton: Component<CopyButtonProps> = (props) => {
       )}
       {...others}
     >
-      {getContent()}
+      <Show when={!copied()}>
+        {getContent()}
+      </Show>
+      <Show when={copied()}>
+        {getCopiedContent()}
+      </Show>
     </button>
   );
 };
