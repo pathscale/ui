@@ -2,7 +2,6 @@ import {
   type Component,
   splitProps,
   JSX,
-  For,
   createMemo,
   children as resolveChildren,
 } from "solid-js";
