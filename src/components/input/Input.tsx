@@ -11,7 +11,7 @@ import type {
 type InputBaseProps = {
   size?: ComponentSize;
   color?: ComponentColor;
-  variant?: 'bordered' | 'ghost' | 'flushed';
+  variant?: "bordered" | "ghost" | "flushed";
   fullWidth?: boolean;
   dataTheme?: string;
   class?: string;
@@ -20,6 +20,7 @@ type InputBaseProps = {
   rightIcon?: JSX.Element;
   leftIcon?: JSX.Element;
   placeholder?: string;
+  ref?: HTMLInputElement | ((el: HTMLInputElement) => void);
   // ARIA attributes
   "aria-label"?: string;
   "aria-describedby"?: string;
@@ -45,6 +46,7 @@ const Input = (props: InputProps): JSX.Element => {
     "rightIcon",
     "placeholder",
     "type",
+    "ref",
     "aria-label",
     "aria-describedby",
     "aria-invalid",
@@ -102,6 +104,7 @@ const Input = (props: InputProps): JSX.Element => {
       <input
         {...others}
         type={inputType()}
+        ref={local.ref}
         aria-label={local["aria-label"]}
         aria-describedby={local["aria-describedby"]}
         aria-invalid={local["aria-invalid"]}
