@@ -23,7 +23,7 @@ const DropdownMenu = (props: DropdownMenuProps): JSX.Element => {
 
   const classes = createMemo(() =>
     twMerge(
-      "dropdown-content menu p-2 shadow bg-base-100 rounded-box",
+      "dropdown-content menu p-2 shadow bg-base-100 max-h-50 overflow-y-auto flex-nowrap w-full rounded-box",
       local.class,
       local.className
     )
