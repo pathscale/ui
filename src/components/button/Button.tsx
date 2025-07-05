@@ -109,6 +109,10 @@ const Button = <E extends ElementType = "button">(
     ]
   );
 
+  const normalizeAriaValue = (value: unknown) => {
+    return typeof value === "boolean" ? String(value) : value;
+  };
+
   const classes = () =>
     twMerge(
       "btn",
@@ -158,22 +162,10 @@ const Button = <E extends ElementType = "button">(
         disabled={local.disabled}
         aria-label={local["aria-label"]}
         aria-describedby={local["aria-describedby"]}
-        aria-pressed={
-          typeof local["aria-pressed"] === "boolean"
-            ? local["aria-pressed"]
-            : undefined
-        }
-        aria-expanded={
-          typeof local["aria-expanded"] === "boolean"
-            ? local["aria-expanded"]
-            : undefined
-        }
+        aria-pressed={normalizeAriaValue(local["aria-pressed"])}
+        aria-expanded={normalizeAriaValue(local["aria-expanded"])}
         aria-controls={local["aria-controls"]}
-        aria-haspopup={
-          typeof local["aria-haspopup"] === "boolean"
-            ? String(local["aria-haspopup"])
-            : local["aria-haspopup"]
-        }
+        aria-haspopup={normalizeAriaValue(local["aria-haspopup"])}
         aria-disabled={local.disabled}
         role={local["aria-role"]}
       />
@@ -190,24 +182,10 @@ const Button = <E extends ElementType = "button">(
       disabled={local.disabled}
       aria-label={local["aria-label"]}
       aria-describedby={local["aria-describedby"]}
-      aria-pressed={
-        typeof local["aria-pressed"] === "boolean"
-          ? local["aria-pressed"]
-          : undefined
-      }
-      aria-expanded={
-        typeof local["aria-expanded"] === "boolean"
-          ? local["aria-expanded"]
-          : undefined
-      }
+      aria-pressed={normalizeAriaValue(local["aria-pressed"])}
+      aria-expanded={normalizeAriaValue(local["aria-expanded"])}
       aria-controls={local["aria-controls"]}
-      aria-haspopup={
-        local["aria-haspopup"] === true
-          ? "true"
-          : local["aria-haspopup"] === false
-          ? "false"
-          : local["aria-haspopup"]
-      }
+      aria-haspopup={normalizeAriaValue(local["aria-haspopup"])}
       aria-disabled={local.disabled}
       role={local["aria-role"]}
     >

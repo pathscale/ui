@@ -39,12 +39,21 @@ const DropdownToggle = (props: DropdownToggleProps) => {
     "aria-controls",
   ]);
 
+  const normalizeAriaHaspopup = (value: (typeof local)["aria-haspopup"]) => {
+    return typeof value === "boolean" ? String(value) : value;
+  };
+
   const commonAriaProps = {
     id: local.id,
     role: local.role,
     "aria-haspopup": local["aria-haspopup"],
     "aria-expanded": local["aria-expanded"],
     "aria-controls": local["aria-controls"],
+  };
+
+  const buttonAriaProps = {
+    ...commonAriaProps,
+    "aria-haspopup": normalizeAriaHaspopup(local["aria-haspopup"]),
   };
 
   return (
@@ -56,7 +65,7 @@ const DropdownToggle = (props: DropdownToggleProps) => {
           color={local.color}
           size={local.size}
           disabled={local.disabled}
-          {...commonAriaProps}
+          {...buttonAriaProps}
         >
           {local.children}
         </Button>
