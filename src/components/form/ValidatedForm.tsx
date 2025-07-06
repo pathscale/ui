@@ -9,6 +9,7 @@ import {
 import { createForm } from "@felte/solid";
 import { validator } from "@felte/validator-zod";
 import { z } from "zod";
+import type { ObjectSetter, Paths } from "@felte/common";
 import Form, { type FormProps } from "./Form";
 
 export type ValidatedFormProps<T extends z.ZodTypeAny> = Omit<
@@ -21,13 +22,13 @@ export type ValidatedFormProps<T extends z.ZodTypeAny> = Omit<
   children?: JSX.Element | (() => JSX.Element);
 };
 
-interface FormValidationContext {
+interface FormValidationContext<T extends z.ZodTypeAny = z.ZodTypeAny> {
   errors: (path?: string | ((data: any) => any)) => any;
   touched: (path?: string | ((data: any) => any)) => any;
   data: (path?: string | ((data: any) => any)) => any;
   isValid: () => boolean;
   isSubmitting: () => boolean;
-  setData: (data: any) => void;
+  setData: ObjectSetter<z.infer<T>, Paths<z.infer<T>>>;
   setErrors: (errors: any) => void;
   setWarnings: (warnings: any) => void;
   setTouched: (touched: any) => void;
@@ -36,8 +37,8 @@ interface FormValidationContext {
 
 const FormValidationContext = createContext<FormValidationContext>();
 
-export function useFormValidation() {
-  const context = useContext(FormValidationContext);
+export function useFormValidation<T extends z.ZodTypeAny = z.ZodTypeAny>() {
+  const context = useContext(FormValidationContext) as FormValidationContext<T> | undefined;
   if (!context) {
     throw new Error("useFormValidation must be used within a ValidatedForm");
   }
@@ -73,7 +74,7 @@ function ValidatedForm<T extends z.ZodTypeAny>(
   });
 
   const contextValue = createMemo(
-    (): FormValidationContext => ({
+    (): FormValidationContext<T> => ({
       errors,
       touched,
       data,
