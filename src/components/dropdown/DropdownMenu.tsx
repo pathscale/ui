@@ -1,13 +1,12 @@
 import { type JSX, splitProps, createMemo } from "solid-js";
 import { twMerge } from "tailwind-merge";
 import type { IComponentBaseProps } from "../types";
+import clsx from "clsx";
 
 export type DropdownMenuProps = JSX.HTMLAttributes<HTMLUListElement> &
   IComponentBaseProps & {
     id?: string;
-    class?: string;
-    className?: string;
-    style?: JSX.CSSProperties;
+    hideOverflow?: boolean;
     "aria-labelledby"?: string;
   };
 
@@ -18,12 +17,20 @@ const DropdownMenu = (props: DropdownMenuProps): JSX.Element => {
     "dataTheme",
     "style",
     "id",
+    "hideOverflow",
     "aria-labelledby",
   ]);
 
+  const hideOverflowMemo = createMemo(() => {
+    return local.hideOverflow ?? true;
+  });
+
   const classes = createMemo(() =>
     twMerge(
-      "dropdown-content menu p-2 shadow bg-base-100 max-h-50 overflow-y-auto flex-nowrap w-full rounded-box",
+      "dropdown-content menu p-2 shadow bg-base-100 overflow-y-auto flex-nowrap w-full rounded-box",
+      clsx({
+        "max-h-50": hideOverflowMemo(),
+      }),
       local.class,
       local.className
     )
