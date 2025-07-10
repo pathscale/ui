@@ -19,7 +19,9 @@ export default function App() {
           You can start editing <code class="font-mono">App.tsx</code> to try
           out any component from <code>@pathscale/ui</code>.
         </p>
-        <CopyButton text="Copy" copiedToken={"jiohiohiohjioj"} >hiohoho</CopyButton>
+        <CopyButton text="Copy" copiedToken={"jiohiohiohjioj"}>
+          hiohoho
+        </CopyButton>
       </Flex>
     </Background>
   );
