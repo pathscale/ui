@@ -92,6 +92,7 @@ export {
 } from "./components/sidenav";
 export { default as Skeleton } from "./components/skeleton";
 export { default as Stack } from "./components/stack";
+export { default as StatCard } from "./components/stat-card";
 export { default as Stats } from "./components/stats";
 export { Status } from "./components/status";
 export type { StatusProps } from "./components/status";
