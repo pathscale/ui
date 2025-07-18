@@ -19,6 +19,7 @@ export interface NumberFieldProps extends Omit<InputProps, "type" | "ref"> {
   step?: number;
   allowDecimals?: boolean;
   formatter?: (value: string) => string;
+  onInput?: (event: InputEvent) => void;
 }
 
 export const NumberField: Component<NumberFieldProps> = (props) => {
@@ -80,7 +81,7 @@ export const NumberField: Component<NumberFieldProps> = (props) => {
     }
 
     // Call the original onInput handler if provided
-    if (local.onInput) {
+    if (typeof local.onInput === "function") {
       local.onInput(event);
     }
   };
