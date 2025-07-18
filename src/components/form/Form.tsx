@@ -11,7 +11,14 @@ import { twMerge } from "tailwind-merge";
 import { IComponentBaseProps } from "../types";
 import FormLabel from "./Label";
 import ValidatedForm, { useFormValidation } from "./ValidatedForm";
+import FormField from "./FormField";
+import PasswordField from "./PasswordField";
+import NumberField from "./NumberField";
+
 export { type ValidatedFormProps } from "./ValidatedForm";
+export { type FormFieldProps } from "./FormField";
+export { type PasswordFieldProps } from "./PasswordField";
+export { type NumberFieldProps } from "./NumberField";
 
 export type FormProps = Omit<JSX.HTMLAttributes<HTMLFormElement>, "ref"> &
   IComponentBaseProps & {
@@ -106,4 +113,7 @@ export { useFormValidation };
 export default Object.assign(Form, {
   Label: FormLabel,
   Validated: ValidatedForm,
+  Field: FormField,
+  Password: PasswordField,
+  Number: NumberField,
 });

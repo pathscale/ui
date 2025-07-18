@@ -1,5 +1,5 @@
 import clsx from "clsx";
-import { type JSX, splitProps } from "solid-js";
+import { createMemo, type JSX, splitProps } from "solid-js";
 import { twMerge } from "tailwind-merge";
 import type { IComponentBaseProps } from "../types";
 import { ComponentColor } from "../types";
@@ -26,16 +26,11 @@ const Icon = (props: IconProps): JSX.Element => {
   const height = local.height ?? 24;
   const name = local.name;
 
-  const sizeClass = () => `${name} w-${width / 4} h-${height / 4}`;
+  const sizeClass = createMemo(() => `${name} w-${width / 4} h-${height / 4}`);
 
-  const classes = () => {
-    return twMerge(
-      clsx(
-        local.className ?? local.class,
-        sizeClass(),
-      )
-    );
-  };
+  const classes = createMemo(() => {
+    return twMerge(clsx(sizeClass(), local.className ?? local.class));
+  });
 
   return (
     <span
