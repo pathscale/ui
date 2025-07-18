@@ -24,6 +24,11 @@ export {
   CollapseTitle,
   Summary,
 } from "./components/collapse";
+export { default as ConnectionStatus } from "./components/connectionstatus";
+export type {
+  ConnectionState,
+  ConnectionStatusProps,
+} from "./components/connectionstatus";
 export { default as CopyButton } from "./components/copy-button";
 export { default as Countdown } from "./components/countdown";
 export { default as Diff } from "./components/diff";
@@ -122,3 +127,4 @@ export {
   default as WindowMockup,
   type WindowMockupProps,
 } from "./components/windowmockup";
+export { default } from "./components/connectionstatus";
