@@ -68,13 +68,13 @@ export const PasswordField: Component<PasswordFieldProps> = (props) => {
     if (showPassword()) {
       return (
         local.hidePasswordIcon || (
-          <Icon name="i-heroicons-eye-slash" width={20} height={20} />
+          <Icon name="icon-[mdi-light--eye-off]" width={20} height={20} />
         )
       );
     } else {
       return (
         local.showPasswordIcon || (
-          <Icon name="i-heroicons-eye" width={20} height={20} />
+          <Icon name="icon-[mdi-light--eye]" width={20} height={20} />
         )
       );
     }
