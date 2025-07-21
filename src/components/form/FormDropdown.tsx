@@ -3,6 +3,7 @@ import { twMerge } from "tailwind-merge";
 import { useFormValidation } from "./ValidatedForm";
 import Form from "./Form";
 import Dropdown from "../dropdown";
+import Icon from "../icon";
 
 export interface DropdownOption {
   value: string;
@@ -107,7 +108,15 @@ export const FormDropdown: Component<FormDropdownProps> = (props) => {
           <span>
             {selectedOption()?.label || local.placeholder || "Select an option"}
           </span>
-          {local.icon || <span class="ml-2">▼</span>}
+          {local.icon || (
+            <span class="ml-2">
+              <Icon
+                name="icon-[mdi-light--chevron-down]"
+                width={20}
+                height={20}
+              />
+            </span>
+          )}
         </Dropdown.Toggle>
         <Dropdown.Menu class="w-full">
           <For each={local.options}>
