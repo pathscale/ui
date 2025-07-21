@@ -14,11 +14,13 @@ import ValidatedForm, { useFormValidation } from "./ValidatedForm";
 import FormField from "./FormField";
 import PasswordField from "./PasswordField";
 import NumberField from "./NumberField";
+import FormDropdown from "./FormDropdown";
 
 export { type ValidatedFormProps } from "./ValidatedForm";
 export { type FormFieldProps } from "./FormField";
 export { type PasswordFieldProps } from "./PasswordField";
 export { type NumberFieldProps } from "./NumberField";
+export { type FormDropdownProps, type DropdownOption } from "./FormDropdown";
 
 export type FormProps = Omit<JSX.HTMLAttributes<HTMLFormElement>, "ref"> &
   IComponentBaseProps & {
@@ -116,4 +118,5 @@ export default Object.assign(Form, {
   Field: FormField,
   Password: PasswordField,
   Number: NumberField,
+  Dropdown: FormDropdown,
 });
