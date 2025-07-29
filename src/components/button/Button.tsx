@@ -144,6 +144,7 @@ const Button = <E extends ElementType = "button">(
         "no-animation": !local.animation,
         "btn-active": local.active,
         "btn-disabled": local.disabled,
+        "cursor-not-allowed": local.disabled,
       }),
       local.class,
       local.className
