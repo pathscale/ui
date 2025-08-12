@@ -9,6 +9,8 @@ export {
   default as BrowserMockup,
   type BrowserMockupProps,
 } from "./components/browsermockup";
+export { default as BottomSheet } from "./components/bottom-sheet/BottomSheet";
+export type { BottomSheetProps } from "./components/bottom-sheet/BottomSheet";
 export { default as Button } from "./components/button";
 export { default as Calendar, type CalendarProps } from "./components/calendar";
 export { default as Card } from "./components/card";
