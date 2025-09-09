@@ -109,7 +109,7 @@ export {
   type SvgBackgroundProps,
 } from "./components/svgbackground";
 export { default as Swap } from "./components/swap";
-export { default as Table } from "./components/table";
+export { default as Table, EnhancedTable } from "./components/table";
 export type { TableProps } from "./components/table";
 export type { EnhancedTableProps } from "./components/table/EnhancedTable";
 export { default as Tabs } from "./components/tabs";
