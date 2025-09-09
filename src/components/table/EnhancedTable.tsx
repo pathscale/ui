@@ -5,6 +5,7 @@ import {
   splitProps,
   type Accessor,
   type JSX,
+  createSignal,
 } from "solid-js";
 import {
   createSolidTable,
@@ -43,6 +44,11 @@ export type EnhancedTableProps<TData> = Omit<TableProps, "children"> & {
   renderEmpty?: () => JSX.Element;
   loading?: boolean;
   renderLoading?: () => JSX.Element;
+  filterIcon: JSX.Element;
+  sortAscIcon: JSX.Element;
+  sortDescIcon: JSX.Element;
+  sortNeutralIcon?: JSX.Element;
+  filterPanelClass?: string;
 };
 
 function EnhancedTable<TData>(props: EnhancedTableProps<TData>): JSX.Element {
@@ -64,7 +70,16 @@ function EnhancedTable<TData>(props: EnhancedTableProps<TData>): JSX.Element {
     "renderEmpty",
     "loading",
     "renderLoading",
+    "filterIcon",
+    "sortAscIcon",
+    "sortDescIcon",
+    "sortNeutralIcon",
+    "filterPanelClass",
   ]);
+
+  const [openFilterFor, setOpenFilterFor] = createSignal<string | null>(null);
+  const toggleFilterFor = (colId: string) =>
+    setOpenFilterFor((curr) => (curr === colId ? null : colId));
 
   const table = createSolidTable({
     get data() {
@@ -108,14 +123,70 @@ function EnhancedTable<TData>(props: EnhancedTableProps<TData>): JSX.Element {
   });
 
   const headerGroups = () => table.getHeaderGroups();
-  const leafHeaders = () =>
-    headerGroups().length > 0
-      ? headerGroups()[headerGroups().length - 1].headers
-      : [];
+
+  const anyFilterActive = () =>
+    (table.getState().columnFilters as any[]).length > 0;
+
+  const FilterButton = (props: { colId: string; disabled?: boolean }) => (
+    <Button
+      size="xs"
+      variant="ghost"
+      shape="square"
+      aria-label="Open column filter"
+      class="ml-auto"
+      active={openFilterFor() === props.colId}
+      disabled={props.disabled}
+      onClick={(e) => {
+        e.stopPropagation();
+        toggleFilterFor(props.colId);
+      }}
+    >
+      {local.filterIcon}
+    </Button>
+  );
+
+  const FilterPanel = (props: { column: any }) => {
+    const col = props.column;
+    const colId = col.id as string;
+    return (
+      <Show when={openFilterFor() === colId}>
+        <div
+          class={
+            local.filterPanelClass ??
+            "absolute right-0 top-full mt-1 z-20 bg-base-100 border border-base-300 shadow rounded-box p-2 w-56"
+          }
+          onClick={(e) => e.stopPropagation()}
+        >
+          <div class="mb-2">
+            <ColumnFilter column={col} />
+          </div>
+          <div class="flex gap-2 justify-end">
+            <Button
+              size="xs"
+              color="neutral"
+              variant="outline"
+              onClick={() => {
+                col.setFilterValue(undefined);
+                setOpenFilterFor(null);
+              }}
+            >
+              Clear
+            </Button>
+            <Button
+              size="xs"
+              color="primary"
+              onClick={() => setOpenFilterFor(null)}
+            >
+              Apply
+            </Button>
+          </div>
+        </div>
+      </Show>
+    );
+  };
 
   return (
     <Table {...tableProps}>
-      {/* Toolbar */}
       <caption class="mb-3 text-left">
         <div class="flex items-center gap-2">
           <div class="join">
@@ -137,60 +208,83 @@ function EnhancedTable<TData>(props: EnhancedTableProps<TData>): JSX.Element {
               color="neutral"
               onClick={() => table.setGlobalFilter("")}
             >
-              Clear
+              Clear search
             </Button>
           </div>
+
+          <Button
+            size="sm"
+            variant="outline"
+            color="neutral"
+            disabled={!anyFilterActive()}
+            onClick={() => {
+              table.resetColumnFilters();
+              setOpenFilterFor(null);
+            }}
+          >
+            Clear filters
+          </Button>
         </div>
       </caption>
 
       <Table.Head noCell>
-        {/* Fila de headers */}
         <For each={headerGroups()}>
           {(hg) => (
-            <tr>
-              <For each={hg.headers}>
-                {(header) => (
+            <For each={hg.headers}>
+              {(header) => {
+                const canSort = header.column.getCanSort();
+                const canFilter =
+                  local.enableFilters && header.column.getCanFilter();
+                const colId = header.column.id as string;
+
+                return (
                   <Table.HeadCell
                     class={
-                      header.column.getCanSort()
-                        ? "cursor-pointer select-none"
-                        : ""
+                      canSort
+                        ? "relative cursor-pointer select-none"
+                        : "relative"
                     }
                     onClick={
-                      header.column.getCanSort()
+                      canSort
                         ? header.column.getToggleSortingHandler()
                         : undefined
                     }
                   >
                     <div class="flex items-center gap-2">
-                      {flexRender(
-                        header.column.columnDef.header,
-                        header.getContext()
-                      )}
-                      {header.column.getIsSorted() === "asc" && <span>↑</span>}
-                      {header.column.getIsSorted() === "desc" && <span>↓</span>}
+                      <div class="truncate">
+                        {flexRender(
+                          header.column.columnDef.header,
+                          header.getContext()
+                        )}
+                      </div>
+                      <Show when={header.column.getIsSorted() === "asc"}>
+                        {local.sortAscIcon}
+                      </Show>
+                      <Show when={header.column.getIsSorted() === "desc"}>
+                        {local.sortDescIcon}
+                      </Show>
+                      <Show
+                        when={
+                          header.column.getIsSorted() === false &&
+                          local.sortNeutralIcon
+                        }
+                      >
+                        {local.sortNeutralIcon}
+                      </Show>
+                      <div class="grow" />
+                      <Show when={canFilter}>
+                        <FilterButton colId={colId} />
+                      </Show>
                     </div>
+                    <Show when={canFilter}>
+                      <FilterPanel column={header.column} />
+                    </Show>
                   </Table.HeadCell>
-                )}
-              </For>
-            </tr>
+                );
+              }}
+            </For>
           )}
         </For>
-
-        <Show when={local.enableFilters}>
-          <tr>
-            <For each={leafHeaders()}>
-              {(header) => (
-                <Table.HeadCell>
-                  {header.isPlaceholder ||
-                  !header.column.getCanFilter() ? null : (
-                    <ColumnFilter column={header.column} />
-                  )}
-                </Table.HeadCell>
-              )}
-            </For>
-          </tr>
-        </Show>
       </Table.Head>
 
       <Table.Body>
@@ -305,7 +399,7 @@ function ColumnFilter(props: { column: any }) {
   if (type === "text") {
     return (
       <Input
-        size="xs"
+        size="sm"
         placeholder="Filter…"
         value={value() ?? ""}
         onInput={(e) =>
@@ -324,9 +418,9 @@ function ColumnFilter(props: { column: any }) {
       col.setFilterValue([min || undefined, max || undefined]);
     };
     return (
-      <div class="flex gap-1">
+      <div class="flex gap-2">
         <Input
-          size="xs"
+          size="sm"
           type="number"
           placeholder="Min"
           value={v[0] ?? ""}
@@ -335,7 +429,7 @@ function ColumnFilter(props: { column: any }) {
           }
         />
         <Input
-          size="xs"
+          size="sm"
           type="number"
           placeholder="Max"
           value={v[1] ?? ""}
@@ -352,7 +446,7 @@ function ColumnFilter(props: { column: any }) {
       col.columnDef.meta?.options ?? [];
     return (
       <Select
-        size="xs"
+        size="sm"
         value={value() ?? ""}
         onChange={(e) =>
           col.setFilterValue(
