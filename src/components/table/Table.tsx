@@ -9,7 +9,6 @@ import TableRow from "./TableRow";
 import TableFooter from "./TableFooter";
 import TableCell from "./TableCell";
 import TableHeadCell from "./TableHeadCell";
-import EnhancedTable from "./EnhancedTable";
 
 export type TableProps = JSX.HTMLAttributes<HTMLTableElement> &
   IComponentBaseProps & {
@@ -63,5 +62,4 @@ export default Object.assign(Table, {
   Footer: TableFooter,
   Cell: TableCell,
   HeadCell: TableHeadCell,
-  Enhanced: EnhancedTable,
 });

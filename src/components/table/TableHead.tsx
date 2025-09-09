@@ -4,6 +4,7 @@ import {
   JSX,
   createMemo,
   children as resolveChildren,
+  Show,
 } from "solid-js";
 import clsx from "clsx";
 import { twMerge } from "tailwind-merge";
@@ -28,7 +29,9 @@ const TableHead: Component<TableHeadProps> = (props) => {
 
   return (
     <thead class={classes()} data-theme={local.dataTheme} {...rest}>
-      <tr>{resolved()}</tr>
+      <Show when={local.noCell} fallback={<tr>{resolved()}</tr>}>
+        {resolved()}
+      </Show>
     </thead>
   );
 };
