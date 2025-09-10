@@ -32,24 +32,9 @@ const TableFooter: Component<TableFooterProps> = (props) => {
 
   return (
     <tfoot class={classes()} data-theme={local.dataTheme} {...rest}>
-      <tr>
-        <Show
-          when={local.noCell}
-          fallback={
-            <For each={resolved.toArray()}>
-              {(child, i) =>
-                i() === 0 ? (
-                  <TableHeadCell>{child}</TableHeadCell>
-                ) : (
-                  <TableCell>{child}</TableCell>
-                )
-              }
-            </For>
-          }
-        >
-          {resolved()}
-        </Show>
-      </tr>
+      <Show when={local.noCell} fallback={<tr>{resolved()}</tr>}>
+        {resolved()}
+      </Show>
     </tfoot>
   );
 };

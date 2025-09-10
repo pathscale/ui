@@ -14,12 +14,16 @@ import {
   getSortedRowModel,
   getFilteredRowModel,
   getPaginationRowModel,
+  getExpandedRowModel,
   type ColumnDef,
   type SortingState,
   type ColumnFiltersState,
   type PaginationState,
   type OnChangeFn,
+  type ExpandedState,
 } from "@tanstack/solid-table";
+import clsx from "clsx";
+import Checkbox from "../checkbox/Checkbox";
 import Table, { type TableProps } from "./Table";
 import Button from "../button/Button";
 import Input from "../input/Input";
@@ -37,10 +41,17 @@ export type EnhancedTableProps<TData> = Omit<TableProps, "children"> & {
   setPagination?: OnChangeFn<PaginationState>;
   globalFilter?: Accessor<string>;
   setGlobalFilter?: OnChangeFn<string>;
+  rowSelection?: Accessor<Record<string, boolean>>;
+  setRowSelection?: OnChangeFn<Record<string, boolean>>;
+  expanded?: Accessor<ExpandedState>;
+  setExpanded?: OnChangeFn<ExpandedState>;
   enableSorting?: boolean;
   enableFilters?: boolean;
   enablePagination?: boolean;
-  renderRowSubComponent?: (props: { row: any }) => JSX.Element;
+  enableRowSelection?: boolean;
+  expandable?: {
+    expandedRowRender: (props: { row: any }) => JSX.Element;
+  };
   renderEmpty?: () => JSX.Element;
   loading?: boolean;
   renderLoading?: () => JSX.Element;
@@ -48,7 +59,10 @@ export type EnhancedTableProps<TData> = Omit<TableProps, "children"> & {
   sortAscIcon: JSX.Element;
   sortDescIcon: JSX.Element;
   sortNeutralIcon?: JSX.Element;
+  expandIcon?: JSX.Element;
+  collapseIcon?: JSX.Element;
   filterPanelClass?: string;
+  paginationPosition?: "bottomLeft" | "bottomCenter" | "bottomRight";
 };
 
 function EnhancedTable<TData>(props: EnhancedTableProps<TData>): JSX.Element {
@@ -63,10 +77,15 @@ function EnhancedTable<TData>(props: EnhancedTableProps<TData>): JSX.Element {
     "setPagination",
     "globalFilter",
     "setGlobalFilter",
+    "rowSelection",
+    "setRowSelection",
+    "expanded",
+    "setExpanded",
     "enableSorting",
     "enableFilters",
     "enablePagination",
-    "renderRowSubComponent",
+    "enableRowSelection",
+    "expandable",
     "renderEmpty",
     "loading",
     "renderLoading",
@@ -74,12 +93,13 @@ function EnhancedTable<TData>(props: EnhancedTableProps<TData>): JSX.Element {
     "sortAscIcon",
     "sortDescIcon",
     "sortNeutralIcon",
+    "expandIcon",
+    "collapseIcon",
     "filterPanelClass",
+    "paginationPosition",
   ]);
 
   const [openFilterFor, setOpenFilterFor] = createSignal<string | null>(null);
-  const toggleFilterFor = (colId: string) =>
-    setOpenFilterFor((curr) => (curr === colId ? null : colId));
 
   const table = createSolidTable({
     get data() {
@@ -101,18 +121,30 @@ function EnhancedTable<TData>(props: EnhancedTableProps<TData>): JSX.Element {
       get globalFilter() {
         return local.globalFilter?.() || "";
       },
+      get rowSelection() {
+        return local.rowSelection?.() || {};
+      },
+      get expanded() {
+        return local.expanded?.() || {};
+      },
     },
     onSortingChange: local.setSorting,
     onColumnFiltersChange: local.setColumnFilters,
     onPaginationChange: local.setPagination,
     onGlobalFilterChange: local.setGlobalFilter,
+    onRowSelectionChange: local.setRowSelection,
+    onExpandedChange: local.setExpanded,
     getCoreRowModel: getCoreRowModel(),
     getSortedRowModel: getSortedRowModel(),
     getFilteredRowModel: getFilteredRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
+    getExpandedRowModel: getExpandedRowModel(),
     enableSorting: local.enableSorting !== false,
     enableFilters: !!local.enableFilters,
     manualPagination: !local.enablePagination,
+    enableRowSelection: !!local.enableRowSelection,
+    enableExpanding: true,
+    getRowCanExpand: () => !!local.expandable,
   });
 
   const tableRows = createMemo(() => {
@@ -127,22 +159,21 @@ function EnhancedTable<TData>(props: EnhancedTableProps<TData>): JSX.Element {
   const anyFilterActive = () =>
     (table.getState().columnFilters as any[]).length > 0;
 
-  const FilterButton = (props: { colId: string; disabled?: boolean }) => (
-    <Button
-      size="xs"
-      variant="ghost"
-      shape="square"
-      aria-label="Open column filter"
-      class="ml-auto"
-      active={openFilterFor() === props.colId}
-      disabled={props.disabled}
+  const FilterIconTrigger = (props: { colId: string; disabled?: boolean }) => (
+    <span
+      class="cursor-pointer ml-auto"
+      classList={{
+        "opacity-50 pointer-events-none": props.disabled,
+        "text-primary": openFilterFor() === props.colId,
+      }}
       onClick={(e) => {
         e.stopPropagation();
-        toggleFilterFor(props.colId);
+        if (!props.disabled)
+          setOpenFilterFor((c) => (c === props.colId ? null : props.colId));
       }}
     >
       {local.filterIcon}
-    </Button>
+    </span>
   );
 
   const FilterPanel = (props: { column: any }) => {
@@ -185,104 +216,91 @@ function EnhancedTable<TData>(props: EnhancedTableProps<TData>): JSX.Element {
     );
   };
 
+  const totalColumns =
+    table.getAllLeafColumns().length +
+    (local.enableRowSelection ? 1 : 0) +
+    (local.expandable ? 1 : 0);
+
   return (
-    <Table {...tableProps}>
-      <caption class="mb-3 text-left">
-        <div class="flex items-center gap-2">
-          <div class="join">
-            <Input
-              size="sm"
-              placeholder="Search…"
-              value={(table.getState().globalFilter as string) ?? ""}
-              onInput={(e) => {
-                const val = (e.currentTarget as HTMLInputElement).value;
-                clearTimeout((window as any).__t);
-                (window as any).__t = setTimeout(
-                  () => table.setGlobalFilter(val),
-                  300
-                );
-              }}
-            />
-            <Button
-              size="sm"
-              color="neutral"
-              onClick={() => table.setGlobalFilter("")}
-            >
-              Clear search
-            </Button>
-          </div>
-
-          <Button
-            size="sm"
-            variant="outline"
-            color="neutral"
-            disabled={!anyFilterActive()}
-            onClick={() => {
-              table.resetColumnFilters();
-              setOpenFilterFor(null);
-            }}
-          >
-            Clear filters
-          </Button>
-        </div>
-      </caption>
-
+    <Table {...tableProps} class={clsx(tableProps.class, "table-auto")}>
       <Table.Head noCell>
         <For each={headerGroups()}>
           {(hg) => (
-            <For each={hg.headers}>
-              {(header) => {
-                const canSort = header.column.getCanSort();
-                const canFilter =
-                  local.enableFilters && header.column.getCanFilter();
-                const colId = header.column.id as string;
+            <Table.Row>
+              <Show when={local.expandable}>
+                <Table.HeadCell class="w-6" />
+              </Show>
 
-                return (
-                  <Table.HeadCell
-                    class={
-                      canSort
-                        ? "relative cursor-pointer select-none"
-                        : "relative"
-                    }
-                    onClick={
-                      canSort
-                        ? header.column.getToggleSortingHandler()
-                        : undefined
-                    }
-                  >
-                    <div class="flex items-center gap-2">
-                      <div class="truncate">
-                        {flexRender(
-                          header.column.columnDef.header,
-                          header.getContext()
-                        )}
+              <Show when={local.enableRowSelection}>
+                <Table.HeadCell class="w-8">
+                  <Checkbox
+                    checked={table.getIsAllPageRowsSelected()}
+                    indeterminate={table.getIsSomePageRowsSelected()}
+                    onChange={table.getToggleAllPageRowsSelectedHandler()}
+                  />
+                </Table.HeadCell>
+              </Show>
+
+              <For each={hg.headers}>
+                {(header) => {
+                  const colId = header.column.id as string;
+                  const canSort =
+                    local.enableSorting &&
+                    header.column.columnDef.enableSorting !== false &&
+                    header.column.getCanSort();
+                  const canFilter =
+                    local.enableFilters &&
+                    header.column.columnDef.enableColumnFilter !== false &&
+                    header.column.getCanFilter();
+
+                  return (
+                    <Table.HeadCell
+                      class={
+                        canSort
+                          ? "relative cursor-pointer select-none"
+                          : "relative"
+                      }
+                      onClick={
+                        canSort
+                          ? header.column.getToggleSortingHandler()
+                          : undefined
+                      }
+                    >
+                      <div class="flex items-center gap-2">
+                        <div class="truncate">
+                          {flexRender(
+                            header.column.columnDef.header,
+                            header.getContext()
+                          )}
+                        </div>
+                        <Show when={header.column.getIsSorted() === "asc"}>
+                          {local.sortAscIcon}
+                        </Show>
+                        <Show when={header.column.getIsSorted() === "desc"}>
+                          {local.sortDescIcon}
+                        </Show>
+                        <Show
+                          when={
+                            canSort &&
+                            header.column.getIsSorted() === false &&
+                            local.sortNeutralIcon
+                          }
+                        >
+                          {local.sortNeutralIcon}
+                        </Show>
+                        <div class="grow" />
+                        <Show when={canFilter}>
+                          <FilterIconTrigger colId={colId} />
+                        </Show>
+                        <Show when={canFilter}>
+                          <FilterPanel column={header.column} />
+                        </Show>
                       </div>
-                      <Show when={header.column.getIsSorted() === "asc"}>
-                        {local.sortAscIcon}
-                      </Show>
-                      <Show when={header.column.getIsSorted() === "desc"}>
-                        {local.sortDescIcon}
-                      </Show>
-                      <Show
-                        when={
-                          header.column.getIsSorted() === false &&
-                          local.sortNeutralIcon
-                        }
-                      >
-                        {local.sortNeutralIcon}
-                      </Show>
-                      <div class="grow" />
-                      <Show when={canFilter}>
-                        <FilterButton colId={colId} />
-                      </Show>
-                    </div>
-                    <Show when={canFilter}>
-                      <FilterPanel column={header.column} />
-                    </Show>
-                  </Table.HeadCell>
-                );
-              }}
-            </For>
+                    </Table.HeadCell>
+                  );
+                }}
+              </For>
+            </Table.Row>
           )}
         </For>
       </Table.Head>
@@ -313,79 +331,127 @@ function EnhancedTable<TData>(props: EnhancedTableProps<TData>): JSX.Element {
         ) : (
           <For each={tableRows()}>
             {(row) => (
-              <Table.Row>
-                <For each={row.getVisibleCells()}>
-                  {(cell) => (
-                    <Table.Cell>
-                      {flexRender(
-                        cell.column.columnDef.cell,
-                        cell.getContext()
-                      )}
+              <>
+                <Table.Row>
+                  <Show when={local.expandable}>
+                    <Table.Cell class="w-6">
+                      <Button
+                        size="xs"
+                        color="ghost"
+                        shape="circle"
+                        onClick={row.getToggleExpandedHandler()}
+                      >
+                        {row.getIsExpanded()
+                          ? local.collapseIcon ?? "▼"
+                          : local.expandIcon ?? "▶"}
+                      </Button>
                     </Table.Cell>
-                  )}
-                </For>
-              </Table.Row>
+                  </Show>
+                  <Show when={local.enableRowSelection}>
+                    <Table.Cell class="w-8">
+                      <Checkbox
+                        checked={row.getIsSelected()}
+                        onChange={row.getToggleSelectedHandler()}
+                      />
+                    </Table.Cell>
+                  </Show>
+                  <For each={row.getVisibleCells()}>
+                    {(cell) => (
+                      <Table.Cell>
+                        {flexRender(
+                          cell.column.columnDef.cell,
+                          cell.getContext()
+                        )}
+                      </Table.Cell>
+                    )}
+                  </For>
+                </Table.Row>
+                <Show when={row.getIsExpanded() && local.expandable}>
+                  <Table.Row>
+                    <Table.Cell
+                      colSpan={
+                        row.getVisibleCells().length +
+                        (local.enableRowSelection ? 1 : 0) +
+                        (local.expandable ? 1 : 0)
+                      }
+                    >
+                      {local.expandable?.expandedRowRender({ row })}
+                    </Table.Cell>
+                  </Table.Row>
+                </Show>
+              </>
             )}
           </For>
         )}
       </Table.Body>
 
       <Table.Footer noCell>
-        <div class="flex items-center justify-between w-full">
-          <div class="flex items-center gap-2">
-            <span class="opacity-70">Rows per page</span>
-            <Select
-              size="sm"
-              value={String(table.getState().pagination.pageSize)}
-              onChange={(e) =>
-                table.setPageSize(
-                  Number((e.currentTarget as HTMLSelectElement).value)
-                )
-              }
+        <Table.Row>
+          <Table.Cell colSpan={totalColumns}>
+            <div
+              class={clsx(
+                "flex items-center w-full",
+                local.paginationPosition === "bottomLeft" && "justify-start",
+                local.paginationPosition === "bottomCenter" && "justify-center",
+                local.paginationPosition === "bottomRight" && "justify-end"
+              )}
             >
-              <option value="10">10</option>
-              <option value="25">25</option>
-              <option value="50">50</option>
-              <option value="100">100</option>
-            </Select>
-          </div>
-          <div class="flex items-center gap-3">
-            <span class="opacity-70">
-              Page {table.getState().pagination.pageIndex + 1} of{" "}
-              {table.getPageCount() || 1}
-            </span>
-            <div class="join">
-              <Button
-                size="sm"
-                disabled={!table.getCanPreviousPage()}
-                onClick={() => table.setPageIndex(0)}
-              >
-                |⟪
-              </Button>
-              <Button
-                size="sm"
-                disabled={!table.getCanPreviousPage()}
-                onClick={() => table.previousPage()}
-              >
-                Prev
-              </Button>
-              <Button
-                size="sm"
-                disabled={!table.getCanNextPage()}
-                onClick={() => table.nextPage()}
-              >
-                Next
-              </Button>
-              <Button
-                size="sm"
-                disabled={!table.getCanNextPage()}
-                onClick={() => table.setPageIndex(table.getPageCount() - 1)}
-              >
-                ⟫|
-              </Button>
+              <div class="flex items-center gap-2">
+                <span class="opacity-70">Rows per page</span>
+                <Select
+                  size="sm"
+                  value={String(table.getState().pagination.pageSize)}
+                  onChange={(e) =>
+                    table.setPageSize(
+                      Number((e.currentTarget as HTMLSelectElement).value)
+                    )
+                  }
+                >
+                  <option value="10">10</option>
+                  <option value="25">25</option>
+                  <option value="50">50</option>
+                  <option value="100">100</option>
+                </Select>
+              </div>
+              <div class="flex items-center gap-3 ml-4">
+                <span class="opacity-70">
+                  Page {table.getState().pagination.pageIndex + 1} of
+                  {table.getPageCount() || 1}
+                </span>
+                <div class="join">
+                  <Button
+                    size="sm"
+                    disabled={!table.getCanPreviousPage()}
+                    onClick={() => table.setPageIndex(0)}
+                  >
+                    |⟪
+                  </Button>
+                  <Button
+                    size="sm"
+                    disabled={!table.getCanPreviousPage()}
+                    onClick={() => table.previousPage()}
+                  >
+                    Prev
+                  </Button>
+                  <Button
+                    size="sm"
+                    disabled={!table.getCanNextPage()}
+                    onClick={() => table.nextPage()}
+                  >
+                    Next
+                  </Button>
+                  <Button
+                    size="sm"
+                    disabled={!table.getCanNextPage()}
+                    onClick={() => table.setPageIndex(table.getPageCount() - 1)}
+                  >
+                    ⟫|
+                  </Button>
+                </div>
+              </div>
             </div>
-          </div>
-        </div>
+          </Table.Cell>
+        </Table.Row>
       </Table.Footer>
     </Table>
   );
