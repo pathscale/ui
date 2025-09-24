@@ -342,8 +342,8 @@ function EnhancedTable<TData>(props: EnhancedTableProps<TData>): JSX.Element {
                         onClick={row.getToggleExpandedHandler()}
                       >
                         {row.getIsExpanded()
-                          ? local.collapseIcon ?? "▼"
-                          : local.expandIcon ?? "▶"}
+                          ? local.collapseIcon ?? "v"
+                          : local.expandIcon ?? ">"}
                       </Button>
                     </Table.Cell>
                   </Show>
@@ -424,7 +424,7 @@ function EnhancedTable<TData>(props: EnhancedTableProps<TData>): JSX.Element {
                     disabled={!table.getCanPreviousPage()}
                     onClick={() => table.setPageIndex(0)}
                   >
-                    |⟪
+                    {"|<<"}
                   </Button>
                   <Button
                     size="sm"
@@ -445,7 +445,7 @@ function EnhancedTable<TData>(props: EnhancedTableProps<TData>): JSX.Element {
                     disabled={!table.getCanNextPage()}
                     onClick={() => table.setPageIndex(table.getPageCount() - 1)}
                   >
-                    ⟫|
+                    {">>|"}
                   </Button>
                 </div>
               </div>
@@ -466,7 +466,7 @@ function ColumnFilter(props: { column: any }) {
     return (
       <Input
         size="sm"
-        placeholder="Filter…"
+        placeholder="Filter..."
         value={value() ?? ""}
         onInput={(e) =>
           col.setFilterValue(

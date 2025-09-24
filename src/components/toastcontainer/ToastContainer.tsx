@@ -21,7 +21,7 @@ export const ToastContainer: Component = () => {
               onClick={() => toastStore.removeToast(toast.id)}
               class="ml-2 opacity-70 hover:opacity-100"
             >
-              ✕
+              x
             </Button>
           </Alert>
         )}
