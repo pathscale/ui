@@ -557,21 +557,48 @@ function ColumnFilter(props: { column: any }) {
   if (type === "select") {
     const options: Array<{ label: string; value: string }> =
       col.columnDef.meta?.options ?? [];
+
+    const currentValue = () => value() ?? "";
+    const currentLabel = () => {
+      if (!currentValue()) return "All";
+      return options.find((o) => o.value === currentValue())?.label ?? "All";
+    };
+
+    const handleSelect = (val?: string) => {
+      col.setFilterValue(val || undefined);
+    };
+
     return (
-      <Select
-        size="sm"
-        value={value() ?? ""}
-        onChange={(e) =>
-          col.setFilterValue(
-            (e.currentTarget as HTMLSelectElement).value || undefined
-          )
-        }
-      >
-        <option value="">All</option>
-        <For each={options}>
-          {(o) => <option value={o.value}>{o.label}</option>}
-        </For>
-      </Select>
+      <Dropdown class="w-full">
+        <Dropdown.Toggle
+          button
+          size="sm"
+          color="neutral"
+          class="w-full justify-between"
+        >
+          {currentLabel()}
+        </Dropdown.Toggle>
+        <Dropdown.Menu>
+          <Dropdown.Item
+            onClick={() => handleSelect("")}
+            aria-selected={!currentValue()}
+            class={clsx(!currentValue() && "active")}
+          >
+            All
+          </Dropdown.Item>
+          <For each={options}>
+            {(o) => (
+              <Dropdown.Item
+                onClick={() => handleSelect(o.value)}
+                aria-selected={currentValue() === o.value}
+                class={clsx(currentValue() === o.value && "active")}
+              >
+                {o.label}
+              </Dropdown.Item>
+            )}
+          </For>
+        </Dropdown.Menu>
+      </Dropdown>
     );
   }
 
