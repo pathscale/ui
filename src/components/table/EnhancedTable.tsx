@@ -28,6 +28,7 @@ import Table, { type TableProps } from "./Table";
 import Button from "../button/Button";
 import Input from "../input/Input";
 import Select from "../select/Select";
+import Dropdown from "../dropdown/Dropdown";
 import Loading from "../loading/Loading";
 
 export type EnhancedTableProps<TData> = Omit<TableProps, "children"> & {
@@ -407,22 +408,59 @@ function EnhancedTable<TData>(props: EnhancedTableProps<TData>): JSX.Element {
             >
               <div class="flex items-center gap-2">
                 <span class="opacity-70">Rows per page</span>
-                <Select
-                  size="sm"
-                  value={String(table.getState().pagination.pageSize)}
-                  onChange={(e) =>
-                    table.setPageSize(
-                      Number((e.currentTarget as HTMLSelectElement).value)
-                    )
-                  }
-                >
-                  <option value="10">10</option>
-                  <option value="25">25</option>
-                  <option value="50">50</option>
-                  <option value="100">100</option>
-                </Select>
+                <Dropdown class="dropdown-end">
+                  <Dropdown.Toggle button size="sm" color="neutral">
+                    {table.getState().pagination.pageSize}
+                  </Dropdown.Toggle>
+                  <Dropdown.Menu class="w-24">
+                    <Dropdown.Item
+                      onClick={() => table.setPageSize(10)}
+                      aria-selected={
+                        table.getState().pagination.pageSize === 10
+                      }
+                      class={clsx(
+                        table.getState().pagination.pageSize === 10 && "active"
+                      )}
+                    >
+                      10
+                    </Dropdown.Item>
+                    <Dropdown.Item
+                      onClick={() => table.setPageSize(25)}
+                      aria-selected={
+                        table.getState().pagination.pageSize === 25
+                      }
+                      class={clsx(
+                        table.getState().pagination.pageSize === 25 && "active"
+                      )}
+                    >
+                      25
+                    </Dropdown.Item>
+                    <Dropdown.Item
+                      onClick={() => table.setPageSize(50)}
+                      aria-selected={
+                        table.getState().pagination.pageSize === 50
+                      }
+                      class={clsx(
+                        table.getState().pagination.pageSize === 50 && "active"
+                      )}
+                    >
+                      50
+                    </Dropdown.Item>
+                    <Dropdown.Item
+                      onClick={() => table.setPageSize(100)}
+                      aria-selected={
+                        table.getState().pagination.pageSize === 100
+                      }
+                      class={clsx(
+                        table.getState().pagination.pageSize === 100 && "active"
+                      )}
+                    >
+                      100
+                    </Dropdown.Item>
+                  </Dropdown.Menu>
+                </Dropdown>
               </div>
-              <div class="flex items-center justify-center gap-3 ml-4">
+              <div class="flex items-center gap-3 ml-4">
                 <span class="opacity-70">
                   Page {table.getState().pagination.pageIndex + 1} of{" "}
                   {table.getPageCount() || 1}
