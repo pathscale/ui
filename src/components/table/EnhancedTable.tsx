@@ -63,6 +63,11 @@ export type EnhancedTableProps<TData> = Omit<TableProps, "children"> & {
   collapseIcon?: JSX.Element;
   filterPanelClass?: string;
   paginationPosition?: "bottomLeft" | "bottomCenter" | "bottomRight";
+  /** Nuevo: íconos para paginación **/
+  firstPageIcon?: JSX.Element;
+  prevPageIcon?: JSX.Element;
+  nextPageIcon?: JSX.Element;
+  lastPageIcon?: JSX.Element;
 };
 
 function EnhancedTable<TData>(props: EnhancedTableProps<TData>): JSX.Element {
@@ -97,6 +102,10 @@ function EnhancedTable<TData>(props: EnhancedTableProps<TData>): JSX.Element {
     "collapseIcon",
     "filterPanelClass",
     "paginationPosition",
+    "firstPageIcon",
+    "prevPageIcon",
+    "nextPageIcon",
+    "lastPageIcon",
   ]);
 
   const [openFilterFor, setOpenFilterFor] = createSignal<string | null>(null);
@@ -413,9 +422,9 @@ function EnhancedTable<TData>(props: EnhancedTableProps<TData>): JSX.Element {
                   <option value="100">100</option>
                 </Select>
               </div>
-              <div class="flex items-center gap-3 ml-4">
+              <div class="flex items-center justify-center gap-3 ml-4">
                 <span class="opacity-70">
-                  Page {table.getState().pagination.pageIndex + 1} of
+                  Page {table.getState().pagination.pageIndex + 1} of{" "}
                   {table.getPageCount() || 1}
                 </span>
                 <div class="join">
@@ -424,28 +433,28 @@ function EnhancedTable<TData>(props: EnhancedTableProps<TData>): JSX.Element {
                     disabled={!table.getCanPreviousPage()}
                     onClick={() => table.setPageIndex(0)}
                   >
-                    {"|<<"}
+                    {local.firstPageIcon ?? "|<<"}
                   </Button>
                   <Button
                     size="sm"
                     disabled={!table.getCanPreviousPage()}
                     onClick={() => table.previousPage()}
                   >
-                    Prev
+                    {local.prevPageIcon ?? "<<"}
                   </Button>
                   <Button
                     size="sm"
                     disabled={!table.getCanNextPage()}
                     onClick={() => table.nextPage()}
                   >
-                    Next
+                    {local.nextPageIcon ?? ">>"}
                   </Button>
                   <Button
                     size="sm"
                     disabled={!table.getCanNextPage()}
                     onClick={() => table.setPageIndex(table.getPageCount() - 1)}
                   >
-                    {">>|"}
+                    {local.lastPageIcon ?? ">>|"}
                   </Button>
                 </div>
               </div>
