@@ -27,7 +27,6 @@ import Checkbox from "../checkbox/Checkbox";
 import Table, { type TableProps } from "./Table";
 import Button from "../button/Button";
 import Input from "../input/Input";
-import Select from "../select/Select";
 import Dropdown from "../dropdown/Dropdown";
 import Loading from "../loading/Loading";
 
@@ -64,7 +63,6 @@ export type EnhancedTableProps<TData> = Omit<TableProps, "children"> & {
   collapseIcon?: JSX.Element;
   filterPanelClass?: string;
   paginationPosition?: "bottomLeft" | "bottomCenter" | "bottomRight";
-  /** Nuevo: íconos para paginación **/
   firstPageIcon?: JSX.Element;
   prevPageIcon?: JSX.Element;
   nextPageIcon?: JSX.Element;
@@ -162,6 +160,15 @@ function EnhancedTable<TData>(props: EnhancedTableProps<TData>): JSX.Element {
     const rows = table.getRowModel().rows;
     if (rows.length === 0 && local.renderEmpty) return [];
     return rows;
+  });
+
+  const shouldShowPagination = createMemo(() => {
+    if (!local.enablePagination) return false;
+    const pageCount = table.getPageCount();
+    const pageSize = table.getState().pagination.pageSize;
+    const totalRows = table.getCoreRowModel().rows.length;
+
+    return pageCount > 1 || totalRows > pageSize;
   });
 
   const headerGroups = () => table.getHeaderGroups();
@@ -395,111 +402,120 @@ function EnhancedTable<TData>(props: EnhancedTableProps<TData>): JSX.Element {
         )}
       </Table.Body>
 
-      <Table.Footer noCell>
-        <Table.Row>
-          <Table.Cell colSpan={totalColumns}>
-            <div
-              class={clsx(
-                "flex items-center w-full",
-                local.paginationPosition === "bottomLeft" && "justify-start",
-                local.paginationPosition === "bottomCenter" && "justify-center",
-                local.paginationPosition === "bottomRight" && "justify-end"
-              )}
-            >
-              <div class="flex items-center gap-2">
-                <span class="opacity-70">Rows per page</span>
-                <Dropdown class="dropdown-end">
-                  <Dropdown.Toggle button size="sm" color="neutral">
-                    {table.getState().pagination.pageSize}
-                  </Dropdown.Toggle>
-                  <Dropdown.Menu class="w-24">
-                    <Dropdown.Item
-                      onClick={() => table.setPageSize(10)}
-                      aria-selected={
-                        table.getState().pagination.pageSize === 10
-                      }
-                      class={clsx(
-                        table.getState().pagination.pageSize === 10 && "active"
-                      )}
+      <Show when={shouldShowPagination()}>
+        <Table.Footer noCell>
+          <Table.Row>
+            <Table.Cell colSpan={totalColumns}>
+              <div
+                class={clsx(
+                  "flex items-center w-full",
+                  local.paginationPosition === "bottomLeft" && "justify-start",
+                  local.paginationPosition === "bottomCenter" &&
+                    "justify-center",
+                  local.paginationPosition === "bottomRight" && "justify-end"
+                )}
+              >
+                <div class="flex items-center gap-2">
+                  <span class="opacity-70">Rows per page</span>
+                  <Dropdown class="dropdown-end">
+                    <Dropdown.Toggle button size="sm" color="neutral">
+                      {table.getState().pagination.pageSize}
+                    </Dropdown.Toggle>
+                    <Dropdown.Menu class="w-24">
+                      <Dropdown.Item
+                        onClick={() => table.setPageSize(10)}
+                        aria-selected={
+                          table.getState().pagination.pageSize === 10
+                        }
+                        class={clsx(
+                          table.getState().pagination.pageSize === 10 &&
+                            "active"
+                        )}
+                      >
+                        10
+                      </Dropdown.Item>
+                      <Dropdown.Item
+                        onClick={() => table.setPageSize(25)}
+                        aria-selected={
+                          table.getState().pagination.pageSize === 25
+                        }
+                        class={clsx(
+                          table.getState().pagination.pageSize === 25 &&
+                            "active"
+                        )}
+                      >
+                        25
+                      </Dropdown.Item>
+                      <Dropdown.Item
+                        onClick={() => table.setPageSize(50)}
+                        aria-selected={
+                          table.getState().pagination.pageSize === 50
+                        }
+                        class={clsx(
+                          table.getState().pagination.pageSize === 50 &&
+                            "active"
+                        )}
+                      >
+                        50
+                      </Dropdown.Item>
+                      <Dropdown.Item
+                        onClick={() => table.setPageSize(100)}
+                        aria-selected={
+                          table.getState().pagination.pageSize === 100
+                        }
+                        class={clsx(
+                          table.getState().pagination.pageSize === 100 &&
+                            "active"
+                        )}
+                      >
+                        100
+                      </Dropdown.Item>
+                    </Dropdown.Menu>
+                  </Dropdown>
+                </div>
+                <div class="flex items-center gap-3 ml-4">
+                  <span class="opacity-70">
+                    Page {table.getState().pagination.pageIndex + 1} of{" "}
+                    {table.getPageCount() || 1}
+                  </span>
+                  <div class="join">
+                    <Button
+                      size="sm"
+                      disabled={!table.getCanPreviousPage()}
+                      onClick={() => table.setPageIndex(0)}
                     >
-                      10
-                    </Dropdown.Item>
-                    <Dropdown.Item
-                      onClick={() => table.setPageSize(25)}
-                      aria-selected={
-                        table.getState().pagination.pageSize === 25
-                      }
-                      class={clsx(
-                        table.getState().pagination.pageSize === 25 && "active"
-                      )}
+                      {local.firstPageIcon ?? "|<<"}
+                    </Button>
+                    <Button
+                      size="sm"
+                      disabled={!table.getCanPreviousPage()}
+                      onClick={() => table.previousPage()}
                     >
-                      25
-                    </Dropdown.Item>
-                    <Dropdown.Item
-                      onClick={() => table.setPageSize(50)}
-                      aria-selected={
-                        table.getState().pagination.pageSize === 50
-                      }
-                      class={clsx(
-                        table.getState().pagination.pageSize === 50 && "active"
-                      )}
+                      {local.prevPageIcon ?? "<<"}
+                    </Button>
+                    <Button
+                      size="sm"
+                      disabled={!table.getCanNextPage()}
+                      onClick={() => table.nextPage()}
                     >
-                      50
-                    </Dropdown.Item>
-                    <Dropdown.Item
-                      onClick={() => table.setPageSize(100)}
-                      aria-selected={
-                        table.getState().pagination.pageSize === 100
+                      {local.nextPageIcon ?? ">>"}
+                    </Button>
+                    <Button
+                      size="sm"
+                      disabled={!table.getCanNextPage()}
+                      onClick={() =>
+                        table.setPageIndex(table.getPageCount() - 1)
                       }
-                      class={clsx(
-                        table.getState().pagination.pageSize === 100 && "active"
-                      )}
                     >
-                      100
-                    </Dropdown.Item>
-                  </Dropdown.Menu>
-                </Dropdown>
-              </div>
-              <div class="flex items-center gap-3 ml-4">
-                <span class="opacity-70">
-                  Page {table.getState().pagination.pageIndex + 1} of{" "}
-                  {table.getPageCount() || 1}
-                </span>
-                <div class="join">
-                  <Button
-                    size="sm"
-                    disabled={!table.getCanPreviousPage()}
-                    onClick={() => table.setPageIndex(0)}
-                  >
-                    {local.firstPageIcon ?? "|<<"}
-                  </Button>
-                  <Button
-                    size="sm"
-                    disabled={!table.getCanPreviousPage()}
-                    onClick={() => table.previousPage()}
-                  >
-                    {local.prevPageIcon ?? "<<"}
-                  </Button>
-                  <Button
-                    size="sm"
-                    disabled={!table.getCanNextPage()}
-                    onClick={() => table.nextPage()}
-                  >
-                    {local.nextPageIcon ?? ">>"}
-                  </Button>
-                  <Button
-                    size="sm"
-                    disabled={!table.getCanNextPage()}
-                    onClick={() => table.setPageIndex(table.getPageCount() - 1)}
-                  >
-                    {local.lastPageIcon ?? ">>|"}
-                  </Button>
+                      {local.lastPageIcon ?? ">>|"}
+                    </Button>
+                  </div>
                 </div>
               </div>
-            </div>
-          </Table.Cell>
-        </Table.Row>
-      </Table.Footer>
+            </Table.Cell>
+          </Table.Row>
+        </Table.Footer>
+      </Show>
     </Table>
   );
 }
