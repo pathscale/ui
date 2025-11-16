@@ -325,10 +325,7 @@ function EnhancedTable<TData>(props: EnhancedTableProps<TData>): JSX.Element {
       <Table.Body>
         {local.loading ? (
           <Table.Row>
-            <Table.Cell
-              colSpan={table.getAllColumns().length}
-              class="text-center py-6"
-            >
+            <Table.Cell colSpan={totalColumns} class="text-center py-6">
               {local.renderLoading ? (
                 local.renderLoading()
               ) : (
@@ -338,10 +335,7 @@ function EnhancedTable<TData>(props: EnhancedTableProps<TData>): JSX.Element {
           </Table.Row>
         ) : tableRows().length === 0 && local.renderEmpty ? (
           <Table.Row>
-            <Table.Cell
-              colSpan={table.getAllColumns().length}
-              class="text-center py-4"
-            >
+            <Table.Cell colSpan={totalColumns} class="text-center py-4">
               {local.renderEmpty()}
             </Table.Cell>
           </Table.Row>
