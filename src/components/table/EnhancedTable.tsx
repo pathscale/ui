@@ -173,6 +173,8 @@ function EnhancedTable<TData>(props: EnhancedTableProps<TData>): JSX.Element {
 
   const headerGroups = () => table.getHeaderGroups();
 
+  const visibleColumnCount = () => headerGroups()[0]?.headers.length ?? 0;
+
   const anyFilterActive = () =>
     (table.getState().columnFilters as any[]).length > 0;
 
@@ -325,7 +327,7 @@ function EnhancedTable<TData>(props: EnhancedTableProps<TData>): JSX.Element {
       <Table.Body>
         {local.loading ? (
           <Table.Row>
-            <Table.Cell colSpan={totalColumns} class="text-center py-6">
+            <Table.Cell colSpan={visibleColumnCount()} class="text-center py-6">
               {local.renderLoading ? (
                 local.renderLoading()
               ) : (
@@ -335,7 +337,7 @@ function EnhancedTable<TData>(props: EnhancedTableProps<TData>): JSX.Element {
           </Table.Row>
         ) : tableRows().length === 0 && local.renderEmpty ? (
           <Table.Row>
-            <Table.Cell colSpan={totalColumns} class="text-center py-4">
+            <Table.Cell colSpan={visibleColumnCount()} class="text-center py-4">
               {local.renderEmpty()}
             </Table.Cell>
           </Table.Row>
@@ -379,13 +381,7 @@ function EnhancedTable<TData>(props: EnhancedTableProps<TData>): JSX.Element {
                 </Table.Row>
                 <Show when={row.getIsExpanded() && local.expandable}>
                   <Table.Row>
-                    <Table.Cell
-                      colSpan={
-                        row.getVisibleCells().length +
-                        (local.enableRowSelection ? 1 : 0) +
-                        (local.expandable ? 1 : 0)
-                      }
-                    >
+                    <Table.Cell colSpan={visibleColumnCount()}>
                       {local.expandable?.expandedRowRender({ row })}
                     </Table.Cell>
                   </Table.Row>
@@ -399,7 +395,7 @@ function EnhancedTable<TData>(props: EnhancedTableProps<TData>): JSX.Element {
       <Show when={shouldShowPagination()}>
         <Table.Footer noCell>
           <Table.Row>
-            <Table.Cell colSpan={totalColumns}>
+            <Table.Cell colSpan={visibleColumnCount()}>
               <div
                 class={clsx(
                   "flex items-center w-full",
