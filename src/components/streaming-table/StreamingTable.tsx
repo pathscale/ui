@@ -1,31 +1,50 @@
-import { For, onMount, splitProps } from "solid-js";
-import Table from "../table/Table";
-import type { StreamingColumnDef } from "./types";
-
+import { For, createEffect, splitProps, type Component } from "solid-js";
+import Table from "../table";
+import type { TableProps } from "../table";
 import {
   createStreamingTableStore,
   type StreamingTableStore,
 } from "./createStreamingTableStore";
+import type { StreamingColumnDef } from "./types";
 
-export type StreamingTableProps<T> = {
-  data: T[];
-  columns: StreamingColumnDef<T>[];
-  getRowId?: (row: T) => string;
-} & Omit<Parameters<typeof Table>[0], "children">;
+export type StreamingTableProps<TData> = {
+  data: TData[];
+  columns: StreamingColumnDef<TData>[];
+  getRowId?: (row: TData) => string;
+} & Omit<TableProps, "children">;
 
-export function StreamingTable<T>(props: StreamingTableProps<T>) {
+const StreamingTable = <TData,>(props: StreamingTableProps<TData>) => {
   const [local, tableProps] = splitProps(props, [
     "data",
     "columns",
     "getRowId",
   ]);
 
-  const getId = local.getRowId ?? ((row: any) => row.id);
+  const store: StreamingTableStore<TData> = createStreamingTableStore<TData>();
 
-  const store: StreamingTableStore<T> = createStreamingTableStore<T>();
+  const resolveId = (row: TData): string => {
+    if (local.getRowId) return local.getRowId(row);
+    const anyRow = row as any;
+    if (anyRow.id != null) return String(anyRow.id);
+    return JSON.stringify(anyRow);
+  };
 
-  onMount(() => {
-    store.loadInitial(local.data, getId);
+  createEffect(() => {
+    const incoming = local.data ?? [];
+    const idSet = new Set<string>();
+
+    incoming.forEach((row) => {
+      const id = resolveId(row);
+      idSet.add(id);
+      store.upsertRow(row, resolveId);
+    });
+
+    const current = store.rows();
+    current.forEach((r) => {
+      if (!idSet.has(r.id)) {
+        store.removeRow(r.id);
+      }
+    });
   });
 
   return (
@@ -46,9 +65,7 @@ export function StreamingTable<T>(props: StreamingTableProps<T>) {
                 {(col) => (
                   <Table.Cell>
                     {col.cell
-                      ? col.cell({
-                          row: { original: rowStore.data() },
-                        })
+                      ? col.cell({ row: { original: rowStore.data() } })
                       : col.accessorKey
                       ? (rowStore.data() as any)[col.accessorKey]
                       : col.accessorFn
@@ -63,6 +80,6 @@ export function StreamingTable<T>(props: StreamingTableProps<T>) {
       </Table.Body>
     </Table>
   );
-}
+};
 
 export default StreamingTable;
