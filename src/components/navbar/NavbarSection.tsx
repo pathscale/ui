@@ -26,7 +26,7 @@ const NavbarSection = (props: NavbarSectionProps): JSX.Element => {
         "navbar-start": local.section === "start",
         "navbar-center": local.section === "center",
         "navbar-end": local.section === "end",
-      })
+      }),
     );
 
   return (

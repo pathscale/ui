@@ -27,7 +27,7 @@ export type SelectProps = SelectBaseProps &
 const Select: Component<SelectProps> = (props) => {
   const merged = mergeProps(
     { value: "", placeholder: "Please, select an option" },
-    props
+    props,
   );
   const [local, others] = splitProps(merged, [
     "color",
@@ -60,12 +60,12 @@ const Select: Component<SelectProps> = (props) => {
         "select-success": local.color === "success",
         "select-warning": local.color === "warning",
         "select-error": local.color === "error",
-      })
-    )
+      }),
+    ),
   );
 
   const hasValue = createMemo(
-    () => local.value !== undefined && local.value !== ""
+    () => local.value !== undefined && local.value !== "",
   );
 
   return (
@@ -76,7 +76,12 @@ const Select: Component<SelectProps> = (props) => {
       style={local.style}
       value={local.value}
     >
-      <option value="" disabled hidden selected={!hasValue()}>
+      <option
+        value=""
+        disabled
+        hidden
+        selected={!hasValue()}
+      >
         {local.placeholder}
       </option>
       {local.children}

@@ -45,11 +45,15 @@ const Tab = (props: TabProps): JSX.Element => {
         "text-error": local.color === "error",
         "tab-active": local.active,
         "tab-disabled": local.disabled,
-      })
+      }),
     );
 
   return (
-    <a role="tab" class={classes()} {...others}>
+    <a
+      role="tab"
+      class={classes()}
+      {...others}
+    >
       {local.children}
     </a>
   );

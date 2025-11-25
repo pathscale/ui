@@ -16,11 +16,15 @@ const Skeleton = (props: SkeletonProps): JSX.Element => {
 
   const resolvedChildren = resolveChildren(() => local.children);
   const classes = createMemo(() =>
-    twMerge("skeleton", local.class, local.className)
+    twMerge("skeleton", local.class, local.className),
   );
 
   return (
-    <div {...others} data-theme={local.dataTheme} class={classes()}>
+    <div
+      {...others}
+      data-theme={local.dataTheme}
+      class={classes()}
+    >
       {resolvedChildren()}
     </div>
   );

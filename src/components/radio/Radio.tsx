@@ -1,7 +1,7 @@
 import clsx from "clsx";
 import { splitProps, type JSX, createMemo } from "solid-js";
 import { twMerge } from "tailwind-merge";
-import { IComponentBaseProps } from "../types";
+import type { IComponentBaseProps } from "../types";
 
 export type ComponentColor =
   | "primary"
@@ -65,8 +65,8 @@ const Radio = (props: RadioProps): JSX.Element => {
         "radio-success": local.color === "success",
         "radio-warning": local.color === "warning",
         "radio-error": local.color === "error",
-      })
-    )
+      }),
+    ),
   );
 
   return (

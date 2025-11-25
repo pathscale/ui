@@ -1,7 +1,7 @@
 import { createSignal, onCleanup, onMount, type JSX } from "solid-js";
 import { Dynamic } from "solid-js/web";
 import { breakpoints } from "./types";
-import { ResponsiveProp } from "./types";
+import type { ResponsiveProp } from "./types";
 
 function isJSXElement(node: unknown): node is JSX.Element {
   return typeof node === "object" && node !== null;
@@ -24,14 +24,20 @@ export function wrapWithElementIfInvalid({
     !isJSXElement(node)
   ) {
     return (
-      <Dynamic component={wrapper} class={className}>
+      <Dynamic
+        component={wrapper}
+        class={className}
+      >
         {node}
       </Dynamic>
     );
   }
 
   return (
-    <Dynamic component={wrapper} class={className}>
+    <Dynamic
+      component={wrapper}
+      class={className}
+    >
       {node}
     </Dynamic>
   );
@@ -39,7 +45,7 @@ export function wrapWithElementIfInvalid({
 
 export function mapResponsiveProp<T extends string | boolean>(
   prop: ResponsiveProp<T> | undefined,
-  classMap: Record<string, string>
+  classMap: Record<string, string>,
 ) {
   if (prop === undefined) return [];
   if (typeof prop === "string" || typeof prop === "boolean") {
@@ -71,4 +77,4 @@ export function useDesktop(breakpoint = 1024) {
   });
 
   return isDesktop;
-} 
+}

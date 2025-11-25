@@ -11,7 +11,7 @@ export type DropdownContextType = {
 
 export function useDropdown(
   trigger: "click" | "hover",
-  disabled = false
+  disabled = false,
 ): DropdownContextType {
   const [open, setOpenState] = createSignal(false);
   let ref: HTMLDivElement | undefined;
@@ -42,7 +42,7 @@ export function useDropdown(
       if (ref) {
         // Remove focus from any focusable elements within the dropdown
         const focusableElements = ref.querySelectorAll(
-          'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
+          'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])',
         );
         focusableElements.forEach((el) => {
           (el as HTMLElement).blur();

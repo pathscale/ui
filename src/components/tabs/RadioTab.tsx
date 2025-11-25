@@ -52,7 +52,7 @@ const RadioTab = (props: RadioTabProps): JSX.Element => {
         "text-error": local.color === "error",
         "tab-active": local.active,
         "tab-disabled": local.disabled,
-      })
+      }),
     );
 
   const contentClasses = () => twMerge("tab-content", local.contentClassName);

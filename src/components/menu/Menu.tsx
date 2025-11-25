@@ -51,7 +51,7 @@ const Menu = (props: MenuProps): JSX.Element => {
         "menu-xs": local.size === "xs",
         "menu-vertical": local.vertical,
         "menu-horizontal": local.horizontal,
-      })
+      }),
     );
 
   return (

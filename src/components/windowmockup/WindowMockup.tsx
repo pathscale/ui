@@ -1,13 +1,13 @@
 import {
-  ParentComponent,
+  type ParentComponent,
   splitProps,
-  JSX,
+  type JSX,
   children as resolveChildren,
   createMemo,
 } from "solid-js";
 import clsx from "clsx";
 import { twMerge } from "tailwind-merge";
-import { IComponentBaseProps, ComponentColor } from "../types";
+import type { IComponentBaseProps, ComponentColor } from "../types";
 
 export type WindowMockupColors = Exclude<ComponentColor, "ghost">;
 
@@ -20,7 +20,7 @@ export type WindowMockupProps = JSX.HTMLAttributes<HTMLDivElement> &
   };
 
 const WindowMockup: ParentComponent<WindowMockupProps> = (
-  props
+  props,
 ): JSX.Element => {
   const [local, others] = splitProps(props, [
     "children",
@@ -36,7 +36,7 @@ const WindowMockup: ParentComponent<WindowMockupProps> = (
   const resolvedChildren = resolveChildren(() => local.children);
 
   const borderColorValue = createMemo(
-    () => local.borderColor || local.frameColor || "neutral"
+    () => local.borderColor || local.frameColor || "neutral",
   );
 
   const classes = createMemo(() =>
@@ -62,8 +62,8 @@ const WindowMockup: ParentComponent<WindowMockupProps> = (
         "bg-success": local.frameColor === "success",
         "bg-warning": local.frameColor === "warning",
         "bg-error": local.frameColor === "error",
-      })
-    )
+      }),
+    ),
   );
 
   const innerClasses = createMemo(() =>
@@ -80,8 +80,8 @@ const WindowMockup: ParentComponent<WindowMockupProps> = (
         "bg-success": local.backgroundColor === "success",
         "bg-warning": local.backgroundColor === "warning",
         "bg-error": local.backgroundColor === "error",
-      })
-    )
+      }),
+    ),
   );
 
   const innerElement = createMemo(() => {

@@ -9,7 +9,11 @@ const TimelineMiddle = (props: TimelineMiddleProps): JSX.Element => {
   const classes = twMerge("timeline-middle", local.class);
 
   return (
-    <div {...others} class={classes} style={local.style}>
+    <div
+      {...others}
+      class={classes}
+      style={local.style}
+    >
       {local.children ?? (
         <svg
           xmlns="http://www.w3.org/2000/svg"

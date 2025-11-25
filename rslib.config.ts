@@ -30,8 +30,8 @@ export default defineConfig({
     }),
     pluginSolid(),
     pluginIconify({
-      targetDir: 'src/styles/icons',
-      includeSets: ['mdi-light', 'material-symbols'],
+      targetDir: "src/styles/icons",
+      includeSets: ["mdi-light", "material-symbols"],
       forceIncludeSets: false,
       maxIconsPerSet: 1000,
     }),

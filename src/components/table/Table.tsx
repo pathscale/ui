@@ -45,11 +45,15 @@ const Table: Component<TableProps> = (props) => {
         "table-xs": local.size === "xs",
         "table-pin-rows": local.pinRows,
         "table-pin-cols": local.pinCols,
-      })
+      }),
     );
 
   return (
-    <table data-theme={local.dataTheme} class={classes()} {...rest}>
+    <table
+      data-theme={local.dataTheme}
+      class={classes()}
+      {...rest}
+    >
       {local.children}
     </table>
   );

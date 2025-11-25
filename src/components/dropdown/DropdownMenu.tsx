@@ -32,8 +32,8 @@ const DropdownMenu = (props: DropdownMenuProps): JSX.Element => {
         "max-h-50": hideOverflowMemo(),
       }),
       local.class,
-      local.className
-    )
+      local.className,
+    ),
   );
 
   return (

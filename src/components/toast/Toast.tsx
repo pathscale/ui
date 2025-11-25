@@ -23,8 +23,7 @@ type ToastPosition = {
 export type ToastProps = ToastPosition &
   IComponentBaseProps & {
     max?: number;
-  } &
-  Omit<JSX.HTMLAttributes<HTMLDivElement>, keyof ToastPosition | "max">;
+  } & Omit<JSX.HTMLAttributes<HTMLDivElement>, keyof ToastPosition | "max">;
 
 const Toast = (props: ToastProps): JSX.Element => {
   const [local, others] = splitProps(props, [

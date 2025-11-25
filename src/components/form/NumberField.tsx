@@ -1,4 +1,4 @@
-import { Component, JSX, Show, createMemo, splitProps } from "solid-js";
+import { type Component, JSX, Show, createMemo, splitProps } from "solid-js";
 import Input from "../input";
 import type { InputProps } from "../input";
 import { useFormValidation } from "./ValidatedForm";
@@ -44,25 +44,25 @@ export const NumberField: Component<NumberFieldProps> = (props) => {
   ]);
 
   const containerClasses = createMemo(() =>
-    twMerge("flex flex-col gap-2", local.containerClass)
+    twMerge("flex flex-col gap-2", local.containerClass),
   );
 
   const descriptionClasses = createMemo(() =>
-    twMerge("text-sm text-base-content/70", local.descriptionClass)
+    twMerge("text-sm text-base-content/70", local.descriptionClass),
   );
 
   const errorClasses = createMemo(() =>
-    twMerge("text-error text-sm", local.errorClass)
+    twMerge("text-error text-sm", local.errorClass),
   );
 
   const inputClasses = createMemo(() => twMerge(local.class, local.className));
 
   const hasError = createMemo(
-    () => touched(props.name) && !!errors(props.name)
+    () => touched(props.name) && !!errors(props.name),
   );
 
   const stepValue = createMemo(
-    () => local.step || (local.allowDecimals !== false ? "any" : 1)
+    () => local.step || (local.allowDecimals !== false ? "any" : 1),
   );
 
   const handleInput = (event: InputEvent) => {
@@ -89,7 +89,10 @@ export const NumberField: Component<NumberFieldProps> = (props) => {
   return (
     <div class={containerClasses()}>
       {local.label && (
-        <Form.Label title={local.label} class={local.labelClass}>
+        <Form.Label
+          title={local.label}
+          class={local.labelClass}
+        >
           {local.required && <span class="text-error ml-1">*</span>}
         </Form.Label>
       )}

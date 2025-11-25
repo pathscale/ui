@@ -59,7 +59,7 @@ const Textarea = (props: TextareaProps): JSX.Element => {
         "resize-x": local.resize === "x",
         "resize-none": local.resize === "none",
         "resize-both": local.resize === "both",
-      })
+      }),
     );
 
   return (

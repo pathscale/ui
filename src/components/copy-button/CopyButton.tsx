@@ -54,16 +54,12 @@ const CopyButton: Component<CopyButtonProps> = (props) => {
         "btn btn-sm btn-ghost",
         copied() ? "text-success" : "",
         local.class,
-        local.className
+        local.className,
       )}
       {...others}
     >
-      <Show when={!copied()}>
-        {getContent()}
-      </Show>
-      <Show when={copied()}>
-        {getCopiedContent()}
-      </Show>
+      <Show when={!copied()}>{getContent()}</Show>
+      <Show when={copied()}>{getCopiedContent()}</Show>
     </button>
   );
 };

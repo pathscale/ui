@@ -114,7 +114,12 @@ export type { TableProps } from "./components/table";
 export type { EnhancedTableProps } from "./components/table/EnhancedTable";
 export { StreamingTable } from "./components/streaming-table";
 export type { StreamingTableProps } from "./components/streaming-table";
-export type { StreamingColumnDef } from "./components/streaming-table";
+export type {
+  StreamingColumnDef,
+  StreamingConfig,
+} from "./components/streaming-table";
+export { createStreamingTableStore } from "./components/streaming-table";
+export type { StreamingTableStore } from "./components/streaming-table";
 export { default as Tabs } from "./components/tabs";
 export type { RadioTabProps, TabProps, TabsProps } from "./components/tabs";
 export { default as Textarea } from "./components/textarea";

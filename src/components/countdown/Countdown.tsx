@@ -16,7 +16,7 @@ const Countdown = (props: CountdownProps): JSX.Element => {
   } = props;
 
   const displayedValue = createMemo(() =>
-    Math.min(99, Math.max(0, props.value))
+    Math.min(99, Math.max(0, props.value)),
   );
 
   return (

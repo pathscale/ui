@@ -1,12 +1,12 @@
 import {
   children as resolveChildren,
-  JSX,
+  type JSX,
   splitProps,
   createMemo,
-  ParentProps,
+  type ParentProps,
 } from "solid-js";
 import { twMerge } from "tailwind-merge";
-import { IComponentBaseProps } from "../types";
+import type { IComponentBaseProps } from "../types";
 
 type CodeMockupProps = JSX.HTMLAttributes<HTMLDivElement> & IComponentBaseProps;
 
@@ -22,7 +22,7 @@ const CodeMockup = (props: ParentProps<CodeMockupProps>): JSX.Element => {
   const resolvedChildren = resolveChildren(() => local.children);
 
   const classes = createMemo(() =>
-    twMerge("mockup-code w-full", local.class, local.className)
+    twMerge("mockup-code w-full", local.class, local.className),
   );
 
   return (

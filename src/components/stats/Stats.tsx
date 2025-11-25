@@ -20,7 +20,7 @@ const Stats = (props: StatsProps) => {
           "stats-horizontal": local.direction === "horizontal",
           "stats-vertical": local.direction === "vertical",
         }),
-        local.class
+        local.class,
       )}
     >
       {props.children}

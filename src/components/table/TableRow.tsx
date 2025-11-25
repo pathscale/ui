@@ -2,12 +2,12 @@ import {
   type Component,
   splitProps,
   children as resolveChildren,
-  JSX,
+  type JSX,
   createMemo,
 } from "solid-js";
 import clsx from "clsx";
 import { twMerge } from "tailwind-merge";
-import { type IComponentBaseProps } from "../types";
+import type { IComponentBaseProps } from "../types";
 
 export type TableRowProps = JSX.HTMLAttributes<HTMLTableRowElement> &
   IComponentBaseProps & {
@@ -30,14 +30,18 @@ const TableRow: Component<TableRowProps> = (props): JSX.Element => {
         active: local.active,
       }),
       local.className,
-      local.class
-    )
+      local.class,
+    ),
   );
 
   const resolved = resolveChildren(() => local.children);
 
   return (
-    <tr {...rest} class={classes()} data-theme={local.dataTheme}>
+    <tr
+      {...rest}
+      class={classes()}
+      data-theme={local.dataTheme}
+    >
       {resolved()}
     </tr>
   );

@@ -35,7 +35,7 @@ const Timeline = (props: TimelineProps): JSX.Element => {
       "timeline-compact": local.compact,
     }),
     local.class,
-    local.className
+    local.className,
   );
 
   return (

@@ -1,7 +1,7 @@
 import { type Component, splitProps, type JSX, createMemo } from "solid-js";
 import clsx from "clsx";
 import { twMerge } from "tailwind-merge";
-import { type IComponentBaseProps } from "../types";
+import type { IComponentBaseProps } from "../types";
 import { children as resolveChildren } from "solid-js";
 
 export type TableHeadCellProps = JSX.HTMLAttributes<HTMLTableCellElement> &

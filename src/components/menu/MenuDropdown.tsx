@@ -30,12 +30,12 @@ const MenuDropdown: Component<MenuDropdownProps> = (props): JSX.Element => {
       "menu-dropdown-toggle",
       local.class,
       local.className,
-      clsx({ "menu-dropdown-show": local.open })
-    )
+      clsx({ "menu-dropdown-show": local.open }),
+    ),
   );
 
   const ulClasses = createMemo(() =>
-    clsx("menu-dropdown", { "menu-dropdown-show": local.open })
+    clsx("menu-dropdown", { "menu-dropdown-show": local.open }),
   );
 
   return (

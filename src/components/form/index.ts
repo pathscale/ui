@@ -7,7 +7,7 @@ export {
   type NumberFieldProps,
   useFormValidation,
 } from "./Form";
-export { type LabelProps } from "./Label";
+export type { LabelProps } from "./Label";
 export {
   default as FormDropdown,
   type FormDropdownProps,

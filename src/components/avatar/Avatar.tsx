@@ -65,7 +65,7 @@ const VoidElementList: ElementType[] = [
 ];
 
 const Avatar = <E extends ElementType = "div">(
-  props: AvatarProps<E>
+  props: AvatarProps<E>,
 ): JSX.Element => {
   const [local, others] = splitProps(
     props as AvatarBaseProps & Record<string, unknown>,
@@ -86,7 +86,7 @@ const Avatar = <E extends ElementType = "div">(
       "style",
       "children",
       "dataTheme",
-    ]
+    ],
   );
 
   const resolvedChildren = resolveChildren(() => local.children);
@@ -102,15 +102,15 @@ const Avatar = <E extends ElementType = "div">(
         "avatar-online": local.online,
         "avatar-offline": local.offline,
         "avatar-placeholder": !local.src,
-      })
-    )
+      }),
+    ),
   );
 
   // Inner element dimensions
   const customSizeStyle = createMemo(() =>
     typeof local.size === "number"
       ? { width: `${local.size}px`, height: `${local.size}px` }
-      : undefined
+      : undefined,
   );
 
   // Shared inner classes
@@ -128,7 +128,7 @@ const Avatar = <E extends ElementType = "div">(
       "w-24 h-24": local.size === "md",
       "w-14 h-14": local.size === "sm",
       "w-10 h-10": local.size === "xs",
-    })
+    }),
   );
 
   // Placeholder wrapper classes
@@ -147,7 +147,7 @@ const Avatar = <E extends ElementType = "div">(
       "w-24 h-24 text-xl": local.size === "md",
       "w-14 h-14": local.size === "sm",
       "w-10 h-10": local.size === "xs",
-    })
+    }),
   );
 
   // Check if child is a single string
@@ -159,15 +159,24 @@ const Avatar = <E extends ElementType = "div">(
   const renderContents = () => {
     // If src => image avatar
     return local.src ? (
-      <div class={imgClasses()} style={customSizeStyle()}>
+      <div
+        class={imgClasses()}
+        style={customSizeStyle()}
+      >
         <img src={local.src} />
       </div>
     ) : local.letters || isStringChild() ? (
-      <div class={placeholderClasses()} style={customSizeStyle()}>
+      <div
+        class={placeholderClasses()}
+        style={customSizeStyle()}
+      >
         <span>{local.letters ?? resolvedChildren()}</span>
       </div>
     ) : (
-      <div class={imgClasses()} style={customSizeStyle()}>
+      <div
+        class={imgClasses()}
+        style={customSizeStyle()}
+      >
         {resolvedChildren()}
       </div>
     );

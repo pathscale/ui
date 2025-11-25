@@ -49,7 +49,7 @@ const VoidElementList: ElementType[] = [
 ];
 
 const Step = <E extends ElementType = "li">(
-  props: StepProps<E>
+  props: StepProps<E>,
 ): JSX.Element => {
   const [local, others] = splitProps(
     props as StepBaseProps & Record<string, unknown>,
@@ -62,7 +62,7 @@ const Step = <E extends ElementType = "li">(
       "style",
       "children",
       "dataTheme",
-    ]
+    ],
   );
 
   const Tag = createMemo(() => local.as || ("li" as ElementType));
@@ -81,8 +81,8 @@ const Step = <E extends ElementType = "li">(
         "step-success": local.color === "success",
         "step-warning": local.color === "warning",
         "step-error": local.color === "error",
-      })
-    )
+      }),
+    ),
   );
 
   // Even if Tag is a void element, render without children

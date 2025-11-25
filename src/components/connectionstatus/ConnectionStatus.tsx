@@ -1,4 +1,4 @@
-import { Component, Show, createMemo, splitProps } from "solid-js";
+import { type Component, Show, createMemo, splitProps } from "solid-js";
 import { twMerge } from "tailwind-merge";
 import Badge from "../badge";
 import Button from "../button";
@@ -97,7 +97,7 @@ export const ConnectionStatus: Component<ConnectionStatusProps> = (props) => {
   ]);
 
   const containerClasses = createMemo(() =>
-    twMerge(local.class, local.className)
+    twMerge(local.class, local.className),
   );
 
   const getBadgeColor = createMemo((): ComponentColor => {
@@ -164,7 +164,7 @@ export const ConnectionStatus: Component<ConnectionStatusProps> = (props) => {
   const shouldShowReconnectButton = createMemo(
     () =>
       local.showReconnectButton &&
-      (local.state === "disconnected" || local.state === "error")
+      (local.state === "disconnected" || local.state === "error"),
   );
 
   const displayUrl = createMemo(() => (local.url ? formatUrl(local.url) : ""));
@@ -178,11 +178,24 @@ export const ConnectionStatus: Component<ConnectionStatusProps> = (props) => {
       data-theme={local.dataTheme}
       {...others}
     >
-      <Tooltip position="bottom" message={getTooltipText()}>
-        <Flex align="center" gap="sm">
+      <Tooltip
+        position="bottom"
+        message={getTooltipText()}
+      >
+        <Flex
+          align="center"
+          gap="sm"
+        >
           <Show when={local.showDetails}>
-            <Flex direction="col" align="start" gap="sm">
-              <Badge color={getBadgeColor()} size="sm">
+            <Flex
+              direction="col"
+              align="start"
+              gap="sm"
+            >
+              <Badge
+                color={getBadgeColor()}
+                size="sm"
+              >
                 {getStatusText()}
               </Badge>
               <Show when={local.serviceName}>
@@ -198,7 +211,10 @@ export const ConnectionStatus: Component<ConnectionStatusProps> = (props) => {
             </Flex>
           </Show>
           <Show when={!local.showDetails}>
-            <Badge color={getBadgeColor()} size="sm">
+            <Badge
+              color={getBadgeColor()}
+              size="sm"
+            >
               {getStatusText()}
             </Badge>
           </Show>

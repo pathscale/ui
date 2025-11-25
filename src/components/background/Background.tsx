@@ -11,10 +11,15 @@ const Background: Component<BackgroundProps> = (props) => {
   const [local, others] = splitProps(props, ["class", "className"]);
 
   const classes = createMemo(() =>
-    twMerge("bg-base-100 min-h-screen", local.class, local.className)
+    twMerge("bg-base-100 min-h-screen", local.class, local.className),
   );
 
-  return <div class={classes()} {...others} />;
+  return (
+    <div
+      class={classes()}
+      {...others}
+    />
+  );
 };
 
 export default Background;

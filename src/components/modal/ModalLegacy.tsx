@@ -28,7 +28,7 @@ export default function ModalLegacy(props: ModalLegacyProps): JSX.Element {
     clsx({
       "modal-open": open,
       "modal-bottom sm:modal-middle": responsive,
-    })
+    }),
   );
 
   const bodyClasses = twMerge("modal-box", classProp, className);
@@ -48,7 +48,11 @@ export default function ModalLegacy(props: ModalLegacyProps): JSX.Element {
         }
       }}
     >
-      <div {...rest} data-theme={dataTheme} class={bodyClasses}>
+      <div
+        {...rest}
+        data-theme={dataTheme}
+        class={bodyClasses}
+      >
         {children}
       </div>
     </div>

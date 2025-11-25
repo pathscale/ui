@@ -16,7 +16,11 @@ const TimelineItem = (props: TimelineItemProps): JSX.Element => {
   ]);
 
   return (
-    <li {...others} class={local.class} style={local.style}>
+    <li
+      {...others}
+      class={local.class}
+      style={local.style}
+    >
       <Show when={local.connect === "both" || local.connect === "start"}>
         <hr class={local.startClassName} />
       </Show>

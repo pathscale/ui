@@ -7,8 +7,13 @@ export type CollapseContentProps = JSX.HTMLAttributes<HTMLDivElement> &
   IComponentBaseProps;
 
 export default function CollapseContent(
-  props: CollapseContentProps
+  props: CollapseContentProps,
 ): JSX.Element {
   const classes = twMerge("collapse-content", props.class);
-  return <div {...props} class={classes} />;
+  return (
+    <div
+      {...props}
+      class={classes}
+    />
+  );
 }

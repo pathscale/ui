@@ -1,3 +1,2 @@
-export { default as SvgBackground } from './SvgBackground';
-export type { SvgBackgroundProps } from './SvgBackground';
-
+export { default as SvgBackground } from "./SvgBackground";
+export type { SvgBackgroundProps } from "./SvgBackground";

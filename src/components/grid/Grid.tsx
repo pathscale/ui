@@ -8,7 +8,7 @@ import { Dynamic } from "solid-js/web";
 import { twMerge } from "tailwind-merge";
 import type { IComponentBaseProps } from "../types";
 import clsx from "clsx";
-import { ResponsiveProp } from "../types";
+import type { ResponsiveProp } from "../types";
 import { mapResponsiveProp } from "../utils";
 
 type GridFlow = "row" | "col" | "row-dense" | "col-dense";
@@ -166,11 +166,15 @@ const Grid = (props: GridProps) => {
     mapResponsiveProp(local.autoCols, autoColsMap),
     mapResponsiveProp(local.autoRows, autoRowsMap),
     local.class,
-    local.className
+    local.className,
   );
 
   return (
-    <Dynamic component={local.as} class={twMerge(classes)} {...rest}>
+    <Dynamic
+      component={local.as}
+      class={twMerge(classes)}
+      {...rest}
+    >
       {resolvedChildren()}
     </Dynamic>
   );

@@ -28,7 +28,7 @@ export type IndicatorProps<E extends ElementType = "div"> = Omit<
   IComponentBaseProps;
 
 const Indicator = <E extends ElementType = "div">(
-  props: IndicatorProps<E>
+  props: IndicatorProps<E>,
 ): JSX.Element => {
   const [local, others] = splitProps(
     props as IndicatorBaseProps & Record<string, unknown>,
@@ -41,7 +41,7 @@ const Indicator = <E extends ElementType = "div">(
       "className",
       "style",
       "as",
-    ]
+    ],
   );
 
   const classes = () => twMerge("indicator", local.class, local.className);
@@ -80,7 +80,7 @@ export type IndicatorItemProps<E extends ElementType = "span"> = Omit<
   IComponentBaseProps;
 
 const IndicatorItem = <E extends ElementType = "span">(
-  props: IndicatorItemProps<E>
+  props: IndicatorItemProps<E>,
 ): JSX.Element => {
   const [local, others] = splitProps(
     props as IndicatorItemBaseProps & Record<string, unknown>,
@@ -93,7 +93,7 @@ const IndicatorItem = <E extends ElementType = "span">(
       "className",
       "style",
       "as",
-    ]
+    ],
   );
 
   const classes = () =>
@@ -108,7 +108,7 @@ const IndicatorItem = <E extends ElementType = "span">(
         "indicator-top": local.vertical === "top",
         "indicator-middle": local.vertical === "middle",
         "indicator-bottom": local.vertical === "bottom",
-      })
+      }),
     );
 
   const Tag = local.as || "span";

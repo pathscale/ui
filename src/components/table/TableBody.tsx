@@ -1,13 +1,13 @@
 import {
   type Component,
   splitProps,
-  JSX,
+  type JSX,
   createMemo,
   children as resolveChildren,
 } from "solid-js";
 import clsx from "clsx";
 import { twMerge } from "tailwind-merge";
-import { type IComponentBaseProps } from "../types";
+import type { IComponentBaseProps } from "../types";
 
 export type TableBodyProps = JSX.HTMLAttributes<HTMLTableSectionElement> &
   IComponentBaseProps;
@@ -24,7 +24,11 @@ const TableBody: Component<TableBodyProps> = (props) => {
   const resolved = resolveChildren(() => local.children);
 
   return (
-    <tbody class={classes()} data-theme={local.dataTheme} {...rest}>
+    <tbody
+      class={classes()}
+      data-theme={local.dataTheme}
+      {...rest}
+    >
       {resolved()}
     </tbody>
   );

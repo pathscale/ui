@@ -31,7 +31,7 @@ export const classesFn = ({
       "collapse-plus": icon === "plus",
       "collapse-open": open === true,
       "collapse-close": open === false,
-    })
+    }),
   );
 
 const Collapse = (props: CollapseProps): JSX.Element => {
@@ -68,7 +68,7 @@ const Collapse = (props: CollapseProps): JSX.Element => {
   };
 
   const handleBlur: JSX.FocusEventHandlerUnion<HTMLDivElement, FocusEvent> = (
-    e
+    e,
   ) => {
     if (!local.checkbox) {
       local.onToggle?.();
@@ -80,7 +80,7 @@ const Collapse = (props: CollapseProps): JSX.Element => {
   };
 
   const handleFocus: JSX.FocusEventHandlerUnion<HTMLDivElement, FocusEvent> = (
-    e
+    e,
   ) => {
     if (!local.checkbox) {
       local.onToggle?.();

@@ -55,13 +55,13 @@ const Alert: Component<AlertProps> = (props) => {
         "alert-soft": local.variant === "soft",
         "alert-dash": local.variant === "dash",
         "alert-outline": local.variant === "outline",
-      })
-    )
+      }),
+    ),
   );
 
   const role = "alert";
   const ariaAtomic = createMemo(() =>
-    local["aria-atomic"] === undefined ? true : local["aria-atomic"]
+    local["aria-atomic"] === undefined ? true : local["aria-atomic"],
   );
   const ariaLive = createMemo(() => local["aria-live"] || "assertive");
   const ariaRelevant = createMemo(() => local["aria-relevant"]);

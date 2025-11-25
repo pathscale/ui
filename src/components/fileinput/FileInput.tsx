@@ -53,8 +53,8 @@ const FileInput = (props: FileInputProps): JSX.Element => {
         "file-input-warning": local.color === "warning",
         "file-input-error": local.color === "error",
         "file-input-bordered": local.bordered,
-      })
-    )
+      }),
+    ),
   );
 
   return (

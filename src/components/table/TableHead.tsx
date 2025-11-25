@@ -1,14 +1,14 @@
 import {
   type Component,
   splitProps,
-  JSX,
+  type JSX,
   createMemo,
   children as resolveChildren,
   Show,
 } from "solid-js";
 import clsx from "clsx";
 import { twMerge } from "tailwind-merge";
-import { type IComponentBaseProps } from "../types";
+import type { IComponentBaseProps } from "../types";
 
 export type TableHeadProps = JSX.HTMLAttributes<HTMLTableSectionElement> &
   IComponentBaseProps & {
@@ -28,8 +28,15 @@ const TableHead: Component<TableHeadProps> = (props) => {
   const resolved = resolveChildren(() => local.children);
 
   return (
-    <thead class={classes()} data-theme={local.dataTheme} {...rest}>
-      <Show when={local.noCell} fallback={<tr>{resolved()}</tr>}>
+    <thead
+      class={classes()}
+      data-theme={local.dataTheme}
+      {...rest}
+    >
+      <Show
+        when={local.noCell}
+        fallback={<tr>{resolved()}</tr>}
+      >
         {resolved()}
       </Show>
     </thead>

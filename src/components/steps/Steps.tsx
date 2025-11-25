@@ -47,7 +47,7 @@ const VoidElementList: ElementType[] = [
 ];
 
 const Steps = <E extends ElementType = "ul">(
-  props: StepsProps<E>
+  props: StepsProps<E>,
 ): JSX.Element => {
   const [local, others] = splitProps(
     props as StepsBaseProps & Record<string, unknown>,
@@ -60,7 +60,7 @@ const Steps = <E extends ElementType = "ul">(
       "className",
       "style",
       "dataTheme",
-    ]
+    ],
   );
 
   const Tag = createMemo(() => local.as || ("ul" as ElementType));
@@ -73,8 +73,8 @@ const Steps = <E extends ElementType = "ul">(
       clsx({
         "steps-vertical": local.vertical,
         "steps-horizontal": local.horizontal,
-      })
-    )
+      }),
+    ),
   );
 
   if (VoidElementList.includes(Tag())) {

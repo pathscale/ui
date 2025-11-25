@@ -6,7 +6,7 @@ import {
 } from "solid-js";
 import clsx from "clsx";
 import { twMerge } from "tailwind-merge";
-import { IComponentBaseProps } from "../types";
+import type { IComponentBaseProps } from "../types";
 
 export type ArtboardProps = IComponentBaseProps & {
   demo?: boolean;
@@ -41,12 +41,16 @@ const Artboard: ParentComponent<ArtboardProps> = (props) => {
         "phone-5": local.size === 5,
         "phone-6": local.size === 6,
         horizontal: local.horizontal,
-      })
-    )
+      }),
+    ),
   );
 
   return (
-    <div {...others} data-theme={local.dataTheme} class={classes()}>
+    <div
+      {...others}
+      data-theme={local.dataTheme}
+      class={classes()}
+    >
       {resolvedChildren()}
     </div>
   );

@@ -33,7 +33,7 @@ const SidenavGroup = (props: SidenavGroupProps): JSX.Element => {
   const resolvedChildren = resolveChildren(() => local.children);
 
   const classes = createMemo(() =>
-    twMerge("sidenav-group", local.class, local.className)
+    twMerge("sidenav-group", local.class, local.className),
   );
 
   return (

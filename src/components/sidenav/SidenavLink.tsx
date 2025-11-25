@@ -32,7 +32,7 @@ const SidenavLink = (props: SidenavLinkProps): JSX.Element => {
   const resolvedChildren = resolveChildren(() => local.children);
 
   const classes = createMemo(() =>
-    twMerge("sidenav-item-link", local.class, local.className)
+    twMerge("sidenav-item-link", local.class, local.className),
   );
 
   if (local.asChild) {

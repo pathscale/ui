@@ -60,7 +60,7 @@ const Accordion = (props: AccordionProps): JSX.Element => {
   const isControlled = createMemo(() => local.mode === "controlled");
 
   const [isExpanded, setIsExpanded] = createSignal(
-    local.checked || local.expanded || false
+    local.checked || local.expanded || false,
   );
 
   const expanded = createMemo(() => {
@@ -133,7 +133,7 @@ const Accordion = (props: AccordionProps): JSX.Element => {
         "collapse-close": !expanded(),
       }),
       local.class,
-      local.className
+      local.className,
     );
 
   const resolvedChildren = resolveChildren(() => local.children);

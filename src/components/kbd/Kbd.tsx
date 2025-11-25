@@ -7,7 +7,12 @@ export type KbdProps = ComponentProps<"kbd">;
 const Kbd = (props: KbdProps) => {
   const [local, rest] = splitProps(props, ["class"]);
 
-  return <kbd {...rest} class={twMerge("kbd", clsx(local.class))} />;
+  return (
+    <kbd
+      {...rest}
+      class={twMerge("kbd", clsx(local.class))}
+    />
+  );
 };
 
 export default Kbd;

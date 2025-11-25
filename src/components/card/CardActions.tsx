@@ -7,5 +7,10 @@ export type CardActionsProps = JSX.HTMLAttributes<HTMLDivElement> &
   IComponentBaseProps;
 
 export default function CardActions(props: CardActionsProps): JSX.Element {
-  return <div {...props} class={twMerge("card-actions", props.class)} />;
+  return (
+    <div
+      {...props}
+      class={twMerge("card-actions", props.class)}
+    />
+  );
 }

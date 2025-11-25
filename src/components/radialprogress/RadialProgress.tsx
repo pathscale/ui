@@ -38,7 +38,7 @@ const RadialProgress = (props: RadialProgressProps): JSX.Element => {
       "text-error": local.color === "error",
     }),
     local.class,
-    local.className
+    local.className,
   );
 
   const progressStyle: JSX.CSSProperties = {

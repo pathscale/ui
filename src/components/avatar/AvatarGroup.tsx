@@ -24,16 +24,29 @@ export type AvatarGroupProps<E extends ElementType = "div"> = Omit<
   AvatarGroupBaseProps;
 
 const VoidElementList: ElementType[] = [
-  "area", "base", "br", "col", "embed", "hr", "img", "input",
-  "link", "keygen", "meta", "param", "source", "track", "wbr",
+  "area",
+  "base",
+  "br",
+  "col",
+  "embed",
+  "hr",
+  "img",
+  "input",
+  "link",
+  "keygen",
+  "meta",
+  "param",
+  "source",
+  "track",
+  "wbr",
 ];
 
 const AvatarGroup = <E extends ElementType = "div">(
-  props: AvatarGroupProps<E>
+  props: AvatarGroupProps<E>,
 ): JSX.Element => {
   const [local, others] = splitProps(
     props as AvatarGroupBaseProps & Record<string, unknown>,
-    ["as", "class", "className", "children"]
+    ["as", "class", "className", "children"],
   );
 
   const Tag = local.as || "div";

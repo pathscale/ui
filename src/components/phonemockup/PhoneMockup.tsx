@@ -1,7 +1,7 @@
-import { ParentComponent, splitProps, JSX } from "solid-js";
+import { type ParentComponent, splitProps, type JSX } from "solid-js";
 import clsx from "clsx";
 import { twMerge } from "tailwind-merge";
-import { IComponentBaseProps, ComponentColor } from "../types";
+import type { IComponentBaseProps, ComponentColor } from "../types";
 
 export type PhoneMockupProps = JSX.HTMLAttributes<HTMLDivElement> &
   IComponentBaseProps & {
@@ -31,14 +31,14 @@ const PhoneMockup: ParentComponent<PhoneMockupProps> = (props) => {
         "border-success": local.color === "success",
         "border-warning": local.color === "warning",
         "border-error": local.color === "error",
-      })
+      }),
     );
 
   const innerClasses = () =>
     twMerge(
       "artboard artboard-demo phone-1",
       local.innerProps?.class,
-      local.innerProps?.className
+      local.innerProps?.className,
     );
 
   return (
@@ -50,7 +50,10 @@ const PhoneMockup: ParentComponent<PhoneMockupProps> = (props) => {
     >
       <div class="mockup-phone-camera" />
       <div class="mockup-phone-display">
-        <div {...local.innerProps} class={innerClasses()}>
+        <div
+          {...local.innerProps}
+          class={innerClasses()}
+        >
           {local.children}
         </div>
       </div>

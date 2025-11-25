@@ -14,7 +14,12 @@ const MenuTitle: Component<MenuTitleProps> = (props) => {
 
   const classes = () => twMerge("menu-title", local.class, local.className);
 
-  return <li {...others} class={classes()} />;
+  return (
+    <li
+      {...others}
+      class={classes()}
+    />
+  );
 };
 
 export default MenuTitle;

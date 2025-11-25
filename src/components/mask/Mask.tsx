@@ -55,7 +55,7 @@ export function maskClassName({
       "mask-triangle-4": variant === "triangle-4",
       "mask-half-1": variant === "half-1",
       "mask-half-2": variant === "half-2",
-    })
+    }),
   );
 }
 

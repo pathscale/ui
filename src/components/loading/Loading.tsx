@@ -62,7 +62,7 @@ const Loading: Component<LoadingProps> = (props) => {
         "text-warning": local.color === "warning",
         "text-error": local.color === "error",
         "text-ghost": local.color === "ghost",
-      })
+      }),
     );
 
   return (

@@ -24,9 +24,12 @@ export type DropdownItemProps = (AnchorProps | ButtonProps | NoAnchorProps) & {
 const DropdownItem = (props: DropdownItemProps): JSX.Element => {
   const dropdownContext = useContext(DropdownContext);
 
-  const defaultProps = mergeProps({
-    closeOnClick: true,
-  }, props);
+  const defaultProps = mergeProps(
+    {
+      closeOnClick: true,
+    },
+    props,
+  );
 
   const [local, others] = splitProps(defaultProps, [
     "anchor",
@@ -34,8 +37,6 @@ const DropdownItem = (props: DropdownItemProps): JSX.Element => {
     "aria-selected",
     "closeOnClick",
   ]);
-
-
 
   const handleClick = (e: MouseEvent) => {
     e.stopPropagation();
@@ -51,9 +52,15 @@ const DropdownItem = (props: DropdownItemProps): JSX.Element => {
   };
 
   return (
-    <li role="menuitem" aria-selected={local["aria-selected"]}>
+    <li
+      role="menuitem"
+      aria-selected={local["aria-selected"]}
+    >
       {local.anchor ? (
-        <a {...(others as AnchorProps)} onClick={handleClick}>
+        <a
+          {...(others as AnchorProps)}
+          onClick={handleClick}
+        >
           {local.children}
         </a>
       ) : (

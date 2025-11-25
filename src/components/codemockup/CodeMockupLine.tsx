@@ -1,5 +1,5 @@
 import clsx from "clsx";
-import { JSX, mergeProps, splitProps } from "solid-js";
+import { type JSX, mergeProps, splitProps } from "solid-js";
 import { twMerge } from "tailwind-merge";
 
 type ComponentStatus = "info" | "success" | "warning" | "error";
@@ -20,7 +20,7 @@ const CodeMockupLine = (props: CodeMockupLineProps): JSX.Element => {
       status: null,
       class: "",
     },
-    props
+    props,
   );
 
   const [local, rest] = splitProps(merged, [
@@ -46,7 +46,7 @@ const CodeMockupLine = (props: CodeMockupLineProps): JSX.Element => {
         "text-warning-content": local.status === "warning",
         "text-error-content": local.status === "error",
       }),
-      local.class
+      local.class,
     );
 
   const prefix = () =>
@@ -59,7 +59,10 @@ const CodeMockupLine = (props: CodeMockupLineProps): JSX.Element => {
       data-theme={local.dataTheme}
       {...rest}
     >
-      <code {...local.innerProps} ref={local.innerRef}>
+      <code
+        {...local.innerProps}
+        ref={local.innerRef}
+      >
         {local.children}
       </code>
     </pre>

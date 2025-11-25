@@ -6,7 +6,7 @@ import {
 } from "solid-js";
 import clsx from "clsx";
 import { twMerge } from "tailwind-merge";
-import { IComponentBaseProps } from "../types";
+import type { IComponentBaseProps } from "../types";
 import { createMemo } from "solid-js";
 
 export type BrowserMockupProps = Omit<
@@ -43,8 +43,8 @@ const BrowserMockup: ParentComponent<BrowserMockupProps> = (props) => {
         "bg-base-300": variant() === "background",
       }),
       local.class,
-      local.className
-    )
+      local.className,
+    ),
   );
 
   const inputClasses = createMemo(() =>
@@ -53,8 +53,8 @@ const BrowserMockup: ParentComponent<BrowserMockupProps> = (props) => {
       clsx({
         "border-base-300": variant() === "border",
       }),
-      local.inputClassName
-    )
+      local.inputClassName,
+    ),
   );
 
   const innerClasses = createMemo(() =>
@@ -64,12 +64,16 @@ const BrowserMockup: ParentComponent<BrowserMockupProps> = (props) => {
         "border-t border-base-300": variant() === "border",
         "bg-base-200": variant() === "background",
       }),
-      local.innerClassName
-    )
+      local.innerClassName,
+    ),
   );
 
   return (
-    <div {...others} data-theme={local.dataTheme} class={classes()}>
+    <div
+      {...others}
+      data-theme={local.dataTheme}
+      class={classes()}
+    >
       <div class="mockup-browser-toolbar">
         <div class="input">
           <input

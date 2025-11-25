@@ -63,7 +63,7 @@ const Toggle = (props: ToggleProps): JSX.Element => {
         "toggle-success": local.color === "success",
         "toggle-warning": local.color === "warning",
         "toggle-error": local.color === "error",
-      })
+      }),
     );
 
   return (

@@ -1,4 +1,4 @@
-import { ParentComponent, splitProps } from "solid-js";
+import { type ParentComponent, splitProps } from "solid-js";
 import { twMerge } from "tailwind-merge";
 import clsx from "clsx";
 import type { IComponentBaseProps } from "../types";
@@ -30,11 +30,15 @@ const Footer: ParentComponent<FooterProps> = (props) => {
         "footer-center": local.center,
         "footer-horizontal": local.horizontal,
         "footer-vertical": local.vertical,
-      })
+      }),
     );
 
   return (
-    <footer {...others} data-theme={local.dataTheme} class={classes()}>
+    <footer
+      {...others}
+      data-theme={local.dataTheme}
+      class={classes()}
+    >
       {local.children}
     </footer>
   );

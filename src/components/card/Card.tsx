@@ -20,8 +20,8 @@ export type CardProps = IComponentBaseProps &
     variant?: Exclude<ComponentVariant, "soft"> | "border";
     imageFull?: boolean;
     side?: ComponentSize | boolean;
-    background?: ComponentColor | 'base-100' | 'base-200' | 'base-300';
-    shadow?: 'none' | 'sm' | 'md' | 'lg' | 'xl';
+    background?: ComponentColor | "base-100" | "base-200" | "base-300";
+    shadow?: "none" | "sm" | "md" | "lg" | "xl";
     fullWidth?: boolean;
     "aria-label"?: string;
     "aria-describedby"?: string;
@@ -95,7 +95,7 @@ const Card = (props: CardProps): JSX.Element => {
       [DYNAMIC_MODIFIERS.side[
         local.side?.toString() as keyof typeof DYNAMIC_MODIFIERS.side
       ] ?? ""]: !!local.side,
-    })
+    }),
   );
 
   return (

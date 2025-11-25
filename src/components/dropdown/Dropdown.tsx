@@ -61,12 +61,12 @@ export const classesFn = ({
       "dropdown-end": end,
       "dropdown-hover": hover,
       "dropdown-open": open,
-    })
+    }),
   );
 
 // Create a dropdown context for this component
 export const DropdownContext = createContext<DropdownContextType | undefined>(
-  undefined
+  undefined,
 );
 
 const Dropdown = (props: DropdownProps): JSX.Element => {
@@ -108,7 +108,7 @@ const Dropdown = (props: DropdownProps): JSX.Element => {
         "dropdown-end": local.end,
         "dropdown-hover": local.hover,
         "dropdown-open": isOpen,
-      })
+      }),
     );
   });
 
@@ -131,14 +131,20 @@ const Dropdown = (props: DropdownProps): JSX.Element => {
           local["aria-haspopup"] === true
             ? "true"
             : local["aria-haspopup"] === false
-            ? "false"
-            : local["aria-haspopup"] || (local.item ? "listbox" : "true")
+              ? "false"
+              : local["aria-haspopup"] || (local.item ? "listbox" : "true")
         }
         aria-labelledby={local["aria-labelledby"]}
       >
-        <Show when={local.item} fallback={<>{local.children}</>}>
+        <Show
+          when={local.item}
+          fallback={<>{local.children}</>}
+        >
           <label tabIndex={0}>{local.children}</label>
-          <ul class="dropdown-content" role="listbox">
+          <ul
+            class="dropdown-content"
+            role="listbox"
+          >
             {local.item}
           </ul>
         </Show>

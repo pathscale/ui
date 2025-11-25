@@ -12,7 +12,10 @@ const DockLabel: Component<DockLabelProps> = (props) => {
   const classes = twMerge("dock-label", local.class, local.className);
 
   return (
-    <span {...others} class={classes}>
+    <span
+      {...others}
+      class={classes}
+    >
       {local.children}
     </span>
   );

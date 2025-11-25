@@ -1,4 +1,4 @@
-import { ParentComponent, splitProps } from "solid-js";
+import { type ParentComponent, splitProps } from "solid-js";
 import { twMerge } from "tailwind-merge";
 
 import CopyButton from "../copy-button";
@@ -34,10 +34,15 @@ const ShowcaseSection: ParentComponent<ShowcaseSectionProps> = (props) => {
       class={twMerge(
         "p-3 bg-base-100 rounded-lg shadow-sm scroll-mt-6",
         local.class,
-        local.className
+        local.className,
       )}
     >
-      <Flex align="center" justify="between" gap="sm" class="mb-2">
+      <Flex
+        align="center"
+        justify="between"
+        gap="sm"
+        class="mb-2"
+      >
         <h2 class="text-xl font-semibold group/title">
           <Flex
             as="a"

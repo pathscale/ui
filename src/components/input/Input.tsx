@@ -93,13 +93,16 @@ const Input = (props: InputProps): JSX.Element => {
         "input-success": local.color === "success",
         "input-warning": local.color === "warning",
         "input-error": local.color === "error",
-      })
+      }),
     );
 
   const inputClasses = () => "grow bg-transparent focus:outline-none";
 
   return (
-    <label class={labelClasses()} data-theme={local.dataTheme}>
+    <label
+      class={labelClasses()}
+      data-theme={local.dataTheme}
+    >
       <Show when={local.leftIcon}>{local.leftIcon}</Show>
       <input
         {...others}

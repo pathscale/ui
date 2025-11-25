@@ -2,8 +2,8 @@ import type { JSX, Component } from "solid-js";
 import { splitProps } from "solid-js";
 import clsx from "clsx";
 import { twMerge } from "tailwind-merge";
-import { IComponentBaseProps } from "../types";
-import { ComponentColor } from "../types";
+import type { IComponentBaseProps } from "../types";
+import type { ComponentColor } from "../types";
 
 export type DockItemProps = JSX.ButtonHTMLAttributes<HTMLButtonElement> &
   IComponentBaseProps & {
@@ -39,7 +39,7 @@ const DockItem: Component<DockItemProps> = (props) => {
 
       active: local.active,
       disabled: local.disabled,
-    })
+    }),
   );
 
   return (

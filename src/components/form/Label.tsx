@@ -5,7 +5,7 @@ import {
   splitProps,
 } from "solid-js";
 import { twMerge } from "tailwind-merge";
-import { IComponentBaseProps } from "../types";
+import type { IComponentBaseProps } from "../types";
 
 export type LabelProps = Omit<JSX.HTMLAttributes<HTMLLabelElement>, "ref"> &
   IComponentBaseProps & {
@@ -26,7 +26,11 @@ const Label: ParentComponent<LabelProps> = (props) => {
   const classes = () => twMerge("label", local.class, local.className);
 
   return (
-    <label {...others} data-theme={local.dataTheme} class={classes()}>
+    <label
+      {...others}
+      data-theme={local.dataTheme}
+      class={classes()}
+    >
       <span class="label-text cursor-pointer">{local.title}</span>
       {resolvedChildren()}
     </label>

@@ -2,7 +2,7 @@ import clsx from "clsx";
 import { createMemo, type JSX, splitProps } from "solid-js";
 import { twMerge } from "tailwind-merge";
 import type { IComponentBaseProps } from "../types";
-import { ComponentColor } from "../types";
+import type { ComponentColor } from "../types";
 
 export type IconProps = IComponentBaseProps & {
   width?: number;

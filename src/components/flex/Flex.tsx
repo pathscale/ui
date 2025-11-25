@@ -8,7 +8,7 @@ import { Dynamic } from "solid-js/web";
 import clsx from "clsx";
 import { twMerge } from "tailwind-merge";
 import type { IComponentBaseProps } from "../types";
-import { ResponsiveProp } from "../types";
+import type { ResponsiveProp } from "../types";
 import { mapResponsiveProp } from "../utils";
 
 export type FlexProps = IComponentBaseProps &
@@ -188,13 +188,17 @@ const Flex = (props: FlexProps): JSX.Element => {
         mapResponsiveProp(local.grow, growMap),
         mapResponsiveProp(local.shrink, shrinkMap),
         mapResponsiveProp(local.basis, basisMap),
-        local.class
-      )
-    )
+        local.class,
+      ),
+    ),
   );
 
   return (
-    <Dynamic component={tag()} class={classes()} {...rest}>
+    <Dynamic
+      component={tag()}
+      class={classes()}
+      {...rest}
+    >
       {resolvedChildren()}
     </Dynamic>
   );

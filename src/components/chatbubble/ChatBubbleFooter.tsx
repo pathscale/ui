@@ -7,7 +7,10 @@ export type ChatBubbleFooterProps = JSX.HTMLAttributes<HTMLDivElement> &
 
 const ChatBubbleFooter = (props: ChatBubbleFooterProps): JSX.Element => {
   return (
-    <div {...props} class={twMerge("chat-footer opacity-50", props.class)} />
+    <div
+      {...props}
+      class={twMerge("chat-footer opacity-50", props.class)}
+    />
   );
 };
 

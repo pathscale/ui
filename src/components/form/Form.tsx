@@ -8,7 +8,7 @@ import {
   splitProps,
 } from "solid-js";
 import { twMerge } from "tailwind-merge";
-import { IComponentBaseProps } from "../types";
+import type { IComponentBaseProps } from "../types";
 import FormLabel from "./Label";
 import ValidatedForm, { useFormValidation } from "./ValidatedForm";
 import FormField from "./FormField";
@@ -16,11 +16,11 @@ import PasswordField from "./PasswordField";
 import NumberField from "./NumberField";
 import FormDropdown from "./FormDropdown";
 
-export { type ValidatedFormProps } from "./ValidatedForm";
-export { type FormFieldProps } from "./FormField";
-export { type PasswordFieldProps } from "./PasswordField";
-export { type NumberFieldProps } from "./NumberField";
-export { type FormDropdownProps, type DropdownOption } from "./FormDropdown";
+export type { ValidatedFormProps } from "./ValidatedForm";
+export type { FormFieldProps } from "./FormField";
+export type { PasswordFieldProps } from "./PasswordField";
+export type { NumberFieldProps } from "./NumberField";
+export type { FormDropdownProps, DropdownOption } from "./FormDropdown";
 
 export type FormProps = Omit<JSX.HTMLAttributes<HTMLFormElement>, "ref"> &
   IComponentBaseProps & {
@@ -50,8 +50,8 @@ const Form: ParentComponent<FormProps> = (props) => {
     if (!formRef) return [];
     return Array.from(
       formRef.querySelectorAll(
-        'input:not([disabled]):not([type="hidden"]), textarea:not([disabled]), select:not([disabled])'
-      )
+        'input:not([disabled]):not([type="hidden"]), textarea:not([disabled]), select:not([disabled])',
+      ),
     ) as HTMLElement[];
   };
 
@@ -71,7 +71,7 @@ const Form: ParentComponent<FormProps> = (props) => {
 
     if (currentIndex === focusableElements.length - 1) {
       formRef?.dispatchEvent(
-        new Event("submit", { bubbles: true, cancelable: true })
+        new Event("submit", { bubbles: true, cancelable: true }),
       );
     } else {
       const nextElement = focusableElements[currentIndex + 1];

@@ -1,4 +1,4 @@
-import { JSX, splitProps, Show } from "solid-js";
+import { type JSX, splitProps, Show } from "solid-js";
 import Button, { type ButtonProps } from "../button/Button";
 import type {
   ComponentColor,
@@ -57,8 +57,16 @@ const DropdownToggle = (props: DropdownToggleProps) => {
   };
 
   return (
-    <label tabIndex={0} {...others} {...commonAriaProps} class={local.class}>
-      <Show when={local.button} fallback={local.children}>
+    <label
+      tabIndex={0}
+      {...others}
+      {...commonAriaProps}
+      class={local.class}
+    >
+      <Show
+        when={local.button}
+        fallback={local.children}
+      >
         <Button
           type="button"
           dataTheme={local.dataTheme}

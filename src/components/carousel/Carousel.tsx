@@ -39,12 +39,12 @@ const Carousel = (props: ParentProps<CarouselProps>) => {
         "carousel-end": local.snap === "end",
         "carousel-vertical": local.direction === "vertical",
         "carousel-horizontal": local.direction === "horizontal",
-      })
-    )
+      }),
+    ),
   );
 
   const ariaRoleDescription = createMemo(
-    () => local["aria-roledescription"] || "carousel"
+    () => local["aria-roledescription"] || "carousel",
   );
   const ariaLabel = createMemo(() => local["aria-label"]);
   const ariaDescribedby = createMemo(() => local["aria-describedby"]);

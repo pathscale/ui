@@ -1,5 +1,5 @@
 import {
-  Component,
+  type Component,
   createSignal,
   onMount,
   onCleanup,
@@ -23,7 +23,7 @@ const BottomSheet: Component<BottomSheetProps> = (props) => {
       closeOnOverlayClick: true,
       closeOnSwipeDown: true,
     },
-    props
+    props,
   );
 
   const [local, others] = splitProps(merged, [
@@ -110,7 +110,7 @@ const BottomSheet: Component<BottomSheetProps> = (props) => {
         ref={overlayRef}
         class={clsx(
           "fixed inset-0 bg-base-100 bg-opacity-60 z-40 transition-opacity duration-200",
-          local.isOpen ? "opacity-100" : "opacity-0 pointer-events-none"
+          local.isOpen ? "opacity-100" : "opacity-0 pointer-events-none",
         )}
         onClick={handleOverlayClick}
       />
@@ -119,7 +119,7 @@ const BottomSheet: Component<BottomSheetProps> = (props) => {
         ref={sheetRef}
         class={clsx(
           "bg-base-300 text-base-content fixed bottom-0 left-0 right-0 rounded-t-2xl shadow-lg z-50 transition-transform duration-300 ease-out",
-          local.isOpen ? "translate-y-0" : "translate-y-full"
+          local.isOpen ? "translate-y-0" : "translate-y-full",
         )}
         style={{
           transform: isDragging()

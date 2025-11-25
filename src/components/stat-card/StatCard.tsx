@@ -27,11 +27,14 @@ const StatCard = (props: StatCardProps) => {
       style={normalizedStyle}
       class={twMerge(
         "border border-base-300 bg-base-100 rounded-lg p-6",
-        local.class
+        local.class,
       )}
       data-theme={local.dataTheme}
     >
-      <Flex align="center" gap="md">
+      <Flex
+        align="center"
+        gap="md"
+      >
         {local.children}
       </Flex>
     </Card>

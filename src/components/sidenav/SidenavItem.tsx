@@ -36,7 +36,7 @@ const SidenavItem = (props: SidenavItemProps): JSX.Element => {
       local.className,
       clsx({
         "sidenav-item-active": local.active,
-      })
+      }),
     );
   });
 

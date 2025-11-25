@@ -25,7 +25,7 @@ export type ModalProps = IComponentBaseProps &
     onClose?: () => void;
     closeOnEsc?: boolean;
     closeOnOutsideClick?: boolean;
-    size?: ComponentSize | 'full';
+    size?: ComponentSize | "full";
   };
 
 export type DialogProps = Omit<ModalProps, "ref">;
@@ -112,8 +112,8 @@ export function Modal(props: ModalProps): JSX.Element {
         "modal-middle": local.position === "middle",
         "modal-bottom": local.position === "bottom",
         "modal-bottom sm:modal-middle": local.responsive,
-      })
-    )
+      }),
+    ),
   );
 
   const bodyClasses = createMemo(() =>
@@ -128,8 +128,8 @@ export function Modal(props: ModalProps): JSX.Element {
         "max-w-none w-80": local.size === "sm",
         "max-w-none w-64": local.size === "xs",
         "max-w-none w-full h-full": local.size === "full",
-      })
-    )
+      }),
+    ),
   );
 
   return (
@@ -148,12 +148,21 @@ export function Modal(props: ModalProps): JSX.Element {
         }
       }}
     >
-      <div data-theme={local.dataTheme} class={bodyClasses()}>
+      <div
+        data-theme={local.dataTheme}
+        class={bodyClasses()}
+      >
         {resolvedChildren()}
       </div>
       {local.backdrop && (
-        <form method="dialog" class="modal-backdrop">
-          <button type="submit" class="sr-only">
+        <form
+          method="dialog"
+          class="modal-backdrop"
+        >
+          <button
+            type="submit"
+            class="sr-only"
+          >
             Close
           </button>
         </form>

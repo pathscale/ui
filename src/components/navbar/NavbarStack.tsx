@@ -39,8 +39,8 @@ const NavbarStack = (props: NavbarStackProps): JSX.Element => {
       clsx({
         "sticky top-0 z-30": local.sticky,
         "max-w-screen-xl mx-auto px-4": local.container,
-      })
-    )
+      }),
+    ),
   );
 
   return (

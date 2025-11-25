@@ -8,7 +8,7 @@ import {
 } from "solid-js";
 import { createForm } from "@felte/solid";
 import { validator } from "@felte/validator-zod";
-import { z } from "zod";
+import type { z } from "zod";
 import type { ObjectSetter, Paths } from "@felte/common";
 import Form, { type FormProps } from "./Form";
 
@@ -38,7 +38,9 @@ interface FormValidationContext<T extends z.ZodTypeAny = z.ZodTypeAny> {
 const FormValidationContext = createContext<FormValidationContext>();
 
 export function useFormValidation<T extends z.ZodTypeAny = z.ZodTypeAny>() {
-  const context = useContext(FormValidationContext) as FormValidationContext<T> | undefined;
+  const context = useContext(FormValidationContext) as
+    | FormValidationContext<T>
+    | undefined;
   if (!context) {
     throw new Error("useFormValidation must be used within a ValidatedForm");
   }
@@ -46,7 +48,7 @@ export function useFormValidation<T extends z.ZodTypeAny = z.ZodTypeAny>() {
 }
 
 function ValidatedForm<T extends z.ZodTypeAny>(
-  props: ValidatedFormProps<T>
+  props: ValidatedFormProps<T>,
 ): JSX.Element {
   const [local, others] = splitProps(props, [
     "children",
@@ -66,7 +68,7 @@ function ValidatedForm<T extends z.ZodTypeAny>(
     setErrors,
     setWarnings,
     setTouched,
-    reset
+    reset,
   } = createForm<z.infer<T>>({
     initialValues: local.initialValues,
     extend: [validator({ schema: local.schema })],
@@ -84,13 +86,16 @@ function ValidatedForm<T extends z.ZodTypeAny>(
       setErrors,
       setWarnings,
       setTouched,
-      reset
-    })
+      reset,
+    }),
   );
 
   return (
     <FormValidationContext.Provider value={contextValue()}>
-      <Form {...others} ref={form}>
+      <Form
+        {...others}
+        ref={form}
+      >
         {typeof local.children === "function"
           ? local.children()
           : local.children}

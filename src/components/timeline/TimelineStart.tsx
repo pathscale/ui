@@ -12,11 +12,15 @@ const TimelineStart = (props: TimelineStartProps): JSX.Element => {
   const classes = twMerge(
     "timeline-start",
     clsx({ "timeline-box": local.box }),
-    local.class
+    local.class,
   );
 
   return (
-    <div {...others} class={classes} style={local.style}>
+    <div
+      {...others}
+      class={classes}
+      style={local.style}
+    >
       {props.children}
     </div>
   );

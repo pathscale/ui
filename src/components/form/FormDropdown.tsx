@@ -1,4 +1,11 @@
-import { Component, Show, createMemo, splitProps, JSX, For } from "solid-js";
+import {
+  type Component,
+  Show,
+  createMemo,
+  splitProps,
+  type JSX,
+  For,
+} from "solid-js";
 import { twMerge } from "tailwind-merge";
 import { useFormValidation } from "./ValidatedForm";
 import Form from "./Form";
@@ -52,15 +59,15 @@ export const FormDropdown: Component<FormDropdownProps> = (props) => {
   ]);
 
   const containerClasses = createMemo(() =>
-    twMerge("flex flex-col gap-2", local.containerClass)
+    twMerge("flex flex-col gap-2", local.containerClass),
   );
 
   const descriptionClasses = createMemo(() =>
-    twMerge("text-sm text-base-content/70", local.descriptionClass)
+    twMerge("text-sm text-base-content/70", local.descriptionClass),
   );
 
   const errorClasses = createMemo(() =>
-    twMerge("text-error text-sm", local.errorClass)
+    twMerge("text-error text-sm", local.errorClass),
   );
 
   const dropdownClasses = createMemo(() =>
@@ -68,16 +75,16 @@ export const FormDropdown: Component<FormDropdownProps> = (props) => {
       "border border-base-300 rounded px-4 py-2 w-full flex justify-between items-center",
       local.disabled ? "opacity-70 cursor-not-allowed" : "",
       local.class,
-      local.className
-    )
+      local.className,
+    ),
   );
 
   const hasError = createMemo(
-    () => touched(local.name) && !!errors(local.name)
+    () => touched(local.name) && !!errors(local.name),
   );
 
   const selectedOption = createMemo(() =>
-    local.options.find((opt) => opt.value === local.value)
+    local.options.find((opt) => opt.value === local.value),
   );
 
   const handleSelect = (value: string) => {
@@ -89,7 +96,10 @@ export const FormDropdown: Component<FormDropdownProps> = (props) => {
 
   return (
     <div class={containerClasses()}>
-      <Form.Label title={local.label} class={local.labelClass}>
+      <Form.Label
+        title={local.label}
+        class={local.labelClass}
+      >
         {local.required && <span class="text-error ml-1">*</span>}
       </Form.Label>
 

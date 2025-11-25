@@ -29,7 +29,12 @@ const ChatBubbleMessage = (props: ChatBubbleMessageProps): JSX.Element => {
     "chat-bubble-error": props.color === "error",
   });
 
-  return <div {...props} class={twMerge(bubbleClass, props.class)} />;
+  return (
+    <div
+      {...props}
+      class={twMerge(bubbleClass, props.class)}
+    />
+  );
 };
 
 export default ChatBubbleMessage;

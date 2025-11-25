@@ -241,7 +241,10 @@ function EnhancedTable<TData>(props: EnhancedTableProps<TData>): JSX.Element {
     (local.expandable ? 1 : 0);
 
   return (
-    <Table {...tableProps} class={clsx(tableProps.class, "table-auto")}>
+    <Table
+      {...tableProps}
+      class={clsx(tableProps.class, "table-auto")}
+    >
       <Table.Head noCell>
         <For each={headerGroups()}>
           {(hg) => (
@@ -289,7 +292,7 @@ function EnhancedTable<TData>(props: EnhancedTableProps<TData>): JSX.Element {
                         <div class="truncate">
                           {flexRender(
                             header.column.columnDef.header,
-                            header.getContext()
+                            header.getContext(),
                           )}
                         </div>
                         <Show when={header.column.getIsSorted() === "asc"}>
@@ -327,17 +330,27 @@ function EnhancedTable<TData>(props: EnhancedTableProps<TData>): JSX.Element {
       <Table.Body>
         {local.loading ? (
           <Table.Row>
-            <Table.Cell colSpan={visibleColumnCount()} class="text-center py-6">
+            <Table.Cell
+              colSpan={visibleColumnCount()}
+              class="text-center py-6"
+            >
               {local.renderLoading ? (
                 local.renderLoading()
               ) : (
-                <Loading variant="spinner" size="lg" color="primary" />
+                <Loading
+                  variant="spinner"
+                  size="lg"
+                  color="primary"
+                />
               )}
             </Table.Cell>
           </Table.Row>
         ) : tableRows().length === 0 && local.renderEmpty ? (
           <Table.Row>
-            <Table.Cell colSpan={visibleColumnCount()} class="text-center py-4">
+            <Table.Cell
+              colSpan={visibleColumnCount()}
+              class="text-center py-4"
+            >
               {local.renderEmpty()}
             </Table.Cell>
           </Table.Row>
@@ -355,8 +368,8 @@ function EnhancedTable<TData>(props: EnhancedTableProps<TData>): JSX.Element {
                         onClick={row.getToggleExpandedHandler()}
                       >
                         {row.getIsExpanded()
-                          ? local.collapseIcon ?? "v"
-                          : local.expandIcon ?? ">"}
+                          ? (local.collapseIcon ?? "v")
+                          : (local.expandIcon ?? ">")}
                       </Button>
                     </Table.Cell>
                   </Show>
@@ -373,7 +386,7 @@ function EnhancedTable<TData>(props: EnhancedTableProps<TData>): JSX.Element {
                       <Table.Cell>
                         {flexRender(
                           cell.column.columnDef.cell,
-                          cell.getContext()
+                          cell.getContext(),
                         )}
                       </Table.Cell>
                     )}
@@ -402,13 +415,17 @@ function EnhancedTable<TData>(props: EnhancedTableProps<TData>): JSX.Element {
                   local.paginationPosition === "bottomLeft" && "justify-start",
                   local.paginationPosition === "bottomCenter" &&
                     "justify-center",
-                  local.paginationPosition === "bottomRight" && "justify-end"
+                  local.paginationPosition === "bottomRight" && "justify-end",
                 )}
               >
                 <div class="flex items-center gap-2">
                   <span class="opacity-70">Rows per page</span>
                   <Dropdown class="dropdown-end">
-                    <Dropdown.Toggle button size="sm" color="neutral">
+                    <Dropdown.Toggle
+                      button
+                      size="sm"
+                      color="neutral"
+                    >
                       {table.getState().pagination.pageSize}
                     </Dropdown.Toggle>
                     <Dropdown.Menu class="w-24">
@@ -419,7 +436,7 @@ function EnhancedTable<TData>(props: EnhancedTableProps<TData>): JSX.Element {
                         }
                         class={clsx(
                           table.getState().pagination.pageSize === 10 &&
-                            "active"
+                            "active",
                         )}
                       >
                         10
@@ -431,7 +448,7 @@ function EnhancedTable<TData>(props: EnhancedTableProps<TData>): JSX.Element {
                         }
                         class={clsx(
                           table.getState().pagination.pageSize === 25 &&
-                            "active"
+                            "active",
                         )}
                       >
                         25
@@ -443,7 +460,7 @@ function EnhancedTable<TData>(props: EnhancedTableProps<TData>): JSX.Element {
                         }
                         class={clsx(
                           table.getState().pagination.pageSize === 50 &&
-                            "active"
+                            "active",
                         )}
                       >
                         50
@@ -455,7 +472,7 @@ function EnhancedTable<TData>(props: EnhancedTableProps<TData>): JSX.Element {
                         }
                         class={clsx(
                           table.getState().pagination.pageSize === 100 &&
-                            "active"
+                            "active",
                         )}
                       >
                         100
@@ -523,7 +540,7 @@ function ColumnFilter(props: { column: any }) {
         value={value() ?? ""}
         onInput={(e) =>
           col.setFilterValue(
-            (e.currentTarget as HTMLInputElement).value || undefined
+            (e.currentTarget as HTMLInputElement).value || undefined,
           )
         }
       />

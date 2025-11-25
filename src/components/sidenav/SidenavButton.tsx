@@ -31,7 +31,7 @@ const SidenavButton = (props: SidenavButtonProps): JSX.Element => {
   const resolvedChildren = resolveChildren(() => local.children);
 
   const classes = createMemo(() =>
-    twMerge("sidenav-item-button", local.class, local.className)
+    twMerge("sidenav-item-button", local.class, local.className),
   );
 
   return (

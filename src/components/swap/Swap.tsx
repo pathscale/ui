@@ -42,8 +42,8 @@ export default function Swap(props: SwapProps): JSX.Element {
         "swap-flip": local.flip,
       }),
       local.class,
-      local.className
-    )
+      local.className,
+    ),
   );
 
   const onEl = createMemo(() =>
@@ -51,7 +51,7 @@ export default function Swap(props: SwapProps): JSX.Element {
       node: local.onElement,
       wrapper: "div",
       className: "swap-on",
-    })
+    }),
   );
 
   const offEl = createMemo(() =>
@@ -59,7 +59,7 @@ export default function Swap(props: SwapProps): JSX.Element {
       node: local.offElement,
       wrapper: "div",
       className: "swap-off",
-    })
+    }),
   );
 
   return (

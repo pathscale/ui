@@ -28,12 +28,12 @@ export function classesFn({
       "collapse-plus": icon === "plus",
       "collapse-open": open === true,
       "collapse-close": open === false,
-    })
+    }),
   );
 }
 
 export default function CollapseDetails(
-  props: CollapseDetailsProps
+  props: CollapseDetailsProps,
 ): JSX.Element {
   const classes = classesFn({
     className: props.class,
@@ -42,7 +42,11 @@ export default function CollapseDetails(
   });
 
   return (
-    <details {...props} class={classes} open={props.open}>
+    <details
+      {...props}
+      class={classes}
+      open={props.open}
+    >
       {props.children}
     </details>
   );

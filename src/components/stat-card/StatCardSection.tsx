@@ -4,7 +4,7 @@ import CopyButton from "../copy-button/CopyButton";
 
 export const StatCardSection = (section: string) => {
   return (
-    props: JSX.HTMLAttributes<HTMLDivElement> & { copyable?: boolean }
+    props: JSX.HTMLAttributes<HTMLDivElement> & { copyable?: boolean },
   ) => {
     const [local, rest] = splitProps(props, ["class", "children", "copyable"]);
 
@@ -30,15 +30,18 @@ export const StatCardSection = (section: string) => {
       section === "title"
         ? "text-sm text-base-content/60"
         : section === "value"
-        ? "text-2xl font-bold text-base-content"
-        : section === "desc"
-        ? "text-sm text-base-content/50"
-        : section === "actions"
-        ? "flex items-center gap-2"
-        : "";
+          ? "text-2xl font-bold text-base-content"
+          : section === "desc"
+            ? "text-sm text-base-content/50"
+            : section === "actions"
+              ? "flex items-center gap-2"
+              : "";
 
     return (
-      <div {...rest} class={twMerge(classes, local.class)}>
+      <div
+        {...rest}
+        class={twMerge(classes, local.class)}
+      >
         {content}
       </div>
     );

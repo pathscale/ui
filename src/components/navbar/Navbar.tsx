@@ -42,15 +42,28 @@ const Navbar = (props: NavbarProps): JSX.Element => {
 };
 
 const NavbarStart = (
-  props: JSX.HTMLAttributes<HTMLDivElement>
-): JSX.Element => <NavbarSection section="start" {...props} />;
+  props: JSX.HTMLAttributes<HTMLDivElement>,
+): JSX.Element => (
+  <NavbarSection
+    section="start"
+    {...props}
+  />
+);
 
 const NavbarCenter = (
-  props: JSX.HTMLAttributes<HTMLDivElement>
-): JSX.Element => <NavbarSection section="center" {...props} />;
+  props: JSX.HTMLAttributes<HTMLDivElement>,
+): JSX.Element => (
+  <NavbarSection
+    section="center"
+    {...props}
+  />
+);
 
 const NavbarEnd = (props: JSX.HTMLAttributes<HTMLDivElement>): JSX.Element => (
-  <NavbarSection section="end" {...props} />
+  <NavbarSection
+    section="end"
+    {...props}
+  />
 );
 
 export default Object.assign(Navbar, {

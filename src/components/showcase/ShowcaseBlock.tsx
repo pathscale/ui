@@ -1,4 +1,4 @@
-import { ParentComponent, Show, splitProps } from "solid-js";
+import { type ParentComponent, Show, splitProps } from "solid-js";
 import { twMerge } from "tailwind-merge";
 import type { IComponentBaseProps } from "../types";
 import Flex from "../flex";

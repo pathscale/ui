@@ -1,7 +1,7 @@
-import { splitProps, createMemo, JSX, Show, For } from "solid-js";
+import { splitProps, createMemo, type JSX, Show, For } from "solid-js";
 import clsx from "clsx";
 import { twMerge } from "tailwind-merge";
-import { IComponentBaseProps } from "../types";
+import type { IComponentBaseProps } from "../types";
 
 export type ComponentColor =
   | "primary"
@@ -57,8 +57,8 @@ const Range = (props: RangeProps): JSX.Element => {
         "range-success": local.color === "success",
         "range-warning": local.color === "warning",
         "range-error": local.color === "error",
-      })
-    )
+      }),
+    ),
   );
 
   const ticks = createMemo(() => {

@@ -66,7 +66,7 @@ const Checkbox = (props: CheckboxProps): JSX.Element => {
         "checkbox-success": local.color === "success",
         "checkbox-warning": local.color === "warning",
         "checkbox-error": local.color === "error",
-      })
+      }),
     );
 
   onMount(() => {
@@ -97,7 +97,7 @@ const Checkbox = (props: CheckboxProps): JSX.Element => {
       aria-checked={
         local.indeterminate
           ? "mixed"
-          : props.checked ?? props.defaultChecked ?? undefined
+          : (props.checked ?? props.defaultChecked ?? undefined)
       }
     />
   );

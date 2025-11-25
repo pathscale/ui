@@ -43,11 +43,15 @@ const Tabs = (props: TabsProps): JSX.Element => {
         "tabs-xs": local.size === "xs",
         "tabs-top": local.position === "top",
         "tabs-bottom": local.position === "bottom",
-      })
+      }),
     );
 
   return (
-    <div role="tablist" class={classes()} {...others}>
+    <div
+      role="tablist"
+      class={classes()}
+      {...others}
+    >
       {local.children}
     </div>
   );

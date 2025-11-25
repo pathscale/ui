@@ -1,10 +1,10 @@
 import {
-  Component,
+  type Component,
   Show,
   createSignal,
   createMemo,
   splitProps,
-  JSX,
+  type JSX,
 } from "solid-js";
 import Input from "../input";
 import Icon from "../icon";
@@ -47,34 +47,42 @@ export const PasswordField: Component<PasswordFieldProps> = (props) => {
   const togglePassword = () => setShowPassword(!showPassword());
 
   const containerClasses = createMemo(() =>
-    twMerge("flex flex-col gap-2", local.containerClass)
+    twMerge("flex flex-col gap-2", local.containerClass),
   );
 
   const descriptionClasses = createMemo(() =>
-    twMerge("text-sm text-base-content/70", local.descriptionClass)
+    twMerge("text-sm text-base-content/70", local.descriptionClass),
   );
 
   const errorClasses = createMemo(() =>
-    twMerge("text-error text-sm", local.errorClass)
+    twMerge("text-error text-sm", local.errorClass),
   );
 
   const inputClasses = createMemo(() => twMerge(local.class, local.className));
 
   const hasError = createMemo(
-    () => touched(props.name) && !!errors(props.name)
+    () => touched(props.name) && !!errors(props.name),
   );
 
   const passwordIcon = createMemo(() => {
     if (showPassword()) {
       return (
         local.hidePasswordIcon || (
-          <Icon name="icon-[mdi-light--eye-off]" width={20} height={20} />
+          <Icon
+            name="icon-[mdi-light--eye-off]"
+            width={20}
+            height={20}
+          />
         )
       );
     } else {
       return (
         local.showPasswordIcon || (
-          <Icon name="icon-[mdi-light--eye]" width={20} height={20} />
+          <Icon
+            name="icon-[mdi-light--eye]"
+            width={20}
+            height={20}
+          />
         )
       );
     }
@@ -83,7 +91,10 @@ export const PasswordField: Component<PasswordFieldProps> = (props) => {
   return (
     <div class={containerClasses()}>
       {local.label && (
-        <Form.Label title={local.label} class={local.labelClass}>
+        <Form.Label
+          title={local.label}
+          class={local.labelClass}
+        >
           {local.required && <span class="text-error ml-1">*</span>}
         </Form.Label>
       )}

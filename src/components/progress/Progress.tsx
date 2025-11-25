@@ -48,7 +48,7 @@ const Progress = (props: ProgressProps) => {
       "progress-ghost": local.color === "ghost",
     }),
     local.class,
-    local.className
+    local.className,
   );
 
   // Helper to get proper aria-valuenow value
@@ -57,7 +57,7 @@ const Progress = (props: ProgressProps) => {
       return local["aria-valuenow"];
     }
     const value = others.value;
-    if (typeof value === 'number' || typeof value === 'string') {
+    if (typeof value === "number" || typeof value === "string") {
       return value;
     }
     return undefined;

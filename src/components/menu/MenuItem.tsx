@@ -31,7 +31,7 @@ const MenuItem: Component<MenuItemProps> = (props) => {
         "menu-focus": local.focus,
         "menu-active": local.active,
         "menu-disabled": local.disabled,
-      })
+      }),
     );
 
   return (

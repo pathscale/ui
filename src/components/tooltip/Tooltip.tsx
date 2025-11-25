@@ -53,7 +53,7 @@ const Tooltip = (props: TooltipProps): JSX.Element => {
         "tooltip-bottom": local.position === "bottom",
         "tooltip-left": local.position === "left",
         "tooltip-right": local.position === "right",
-      })
+      }),
     );
 
   return (

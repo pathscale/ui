@@ -6,7 +6,7 @@ import {
 } from "solid-js";
 import clsx from "clsx";
 import { twMerge } from "tailwind-merge";
-import { IComponentBaseProps } from "../types";
+import type { IComponentBaseProps } from "../types";
 
 export type DrawerProps = Omit<JSX.HTMLAttributes<HTMLDivElement>, "ref"> &
   IComponentBaseProps & {
@@ -45,7 +45,7 @@ const Drawer: ParentComponent<DrawerProps> = (props) => {
       local.className,
       clsx({
         "drawer-end": local.end,
-      })
+      }),
     );
 
   const toggleClasses = () => twMerge("drawer-toggle", local.toggleClassName);
@@ -73,7 +73,10 @@ const Drawer: ParentComponent<DrawerProps> = (props) => {
       />
       <div class={contentClasses()}>{resolvedChildren()}</div>
       <div class={sideClasses()}>
-        <label class={overlayClasses()} onClick={local.onClickOverlay} />
+        <label
+          class={overlayClasses()}
+          onClick={local.onClickOverlay}
+        />
         {local.side}
       </div>
     </div>

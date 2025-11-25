@@ -74,7 +74,7 @@ const VoidElementList: ElementType[] = [
 ];
 
 const Button = <E extends ElementType = "button">(
-  props: ButtonProps<E>
+  props: ButtonProps<E>,
 ): JSX.Element => {
   const [local, others] = splitProps(
     props as ButtonBaseProps & Record<string, unknown>,
@@ -106,7 +106,7 @@ const Button = <E extends ElementType = "button">(
       "aria-controls",
       "aria-haspopup",
       "aria-role",
-    ]
+    ],
   );
 
   const normalizeAriaValue = (value: unknown) => {
@@ -147,7 +147,7 @@ const Button = <E extends ElementType = "button">(
         "cursor-not-allowed": local.disabled,
       }),
       local.class,
-      local.className
+      local.className,
     );
 
   const Tag = local.as || "button";
@@ -191,7 +191,11 @@ const Button = <E extends ElementType = "button">(
       role={local["aria-role"]}
     >
       <Show when={local.loading}>
-        <Loading size={local.size} color={local.color} variant="spinner" />
+        <Loading
+          size={local.size}
+          color={local.color}
+          variant="spinner"
+        />
       </Show>
       <Show when={local.startIcon && !local.loading}>{local.startIcon}</Show>
       {local.children}

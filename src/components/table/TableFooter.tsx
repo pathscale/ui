@@ -2,12 +2,12 @@ import {
   type Component,
   splitProps,
   children as resolveChildren,
-  JSX,
+  type JSX,
   For,
   Show,
   createMemo,
 } from "solid-js";
-import { type IComponentBaseProps } from "../types";
+import type { IComponentBaseProps } from "../types";
 import TableCell from "./TableCell";
 import TableHeadCell from "./TableHeadCell";
 import clsx from "clsx";
@@ -31,8 +31,15 @@ const TableFooter: Component<TableFooterProps> = (props) => {
   const classes = createMemo(() => twMerge(clsx(local.class, local.className)));
 
   return (
-    <tfoot class={classes()} data-theme={local.dataTheme} {...rest}>
-      <Show when={local.noCell} fallback={<tr>{resolved()}</tr>}>
+    <tfoot
+      class={classes()}
+      data-theme={local.dataTheme}
+      {...rest}
+    >
+      <Show
+        when={local.noCell}
+        fallback={<tr>{resolved()}</tr>}
+      >
         {resolved()}
       </Show>
     </tfoot>

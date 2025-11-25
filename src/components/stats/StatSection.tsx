@@ -20,7 +20,7 @@ const StatSection = (props: StatSectionProps) => {
           "stat-figure": local.section === "figure",
           "stat-actions": local.section === "actions",
         }),
-        local.class
+        local.class,
       )}
     >
       {props.children}

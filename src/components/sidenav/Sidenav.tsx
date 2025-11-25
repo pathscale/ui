@@ -52,8 +52,8 @@ const Sidenav = (props: SidenavProps): JSX.Element => {
         "sidenav-collapsed": local.collapsed,
         "sidenav-closed": !local.isOpen,
         "sidenav-desktop": isDesktop(),
-      })
-    )
+      }),
+    ),
   );
 
   return (

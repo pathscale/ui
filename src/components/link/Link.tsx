@@ -53,8 +53,8 @@ const Link = (props: LinkProps) => {
         "link-ghost": local.color === "ghost",
       }),
       local.class,
-      local.className
-    )
+      local.className,
+    ),
   );
 
   const ariaCurrent = createMemo(() => local["aria-current"]);

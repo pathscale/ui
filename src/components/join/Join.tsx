@@ -38,8 +38,8 @@ const Join = (props: JoinProps): JSX.Element => {
         "join-vertical lg:join-horizontal": local.responsive,
       }),
       local.class,
-      local.className
-    )
+      local.className,
+    ),
   );
 
   return (

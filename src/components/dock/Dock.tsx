@@ -2,7 +2,7 @@ import type { JSX } from "solid-js";
 import { splitProps } from "solid-js";
 import { twMerge } from "tailwind-merge";
 import clsx from "clsx";
-import { IComponentBaseProps, ComponentSize } from "../types";
+import type { IComponentBaseProps, ComponentSize } from "../types";
 import DockItem, { type DockItemProps as ItemProps } from "./DockItem";
 import DockLabel, { type DockLabelProps as LabelProps } from "./DockLabel";
 
@@ -32,7 +32,7 @@ const Dock = (props: DockProps): JSX.Element => {
       "dock-xs": local.size === "xs",
     }),
     local.class,
-    local.className
+    local.className,
   );
 
   return (

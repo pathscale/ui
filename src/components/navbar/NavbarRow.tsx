@@ -46,8 +46,8 @@ const NavbarRow = (props: NavbarRowProps): JSX.Element => {
         "bg-error text-error-content": local.color === "error",
       }),
       local.class,
-      local.className
-    )
+      local.className,
+    ),
   );
 
   return (
