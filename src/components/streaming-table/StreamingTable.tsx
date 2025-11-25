@@ -1,6 +1,6 @@
-import { createEffect, splitProps, type Component } from "solid-js";
-import EnhancedTable, { type EnhancedTableProps } from "../table/EnhancedTable";
-import type { ColumnDef } from "@tanstack/solid-table";
+import { For, createEffect, splitProps } from "solid-js";
+import Table from "../table";
+import type { TableProps } from "../table";
 import {
   createStreamingTableStore,
   type StreamingTableStore,
@@ -12,10 +12,10 @@ export type StreamingTableProps<TData> = {
   columns: StreamingColumnDef<TData>[];
   getRowId?: (row: TData) => string;
   streamingConfig?: StreamingConfig;
-} & Omit<EnhancedTableProps<TData>, "data" | "columns">;
+} & Omit<TableProps, "children">;
 
 const StreamingTable = <TData,>(props: StreamingTableProps<TData>) => {
-  const [local, enhancedProps] = splitProps(props, [
+  const [local, tableProps] = splitProps(props, [
     "data",
     "columns",
     "getRowId",
@@ -40,13 +40,9 @@ const StreamingTable = <TData,>(props: StreamingTableProps<TData>) => {
     const incoming = local.data ?? [];
 
     if (config.appendMode) {
-      // Append mode: add new rows, don't remove stale ones
       store.appendRows(incoming, resolveId);
-
-      // Truncate if buffer exceeds max size
       store.truncateToSize(config.maxBufferSize);
     } else {
-      // Sync mode: upsert and remove stale rows (original behavior)
       const idSet = new Set<string>();
 
       incoming.forEach((row) => {
@@ -64,41 +60,35 @@ const StreamingTable = <TData,>(props: StreamingTableProps<TData>) => {
     }
   });
 
-  // Convert row stores to plain data for EnhancedTable
-  const tableData = () => store.rows().map((rowStore) => rowStore.data());
-
-  // Convert StreamingColumnDef to TanStack ColumnDef
-  const enhancedColumns = (): ColumnDef<TData>[] => {
-    return local.columns.map((col) => {
-      const colDef: any = {
-        header: col.header,
-        meta: col.meta,
-        enableColumnFilter: col.enableColumnFilter,
-        enableSorting: col.enableSorting,
-      };
-
-      if (col.accessorKey) {
-        colDef.accessorKey = col.accessorKey;
-      }
-
-      if (col.accessorFn) {
-        colDef.accessorFn = col.accessorFn;
-      }
-
-      if (col.cell) {
-        colDef.cell = col.cell;
-      }
-
-      return colDef as ColumnDef<TData>;
-    });
-  };
-
   return (
-    <EnhancedTable
-      data={tableData()}
-      columns={enhancedColumns()}
-      {...enhancedProps}
-    />
+    <Table {...tableProps}>
+      <Table.Head>
+        <For each={local.columns}>
+          {(col) => <Table.HeadCell>{col.header}</Table.HeadCell>}
+        </For>
+      </Table.Head>
+      <tbody>
+        <For each={store.rows()}>
+          {(rowStore) => (
+            <Table.Row>
+              <For each={local.columns}>
+                {(col) => (
+                  <Table.Cell>
+                    {col.cell
+                      ? col.cell({ row: { original: rowStore.data() } })
+                      : col.accessorKey
+                        ? (rowStore.data() as any)[col.accessorKey]
+                        : col.accessorFn
+                          ? col.accessorFn(rowStore.data())
+                          : ""}
+                  </Table.Cell>
+                )}
+              </For>
+            </Table.Row>
+          )}
+        </For>
+      </tbody>
+    </Table>
   );
 };
 
