@@ -36,6 +36,8 @@ export type StreamingTableProps<TData> = {
   initialPage?: number;
   /** Enable sorting (default: false) */
   enableSorting?: boolean;
+  /** Initial sorting state (default: null) */
+  initialSorting?: SortingState;
 } & Omit<TableProps, "children">;
 
 const StreamingTable = <TData,>(props: StreamingTableProps<TData>) => {
@@ -52,14 +54,20 @@ const StreamingTable = <TData,>(props: StreamingTableProps<TData>) => {
     "pageSize",
     "initialPage",
     "enableSorting",
+    "initialSorting",
   ]);
 
   const store: StreamingTableStore<TData> = createStreamingTableStore<TData>();
 
   // Sorting state
-  const [sortingState, setSortingState] = createSignal<SortingState>({
-    columnId: null,
-    direction: null,
+  const [sortingState, setSortingState] = createSignal<SortingState>(
+    local.initialSorting ?? { columnId: null, direction: null }
+  );
+
+  createEffect(() => {
+    if (local.initialSorting) {
+      setSortingState(local.initialSorting);
+    }
   });
 
   const config = {
