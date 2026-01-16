@@ -44,10 +44,31 @@ export default function App() {
           >
             Error Toast
           </Button>
+          <Button
+            color="error"
+            onClick={() =>
+              toastStore.addToast("Transient error (4s).", "error", 4000)
+            }
+          >
+            Error Toast (Timed)
+          </Button>
           <Button onClick={() => toastStore.showInfo("New message received.")}>
             Info Toast
           </Button>
+          <Button
+            variant="outline"
+            onClick={() => toastStore.clearAll()}
+          >
+            Clear All
+          </Button>
         </Flex>
+        <div class="max-w-xl text-sm text-neutral-content/80 leading-relaxed">
+          <p>
+            ToastStack test: errors are persistent by default and should stay
+            until dismissed. Timed toasts should auto-dismiss. Click the latest
+            toast to expand or collapse the stack.
+          </p>
+        </div>
       </Flex>
       <ToastStack max={4} />
     </Background>

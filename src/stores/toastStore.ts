@@ -9,6 +9,7 @@ export interface ToastItem {
   timestamp: number;
   duration: number;
   isExiting?: boolean;
+  persist?: boolean;
 }
 
 const [toasts, setToasts] = createSignal<ToastItem[]>([]);
@@ -35,7 +36,22 @@ const scheduleDismiss = (id: string, duration: number) => {
 export const toastStore = {
   toasts,
 
-  addToast: (message: string, type: ToastType = "info", duration = 8000) => {
+  addToast: (
+    message: string,
+    type: ToastType = "info",
+    durationOrOptions?: number | { duration?: number; persist?: boolean }
+  ) => {
+    const hasOptions = durationOrOptions !== undefined;
+    const duration =
+      typeof durationOrOptions === "number"
+        ? durationOrOptions
+        : durationOrOptions?.duration ??
+          (type === "error" && !hasOptions ? 0 : 8000);
+    const persist =
+      typeof durationOrOptions === "number"
+        ? false
+        : durationOrOptions?.persist ??
+          (type === "error" && !hasOptions ? true : false);
     const id = `toast-${++toastCounter}`;
     const toast: ToastItem = {
       id,
@@ -43,11 +59,14 @@ export const toastStore = {
       type,
       timestamp: Date.now(),
       duration,
+      persist,
     };
 
     setToasts((prev) => [...prev, toast]);
 
-    scheduleDismiss(id, duration);
+    if (!persist) {
+      scheduleDismiss(id, duration);
+    }
 
     return id;
   },
@@ -74,7 +93,8 @@ export const toastStore = {
     setToasts([]);
   },
 
-  showError: (message: string) => toastStore.addToast(message, "error", 10000),
+  showError: (message: string) =>
+    toastStore.addToast(message, "error", { persist: true }),
   showSuccess: (message: string) =>
     toastStore.addToast(message, "success", 6000),
   showWarning: (message: string) =>
