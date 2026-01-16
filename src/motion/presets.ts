@@ -76,6 +76,15 @@ export const createMotionPresets = (
         delay: 0.08,
       },
     },
+    toast: {
+      initial: { opacity: 0, y: distances.sm },
+      animate: { opacity: 1, y: 0 },
+      exit: { opacity: 0, y: -distances.sm },
+      transition: {
+        duration: durations.fast,
+        easing: easings.out,
+      },
+    },
     routeDashboard: {
       initial: { opacity: 0, y: distances.md, scale: 0.985 },
       animate: { opacity: 1, y: 0, scale: 1 },

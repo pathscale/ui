@@ -7,11 +7,30 @@ export interface ToastItem {
   message: string;
   type: ToastType;
   timestamp: number;
+  duration: number;
+  isExiting?: boolean;
 }
 
 const [toasts, setToasts] = createSignal<ToastItem[]>([]);
 
 let toastCounter = 0;
+const toastTimers = new Map<string, ReturnType<typeof setTimeout>>();
+
+const clearToastTimer = (id: string) => {
+  const timer = toastTimers.get(id);
+  if (!timer) return;
+  clearTimeout(timer);
+  toastTimers.delete(id);
+};
+
+const scheduleDismiss = (id: string, duration: number) => {
+  if (duration <= 0) return;
+  clearToastTimer(id);
+  const timer = setTimeout(() => {
+    toastStore.dismissToast(id);
+  }, duration);
+  toastTimers.set(id, timer);
+};
 
 export const toastStore = {
   toasts,
@@ -23,23 +42,35 @@ export const toastStore = {
       message,
       type,
       timestamp: Date.now(),
+      duration,
     };
 
     setToasts((prev) => [...prev, toast]);
 
-    // Auto remove toast after duration
-    setTimeout(() => {
-      toastStore.removeToast(id);
-    }, duration);
+    scheduleDismiss(id, duration);
 
     return id;
   },
 
+  dismissToast: (id: string) => {
+    clearToastTimer(id);
+    setToasts((prev) =>
+      prev.map((toast) =>
+        toast.id === id && !toast.isExiting
+          ? { ...toast, isExiting: true }
+          : toast
+      )
+    );
+  },
+
   removeToast: (id: string) => {
+    clearToastTimer(id);
     setToasts((prev) => prev.filter((toast) => toast.id !== id));
   },
 
   clearAll: () => {
+    toastTimers.forEach((timer) => clearTimeout(timer));
+    toastTimers.clear();
     setToasts([]);
   },
 
