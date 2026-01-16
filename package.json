@@ -64,7 +64,13 @@
     "@felte/validator-zod": "^1.0.0",
     "@tanstack/solid-table": "^8.0.0",
     "solid-js": "^1.9",
+    "popmotion": "^11.0.5",
     "zod": "^3.22.0"
+  },
+  "peerDependenciesMeta": {
+    "popmotion": {
+      "optional": true
+    }
   },
   "scripts": {
     "build": "rslib build && bun scripts/copy-css.js",

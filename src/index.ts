@@ -142,4 +142,7 @@ export {
 // Stores
 export * from "./stores";
 
+// Motion
+export * from "./motion";
+
 export { default } from "./components/connectionstatus";
