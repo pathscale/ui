@@ -17,9 +17,8 @@ const ColorPreview = (props: ColorPreviewProps): JSX.Element => {
     twMerge(
       "w-10 h-10 rounded border-2 cursor-pointer transition-all duration-150 overflow-hidden",
       clsx({
-        "border-gray-300 hover:scale-110 hover:shadow-lg dark:border-gray-600":
-          !props.disabled,
-        "border-gray-200 opacity-50 cursor-not-allowed": props.disabled,
+        "border-base-300 hover:scale-110 hover:shadow-lg": !props.disabled,
+        "border-base-200 opacity-50 cursor-not-allowed": props.disabled,
       }),
       props.class,
       props.className,
@@ -41,7 +40,7 @@ const ColorPreview = (props: ColorPreviewProps): JSX.Element => {
           class="absolute inset-0"
           style={{
             "background-image":
-              "linear-gradient(45deg, #ccc 25%, transparent 25%), linear-gradient(-45deg, #ccc 25%, transparent 25%), linear-gradient(45deg, transparent 75%, #ccc 75%), linear-gradient(-45deg, transparent 75%, #ccc 75%)",
+              "linear-gradient(45deg, hsl(var(--b3)) 25%, transparent 25%), linear-gradient(-45deg, hsl(var(--b3)) 25%, transparent 25%), linear-gradient(45deg, transparent 75%, hsl(var(--b3)) 75%), linear-gradient(-45deg, transparent 75%, hsl(var(--b3)) 75%)",
             "background-size": "8px 8px",
             "background-position": "0 0, 0 4px, 4px -4px, -4px 0px",
           }}

@@ -44,9 +44,9 @@ const ColorSwatches = (props: ColorSwatchesProps): JSX.Element => {
     return twMerge(
       "w-8 h-8 rounded cursor-pointer border-2 transition-all duration-150",
       clsx({
-        "border-primary ring-2 ring-primary ring-offset-2": isSelected,
-        "border-gray-300 hover:scale-110 hover:shadow-lg": !isSelected,
-        "dark:border-gray-600": !isSelected,
+        "border-primary ring-2 ring-primary ring-offset-2 ring-offset-base-100":
+          isSelected,
+        "border-base-300 hover:scale-110 hover:shadow-lg": !isSelected,
       }),
     );
   };

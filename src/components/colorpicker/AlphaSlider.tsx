@@ -116,7 +116,7 @@ const AlphaSlider = (props: AlphaSliderProps): JSX.Element => {
         class="absolute inset-0"
         style={{
           "background-image":
-            "linear-gradient(45deg, #ccc 25%, transparent 25%), linear-gradient(-45deg, #ccc 25%, transparent 25%), linear-gradient(45deg, transparent 75%, #ccc 75%), linear-gradient(-45deg, transparent 75%, #ccc 75%)",
+            "linear-gradient(45deg, hsl(var(--b3)) 25%, transparent 25%), linear-gradient(-45deg, hsl(var(--b3)) 25%, transparent 25%), linear-gradient(45deg, transparent 75%, hsl(var(--b3)) 75%), linear-gradient(-45deg, transparent 75%, hsl(var(--b3)) 75%)",
           "background-size": "8px 8px",
           "background-position": "0 0, 0 4px, 4px -4px, -4px 0px",
         }}
