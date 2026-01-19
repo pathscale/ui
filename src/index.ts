@@ -18,6 +18,8 @@ export { default as Carousel } from "./components/carousel";
 export type { CarouselItemProps, CarouselProps } from "./components/carousel";
 export { default as ChatBubble } from "./components/chatbubble";
 export { default as Checkbox } from "./components/checkbox";
+export { default as ColorPicker } from "./components/colorpicker";
+export type { ColorPickerProps, ColorFormat, ColorValue } from "./components/colorpicker";
 export { CodeMockup, CodeMockupLine } from "./components/codemockup";
 export {
   Collapse,
