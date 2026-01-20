@@ -10,12 +10,10 @@ import { twMerge } from "tailwind-merge";
 import { ColorPickerContext } from "./colorpickerContext";
 import type { ColorFormat, ColorValue } from "./ColorUtils";
 import { parseColor, getDefaultColor, formatColor } from "./ColorUtils";
-import SaturationBrightness from "./SaturationBrightness";
-import HueSlider from "./HueSlider";
 import AlphaSlider from "./AlphaSlider";
-import ColorWheel from "./ColorWheel";
-import ColorWheelFlower from "./ColorWheelFlower";
-import LightnessSlider from "./LightnessSlider";
+import ColorPickerGradientSelector from "./ColorPickerGradientSelector";
+import ColorPickerWheelSelector from "./ColorPickerWheelSelector";
+import ColorPickerFlowerSelector from "./ColorPickerFlowerSelector";
 import ColorSwatches from "./ColorSwatches";
 import ColorInput from "./ColorInput";
 import ColorPreview from "./ColorPreview";
@@ -218,18 +216,15 @@ const ColorPicker = (props: ColorPickerProps): JSX.Element => {
 
       <div class="space-y-4">
         <Show when={mode() === "picker"}>
-          <SaturationBrightness />
-          <HueSlider />
+          <ColorPickerGradientSelector />
         </Show>
 
         <Show when={mode() === "wheel"}>
-          <ColorWheel />
-          <LightnessSlider />
+          <ColorPickerWheelSelector />
         </Show>
 
         <Show when={mode() === "flower"}>
-          <ColorWheelFlower />
-          <LightnessSlider />
+          <ColorPickerFlowerSelector />
         </Show>
 
         <Show when={local.showAlpha}>
