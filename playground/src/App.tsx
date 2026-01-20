@@ -204,17 +204,17 @@ export default function App() {
         </section>
 
         <section class="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-lg">
-          <h2 class="text-2xl font-bold mb-4 text-left">Color Wheel Mode</h2>
+          <h2 class="text-2xl font-bold mb-4 text-left">Flower Color Wheel Mode</h2>
           <div class="flex items-center gap-4">
             <ColorPicker
               value={color4()}
               onChange={setColor4}
               format="hsl"
-              initialMode="wheel"
+              initialMode="flower"
             />
             <div class="text-left">
               <p class="text-sm text-gray-600 dark:text-gray-400">
-                Starts in Wheel Mode:
+                Color Picker:
               </p>
               <p class="font-mono text-lg font-bold">{color4()}</p>
             </div>
