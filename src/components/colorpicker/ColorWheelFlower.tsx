@@ -1,8 +1,24 @@
-import { type JSX, createSignal, For } from "solid-js";
+import {
+  type JSX,
+  createEffect,
+  createMemo,
+  createSignal,
+  For,
+  onCleanup,
+} from "solid-js";
 import { clsx } from "clsx";
 import { twMerge } from "tailwind-merge";
 import { useColorPickerContext } from "./colorpickerContext";
 import { rgbToHsl, createColorFromHsl } from "./ColorUtils";
+import {
+  motionDistances,
+  motionDurations,
+  motionEasings,
+  prefersReducedMotion,
+  runMotion,
+  type MotionState,
+  type MotionTransition,
+} from "../../motion";
 
 export interface ColorWheelFlowerProps {
   class?: string;
@@ -11,7 +27,8 @@ export interface ColorWheelFlowerProps {
 
 type ColorItem = {
   rgb: string;
-  transform: string;
+  offsetX: number;
+  offsetY: number;
   hue: number;
   saturation: number;
   lightness: number;
@@ -30,27 +47,78 @@ const parseRgbToHsl = (rgbString: string) => {
   return { hue: hsl.h, saturation: hsl.s, lightness: hsl.l };
 };
 
+const createColorItem = (
+  rgb: string,
+  offsetX: number,
+  offsetY: number
+): ColorItem => ({
+  rgb,
+  offsetX,
+  offsetY,
+  ...parseRgbToHsl(rgb),
+});
+
+const readMotionState = (el: HTMLElement): MotionState => {
+  const styles = getComputedStyle(el);
+  const opacityValue = Number.parseFloat(styles.opacity);
+  const opacity = Number.isFinite(opacityValue) ? opacityValue : 1;
+  const transform = styles.transform;
+  if (!transform || transform === "none") {
+    return { opacity, x: 0, y: 0, scale: 1 };
+  }
+
+  if (typeof DOMMatrixReadOnly !== "undefined") {
+    const matrix = new DOMMatrixReadOnly(transform);
+    return { opacity, x: matrix.m41, y: matrix.m42, scale: matrix.a };
+  }
+
+  const matrixMatch = transform.match(/matrix\(([^)]+)\)/);
+  if (!matrixMatch) {
+    return { opacity, x: 0, y: 0, scale: 1 };
+  }
+
+  const values = matrixMatch[1]
+    .split(",")
+    .map((value) => Number.parseFloat(value.trim()));
+  return {
+    opacity,
+    scale: Number.isFinite(values[0]) ? values[0] : 1,
+    x: Number.isFinite(values[4]) ? values[4] : 0,
+    y: Number.isFinite(values[5]) ? values[5] : 0,
+  };
+};
+
+const getLiftOffset = (item: ColorItem, distance: number) => {
+  const radius = Math.sqrt(item.offsetX ** 2 + item.offsetY ** 2);
+  if (!Number.isFinite(radius) || radius === 0) {
+    return { x: 0, y: 0 };
+  }
+  return {
+    x: (item.offsetX / radius) * distance,
+    y: (item.offsetY / radius) * distance,
+  };
+};
 
 const COLORS: ColorItem[] = [
-  { rgb: "rgb(245,245,61)", transform: "translateX(34.641px) translateY(-20px)", ...parseRgbToHsl("rgb(245,245,61)") },
-  { rgb: "rgb(245,153,61)", transform: "translateX(20px) translateY(-34.641px)", ...parseRgbToHsl("rgb(245,153,61)") },
-  { rgb: "rgb(245,61,61)", transform: "translateY(-40px)", ...parseRgbToHsl("rgb(245,61,61)") },
-  { rgb: "rgb(245,61,153)", transform: "translateX(-20px) translateY(-34.641px)", ...parseRgbToHsl("rgb(245,61,153)") },
-  { rgb: "rgb(245,61,245)", transform: "translateX(-34.641px) translateY(-20px)", ...parseRgbToHsl("rgb(245,61,245)") },
-  { rgb: "rgb(153,61,245)", transform: "translateX(-40px)", ...parseRgbToHsl("rgb(153,61,245)") },
-  { rgb: "rgb(61,61,245)", transform: "translateX(-34.641px) translateY(20px)", ...parseRgbToHsl("rgb(61,61,245)") },
-  { rgb: "rgb(61,153,245)", transform: "translateX(-20px) translateY(34.641px)", ...parseRgbToHsl("rgb(61,153,245)") },
-  { rgb: "rgb(61,245,245)", transform: "translateY(40px)", ...parseRgbToHsl("rgb(61,245,245)") },
-  { rgb: "rgb(61,245,153)", transform: "translateX(20px) translateY(34.641px)", ...parseRgbToHsl("rgb(61,245,153)") },
-  { rgb: "rgb(61,245,61)", transform: "translateX(34.641px) translateY(20px)", ...parseRgbToHsl("rgb(61,245,61)") },
-  { rgb: "rgb(153,245,61)", transform: "translateX(40px)", ...parseRgbToHsl("rgb(153,245,61)") },
-  { rgb: "rgb(240,217,194)", transform: "translateX(10px) translateY(-17.3205px)", ...parseRgbToHsl("rgb(240,217,194)") },
-  { rgb: "rgb(240,194,217)", transform: "translateX(-10px) translateY(-17.3205px)", ...parseRgbToHsl("rgb(240,194,217)") },
-  { rgb: "rgb(217,194,240)", transform: "translateX(-20px)", ...parseRgbToHsl("rgb(217,194,240)") },
-  { rgb: "rgb(194,217,240)", transform: "translateX(-10px) translateY(17.3205px)", ...parseRgbToHsl("rgb(194,217,240)") },
-  { rgb: "rgb(194,240,217)", transform: "translateX(10px) translateY(17.3205px)", ...parseRgbToHsl("rgb(194,240,217)") },
-  { rgb: "rgb(217,240,194)", transform: "translateX(20px)", ...parseRgbToHsl("rgb(217,240,194)") },
-  { rgb: "rgb(255,255,255)", transform: "none", ...parseRgbToHsl("rgb(255,255,255)") },
+  createColorItem("rgb(245,245,61)", 34.641, -20),
+  createColorItem("rgb(245,153,61)", 20, -34.641),
+  createColorItem("rgb(245,61,61)", 0, -40),
+  createColorItem("rgb(245,61,153)", -20, -34.641),
+  createColorItem("rgb(245,61,245)", -34.641, -20),
+  createColorItem("rgb(153,61,245)", -40, 0),
+  createColorItem("rgb(61,61,245)", -34.641, 20),
+  createColorItem("rgb(61,153,245)", -20, 34.641),
+  createColorItem("rgb(61,245,245)", 0, 40),
+  createColorItem("rgb(61,245,153)", 20, 34.641),
+  createColorItem("rgb(61,245,61)", 34.641, 20),
+  createColorItem("rgb(153,245,61)", 40, 0),
+  createColorItem("rgb(240,217,194)", 10, -17.3205),
+  createColorItem("rgb(240,194,217)", -10, -17.3205),
+  createColorItem("rgb(217,194,240)", -20, 0),
+  createColorItem("rgb(194,217,240)", -10, 17.3205),
+  createColorItem("rgb(194,240,217)", 10, 17.3205),
+  createColorItem("rgb(217,240,194)", 20, 0),
+  createColorItem("rgb(255,255,255)", 0, 0),
 ];
 
 
@@ -70,7 +138,19 @@ const ColorWheelFlower = (props: ColorWheelFlowerProps): JSX.Element => {
   const context = useColorPickerContext();
   const [selectedIndex, setSelectedIndex] = createSignal<number | null>(null);
   const [hoveredIndex, setHoveredIndex] = createSignal<number | null>(null);
+  const reduceMotion = prefersReducedMotion();
+  const dotTransition: MotionTransition = reduceMotion
+    ? { duration: 0 }
+    : { duration: motionDurations.fast, easing: motionEasings.out };
+  const ringTransition: MotionTransition = reduceMotion
+    ? { duration: 0 }
+    : { duration: motionDurations.base, easing: motionEasings.out };
 
+  const hoverLift = reduceMotion ? 0 : motionDistances.sm / 2;
+  const selectLift = reduceMotion ? 0 : motionDistances.sm;
+
+  let outerRingRef: HTMLDivElement | undefined;
+  let outerRingControl: { stop: () => void } | null = null;
 
   const handleDotClick = (index: number) => {
     if (context.disabled()) return;
@@ -93,11 +173,6 @@ const ColorWheelFlower = (props: ColorWheelFlowerProps): JSX.Element => {
     }
   };
 
-
-  const handleDotHover = (el: HTMLElement, isEntering: boolean) => {
- 
-  };
-
   const containerClasses = () =>
     twMerge(
       "relative w-[140px] h-[140px] flex items-center justify-center",
@@ -116,83 +191,178 @@ const ColorWheelFlower = (props: ColorWheelFlowerProps): JSX.Element => {
       : `conic-gradient(${COLORS[idx].rgb}, ${COLORS[idx].rgb})`;
   };
 
+  const outerRingTarget = createMemo<MotionState>(() => {
+    if (context.disabled()) {
+      return { opacity: 0.5, scale: 1 };
+    }
+    if (selectedIndex() !== null) {
+      return { opacity: 1, scale: 1.04 };
+    }
+    if (hoveredIndex() !== null) {
+      return { opacity: 0.96, scale: 1.02 };
+    }
+    return { opacity: 0.9, scale: 1 };
+  });
+
+  createEffect(() => {
+    if (!outerRingRef) return;
+    const target = outerRingTarget();
+    outerRingControl?.stop();
+    outerRingControl = runMotion(
+      outerRingRef,
+      readMotionState(outerRingRef),
+      target,
+      ringTransition
+    );
+  });
+
+  onCleanup(() => {
+    outerRingControl?.stop();
+  });
+
   return (
     <div class={containerClasses()}>
       <div class="absolute inset-0">
-        <div
-          class="absolute inset-0 rounded-full transition-all duration-500 ease-out"
-          style={{
-            background: outerRingBackground(),
-            transform: "scale(1.1)",
-          }}
-        />
-        <div 
-          class="absolute inset-0 rounded-full transition-all duration-300"
-          style={{
-            background: "#0b1012",
-            transform: "scale(0.9)",
-          }}
-        />
+        <div class="absolute inset-0" style={{ transform: "scale(1.1)" }}>
+          <div
+            ref={outerRingRef}
+            class="absolute inset-0 rounded-full"
+            style={{
+              background: outerRingBackground(),
+              transition: reduceMotion ? "none" : "background 500ms ease-out",
+            }}
+          />
+        </div>
+        <div class="absolute inset-0" style={{ transform: "scale(0.9)" }}>
+          <div
+            class="absolute inset-0 rounded-full"
+            style={{ background: "#0b1012" }}
+          />
+        </div>
       </div>
 
       <div class="relative z-10 w-[calc(100%-5px)] h-[calc(100%-5px)] rounded-full">
         <For each={COLORS}>
           {(item, index) => {
-            let buttonRef: HTMLButtonElement | undefined;
+            let motionRef: HTMLDivElement | undefined;
+            let dotControl: { stop: () => void } | null = null;
+
+            const isSelected = () => selectedIndex() === index();
+            const isHovered = () => hoveredIndex() === index();
+            const hasSelection = () => selectedIndex() !== null;
+            const hasHover = () => hoveredIndex() !== null;
+
+            const dotTarget = createMemo<MotionState>(() => {
+              if (context.disabled()) {
+                return { opacity: 0.5, scale: 1, x: 0, y: 0 };
+              }
+
+              if (isSelected()) {
+                const lift = getLiftOffset(item, selectLift);
+                return { opacity: 1, scale: 1.18, x: lift.x, y: lift.y };
+              }
+
+              if (isHovered()) {
+                const lift = getLiftOffset(item, hoverLift);
+                return { opacity: 1, scale: 1.1, x: lift.x, y: lift.y };
+              }
+
+              if (hasSelection()) {
+                return { opacity: 0.65, scale: 0.92, x: 0, y: 0 };
+              }
+
+              if (hasHover()) {
+                return { opacity: 0.85, scale: 0.96, x: 0, y: 0 };
+              }
+
+              return { opacity: 0.95, scale: 1, x: 0, y: 0 };
+            });
+
+            createEffect(() => {
+              if (!motionRef) return;
+              const target = dotTarget();
+              dotControl?.stop();
+              dotControl = runMotion(
+                motionRef,
+                readMotionState(motionRef),
+                target,
+                dotTransition
+              );
+            });
+
+            onCleanup(() => {
+              dotControl?.stop();
+            });
 
             return (
-              <button
-                ref={(el) => {
-                  buttonRef = el;
-                  el.dataset.baseTransform = item.transform === "none" ? "" : item.transform;
-                }}
-                type="button"
-                tabindex={context.disabled() ? -1 : 0}
-                class={clsx(
-                  "absolute top-1/2 left-1/2",
-                  "w-[32px] h-[32px]",
-                  "rounded-full",
-                  "-translate-x-1/2 -translate-y-1/2",
-                  "transition-shadow duration-200 ease-out",
-                  "focus:outline-none focus:ring-2 focus:ring-white/50",
-                  "z-10",
-                  {
-                    "cursor-not-allowed": context.disabled(),
-                    "cursor-pointer": !context.disabled(),
-                  }
-                )}
+              <div
+                class="absolute"
                 style={{
-                  background: item.rgb,
-                  transform: item.transform,
-                  "box-shadow": "0 2px 8px rgba(0,0,0,0.3)",
+                  left: `calc(50% + ${item.offsetX}px)`,
+                  top: `calc(50% + ${item.offsetY}px)`,
+                  transform: "translate(-50%, -50%)",
                 }}
-                onClick={() => handleDotClick(index())}
-                onMouseEnter={() => {
-                  if (!context.disabled() && buttonRef) {
-                    setHoveredIndex(index());
-                    handleDotHover(buttonRef, true);
-                  }
-                }}
-                onMouseLeave={() => {
-                  if (!context.disabled() && buttonRef) {
-                    setHoveredIndex(null);
-                    handleDotHover(buttonRef, false);
-                  }
-                }}
-                aria-label={`Select color ${item.rgb}`}
-                aria-pressed={selectedIndex() === index()}
               >
-                <span
-                  class={clsx(
-                    "absolute inset-0 rounded-full border-2 border-white",
-                    "transition-opacity duration-300 ease-out"
-                  )}
-                  style={{
-                    "mix-blend-mode": "overlay",
-                    opacity: selectedIndex() === index() ? "1" : "0",
+                <div
+                  ref={(el) => {
+                    motionRef = el;
                   }}
-                />
-              </button>
+                  class="w-[32px] h-[32px]"
+                >
+                  <button
+                    type="button"
+                    tabindex={context.disabled() ? -1 : 0}
+                    class={clsx(
+                      "w-full h-full rounded-full",
+                      "transition-shadow duration-200 ease-out",
+                      "focus:outline-none focus:ring-2 focus:ring-white/50",
+                      "relative z-10",
+                      {
+                        "cursor-not-allowed": context.disabled(),
+                        "cursor-pointer": !context.disabled(),
+                      }
+                    )}
+                    style={{
+                      background: item.rgb,
+                      "box-shadow": "0 2px 8px rgba(0,0,0,0.3)",
+                    }}
+                    onClick={() => handleDotClick(index())}
+                    onMouseEnter={() => {
+                      if (!context.disabled()) {
+                        setHoveredIndex(index());
+                      }
+                    }}
+                    onMouseLeave={() => {
+                      if (!context.disabled()) {
+                        setHoveredIndex(null);
+                      }
+                    }}
+                    onFocus={() => {
+                      if (!context.disabled()) {
+                        setHoveredIndex(index());
+                      }
+                    }}
+                    onBlur={() => {
+                      if (!context.disabled()) {
+                        setHoveredIndex(null);
+                      }
+                    }}
+                    aria-label={`Select color ${item.rgb}`}
+                    aria-pressed={selectedIndex() === index()}
+                  >
+                    <span
+                      class={clsx(
+                        "absolute inset-0 rounded-full border-2 border-white",
+                        "transition-opacity duration-300 ease-out"
+                      )}
+                      style={{
+                        "mix-blend-mode": "overlay",
+                        opacity: selectedIndex() === index() ? "1" : "0",
+                      }}
+                    />
+                  </button>
+                </div>
+              </div>
             );
           }}
         </For>
