@@ -14,6 +14,7 @@ import SaturationBrightness from "./SaturationBrightness";
 import HueSlider from "./HueSlider";
 import AlphaSlider from "./AlphaSlider";
 import ColorWheel from "./ColorWheel";
+import ColorWheelFlower from "./ColorWheelFlower";
 import LightnessSlider from "./LightnessSlider";
 import ColorSwatches from "./ColorSwatches";
 import ColorInput from "./ColorInput";
@@ -22,7 +23,7 @@ import { IComponentBaseProps } from "../types";
 import { MotionDiv, motionPresets } from "../../motion";
 
 export type { ColorFormat } from "./ColorUtils";
-export type ColorPickerMode = "picker" | "wheel";
+export type ColorPickerMode = "picker" | "wheel" | "flower";
 
 export interface ColorPickerProps extends IComponentBaseProps {
   value?: string;
@@ -189,6 +190,19 @@ const ColorPicker = (props: ColorPickerProps): JSX.Element => {
       >
         Wheel
       </button>
+      <button
+        type="button"
+        class={clsx(
+          "flex-1 px-3 py-1 text-xs font-medium rounded-sm transition-colors",
+          {
+            "bg-base-100 shadow-sm text-base-content": mode() === "flower",
+            "text-base-content/60 hover:text-base-content": mode() !== "flower",
+          }
+        )}
+        onClick={() => setMode("flower")}
+      >
+        Flower
+      </button>
     </div>
   );
 
@@ -210,6 +224,11 @@ const ColorPicker = (props: ColorPickerProps): JSX.Element => {
 
         <Show when={mode() === "wheel"}>
           <ColorWheel />
+          <LightnessSlider />
+        </Show>
+
+        <Show when={mode() === "flower"}>
+          <ColorWheelFlower />
           <LightnessSlider />
         </Show>
 
