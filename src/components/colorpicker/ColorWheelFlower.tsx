@@ -1,7 +1,6 @@
 import { type JSX, createSignal, For } from "solid-js";
 import { clsx } from "clsx";
 import { twMerge } from "tailwind-merge";
-import { animate } from "popmotion";
 import { useColorPickerContext } from "./colorpickerContext";
 import { rgbToHsl, createColorFromHsl } from "./ColorUtils";
 
@@ -96,18 +95,7 @@ const ColorWheelFlower = (props: ColorWheelFlowerProps): JSX.Element => {
 
 
   const handleDotHover = (el: HTMLElement, isEntering: boolean) => {
-    animate({
-      from: { scale: isEntering ? 1 : 1.5 },
-      to: { scale: isEntering ? 1.5 : 1 },
-      type: "spring",
-      stiffness: 400,
-      damping: 25,
-      onUpdate: (latest: any) => {
-        if (el) {
-          el.style.transform = el.dataset.baseTransform + ` scale(${latest.scale})`;
-        }
-      },
-    });
+ 
   };
 
   const containerClasses = () =>
