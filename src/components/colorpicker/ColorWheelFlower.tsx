@@ -105,6 +105,12 @@ const easeOutBack = (overshoot = 1.4) => (t: number) => {
   return 1 + c3 * (t - 1) ** 3 + c1 * (t - 1) ** 2;
 };
 
+const toRgba = (rgb: string, alpha: number) => {
+  const match = rgb.match(/^rgb\((\d+),\s*(\d+),\s*(\d+)\)$/);
+  if (!match) return rgb;
+  return `rgba(${match[1]}, ${match[2]}, ${match[3]}, ${alpha})`;
+};
+
 const COLORS: ColorItem[] = [
   createColorItem("rgb(245,245,61)", 34.641, -20),
   createColorItem("rgb(245,153,61)", 20, -34.641),
@@ -127,10 +133,10 @@ const COLORS: ColorItem[] = [
   createColorItem("rgb(255,255,255)", 0, 0),
 ];
 
-const MAX_WAVE_DISTANCE =
-  Math.max(
-    ...COLORS.map((item) => Math.sqrt(item.offsetX ** 2 + item.offsetY ** 2))
-  ) * 2;
+const MAX_RADIUS = Math.max(
+  ...COLORS.map((item) => Math.sqrt(item.offsetX ** 2 + item.offsetY ** 2))
+);
+const MAX_WAVE_DISTANCE = MAX_RADIUS * 2;
 const MAX_WAVE_DELAY = 0.12;
 
 const RAINBOW_GRADIENT = `conic-gradient(
@@ -150,20 +156,42 @@ const ColorWheelFlower = (props: ColorWheelFlowerProps): JSX.Element => {
   const [selectedIndex, setSelectedIndex] = createSignal<number | null>(null);
   const [hoveredIndex, setHoveredIndex] = createSignal<number | null>(null);
   const [pressedIndex, setPressedIndex] = createSignal<number | null>(null);
+  const [pointer, setPointer] = createSignal({
+    x: 0,
+    y: 0,
+    active: false,
+  });
+  const [pulseState, setPulseState] = createSignal<{
+    index: number;
+    key: number;
+  } | null>(null);
   const reduceMotion = prefersReducedMotion();
   const ringTransition: MotionTransition = reduceMotion
     ? { duration: 0 }
     : { duration: motionDurations.slow, easing: motionEasings.inOut };
 
   const hoverLift = reduceMotion ? 0 : motionDistances.sm;
-  const selectLift = reduceMotion ? 0 : motionDistances.md;
   const pressScale = 0.96;
+  const pulseScale = 1.12;
 
+  let containerRef: HTMLDivElement | undefined;
+  let pointerTimeout: number | undefined;
+  let pulseTimeout: number | undefined;
   let outerRingRef: HTMLDivElement | undefined;
   let outerRingControl: { stop: () => void } | null = null;
 
   const handleDotClick = (index: number) => {
     if (context.disabled()) return;
+    const pulseKey = Date.now();
+    setPulseState({ index, key: pulseKey });
+    if (pulseTimeout !== undefined) {
+      clearTimeout(pulseTimeout);
+    }
+    pulseTimeout = window.setTimeout(() => {
+      setPulseState((prev) =>
+        prev?.index === index && prev?.key === pulseKey ? null : prev
+      );
+    }, reduceMotion ? 0 : 220);
     
     if (selectedIndex() === index) {
       setSelectedIndex(null);
@@ -180,6 +208,28 @@ const ColorWheelFlower = (props: ColorWheelFlowerProps): JSX.Element => {
         context.color().hsl.a
       );
       context.onChange(newColor);
+    }
+  };
+
+  const handlePointerMove = (event: MouseEvent) => {
+    if (!containerRef) return;
+    const rect = containerRef.getBoundingClientRect();
+    const x = event.clientX - rect.left - rect.width / 2;
+    const y = event.clientY - rect.top - rect.height / 2;
+    setPointer({ x, y, active: true });
+    if (pointerTimeout !== undefined) {
+      clearTimeout(pointerTimeout);
+    }
+    pointerTimeout = window.setTimeout(() => {
+      setPointer((prev) => ({ ...prev, active: false }));
+    }, 120);
+  };
+
+  const handlePointerLeave = () => {
+    setPointer((prev) => ({ ...prev, active: false }));
+    setHoveredIndex(null);
+    if (pointerTimeout !== undefined) {
+      clearTimeout(pointerTimeout);
     }
   };
 
@@ -218,10 +268,10 @@ const ColorWheelFlower = (props: ColorWheelFlowerProps): JSX.Element => {
     if (context.disabled()) return "none";
     const idx = hoveredIndex() ?? selectedIndex();
     if (idx === null) {
-      return "0 0 12px rgba(255,255,255,0.12)";
+      return "0 0 10px rgba(255,255,255,0.08)";
     }
     const color = COLORS[idx].rgb;
-    return `0 0 12px rgba(255,255,255,0.35), 0 0 28px ${color}`;
+    return `0 0 10px rgba(255,255,255,0.16), 0 0 20px ${toRgba(color, 0.35)}`;
   });
 
   createEffect(() => {
@@ -238,10 +288,21 @@ const ColorWheelFlower = (props: ColorWheelFlowerProps): JSX.Element => {
 
   onCleanup(() => {
     outerRingControl?.stop();
+    if (pulseTimeout !== undefined) {
+      clearTimeout(pulseTimeout);
+    }
+    if (pointerTimeout !== undefined) {
+      clearTimeout(pointerTimeout);
+    }
   });
 
   return (
-    <div class={containerClasses()}>
+    <div
+      ref={containerRef}
+      class={containerClasses()}
+      onMouseMove={handlePointerMove}
+      onMouseLeave={handlePointerLeave}
+    >
       <div class="absolute inset-0">
         <div class="absolute inset-0" style={{ transform: "scale(1.1)" }}>
           <div
@@ -270,59 +331,86 @@ const ColorWheelFlower = (props: ColorWheelFlowerProps): JSX.Element => {
             let motionRef: HTMLDivElement | undefined;
             let dotControl: { stop: () => void } | null = null;
 
-            const isSelected = () => selectedIndex() === index();
             const isHovered = () => hoveredIndex() === index();
             const isPressed = () => pressedIndex() === index();
-            const hasSelection = () => selectedIndex() !== null;
-            const hasHover = () => hoveredIndex() !== null;
+            const isSelected = () => selectedIndex() === index();
+            const isPulsing = () => pulseState()?.index === index();
 
             const dotBaseTarget = createMemo<MotionState>(() => {
               if (context.disabled()) {
                 return { opacity: 0.5, scale: 1, x: 0, y: 0 };
               }
 
-              if (isSelected()) {
-                const lift = getLiftOffset(item, selectLift);
-                return { opacity: 1, scale: 1.18, x: lift.x, y: lift.y };
+              const pointerState = pointer();
+              const anchorIndex = hoveredIndex();
+              let scale = 1;
+              let offsetX = 0;
+              let offsetY = 0;
+
+              if (anchorIndex !== null && pointerState.active) {
+                const anchor = COLORS[anchorIndex];
+                const distance = Math.sqrt(
+                  (item.offsetX - anchor.offsetX) ** 2 +
+                    (item.offsetY - anchor.offsetY) ** 2
+                );
+                const waveRadius = MAX_RADIUS * 0.9;
+                const influence = Math.max(0, 1 - distance / waveRadius);
+
+                if (influence > 0) {
+                  const maxDelta = 16;
+                  const deltaX = Math.max(
+                    -maxDelta,
+                    Math.min(maxDelta, pointerState.x - anchor.offsetX)
+                  );
+                  const deltaY = Math.max(
+                    -maxDelta,
+                    Math.min(maxDelta, pointerState.y - anchor.offsetY)
+                  );
+                  const waveStrength = isHovered() ? 0.25 : 0.18;
+                  offsetX += deltaX * influence * waveStrength;
+                  offsetY += deltaY * influence * waveStrength;
+
+                  const liftStrength = isHovered() ? 0.8 : 0.35;
+                  const lift = getLiftOffset(item, hoverLift * liftStrength);
+                  offsetX += lift.x * influence;
+                  offsetY += lift.y * influence;
+
+                  const scaleBoost = isHovered() ? 0.06 : 0.03;
+                  scale += influence * scaleBoost;
+                }
               }
 
-              if (isHovered()) {
-                const lift = getLiftOffset(item, hoverLift);
-                return { opacity: 1, scale: 1.1, x: lift.x, y: lift.y };
-              }
-
-              if (hasSelection()) {
-                return { opacity: 1, scale: 0.98, x: 0, y: 0 };
-              }
-
-              if (hasHover()) {
-                return { opacity: 1, scale: 0.99, x: 0, y: 0 };
-              }
-
-              return { opacity: 1, scale: 1, x: 0, y: 0 };
+              return { opacity: 1, scale, x: offsetX, y: offsetY };
             });
 
             const dotTarget = createMemo<MotionState>(() => {
               const base = dotBaseTarget();
-              if (!isPressed()) return base;
+              let scale = base.scale ?? 1;
+              if (isPulsing()) {
+                scale *= pulseScale;
+              }
+              if (isPressed()) {
+                scale *= pressScale;
+              }
               return {
                 ...base,
-                scale: (base.scale ?? 1) * pressScale,
+                scale,
               };
             });
 
             const glowOpacity = createMemo(() => {
               if (context.disabled()) return 0;
-              if (isHovered()) return 1;
-              if (isSelected()) return 0.75;
+              if (isHovered()) return 0.6;
+              if (isPulsing()) return 0.35;
               return 0;
             });
 
             const dotTransition = (): MotionTransition => {
               if (reduceMotion) return { duration: 0 };
-              const anchorIndex = hoveredIndex() ?? selectedIndex();
+              const anchorIndex = hoveredIndex();
+              const pointerState = pointer();
               let delay = 0;
-              if (anchorIndex !== null) {
+              if (anchorIndex !== null && pointerState.active) {
                 const anchor = COLORS[anchorIndex];
                 const distance = Math.sqrt(
                   (item.offsetX - anchor.offsetX) ** 2 +
@@ -333,11 +421,10 @@ const ColorWheelFlower = (props: ColorWheelFlowerProps): JSX.Element => {
                   (distance / MAX_WAVE_DISTANCE) * MAX_WAVE_DELAY
                 );
               }
-              if (isSelected()) {
+              if (isPulsing()) {
                 return {
                   duration: motionDurations.fast,
                   easing: easeOutBack(1.25),
-                  delay,
                 };
               }
               if (isHovered()) {
@@ -381,104 +468,111 @@ const ColorWheelFlower = (props: ColorWheelFlowerProps): JSX.Element => {
                 }}
               >
                 <div
-                  ref={(el) => {
-                    motionRef = el;
-                  }}
                   class="relative w-[32px] h-[32px]"
                 >
-                  <span
-                    class="absolute rounded-full pointer-events-none"
-                    style={{
-                      top: "-5px",
-                      left: "-5px",
-                      right: "-5px",
-                      bottom: "-5px",
-                      opacity: glowOpacity(),
-                      background:
-                        "radial-gradient(circle, rgba(255,255,255,0.45) 0%, rgba(255,255,255,0) 65%)",
-                      "box-shadow": `0 0 16px ${item.rgb}, 0 0 6px rgba(255,255,255,0.6)`,
-                      transition: reduceMotion
-                        ? "none"
-                        : "opacity 200ms ease-out, box-shadow 200ms ease-out",
+                  <div
+                    ref={(el) => {
+                      motionRef = el;
                     }}
-                  />
-                  <button
-                    type="button"
-                    tabindex={context.disabled() ? -1 : 0}
-                    class={clsx(
-                      "w-full h-full rounded-full",
-                      "transition-shadow duration-200 ease-out",
-                      "focus:outline-none focus:ring-2 focus:ring-white/50",
-                      "relative z-10",
-                      {
-                        "cursor-not-allowed": context.disabled(),
-                        "cursor-pointer": !context.disabled(),
-                      }
-                    )}
-                    style={{
-                      background: item.rgb,
-                      "box-shadow": isSelected()
-                        ? "0 6px 16px rgba(0,0,0,0.35)"
-                        : isHovered()
-                          ? "0 4px 12px rgba(0,0,0,0.3)"
-                          : "0 2px 8px rgba(0,0,0,0.3)",
-                      transition: reduceMotion ? "none" : "box-shadow 200ms ease-out",
-                    }}
-                    onClick={() => handleDotClick(index())}
-                    onMouseEnter={() => {
-                      if (!context.disabled()) {
-                        setHoveredIndex(index());
-                      }
-                    }}
-                    onMouseLeave={() => {
-                      if (!context.disabled()) {
-                        setHoveredIndex(null);
-                      }
-                    }}
-                    onFocus={() => {
-                      if (!context.disabled()) {
-                        setHoveredIndex(index());
-                      }
-                    }}
-                    onBlur={() => {
-                      if (!context.disabled()) {
-                        setHoveredIndex(null);
-                      }
-                    }}
-                    onPointerDown={() => {
-                      if (!context.disabled()) {
-                        setPressedIndex(index());
-                      }
-                    }}
-                    onPointerUp={() => {
-                      if (!context.disabled()) {
-                        setPressedIndex(null);
-                      }
-                    }}
-                    onPointerLeave={() => {
-                      if (!context.disabled()) {
-                        setPressedIndex(null);
-                      }
-                    }}
-                    onPointerCancel={() => {
-                      if (!context.disabled()) {
-                        setPressedIndex(null);
-                      }
-                    }}
-                    aria-label={`Select color ${item.rgb}`}
-                    aria-pressed={selectedIndex() === index()}
+                    class="relative w-full h-full"
                   >
                     <span
-                      class={clsx(
-                        "absolute inset-0 rounded-full border-2 border-white",
-                        "transition-opacity duration-300 ease-out"
-                      )}
+                      class="absolute rounded-full pointer-events-none"
                       style={{
-                        "mix-blend-mode": "overlay",
-                        opacity: selectedIndex() === index() ? "1" : "0",
+                        top: "-5px",
+                        left: "-5px",
+                        right: "-5px",
+                        bottom: "-5px",
+                        opacity: glowOpacity(),
+                        background:
+                          "radial-gradient(circle, rgba(255,255,255,0.25) 0%, rgba(255,255,255,0) 70%)",
+                        "box-shadow": `0 0 8px ${toRgba(item.rgb, 0.3)}, 0 0 3px rgba(255,255,255,0.35)`,
+                        transition: reduceMotion
+                          ? "none"
+                          : "opacity 200ms ease-out, box-shadow 200ms ease-out",
                       }}
                     />
-                  </button>
+                    <button
+                      type="button"
+                      tabindex={context.disabled() ? -1 : 0}
+                      class={clsx(
+                        "w-full h-full rounded-full",
+                        "transition-shadow duration-200 ease-out",
+                        "focus:outline-none focus:ring-2 focus:ring-white/50",
+                        "relative z-10",
+                        {
+                          "cursor-not-allowed": context.disabled(),
+                          "cursor-pointer": !context.disabled(),
+                        }
+                      )}
+                      style={{
+                        background: item.rgb,
+                        "box-shadow": isHovered() || isPulsing()
+                          ? "0 3px 10px rgba(0,0,0,0.25)"
+                          : "0 2px 8px rgba(0,0,0,0.25)",
+                        transition: reduceMotion ? "none" : "box-shadow 200ms ease-out",
+                      }}
+                      onClick={() => handleDotClick(index())}
+                      onMouseEnter={() => {
+                        if (!context.disabled()) {
+                          setHoveredIndex(index());
+                        }
+                      }}
+                      onMouseLeave={() => {
+                        if (!context.disabled()) {
+                          setHoveredIndex(null);
+                        }
+                      }}
+                      onFocus={() => {
+                        if (!context.disabled()) {
+                          setHoveredIndex(index());
+                        }
+                      }}
+                      onBlur={() => {
+                        if (!context.disabled()) {
+                          setHoveredIndex(null);
+                        }
+                      }}
+                      onPointerDown={() => {
+                        if (!context.disabled()) {
+                          setPressedIndex(index());
+                        }
+                      }}
+                      onPointerUp={() => {
+                        if (!context.disabled()) {
+                          setPressedIndex(null);
+                        }
+                      }}
+                      onPointerLeave={() => {
+                        if (!context.disabled()) {
+                          setPressedIndex(null);
+                        }
+                      }}
+                      onPointerCancel={() => {
+                        if (!context.disabled()) {
+                          setPressedIndex(null);
+                        }
+                      }}
+                      aria-label={`Select color ${item.rgb}`}
+                      aria-pressed={selectedIndex() === index()}
+                    >
+                      <span
+                        class={clsx(
+                          "absolute inset-0 rounded-full border-2 border-white",
+                          "transition-opacity duration-300 ease-out"
+                        )}
+                        style={{
+                          "mix-blend-mode": "overlay",
+                          opacity: isHovered() ? "0.75" : isPulsing() ? "0.45" : "0",
+                          "box-shadow": isHovered()
+                            ? "0 0 6px rgba(255,255,255,0.45)"
+                            : isPulsing()
+                              ? "0 0 4px rgba(255,255,255,0.35)"
+                              : "none",
+                        }}
+                      />
+                    </button>
+                  </div>
                 </div>
               </div>
             );
