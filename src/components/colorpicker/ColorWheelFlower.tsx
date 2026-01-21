@@ -256,12 +256,12 @@ const ColorWheelFlower = (props: ColorWheelFlowerProps): JSX.Element => {
       return { opacity: 0.5, scale: 1 };
     }
     if (selectedIndex() !== null) {
-      return { opacity: 1, scale: 1.06 };
+      return { opacity: 1, scale: 1 };
     }
     if (hoveredIndex() !== null) {
-      return { opacity: 0.98, scale: 1.03 };
+      return { opacity: 0.98, scale: 0.84 };
     }
-    return { opacity: 0.92, scale: 1 };
+    return { opacity: 0.92, scale: 0.84 };
   });
 
   const outerRingGlow = createMemo(() => {
