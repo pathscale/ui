@@ -99,6 +99,12 @@ const getLiftOffset = (item: ColorItem, distance: number) => {
   };
 };
 
+const easeOutBack = (overshoot = 1.4) => (t: number) => {
+  const c1 = overshoot;
+  const c3 = c1 + 1;
+  return 1 + c3 * (t - 1) ** 3 + c1 * (t - 1) ** 2;
+};
+
 const COLORS: ColorItem[] = [
   createColorItem("rgb(245,245,61)", 34.641, -20),
   createColorItem("rgb(245,153,61)", 20, -34.641),
@@ -121,6 +127,11 @@ const COLORS: ColorItem[] = [
   createColorItem("rgb(255,255,255)", 0, 0),
 ];
 
+const MAX_WAVE_DISTANCE =
+  Math.max(
+    ...COLORS.map((item) => Math.sqrt(item.offsetX ** 2 + item.offsetY ** 2))
+  ) * 2;
+const MAX_WAVE_DELAY = 0.12;
 
 const RAINBOW_GRADIENT = `conic-gradient(
   from 0deg,
@@ -138,16 +149,15 @@ const ColorWheelFlower = (props: ColorWheelFlowerProps): JSX.Element => {
   const context = useColorPickerContext();
   const [selectedIndex, setSelectedIndex] = createSignal<number | null>(null);
   const [hoveredIndex, setHoveredIndex] = createSignal<number | null>(null);
+  const [pressedIndex, setPressedIndex] = createSignal<number | null>(null);
   const reduceMotion = prefersReducedMotion();
-  const dotTransition: MotionTransition = reduceMotion
-    ? { duration: 0 }
-    : { duration: motionDurations.fast, easing: motionEasings.out };
   const ringTransition: MotionTransition = reduceMotion
     ? { duration: 0 }
-    : { duration: motionDurations.base, easing: motionEasings.out };
+    : { duration: motionDurations.slow, easing: motionEasings.inOut };
 
-  const hoverLift = reduceMotion ? 0 : motionDistances.sm / 2;
-  const selectLift = reduceMotion ? 0 : motionDistances.sm;
+  const hoverLift = reduceMotion ? 0 : motionDistances.sm;
+  const selectLift = reduceMotion ? 0 : motionDistances.md;
+  const pressScale = 0.96;
 
   let outerRingRef: HTMLDivElement | undefined;
   let outerRingControl: { stop: () => void } | null = null;
@@ -196,12 +206,22 @@ const ColorWheelFlower = (props: ColorWheelFlowerProps): JSX.Element => {
       return { opacity: 0.5, scale: 1 };
     }
     if (selectedIndex() !== null) {
-      return { opacity: 1, scale: 1.04 };
+      return { opacity: 1, scale: 1.06 };
     }
     if (hoveredIndex() !== null) {
-      return { opacity: 0.96, scale: 1.02 };
+      return { opacity: 0.98, scale: 1.03 };
     }
-    return { opacity: 0.9, scale: 1 };
+    return { opacity: 0.92, scale: 1 };
+  });
+
+  const outerRingGlow = createMemo(() => {
+    if (context.disabled()) return "none";
+    const idx = hoveredIndex() ?? selectedIndex();
+    if (idx === null) {
+      return "0 0 12px rgba(255,255,255,0.12)";
+    }
+    const color = COLORS[idx].rgb;
+    return `0 0 12px rgba(255,255,255,0.35), 0 0 28px ${color}`;
   });
 
   createEffect(() => {
@@ -229,7 +249,10 @@ const ColorWheelFlower = (props: ColorWheelFlowerProps): JSX.Element => {
             class="absolute inset-0 rounded-full"
             style={{
               background: outerRingBackground(),
-              transition: reduceMotion ? "none" : "background 500ms ease-out",
+              "box-shadow": outerRingGlow(),
+              transition: reduceMotion
+                ? "none"
+                : "background 450ms ease-in-out, box-shadow 300ms ease-out",
             }}
           />
         </div>
@@ -249,10 +272,11 @@ const ColorWheelFlower = (props: ColorWheelFlowerProps): JSX.Element => {
 
             const isSelected = () => selectedIndex() === index();
             const isHovered = () => hoveredIndex() === index();
+            const isPressed = () => pressedIndex() === index();
             const hasSelection = () => selectedIndex() !== null;
             const hasHover = () => hoveredIndex() !== null;
 
-            const dotTarget = createMemo<MotionState>(() => {
+            const dotBaseTarget = createMemo<MotionState>(() => {
               if (context.disabled()) {
                 return { opacity: 0.5, scale: 1, x: 0, y: 0 };
               }
@@ -268,25 +292,78 @@ const ColorWheelFlower = (props: ColorWheelFlowerProps): JSX.Element => {
               }
 
               if (hasSelection()) {
-                return { opacity: 0.65, scale: 0.92, x: 0, y: 0 };
+                return { opacity: 1, scale: 0.98, x: 0, y: 0 };
               }
 
               if (hasHover()) {
-                return { opacity: 0.85, scale: 0.96, x: 0, y: 0 };
+                return { opacity: 1, scale: 0.99, x: 0, y: 0 };
               }
 
-              return { opacity: 0.95, scale: 1, x: 0, y: 0 };
+              return { opacity: 1, scale: 1, x: 0, y: 0 };
             });
+
+            const dotTarget = createMemo<MotionState>(() => {
+              const base = dotBaseTarget();
+              if (!isPressed()) return base;
+              return {
+                ...base,
+                scale: (base.scale ?? 1) * pressScale,
+              };
+            });
+
+            const glowOpacity = createMemo(() => {
+              if (context.disabled()) return 0;
+              if (isHovered()) return 1;
+              if (isSelected()) return 0.75;
+              return 0;
+            });
+
+            const dotTransition = (): MotionTransition => {
+              if (reduceMotion) return { duration: 0 };
+              const anchorIndex = hoveredIndex() ?? selectedIndex();
+              let delay = 0;
+              if (anchorIndex !== null) {
+                const anchor = COLORS[anchorIndex];
+                const distance = Math.sqrt(
+                  (item.offsetX - anchor.offsetX) ** 2 +
+                    (item.offsetY - anchor.offsetY) ** 2
+                );
+                delay = Math.min(
+                  MAX_WAVE_DELAY,
+                  (distance / MAX_WAVE_DISTANCE) * MAX_WAVE_DELAY
+                );
+              }
+              if (isSelected()) {
+                return {
+                  duration: motionDurations.fast,
+                  easing: easeOutBack(1.25),
+                  delay,
+                };
+              }
+              if (isHovered()) {
+                return {
+                  duration: motionDurations.fast,
+                  easing: motionEasings.out,
+                  delay,
+                };
+              }
+              return {
+                duration: motionDurations.base,
+                easing: motionEasings.out,
+                delay,
+              };
+            };
 
             createEffect(() => {
               if (!motionRef) return;
               const target = dotTarget();
+              const transition = dotTransition();
               dotControl?.stop();
               dotControl = runMotion(
                 motionRef,
                 readMotionState(motionRef),
                 target,
-                dotTransition
+                transition
               );
             });
 
@@ -307,8 +384,24 @@ const ColorWheelFlower = (props: ColorWheelFlowerProps): JSX.Element => {
                   ref={(el) => {
                     motionRef = el;
                   }}
-                  class="w-[32px] h-[32px]"
+                  class="relative w-[32px] h-[32px]"
                 >
+                  <span
+                    class="absolute rounded-full pointer-events-none"
+                    style={{
+                      top: "-5px",
+                      left: "-5px",
+                      right: "-5px",
+                      bottom: "-5px",
+                      opacity: glowOpacity(),
+                      background:
+                        "radial-gradient(circle, rgba(255,255,255,0.45) 0%, rgba(255,255,255,0) 65%)",
+                      "box-shadow": `0 0 16px ${item.rgb}, 0 0 6px rgba(255,255,255,0.6)`,
+                      transition: reduceMotion
+                        ? "none"
+                        : "opacity 200ms ease-out, box-shadow 200ms ease-out",
+                    }}
+                  />
                   <button
                     type="button"
                     tabindex={context.disabled() ? -1 : 0}
@@ -324,7 +417,12 @@ const ColorWheelFlower = (props: ColorWheelFlowerProps): JSX.Element => {
                     )}
                     style={{
                       background: item.rgb,
-                      "box-shadow": "0 2px 8px rgba(0,0,0,0.3)",
+                      "box-shadow": isSelected()
+                        ? "0 6px 16px rgba(0,0,0,0.35)"
+                        : isHovered()
+                          ? "0 4px 12px rgba(0,0,0,0.3)"
+                          : "0 2px 8px rgba(0,0,0,0.3)",
+                      transition: reduceMotion ? "none" : "box-shadow 200ms ease-out",
                     }}
                     onClick={() => handleDotClick(index())}
                     onMouseEnter={() => {
@@ -345,6 +443,26 @@ const ColorWheelFlower = (props: ColorWheelFlowerProps): JSX.Element => {
                     onBlur={() => {
                       if (!context.disabled()) {
                         setHoveredIndex(null);
+                      }
+                    }}
+                    onPointerDown={() => {
+                      if (!context.disabled()) {
+                        setPressedIndex(index());
+                      }
+                    }}
+                    onPointerUp={() => {
+                      if (!context.disabled()) {
+                        setPressedIndex(null);
+                      }
+                    }}
+                    onPointerLeave={() => {
+                      if (!context.disabled()) {
+                        setPressedIndex(null);
+                      }
+                    }}
+                    onPointerCancel={() => {
+                      if (!context.disabled()) {
+                        setPressedIndex(null);
                       }
                     }}
                     aria-label={`Select color ${item.rgb}`}
