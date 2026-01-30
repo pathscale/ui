@@ -23,6 +23,7 @@ export type DropdownProps = JSX.HTMLAttributes<HTMLDivElement> &
     hover?: boolean;
     open?: boolean;
     fullWidth?: boolean;
+    role?: string;
     // ARIA attributes
     "aria-label"?: string;
     "aria-describedby"?: string;
@@ -83,6 +84,7 @@ const Dropdown = (props: DropdownProps): JSX.Element => {
     "fullWidth",
     "dataTheme",
     "style",
+    "role",
     "aria-label",
     "aria-describedby",
     "aria-expanded",
@@ -115,7 +117,7 @@ const Dropdown = (props: DropdownProps): JSX.Element => {
   return (
     <DropdownContext.Provider value={dropdownCtx}>
       <div
-        role={local.item ? "combobox" : "listbox"}
+        role={local.role !== undefined ? local.role : (local.item ? "combobox" : "listbox")}
         {...others}
         data-theme={local.dataTheme}
         class={classes()}
