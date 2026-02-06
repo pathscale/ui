@@ -67,8 +67,8 @@ const ImmersiveLanding: Component<ImmersiveLandingProps> = (props) => {
       {/* Fixed viewport */}
       <div class={classes()} style={local.style} {...others}>
         <Show when={local.appVersion}>
-          <div class="pointer-events-none absolute inset-0 z-0 flex items-end justify-end p-6" aria-hidden="true">
-            <span class="font-mono text-base-content/10 text-[clamp(0.75rem,2vw,1.25rem)] tracking-[0.4em]">
+          <div class="pointer-events-none absolute inset-0 z-20 flex items-end justify-end p-6" aria-hidden="true">
+            <span class="font-mono text-base-content/20 text-[clamp(0.75rem,2vw,1.25rem)] tracking-[0.4em]">
               v{local.appVersion}
             </span>
           </div>
