@@ -35,6 +35,7 @@ export interface ImmersiveLandingContextValue {
   direction: Accessor<"next" | "prev" | null>;
   transitionDuration: number;
   pages: readonly string[];
+  appVersion?: string;
 }
 
 export interface ImmersiveLandingProps extends IComponentBaseProps {
@@ -46,6 +47,7 @@ export interface ImmersiveLandingProps extends IComponentBaseProps {
   enableScrollNavigation?: boolean;
   showNavigation?: boolean;
   showArrows?: boolean;
+  appVersion?: string;
   children: JSX.Element | ((context: ImmersiveLandingContextValue) => JSX.Element);
 }
 
