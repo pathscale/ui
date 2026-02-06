@@ -19,6 +19,7 @@ const ImmersiveLanding: Component<ImmersiveLandingProps> = (props) => {
     "showNavigation",
     "showArrows",
     "appVersion",
+    "children",
     "class",
     "className",
     "style",
@@ -53,29 +54,33 @@ const ImmersiveLanding: Component<ImmersiveLandingProps> = (props) => {
   const showArrowNav = () => local.showArrows !== false;
 
   const classes = () =>
-    twMerge("fixed inset-0 overflow-hidden bg-transparent relative", local.class, local.className);
+    twMerge(
+      "fixed inset-0 h-screen w-screen overflow-hidden bg-transparent relative isolate",
+      local.class,
+      local.className,
+    );
 
   // Render children - if it's a function, call it with context for render props pattern
   const renderChildren = () => {
-    return typeof props.children === "function"
-      ? props.children(contextValue)
-      : props.children;
+    return typeof local.children === "function"
+      ? local.children(contextValue)
+      : local.children;
   };
 
   return (
     <ImmersiveLandingContext.Provider value={contextValue}>
       {/* Fixed viewport */}
       <div class={classes()} style={local.style} {...others}>
-        <Show when={local.appVersion}>
-          <div class="pointer-events-none absolute inset-0 z-20 flex items-end justify-end p-6" aria-hidden="true">
-            <span class="font-mono text-base-content/20 text-[clamp(0.75rem,2vw,1.25rem)] tracking-[0.4em]">
-              v{local.appVersion}
-            </span>
-          </div>
-        </Show>
         {/* Layered container for fade transitions */}
-        <div class="relative z-10 h-full w-full">
-          {renderChildren()}
+        <div class="relative h-full w-full">
+          <div class="relative z-10 h-full w-full">{renderChildren()}</div>
+          <Show when={local.appVersion}>
+            <div class="pointer-events-none absolute inset-0 z-20 flex items-end justify-end p-6" aria-hidden="true">
+              <span class="font-mono text-base-content/20 text-[clamp(0.75rem,2vw,1.25rem)] tracking-[0.4em]">
+                v{local.appVersion}
+              </span>
+            </div>
+          </Show>
         </div>
       </div>
 
