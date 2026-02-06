@@ -19,6 +19,10 @@ export default defineConfig({
       bundle: true,
       dts: true,
       format: "esm",
+      autoExternal: {
+        dependencies: true,
+        peerDependencies: true,
+      },
     },
   ],
   output: {

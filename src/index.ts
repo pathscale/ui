@@ -90,6 +90,21 @@ export type {
   HeroProps,
 } from "./components/hero";
 export { default as Icon } from "./components/icon";
+export {
+  default as ImmersiveLanding,
+  useImmersiveLanding,
+  useImmersiveLandingContext,
+  ImmersiveLandingContext,
+} from "./components/immersive-landing";
+export type {
+  ImmersiveLandingProps,
+  ImmersiveLandingPageProps,
+  ImmersiveLandingArrowsProps,
+  ImmersiveLandingNavigationProps,
+  ImmersiveLandingContextValue,
+  UseImmersiveLandingOptions,
+  UseImmersiveLandingReturn,
+} from "./components/immersive-landing";
 export { default as Indicator } from "./components/indicator";
 export { default as Input } from "./components/input";
 export { default as Join } from "./components/join";
