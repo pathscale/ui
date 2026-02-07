@@ -19,6 +19,7 @@ const ImmersiveLanding: Component<ImmersiveLandingProps> = (props) => {
     "showNavigation",
     "showArrows",
     "appVersion",
+    "overlay",
     "children",
     "class",
     "className",
@@ -67,6 +68,12 @@ const ImmersiveLanding: Component<ImmersiveLandingProps> = (props) => {
       : local.children;
   };
 
+  const renderOverlay = () => {
+    return typeof local.overlay === "function"
+      ? local.overlay(contextValue)
+      : local.overlay;
+  };
+
   return (
     <ImmersiveLandingContext.Provider value={contextValue}>
       {/* Fixed viewport */}
@@ -74,15 +81,21 @@ const ImmersiveLanding: Component<ImmersiveLandingProps> = (props) => {
         {/* Layered container for fade transitions */}
         <div class="relative h-full w-full">
           <div class="relative z-10 h-full w-full">{renderChildren()}</div>
+        </div>
+      </div>
+
+      <Show when={local.overlay || local.appVersion}>
+        <div class="pointer-events-none fixed inset-0 z-30">
+          {renderOverlay()}
           <Show when={local.appVersion}>
-            <div class="pointer-events-none absolute inset-0 z-20 flex items-end justify-end p-6" aria-hidden="true">
+            <div class="absolute inset-0 flex items-end justify-end p-6" aria-hidden="true">
               <span class="font-mono text-base-content/20 text-[clamp(0.75rem,2vw,1.25rem)] tracking-[0.4em]">
                 v{local.appVersion}
               </span>
             </div>
           </Show>
         </div>
-      </div>
+      </Show>
 
       {/* Desktop side arrows */}
       {showArrowNav() && (

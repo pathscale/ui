@@ -48,6 +48,7 @@ export interface ImmersiveLandingProps extends IComponentBaseProps {
   showNavigation?: boolean;
   showArrows?: boolean;
   appVersion?: string;
+  overlay?: JSX.Element | ((context: ImmersiveLandingContextValue) => JSX.Element);
   children: JSX.Element | ((context: ImmersiveLandingContextValue) => JSX.Element);
 }
 
