@@ -110,7 +110,33 @@ export { default as Input } from "./components/input";
 export { default as Join } from "./components/join";
 export { default as Kbd } from "./components/kbd";
 export { default as Link } from "./components/link";
+export {
+  LiveChatBubble,
+  LiveChatPanel,
+} from "./components/live-chat";
+export type {
+  LiveChatBubbleProps,
+  LiveChatPanelProps,
+  ChatMessage,
+  SendMessagePayload,
+  SendMessageResponse,
+} from "./components/live-chat";
 export { default as Loading } from "./components/loading";
+export {
+  LanguageSwitcher,
+  createI18n,
+  I18nProvider,
+  I18nContext,
+  useI18n,
+} from "./components/language-switcher";
+export type {
+  LanguageSwitcherProps,
+  I18nStore,
+  I18nOptions,
+  I18nContextValue,
+  I18nProviderProps,
+  Language,
+} from "./components/language-switcher";
 export { default as Mask } from "./components/mask";
 export { Menu } from "./components/menu";
 export { default as Modal } from "./components/modal";
@@ -171,6 +197,16 @@ export type { StreamingTableStore } from "./components/streaming-table";
 export { default as Tabs } from "./components/tabs";
 export type { RadioTabProps, TabProps, TabsProps } from "./components/tabs";
 export { default as Textarea } from "./components/textarea";
+export {
+  ThemeColorPicker,
+  createHueShiftStore,
+  getDefaultHueShiftStore,
+  resetHueShift,
+} from "./components/theme-color-picker";
+export type {
+  ThemeColorPickerProps,
+  HueShiftStore,
+} from "./components/theme-color-picker";
 export {
   Timeline,
   TimelineEnd,
