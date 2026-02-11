@@ -1,9 +1,9 @@
 import { type Component, createSignal, onMount, Show } from "solid-js";
-import Button from "~/components/button";
-import Card from "~/components/card";
-import Flex from "~/components/flex";
-import Icon from "~/components/icon";
 import { BrowserType, FirefoxPWABannerProps } from "../types";
+import Button from "../../button";
+import Card from "../../card";
+import Flex from "../../flex";
+import Icon from "../../icon";
 
 const defaultTexts = {
   title: "Install App on Firefox",

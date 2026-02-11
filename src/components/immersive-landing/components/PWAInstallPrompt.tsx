@@ -5,11 +5,10 @@ import {
   onCleanup,
   Show,
 } from "solid-js";
-import Button from "~/components/button";
-import Card from "~/components/card";
-import Flex from "~/components/flex";
 import { PWAInstallPromptProps } from "../types";
-
+import Button from "../../button";
+import Card from "../../card";
+import Flex from "../../flex";
 const DISMISS_DURATION = 7 * 24 * 60 * 60 * 1000; // 7 days in milliseconds
 
 const defaultTexts = {

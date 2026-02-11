@@ -6,9 +6,10 @@ import {
   onCleanup,
   Show,
 } from "solid-js";
-import Button from "~/components/button";
-import Flex from "~/components/flex";
+
 import { ConsentType, CookieConsentProps } from "../types";
+import Button from "../../button";
+import Flex from "../../flex";
 
 /**
  * CookieConsent Component
