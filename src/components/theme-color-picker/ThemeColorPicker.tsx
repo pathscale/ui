@@ -98,7 +98,7 @@ const ThemeColorPicker: Component<ThemeColorPickerProps> = (props) => {
   // Check availability on mount
   createEffect(() => {
     const timer = setTimeout(() => {
-      setFeatureAvailable(store().isAvailable());
+      setFeatureAvailable(true); // Always show the icon
     }, 0);
     onCleanup(() => clearTimeout(timer));
   });

@@ -44,6 +44,7 @@
     "@tanstack/solid-table": "^8.21.3",
     "@types/bun": "^1.2.12",
     "babel-preset-solid": "^1.9.6",
+    "cally": "^0.8.0",
     "clsx": "^2.1.1",
     "cssnano": "^7.0.7",
     "postcss": "^8.5.4",
@@ -52,11 +53,10 @@
     "svgo": "^3.3.2",
     "tailwind-merge": "^3.3.0",
     "typescript": "^5.8.3",
-    "zod": "^3.22.4",
-    "cally": "^0.8.0"
+    "zod": "^3.22.4"
   },
   "dependencies": {
-    "@iconify/tailwind4": "^1.0.6",
+    "@iconify/tailwind4": "^1.2.1",
     "rsbuild-plugin-iconify": "^1.0.3"
   },
   "peerDependencies": {
@@ -73,8 +73,8 @@
     "@solid-primitives/storage": "^2.1.1",
     "@solid-primitives/utils": "^6.2.1",
     "@tanstack/solid-table": "^8.0.0",
-    "solid-js": "^1.9",
     "popmotion": "^11.0.5",
+    "solid-js": "^1.9",
     "zod": "^3.22.0"
   },
   "peerDependenciesMeta": {
