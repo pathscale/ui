@@ -134,7 +134,7 @@ const ImmersiveLanding: Component<ImmersiveLandingProps> = (props) => {
         />
       )}
 
-      <Show when={local.showPWAPrompt !== false}>
+      <Show when={local.showPWAPrompt}>
         <PWAInstallPrompt
           appName={local.pwaConfig?.appName}
           appIcon={local.pwaConfig?.appIcon}
@@ -144,7 +144,7 @@ const ImmersiveLanding: Component<ImmersiveLandingProps> = (props) => {
           onDismiss={local.pwaConfig?.onDismiss}
         />
       </Show>
-      <Show when={local.showFirefoxBanner !== false}>
+      <Show when={local.showFirefoxBanner}>
         <FirefoxPWABanner
           extensionUrl={local.firefoxPWAConfig?.extensionUrl}
           storageKey={
@@ -155,7 +155,7 @@ const ImmersiveLanding: Component<ImmersiveLandingProps> = (props) => {
           onDismiss={local.firefoxPWAConfig?.onDismiss}
         />
       </Show>
-      <Show when={local.showCookieConsent !== false}>
+      <Show when={local.showCookieConsent}>
         <CookieConsent
           storageKeys={local.cookieConfig?.storageKeys}
           texts={local.cookieConfig?.texts}
