@@ -71,9 +71,8 @@ const LanguageSwitcher: Component<LanguageSwitcherProps> = (props) => {
       aria-haspopup="menu"
     >
       <Dropdown.Toggle
-        class={local.compact
-          ? "btn btn-sm bg-base-100 border border-base-300"
-          : "bg-base-100 border border-base-300 rounded px-3 py-2 flex gap-2 justify-between items-center"}
+        button
+        size="sm"
         aria-label={`${local.currentLanguageLabel ?? "Current language"}: ${currentLanguageName()}`}
       >
         <Show when={!local.compact}>
