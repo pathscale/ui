@@ -1,23 +1,47 @@
-import { createSignal, onMount, onCleanup } from "solid-js";
+import { createSignal, createEffect, onMount, onCleanup } from "solid-js";
 import type { UseImmersiveLandingOptions, UseImmersiveLandingReturn } from "./types";
 
 export function useImmersiveLanding(options: UseImmersiveLandingOptions): UseImmersiveLandingReturn {
   const {
     pages,
     initialPage = pages[0],
+    currentPage: controlledPage,
     transitionDuration = 400,
     onNavigate,
     onNavigationComplete,
     enableScrollNavigation = true,
   } = options;
 
-  const [activePage, setActivePage] = createSignal(initialPage);
+  const isControlled = !!controlledPage;
+  const [internalPage, setInternalPage] = createSignal(initialPage);
   const [isTransitioning, setIsTransitioning] = createSignal(false);
   const [direction, setDirection] = createSignal<"next" | "prev" | null>(null);
 
+  const activePage = isControlled ? controlledPage! : internalPage;
   const currentIndex = () => pages.indexOf(activePage());
   const isFirstPage = () => currentIndex() === 0;
   const isLastPage = () => currentIndex() === pages.length - 1;
+
+  // In controlled mode, animate transitions triggered by external page changes (e.g. browser back/forward)
+  if (isControlled) {
+    let prevPage = controlledPage!();
+    createEffect(() => {
+      const next = controlledPage!();
+      if (next !== prevPage && !isTransitioning()) {
+        const fromIndex = pages.indexOf(prevPage);
+        const toIndex = pages.indexOf(next);
+        if (toIndex >= 0) {
+          setDirection(toIndex > fromIndex ? "next" : "prev");
+          setIsTransitioning(true);
+          setTimeout(() => {
+            setIsTransitioning(false);
+            setDirection(null);
+          }, transitionDuration);
+        }
+        prevPage = next;
+      }
+    });
+  }
 
   const navigateToInternal = (pageId: string) => {
     if (isTransitioning() || !pages.includes(pageId)) return;
@@ -29,7 +53,7 @@ export function useImmersiveLanding(options: UseImmersiveLandingOptions): UseImm
 
     setDirection(toIndex > fromIndex ? "next" : "prev");
     setIsTransitioning(true);
-    setActivePage(pageId);
+    if (!isControlled) setInternalPage(pageId);
 
     if (onNavigate) onNavigate(fromPage, pageId);
 

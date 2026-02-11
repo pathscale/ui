@@ -12,6 +12,7 @@ const ImmersiveLanding: Component<ImmersiveLandingProps> = (props) => {
   const [local, others] = splitProps(props, [
     "pages",
     "initialPage",
+    "currentPage",
     "transitionDuration",
     "onNavigate",
     "onNavigationComplete",
@@ -29,6 +30,7 @@ const ImmersiveLanding: Component<ImmersiveLandingProps> = (props) => {
   const navigation = useImmersiveLanding({
     pages: local.pages,
     initialPage: local.initialPage,
+    currentPage: local.currentPage,
     transitionDuration: local.transitionDuration,
     onNavigate: local.onNavigate,
     onNavigationComplete: local.onNavigationComplete,

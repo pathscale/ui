@@ -31,10 +31,6 @@ export interface LanguageSwitcherProps extends IComponentBaseProps {
    * Callback when language changes
    */
   onLanguageChange?: (lang: string) => void;
-  /**
-   * Show compact version (language code instead of full name in toggle)
-   */
-  compact?: boolean;
 }
 
 const LanguageSwitcher: Component<LanguageSwitcherProps> = (props) => {
@@ -48,7 +44,6 @@ const LanguageSwitcher: Component<LanguageSwitcherProps> = (props) => {
     "optionsLabel",
     "loadingLabel",
     "onLanguageChange",
-    "compact",
   ]);
 
   const currentLanguageName = () => local.i18n.languageNames[local.i18n.locale];
@@ -59,7 +54,7 @@ const LanguageSwitcher: Component<LanguageSwitcherProps> = (props) => {
     local.onLanguageChange?.(lang);
   };
 
-  const classes = () => twMerge(local.compact ? "" : "min-w-28", clsx(local.class, local.className));
+  const classes = () => twMerge(clsx(local.class, local.className));
 
   return (
     <Dropdown
@@ -75,9 +70,6 @@ const LanguageSwitcher: Component<LanguageSwitcherProps> = (props) => {
         size="sm"
         aria-label={`${local.currentLanguageLabel ?? "Current language"}: ${currentLanguageName()}`}
       >
-        <Show when={!local.compact}>
-          <span>{currentLanguageName()}</span>
-        </Show>
         <Show
           when={!local.i18n.isLoading}
           fallback={
@@ -90,28 +82,13 @@ const LanguageSwitcher: Component<LanguageSwitcherProps> = (props) => {
             />
           }
         >
-          <Show
-            when={!local.compact}
-            fallback={
-              <Icon
-                name="icon-[mdi--translate]"
-                width={16}
-                height={16}
-                aria-hidden="true"
-              />
-            }
-          >
-            <Icon
-              name="icon-[mdi--chevron-down]"
-              width={16}
-              height={16}
-              aria-hidden="true"
-            />
-          </Show>
+          <span class="text-xs font-bold uppercase" aria-hidden="true">
+            {local.i18n.locale.toUpperCase()}
+          </span>
         </Show>
       </Dropdown.Toggle>
 
-      <Dropdown.Menu class={local.compact ? "min-w-32" : "w-full"} aria-label={local.optionsLabel ?? "Language options"}>
+      <Dropdown.Menu class="min-w-32" aria-label={local.optionsLabel ?? "Language options"}>
         <For each={local.i18n.languages}>
           {(lang) => (
             <Dropdown.Item

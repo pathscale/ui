@@ -4,6 +4,7 @@ import type { IComponentBaseProps } from "../types";
 export interface UseImmersiveLandingOptions {
   pages: readonly string[];
   initialPage?: string;
+  currentPage?: Accessor<string>;
   transitionDuration?: number;
   onNavigate?: (fromPage: string, toPage: string) => void;
   onNavigationComplete?: (page: string) => void;
@@ -41,6 +42,7 @@ export interface ImmersiveLandingContextValue {
 export interface ImmersiveLandingProps extends IComponentBaseProps {
   pages: readonly string[];
   initialPage?: string;
+  currentPage?: Accessor<string>;
   transitionDuration?: number;
   onNavigate?: (fromPage: string, toPage: string) => void;
   onNavigationComplete?: (page: string) => void;
