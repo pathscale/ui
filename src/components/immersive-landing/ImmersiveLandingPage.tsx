@@ -33,7 +33,7 @@ const ImmersiveLandingPage = (props: ImmersiveLandingPageProps): JSX.Element => 
       aria-hidden={!isActive()}
       {...others}
     >
-      <div class="relative z-10 h-full">{local.children}</div>
+      <div class="relative z-10 h-full overflow-hidden">{local.children}</div>
     </section>
   );
 };

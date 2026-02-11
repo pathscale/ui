@@ -88,7 +88,7 @@ const ImmersiveLanding: Component<ImmersiveLandingProps> = (props) => {
         <div class="pointer-events-none fixed inset-0 z-30">
           {renderOverlay()}
           <Show when={local.appVersion}>
-            <div class="absolute inset-0 flex items-end justify-end p-6" aria-hidden="true">
+            <div class="absolute bottom-20 right-6" aria-hidden="true">
               <span class="font-mono text-base-content/20 text-[clamp(0.75rem,2vw,1.25rem)] tracking-[0.4em]">
                 v{local.appVersion}
               </span>
