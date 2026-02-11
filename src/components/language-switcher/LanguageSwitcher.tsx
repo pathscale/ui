@@ -31,6 +31,10 @@ export interface LanguageSwitcherProps extends IComponentBaseProps {
    * Callback when language changes
    */
   onLanguageChange?: (lang: string) => void;
+  /**
+   * Show compact version (language code instead of full name in toggle)
+   */
+  compact?: boolean;
 }
 
 const LanguageSwitcher: Component<LanguageSwitcherProps> = (props) => {
@@ -44,6 +48,7 @@ const LanguageSwitcher: Component<LanguageSwitcherProps> = (props) => {
     "optionsLabel",
     "loadingLabel",
     "onLanguageChange",
+    "compact",
   ]);
 
   const currentLanguageName = () => local.i18n.languageNames[local.i18n.locale];
@@ -54,7 +59,7 @@ const LanguageSwitcher: Component<LanguageSwitcherProps> = (props) => {
     local.onLanguageChange?.(lang);
   };
 
-  const classes = () => twMerge("min-w-28", clsx(local.class, local.className));
+  const classes = () => twMerge(local.compact ? "" : "min-w-28", clsx(local.class, local.className));
 
   return (
     <Dropdown
@@ -66,10 +71,14 @@ const LanguageSwitcher: Component<LanguageSwitcherProps> = (props) => {
       aria-haspopup="menu"
     >
       <Dropdown.Toggle
-        class="bg-base-100 border border-base-300 rounded px-3 py-2 flex gap-2 justify-between items-center"
+        class={local.compact
+          ? "btn btn-sm bg-base-100 border border-base-300"
+          : "bg-base-100 border border-base-300 rounded px-3 py-2 flex gap-2 justify-between items-center"}
         aria-label={`${local.currentLanguageLabel ?? "Current language"}: ${currentLanguageName()}`}
       >
-        <span>{currentLanguageName()}</span>
+        <Show when={!local.compact}>
+          <span>{currentLanguageName()}</span>
+        </Show>
         <Show
           when={!local.i18n.isLoading}
           fallback={
@@ -82,16 +91,28 @@ const LanguageSwitcher: Component<LanguageSwitcherProps> = (props) => {
             />
           }
         >
-          <Icon
-            name="icon-[mdi--chevron-down]"
-            width={16}
-            height={16}
-            aria-hidden="true"
-          />
+          <Show
+            when={!local.compact}
+            fallback={
+              <Icon
+                name="icon-[mdi--translate]"
+                width={16}
+                height={16}
+                aria-hidden="true"
+              />
+            }
+          >
+            <Icon
+              name="icon-[mdi--chevron-down]"
+              width={16}
+              height={16}
+              aria-hidden="true"
+            />
+          </Show>
         </Show>
       </Dropdown.Toggle>
 
-      <Dropdown.Menu class="w-full" aria-label={local.optionsLabel ?? "Language options"}>
+      <Dropdown.Menu class={local.compact ? "min-w-32" : "w-full"} aria-label={local.optionsLabel ?? "Language options"}>
         <For each={local.i18n.languages}>
           {(lang) => (
             <Dropdown.Item
