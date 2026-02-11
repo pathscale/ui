@@ -1,11 +1,17 @@
 import { Show, splitProps, type Component } from "solid-js";
 import { twMerge } from "tailwind-merge";
-import type { ImmersiveLandingProps, ImmersiveLandingContextValue } from "./types";
+import type {
+  ImmersiveLandingProps,
+  ImmersiveLandingContextValue,
+} from "./types";
 import { useImmersiveLanding } from "./useImmersiveLanding";
 import { ImmersiveLandingContext } from "./ImmersiveLandingContext";
 import ImmersiveLandingPage from "./ImmersiveLandingPage";
 import ImmersiveLandingArrows from "./ImmersiveLandingArrows";
 import ImmersiveLandingNavigation from "./ImmersiveLandingNavigation";
+import { PWAInstallPrompt } from "./components/PWAInstallPrompt";
+import { FirefoxPWABanner } from "./components/FirefoxPWABanner";
+import { CookieConsent } from "./components/CookieConsent";
 
 const ImmersiveLanding: Component<ImmersiveLandingProps> = (props) => {
   // Don't split children - access directly from props to preserve reactivity
@@ -25,6 +31,12 @@ const ImmersiveLanding: Component<ImmersiveLandingProps> = (props) => {
     "class",
     "className",
     "style",
+    "pwaConfig",
+    "cookieConfig",
+    "firefoxPWAConfig",
+    "showPWAPrompt",
+    "showCookieConsent",
+    "showFirefoxBanner",
   ]);
 
   const navigation = useImmersiveLanding({
@@ -121,6 +133,35 @@ const ImmersiveLanding: Component<ImmersiveLandingProps> = (props) => {
           isLastPage={navigation.isLastPage()}
         />
       )}
+
+      <Show when={local.showPWAPrompt}>
+        <PWAInstallPrompt
+          appName={local.pwaConfig?.appName}
+          appIcon={local.pwaConfig?.appIcon}
+          storageKey={local.pwaConfig?.storageKey ?? "app_pwa_dismissed"}
+          texts={local.pwaConfig?.texts}
+          onInstall={local.pwaConfig?.onInstall}
+          onDismiss={local.pwaConfig?.onDismiss}
+        />
+      </Show>
+      <Show when={local.showFirefoxBanner}>
+        <FirefoxPWABanner
+          extensionUrl={local.firefoxPWAConfig?.extensionUrl}
+          storageKey={
+            local.firefoxPWAConfig?.storageKey ?? "app_firefox_pwa_dismissed"
+          }
+          texts={local.firefoxPWAConfig?.texts}
+          onInstall={local.firefoxPWAConfig?.onInstall}
+          onDismiss={local.firefoxPWAConfig?.onDismiss}
+        />
+      </Show>
+      <Show when={local.showCookieConsent}>
+        <CookieConsent
+          storageKeys={local.cookieConfig?.storageKeys}
+          texts={local.cookieConfig?.texts}
+          onConsentChange={local.cookieConfig?.onConsentChange}
+        />
+      </Show>
     </ImmersiveLandingContext.Provider>
   );
 };
