@@ -95,6 +95,9 @@ export {
   useImmersiveLanding,
   useImmersiveLandingContext,
   ImmersiveLandingContext,
+  CookieConsent,
+  PWAInstallPrompt,
+  FirefoxPWABanner,
 } from "./components/immersive-landing";
 export type {
   ImmersiveLandingProps,
@@ -104,6 +107,13 @@ export type {
   ImmersiveLandingContextValue,
   UseImmersiveLandingOptions,
   UseImmersiveLandingReturn,
+  CookieConsentProps,
+  CookieConsentTexts,
+  CookieConsentStorageKeys,
+  PWAInstallPromptProps,
+  PWAInstallPromptTexts,
+  FirefoxPWABannerProps,
+  FirefoxPWABannerTexts,
 } from "./components/immersive-landing";
 export { default as Indicator } from "./components/indicator";
 export { default as Input } from "./components/input";
