@@ -1,4 +1,5 @@
 import {
+  createEffect,
   createMemo,
   For,
   Show,
@@ -6,7 +7,9 @@ import {
   type Accessor,
   type JSX,
   createSignal,
+  onCleanup,
 } from "solid-js";
+import { Portal } from "solid-js/web";
 import {
   createSolidTable,
   flexRender,
@@ -108,6 +111,18 @@ function EnhancedTable<TData>(props: EnhancedTableProps<TData>): JSX.Element {
   ]);
 
   const [openFilterFor, setOpenFilterFor] = createSignal<string | null>(null);
+  const [pageSizeMenuOpen, setPageSizeMenuOpen] = createSignal(false);
+  const [pageSizeMenuStyle, setPageSizeMenuStyle] = createSignal<JSX.CSSProperties>({
+    position: "fixed",
+    top: "0px",
+    left: "0px",
+    "min-width": "96px",
+    "z-index": 1300,
+  });
+
+  const pageSizeOptions = [10, 25, 50, 100] as const;
+  let pageSizeToggleRef: HTMLButtonElement | undefined;
+  let pageSizeMenuRef: HTMLDivElement | undefined;
 
   const table = createSolidTable({
     get data() {
@@ -173,7 +188,12 @@ function EnhancedTable<TData>(props: EnhancedTableProps<TData>): JSX.Element {
 
   const headerGroups = () => table.getHeaderGroups();
 
-  const visibleColumnCount = () => headerGroups()[0]?.headers.length ?? 0;
+  const totalColumns = createMemo(
+    () =>
+      table.getVisibleLeafColumns().length +
+      (local.enableRowSelection ? 1 : 0) +
+      (local.expandable ? 1 : 0),
+  );
 
   const anyFilterActive = () =>
     (table.getState().columnFilters as any[]).length > 0;
@@ -235,295 +255,384 @@ function EnhancedTable<TData>(props: EnhancedTableProps<TData>): JSX.Element {
     );
   };
 
-  const totalColumns =
-    table.getAllLeafColumns().length +
-    (local.enableRowSelection ? 1 : 0) +
-    (local.expandable ? 1 : 0);
+  const ensurePortalRoot = () => {
+    if (typeof document === "undefined") return undefined;
+    const existing = document.getElementById(
+      "enhanced-table-overlay-root",
+    ) as HTMLDivElement | null;
+    if (existing) return existing;
+    const root = document.createElement("div");
+    root.id = "enhanced-table-overlay-root";
+    document.body.append(root);
+    return root;
+  };
+
+  const updatePageSizeMenuPosition = () => {
+    const toggleEl = pageSizeToggleRef;
+    const menuEl = pageSizeMenuRef;
+    if (!toggleEl || !menuEl) return;
+
+    const viewportPadding = 8;
+    const gap = 4;
+    const toggleRect = toggleEl.getBoundingClientRect();
+    const menuRect = menuEl.getBoundingClientRect();
+    const menuWidth = menuRect.width || Math.max(toggleRect.width, 96);
+    const menuHeight = menuRect.height || 0;
+
+    const viewportWidth = window.innerWidth;
+    const viewportHeight = window.innerHeight;
+
+    let left = toggleRect.right - menuWidth;
+    left = Math.max(
+      viewportPadding,
+      Math.min(left, viewportWidth - menuWidth - viewportPadding),
+    );
+
+    const spaceBelow = viewportHeight - toggleRect.bottom;
+    const spaceAbove = toggleRect.top;
+    const shouldOpenUp =
+      spaceBelow < menuHeight + gap && spaceAbove > menuHeight + gap;
+
+    let top = shouldOpenUp
+      ? toggleRect.top - menuHeight - gap
+      : toggleRect.bottom + gap;
+    top = Math.max(
+      viewportPadding,
+      Math.min(top, viewportHeight - menuHeight - viewportPadding),
+    );
+
+    setPageSizeMenuStyle({
+      position: "fixed",
+      top: `${top}px`,
+      left: `${left}px`,
+      "min-width": `${Math.max(toggleRect.width, 96)}px`,
+      "z-index": 1300,
+    });
+  };
+
+  const closePageSizeMenu = () => setPageSizeMenuOpen(false);
+  const togglePageSizeMenu = () => setPageSizeMenuOpen((current) => !current);
+
+  createEffect(() => {
+    if (!shouldShowPagination()) {
+      closePageSizeMenu();
+    }
+  });
+
+  createEffect(() => {
+    if (!pageSizeMenuOpen()) return;
+    ensurePortalRoot();
+
+    requestAnimationFrame(() => {
+      updatePageSizeMenuPosition();
+      requestAnimationFrame(updatePageSizeMenuPosition);
+    });
+
+    const onPointerDown = (event: PointerEvent) => {
+      const target = event.target as Node | null;
+      if (!target) return;
+      if (pageSizeToggleRef?.contains(target)) return;
+      if (pageSizeMenuRef?.contains(target)) return;
+      closePageSizeMenu();
+    };
+
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") closePageSizeMenu();
+    };
+
+    const onViewportChange = () => updatePageSizeMenuPosition();
+
+    document.addEventListener("pointerdown", onPointerDown);
+    document.addEventListener("keydown", onKeyDown);
+    window.addEventListener("resize", onViewportChange);
+    window.addEventListener("scroll", onViewportChange, true);
+
+    onCleanup(() => {
+      document.removeEventListener("pointerdown", onPointerDown);
+      document.removeEventListener("keydown", onKeyDown);
+      window.removeEventListener("resize", onViewportChange);
+      window.removeEventListener("scroll", onViewportChange, true);
+    });
+  });
 
   return (
-    <Table
-      {...tableProps}
-      class={clsx(tableProps.class, "table-auto")}
-    >
-      <Table.Head noCell>
-        <For each={headerGroups()}>
-          {(hg) => (
-            <Table.Row>
-              <Show when={local.expandable}>
-                <Table.HeadCell class="w-6" />
-              </Show>
-
-              <Show when={local.enableRowSelection}>
-                <Table.HeadCell class="w-8">
-                  <Checkbox
-                    checked={table.getIsAllPageRowsSelected()}
-                    indeterminate={table.getIsSomePageRowsSelected()}
-                    onChange={table.getToggleAllPageRowsSelectedHandler()}
-                  />
-                </Table.HeadCell>
-              </Show>
-
-              <For each={hg.headers}>
-                {(header) => {
-                  const colId = header.column.id as string;
-                  const canSort =
-                    local.enableSorting &&
-                    header.column.columnDef.enableSorting !== false &&
-                    header.column.getCanSort();
-                  const canFilter =
-                    local.enableFilters &&
-                    header.column.columnDef.enableColumnFilter !== false &&
-                    header.column.getCanFilter();
-
-                  return (
-                    <Table.HeadCell
-                      class={
-                        canSort
-                          ? "relative cursor-pointer select-none"
-                          : "relative"
-                      }
-                      onClick={
-                        canSort
-                          ? header.column.getToggleSortingHandler()
-                          : undefined
-                      }
-                    >
-                      <div class="flex items-center gap-2">
-                        <div class="truncate">
-                          {flexRender(
-                            header.column.columnDef.header,
-                            header.getContext(),
-                          )}
-                        </div>
-                        <Show when={header.column.getIsSorted() === "asc"}>
-                          {local.sortAscIcon}
-                        </Show>
-                        <Show when={header.column.getIsSorted() === "desc"}>
-                          {local.sortDescIcon}
-                        </Show>
-                        <Show
-                          when={
-                            canSort &&
-                            header.column.getIsSorted() === false &&
-                            local.sortNeutralIcon
-                          }
-                        >
-                          {local.sortNeutralIcon}
-                        </Show>
-                        <div class="grow" />
-                        <Show when={canFilter}>
-                          <FilterIconTrigger colId={colId} />
-                        </Show>
-                        <Show when={canFilter}>
-                          <FilterPanel column={header.column} />
-                        </Show>
-                      </div>
-                    </Table.HeadCell>
-                  );
-                }}
-              </For>
-            </Table.Row>
-          )}
-        </For>
-      </Table.Head>
-
-      <Table.Body>
-        {local.loading ? (
-          <Table.Row>
-            <Table.Cell
-              colSpan={visibleColumnCount()}
-              class="text-center py-6"
-            >
-              {local.renderLoading ? (
-                local.renderLoading()
-              ) : (
-                <Loading
-                  variant="spinner"
-                  size="lg"
-                  color="primary"
-                />
-              )}
-            </Table.Cell>
-          </Table.Row>
-        ) : tableRows().length === 0 && local.renderEmpty ? (
-          <Table.Row>
-            <Table.Cell
-              colSpan={visibleColumnCount()}
-              class="text-center py-4"
-            >
-              {local.renderEmpty()}
-            </Table.Cell>
-          </Table.Row>
-        ) : (
-          <For each={tableRows()}>
-            {(row) => (
-              <>
+    <>
+      <div class="w-full overflow-x-auto overflow-y-hidden">
+        <Table
+          {...tableProps}
+          class={clsx(tableProps.class, "table-auto")}
+        >
+          <Table.Head noCell>
+            <For each={headerGroups()}>
+              {(hg) => (
                 <Table.Row>
                   <Show when={local.expandable}>
-                    <Table.Cell class="w-6">
-                      <Button
-                        size="xs"
-                        color="ghost"
-                        shape="circle"
-                        onClick={row.getToggleExpandedHandler()}
-                      >
-                        {row.getIsExpanded()
-                          ? (local.collapseIcon ?? "v")
-                          : (local.expandIcon ?? ">")}
-                      </Button>
-                    </Table.Cell>
+                    <Table.HeadCell class="w-6" />
                   </Show>
+
                   <Show when={local.enableRowSelection}>
-                    <Table.Cell class="w-8">
+                    <Table.HeadCell class="w-8">
                       <Checkbox
-                        checked={row.getIsSelected()}
-                        onChange={row.getToggleSelectedHandler()}
+                        checked={table.getIsAllPageRowsSelected()}
+                        indeterminate={table.getIsSomePageRowsSelected()}
+                        onChange={table.getToggleAllPageRowsSelectedHandler()}
                       />
-                    </Table.Cell>
+                    </Table.HeadCell>
                   </Show>
-                  <For each={row.getVisibleCells()}>
-                    {(cell) => (
-                      <Table.Cell>
-                        {flexRender(
-                          cell.column.columnDef.cell,
-                          cell.getContext(),
-                        )}
-                      </Table.Cell>
-                    )}
+
+                  <For each={hg.headers}>
+                    {(header) => {
+                      const colId = header.column.id as string;
+                      const canSort =
+                        local.enableSorting &&
+                        header.column.columnDef.enableSorting !== false &&
+                        header.column.getCanSort();
+                      const canFilter =
+                        local.enableFilters &&
+                        header.column.columnDef.enableColumnFilter !== false &&
+                        header.column.getCanFilter();
+
+                      return (
+                        <Table.HeadCell
+                          class={
+                            canSort
+                              ? "relative cursor-pointer select-none"
+                              : "relative"
+                          }
+                          onClick={
+                            canSort
+                              ? header.column.getToggleSortingHandler()
+                              : undefined
+                          }
+                        >
+                          <div class="flex items-center gap-2">
+                            <div class="truncate">
+                              {flexRender(
+                                header.column.columnDef.header,
+                                header.getContext(),
+                              )}
+                            </div>
+                            <Show when={header.column.getIsSorted() === "asc"}>
+                              {local.sortAscIcon}
+                            </Show>
+                            <Show when={header.column.getIsSorted() === "desc"}>
+                              {local.sortDescIcon}
+                            </Show>
+                            <Show
+                              when={
+                                canSort &&
+                                header.column.getIsSorted() === false &&
+                                local.sortNeutralIcon
+                              }
+                            >
+                              {local.sortNeutralIcon}
+                            </Show>
+                            <div class="grow" />
+                            <Show when={canFilter}>
+                              <FilterIconTrigger colId={colId} />
+                            </Show>
+                            <Show when={canFilter}>
+                              <FilterPanel column={header.column} />
+                            </Show>
+                          </div>
+                        </Table.HeadCell>
+                      );
+                    }}
                   </For>
                 </Table.Row>
-                <Show when={row.getIsExpanded() && local.expandable}>
-                  <Table.Row>
-                    <Table.Cell colSpan={visibleColumnCount()}>
-                      {local.expandable?.expandedRowRender({ row })}
-                    </Table.Cell>
-                  </Table.Row>
-                </Show>
-              </>
-            )}
-          </For>
-        )}
-      </Table.Body>
+              )}
+            </For>
+          </Table.Head>
 
-      <Show when={shouldShowPagination()}>
-        <Table.Footer noCell>
-          <Table.Row>
-            <Table.Cell colSpan={visibleColumnCount()}>
-              <div
-                class={clsx(
-                  "flex items-center w-full",
-                  local.paginationPosition === "bottomLeft" && "justify-start",
-                  local.paginationPosition === "bottomCenter" &&
-                    "justify-center",
-                  local.paginationPosition === "bottomRight" && "justify-end",
+          <Table.Body>
+            {local.loading ? (
+              <Table.Row>
+                <Table.Cell
+                  colSpan={totalColumns()}
+                  class="text-center py-6"
+                >
+                  {local.renderLoading ? (
+                    local.renderLoading()
+                  ) : (
+                    <Loading
+                      variant="spinner"
+                      size="lg"
+                      color="primary"
+                    />
+                  )}
+                </Table.Cell>
+              </Table.Row>
+            ) : tableRows().length === 0 && local.renderEmpty ? (
+              <Table.Row>
+                <Table.Cell
+                  colSpan={totalColumns()}
+                  class="text-center py-4"
+                >
+                  {local.renderEmpty()}
+                </Table.Cell>
+              </Table.Row>
+            ) : (
+              <For each={tableRows()}>
+                {(row) => (
+                  <>
+                    <Table.Row>
+                      <Show when={local.expandable}>
+                        <Table.Cell class="w-6">
+                          <Button
+                            size="xs"
+                            color="ghost"
+                            shape="circle"
+                            onClick={row.getToggleExpandedHandler()}
+                          >
+                            {row.getIsExpanded()
+                              ? (local.collapseIcon ?? "v")
+                              : (local.expandIcon ?? ">")}
+                          </Button>
+                        </Table.Cell>
+                      </Show>
+                      <Show when={local.enableRowSelection}>
+                        <Table.Cell class="w-8">
+                          <Checkbox
+                            checked={row.getIsSelected()}
+                            onChange={row.getToggleSelectedHandler()}
+                          />
+                        </Table.Cell>
+                      </Show>
+                      <For each={row.getVisibleCells()}>
+                        {(cell) => (
+                          <Table.Cell>
+                            {flexRender(
+                              cell.column.columnDef.cell,
+                              cell.getContext(),
+                            )}
+                          </Table.Cell>
+                        )}
+                      </For>
+                    </Table.Row>
+                    <Show when={row.getIsExpanded() && local.expandable}>
+                      <Table.Row>
+                        <Table.Cell colSpan={totalColumns()}>
+                          {local.expandable?.expandedRowRender({ row })}
+                        </Table.Cell>
+                      </Table.Row>
+                    </Show>
+                  </>
                 )}
-              >
-                <div class="flex items-center gap-2">
-                  <span class="opacity-70">Rows per page</span>
-                  <Dropdown class="dropdown-end">
-                    <Dropdown.Toggle
-                      button
-                      size="sm"
-                      color="neutral"
-                    >
-                      {table.getState().pagination.pageSize}
-                    </Dropdown.Toggle>
-                    <Dropdown.Menu class="w-24">
-                      <Dropdown.Item
-                        onClick={() => table.setPageSize(10)}
-                        aria-selected={
-                          table.getState().pagination.pageSize === 10
-                        }
-                        class={clsx(
-                          table.getState().pagination.pageSize === 10 &&
-                            "active",
-                        )}
+              </For>
+            )}
+          </Table.Body>
+
+          <Show when={shouldShowPagination()}>
+            <Table.Footer noCell>
+              <Table.Row>
+                <Table.Cell colSpan={totalColumns()}>
+                  <div
+                    class={clsx(
+                      "flex items-center w-full",
+                      local.paginationPosition === "bottomLeft" &&
+                        "justify-start",
+                      local.paginationPosition === "bottomCenter" &&
+                        "justify-center",
+                      local.paginationPosition === "bottomRight" &&
+                        "justify-end",
+                    )}
+                  >
+                    <div class="flex items-center gap-2">
+                      <span class="opacity-70">Rows per page</span>
+                      <Button
+                        size="sm"
+                        color="neutral"
+                        aria-haspopup="menu"
+                        aria-expanded={pageSizeMenuOpen()}
+                        onClick={(event) => {
+                          event.stopPropagation();
+                          togglePageSizeMenu();
+                        }}
+                        ref={(el) => {
+                          pageSizeToggleRef = el as HTMLButtonElement;
+                        }}
                       >
-                        10
-                      </Dropdown.Item>
-                      <Dropdown.Item
-                        onClick={() => table.setPageSize(25)}
-                        aria-selected={
-                          table.getState().pagination.pageSize === 25
-                        }
-                        class={clsx(
-                          table.getState().pagination.pageSize === 25 &&
-                            "active",
-                        )}
-                      >
-                        25
-                      </Dropdown.Item>
-                      <Dropdown.Item
-                        onClick={() => table.setPageSize(50)}
-                        aria-selected={
-                          table.getState().pagination.pageSize === 50
-                        }
-                        class={clsx(
-                          table.getState().pagination.pageSize === 50 &&
-                            "active",
-                        )}
-                      >
-                        50
-                      </Dropdown.Item>
-                      <Dropdown.Item
-                        onClick={() => table.setPageSize(100)}
-                        aria-selected={
-                          table.getState().pagination.pageSize === 100
-                        }
-                        class={clsx(
-                          table.getState().pagination.pageSize === 100 &&
-                            "active",
-                        )}
-                      >
-                        100
-                      </Dropdown.Item>
-                    </Dropdown.Menu>
-                  </Dropdown>
-                </div>
-                <div class="flex items-center gap-3 ml-4">
-                  <span class="opacity-70">
-                    Page {table.getState().pagination.pageIndex + 1} of{" "}
-                    {table.getPageCount() || 1}
-                  </span>
-                  <div class="join">
-                    <Button
-                      size="sm"
-                      disabled={!table.getCanPreviousPage()}
-                      onClick={() => table.setPageIndex(0)}
-                    >
-                      {local.firstPageIcon ?? "|<<"}
-                    </Button>
-                    <Button
-                      size="sm"
-                      disabled={!table.getCanPreviousPage()}
-                      onClick={() => table.previousPage()}
-                    >
-                      {local.prevPageIcon ?? "<<"}
-                    </Button>
-                    <Button
-                      size="sm"
-                      disabled={!table.getCanNextPage()}
-                      onClick={() => table.nextPage()}
-                    >
-                      {local.nextPageIcon ?? ">>"}
-                    </Button>
-                    <Button
-                      size="sm"
-                      disabled={!table.getCanNextPage()}
-                      onClick={() =>
-                        table.setPageIndex(table.getPageCount() - 1)
-                      }
-                    >
-                      {local.lastPageIcon ?? ">>|"}
-                    </Button>
+                        {table.getState().pagination.pageSize}
+                      </Button>
+                    </div>
+                    <div class="flex items-center gap-3 ml-4">
+                      <span class="opacity-70">
+                        Page {table.getState().pagination.pageIndex + 1} of{" "}
+                        {table.getPageCount() || 1}
+                      </span>
+                      <div class="join">
+                        <Button
+                          size="sm"
+                          disabled={!table.getCanPreviousPage()}
+                          onClick={() => table.setPageIndex(0)}
+                        >
+                          {local.firstPageIcon ?? "|<<"}
+                        </Button>
+                        <Button
+                          size="sm"
+                          disabled={!table.getCanPreviousPage()}
+                          onClick={() => table.previousPage()}
+                        >
+                          {local.prevPageIcon ?? "<<"}
+                        </Button>
+                        <Button
+                          size="sm"
+                          disabled={!table.getCanNextPage()}
+                          onClick={() => table.nextPage()}
+                        >
+                          {local.nextPageIcon ?? ">>"}
+                        </Button>
+                        <Button
+                          size="sm"
+                          disabled={!table.getCanNextPage()}
+                          onClick={() =>
+                            table.setPageIndex(table.getPageCount() - 1)
+                          }
+                        >
+                          {local.lastPageIcon ?? ">>|"}
+                        </Button>
+                      </div>
+                    </div>
                   </div>
-                </div>
-              </div>
-            </Table.Cell>
-          </Table.Row>
-        </Table.Footer>
+                </Table.Cell>
+              </Table.Row>
+            </Table.Footer>
+          </Show>
+        </Table>
+      </div>
+      <Show when={pageSizeMenuOpen()}>
+        <Portal mount={ensurePortalRoot()}>
+          <div
+            ref={(el) => {
+              pageSizeMenuRef = el;
+            }}
+            style={pageSizeMenuStyle()}
+            class="menu p-2 shadow bg-base-100 rounded-box border border-base-300 w-24"
+            role="menu"
+            aria-label="Rows per page"
+          >
+            <For each={pageSizeOptions}>
+              {(size) => (
+                <button
+                  type="button"
+                  class={clsx(
+                    "btn btn-sm btn-ghost justify-start",
+                    table.getState().pagination.pageSize === size && "btn-active",
+                  )}
+                  aria-pressed={table.getState().pagination.pageSize === size}
+                  onClick={() => {
+                    table.setPageSize(size);
+                    closePageSizeMenu();
+                  }}
+                >
+                  {size}
+                </button>
+              )}
+            </For>
+          </div>
+        </Portal>
       </Show>
-    </Table>
+    </>
   );
 }
 
