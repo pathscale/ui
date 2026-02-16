@@ -38,6 +38,8 @@ const Tooltip = (props: TooltipProps): JSX.Element => {
   const classes = () =>
     twMerge(
       "tooltip",
+      "!z-[9999]",
+      "relative",
       "[&::before]:!z-[9999]",
       "[&::after]:!z-[9999]",
       local.class,
