@@ -1,4 +1,13 @@
-import { type Component, type JSX, createSignal, createEffect, For, Show, splitProps } from "solid-js";
+import {
+  type Component,
+  type JSX,
+  createSignal,
+  createEffect,
+  onCleanup,
+  For,
+  Show,
+  splitProps,
+} from "solid-js";
 import { twMerge } from "tailwind-merge";
 import { clsx } from "clsx";
 import Button from "../button";
@@ -66,8 +75,8 @@ export interface LiveChatPanelProps extends IComponentBaseProps {
    */
   autoScrollBehavior?: "instant" | "smooth";
   /**
-   * Distance in pixels from the bottom that still counts as "stuck to bottom"
-   * @default 100
+   * Reserved for backward compatibility.
+   * Auto-scroll now always follows new messages when enabled.
    */
   stickToBottomThreshold?: number;
 }
@@ -158,11 +167,12 @@ const LiveChatPanel: Component<LiveChatPanelProps> = (props) => {
   const [internalMessages, setInternalMessages] = createSignal<ChatMessage[]>([]);
   const [inputValue, setInputValue] = createSignal("");
   const [sending, setSending] = createSignal(false);
-  const [shouldStickToBottom, setShouldStickToBottom] = createSignal(true);
   let scrollContainer: HTMLDivElement | undefined;
   let previousMessageCount = 0;
   let previousLastMessageId: string | undefined;
   let hasObservedMessages = false;
+  let scrollRafId: number | undefined;
+  let scrollRafNestedId: number | undefined;
 
   // Initialize with mock data or provided messages
   createEffect(() => {
@@ -183,18 +193,6 @@ const LiveChatPanel: Component<LiveChatPanelProps> = (props) => {
   const isSending = () => local.isSending ?? sending();
   const autoScrollOnNewMessage = () => local.autoScrollOnNewMessage ?? true;
   const autoScrollBehavior = () => local.autoScrollBehavior ?? "instant";
-  const stickToBottomThreshold = () => local.stickToBottomThreshold ?? 100;
-
-  const isNearBottom = (element: HTMLDivElement) => {
-    const distanceFromBottom =
-      element.scrollHeight - element.scrollTop - element.clientHeight;
-    return distanceFromBottom <= stickToBottomThreshold();
-  };
-
-  const updateStickToBottomState = () => {
-    if (!scrollContainer) return;
-    setShouldStickToBottom(isNearBottom(scrollContainer));
-  };
 
   const scrollToBottom = () => {
     if (!scrollContainer) return;
@@ -210,23 +208,32 @@ const LiveChatPanel: Component<LiveChatPanelProps> = (props) => {
     scrollContainer.scrollTop = scrollContainer.scrollHeight;
   };
 
+  const clearScheduledScroll = () => {
+    if (typeof window === "undefined") return;
+    if (scrollRafId != null) {
+      window.cancelAnimationFrame(scrollRafId);
+      scrollRafId = undefined;
+    }
+    if (scrollRafNestedId != null) {
+      window.cancelAnimationFrame(scrollRafNestedId);
+      scrollRafNestedId = undefined;
+    }
+  };
+
   const scheduleScrollToBottom = () => {
     if (typeof window === "undefined") {
       scrollToBottom();
-      setShouldStickToBottom(true);
       return;
     }
 
-    window.requestAnimationFrame(() => {
-      scrollToBottom();
-      setShouldStickToBottom(true);
+    clearScheduledScroll();
+
+    scrollRafId = window.requestAnimationFrame(() => {
+      scrollRafNestedId = window.requestAnimationFrame(() => {
+        scrollToBottom();
+      });
     });
   };
-
-  createEffect(() => {
-    stickToBottomThreshold();
-    updateStickToBottomState();
-  });
 
   createEffect(() => {
     const messages = internalMessages();
@@ -244,9 +251,11 @@ const LiveChatPanel: Component<LiveChatPanelProps> = (props) => {
 
     if (!autoScrollOnNewMessage()) return;
     if (!isInitialHydration && !hasAppendedMessage) return;
-    if (!isInitialHydration && !shouldStickToBottom()) return;
-
     scheduleScrollToBottom();
+  });
+
+  onCleanup(() => {
+    clearScheduledScroll();
   });
 
   const handleSend = async () => {
@@ -370,9 +379,7 @@ const LiveChatPanel: Component<LiveChatPanelProps> = (props) => {
       <div
         ref={(element) => {
           scrollContainer = element;
-          updateStickToBottomState();
         }}
-        onScroll={updateStickToBottomState}
         class="flex-1 overflow-y-auto px-4 py-4 space-y-4"
       >
         <For each={internalMessages()}>

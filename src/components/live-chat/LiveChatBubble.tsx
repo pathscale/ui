@@ -32,8 +32,8 @@ export interface LiveChatBubbleProps extends IComponentBaseProps {
    */
   autoScrollBehavior?: "instant" | "smooth";
   /**
-   * Distance in pixels from the bottom that still counts as "stuck to bottom"
-   * @default 100
+   * Reserved for backward compatibility.
+   * Auto-scroll now always follows new messages when enabled.
    */
   stickToBottomThreshold?: number;
   /**
