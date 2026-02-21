@@ -55,6 +55,21 @@ export interface LiveChatPanelProps extends IComponentBaseProps {
    * Whether a message is currently being sent
    */
   isSending?: boolean;
+  /**
+   * Auto-scroll to the latest message when new messages are appended
+   * @default true
+   */
+  autoScrollOnNewMessage?: boolean;
+  /**
+   * Auto-scroll behavior when moving to the latest message
+   * @default "instant"
+   */
+  autoScrollBehavior?: "instant" | "smooth";
+  /**
+   * Distance in pixels from the bottom that still counts as "stuck to bottom"
+   * @default 100
+   */
+  stickToBottomThreshold?: number;
 }
 
 const getMockMessages = (): ChatMessage[] => {
@@ -132,6 +147,9 @@ const LiveChatPanel: Component<LiveChatPanelProps> = (props) => {
     "messages",
     "onSendMessage",
     "isSending",
+    "autoScrollOnNewMessage",
+    "autoScrollBehavior",
+    "stickToBottomThreshold",
     "class",
     "className",
     "style",
@@ -140,6 +158,11 @@ const LiveChatPanel: Component<LiveChatPanelProps> = (props) => {
   const [internalMessages, setInternalMessages] = createSignal<ChatMessage[]>([]);
   const [inputValue, setInputValue] = createSignal("");
   const [sending, setSending] = createSignal(false);
+  const [shouldStickToBottom, setShouldStickToBottom] = createSignal(true);
+  let scrollContainer: HTMLDivElement | undefined;
+  let previousMessageCount = 0;
+  let previousLastMessageId: string | undefined;
+  let hasObservedMessages = false;
 
   // Initialize with mock data or provided messages
   createEffect(() => {
@@ -158,6 +181,73 @@ const LiveChatPanel: Component<LiveChatPanelProps> = (props) => {
   });
 
   const isSending = () => local.isSending ?? sending();
+  const autoScrollOnNewMessage = () => local.autoScrollOnNewMessage ?? true;
+  const autoScrollBehavior = () => local.autoScrollBehavior ?? "instant";
+  const stickToBottomThreshold = () => local.stickToBottomThreshold ?? 100;
+
+  const isNearBottom = (element: HTMLDivElement) => {
+    const distanceFromBottom =
+      element.scrollHeight - element.scrollTop - element.clientHeight;
+    return distanceFromBottom <= stickToBottomThreshold();
+  };
+
+  const updateStickToBottomState = () => {
+    if (!scrollContainer) return;
+    setShouldStickToBottom(isNearBottom(scrollContainer));
+  };
+
+  const scrollToBottom = () => {
+    if (!scrollContainer) return;
+
+    if (autoScrollBehavior() === "smooth") {
+      scrollContainer.scrollTo({
+        top: scrollContainer.scrollHeight,
+        behavior: "smooth",
+      });
+      return;
+    }
+
+    scrollContainer.scrollTop = scrollContainer.scrollHeight;
+  };
+
+  const scheduleScrollToBottom = () => {
+    if (typeof window === "undefined") {
+      scrollToBottom();
+      setShouldStickToBottom(true);
+      return;
+    }
+
+    window.requestAnimationFrame(() => {
+      scrollToBottom();
+      setShouldStickToBottom(true);
+    });
+  };
+
+  createEffect(() => {
+    stickToBottomThreshold();
+    updateStickToBottomState();
+  });
+
+  createEffect(() => {
+    const messages = internalMessages();
+    const nextMessageCount = messages.length;
+    const nextLastMessageId = messages[messages.length - 1]?.messageId;
+    const isInitialHydration = !hasObservedMessages && nextMessageCount > 0;
+    const hasAppendedMessage = hasObservedMessages
+      ? nextMessageCount > previousMessageCount ||
+        (nextMessageCount > 0 && nextLastMessageId !== previousLastMessageId)
+      : false;
+
+    previousMessageCount = nextMessageCount;
+    previousLastMessageId = nextLastMessageId;
+    hasObservedMessages = true;
+
+    if (!autoScrollOnNewMessage()) return;
+    if (!isInitialHydration && !hasAppendedMessage) return;
+    if (!isInitialHydration && !shouldStickToBottom()) return;
+
+    scheduleScrollToBottom();
+  });
 
   const handleSend = async () => {
     const content = inputValue().trim();
@@ -277,7 +367,14 @@ const LiveChatPanel: Component<LiveChatPanelProps> = (props) => {
       </div>
 
       {/* Messages area */}
-      <div class="flex-1 overflow-y-auto px-4 py-4 space-y-4">
+      <div
+        ref={(element) => {
+          scrollContainer = element;
+          updateStickToBottomState();
+        }}
+        onScroll={updateStickToBottomState}
+        class="flex-1 overflow-y-auto px-4 py-4 space-y-4"
+      >
         <For each={internalMessages()}>
           {(message) => {
             const isUser = message.sender === "user";

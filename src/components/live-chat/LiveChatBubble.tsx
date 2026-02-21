@@ -22,6 +22,21 @@ export interface LiveChatBubbleProps extends IComponentBaseProps {
    */
   unreadCount?: number;
   /**
+   * Auto-scroll to the latest message when new messages are appended
+   * @default true
+   */
+  autoScrollOnNewMessage?: boolean;
+  /**
+   * Auto-scroll behavior when moving to the latest message
+   * @default "instant"
+   */
+  autoScrollBehavior?: "instant" | "smooth";
+  /**
+   * Distance in pixels from the bottom that still counts as "stuck to bottom"
+   * @default 100
+   */
+  stickToBottomThreshold?: number;
+  /**
    * Props to pass to the LiveChatPanel when opened
    */
   panelProps?: Omit<LiveChatPanelProps, "onClose">;
@@ -44,6 +59,9 @@ const LiveChatBubble: Component<LiveChatBubbleProps> = (props) => {
     "position",
     "aria-label",
     "unreadCount",
+    "autoScrollOnNewMessage",
+    "autoScrollBehavior",
+    "stickToBottomThreshold",
     "panelProps",
     "onOpen",
     "onClose",
@@ -145,7 +163,19 @@ const LiveChatBubble: Component<LiveChatBubbleProps> = (props) => {
       </button>
 
       <Show when={isOpen()}>
-        <LiveChatPanel {...(local.panelProps ?? {})} onClose={handleClose} />
+        <LiveChatPanel
+          {...(local.panelProps ?? {})}
+          autoScrollOnNewMessage={
+            local.panelProps?.autoScrollOnNewMessage ?? local.autoScrollOnNewMessage
+          }
+          autoScrollBehavior={
+            local.panelProps?.autoScrollBehavior ?? local.autoScrollBehavior
+          }
+          stickToBottomThreshold={
+            local.panelProps?.stickToBottomThreshold ?? local.stickToBottomThreshold
+          }
+          onClose={handleClose}
+        />
       </Show>
     </>
   );
