@@ -112,6 +112,20 @@ const toRgba = (rgb: string, alpha: number) => {
 };
 
 const COLORS: ColorItem[] = [
+  // Outer ring — dark/muted tones (radius ~55)
+  createColorItem("rgb(80,80,80)", 47.631, -27.5),
+  createColorItem("rgb(80,60,50)", 27.5, -47.631),
+  createColorItem("rgb(80,50,50)", 0, -55),
+  createColorItem("rgb(80,50,70)", -27.5, -47.631),
+  createColorItem("rgb(70,50,80)", -47.631, -27.5),
+  createColorItem("rgb(55,50,80)", -55, 0),
+  createColorItem("rgb(50,55,80)", -47.631, 27.5),
+  createColorItem("rgb(50,65,80)", -27.5, 47.631),
+  createColorItem("rgb(50,80,80)", 0, 55),
+  createColorItem("rgb(50,80,65)", 27.5, 47.631),
+  createColorItem("rgb(55,80,50)", 47.631, 27.5),
+  createColorItem("rgb(70,80,50)", 55, 0),
+  // Middle ring — vivid rainbow
   createColorItem("rgb(245,245,61)", 34.641, -20),
   createColorItem("rgb(245,153,61)", 20, -34.641),
   createColorItem("rgb(245,61,61)", 0, -40),
@@ -124,12 +138,14 @@ const COLORS: ColorItem[] = [
   createColorItem("rgb(61,245,153)", 20, 34.641),
   createColorItem("rgb(61,245,61)", 34.641, 20),
   createColorItem("rgb(153,245,61)", 40, 0),
+  // Inner ring — pastels
   createColorItem("rgb(240,217,194)", 10, -17.3205),
   createColorItem("rgb(240,194,217)", -10, -17.3205),
   createColorItem("rgb(217,194,240)", -20, 0),
   createColorItem("rgb(194,217,240)", -10, 17.3205),
   createColorItem("rgb(194,240,217)", 10, 17.3205),
   createColorItem("rgb(217,240,194)", 20, 0),
+  // Center — white/reset
   createColorItem("rgb(255,255,255)", 0, 0),
 ];
 
@@ -235,7 +251,7 @@ const ColorWheelFlower = (props: ColorWheelFlowerProps): JSX.Element => {
 
   const containerClasses = () =>
     twMerge(
-      "relative w-[140px] h-[140px] flex items-center justify-center",
+      "relative w-[190px] h-[190px] flex items-center justify-center",
       clsx({
         "opacity-50 cursor-not-allowed": context.disabled(),
       }),

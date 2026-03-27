@@ -138,7 +138,7 @@ const ThemeColorPicker: Component<ThemeColorPickerProps> = (props) => {
         </Button>
 
         <Show when={isOpen()}>
-          <div class="absolute right-0 mt-2 p-4 bg-base-100 rounded-lg shadow-xl border border-base-300 z-50">
+          <div class="absolute right-0 mt-2 p-6 bg-base-100 rounded-lg shadow-xl border border-base-300 z-50">
             <ColorPickerContext.Provider value={contextValue()}>
               <ColorWheelFlower class="color-wheel-custom" />
             </ColorPickerContext.Provider>
