@@ -73,7 +73,7 @@ export { default as Drawer, type DrawerProps } from "./components/drawer";
 export { default as Dropdown } from "./components/dropdown";
 export { default as FileInput } from "./components/fileinput";
 export { default as FloatingDock } from "./components/floating-dock";
-export type { FloatingDockProps, FloatingDockItem } from "./components/floating-dock";
+export type { FloatingDockProps, FloatingDockItem, FloatingDockDirection } from "./components/floating-dock";
 export { default as Flex } from "./components/flex";
 export { default as Footer } from "./components/footer";
 export type { FooterProps, FooterTitleProps } from "./components/footer";
