@@ -154,6 +154,8 @@ export { default as Navbar } from "./components/navbar";
 export type { NavbarProps } from "./components/navbar";
 export type { NavbarStackProps } from "./components/navbar/NavbarStack";
 export type { NavbarRowProps } from "./components/navbar/NavbarRow";
+export { default as NoiseBackground } from "./components/noise-background";
+export type { NoiseBackgroundProps } from "./components/noise-background";
 export { default as Pagination } from "./components/pagination";
 export {
   default as PhoneMockup,
