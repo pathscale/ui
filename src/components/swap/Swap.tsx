@@ -50,7 +50,7 @@ export default function Swap(props: SwapProps): JSX.Element {
     wrapWithElementIfInvalid({
       node: local.onElement,
       wrapper: "div",
-      className: "swap-on",
+      className: "swap-on flex h-full w-full items-center justify-center",
     }),
   );
 
@@ -58,7 +58,7 @@ export default function Swap(props: SwapProps): JSX.Element {
     wrapWithElementIfInvalid({
       node: local.offElement,
       wrapper: "div",
-      className: "swap-off",
+      className: "swap-off flex h-full w-full items-center justify-center",
     }),
   );
 

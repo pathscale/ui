@@ -15,6 +15,7 @@ import {
   type SendMessagePayload,
   type SendMessageResponse,
 } from "../../src/components/live-chat";
+import Swap from "../../src/components/swap";
 
 type DemoRow = {
   id: number;
@@ -73,7 +74,7 @@ const createChatMessages = (prefix: string, count = 24): ChatMessage[] =>
   }));
 
 export default function App() {
-  const [demoView, setDemoView] = createSignal<"table" | "chat">("table");
+  const [demoView, setDemoView] = createSignal<"table" | "chat" | "swap">("table");
   const [datasetMode, setDatasetMode] = createSignal<"large" | "small">("large");
   const [pagination, setPagination] = createSignal<PaginationState>({
     pageIndex: 0,
@@ -97,6 +98,7 @@ export default function App() {
     tableScrollHeight: 0,
     tableScrollTop: 0,
   });
+  const [swapActive, setSwapActive] = createSignal(false);
 
   let tableHostRef: HTMLDivElement | undefined;
   let panelOutgoingCount = 0;
@@ -246,7 +248,9 @@ export default function App() {
           <h1 class="text-sm font-semibold tracking-wide">
             {demoView() === "table"
               ? "EnhancedTable Vertical Scroll Containment Test"
-              : "LiveChat Auto-Scroll Test Section"}
+              : demoView() === "chat"
+                ? "LiveChat Auto-Scroll Test Section"
+                : "Swap Usage Example"}
           </h1>
           <div class="flex items-center gap-2">
             <button
@@ -263,6 +267,13 @@ export default function App() {
             >
               LiveChat
             </button>
+            <button
+              type="button"
+              class={`btn btn-xs ${demoView() === "swap" ? "btn-primary" : "btn-ghost"}`}
+              onClick={() => setDemoView("swap")}
+            >
+              Swap
+            </button>
           </div>
         </div>
       </header>
@@ -272,108 +283,168 @@ export default function App() {
           <Show
             when={demoView() === "table"}
             fallback={
-              <>
-                <section class="rounded-box border border-base-300 bg-base-100 p-4 shadow-sm">
-                  <div class="flex flex-wrap items-center gap-2">
-                    <label class="label cursor-pointer gap-2 px-0 py-0">
-                      <input
-                        type="checkbox"
-                        class="checkbox checkbox-sm"
-                        checked={autoScrollOnNewMessage()}
-                        onChange={(event) => setAutoScrollOnNewMessage(event.currentTarget.checked)}
-                      />
-                      <span class="text-sm">autoScrollOnNewMessage</span>
-                    </label>
-                    <select
-                      class="select select-sm select-bordered"
-                      value={autoScrollBehavior()}
-                      onChange={(event) =>
-                        setAutoScrollBehavior(event.currentTarget.value as "instant" | "smooth")
-                      }
-                    >
-                      <option value="instant">instant</option>
-                      <option value="smooth">smooth</option>
-                    </select>
-                    <label class="input input-sm input-bordered flex items-center gap-2">
-                      <span class="text-xs">threshold</span>
-                      <input
-                        type="number"
-                        min="0"
-                        value={stickToBottomThreshold()}
-                        onInput={(event) => {
-                          const nextValue = Number(event.currentTarget.value);
-                          setStickToBottomThreshold(Number.isNaN(nextValue) ? 0 : nextValue);
-                        }}
-                        class="w-20"
-                      />
-                    </label>
-                    <button type="button" class="btn btn-sm btn-ghost" onClick={resetChatMessages}>
-                      Reset messages
-                    </button>
-                    <button type="button" class="btn btn-sm btn-ghost" onClick={appendPanelIncoming}>
-                      Panel + incoming
-                    </button>
-                    <button type="button" class="btn btn-sm btn-ghost" onClick={appendPanelBurst}>
-                      Panel burst x8
-                    </button>
-                    <button
-                      type="button"
-                      class="btn btn-sm btn-ghost"
-                      onClick={appendBubbleIncoming}
-                    >
-                      Bubble + incoming
-                    </button>
-                    <button type="button" class="btn btn-sm btn-ghost" onClick={appendBubbleBurst}>
-                      Bubble burst x8
-                    </button>
-                  </div>
-                  <p class="mt-3 text-xs opacity-70">
-                    Scroll either chat list upward, then click append controls to verify it does not
-                    force-scroll until you return within threshold from bottom.
-                  </p>
-                </section>
+              <Show
+                when={demoView() === "chat"}
+                fallback={
+                  <>
+                    <section class="rounded-box border border-base-300 bg-base-100 p-4 shadow-sm">
+                      <h2 class="text-sm font-semibold">Swap component usage</h2>
+                      <p class="mt-2 text-sm opacity-80">
+                        Controlled and uncontrolled examples for the `Swap` component.
+                      </p>
+                    </section>
 
-                <section class="flex-1 min-h-0 overflow-auto rounded-box border border-base-300 bg-base-100 p-4 shadow-sm">
-                  <div class="grid gap-4 lg:grid-cols-2">
-                    <div class="space-y-2">
-                      <h2 class="text-sm font-semibold">LiveChatPanel</h2>
-                      <LiveChatPanel
-                        onClose={() => {}}
-                        title="Panel Under Test"
-                        messages={panelMessages()}
-                        onSendMessage={handlePanelSend}
-                        autoScrollOnNewMessage={autoScrollOnNewMessage()}
-                        autoScrollBehavior={autoScrollBehavior()}
-                        stickToBottomThreshold={stickToBottomThreshold()}
-                        class="!static !inset-auto !w-full !max-w-none !h-[34rem] !shadow-md"
-                      />
+                    <section class="flex-1 min-h-0 overflow-auto rounded-box border border-base-300 bg-base-100 p-4 shadow-sm">
+                      <div class="grid gap-6 md:grid-cols-2">
+                        <div class="space-y-3">
+                          <h3 class="text-sm font-semibold">Controlled</h3>
+                          <div class="flex items-center gap-4">
+                            <Swap
+                              class="btn btn-primary btn-circle h-20 w-20"
+                              active={swapActive()}
+                              onElement={
+                                <span class="text-xs font-semibold tracking-wide">ON</span>
+                              }
+                              offElement={
+                                <span class="text-xs font-semibold tracking-wide">OFF</span>
+                              }
+                              onChange={(event) =>
+                                setSwapActive(event.currentTarget.checked)
+                              }
+                            />
+                            <div class="text-sm">
+                              State:{" "}
+                              <span class="font-semibold">
+                                {swapActive() ? "ON" : "OFF"}
+                              </span>
+                            </div>
+                          </div>
+                        </div>
+
+                        <div class="space-y-3">
+                          <h3 class="text-sm font-semibold">Uncontrolled + rotate</h3>
+                          <Swap
+                            class="btn btn-outline btn-square h-20 w-20"
+                            rotate
+                            onElement={
+                              <span class="text-lg font-semibold leading-none">YES</span>
+                            }
+                            offElement={
+                              <span class="text-lg font-semibold leading-none">NO</span>
+                            }
+                          />
+                          <p class="text-xs opacity-70">
+                            Click to toggle and verify the on/off content stays centered.
+                          </p>
+                        </div>
+                      </div>
+                    </section>
+                  </>
+                }
+              >
+                <>
+                  <section class="rounded-box border border-base-300 bg-base-100 p-4 shadow-sm">
+                    <div class="flex flex-wrap items-center gap-2">
+                      <label class="label cursor-pointer gap-2 px-0 py-0">
+                        <input
+                          type="checkbox"
+                          class="checkbox checkbox-sm"
+                          checked={autoScrollOnNewMessage()}
+                          onChange={(event) => setAutoScrollOnNewMessage(event.currentTarget.checked)}
+                        />
+                        <span class="text-sm">autoScrollOnNewMessage</span>
+                      </label>
+                      <select
+                        class="select select-sm select-bordered"
+                        value={autoScrollBehavior()}
+                        onChange={(event) =>
+                          setAutoScrollBehavior(event.currentTarget.value as "instant" | "smooth")
+                        }
+                      >
+                        <option value="instant">instant</option>
+                        <option value="smooth">smooth</option>
+                      </select>
+                      <label class="input input-sm input-bordered flex items-center gap-2">
+                        <span class="text-xs">threshold</span>
+                        <input
+                          type="number"
+                          min="0"
+                          value={stickToBottomThreshold()}
+                          onInput={(event) => {
+                            const nextValue = Number(event.currentTarget.value);
+                            setStickToBottomThreshold(Number.isNaN(nextValue) ? 0 : nextValue);
+                          }}
+                          class="w-20"
+                        />
+                      </label>
+                      <button type="button" class="btn btn-sm btn-ghost" onClick={resetChatMessages}>
+                        Reset messages
+                      </button>
+                      <button type="button" class="btn btn-sm btn-ghost" onClick={appendPanelIncoming}>
+                        Panel + incoming
+                      </button>
+                      <button type="button" class="btn btn-sm btn-ghost" onClick={appendPanelBurst}>
+                        Panel burst x8
+                      </button>
+                      <button
+                        type="button"
+                        class="btn btn-sm btn-ghost"
+                        onClick={appendBubbleIncoming}
+                      >
+                        Bubble + incoming
+                      </button>
+                      <button type="button" class="btn btn-sm btn-ghost" onClick={appendBubbleBurst}>
+                        Bubble burst x8
+                      </button>
                     </div>
+                    <p class="mt-3 text-xs opacity-70">
+                      Scroll either chat list upward, then click append controls to verify it does not
+                      force-scroll until you return within threshold from bottom.
+                    </p>
+                  </section>
 
-                    <div class="space-y-2">
-                      <h2 class="text-sm font-semibold">LiveChatBubble</h2>
-                      <div class="relative h-[34rem] overflow-hidden rounded-box border border-base-300 bg-base-200">
-                        <LiveChatBubble
-                          aria-label="Open chat"
-                          class="!absolute !bottom-4 !right-4"
+                  <section class="flex-1 min-h-0 overflow-auto rounded-box border border-base-300 bg-base-100 p-4 shadow-sm">
+                    <div class="grid gap-4 lg:grid-cols-2">
+                      <div class="space-y-2">
+                        <h2 class="text-sm font-semibold">LiveChatPanel</h2>
+                        <LiveChatPanel
+                          onClose={() => {}}
+                          title="Panel Under Test"
+                          messages={panelMessages()}
+                          onSendMessage={handlePanelSend}
                           autoScrollOnNewMessage={autoScrollOnNewMessage()}
                           autoScrollBehavior={autoScrollBehavior()}
                           stickToBottomThreshold={stickToBottomThreshold()}
-                          panelProps={{
-                            title: "Bubble Panel Under Test",
-                            messages: bubbleMessages(),
-                            onSendMessage: handleBubbleSend,
-                            autoScrollOnNewMessage: autoScrollOnNewMessage(),
-                            autoScrollBehavior: autoScrollBehavior(),
-                            stickToBottomThreshold: stickToBottomThreshold(),
-                            class:
-                              "!absolute !inset-3 !w-auto !h-auto !max-w-none !max-h-none !min-h-0 !shadow-md",
-                          }}
+                          class="!static !inset-auto !w-full !max-w-none !h-[34rem] !shadow-md"
                         />
                       </div>
+
+                      <div class="space-y-2">
+                        <h2 class="text-sm font-semibold">LiveChatBubble</h2>
+                        <div class="relative h-[34rem] overflow-hidden rounded-box border border-base-300 bg-base-200">
+                          <LiveChatBubble
+                            aria-label="Open chat"
+                            class="!absolute !bottom-4 !right-4"
+                            autoScrollOnNewMessage={autoScrollOnNewMessage()}
+                            autoScrollBehavior={autoScrollBehavior()}
+                            stickToBottomThreshold={stickToBottomThreshold()}
+                            panelProps={{
+                              title: "Bubble Panel Under Test",
+                              messages: bubbleMessages(),
+                              onSendMessage: handleBubbleSend,
+                              autoScrollOnNewMessage: autoScrollOnNewMessage(),
+                              autoScrollBehavior: autoScrollBehavior(),
+                              stickToBottomThreshold: stickToBottomThreshold(),
+                              class:
+                                "!absolute !inset-3 !w-auto !h-auto !max-w-none !max-h-none !min-h-0 !shadow-md",
+                            }}
+                          />
+                        </div>
+                      </div>
                     </div>
-                  </div>
-                </section>
-              </>
+                  </section>
+                </>
+              </Show>
             }
           >
             <section class="rounded-box border border-base-300 bg-base-100 p-4 shadow-sm">
@@ -438,7 +509,9 @@ export default function App() {
         <div class="mx-auto flex h-full w-full max-w-6xl items-center text-sm opacity-70">
           {demoView() === "table"
             ? "Fixed footer boundary (dashboard chrome simulation)."
-            : "LiveChat mode: use controls to append incoming messages and validate auto-scroll behavior."}
+            : demoView() === "chat"
+              ? "LiveChat mode: use controls to append incoming messages and validate auto-scroll behavior."
+              : "Swap mode: toggle to verify centered on/off content with controlled and uncontrolled usage."}
         </div>
       </footer>
     </div>
