@@ -75,6 +75,8 @@ export { default as FileInput } from "./components/fileinput";
 export { default as FloatingDock } from "./components/floating-dock";
 export type { FloatingDockProps, FloatingDockItem, FloatingDockDirection } from "./components/floating-dock";
 export { default as Flex } from "./components/flex";
+export { default as GlassPanel } from "./components/glass-panel";
+export type { GlassPanelProps, GlassPanelBlur } from "./components/glass-panel";
 export { default as Footer } from "./components/footer";
 export type { FooterProps, FooterTitleProps } from "./components/footer";
 export { default as Form, useFormValidation } from "./components/form";

@@ -15,7 +15,7 @@ import {
   type SendMessagePayload,
   type SendMessageResponse,
 } from "../../src/components/live-chat";
-import Swap from "../../src/components/swap";
+import GlassPanel from "../../src/components/glass-panel";
 
 type DemoRow = {
   id: number;
@@ -74,7 +74,7 @@ const createChatMessages = (prefix: string, count = 24): ChatMessage[] =>
   }));
 
 export default function App() {
-  const [demoView, setDemoView] = createSignal<"table" | "chat" | "swap">("table");
+  const [demoView, setDemoView] = createSignal<"table" | "chat" | "glass">("table");
   const [datasetMode, setDatasetMode] = createSignal<"large" | "small">("large");
   const [pagination, setPagination] = createSignal<PaginationState>({
     pageIndex: 0,
@@ -98,7 +98,6 @@ export default function App() {
     tableScrollHeight: 0,
     tableScrollTop: 0,
   });
-  const [swapActive, setSwapActive] = createSignal(false);
 
   let tableHostRef: HTMLDivElement | undefined;
   let panelOutgoingCount = 0;
@@ -250,7 +249,7 @@ export default function App() {
               ? "EnhancedTable Vertical Scroll Containment Test"
               : demoView() === "chat"
                 ? "LiveChat Auto-Scroll Test Section"
-                : "Swap Usage Example"}
+                : "GlassPanel Showcase"}
           </h1>
           <div class="flex items-center gap-2">
             <button
@@ -269,10 +268,10 @@ export default function App() {
             </button>
             <button
               type="button"
-              class={`btn btn-xs ${demoView() === "swap" ? "btn-primary" : "btn-ghost"}`}
-              onClick={() => setDemoView("swap")}
+              class={`btn btn-xs ${demoView() === "glass" ? "btn-primary" : "btn-ghost"}`}
+              onClick={() => setDemoView("glass")}
             >
-              Swap
+              GlassPanel
             </button>
           </div>
         </div>
@@ -280,170 +279,239 @@ export default function App() {
 
       <main class="h-full px-6 pb-16 pt-16">
         <div class="mx-auto flex h-full min-h-0 w-full max-w-6xl flex-col gap-4">
+          <Show when={demoView() === "glass"}>
+            <section
+              data-theme="dark"
+              class="relative flex-1 min-h-0 overflow-auto rounded-box p-6"
+              style={{
+                background: "#0f172a",
+                "background-image": "radial-gradient(circle, rgba(255,255,255,0.08) 1px, transparent 1px)",
+                "background-size": "24px 24px",
+              }}
+            >
+              {/* Colorful blobs behind panels to show the glass blur */}
+              <div class="pointer-events-none absolute inset-0 overflow-hidden">
+                <div class="absolute top-20 left-1/4 h-48 w-48 rounded-full bg-blue-500/30 blur-3xl" />
+                <div class="absolute top-60 right-1/4 h-40 w-40 rounded-full bg-purple-500/25 blur-3xl" />
+                <div class="absolute bottom-40 left-1/3 h-56 w-56 rounded-full bg-emerald-500/20 blur-3xl" />
+                <div class="absolute bottom-20 right-1/3 h-36 w-36 rounded-full bg-rose-500/20 blur-3xl" />
+              </div>
+
+              <div class="relative space-y-6">
+                {/* --- Default glass panel --- */}
+                <div>
+                  <h2 class="text-sm font-semibold mb-3 text-white/80">Default</h2>
+                  <GlassPanel>
+                    <p class="text-white/70">Default glass panel — <code class="text-blue-300">blur="md"</code>, <code class="text-blue-300">size="md"</code></p>
+                  </GlassPanel>
+                </div>
+
+                {/* --- Blur variants --- */}
+                <div>
+                  <h2 class="text-sm font-semibold mb-3 text-white/80">Blur Variants</h2>
+                  <div class="grid gap-3 md:grid-cols-3">
+                    <GlassPanel blur="sm" size="sm">
+                      <p class="text-xs text-white/70">blur="sm" (4px)</p>
+                    </GlassPanel>
+                    <GlassPanel blur="md" size="sm">
+                      <p class="text-xs text-white/70">blur="md" (12px) — default</p>
+                    </GlassPanel>
+                    <GlassPanel blur="xl" size="sm">
+                      <p class="text-xs text-white/70">blur="xl" (24px)</p>
+                    </GlassPanel>
+                  </div>
+                </div>
+
+                {/* --- With glow --- */}
+                <div>
+                  <h2 class="text-sm font-semibold mb-3 text-white/80">Inner Glow</h2>
+                  <GlassPanel glow>
+                    <p class="text-white/70">Glass panel with inner glow shadow</p>
+                  </GlassPanel>
+                </div>
+
+                {/* --- Accent borders --- */}
+                <div>
+                  <h2 class="text-sm font-semibold mb-3 text-white/80">Accent Borders</h2>
+                  <div class="grid gap-3 md:grid-cols-3">
+                    <GlassPanel accent="primary" size="sm">
+                      <p class="text-xs text-white/70">accent="primary"</p>
+                    </GlassPanel>
+                    <GlassPanel accent="secondary" size="sm">
+                      <p class="text-xs text-white/70">accent="secondary"</p>
+                    </GlassPanel>
+                    <GlassPanel accent="accent" size="sm">
+                      <p class="text-xs text-white/70">accent="accent"</p>
+                    </GlassPanel>
+                    <GlassPanel accent="success" size="sm">
+                      <p class="text-xs text-white/70">accent="success"</p>
+                    </GlassPanel>
+                    <GlassPanel accent="warning" size="sm">
+                      <p class="text-xs text-white/70">accent="warning"</p>
+                    </GlassPanel>
+                    <GlassPanel accent="error" size="sm">
+                      <p class="text-xs text-white/70">accent="error"</p>
+                    </GlassPanel>
+                  </div>
+                </div>
+
+                {/* --- Collapsible panels (Layouts / Performance / Controls) --- */}
+                <div>
+                  <h2 class="text-sm font-semibold mb-3 text-white/80">Collapsible Panels (Layouts / Performance / Controls)</h2>
+                  <div class="space-y-2">
+                    <GlassPanel collapsible title="Layouts" defaultOpen accent="primary">
+                      <div class="grid grid-cols-3 gap-2">
+                        <div class="aspect-video rounded-lg bg-white/5 border border-white/10 flex items-center justify-center text-xs text-white/50">Side by Side</div>
+                        <div class="aspect-video rounded-lg bg-white/5 border border-white/10 flex items-center justify-center text-xs text-white/50">Picture in Picture</div>
+                        <div class="aspect-video rounded-lg bg-white/5 border border-white/10 flex items-center justify-center text-xs text-white/50">Solo</div>
+                      </div>
+                    </GlassPanel>
+                    <GlassPanel collapsible title="Performance" defaultOpen={false} accent="secondary">
+                      <div class="flex gap-3">
+                        <span class="rounded-md bg-white/10 border border-white/10 px-3 py-1 text-xs text-white/70">720p</span>
+                        <span class="rounded-md bg-blue-500/20 border border-blue-400/30 px-3 py-1 text-xs text-blue-300">1080p</span>
+                        <span class="rounded-md bg-white/10 border border-white/10 px-3 py-1 text-xs text-white/70">4K</span>
+                      </div>
+                    </GlassPanel>
+                    <GlassPanel collapsible title="Controls" defaultOpen accent="accent">
+                      <div class="flex gap-2">
+                        <button type="button" class="rounded-lg bg-blue-500/80 px-4 py-2 text-sm text-white backdrop-blur-sm hover:bg-blue-500">Record</button>
+                        <button type="button" class="rounded-lg bg-purple-500/80 px-4 py-2 text-sm text-white backdrop-blur-sm hover:bg-purple-500">Broadcast</button>
+                        <button type="button" class="rounded-lg bg-white/10 border border-white/10 px-4 py-2 text-sm text-white/70 backdrop-blur-sm hover:bg-white/15">Settings</button>
+                      </div>
+                    </GlassPanel>
+                  </div>
+                </div>
+
+                {/* --- Sizes --- */}
+                <div>
+                  <h2 class="text-sm font-semibold mb-3 text-white/80">Sizes</h2>
+                  <div class="space-y-2">
+                    <GlassPanel size="xs"><p class="text-xs text-white/70">size="xs" — p-2</p></GlassPanel>
+                    <GlassPanel size="sm"><p class="text-xs text-white/70">size="sm" — p-3</p></GlassPanel>
+                    <GlassPanel size="md"><p class="text-xs text-white/70">size="md" — p-4</p></GlassPanel>
+                    <GlassPanel size="lg"><p class="text-xs text-white/70">size="lg" — p-5</p></GlassPanel>
+                    <GlassPanel size="xl"><p class="text-xs text-white/70">size="xl" — p-6</p></GlassPanel>
+                  </div>
+                </div>
+
+                {/* --- Transparent --- */}
+                <div>
+                  <h2 class="text-sm font-semibold mb-3 text-white/80">Transparent (border only)</h2>
+                  <GlassPanel transparent>
+                    <p class="text-white/70">No background, no blur — just the border frame</p>
+                  </GlassPanel>
+                </div>
+              </div>
+            </section>
+          </Show>
+
           <Show
             when={demoView() === "table"}
             fallback={
-              <Show
-                when={demoView() === "chat"}
-                fallback={
-                  <>
-                    <section class="rounded-box border border-base-300 bg-base-100 p-4 shadow-sm">
-                      <h2 class="text-sm font-semibold">Swap component usage</h2>
-                      <p class="mt-2 text-sm opacity-80">
-                        Controlled and uncontrolled examples for the `Swap` component.
-                      </p>
-                    </section>
+              <Show when={demoView() === "chat"}>
+              <>
+                <section class="rounded-box border border-base-300 bg-base-100 p-4 shadow-sm">
+                  <div class="flex flex-wrap items-center gap-2">
+                    <label class="label cursor-pointer gap-2 px-0 py-0">
+                      <input
+                        type="checkbox"
+                        class="checkbox checkbox-sm"
+                        checked={autoScrollOnNewMessage()}
+                        onChange={(event) => setAutoScrollOnNewMessage(event.currentTarget.checked)}
+                      />
+                      <span class="text-sm">autoScrollOnNewMessage</span>
+                    </label>
+                    <select
+                      class="select select-sm select-bordered"
+                      value={autoScrollBehavior()}
+                      onChange={(event) =>
+                        setAutoScrollBehavior(event.currentTarget.value as "instant" | "smooth")
+                      }
+                    >
+                      <option value="instant">instant</option>
+                      <option value="smooth">smooth</option>
+                    </select>
+                    <label class="input input-sm input-bordered flex items-center gap-2">
+                      <span class="text-xs">threshold</span>
+                      <input
+                        type="number"
+                        min="0"
+                        value={stickToBottomThreshold()}
+                        onInput={(event) => {
+                          const nextValue = Number(event.currentTarget.value);
+                          setStickToBottomThreshold(Number.isNaN(nextValue) ? 0 : nextValue);
+                        }}
+                        class="w-20"
+                      />
+                    </label>
+                    <button type="button" class="btn btn-sm btn-ghost" onClick={resetChatMessages}>
+                      Reset messages
+                    </button>
+                    <button type="button" class="btn btn-sm btn-ghost" onClick={appendPanelIncoming}>
+                      Panel + incoming
+                    </button>
+                    <button type="button" class="btn btn-sm btn-ghost" onClick={appendPanelBurst}>
+                      Panel burst x8
+                    </button>
+                    <button
+                      type="button"
+                      class="btn btn-sm btn-ghost"
+                      onClick={appendBubbleIncoming}
+                    >
+                      Bubble + incoming
+                    </button>
+                    <button type="button" class="btn btn-sm btn-ghost" onClick={appendBubbleBurst}>
+                      Bubble burst x8
+                    </button>
+                  </div>
+                  <p class="mt-3 text-xs opacity-70">
+                    Scroll either chat list upward, then click append controls to verify it does not
+                    force-scroll until you return within threshold from bottom.
+                  </p>
+                </section>
 
-                    <section class="flex-1 min-h-0 overflow-auto rounded-box border border-base-300 bg-base-100 p-4 shadow-sm">
-                      <div class="grid gap-6 md:grid-cols-2">
-                        <div class="space-y-3">
-                          <h3 class="text-sm font-semibold">Controlled</h3>
-                          <div class="flex items-center gap-4">
-                            <Swap
-                              class="btn btn-primary btn-circle h-20 w-20"
-                              active={swapActive()}
-                              onElement={
-                                <span class="text-xs font-semibold tracking-wide">ON</span>
-                              }
-                              offElement={
-                                <span class="text-xs font-semibold tracking-wide">OFF</span>
-                              }
-                              onChange={(event) =>
-                                setSwapActive(event.currentTarget.checked)
-                              }
-                            />
-                            <div class="text-sm">
-                              State:{" "}
-                              <span class="font-semibold">
-                                {swapActive() ? "ON" : "OFF"}
-                              </span>
-                            </div>
-                          </div>
-                        </div>
-
-                        <div class="space-y-3">
-                          <h3 class="text-sm font-semibold">Uncontrolled + rotate</h3>
-                          <Swap
-                            class="btn btn-outline btn-square h-20 w-20"
-                            rotate
-                            onElement={
-                              <span class="text-lg font-semibold leading-none">YES</span>
-                            }
-                            offElement={
-                              <span class="text-lg font-semibold leading-none">NO</span>
-                            }
-                          />
-                          <p class="text-xs opacity-70">
-                            Click to toggle and verify the on/off content stays centered.
-                          </p>
-                        </div>
-                      </div>
-                    </section>
-                  </>
-                }
-              >
-                <>
-                  <section class="rounded-box border border-base-300 bg-base-100 p-4 shadow-sm">
-                    <div class="flex flex-wrap items-center gap-2">
-                      <label class="label cursor-pointer gap-2 px-0 py-0">
-                        <input
-                          type="checkbox"
-                          class="checkbox checkbox-sm"
-                          checked={autoScrollOnNewMessage()}
-                          onChange={(event) => setAutoScrollOnNewMessage(event.currentTarget.checked)}
-                        />
-                        <span class="text-sm">autoScrollOnNewMessage</span>
-                      </label>
-                      <select
-                        class="select select-sm select-bordered"
-                        value={autoScrollBehavior()}
-                        onChange={(event) =>
-                          setAutoScrollBehavior(event.currentTarget.value as "instant" | "smooth")
-                        }
-                      >
-                        <option value="instant">instant</option>
-                        <option value="smooth">smooth</option>
-                      </select>
-                      <label class="input input-sm input-bordered flex items-center gap-2">
-                        <span class="text-xs">threshold</span>
-                        <input
-                          type="number"
-                          min="0"
-                          value={stickToBottomThreshold()}
-                          onInput={(event) => {
-                            const nextValue = Number(event.currentTarget.value);
-                            setStickToBottomThreshold(Number.isNaN(nextValue) ? 0 : nextValue);
-                          }}
-                          class="w-20"
-                        />
-                      </label>
-                      <button type="button" class="btn btn-sm btn-ghost" onClick={resetChatMessages}>
-                        Reset messages
-                      </button>
-                      <button type="button" class="btn btn-sm btn-ghost" onClick={appendPanelIncoming}>
-                        Panel + incoming
-                      </button>
-                      <button type="button" class="btn btn-sm btn-ghost" onClick={appendPanelBurst}>
-                        Panel burst x8
-                      </button>
-                      <button
-                        type="button"
-                        class="btn btn-sm btn-ghost"
-                        onClick={appendBubbleIncoming}
-                      >
-                        Bubble + incoming
-                      </button>
-                      <button type="button" class="btn btn-sm btn-ghost" onClick={appendBubbleBurst}>
-                        Bubble burst x8
-                      </button>
+                <section class="flex-1 min-h-0 overflow-auto rounded-box border border-base-300 bg-base-100 p-4 shadow-sm">
+                  <div class="grid gap-4 lg:grid-cols-2">
+                    <div class="space-y-2">
+                      <h2 class="text-sm font-semibold">LiveChatPanel</h2>
+                      <LiveChatPanel
+                        onClose={() => {}}
+                        title="Panel Under Test"
+                        messages={panelMessages()}
+                        onSendMessage={handlePanelSend}
+                        autoScrollOnNewMessage={autoScrollOnNewMessage()}
+                        autoScrollBehavior={autoScrollBehavior()}
+                        stickToBottomThreshold={stickToBottomThreshold()}
+                        class="!static !inset-auto !w-full !max-w-none !h-[34rem] !shadow-md"
+                      />
                     </div>
-                    <p class="mt-3 text-xs opacity-70">
-                      Scroll either chat list upward, then click append controls to verify it does not
-                      force-scroll until you return within threshold from bottom.
-                    </p>
-                  </section>
 
-                  <section class="flex-1 min-h-0 overflow-auto rounded-box border border-base-300 bg-base-100 p-4 shadow-sm">
-                    <div class="grid gap-4 lg:grid-cols-2">
-                      <div class="space-y-2">
-                        <h2 class="text-sm font-semibold">LiveChatPanel</h2>
-                        <LiveChatPanel
-                          onClose={() => {}}
-                          title="Panel Under Test"
-                          messages={panelMessages()}
-                          onSendMessage={handlePanelSend}
+                    <div class="space-y-2">
+                      <h2 class="text-sm font-semibold">LiveChatBubble</h2>
+                      <div class="relative h-[34rem] overflow-hidden rounded-box border border-base-300 bg-base-200">
+                        <LiveChatBubble
+                          aria-label="Open chat"
+                          class="!absolute !bottom-4 !right-4"
                           autoScrollOnNewMessage={autoScrollOnNewMessage()}
                           autoScrollBehavior={autoScrollBehavior()}
                           stickToBottomThreshold={stickToBottomThreshold()}
-                          class="!static !inset-auto !w-full !max-w-none !h-[34rem] !shadow-md"
+                          panelProps={{
+                            title: "Bubble Panel Under Test",
+                            messages: bubbleMessages(),
+                            onSendMessage: handleBubbleSend,
+                            autoScrollOnNewMessage: autoScrollOnNewMessage(),
+                            autoScrollBehavior: autoScrollBehavior(),
+                            stickToBottomThreshold: stickToBottomThreshold(),
+                            class:
+                              "!absolute !inset-3 !w-auto !h-auto !max-w-none !max-h-none !min-h-0 !shadow-md",
+                          }}
                         />
                       </div>
-
-                      <div class="space-y-2">
-                        <h2 class="text-sm font-semibold">LiveChatBubble</h2>
-                        <div class="relative h-[34rem] overflow-hidden rounded-box border border-base-300 bg-base-200">
-                          <LiveChatBubble
-                            aria-label="Open chat"
-                            class="!absolute !bottom-4 !right-4"
-                            autoScrollOnNewMessage={autoScrollOnNewMessage()}
-                            autoScrollBehavior={autoScrollBehavior()}
-                            stickToBottomThreshold={stickToBottomThreshold()}
-                            panelProps={{
-                              title: "Bubble Panel Under Test",
-                              messages: bubbleMessages(),
-                              onSendMessage: handleBubbleSend,
-                              autoScrollOnNewMessage: autoScrollOnNewMessage(),
-                              autoScrollBehavior: autoScrollBehavior(),
-                              stickToBottomThreshold: stickToBottomThreshold(),
-                              class:
-                                "!absolute !inset-3 !w-auto !h-auto !max-w-none !max-h-none !min-h-0 !shadow-md",
-                            }}
-                          />
-                        </div>
-                      </div>
                     </div>
-                  </section>
-                </>
+                  </div>
+                </section>
+              </>
               </Show>
             }
           >
@@ -509,9 +577,7 @@ export default function App() {
         <div class="mx-auto flex h-full w-full max-w-6xl items-center text-sm opacity-70">
           {demoView() === "table"
             ? "Fixed footer boundary (dashboard chrome simulation)."
-            : demoView() === "chat"
-              ? "LiveChat mode: use controls to append incoming messages and validate auto-scroll behavior."
-              : "Swap mode: toggle to verify centered on/off content with controlled and uncontrolled usage."}
+            : "LiveChat mode: use controls to append incoming messages and validate auto-scroll behavior."}
         </div>
       </footer>
     </div>

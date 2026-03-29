@@ -116,6 +116,11 @@ function createSpring(
       const accel = (force - damping * velocity) / mass;
       velocity += accel * dt;
       current += velocity * dt;
+      // Clamp to prevent runaway accumulation
+      if (Math.abs(current - target) < 0.01 && Math.abs(velocity) < 0.01) {
+        current = target;
+        velocity = 0;
+      }
     },
   };
 }
@@ -137,7 +142,7 @@ const TOOLTIP_POS: Record<FloatingDockDirection, string> = {
 };
 
 /* ------------------------------------------------------------------ */
-/*  DockItem — physical width/height change (like macOS dock)         */
+/*  DockItem — width/height spring, targets update only on mousemove  */
 /* ------------------------------------------------------------------ */
 
 const DockItem: Component<{
@@ -158,6 +163,7 @@ const DockItem: Component<{
 
   let rafId: number | undefined;
   let prevTime = 0;
+  let lastMousePos = Infinity;
 
   onMount(() => {
     if (!cfg.magnify) return;
@@ -166,27 +172,30 @@ const DockItem: Component<{
       const dt = prevTime ? Math.min((time - prevTime) / 1000, 0.05) : 1 / 60;
       prevTime = time;
 
+      // Only recalculate targets when mouse position actually changed
+      // This prevents the feedback loop: animated size → shifted center → new target → oscillation
       const mp = props.mousePos();
-      if (wrapRef) {
-        const b = wrapRef.getBoundingClientRect();
-        const isH = cfg.orientation === "horizontal";
-        const center = isH ? b.x + b.width / 2 : b.y + b.height / 2;
-        const dist = Math.abs(mp - center);
+      if (mp !== lastMousePos) {
+        lastMousePos = mp;
+        if (wrapRef) {
+          const b = wrapRef.getBoundingClientRect();
+          const isH = cfg.orientation === "horizontal";
+          const center = isH ? b.x + b.width / 2 : b.y + b.height / 2;
+          const dist = Math.abs(mp - center);
 
-        const ts = mp === Infinity ? cfg.baseSize : mapRange(dist, 0, cfg.magnifyRange, cfg.hoverSize, cfg.baseSize);
-        const ti = mp === Infinity ? cfg.iconSize : mapRange(dist, 0, cfg.magnifyRange, cfg.hoverIconSize, cfg.iconSize);
+          const ts = mp === Infinity ? cfg.baseSize : mapRange(dist, 0, cfg.magnifyRange, cfg.hoverSize, cfg.baseSize);
+          const ti = mp === Infinity ? cfg.iconSize : mapRange(dist, 0, cfg.magnifyRange, cfg.hoverIconSize, cfg.iconSize);
 
-        sW.set(ts); sH.set(ts);
-        sIW.set(ti); sIH.set(ti);
+          sW.set(ts); sH.set(ts);
+          sIW.set(ti); sIH.set(ti);
+        }
       }
 
       sW.step(dt); sH.step(dt); sIW.step(dt); sIH.step(dt);
 
       if (wrapRef) {
-        const w = sW.get();
-        const h = sH.get();
-        wrapRef.style.width = `${w}px`;
-        wrapRef.style.height = `${h}px`;
+        wrapRef.style.width = `${sW.get()}px`;
+        wrapRef.style.height = `${sH.get()}px`;
       }
       if (iconRef) {
         iconRef.style.width = `${sIW.get()}px`;
@@ -210,7 +219,8 @@ const DockItem: Component<{
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
       class={twMerge(
-        "relative flex items-center justify-center rounded-full bg-base-200",
+        "relative flex items-center justify-center rounded-full bg-base-200 transition-[opacity,transform] duration-150 hover:opacity-100 active:scale-90 active:duration-75",
+        "opacity-80",
         cfg.itemClass,
       )}
       style={{ width: `${cfg.baseSize}px`, height: `${cfg.baseSize}px` }}
@@ -265,19 +275,17 @@ const FloatingDockDesktop: Component<{
       onMouseLeave={() => setMousePos(Infinity)}
       class={twMerge(
         "mx-auto",
-        isH() ? "items-end" : "items-center",
+        "items-center",
         props.showContainer && "rounded-2xl bg-base-100 shadow-[0px_1px_0px_0px_var(--color-base-300)_inset,0px_1px_0px_0px_var(--color-base-100)]",
-        isH() && props.showContainer && "h-16 px-4 pb-3",
-        !isH() && props.showContainer && "w-16 py-4 pl-3",
+        isH() && props.showContainer && "px-4 py-2",
+        !isH() && props.showContainer && "py-4 px-2",
         props.class,
       )}
       style={{
         display: "flex",
         "flex-direction": isH() ? "row" : "column",
         gap: `${props.cfg.gap}px`,
-        // When no container bg, fix cross-axis to baseSize so magnified
-        // items don't stretch parent. With container, let CSS class handle it.
-        ...(!props.showContainer && isH() ? { height: `${props.cfg.baseSize}px` } : {}),
+        ...(isH() ? { height: `${props.cfg.baseSize + 16}px` } : { width: `${props.cfg.baseSize + 16}px` }),
         overflow: "visible",
       }}
     >
