@@ -157,7 +157,7 @@ const GlassPanel = (props: GlassPanelProps): JSX.Element => {
         class="grid transition-[grid-template-rows] duration-200 ease-in-out"
         style={{ "grid-template-rows": (!local.collapsible || isOpen()) ? "1fr" : "0fr" }}
       >
-        <div class={`overflow-hidden ${contentClasses()}`}>
+        <div class={`${(!local.collapsible || isOpen()) ? "overflow-visible" : "overflow-hidden"} ${contentClasses()}`}>
           {local.children}
         </div>
       </div>
