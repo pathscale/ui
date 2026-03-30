@@ -213,7 +213,7 @@ const DockItem: Component<{
       onMouseEnter={handleMouseEnter}
       onMouseLeave={() => setHovered(false)}
       class={twMerge(
-        "relative flex items-center justify-center rounded-full bg-base-200 transition-[opacity,transform] duration-150 hover:opacity-100 active:scale-90 active:duration-75",
+        "relative flex items-center justify-center rounded-full bg-base-200 transition-opacity duration-150 hover:opacity-100 active:opacity-60",
         "opacity-80",
         cfg.itemClass,
       )}
@@ -281,27 +281,9 @@ const FloatingDockDesktop: Component<{
   let loopRunning = false;
   let anchorCenters: number[] = [];
 
-  /** Snapshot resting centres on mouse-enter so magnification
-   *  distances are computed against stable positions, not
-   *  mid-animation DOM rects that shift as neighbours grow.
-   *  If springs are mid-settle (fast re-enter), snap to rest first. */
+  /** Snapshot centres on mouse-enter. With transform-based scaling
+   *  layout never changes, so centres are always stable — no snap needed. */
   const captureAnchors = () => {
-    // Snap any in-flight springs to their rest targets and flush to DOM
-    // so getBoundingClientRect returns stable rest-state positions.
-    for (let i = 0; i < itemSprings.length; i++) {
-      const s = itemSprings[i];
-      s.sW.snap(); s.sH.snap(); s.sIW.snap(); s.sIH.snap();
-      if (s.wrapRef) {
-        s.wrapRef.style.width = `${s.sW.get()}px`;
-        s.wrapRef.style.height = `${s.sH.get()}px`;
-      }
-      if (s.iconRef) {
-        s.iconRef.style.width = `${s.sIW.get()}px`;
-        s.iconRef.style.height = `${s.sIH.get()}px`;
-      }
-    }
-    stopLoop();
-
     anchorCenters = [];
     for (let i = 0; i < itemSprings.length; i++) {
       const wrap = itemSprings[i].wrapRef;
@@ -358,16 +340,17 @@ const FloatingDockDesktop: Component<{
       }
     }
 
-    // BATCH WRITE: write all styles (no reads after this)
+    // BATCH WRITE: transform-based scaling — no layout changes,
+    // container stays stable, items scale in place.
     for (let i = 0; i < itemSprings.length; i++) {
       const s = itemSprings[i];
       if (s.wrapRef) {
-        s.wrapRef.style.width = `${s.sW.get()}px`;
-        s.wrapRef.style.height = `${s.sH.get()}px`;
+        const scale = s.sW.get() / cfg.baseSize;
+        s.wrapRef.style.transform = `scale(${scale})`;
       }
       if (s.iconRef) {
-        s.iconRef.style.width = `${s.sIW.get()}px`;
-        s.iconRef.style.height = `${s.sIH.get()}px`;
+        const iconScale = s.sIW.get() / cfg.iconSize;
+        s.iconRef.style.transform = `scale(${iconScale})`;
       }
     }
 
