@@ -2,6 +2,7 @@ import { readdirSync, readFileSync, existsSync } from "node:fs";
 import { join } from "node:path";
 
 const COMPONENTS_DIR = "src/components";
+const CONTRIBUTING = "CONTRIBUTING.md";
 
 // Directories that are not components (utilities, types, shared files)
 const SKIP = new Set([
@@ -17,12 +18,12 @@ function toPascalCase(kebab: string): string {
   return kebab.replace(/(^|-)([a-z])/g, (_, __, c) => c.toUpperCase());
 }
 
-type Violation = { component: string; rule: string; detail: string };
+type Violation = { component: string; rule: string; detail: string; section: string };
 
 const violations: Violation[] = [];
 
-function fail(component: string, rule: string, detail: string) {
-  violations.push({ component, rule, detail });
+function fail(component: string, rule: string, detail: string, section: string) {
+  violations.push({ component, rule, detail, section });
 }
 
 const entries = readdirSync(COMPONENTS_DIR, { withFileTypes: true });
@@ -40,7 +41,7 @@ for (const entry of entries) {
   // Must have index.ts
   const indexPath = join(componentDir, "index.ts");
   if (!existsSync(indexPath)) {
-    fail(dir, "structure", "missing index.ts barrel export");
+    fail(dir, "structure", "missing index.ts barrel export", "Structure");
     continue;
   }
 
@@ -60,12 +61,12 @@ for (const entry of entries) {
 
   // Must use splitProps
   if (!source.includes("splitProps")) {
-    fail(dir, "props", "must use splitProps to separate component props from HTML pass-through");
+    fail(dir, "props", "must use splitProps to separate component props from HTML pass-through", "Props");
   }
 
   // Must use twMerge for class merging
   if (!source.includes("twMerge")) {
-    fail(dir, "props", "must use twMerge() for class merging");
+    fail(dir, "props", "must use twMerge() for class merging", "Props");
   }
 
   // --- Code style rules ---
@@ -86,14 +87,14 @@ for (const entry of entries) {
     // Skip if it contains dynamic values (template literals, function calls, ternaries, spread)
     if (/\$\{|`|\.\.\.|[a-z]+\(|[?]/.test(block)) continue;
     // Only flag purely static style objects
-    fail(dir, "code-style", `static inline style={{}} could be a Tailwind class (line ~${from + 1})`);
+    fail(dir, "code-style", `static inline style={{}} could be a Tailwind class (line ~${from + 1})`, "Code Style");
   }
 
   // --- Barrel export rules ---
 
   // index.ts must export a type (props type)
   if (!index.includes("type ")) {
-    fail(dir, "structure", "index.ts must export the component's Props type");
+    fail(dir, "structure", "index.ts must export the component's Props type", "Structure");
   }
 }
 
@@ -106,7 +107,7 @@ if (violations.length === 0) {
   console.log(`\u274c ${violations.length} contract violation(s) found:\n`);
   for (const v of violations) {
     console.log(`  ${v.component} [${v.rule}]: ${v.detail}`);
+    console.log(`    \u2192 See ${CONTRIBUTING} > Component Checklist > ${v.section}\n`);
   }
-  console.log("");
   process.exit(1);
 }

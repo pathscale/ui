@@ -83,13 +83,14 @@
     }
   },
   "scripts": {
-    "build": "rslib build && bun scripts/copy-css.js",
+    "build": "bun run scripts/check-contracts.ts && rslib build && bun scripts/copy-css.js",
     "build:watch": "rslib build --watch",
     "dev": "rslib dev",
     "preview": "rslib preview",
     "clean": "rm -rf dist node_modules",
     "format": "bun biome format --write",
-    "lint": "bun biome lint --write"
+    "lint": "bun biome lint --write",
+    "check": "bun run scripts/check-contracts.ts"
   },
   "sideEffects": false,
   "type": "module"

@@ -1,6 +1,6 @@
 import "cally";
 import { clsx } from "clsx";
-import { type JSX, createEffect, createSignal, createUniqueId } from "solid-js";
+import { type JSX, createEffect, createSignal, createUniqueId, splitProps } from "solid-js";
 import { twMerge } from "tailwind-merge";
 
 import Icon from "../icon/Icon";
@@ -32,7 +32,21 @@ type CalendarBaseProps = {
 export type CalendarProps = CalendarBaseProps & IComponentBaseProps;
 
 const Calendar = (props: CalendarProps): JSX.Element => {
-  const [selectedValue, setSelectedValue] = createSignal(props.value || "");
+  const [local] = splitProps(props, [
+    "size",
+    "value",
+    "onDateSelect",
+    "asInput",
+    "placeholder",
+    "disabled",
+    "children",
+    "dataTheme",
+    "class",
+    "className",
+    "style",
+  ]);
+
+  const [selectedValue, setSelectedValue] = createSignal(local.value || "");
   const [isOpen, setIsOpen] = createSignal(false);
   const uniqueId = createUniqueId();
   const inputId = `calendar-input-${uniqueId}`;
@@ -41,8 +55,8 @@ const Calendar = (props: CalendarProps): JSX.Element => {
   let inputRef: HTMLButtonElement | undefined;
 
   createEffect(() => {
-    if (props.value !== undefined) {
-      setSelectedValue(props.value);
+    if (local.value !== undefined) {
+      setSelectedValue(local.value);
     }
   });
 
@@ -53,7 +67,7 @@ const Calendar = (props: CalendarProps): JSX.Element => {
   });
 
   createEffect(() => {
-    const shouldSetupListeners = props.asInput
+    const shouldSetupListeners = local.asInput
       ? isOpen() && calendarRef
       : calendarRef;
 
@@ -65,11 +79,11 @@ const Calendar = (props: CalendarProps): JSX.Element => {
         if (newValue && newValue !== selectedValue()) {
           setSelectedValue(newValue);
 
-          if (props.onDateSelect) {
-            props.onDateSelect(newValue);
+          if (local.onDateSelect) {
+            local.onDateSelect(newValue);
           }
 
-          if (props.asInput) {
+          if (local.asInput) {
             setIsOpen(false);
           }
         }
@@ -80,10 +94,10 @@ const Calendar = (props: CalendarProps): JSX.Element => {
           const value = calendarRef.value;
           if (value && value !== selectedValue()) {
             setSelectedValue(value);
-            if (props.onDateSelect) {
-              props.onDateSelect(value);
+            if (local.onDateSelect) {
+              local.onDateSelect(value);
             }
-            if (props.asInput) {
+            if (local.asInput) {
               setIsOpen(false);
             }
           }
@@ -105,23 +119,23 @@ const Calendar = (props: CalendarProps): JSX.Element => {
   const calendarClasses = () =>
     twMerge(
       "cally",
-      !props.asInput &&
+      !local.asInput &&
         "bg-base-100 border border-base-300 shadow-lg rounded-box",
       "[&_[slot=heading]]:text-xs [&_[slot=heading]]:font-medium",
       "[&_.cally-month-header]:text-xs [&_.cally-year]:text-xs",
       "text-sm",
-      props.asInput && "w-full max-w-full",
+      local.asInput && "w-full max-w-full",
       "[&_table]:w-full [&_td]:p-1 [&_th]:p-1",
       "[&_button]:p-1 [&_button]:min-h-0 [&_button]:h-auto",
-      props.class,
-      props.className,
+      local.class,
+      local.className,
       clsx({
-        "text-base [&_[slot=heading]]:text-sm": props.size === "lg",
+        "text-base [&_[slot=heading]]:text-sm": local.size === "lg",
         "text-sm [&_[slot=heading]]:text-xs":
-          props.size === "md" || !props.size,
+          local.size === "md" || !local.size,
         "text-xs [&_[slot=heading]]:text-xs [&_button]:text-xs":
-          props.size === "sm",
-        "text-xs [&_button]:text-xs": props.size === "xs",
+          local.size === "sm",
+        "text-xs [&_button]:text-xs": local.size === "xs",
       }),
     );
 
@@ -130,11 +144,11 @@ const Calendar = (props: CalendarProps): JSX.Element => {
       "input input-bordered cursor-pointer",
       "w-72",
       clsx({
-        "input-lg w-80": props.size === "lg",
-        "input-md w-72": props.size === "md" || !props.size,
-        "input-sm w-64": props.size === "sm",
-        "input-xs w-56": props.size === "xs",
-        "input-disabled cursor-not-allowed": props.disabled,
+        "input-lg w-80": local.size === "lg",
+        "input-md w-72": local.size === "md" || !local.size,
+        "input-sm w-64": local.size === "sm",
+        "input-xs w-56": local.size === "xs",
+        "input-disabled cursor-not-allowed": local.disabled,
       }),
     );
 
@@ -143,10 +157,10 @@ const Calendar = (props: CalendarProps): JSX.Element => {
       "dropdown-content bg-base-100 rounded-box shadow-lg z-50 p-2",
       "w-auto",
       clsx({
-        "w-80": props.size === "lg",
-        "w-72": props.size === "md" || !props.size,
-        "w-64": props.size === "sm",
-        "w-56": props.size === "xs",
+        "w-80": local.size === "lg",
+        "w-72": local.size === "md" || !local.size,
+        "w-64": local.size === "sm",
+        "w-56": local.size === "xs",
       }),
     );
 
@@ -170,21 +184,21 @@ const Calendar = (props: CalendarProps): JSX.Element => {
 
   const formatDisplayDate = (value: string) => {
     if (!value) {
-      return props.placeholder || "Pick a date";
+      return local.placeholder || "Pick a date";
     }
     try {
       const date = new Date(value);
       return date.toLocaleDateString();
     } catch {
-      return props.placeholder || "Pick a date";
+      return local.placeholder || "Pick a date";
     }
   };
 
-  if (props.asInput) {
+  if (local.asInput) {
     return (
       <div
-        data-theme={props.dataTheme}
-        style={props.style}
+        data-theme={local.dataTheme}
+        style={local.style}
         class="dropdown"
       >
         <button
@@ -192,7 +206,7 @@ const Calendar = (props: CalendarProps): JSX.Element => {
           id={inputId}
           class={inputClasses()}
           onClick={() => setIsOpen(!isOpen())}
-          disabled={props.disabled}
+          disabled={local.disabled}
           type="button"
         >
           {formatDisplayDate(selectedValue())}
@@ -224,15 +238,15 @@ const Calendar = (props: CalendarProps): JSX.Element => {
           />
         )}
 
-        {props.children}
+        {local.children}
       </div>
     );
   }
 
   return (
     <div
-      data-theme={props.dataTheme}
-      style={props.style}
+      data-theme={local.dataTheme}
+      style={local.style}
     >
       <calendar-date
         ref={calendarRef}
@@ -243,7 +257,7 @@ const Calendar = (props: CalendarProps): JSX.Element => {
         <ArrowRightIcon />
         <calendar-month />
       </calendar-date>
-      {props.children}
+      {local.children}
     </div>
   );
 };
