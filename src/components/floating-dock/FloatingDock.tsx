@@ -124,10 +124,16 @@ function createSpring(
         velocity = 0;
         return;
       }
-      const force = -stiffness * (current - target);
-      const accel = (force - damping * velocity) / mass;
-      velocity += accel * dt;
-      current += velocity * dt;
+      // Sub-step for numerical stability — explicit Euler diverges
+      // with small mass (0.1) at dt > ~0.004.
+      const substeps = Math.ceil(dt / 0.004);
+      const subDt = dt / substeps;
+      for (let i = 0; i < substeps; i++) {
+        const force = -stiffness * (current - target);
+        const accel = (force - damping * velocity) / mass;
+        velocity += accel * subDt;
+        current += velocity * subDt;
+      }
       if (Math.abs(current - target) < 0.01 && Math.abs(velocity) < 0.01) {
         current = target;
         velocity = 0;
@@ -342,14 +348,16 @@ const FloatingDockDesktop: Component<{
 
     // BATCH WRITE: transform-based scaling — no layout changes,
     // container stays stable, items scale in place.
+    const maxScale = cfg.hoverSize / cfg.baseSize;
+    const maxIconScale = cfg.hoverIconSize / cfg.iconSize;
     for (let i = 0; i < itemSprings.length; i++) {
       const s = itemSprings[i];
       if (s.wrapRef) {
-        const scale = s.sW.get() / cfg.baseSize;
+        const scale = Math.max(0.8, Math.min(s.sW.get() / cfg.baseSize, maxScale));
         s.wrapRef.style.transform = `scale(${scale})`;
       }
       if (s.iconRef) {
-        const iconScale = s.sIW.get() / cfg.iconSize;
+        const iconScale = Math.max(0.8, Math.min(s.sIW.get() / cfg.iconSize, maxIconScale));
         s.iconRef.style.transform = `scale(${iconScale})`;
       }
     }
