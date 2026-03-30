@@ -9,6 +9,7 @@ import {
   onMount,
   splitProps,
 } from "solid-js";
+import { Portal } from "solid-js/web";
 import { twMerge } from "tailwind-merge";
 
 import type { IComponentBaseProps } from "../types";
@@ -144,17 +145,6 @@ function mapRange(value: number, inMin: number, inMax: number, outMin: number, o
 }
 
 /* ------------------------------------------------------------------ */
-/*  Tooltip positions                                                 */
-/* ------------------------------------------------------------------ */
-
-const TOOLTIP_POS: Record<FloatingDockDirection, string> = {
-  top: "absolute -top-8 left-1/2 -translate-x-1/2",
-  bottom: "absolute -bottom-8 left-1/2 -translate-x-1/2",
-  left: "absolute top-1/2 -translate-y-1/2 right-full mr-2",
-  right: "absolute top-1/2 -translate-y-1/2 left-full ml-2",
-};
-
-/* ------------------------------------------------------------------ */
 /*  Item springs — created per item, animated by parent               */
 /* ------------------------------------------------------------------ */
 
@@ -171,6 +161,26 @@ type ItemSprings = {
 /*  DockItem — rendering only, no rAF                                 */
 /* ------------------------------------------------------------------ */
 
+const TOOLTIP_OFFSET = 8;
+
+function computeTooltipPos(rect: DOMRect, dir: FloatingDockDirection): { top: string; left: string } {
+  const cx = rect.left + rect.width / 2;
+  const cy = rect.top + rect.height / 2;
+  switch (dir) {
+    case "top": return { left: `${cx}px`, top: `${rect.top - TOOLTIP_OFFSET}px` };
+    case "bottom": return { left: `${cx}px`, top: `${rect.bottom + TOOLTIP_OFFSET}px` };
+    case "left": return { left: `${rect.left - TOOLTIP_OFFSET}px`, top: `${cy}px` };
+    case "right": return { left: `${rect.right + TOOLTIP_OFFSET}px`, top: `${cy}px` };
+  }
+}
+
+const TOOLTIP_TRANSFORM: Record<FloatingDockDirection, string> = {
+  top: "translate(-50%, -100%)",
+  bottom: "translate(-50%, 0)",
+  left: "translate(-100%, -50%)",
+  right: "translate(0, -50%)",
+};
+
 const DockItem: Component<{
   item: FloatingDockItem;
   cfg: ResolvedConfig;
@@ -180,11 +190,19 @@ const DockItem: Component<{
   let iconRef: HTMLDivElement | undefined;
 
   const [hovered, setHovered] = createSignal(false);
+  const [tooltipStyle, setTooltipStyle] = createSignal<{ top: string; left: string }>({ top: "0", left: "0" });
   const cfg = props.cfg;
 
   onMount(() => {
     if (wrapRef && iconRef) props.registerRefs(wrapRef, iconRef);
   });
+
+  const handleMouseEnter = () => {
+    if (wrapRef) {
+      setTooltipStyle(computeTooltipPos(wrapRef.getBoundingClientRect(), cfg.tooltipDir));
+    }
+    setHovered(true);
+  };
 
   const handleClick = (e: MouseEvent) => {
     if (props.item.onClick) { e.preventDefault(); props.item.onClick(e); }
@@ -193,7 +211,7 @@ const DockItem: Component<{
   const inner = (
     <div
       ref={wrapRef}
-      onMouseEnter={() => setHovered(true)}
+      onMouseEnter={handleMouseEnter}
       onMouseLeave={() => setHovered(false)}
       class={twMerge(
         "relative flex items-center justify-center rounded-full bg-base-200 transition-[opacity,transform] duration-150 hover:opacity-100 active:scale-90 active:duration-75",
@@ -203,13 +221,21 @@ const DockItem: Component<{
       style={{ width: `${cfg.baseSize}px`, height: `${cfg.baseSize}px` }}
     >
       <Show when={hovered()}>
-        <div class={twMerge(
-          TOOLTIP_POS[cfg.tooltipDir],
-          "w-fit rounded-md border border-base-300 bg-base-100 px-2 py-0.5 text-xs whitespace-pre text-base-content animate-fade-in z-50",
-          cfg.tooltipClass,
-        )}>
-          {props.item.title}
-        </div>
+        <Portal>
+          <div
+            class={twMerge(
+              "fixed w-fit rounded-md border border-base-300 bg-base-100 px-2 py-0.5 text-xs whitespace-pre text-base-content animate-fade-in z-[9999] pointer-events-none",
+              cfg.tooltipClass,
+            )}
+            style={{
+              top: tooltipStyle().top,
+              left: tooltipStyle().left,
+              transform: TOOLTIP_TRANSFORM[cfg.tooltipDir],
+            }}
+          >
+            {props.item.title}
+          </div>
+        </Portal>
       </Show>
       <div ref={iconRef} class="flex items-center justify-center shrink-0">
         {props.item.icon}
