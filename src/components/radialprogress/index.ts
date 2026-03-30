@@ -1,1 +1,1 @@
-export { default } from "./RadialProgress";
+export { default, type RadialProgressProps } from "./RadialProgress";

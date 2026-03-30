@@ -3,7 +3,7 @@ import { twMerge } from "tailwind-merge";
 import type { IComponentBaseProps } from "../types";
 import clsx from "clsx";
 
-type TimelineProps = IComponentBaseProps &
+export type TimelineProps = IComponentBaseProps &
   JSX.HTMLAttributes<HTMLUListElement> & {
     vertical?: boolean;
     horizontal?: boolean;

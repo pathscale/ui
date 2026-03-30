@@ -1,4 +1,4 @@
-import { type Component, Show, createMemo, splitProps } from "solid-js";
+import { type Component, type JSX, Show, createMemo, splitProps } from "solid-js";
 import { twMerge } from "tailwind-merge";
 import Badge from "../badge";
 import Button from "../button";
@@ -71,7 +71,7 @@ export interface ConnectionStatusProps extends IComponentBaseProps {
   /**
    * Custom style
    */
-  style?: any;
+  style?: JSX.CSSProperties;
 
   /**
    * Data theme

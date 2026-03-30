@@ -225,9 +225,9 @@ const NoiseBackground = (rawProps: NoiseBackgroundProps): JSX.Element => {
       {...others}
     >
       {/* Moving gradient layers */}
-      <div ref={layer0} class="absolute inset-0" style={{ opacity: 0.4 }} />
-      <div ref={layer1} class="absolute inset-0" style={{ opacity: 0.3 }} />
-      <div ref={layer2} class="absolute inset-0" style={{ opacity: 0.25 }} />
+      <div ref={layer0} class="absolute inset-0 opacity-40" />
+      <div ref={layer1} class="absolute inset-0 opacity-30" />
+      <div ref={layer2} class="absolute inset-0 opacity-25" />
 
       {/* Top gradient strip */}
       <div

@@ -7,6 +7,7 @@ export type DropdownMenuProps = JSX.HTMLAttributes<HTMLUListElement> &
   IComponentBaseProps & {
     id?: string;
     hideOverflow?: boolean;
+    role?: string;
     "aria-labelledby"?: string;
   };
 
@@ -18,6 +19,7 @@ const DropdownMenu = (props: DropdownMenuProps): JSX.Element => {
     "style",
     "id",
     "hideOverflow",
+    "role",
     "aria-labelledby",
   ]);
 
@@ -45,7 +47,7 @@ const DropdownMenu = (props: DropdownMenuProps): JSX.Element => {
       data-theme={local.dataTheme}
       class={classes()}
       style={local.style}
-      role="menu"
+      role={local.role ?? "menu"}
     />
   );
 };

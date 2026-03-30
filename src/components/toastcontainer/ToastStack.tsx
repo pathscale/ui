@@ -6,6 +6,7 @@ import {
   createSignal,
   splitProps,
 } from "solid-js";
+import { twMerge } from "tailwind-merge";
 import Alert from "../alert";
 import Button from "../button";
 import Toast from "../toast";
@@ -54,6 +55,7 @@ const defaultRenderToast: ToastRenderer = (toast, dismiss) => (
 
 export const ToastStack: Component<ToastStackProps> = (props) => {
   const [local, rest] = splitProps(props, [
+    "class",
     "motionPreset",
     "motionPresetName",
     "reduceMotion",
@@ -105,7 +107,7 @@ export const ToastStack: Component<ToastStackProps> = (props) => {
   const renderToast = () => local.renderToast ?? defaultRenderToast;
 
   return (
-    <Toast {...rest}>
+    <Toast {...rest} class={twMerge(local.class)}>
       <div
         class={isExpanded() ? "flex flex-col gap-2" : "relative"}
         style={isExpanded() ? undefined : { "min-height": "3rem" }}

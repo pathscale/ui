@@ -1,4 +1,5 @@
-import { type JSX, createEffect, createSignal, onMount } from "solid-js";
+import { type JSX, createEffect, createSignal, onMount, splitProps } from "solid-js";
+import { twMerge } from "tailwind-merge";
 
 export interface SvgBackgroundProps {
   /** Primary gradient color (CSS color value) */
@@ -37,18 +38,18 @@ function hexToRgb(hex: string) {
 }
 
 export default function SvgBackground(props: SvgBackgroundProps) {
-  const {
-    colorStart = "#6366f1",
-    colorEnd = "#4f46e5",
-    backgroundColor = "#000000",
-    opacity = 1,
-    blurIntensity = 40,
-    density = 5,
-    darkness = 0,
-    class: className = "",
-    style = {},
-    children,
-  } = props;
+  const [local] = splitProps(props, [
+    "colorStart",
+    "colorEnd",
+    "backgroundColor",
+    "opacity",
+    "blurIntensity",
+    "density",
+    "darkness",
+    "class",
+    "style",
+    "children",
+  ]);
 
   let containerRef: HTMLDivElement | undefined;
   let svgRef: SVGSVGElement | undefined;
@@ -57,8 +58,8 @@ export default function SvgBackground(props: SvgBackgroundProps) {
   const [isBackgroundReady, setBackgroundReady] = createSignal(false);
 
   const getIntermediateColor = (t: number) => {
-    const start = hexToRgb(colorStart);
-    const end = hexToRgb(colorEnd);
+    const start = hexToRgb(local.colorStart ?? "#6366f1");
+    const end = hexToRgb(local.colorEnd ?? "#4f46e5");
 
     const r = Math.round(start.r + (end.r - start.r) * t);
     const g = Math.round(start.g + (end.g - start.g) * t);
@@ -68,7 +69,7 @@ export default function SvgBackground(props: SvgBackgroundProps) {
   };
 
   const generateShapes = () => {
-    const normalizedDensity = Math.max(1, density);
+    const normalizedDensity = Math.max(1, local.density ?? 5);
 
     const maxShapes = Math.min(
       200,
@@ -231,7 +232,7 @@ export default function SvgBackground(props: SvgBackgroundProps) {
         cx="0"
         cy="0"
         r="100"
-        fill={colorStart}
+        fill={local.colorStart ?? "#6366f1"}
         opacity="0.7"
       />,
       <circle
@@ -251,7 +252,7 @@ export default function SvgBackground(props: SvgBackgroundProps) {
         cx="400"
         cy="400"
         r="120"
-        fill={colorEnd}
+        fill={local.colorEnd ?? "#4f46e5"}
       />,
 
       <circle
@@ -382,7 +383,7 @@ export default function SvgBackground(props: SvgBackgroundProps) {
 
       if (containerRef) {
         const rect = containerRef.getBoundingClientRect();
-        const blurPadding = Math.ceil(blurIntensity * 2);
+        const blurPadding = Math.ceil((local.blurIntensity ?? 40) * 2);
         canvasRef.width = rect.width + blurPadding * 2;
         canvasRef.height = rect.height + blurPadding * 2;
       }
@@ -392,15 +393,16 @@ export default function SvgBackground(props: SvgBackgroundProps) {
 
       ctx.clearRect(0, 0, canvasRef.width, canvasRef.height);
 
-      ctx.fillStyle = backgroundColor;
+      ctx.fillStyle = local.backgroundColor ?? "#000000";
       ctx.fillRect(0, 0, canvasRef.width, canvasRef.height);
 
+      const blur = local.blurIntensity ?? 40;
       ctx.drawImage(
         img,
-        -blurIntensity * 2,
-        -blurIntensity * 2,
-        canvasRef.width + blurIntensity * 4,
-        canvasRef.height + blurIntensity * 4,
+        -blur * 2,
+        -blur * 2,
+        canvasRef.width + blur * 4,
+        canvasRef.height + blur * 4,
       );
 
       URL.revokeObjectURL(svgUrl);
@@ -431,12 +433,12 @@ export default function SvgBackground(props: SvgBackgroundProps) {
 
   createEffect(() => {
     const _ = [
-      colorStart,
-      colorEnd,
-      backgroundColor,
-      opacity,
-      blurIntensity,
-      density,
+      local.colorStart,
+      local.colorEnd,
+      local.backgroundColor,
+      local.opacity,
+      local.blurIntensity,
+      local.density,
     ];
 
     setTimeout(() => {
@@ -448,20 +450,22 @@ export default function SvgBackground(props: SvgBackgroundProps) {
     return {
       position: "relative",
       overflow: "hidden",
-      ...style,
+      ...local.style,
     };
   };
 
   const canvasStyle = (): JSX.CSSProperties => {
+    const blur = local.blurIntensity ?? 40;
+    const op = local.opacity ?? 1;
     return {
       position: "absolute",
-      top: `-${blurIntensity * 2}px`,
-      left: `-${blurIntensity * 2}px`,
-      width: `calc(100% + ${blurIntensity * 4}px)`,
-      height: `calc(100% + ${blurIntensity * 4}px)`,
+      top: `-${blur * 2}px`,
+      left: `-${blur * 2}px`,
+      width: `calc(100% + ${blur * 4}px)`,
+      height: `calc(100% + ${blur * 4}px)`,
       "z-index": "0",
-      opacity: opacity.toString(),
-      filter: `blur(${blurIntensity}px)`,
+      opacity: op.toString(),
+      filter: `blur(${blur}px)`,
     };
   };
 
@@ -470,10 +474,10 @@ export default function SvgBackground(props: SvgBackgroundProps) {
   return (
     <div
       ref={containerRef}
-      class={`relative flex items-center justify-center ${className}`}
+      class={twMerge("relative flex items-center justify-center", local.class)}
       style={backgroundStyle()}
     >
-      <div style={{ display: "none" }}>
+      <div class="hidden">
         <svg
           ref={svgRef}
           viewBox="0 0 400 400"
@@ -482,7 +486,7 @@ export default function SvgBackground(props: SvgBackgroundProps) {
           <rect
             width="400"
             height="400"
-            fill={backgroundColor}
+            fill={local.backgroundColor ?? "#000000"}
           />
           {generateShapes()}
         </svg>
@@ -493,17 +497,17 @@ export default function SvgBackground(props: SvgBackgroundProps) {
         style={canvasStyle()}
       />
 
-      {darkness > 0 && (
+      {(local.darkness ?? 0) > 0 && (
         <div
           class="absolute inset-0 z-5"
           style={{
-            "background-color": `rgba(0, 0, 0, ${darkness})`,
+            "background-color": `rgba(0, 0, 0, ${local.darkness ?? 0})`,
             "pointer-events": "none",
           }}
         />
       )}
 
-      <div class={contentClasses}>{children}</div>
+      <div class={contentClasses}>{local.children}</div>
     </div>
   );
 }

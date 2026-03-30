@@ -7,12 +7,13 @@ import {
   mergeProps,
 } from "solid-js";
 import { clsx } from "clsx";
+import { twMerge } from "tailwind-merge";
 import type { IComponentBaseProps } from "../types";
 
 export interface BottomSheetProps extends IComponentBaseProps {
   isOpen: boolean;
   onClose: () => void;
-  children?: any;
+  children?: import("solid-js").JSX.Element;
   closeOnOverlayClick?: boolean;
   closeOnSwipeDown?: boolean;
 }
@@ -117,9 +118,13 @@ const BottomSheet: Component<BottomSheetProps> = (props) => {
 
       <div
         ref={sheetRef}
-        class={clsx(
-          "bg-base-300 text-base-content fixed bottom-0 left-0 right-0 rounded-t-2xl shadow-lg z-50 transition-transform duration-300 ease-out",
-          local.isOpen ? "translate-y-0" : "translate-y-full",
+        class={twMerge(
+          clsx(
+            "bg-base-300 text-base-content fixed bottom-0 left-0 right-0 rounded-t-2xl shadow-lg z-50 transition-transform duration-300 ease-out",
+            local.isOpen ? "translate-y-0" : "translate-y-full",
+          ),
+          local.class,
+          local.className,
         )}
         style={{
           transform: isDragging()

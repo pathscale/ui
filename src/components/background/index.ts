@@ -1,1 +1,1 @@
-export { default } from "./Background";
+export { default, type BackgroundProps } from "./Background";

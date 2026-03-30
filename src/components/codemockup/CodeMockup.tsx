@@ -8,7 +8,7 @@ import {
 import { twMerge } from "tailwind-merge";
 import type { IComponentBaseProps } from "../types";
 
-type CodeMockupProps = JSX.HTMLAttributes<HTMLDivElement> & IComponentBaseProps;
+export type CodeMockupProps = JSX.HTMLAttributes<HTMLDivElement> & IComponentBaseProps;
 
 const CodeMockup = (props: ParentProps<CodeMockupProps>): JSX.Element => {
   const [local, rest] = splitProps(props, [

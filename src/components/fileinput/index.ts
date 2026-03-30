@@ -1,1 +1,1 @@
-export { default } from "./FileInput";
+export { default, type FileInputProps } from "./FileInput";

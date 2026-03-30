@@ -1,4 +1,4 @@
-import { type Component, type JSX, Show, createSignal, createMemo, createEffect, onCleanup } from "solid-js";
+import { type Component, type JSX, Show, createSignal, createMemo, createEffect, onCleanup, splitProps } from "solid-js";
 import { twMerge } from "tailwind-merge";
 import { clsx } from "clsx";
 import type { ColorValue, ColorPickerContextType, ColorFormat } from "../colorpicker";
@@ -40,13 +40,24 @@ function hueToColorValue(hue: number | null, sat: number): ColorValue {
 }
 
 const ThemeColorPicker: Component<ThemeColorPickerProps> = (props) => {
+  const [local, others] = splitProps(props, [
+    "storagePrefix",
+    "onColorChange",
+    "aria-label",
+    "children",
+    "class",
+    "className",
+    "style",
+    "dataTheme",
+  ]);
+
   const [isOpen, setIsOpen] = createSignal(false);
   const [featureAvailable, setFeatureAvailable] = createSignal(true);
   let containerRef: HTMLDivElement | undefined;
 
   // Create store with configurable prefix
   const store = createMemo<HueShiftStore>(() =>
-    createHueShiftStore(props.storagePrefix ?? "theme")
+    createHueShiftStore(local.storagePrefix ?? "theme")
   );
 
   // Track color value for the picker
@@ -60,10 +71,10 @@ const ThemeColorPicker: Component<ThemeColorPickerProps> = (props) => {
     // Check if it's the white center (low saturation = reset)
     if (saturation < 10 && color.hsl.l > 90) {
       store().setHueShift(null);
-      props.onColorChange?.(null, 100);
+      local.onColorChange?.(null, 100);
     } else {
       store().setHueShift(hue, saturation);
-      props.onColorChange?.(hue, saturation);
+      local.onColorChange?.(hue, saturation);
     }
   };
 
@@ -114,20 +125,20 @@ const ThemeColorPicker: Component<ThemeColorPickerProps> = (props) => {
   const classes = () =>
     twMerge(
       "relative",
-      clsx(props.class, props.className)
+      clsx(local.class, local.className)
     );
 
   return (
     <Show when={featureAvailable()}>
-      <div ref={containerRef} class={classes()} onKeyDown={handleKeyDown} style={props.style}>
+      <div ref={containerRef} class={classes()} onKeyDown={handleKeyDown} style={local.style} {...others}>
         <Button
           type="button"
           size="sm"
           onClick={() => setIsOpen(!isOpen())}
-          aria-label={props["aria-label"] ?? "Change theme color"}
+          aria-label={local["aria-label"] ?? "Change theme color"}
           aria-expanded={isOpen()}
         >
-          {props.children ?? (
+          {local.children ?? (
             <Icon
               name="icon-[mdi--palette]"
               width={16}

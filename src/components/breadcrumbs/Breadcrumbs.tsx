@@ -3,7 +3,7 @@ import { twMerge } from "tailwind-merge";
 
 import type { IComponentBaseProps } from "../types";
 
-type BreadcrumbProps = IComponentBaseProps &
+export type BreadcrumbProps = IComponentBaseProps &
   JSX.HTMLAttributes<HTMLDivElement> & {
     innerProps?: JSX.HTMLAttributes<HTMLUListElement>;
   };

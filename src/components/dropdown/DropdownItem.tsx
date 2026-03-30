@@ -18,7 +18,9 @@ type NoAnchorProps = {
 };
 
 export type DropdownItemProps = (AnchorProps | ButtonProps | NoAnchorProps) & {
+  id?: string;
   "aria-selected"?: boolean;
+  role?: JSX.HTMLAttributes<HTMLLIElement>["role"];
 };
 
 const DropdownItem = (props: DropdownItemProps): JSX.Element => {
@@ -34,7 +36,9 @@ const DropdownItem = (props: DropdownItemProps): JSX.Element => {
   const [local, others] = splitProps(defaultProps, [
     "anchor",
     "children",
+    "id",
     "aria-selected",
+    "role",
     "closeOnClick",
   ]);
 
@@ -53,7 +57,8 @@ const DropdownItem = (props: DropdownItemProps): JSX.Element => {
 
   return (
     <li
-      role="menuitem"
+      id={local.id}
+      role={local.role ?? "menuitem"}
       aria-selected={local["aria-selected"]}
     >
       {local.anchor ? (

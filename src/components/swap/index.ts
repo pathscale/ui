@@ -1,1 +1,1 @@
-export { default } from "./Swap";
+export { default, type SwapProps } from "./Swap";

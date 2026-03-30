@@ -1,4 +1,5 @@
 import { For, createEffect, createMemo, splitProps, createSignal, Show } from "solid-js";
+import { twMerge } from "tailwind-merge";
 import Table from "../table";
 import type { TableProps } from "../table";
 import Button from "../button";
@@ -55,6 +56,8 @@ const StreamingTable = <TData,>(props: StreamingTableProps<TData>) => {
     "initialPage",
     "enableSorting",
     "initialSorting",
+    "class",
+    "className",
   ]);
 
   const store: StreamingTableStore<TData> = createStreamingTableStore<TData>();
@@ -77,9 +80,9 @@ const StreamingTable = <TData,>(props: StreamingTableProps<TData>) => {
 
   const resolveId = (row: TData): string => {
     if (local.getRowId) return local.getRowId(row);
-    const anyRow = row as any;
-    if (anyRow.id != null) return String(anyRow.id);
-    return JSON.stringify(anyRow);
+    const rowWithId = row as TData & { id?: string | number };
+    if (rowWithId.id != null) return String(rowWithId.id);
+    return JSON.stringify(row);
   };
 
   createEffect(() => {
@@ -125,9 +128,9 @@ const StreamingTable = <TData,>(props: StreamingTableProps<TData>) => {
       }
 
       // Get the value from the row using accessor
-      let value: any;
+      let value: unknown;
       if (col.accessorKey) {
-        value = (row as any)[col.accessorKey];
+        value = (row as Record<string, unknown>)[col.accessorKey];
       } else if (col.accessorFn) {
         value = col.accessorFn(row);
       } else {
@@ -397,7 +400,7 @@ const StreamingTable = <TData,>(props: StreamingTableProps<TData>) => {
   });
 
   return (
-    <div>
+    <div class={twMerge(local.class, local.className)}>
       <Table {...tableProps}>
         <Table.Head>
           <For each={local.columns}>
@@ -423,7 +426,7 @@ const StreamingTable = <TData,>(props: StreamingTableProps<TData>) => {
             when={paginatedRows().length > 0}
             fallback={
               <Table.Row>
-                <Table.Cell colSpan={local.columns.length} style={{ "text-align": "center" }}>
+                <Table.Cell colSpan={local.columns.length} class="text-center">
                   No data
                 </Table.Cell>
               </Table.Row>

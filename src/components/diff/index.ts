@@ -1,1 +1,1 @@
-export { default } from "./Diff";
+export { default, type DiffProps } from "./Diff";

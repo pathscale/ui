@@ -21,6 +21,7 @@ export type DropdownToggleProps = Omit<
     "aria-haspopup"?: boolean | "menu" | "listbox" | "dialog" | "grid" | "tree";
     "aria-expanded"?: boolean;
     "aria-controls"?: string;
+    "aria-activedescendant"?: string;
   };
 
 const DropdownToggle = (props: DropdownToggleProps) => {
@@ -37,6 +38,7 @@ const DropdownToggle = (props: DropdownToggleProps) => {
     "aria-haspopup",
     "aria-expanded",
     "aria-controls",
+    "aria-activedescendant",
   ]);
 
   const normalizeAriaHaspopup = (value: (typeof local)["aria-haspopup"]) => {
@@ -49,6 +51,7 @@ const DropdownToggle = (props: DropdownToggleProps) => {
     "aria-haspopup": local["aria-haspopup"],
     "aria-expanded": local["aria-expanded"],
     "aria-controls": local["aria-controls"],
+    "aria-activedescendant": local["aria-activedescendant"],
   };
 
   const buttonAriaProps = {
