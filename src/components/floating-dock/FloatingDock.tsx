@@ -128,7 +128,6 @@ function createSpring(
       const accel = (force - damping * velocity) / mass;
       velocity += accel * dt;
       current += velocity * dt;
-      // Clamp to prevent runaway accumulation
       if (Math.abs(current - target) < 0.01 && Math.abs(velocity) < 0.01) {
         current = target;
         velocity = 0;
@@ -136,6 +135,8 @@ function createSpring(
     },
   };
 }
+
+type Spring = ReturnType<typeof createSpring>;
 
 function mapRange(value: number, inMin: number, inMax: number, outMin: number, outMax: number): number {
   const t = Math.max(0, Math.min(1, (value - inMin) / (inMax - inMin)));
@@ -154,13 +155,26 @@ const TOOLTIP_POS: Record<FloatingDockDirection, string> = {
 };
 
 /* ------------------------------------------------------------------ */
-/*  DockItem — width/height spring, targets update only on mousemove  */
+/*  Item springs — created per item, animated by parent               */
+/* ------------------------------------------------------------------ */
+
+type ItemSprings = {
+  sW: Spring;
+  sH: Spring;
+  sIW: Spring;
+  sIH: Spring;
+  wrapRef?: HTMLDivElement;
+  iconRef?: HTMLDivElement;
+};
+
+/* ------------------------------------------------------------------ */
+/*  DockItem — rendering only, no rAF                                 */
 /* ------------------------------------------------------------------ */
 
 const DockItem: Component<{
   item: FloatingDockItem;
-  mousePos: () => number;
   cfg: ResolvedConfig;
+  registerRefs: (wrap: HTMLDivElement, icon: HTMLDivElement) => void;
 }> = (props) => {
   let wrapRef: HTMLDivElement | undefined;
   let iconRef: HTMLDivElement | undefined;
@@ -168,80 +182,9 @@ const DockItem: Component<{
   const [hovered, setHovered] = createSignal(false);
   const cfg = props.cfg;
 
-  const sW = createSpring(cfg.baseSize, cfg.springOpts);
-  const sH = createSpring(cfg.baseSize, cfg.springOpts);
-  const sIW = createSpring(cfg.iconSize, cfg.springOpts);
-  const sIH = createSpring(cfg.iconSize, cfg.springOpts);
-
-  let rafId: number | undefined;
-  let prevTime = 0;
-  let lastMousePos = Infinity;
-  let loopRunning = false;
-
-  const startLoop = () => {
-    if (loopRunning || !cfg.magnify) return;
-    loopRunning = true;
-    prevTime = 0;
-    rafId = requestAnimationFrame(tick);
-  };
-
-  const stopLoop = () => {
-    if (rafId !== undefined) cancelAnimationFrame(rafId);
-    rafId = undefined;
-    loopRunning = false;
-  };
-
-  const tick = (time: number) => {
-    const dt = prevTime ? Math.min((time - prevTime) / 1000, 0.05) : 1 / 60;
-    prevTime = time;
-
-    const mp = props.mousePos();
-    if (mp !== lastMousePos) {
-      lastMousePos = mp;
-      if (wrapRef) {
-        const b = wrapRef.getBoundingClientRect();
-        const isH = cfg.orientation === "horizontal";
-        const center = isH ? b.x + b.width / 2 : b.y + b.height / 2;
-        const dist = Math.abs(mp - center);
-
-        const ts = mp === Infinity ? cfg.baseSize : mapRange(dist, 0, cfg.magnifyRange, cfg.hoverSize, cfg.baseSize);
-        const ti = mp === Infinity ? cfg.iconSize : mapRange(dist, 0, cfg.magnifyRange, cfg.hoverIconSize, cfg.iconSize);
-
-        sW.set(ts); sH.set(ts);
-        sIW.set(ti); sIH.set(ti);
-      }
-    }
-
-    sW.step(dt); sH.step(dt); sIW.step(dt); sIH.step(dt);
-
-    if (wrapRef) {
-      wrapRef.style.width = `${sW.get()}px`;
-      wrapRef.style.height = `${sH.get()}px`;
-    }
-    if (iconRef) {
-      iconRef.style.width = `${sIW.get()}px`;
-      iconRef.style.height = `${sIH.get()}px`;
-    }
-
-    // Stop the loop when all springs have settled
-    if (sW.settled() && sH.settled() && sIW.settled() && sIH.settled()) {
-      stopLoop();
-      return;
-    }
-
-    rafId = requestAnimationFrame(tick);
-  };
-
   onMount(() => {
-    if (!cfg.magnify) return;
-    // Restart loop whenever mousePos changes (mouse enters/moves over dock)
-    createEffect(() => {
-      props.mousePos(); // track the signal
-      startLoop();
-    });
+    if (wrapRef && iconRef) props.registerRefs(wrapRef, iconRef);
   });
-
-  onCleanup(() => { stopLoop(); });
 
   const handleClick = (e: MouseEvent) => {
     if (props.item.onClick) { e.preventDefault(); props.item.onClick(e); }
@@ -250,7 +193,7 @@ const DockItem: Component<{
   const inner = (
     <div
       ref={wrapRef}
-      onMouseEnter={() => { setHovered(true); startLoop(); }}
+      onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
       class={twMerge(
         "relative flex items-center justify-center rounded-full bg-base-200 transition-[opacity,transform] duration-150 hover:opacity-100 active:scale-90 active:duration-75",
@@ -291,7 +234,7 @@ const DockItem: Component<{
 };
 
 /* ------------------------------------------------------------------ */
-/*  Desktop dock                                                      */
+/*  Desktop dock — single rAF loop, batched reads/writes              */
 /* ------------------------------------------------------------------ */
 
 const FloatingDockDesktop: Component<{
@@ -302,6 +245,103 @@ const FloatingDockDesktop: Component<{
 }> = (props) => {
   const [mousePos, setMousePos] = createSignal(Infinity);
   const isH = () => props.cfg.orientation === "horizontal";
+  const cfg = props.cfg;
+
+  // Per-item spring state — indexed by order
+  const itemSprings: ItemSprings[] = [];
+
+  let rafId: number | undefined;
+  let prevTime = 0;
+  let lastMousePos = Infinity;
+  let loopRunning = false;
+
+  const startLoop = () => {
+    if (loopRunning || !cfg.magnify) return;
+    loopRunning = true;
+    prevTime = 0;
+    rafId = requestAnimationFrame(tick);
+  };
+
+  const stopLoop = () => {
+    if (rafId !== undefined) cancelAnimationFrame(rafId);
+    rafId = undefined;
+    loopRunning = false;
+  };
+
+  const tick = (time: number) => {
+    const dt = prevTime ? Math.min((time - prevTime) / 1000, 0.05) : 1 / 60;
+    prevTime = time;
+
+    const mp = mousePos();
+
+    // Recompute targets only when mouse position actually changed
+    if (mp !== lastMousePos) {
+      lastMousePos = mp;
+
+      // BATCH READ: read all bounding rects first (no writes yet)
+      const centers: number[] = [];
+      for (let i = 0; i < itemSprings.length; i++) {
+        const wrap = itemSprings[i].wrapRef;
+        if (wrap) {
+          const b = wrap.getBoundingClientRect();
+          centers[i] = isH() ? b.x + b.width / 2 : b.y + b.height / 2;
+        } else {
+          centers[i] = 0;
+        }
+      }
+
+      // Compute all targets (no DOM access)
+      for (let i = 0; i < itemSprings.length; i++) {
+        const s = itemSprings[i];
+        if (!s.wrapRef) continue;
+        const dist = Math.abs(mp - centers[i]);
+        const ts = mp === Infinity ? cfg.baseSize : mapRange(dist, 0, cfg.magnifyRange, cfg.hoverSize, cfg.baseSize);
+        const ti = mp === Infinity ? cfg.iconSize : mapRange(dist, 0, cfg.magnifyRange, cfg.hoverIconSize, cfg.iconSize);
+        s.sW.set(ts); s.sH.set(ts);
+        s.sIW.set(ti); s.sIH.set(ti);
+      }
+    }
+
+    // Step all springs
+    let allSettled = true;
+    for (let i = 0; i < itemSprings.length; i++) {
+      const s = itemSprings[i];
+      s.sW.step(dt); s.sH.step(dt); s.sIW.step(dt); s.sIH.step(dt);
+      if (allSettled && !(s.sW.settled() && s.sH.settled() && s.sIW.settled() && s.sIH.settled())) {
+        allSettled = false;
+      }
+    }
+
+    // BATCH WRITE: write all styles (no reads after this)
+    for (let i = 0; i < itemSprings.length; i++) {
+      const s = itemSprings[i];
+      if (s.wrapRef) {
+        s.wrapRef.style.width = `${s.sW.get()}px`;
+        s.wrapRef.style.height = `${s.sH.get()}px`;
+      }
+      if (s.iconRef) {
+        s.iconRef.style.width = `${s.sIW.get()}px`;
+        s.iconRef.style.height = `${s.sIH.get()}px`;
+      }
+    }
+
+    if (allSettled) {
+      stopLoop();
+      return;
+    }
+
+    rafId = requestAnimationFrame(tick);
+  };
+
+  onMount(() => {
+    if (!cfg.magnify) return;
+    createEffect(() => {
+      mousePos(); // track
+      startLoop();
+    });
+  });
+
+  onCleanup(() => { stopLoop(); });
 
   return (
     <div
@@ -320,13 +360,33 @@ const FloatingDockDesktop: Component<{
       style={{
         display: "flex",
         "flex-direction": isH() ? "row" : "column",
-        gap: `${props.cfg.gap}px`,
-        ...(isH() ? { height: `${props.cfg.baseSize + 16}px` } : { width: `${props.cfg.baseSize + 16}px` }),
+        gap: `${cfg.gap}px`,
+        ...(isH() ? { height: `${cfg.baseSize + 16}px` } : { width: `${cfg.baseSize + 16}px` }),
         overflow: "visible",
       }}
     >
       <For each={props.items}>
-        {(item) => <DockItem item={item} mousePos={mousePos} cfg={props.cfg} />}
+        {(item, idx) => {
+          // Create springs for this item
+          const springs: ItemSprings = {
+            sW: createSpring(cfg.baseSize, cfg.springOpts),
+            sH: createSpring(cfg.baseSize, cfg.springOpts),
+            sIW: createSpring(cfg.iconSize, cfg.springOpts),
+            sIH: createSpring(cfg.iconSize, cfg.springOpts),
+          };
+          itemSprings[idx()] = springs;
+
+          return (
+            <DockItem
+              item={item}
+              cfg={cfg}
+              registerRefs={(wrap, icon) => {
+                springs.wrapRef = wrap;
+                springs.iconRef = icon;
+              }}
+            />
+          );
+        }}
       </For>
     </div>
   );
