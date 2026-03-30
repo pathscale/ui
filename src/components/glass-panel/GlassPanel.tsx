@@ -19,6 +19,8 @@ export type GlassPanelProps = IComponentBaseProps &
     transparent?: boolean;
     glow?: boolean;
     accent?: ComponentColor;
+    paddingX?: string;
+    paddingY?: string;
   };
 
 const BLUR_MAP: Record<GlassPanelBlur, string> = {
@@ -63,6 +65,8 @@ const GlassPanel = (props: GlassPanelProps): JSX.Element => {
     "transparent",
     "glow",
     "accent",
+    "paddingX",
+    "paddingY",
     "children",
     "class",
     "className",
@@ -115,7 +119,9 @@ const GlassPanel = (props: GlassPanelProps): JSX.Element => {
 
   const contentClasses = () =>
     twMerge(
-      SIZE_PADDING[size()],
+      (local.paddingX || local.paddingY) ? "" : SIZE_PADDING[size()],
+      local.paddingX,
+      local.paddingY,
     );
 
   return (
@@ -154,10 +160,13 @@ const GlassPanel = (props: GlassPanelProps): JSX.Element => {
 
       <div
         id={contentId}
-        class="grid transition-[grid-template-rows] duration-200 ease-in-out"
-        style={{ "grid-template-rows": (!local.collapsible || isOpen()) ? "1fr" : "0fr" }}
+        class={`grid transition-[grid-template-rows,opacity] duration-200 ease-in-out overflow-hidden ${(local.collapsible && !isOpen()) ? "" : contentClasses()}`}
+        style={{
+          "grid-template-rows": (!local.collapsible || isOpen()) ? "1fr" : "0fr",
+          opacity: (!local.collapsible || isOpen()) ? "1" : "0",
+        }}
       >
-        <div class={`${(!local.collapsible || isOpen()) ? "overflow-visible" : "overflow-hidden"} ${contentClasses()}`}>
+        <div class="overflow-hidden">
           {local.children}
         </div>
       </div>
