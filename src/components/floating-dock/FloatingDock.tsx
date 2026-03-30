@@ -3,6 +3,7 @@ import {
   type Component,
   For,
   Show,
+  createEffect,
   createSignal,
   onCleanup,
   onMount,
@@ -194,8 +195,6 @@ const DockItem: Component<{
     const dt = prevTime ? Math.min((time - prevTime) / 1000, 0.05) : 1 / 60;
     prevTime = time;
 
-    // Only recalculate targets when mouse position actually changed
-    // This prevents the feedback loop: animated size → shifted center → new target → oscillation
     const mp = props.mousePos();
     if (mp !== lastMousePos) {
       lastMousePos = mp;
@@ -233,7 +232,14 @@ const DockItem: Component<{
     rafId = requestAnimationFrame(tick);
   };
 
-  onMount(() => { startLoop(); });
+  onMount(() => {
+    if (!cfg.magnify) return;
+    // Restart loop whenever mousePos changes (mouse enters/moves over dock)
+    createEffect(() => {
+      props.mousePos(); // track the signal
+      startLoop();
+    });
+  });
 
   onCleanup(() => { stopLoop(); });
 
