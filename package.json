@@ -57,7 +57,7 @@
   },
   "dependencies": {
     "@iconify/tailwind4": "^1.2.1",
-    "@pathscale/ui": "0.0.152",
+    "@pathscale/ui": "0.0.153",
     "rsbuild-plugin-iconify": "^1.0.3"
   },
   "peerDependencies": {

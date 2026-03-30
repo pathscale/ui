@@ -6,7 +6,7 @@
       "name": "my-project",
       "dependencies": {
         "@iconify/tailwind4": "^1.2.1",
-        "@pathscale/ui": "0.0.152",
+        "@pathscale/ui": "0.0.153",
         "rsbuild-plugin-iconify": "^1.0.3",
       },
       "devDependencies": {
@@ -212,7 +212,7 @@
 
     "@module-federation/webpack-bundler-runtime": ["@module-federation/webpack-bundler-runtime@0.14.0", "", { "dependencies": { "@module-federation/runtime": "0.14.0", "@module-federation/sdk": "0.14.0" } }, "sha512-POWS6cKBicAAQ3DNY5X7XEUSfOfUsRaBNxbuwEfSGlrkTE9UcWheO06QP2ndHi8tHQuUKcIHi2navhPkJ+k5xg=="],
 
-    "@pathscale/ui": ["@pathscale/ui@0.0.152", "", { "dependencies": { "@iconify/tailwind4": "^1.2.1", "rsbuild-plugin-iconify": "^1.0.3" }, "peerDependencies": { "@felte/solid": "^1.2.0", "@felte/validator-zod": "^1.0.0", "@solid-primitives/event-listener": "^2.3.0", "@solid-primitives/intersection-observer": "^2.1.3", "@solid-primitives/keyboard": "^1.2.5", "@solid-primitives/media": "^2.2.5", "@solid-primitives/props": "^3.1.8", "@solid-primitives/resize-observer": "^2.0.22", "@solid-primitives/scheduled": "^1.4.1", "@solid-primitives/scroll": "^2.0.20", "@solid-primitives/storage": "^2.1.1", "@solid-primitives/utils": "^6.2.1", "@tanstack/solid-table": "^8.0.0", "popmotion": "^11.0.5", "solid-js": "^1.9", "zod": "^3.22.0" }, "optionalPeers": ["popmotion"] }, "sha512-yfuKHZ6qiGf4oE2Qv6CdRfsHCtWnDIoguAzlxyAMax3pEN/ZET1+9wETS0n3kEeo9wNOKy1ZISMDfg7Wl2d2+w=="],
+    "@pathscale/ui": ["@pathscale/ui@0.0.153", "", { "dependencies": { "@iconify/tailwind4": "^1.2.1", "@pathscale/ui": "0.0.152", "rsbuild-plugin-iconify": "^1.0.3" }, "peerDependencies": { "@felte/solid": "^1.2.0", "@felte/validator-zod": "^1.0.0", "@solid-primitives/event-listener": "^2.3.0", "@solid-primitives/intersection-observer": "^2.1.3", "@solid-primitives/keyboard": "^1.2.5", "@solid-primitives/media": "^2.2.5", "@solid-primitives/props": "^3.1.8", "@solid-primitives/resize-observer": "^2.0.22", "@solid-primitives/scheduled": "^1.4.1", "@solid-primitives/scroll": "^2.0.20", "@solid-primitives/storage": "^2.1.1", "@solid-primitives/utils": "^6.2.1", "@tanstack/solid-table": "^8.0.0", "popmotion": "^11.0.5", "solid-js": "^1.9", "zod": "^3.22.0" }, "optionalPeers": ["popmotion"] }, "sha512-i6/ncQyV/rcyHR1Dne5N8eeYuOwK4SMJipA4px90X3LzGT2vwLs5jEgPFBlW84XMAceIhq1y9q4ZDwsnibTXNg=="],
 
     "@rsbuild/core": ["@rsbuild/core@1.3.22", "", { "dependencies": { "@rspack/core": "1.3.12", "@rspack/lite-tapable": "~1.0.1", "@swc/helpers": "^0.5.17", "core-js": "~3.42.0", "jiti": "^2.4.2" }, "bin": { "rsbuild": "bin/rsbuild.js" } }, "sha512-FGB7m8Tn/uiOhvqk0lw+NRMyD+VYJ+eBqVfpn0X11spkJDiPWn8UkMRvfzCX4XFcNZwRKYuuKJaZK1DNU8UG+w=="],
 
@@ -635,6 +635,8 @@
     "@iconify/tools/pathe": ["pathe@2.0.3", "", {}, "sha512-WUjGcAqP1gQacoQe+OBJsFA7Ld4DyXuUIjZ5cc75cLHvJ7dtNsTugphxIADwspS+AraAUePCKrSVtPLFj/F88w=="],
 
     "@iconify/tools/svgo": ["svgo@4.0.0", "", { "dependencies": { "commander": "^11.1.0", "css-select": "^5.1.0", "css-tree": "^3.0.1", "css-what": "^6.1.0", "csso": "^5.0.5", "picocolors": "^1.1.1", "sax": "^1.4.1" }, "bin": "./bin/svgo.js" }, "sha512-VvrHQ+9uniE+Mvx3+C9IEe/lWasXCU0nXMY2kZeLrHNICuRiC8uMPyM14UEaMOFA5mhyQqEkB02VoQ16n3DLaw=="],
+
+    "@pathscale/ui/@pathscale/ui": ["@pathscale/ui@0.0.152", "", { "dependencies": { "@iconify/tailwind4": "^1.2.1", "rsbuild-plugin-iconify": "^1.0.3" }, "peerDependencies": { "@felte/solid": "^1.2.0", "@felte/validator-zod": "^1.0.0", "@solid-primitives/event-listener": "^2.3.0", "@solid-primitives/intersection-observer": "^2.1.3", "@solid-primitives/keyboard": "^1.2.5", "@solid-primitives/media": "^2.2.5", "@solid-primitives/props": "^3.1.8", "@solid-primitives/resize-observer": "^2.0.22", "@solid-primitives/scheduled": "^1.4.1", "@solid-primitives/scroll": "^2.0.20", "@solid-primitives/storage": "^2.1.1", "@solid-primitives/utils": "^6.2.1", "@tanstack/solid-table": "^8.0.0", "popmotion": "^11.0.5", "solid-js": "^1.9", "zod": "^3.22.0" }, "optionalPeers": ["popmotion"] }, "sha512-yfuKHZ6qiGf4oE2Qv6CdRfsHCtWnDIoguAzlxyAMax3pEN/ZET1+9wETS0n3kEeo9wNOKy1ZISMDfg7Wl2d2+w=="],
 
     "anymatch/picomatch": ["picomatch@2.3.1", "", {}, "sha512-JU3teHTNjmE2VCGFzuY8EXzCDVwEqB2a8fsIvwaStHhAWJEeVd1o1QD80CU6+ZdEXXSLbSsuLwJjkCBWqRQUVA=="],
 
