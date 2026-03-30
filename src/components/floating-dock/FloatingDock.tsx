@@ -3,7 +3,6 @@ import {
   type Component,
   For,
   Show,
-  createEffect,
   createSignal,
   onCleanup,
   onMount,
@@ -280,6 +279,38 @@ const FloatingDockDesktop: Component<{
   let prevTime = 0;
   let lastMousePos = Infinity;
   let loopRunning = false;
+  let anchorCenters: number[] = [];
+
+  /** Snapshot resting centres on mouse-enter so magnification
+   *  distances are computed against stable positions, not
+   *  mid-animation DOM rects that shift as neighbours grow.
+   *  If springs are mid-settle (fast re-enter), snap to rest first. */
+  const captureAnchors = () => {
+    // Snap any in-flight springs to their rest targets and flush to DOM
+    // so getBoundingClientRect returns stable rest-state positions.
+    for (let i = 0; i < itemSprings.length; i++) {
+      const s = itemSprings[i];
+      s.sW.snap(); s.sH.snap(); s.sIW.snap(); s.sIH.snap();
+      if (s.wrapRef) {
+        s.wrapRef.style.width = `${s.sW.get()}px`;
+        s.wrapRef.style.height = `${s.sH.get()}px`;
+      }
+      if (s.iconRef) {
+        s.iconRef.style.width = `${s.sIW.get()}px`;
+        s.iconRef.style.height = `${s.sIH.get()}px`;
+      }
+    }
+    stopLoop();
+
+    anchorCenters = [];
+    for (let i = 0; i < itemSprings.length; i++) {
+      const wrap = itemSprings[i].wrapRef;
+      if (wrap) {
+        const b = wrap.getBoundingClientRect();
+        anchorCenters[i] = isH() ? b.x + b.width / 2 : b.y + b.height / 2;
+      }
+    }
+  };
 
   const startLoop = () => {
     if (loopRunning || !cfg.magnify) return;
@@ -304,23 +335,12 @@ const FloatingDockDesktop: Component<{
     if (mp !== lastMousePos) {
       lastMousePos = mp;
 
-      // BATCH READ: read all bounding rects first (no writes yet)
-      const centers: number[] = [];
-      for (let i = 0; i < itemSprings.length; i++) {
-        const wrap = itemSprings[i].wrapRef;
-        if (wrap) {
-          const b = wrap.getBoundingClientRect();
-          centers[i] = isH() ? b.x + b.width / 2 : b.y + b.height / 2;
-        } else {
-          centers[i] = 0;
-        }
-      }
-
-      // Compute all targets (no DOM access)
+      // Use anchored centres (captured on mouse-enter) so that
+      // mid-animation size changes don't shift distance targets.
       for (let i = 0; i < itemSprings.length; i++) {
         const s = itemSprings[i];
-        if (!s.wrapRef) continue;
-        const dist = Math.abs(mp - centers[i]);
+        if (!s.wrapRef || anchorCenters[i] === undefined) continue;
+        const dist = Math.abs(mp - anchorCenters[i]);
         const ts = mp === Infinity ? cfg.baseSize : mapRange(dist, 0, cfg.magnifyRange, cfg.hoverSize, cfg.baseSize);
         const ti = mp === Infinity ? cfg.iconSize : mapRange(dist, 0, cfg.magnifyRange, cfg.hoverIconSize, cfg.iconSize);
         s.sW.set(ts); s.sH.set(ts);
@@ -359,22 +379,15 @@ const FloatingDockDesktop: Component<{
     rafId = requestAnimationFrame(tick);
   };
 
-  onMount(() => {
-    if (!cfg.magnify) return;
-    createEffect(() => {
-      mousePos(); // track
-      startLoop();
-    });
-  });
-
   onCleanup(() => { stopLoop(); });
 
   return (
     <div
       role="toolbar"
       aria-label="Actions"
-      onMouseMove={(e) => setMousePos(isH() ? e.clientX : e.clientY)}
-      onMouseLeave={() => setMousePos(Infinity)}
+      onMouseEnter={captureAnchors}
+      onMouseMove={(e) => { setMousePos(isH() ? e.clientX : e.clientY); startLoop(); }}
+      onMouseLeave={() => { setMousePos(Infinity); startLoop(); }}
       class={twMerge(
         "mx-auto",
         "items-center",
