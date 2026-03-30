@@ -98,6 +98,10 @@ type ResolvedConfig = {
 /*  Spring                                                            */
 /* ------------------------------------------------------------------ */
 
+const prefersReducedMotion =
+  typeof window !== "undefined" &&
+  window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
 function createSpring(
   initial: number,
   opts: { mass?: number; stiffness?: number; damping?: number } = {},
@@ -111,7 +115,14 @@ function createSpring(
   return {
     set(v: number) { target = v; },
     get() { return current; },
+    settled() { return current === target && velocity === 0; },
+    snap() { current = target; velocity = 0; },
     step(dt: number) {
+      if (prefersReducedMotion) {
+        current = target;
+        velocity = 0;
+        return;
+      }
       const force = -stiffness * (current - target);
       const accel = (force - damping * velocity) / mass;
       velocity += accel * dt;
@@ -164,50 +175,67 @@ const DockItem: Component<{
   let rafId: number | undefined;
   let prevTime = 0;
   let lastMousePos = Infinity;
+  let loopRunning = false;
 
-  onMount(() => {
-    if (!cfg.magnify) return;
-
-    const tick = (time: number) => {
-      const dt = prevTime ? Math.min((time - prevTime) / 1000, 0.05) : 1 / 60;
-      prevTime = time;
-
-      // Only recalculate targets when mouse position actually changed
-      // This prevents the feedback loop: animated size → shifted center → new target → oscillation
-      const mp = props.mousePos();
-      if (mp !== lastMousePos) {
-        lastMousePos = mp;
-        if (wrapRef) {
-          const b = wrapRef.getBoundingClientRect();
-          const isH = cfg.orientation === "horizontal";
-          const center = isH ? b.x + b.width / 2 : b.y + b.height / 2;
-          const dist = Math.abs(mp - center);
-
-          const ts = mp === Infinity ? cfg.baseSize : mapRange(dist, 0, cfg.magnifyRange, cfg.hoverSize, cfg.baseSize);
-          const ti = mp === Infinity ? cfg.iconSize : mapRange(dist, 0, cfg.magnifyRange, cfg.hoverIconSize, cfg.iconSize);
-
-          sW.set(ts); sH.set(ts);
-          sIW.set(ti); sIH.set(ti);
-        }
-      }
-
-      sW.step(dt); sH.step(dt); sIW.step(dt); sIH.step(dt);
-
-      if (wrapRef) {
-        wrapRef.style.width = `${sW.get()}px`;
-        wrapRef.style.height = `${sH.get()}px`;
-      }
-      if (iconRef) {
-        iconRef.style.width = `${sIW.get()}px`;
-        iconRef.style.height = `${sIH.get()}px`;
-      }
-
-      rafId = requestAnimationFrame(tick);
-    };
+  const startLoop = () => {
+    if (loopRunning || !cfg.magnify) return;
+    loopRunning = true;
+    prevTime = 0;
     rafId = requestAnimationFrame(tick);
-  });
+  };
 
-  onCleanup(() => { if (rafId !== undefined) cancelAnimationFrame(rafId); });
+  const stopLoop = () => {
+    if (rafId !== undefined) cancelAnimationFrame(rafId);
+    rafId = undefined;
+    loopRunning = false;
+  };
+
+  const tick = (time: number) => {
+    const dt = prevTime ? Math.min((time - prevTime) / 1000, 0.05) : 1 / 60;
+    prevTime = time;
+
+    // Only recalculate targets when mouse position actually changed
+    // This prevents the feedback loop: animated size → shifted center → new target → oscillation
+    const mp = props.mousePos();
+    if (mp !== lastMousePos) {
+      lastMousePos = mp;
+      if (wrapRef) {
+        const b = wrapRef.getBoundingClientRect();
+        const isH = cfg.orientation === "horizontal";
+        const center = isH ? b.x + b.width / 2 : b.y + b.height / 2;
+        const dist = Math.abs(mp - center);
+
+        const ts = mp === Infinity ? cfg.baseSize : mapRange(dist, 0, cfg.magnifyRange, cfg.hoverSize, cfg.baseSize);
+        const ti = mp === Infinity ? cfg.iconSize : mapRange(dist, 0, cfg.magnifyRange, cfg.hoverIconSize, cfg.iconSize);
+
+        sW.set(ts); sH.set(ts);
+        sIW.set(ti); sIH.set(ti);
+      }
+    }
+
+    sW.step(dt); sH.step(dt); sIW.step(dt); sIH.step(dt);
+
+    if (wrapRef) {
+      wrapRef.style.width = `${sW.get()}px`;
+      wrapRef.style.height = `${sH.get()}px`;
+    }
+    if (iconRef) {
+      iconRef.style.width = `${sIW.get()}px`;
+      iconRef.style.height = `${sIH.get()}px`;
+    }
+
+    // Stop the loop when all springs have settled
+    if (sW.settled() && sH.settled() && sIW.settled() && sIH.settled()) {
+      stopLoop();
+      return;
+    }
+
+    rafId = requestAnimationFrame(tick);
+  };
+
+  onMount(() => { startLoop(); });
+
+  onCleanup(() => { stopLoop(); });
 
   const handleClick = (e: MouseEvent) => {
     if (props.item.onClick) { e.preventDefault(); props.item.onClick(e); }
@@ -216,7 +244,7 @@ const DockItem: Component<{
   const inner = (
     <div
       ref={wrapRef}
-      onMouseEnter={() => setHovered(true)}
+      onMouseEnter={() => { setHovered(true); startLoop(); }}
       onMouseLeave={() => setHovered(false)}
       class={twMerge(
         "relative flex items-center justify-center rounded-full bg-base-200 transition-[opacity,transform] duration-150 hover:opacity-100 active:scale-90 active:duration-75",
@@ -245,11 +273,11 @@ const DockItem: Component<{
       when={props.item.onClick}
       fallback={
         <Show when={props.item.href} fallback={inner}>
-          <a href={props.item.href}>{inner}</a>
+          <a href={props.item.href} aria-label={props.item.title}>{inner}</a>
         </Show>
       }
     >
-      <button type="button" onClick={handleClick} class="appearance-none bg-transparent border-0 p-0 cursor-pointer">
+      <button type="button" onClick={handleClick} aria-label={props.item.title} class="appearance-none bg-transparent border-0 p-0 cursor-pointer">
         {inner}
       </button>
     </Show>
@@ -271,6 +299,8 @@ const FloatingDockDesktop: Component<{
 
   return (
     <div
+      role="toolbar"
+      aria-label="Actions"
       onMouseMove={(e) => setMousePos(isH() ? e.clientX : e.clientY)}
       onMouseLeave={() => setMousePos(Infinity)}
       class={twMerge(
@@ -410,7 +440,7 @@ const FloatingDock = (rawProps: FloatingDockProps): JSX.Element => {
   });
 
   return (
-    <div data-theme={local.dataTheme} {...others}>
+    <div data-theme={local.dataTheme} style={local.style} {...others}>
       <Show when={local.showDesktop !== false}>
         <FloatingDockDesktop
           items={local.items}

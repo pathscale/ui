@@ -1,8 +1,8 @@
-import { type JSX, splitProps, createSignal, Show } from "solid-js";
+import { type JSX, splitProps, createSignal, createUniqueId, Show } from "solid-js";
 import { twMerge } from "tailwind-merge";
 import { clsx } from "clsx";
 
-import type { IComponentBaseProps, ComponentSize } from "../types";
+import type { IComponentBaseProps, ComponentSize, ComponentColor } from "../types";
 
 export type GlassPanelBlur = "none" | "sm" | "md" | "lg" | "xl" | "2xl";
 
@@ -18,7 +18,7 @@ export type GlassPanelProps = IComponentBaseProps &
     size?: ComponentSize;
     transparent?: boolean;
     glow?: boolean;
-    accent?: "primary" | "secondary" | "accent" | "info" | "success" | "warning" | "error";
+    accent?: ComponentColor;
   };
 
 const BLUR_MAP: Record<GlassPanelBlur, string> = {
@@ -46,6 +46,8 @@ const ACCENT_BORDER: Record<string, string> = {
   success: "border-l-success",
   warning: "border-l-warning",
   error: "border-l-error",
+  neutral: "border-l-neutral",
+  ghost: "border-l-transparent",
 };
 
 const GlassPanel = (props: GlassPanelProps): JSX.Element => {
@@ -68,6 +70,7 @@ const GlassPanel = (props: GlassPanelProps): JSX.Element => {
     "style",
   ]);
 
+  const contentId = createUniqueId();
   const blur = () => local.blur ?? "none";
   const size = () => local.size ?? "md";
 
@@ -113,10 +116,6 @@ const GlassPanel = (props: GlassPanelProps): JSX.Element => {
   const contentClasses = () =>
     twMerge(
       SIZE_PADDING[size()],
-      clsx({
-        "animate-collapse-open": local.collapsible && isOpen(),
-        "animate-collapse-close": local.collapsible && !isOpen(),
-      }),
     );
 
   return (
@@ -129,14 +128,10 @@ const GlassPanel = (props: GlassPanelProps): JSX.Element => {
       <Show when={local.collapsible && local.title}>
         <button
           type="button"
-          class="flex w-full items-center justify-between gap-2 px-4 py-3 text-sm font-medium cursor-pointer select-none transition-colors duration-150"
-          style={{
-            color: "color-mix(in srgb, var(--color-base-content) 50%, transparent)",
-          }}
-          onMouseEnter={(e) => { e.currentTarget.style.color = "color-mix(in srgb, var(--color-base-content) 80%, transparent)"; }}
-          onMouseLeave={(e) => { e.currentTarget.style.color = "color-mix(in srgb, var(--color-base-content) 50%, transparent)"; }}
+          class="flex w-full items-center justify-between gap-2 px-4 py-3 text-sm font-medium cursor-pointer select-none transition-colors duration-150 text-base-content/50 hover:text-base-content/80 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
           onClick={handleToggle}
           aria-expanded={isOpen()}
+          aria-controls={contentId}
         >
           <span class="flex items-center gap-2">
             <Show when={local.icon}>{local.icon}</Show>
@@ -157,9 +152,15 @@ const GlassPanel = (props: GlassPanelProps): JSX.Element => {
         </button>
       </Show>
 
-      <Show when={!local.collapsible || isOpen()}>
-        <div class={contentClasses()}>{local.children}</div>
-      </Show>
+      <div
+        id={contentId}
+        class="grid transition-[grid-template-rows] duration-200 ease-in-out"
+        style={{ "grid-template-rows": (!local.collapsible || isOpen()) ? "1fr" : "0fr" }}
+      >
+        <div class={`overflow-hidden ${contentClasses()}`}>
+          {local.children}
+        </div>
+      </div>
     </div>
   );
 };
