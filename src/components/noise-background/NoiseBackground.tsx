@@ -25,6 +25,8 @@ export type NoiseBackgroundProps = {
   borderRadius?: string;
   /** Path or URL to the noise texture image. @default "/noise.webp" */
   noiseSrc?: string;
+  /** Show the static noise texture overlay. @default false */
+  showNoise?: boolean;
 } & IComponentBaseProps;
 
 /* ------------------------------------------------------------------ */
@@ -62,6 +64,7 @@ const NoiseBackground = (rawProps: NoiseBackgroundProps): JSX.Element => {
     "animating",
     "borderRadius",
     "noiseSrc",
+    "showNoise",
     "dataTheme",
     "style",
   ]);
@@ -239,18 +242,20 @@ const NoiseBackground = (rawProps: NoiseBackgroundProps): JSX.Element => {
         }}
       />
 
-      {/* Static noise pattern */}
-      <div class="pointer-events-none absolute inset-0 overflow-hidden">
-        <img
-          src={local.noiseSrc ?? "/noise.webp"}
-          alt=""
-          class="h-full w-full object-cover"
-          style={{
-            opacity: `var(--noise-opacity, 0.2)`,
-            "mix-blend-mode": "overlay",
-          }}
-        />
-      </div>
+      {/* Static noise pattern (opt-in) */}
+      {(local.showNoise ?? false) && (
+        <div class="pointer-events-none absolute inset-0 overflow-hidden">
+          <img
+            src={local.noiseSrc ?? "/noise.webp"}
+            alt=""
+            class="h-full w-full object-cover"
+            style={{
+              opacity: `var(--noise-opacity, 0.2)`,
+              "mix-blend-mode": "overlay",
+            }}
+          />
+        </div>
+      )}
 
       {/* Content */}
       <div class={contentClasses()}>{local.children}</div>
