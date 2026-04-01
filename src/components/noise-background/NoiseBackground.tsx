@@ -248,10 +248,9 @@ const NoiseBackground = (rawProps: NoiseBackgroundProps): JSX.Element => {
           <img
             src={local.noiseSrc ?? "/noise.webp"}
             alt=""
-            class="h-full w-full object-cover"
+            class="h-full w-full object-cover mix-blend-overlay"
             style={{
               opacity: `var(--noise-opacity, 0.2)`,
-              "mix-blend-mode": "overlay",
             }}
           />
         </div>

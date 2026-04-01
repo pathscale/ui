@@ -380,7 +380,7 @@ const FloatingDockDesktop: Component<{
       onMouseMove={(e) => { setMousePos(isH() ? e.clientX : e.clientY); startLoop(); }}
       onMouseLeave={() => { setMousePos(Infinity); startLoop(); }}
       class={twMerge(
-        "mx-auto",
+        "mx-auto flex overflow-visible",
         "items-center",
         props.showContainer && "rounded-2xl bg-base-100 shadow-[0px_1px_0px_0px_var(--color-base-300)_inset,0px_1px_0px_0px_var(--color-base-100)]",
         isH() && props.showContainer && "px-4 py-2",
@@ -388,11 +388,9 @@ const FloatingDockDesktop: Component<{
         props.class,
       )}
       style={{
-        display: "flex",
         "flex-direction": isH() ? "row" : "column",
         gap: `${cfg.gap}px`,
         ...(isH() ? { height: `${cfg.baseSize + 16}px` } : { width: `${cfg.baseSize + 16}px` }),
-        overflow: "visible",
       }}
     >
       <For each={props.items}>
