@@ -21,6 +21,16 @@ export const Example = () => (
 );
 ```
 
+## CSS
+
+Import the compatibility stylesheet to use `@pathscale/ui` components without
+relying on app-level DaisyUI plugin styles:
+
+```ts
+import "@pathscale/ui/dist/styles/compat/daisy-primitives.css";
+import "@pathscale/ui/dist/styles/icons/generated-icons.css";
+```
+
 ## Motion
 
 Shared animation primitives live in `@pathscale/ui/motion`. For setup,

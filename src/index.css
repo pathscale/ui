@@ -1,4 +1,5 @@
 @import "./styles/base/index.css";
+@import "./styles/compat/daisy-primitives.css";
 @import "./styles/themes/dark.css";
 @import "./styles/themes/light.css";
 @import "./components/sidenav/Sidenav.css";
