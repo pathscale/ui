@@ -7,8 +7,24 @@ import { resolve } from "path";
 export default defineConfig({
   plugins: [solid(), paths(), tailwindcss()],
   resolve: {
-    alias: {
-      "@src": resolve(__dirname, "../src"),
+    alias: [
+      {
+        find: "@src",
+        replacement: resolve(__dirname, "../src"),
+      },
+      {
+        find: /^@pathscale\/ui$/,
+        replacement: resolve(__dirname, "../src/index.ts"),
+      },
+      {
+        find: /^@pathscale\/ui\/(.*)$/,
+        replacement: resolve(__dirname, "../src/$1"),
+      },
+    ],
+  },
+  server: {
+    fs: {
+      allow: [resolve(__dirname, "..")],
     },
   },
   build: {

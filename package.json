@@ -91,7 +91,10 @@
     "clean": "rm -rf dist node_modules",
     "format": "bun biome format --write",
     "lint": "bun biome lint --write",
-    "check": "bun run scripts/check-contracts.ts"
+    "check": "bun run scripts/check-contracts.ts",
+    "playground:dev": "cd playground && bun run dev",
+    "playground:build": "cd playground && bun run build",
+    "playground:preview": "cd playground && bun run preview"
   },
   "sideEffects": false,
   "type": "module"

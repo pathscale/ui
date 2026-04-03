@@ -47,3 +47,13 @@ Other useful scripts:
 - `bun run dev`
 - `bun run lint`
 - `bun run format`
+
+## Playground Hot Test
+
+Run the playground from the repository root and hot-test local library changes without rebuilding:
+
+```sh
+bun run playground:dev
+```
+
+The playground resolves `@pathscale/ui` to local `src` via Vite aliases, so edits in `/src` and `/src/styles` refresh immediately.
