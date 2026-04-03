@@ -1,43 +1,35 @@
-import { readdir, mkdir, copyFile } from "node:fs/promises";
-import { join, dirname } from "node:path";
+import { copyFile, mkdir, readdir } from "node:fs/promises";
+import { dirname, join, relative } from "node:path";
 
-async function copyCSS() {
-  async function* findCSSFiles(dir) {
-    const entries = await readdir(dir, { withFileTypes: true });
-    for (const entry of entries) {
-      const fullPath = join(dir, entry.name);
-      if (entry.isDirectory()) {
-        yield* findCSSFiles(fullPath);
-      } else if (entry.isFile() && entry.name.endsWith(".css")) {
-        yield fullPath;
-      }
+async function* findCSSFiles(dir) {
+  const entries = await readdir(dir, { withFileTypes: true });
+  for (const entry of entries) {
+    const fullPath = join(dir, entry.name);
+    if (entry.isDirectory()) {
+      yield* findCSSFiles(fullPath);
+      continue;
+    }
+    if (entry.isFile() && entry.name.endsWith(".css")) {
+      yield fullPath;
     }
   }
+}
 
+async function copyTree(sourceDir, targetDir) {
+  for await (const cssFile of findCSSFiles(sourceDir)) {
+    const relPath = relative(sourceDir, cssFile);
+    const outPath = join(targetDir, relPath);
+    await mkdir(dirname(outPath), { recursive: true });
+    await copyFile(cssFile, outPath);
+    console.log(`Copied: ${outPath}`);
+  }
+}
+
+async function copyCSS() {
   try {
-    // Ensure dist directory exists
     await mkdir("dist", { recursive: true });
-
-    for await (const cssFile of findCSSFiles("src/components")) {
-      // Get the relative path from src/components
-      const relativePath = cssFile.replace("src/components/", "");
-      const targetPath = join("dist", relativePath);
-
-      // Create the target directory if it doesn't exist
-      await mkdir(dirname(targetPath), { recursive: true });
-
-      // Copy the file
-      await copyFile(cssFile, targetPath);
-      console.log(`Copied: ${relativePath}`);
-
-      // Explicitly copy generated-icons.css
-      const generatedIconsSrc = "src/styles/icons/generated-icons.css";
-      const generatedIconsDest = "dist/styles/icons/generated-icons.css";
-
-      await mkdir(dirname(generatedIconsDest), { recursive: true });
-      await copyFile(generatedIconsSrc, generatedIconsDest);
-      console.log(`Copied: styles/icons/generated-icons.css`);
-    }
+    await copyTree("src/components", "dist");
+    await copyTree("src/styles", "dist/styles");
   } catch (error) {
     console.error("Error copying CSS files:", error);
     process.exit(1);
