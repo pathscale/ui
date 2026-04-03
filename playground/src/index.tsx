@@ -1,7 +1,7 @@
 /* @refresh reload */
 import { render } from "solid-js/web";
 import { animate } from "popmotion";
-import { enablePopmotion } from "../../src";
+import { enablePopmotion } from "@pathscale/ui";
 import App from "./App";
 import "./index.css";
 

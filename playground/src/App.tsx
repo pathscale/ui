@@ -7,15 +7,15 @@ import {
   onMount,
   Show,
 } from "solid-js";
-import { EnhancedTable } from "../../src/components/table";
 import {
+  EnhancedTable,
+  GlassPanel,
   LiveChatBubble,
   LiveChatPanel,
   type ChatMessage,
   type SendMessagePayload,
   type SendMessageResponse,
-} from "../../src/components/live-chat";
-import GlassPanel from "../../src/components/glass-panel";
+} from "@pathscale/ui";
 
 type DemoRow = {
   id: number;
