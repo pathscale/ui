@@ -94,11 +94,6 @@ const Checkbox = (props: CheckboxProps): JSX.Element => {
       aria-invalid={local["aria-invalid"]}
       aria-required={local["aria-required"]}
       aria-labelledby={local["aria-labelledby"]}
-      aria-checked={
-        local.indeterminate
-          ? "mixed"
-          : (props.checked ?? props.defaultChecked ?? undefined)
-      }
     />
   );
 };
