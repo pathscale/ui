@@ -13,13 +13,15 @@ Move styling ownership into `@pathscale/ui` so app repos can remove app-level Da
   - `menu` (+ active/disabled states)
   - `table` (+ zebra/hover)
   - `toggle` (+ sizes/colors)
+  - Group A baseline classes: `modal`, `drawer`, `dropdown`, `tabs`
 - Updated CSS packaging contract:
   - `scripts/copy-css.js` now copies all `src/styles/**/*.css` into `dist/styles/**`
 - Documented CSS usage in README.
 
 ## Remaining migration groups
 - Group A (highest risk):
-  - `modal`, `drawer`, `dropdown`, `tabs`
+  - baseline compatibility styles are implemented
+  - pending parity pass against all modal/drawer/dropdown/tabs variants used by app consumers
 - Group B (form primitives):
   - `input`, `select`, `textarea`, `file-input`, `checkbox`, `radio`, `range`
 - Group C (semantic UI primitives):
