@@ -7,8 +7,8 @@
     --color-secondary-content: var(--color-white);
     --color-accent: var(--color-sky-500);
     --color-accent-content: var(--color-white);
-    --color-neutral: var(--color-gray-500);
-    --color-neutral-content: var(--color-white);
+    --color-neutral: var(--color-gray-700);
+    --color-neutral-content: var(--color-gray-100);
 
     /* Semantic colors */
     --color-info: var(--color-blue-400);

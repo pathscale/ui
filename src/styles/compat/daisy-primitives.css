@@ -1,8 +1,12 @@
 @layer components {
-  .btn {
-    --btn-bg: color-mix(in oklch, var(--color-base-content) 8%, var(--color-base-100));
+  .btn.btn {
+    --btn-bg: var(--color-base-200);
     --btn-color: var(--color-base-content);
-    --btn-border: color-mix(in oklch, var(--color-base-content) 16%, var(--color-base-100));
+    --btn-fg: var(--btn-color);
+    --btn-border: var(--color-base-300);
+    --btn-hover-bg: var(--color-base-300);
+    --btn-hover-color: var(--btn-color);
+    --btn-hover-border: color-mix(in oklch, var(--color-base-content) 18%, var(--color-base-200));
     align-items: center;
     background: var(--btn-bg);
     border: 1px solid var(--btn-border);
@@ -24,33 +28,49 @@
     white-space: nowrap;
   }
 
-  .btn:hover {
-    --btn-bg: color-mix(in oklch, var(--color-base-content) 14%, var(--color-base-100));
+  .btn.btn:hover {
+    --btn-bg: var(--btn-hover-bg);
+    --btn-color: var(--btn-hover-color);
+    --btn-fg: var(--btn-hover-color);
+    --btn-border: var(--btn-hover-border);
   }
 
-  .btn:focus-visible {
+  .btn.btn:focus-visible {
     outline: 2px solid color-mix(in oklch, var(--color-primary) 55%, transparent);
     outline-offset: 2px;
   }
 
-  .btn:disabled,
-  .btn.btn-disabled {
+  .btn.btn:disabled,
+  .btn.btn.btn-disabled {
     cursor: not-allowed;
-    opacity: 0.5;
+    opacity: 0.45;
+    pointer-events: none;
+  }
+
+  .btn.btn:disabled:hover,
+  .btn.btn.btn-disabled:hover {
+    --btn-bg: var(--btn-bg);
+    --btn-fg: var(--btn-color);
+    --btn-border: var(--btn-border);
   }
 
   .btn.btn-ghost {
     --btn-bg: transparent;
     --btn-border: transparent;
+    --btn-color: var(--color-base-content);
+    --btn-hover-color: var(--color-base-content);
   }
 
   .btn.btn-ghost:hover {
-    --btn-bg: color-mix(in oklch, var(--color-base-content) 10%, transparent);
+    --btn-hover-bg: var(--color-base-300);
+    --btn-hover-border: transparent;
   }
 
   .btn.btn-outline {
     --btn-bg: transparent;
     --btn-border: color-mix(in oklch, var(--color-base-content) 28%, transparent);
+    --btn-hover-bg: var(--color-base-200);
+    --btn-hover-border: color-mix(in oklch, var(--color-base-content) 38%, transparent);
   }
 
   .btn.btn-link {
@@ -67,48 +87,72 @@
     --btn-bg: var(--color-primary);
     --btn-border: var(--color-primary);
     --btn-color: var(--color-primary-content);
+    --btn-hover-bg: color-mix(in oklch, var(--color-primary) 85%, black);
+    --btn-hover-border: color-mix(in oklch, var(--color-primary) 85%, black);
+    --btn-hover-color: var(--color-primary-content);
   }
 
   .btn.btn-secondary {
     --btn-bg: var(--color-secondary);
     --btn-border: var(--color-secondary);
     --btn-color: var(--color-secondary-content);
+    --btn-hover-bg: color-mix(in oklch, var(--color-secondary) 85%, black);
+    --btn-hover-border: color-mix(in oklch, var(--color-secondary) 85%, black);
+    --btn-hover-color: var(--color-secondary-content);
   }
 
   .btn.btn-accent {
     --btn-bg: var(--color-accent);
     --btn-border: var(--color-accent);
     --btn-color: var(--color-accent-content);
+    --btn-hover-bg: color-mix(in oklch, var(--color-accent) 85%, black);
+    --btn-hover-border: color-mix(in oklch, var(--color-accent) 85%, black);
+    --btn-hover-color: var(--color-accent-content);
   }
 
   .btn.btn-neutral {
     --btn-bg: var(--color-neutral);
     --btn-border: var(--color-neutral);
     --btn-color: var(--color-neutral-content);
+    --btn-hover-bg: color-mix(in oklch, var(--color-neutral) 85%, black);
+    --btn-hover-border: color-mix(in oklch, var(--color-neutral) 85%, black);
+    --btn-hover-color: var(--color-neutral-content);
   }
 
   .btn.btn-info {
     --btn-bg: var(--color-info);
     --btn-border: var(--color-info);
     --btn-color: var(--color-info-content);
+    --btn-hover-bg: color-mix(in oklch, var(--color-info) 85%, black);
+    --btn-hover-border: color-mix(in oklch, var(--color-info) 85%, black);
+    --btn-hover-color: var(--color-info-content);
   }
 
   .btn.btn-success {
     --btn-bg: var(--color-success);
     --btn-border: var(--color-success);
     --btn-color: var(--color-success-content);
+    --btn-hover-bg: color-mix(in oklch, var(--color-success) 85%, black);
+    --btn-hover-border: color-mix(in oklch, var(--color-success) 85%, black);
+    --btn-hover-color: var(--color-success-content);
   }
 
   .btn.btn-warning {
     --btn-bg: var(--color-warning);
     --btn-border: var(--color-warning);
     --btn-color: var(--color-warning-content);
+    --btn-hover-bg: color-mix(in oklch, var(--color-warning) 85%, black);
+    --btn-hover-border: color-mix(in oklch, var(--color-warning) 85%, black);
+    --btn-hover-color: var(--color-warning-content);
   }
 
   .btn.btn-error {
     --btn-bg: var(--color-error);
     --btn-border: var(--color-error);
     --btn-color: var(--color-error-content);
+    --btn-hover-bg: color-mix(in oklch, var(--color-error) 85%, black);
+    --btn-hover-border: color-mix(in oklch, var(--color-error) 85%, black);
+    --btn-hover-color: var(--color-error-content);
   }
 
   .btn.btn-xs {
@@ -768,4 +812,15 @@
     padding-top: 0;
   }
 
+}
+
+@layer utilities {
+  @media (hover: hover) {
+    .btn.btn:hover {
+      --btn-bg: var(--btn-hover-bg);
+      --btn-color: var(--btn-hover-color);
+      --btn-fg: var(--btn-hover-color);
+      --btn-border: var(--btn-hover-border);
+    }
+  }
 }
