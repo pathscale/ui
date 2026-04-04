@@ -540,7 +540,7 @@ function EnhancedTable<TData>(props: EnhancedTableProps<TData>): JSX.Element {
                   <span class="opacity-70">Rows per page</span>
                   <Button
                     size="sm"
-                    color="neutral"
+                    color="ghost"
                     aria-haspopup="menu"
                     aria-expanded={pageSizeMenuOpen()}
                     onClick={(event) => {
@@ -562,6 +562,8 @@ function EnhancedTable<TData>(props: EnhancedTableProps<TData>): JSX.Element {
                   <div class="join">
                     <Button
                       size="sm"
+                      color="ghost"
+                      class="join-item"
                       disabled={!table.getCanPreviousPage()}
                       onClick={() => table.setPageIndex(0)}
                     >
@@ -569,6 +571,8 @@ function EnhancedTable<TData>(props: EnhancedTableProps<TData>): JSX.Element {
                     </Button>
                     <Button
                       size="sm"
+                      color="ghost"
+                      class="join-item"
                       disabled={!table.getCanPreviousPage()}
                       onClick={() => table.previousPage()}
                     >
@@ -576,6 +580,8 @@ function EnhancedTable<TData>(props: EnhancedTableProps<TData>): JSX.Element {
                     </Button>
                     <Button
                       size="sm"
+                      color="ghost"
+                      class="join-item"
                       disabled={!table.getCanNextPage()}
                       onClick={() => table.nextPage()}
                     >
@@ -583,6 +589,8 @@ function EnhancedTable<TData>(props: EnhancedTableProps<TData>): JSX.Element {
                     </Button>
                     <Button
                       size="sm"
+                      color="ghost"
+                      class="join-item"
                       disabled={!table.getCanNextPage()}
                       onClick={() =>
                         table.setPageIndex(table.getPageCount() - 1)

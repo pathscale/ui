@@ -1,4 +1,4 @@
-import { type JSX, splitProps, Show } from "solid-js";
+import { type JSX, splitProps, Show, createMemo } from "solid-js";
 import Button, { type ButtonProps } from "../button/Button";
 import type {
   ComponentColor,
@@ -33,6 +33,7 @@ const DropdownToggle = (props: DropdownToggleProps) => {
     "disabled",
     "dataTheme",
     "class",
+    "className",
     "id",
     "role",
     "aria-haspopup",
@@ -59,12 +60,20 @@ const DropdownToggle = (props: DropdownToggleProps) => {
     "aria-haspopup": normalizeAriaHaspopup(local["aria-haspopup"]),
   };
 
+  const wrapperClass = createMemo(() =>
+    local.button ? undefined : [local.class, local.className].filter(Boolean).join(" "),
+  );
+
+  const buttonClass = createMemo(() =>
+    local.button ? [local.class, local.className].filter(Boolean).join(" ") : undefined,
+  );
+
   return (
     <label
       tabIndex={0}
       {...others}
       {...commonAriaProps}
-      class={local.class}
+      class={wrapperClass()}
     >
       <Show
         when={local.button}
@@ -76,6 +85,7 @@ const DropdownToggle = (props: DropdownToggleProps) => {
           color={local.color}
           size={local.size}
           disabled={local.disabled}
+          class={buttonClass()}
           {...buttonAriaProps}
         >
           {local.children}
