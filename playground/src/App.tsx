@@ -8,10 +8,14 @@ import {
   Show,
 } from "solid-js";
 import {
+  Drawer,
+  Dropdown,
   EnhancedTable,
   GlassPanel,
   LiveChatBubble,
   LiveChatPanel,
+  Modal,
+  Tabs,
   type ChatMessage,
   type SendMessagePayload,
   type SendMessageResponse,
@@ -74,7 +78,7 @@ const createChatMessages = (prefix: string, count = 24): ChatMessage[] =>
   }));
 
 export default function App() {
-  const [demoView, setDemoView] = createSignal<"table" | "chat" | "glass">("table");
+  const [demoView, setDemoView] = createSignal<"table" | "chat" | "glass" | "groupA">("table");
   const [datasetMode, setDatasetMode] = createSignal<"large" | "small">("large");
   const [pagination, setPagination] = createSignal<PaginationState>({
     pageIndex: 0,
@@ -98,6 +102,12 @@ export default function App() {
     tableScrollHeight: 0,
     tableScrollTop: 0,
   });
+  const [modalOpen, setModalOpen] = createSignal(false);
+  const [drawerOpen, setDrawerOpen] = createSignal(false);
+  const [tabValue, setTabValue] = createSignal<"overview" | "settings" | "advanced">("overview");
+  const [dropdownSelection, setDropdownSelection] = createSignal("none");
+  const [modalCloseCount, setModalCloseCount] = createSignal(0);
+  const [interactionLog, setInteractionLog] = createSignal<string[]>([]);
 
   let tableHostRef: HTMLDivElement | undefined;
   let panelOutgoingCount = 0;
@@ -108,6 +118,16 @@ export default function App() {
   const activeData = createMemo(() =>
     datasetMode() === "large" ? LARGE_DATA : SMALL_DATA,
   );
+
+  const pushInteraction = (label: string) => {
+    const stamp = new Date().toLocaleTimeString("en-US", {
+      hour12: false,
+      hour: "2-digit",
+      minute: "2-digit",
+      second: "2-digit",
+    });
+    setInteractionLog((prev) => [`${stamp} - ${label}`, ...prev].slice(0, 10));
+  };
 
   const collectMetrics = () => {
     const root = document.documentElement;
@@ -249,7 +269,9 @@ export default function App() {
               ? "EnhancedTable Vertical Scroll Containment Test"
               : demoView() === "chat"
                 ? "LiveChat Auto-Scroll Test Section"
-                : "GlassPanel Showcase"}
+                : demoView() === "groupA"
+                  ? "Group A Overlay Primitives Interaction Test"
+                  : "GlassPanel Showcase"}
           </h1>
           <div class="flex items-center gap-2">
             <button
@@ -272,6 +294,13 @@ export default function App() {
               onClick={() => setDemoView("glass")}
             >
               GlassPanel
+            </button>
+            <button
+              type="button"
+              class={`btn btn-xs ${demoView() === "groupA" ? "btn-primary" : "btn-ghost"}`}
+              onClick={() => setDemoView("groupA")}
+            >
+              Overlay Primitives
             </button>
           </div>
         </div>
@@ -404,6 +433,226 @@ export default function App() {
                 </div>
               </div>
             </section>
+          </Show>
+
+          <Show when={demoView() === "groupA"}>
+            <section class="rounded-box border border-base-300 bg-base-100 p-4 shadow-sm">
+              <div class="flex flex-wrap items-center gap-2">
+                <button
+                  type="button"
+                  class="btn btn-sm btn-primary"
+                  onClick={() => {
+                    setModalOpen(true);
+                    pushInteraction("open modal");
+                  }}
+                >
+                  Open modal
+                </button>
+                <button
+                  type="button"
+                  class="btn btn-sm btn-secondary"
+                  onClick={() => {
+                    setDrawerOpen(true);
+                    pushInteraction("open drawer");
+                  }}
+                >
+                  Open drawer
+                </button>
+                <button
+                  type="button"
+                  class="btn btn-sm btn-ghost"
+                  onClick={() => {
+                    setInteractionLog([]);
+                    pushInteraction("cleared interaction log");
+                  }}
+                >
+                  Clear log
+                </button>
+                <span class="ml-auto text-xs opacity-70">
+                  modal closes: {modalCloseCount()} | dropdown: {dropdownSelection()} | tab: {tabValue()}
+                </span>
+              </div>
+            </section>
+
+            <section class="flex-1 min-h-0 overflow-auto rounded-box border border-base-300 bg-base-100 p-4 shadow-sm">
+              <div class="grid gap-4 lg:grid-cols-2">
+                <div class="space-y-4">
+                  <h2 class="text-sm font-semibold">Dropdown + Tabs</h2>
+
+                  <Dropdown class="w-full max-w-xs">
+                    <Dropdown.Toggle
+                      button
+                      class="btn btn-sm btn-outline w-full justify-between"
+                      aria-haspopup="menu"
+                    >
+                      Priority: {dropdownSelection()}
+                    </Dropdown.Toggle>
+                    <Dropdown.Menu class="w-full">
+                      <Dropdown.Item
+                        onClick={() => {
+                          setDropdownSelection("low");
+                          pushInteraction("dropdown select low");
+                        }}
+                      >
+                        Low priority
+                      </Dropdown.Item>
+                      <Dropdown.Item
+                        onClick={() => {
+                          setDropdownSelection("medium");
+                          pushInteraction("dropdown select medium");
+                        }}
+                      >
+                        Medium priority
+                      </Dropdown.Item>
+                      <Dropdown.Item
+                        onClick={() => {
+                          setDropdownSelection("high");
+                          pushInteraction("dropdown select high");
+                        }}
+                      >
+                        High priority
+                      </Dropdown.Item>
+                    </Dropdown.Menu>
+                  </Dropdown>
+
+                  <Tabs variant="boxed" size="sm" class="w-fit">
+                    <Tabs.Tab
+                      href="#"
+                      active={tabValue() === "overview"}
+                      onClick={(event) => {
+                        event.preventDefault();
+                        setTabValue("overview");
+                        pushInteraction("tabs -> overview");
+                      }}
+                    >
+                      Overview
+                    </Tabs.Tab>
+                    <Tabs.Tab
+                      href="#"
+                      active={tabValue() === "settings"}
+                      onClick={(event) => {
+                        event.preventDefault();
+                        setTabValue("settings");
+                        pushInteraction("tabs -> settings");
+                      }}
+                    >
+                      Settings
+                    </Tabs.Tab>
+                    <Tabs.Tab
+                      href="#"
+                      active={tabValue() === "advanced"}
+                      onClick={(event) => {
+                        event.preventDefault();
+                        setTabValue("advanced");
+                        pushInteraction("tabs -> advanced");
+                      }}
+                    >
+                      Advanced
+                    </Tabs.Tab>
+                  </Tabs>
+
+                  <div class="rounded-box border border-base-300 bg-base-200 p-3 text-sm">
+                    <Show when={tabValue() === "overview"}>
+                      <p>Overview tab content visible.</p>
+                    </Show>
+                    <Show when={tabValue() === "settings"}>
+                      <p>Settings tab content visible.</p>
+                    </Show>
+                    <Show when={tabValue() === "advanced"}>
+                      <p>Advanced tab content visible.</p>
+                    </Show>
+                  </div>
+                </div>
+
+                <div class="space-y-3">
+                  <h2 class="text-sm font-semibold">Interaction Log</h2>
+                  <div class="rounded-box border border-base-300 bg-base-200 p-3 text-xs min-h-56 max-h-80 overflow-auto">
+                    <Show
+                      when={interactionLog().length > 0}
+                      fallback={<p class="opacity-60">No events yet. Interact with modal/drawer/dropdown/tabs.</p>}
+                    >
+                      <ul class="space-y-1">
+                        {interactionLog().map((entry) => (
+                          <li>{entry}</li>
+                        ))}
+                      </ul>
+                    </Show>
+                  </div>
+                </div>
+              </div>
+            </section>
+
+            <Drawer
+              open={drawerOpen()}
+              onClickOverlay={() => {
+                setDrawerOpen(false);
+                pushInteraction("drawer overlay close");
+              }}
+              side={
+                <aside class="h-full w-80 p-4 space-y-3 bg-base-100">
+                  <div class="flex items-center justify-between">
+                    <h3 class="text-sm font-semibold">Drawer Test</h3>
+                    <button
+                      type="button"
+                      class="btn btn-xs btn-ghost"
+                      onClick={() => {
+                        setDrawerOpen(false);
+                        pushInteraction("drawer close button");
+                      }}
+                    >
+                      Close
+                    </button>
+                  </div>
+                  <p class="text-xs opacity-70">
+                    Verify slide in/out, overlay close behavior, and stacking.
+                  </p>
+                </aside>
+              }
+            >
+              <div />
+            </Drawer>
+
+            <Modal
+              open={modalOpen()}
+              backdrop
+              closeOnEsc
+              closeOnOutsideClick
+              onClose={() => {
+                setModalOpen(false);
+                setModalCloseCount((count) => count + 1);
+                pushInteraction("modal close");
+              }}
+              size="md"
+            >
+              <Modal.Header class="mb-3 text-lg font-semibold">Modal Test</Modal.Header>
+              <Modal.Body class="space-y-3">
+                <p class="text-sm opacity-80">
+                  Verify backdrop, close on outside click, and ESC behavior.
+                </p>
+              </Modal.Body>
+              <Modal.Actions class="mt-4 flex justify-end gap-2">
+                <button
+                  type="button"
+                  class="btn btn-sm btn-ghost"
+                  onClick={() => {
+                    setModalOpen(false);
+                    pushInteraction("modal dismiss");
+                  }}
+                >
+                  Dismiss
+                </button>
+                <button
+                  type="button"
+                  class="btn btn-sm btn-primary"
+                  onClick={() => {
+                    setModalOpen(false);
+                    pushInteraction("modal confirm");
+                  }}
+                >
+                  Confirm
+                </button>
+              </Modal.Actions>
+            </Modal>
           </Show>
 
           <Show
@@ -577,7 +826,11 @@ export default function App() {
         <div class="mx-auto flex h-full w-full max-w-6xl items-center text-sm opacity-70">
           {demoView() === "table"
             ? "Fixed footer boundary (dashboard chrome simulation)."
-            : "LiveChat mode: use controls to append incoming messages and validate auto-scroll behavior."}
+            : demoView() === "chat"
+              ? "LiveChat mode: use controls to append incoming messages and validate auto-scroll behavior."
+              : demoView() === "groupA"
+                ? "Overlay primitives mode: validate modal/drawer/dropdown/tabs interactions and event log."
+                : "GlassPanel mode: visual showcase for blur, accents, and collapsible variants."}
         </div>
       </footer>
     </div>
