@@ -8,14 +8,22 @@ import {
   Show,
 } from "solid-js";
 import {
+  Button,
+  Checkbox,
   Drawer,
   Dropdown,
   EnhancedTable,
+  FileInput,
   GlassPanel,
+  Input,
   LiveChatBubble,
   LiveChatPanel,
   Modal,
+  Radio,
+  Range,
+  Select,
   Tabs,
+  Textarea,
   type ChatMessage,
   type SendMessagePayload,
   type SendMessageResponse,
@@ -78,7 +86,7 @@ const createChatMessages = (prefix: string, count = 24): ChatMessage[] =>
   }));
 
 export default function App() {
-  const [demoView, setDemoView] = createSignal<"table" | "chat" | "glass" | "groupA">("table");
+  const [demoView, setDemoView] = createSignal<"table" | "chat" | "glass" | "groupA" | "groupB">("table");
   const [datasetMode, setDatasetMode] = createSignal<"large" | "small">("large");
   const [pagination, setPagination] = createSignal<PaginationState>({
     pageIndex: 0,
@@ -108,6 +116,18 @@ export default function App() {
   const [dropdownSelection, setDropdownSelection] = createSignal("none");
   const [modalCloseCount, setModalCloseCount] = createSignal(0);
   const [interactionLog, setInteractionLog] = createSignal<string[]>([]);
+  const [formSize, setFormSize] = createSignal<"xs" | "sm" | "md" | "lg" | "xl">("md");
+  const [formColor, setFormColor] =
+    createSignal<"primary" | "secondary" | "accent" | "info" | "success" | "warning" | "error">("primary");
+  const [formGhost, setFormGhost] = createSignal(false);
+  const [formDisabled, setFormDisabled] = createSignal(false);
+  const [inputValue, setInputValue] = createSignal("");
+  const [selectValue, setSelectValue] = createSignal("");
+  const [textareaValue, setTextareaValue] = createSignal("");
+  const [fileValue, setFileValue] = createSignal("none");
+  const [checkboxValue, setCheckboxValue] = createSignal(true);
+  const [radioValue, setRadioValue] = createSignal<"one" | "two">("one");
+  const [rangeValue, setRangeValue] = createSignal(35);
 
   let tableHostRef: HTMLDivElement | undefined;
   let panelOutgoingCount = 0;
@@ -271,37 +291,46 @@ export default function App() {
                 ? "LiveChat Auto-Scroll Test Section"
                 : demoView() === "groupA"
                   ? "Group A Overlay Primitives Interaction Test"
+                  : demoView() === "groupB"
+                    ? "Group B Form Primitives Compatibility Test"
                   : "GlassPanel Showcase"}
           </h1>
           <div class="flex items-center gap-2">
-            <button
-              type="button"
-              class={`btn btn-xs ${demoView() === "table" ? "btn-primary" : "btn-ghost"}`}
+            <Button
+              size="xs"
+              color={demoView() === "table" ? "primary" : "ghost"}
               onClick={() => setDemoView("table")}
             >
               EnhancedTable
-            </button>
-            <button
-              type="button"
-              class={`btn btn-xs ${demoView() === "chat" ? "btn-primary" : "btn-ghost"}`}
+            </Button>
+            <Button
+              size="xs"
+              color={demoView() === "chat" ? "primary" : "ghost"}
               onClick={() => setDemoView("chat")}
             >
               LiveChat
-            </button>
-            <button
-              type="button"
-              class={`btn btn-xs ${demoView() === "glass" ? "btn-primary" : "btn-ghost"}`}
+            </Button>
+            <Button
+              size="xs"
+              color={demoView() === "glass" ? "primary" : "ghost"}
               onClick={() => setDemoView("glass")}
             >
               GlassPanel
-            </button>
-            <button
-              type="button"
-              class={`btn btn-xs ${demoView() === "groupA" ? "btn-primary" : "btn-ghost"}`}
+            </Button>
+            <Button
+              size="xs"
+              color={demoView() === "groupA" ? "primary" : "ghost"}
               onClick={() => setDemoView("groupA")}
             >
               Overlay Primitives
-            </button>
+            </Button>
+            <Button
+              size="xs"
+              color={demoView() === "groupB" ? "primary" : "ghost"}
+              onClick={() => setDemoView("groupB")}
+            >
+              Form Primitives
+            </Button>
           </div>
         </div>
       </header>
@@ -404,9 +433,9 @@ export default function App() {
                     </GlassPanel>
                     <GlassPanel collapsible title="Controls" defaultOpen accent="accent">
                       <div class="flex gap-2">
-                        <button type="button" class="rounded-lg bg-blue-500/80 px-4 py-2 text-sm text-white backdrop-blur-sm hover:bg-blue-500">Record</button>
-                        <button type="button" class="rounded-lg bg-purple-500/80 px-4 py-2 text-sm text-white backdrop-blur-sm hover:bg-purple-500">Broadcast</button>
-                        <button type="button" class="rounded-lg bg-white/10 border border-white/10 px-4 py-2 text-sm text-white/70 backdrop-blur-sm hover:bg-white/15">Settings</button>
+                        <Button size="sm" class="!rounded-lg !bg-blue-500/80 !text-white backdrop-blur-sm hover:!bg-blue-500">Record</Button>
+                        <Button size="sm" class="!rounded-lg !bg-purple-500/80 !text-white backdrop-blur-sm hover:!bg-purple-500">Broadcast</Button>
+                        <Button size="sm" class="!rounded-lg !bg-white/10 !border-white/10 !text-white/70 backdrop-blur-sm hover:!bg-white/15">Settings</Button>
                       </div>
                     </GlassPanel>
                   </div>
@@ -438,36 +467,36 @@ export default function App() {
           <Show when={demoView() === "groupA"}>
             <section class="rounded-box border border-base-300 bg-base-100 p-4 shadow-sm">
               <div class="flex flex-wrap items-center gap-2">
-                <button
-                  type="button"
-                  class="btn btn-sm btn-primary"
+                <Button
+                  size="sm"
+                  color="primary"
                   onClick={() => {
                     setModalOpen(true);
                     pushInteraction("open modal");
                   }}
                 >
                   Open modal
-                </button>
-                <button
-                  type="button"
-                  class="btn btn-sm btn-secondary"
+                </Button>
+                <Button
+                  size="sm"
+                  color="secondary"
                   onClick={() => {
                     setDrawerOpen(true);
                     pushInteraction("open drawer");
                   }}
                 >
                   Open drawer
-                </button>
-                <button
-                  type="button"
-                  class="btn btn-sm btn-ghost"
+                </Button>
+                <Button
+                  size="sm"
+                  color="ghost"
                   onClick={() => {
                     setInteractionLog([]);
                     pushInteraction("cleared interaction log");
                   }}
                 >
                   Clear log
-                </button>
+                </Button>
                 <span class="ml-auto text-xs opacity-70">
                   modal closes: {modalCloseCount()} | dropdown: {dropdownSelection()} | tab: {tabValue()}
                 </span>
@@ -592,16 +621,16 @@ export default function App() {
                 <aside class="h-full w-80 p-4 space-y-3 bg-base-100">
                   <div class="flex items-center justify-between">
                     <h3 class="text-sm font-semibold">Drawer Test</h3>
-                    <button
-                      type="button"
-                      class="btn btn-xs btn-ghost"
+                    <Button
+                      size="xs"
+                      color="ghost"
                       onClick={() => {
                         setDrawerOpen(false);
                         pushInteraction("drawer close button");
                       }}
                     >
                       Close
-                    </button>
+                    </Button>
                   </div>
                   <p class="text-xs opacity-70">
                     Verify slide in/out, overlay close behavior, and stacking.
@@ -631,28 +660,208 @@ export default function App() {
                 </p>
               </Modal.Body>
               <Modal.Actions class="mt-4 flex justify-end gap-2">
-                <button
-                  type="button"
-                  class="btn btn-sm btn-ghost"
+                <Button
+                  size="sm"
+                  color="ghost"
                   onClick={() => {
                     setModalOpen(false);
                     pushInteraction("modal dismiss");
                   }}
                 >
                   Dismiss
-                </button>
-                <button
-                  type="button"
-                  class="btn btn-sm btn-primary"
+                </Button>
+                <Button
+                  size="sm"
+                  color="primary"
                   onClick={() => {
                     setModalOpen(false);
                     pushInteraction("modal confirm");
                   }}
                 >
                   Confirm
-                </button>
+                </Button>
               </Modal.Actions>
             </Modal>
+          </Show>
+
+          <Show when={demoView() === "groupB"}>
+            <section class="rounded-box border border-base-300 bg-base-100 p-4 shadow-sm">
+              <div class="flex flex-wrap items-center gap-3">
+                <label class="flex items-center gap-2 text-sm">
+                  <span class="opacity-70">Size</span>
+                  <Select
+                    size="sm"
+                    value={formSize()}
+                    onChange={(event) =>
+                      setFormSize(event.currentTarget.value as "xs" | "sm" | "md" | "lg" | "xl")
+                    }
+                  >
+                    <option value="xs">xs</option>
+                    <option value="sm">sm</option>
+                    <option value="md">md</option>
+                    <option value="lg">lg</option>
+                    <option value="xl">xl</option>
+                  </Select>
+                </label>
+                <label class="flex items-center gap-2 text-sm">
+                  <span class="opacity-70">Color</span>
+                  <Select
+                    size="sm"
+                    value={formColor()}
+                    onChange={(event) =>
+                      setFormColor(
+                        event.currentTarget.value as
+                          | "primary"
+                          | "secondary"
+                          | "accent"
+                          | "info"
+                          | "success"
+                          | "warning"
+                          | "error",
+                      )
+                    }
+                  >
+                    <option value="primary">primary</option>
+                    <option value="secondary">secondary</option>
+                    <option value="accent">accent</option>
+                    <option value="info">info</option>
+                    <option value="success">success</option>
+                    <option value="warning">warning</option>
+                    <option value="error">error</option>
+                  </Select>
+                </label>
+                <label class="label cursor-pointer gap-2 px-0 py-0">
+                  <Checkbox
+                    size="sm"
+                    checked={formGhost()}
+                    onChange={(event) => setFormGhost(event.currentTarget.checked)}
+                  />
+                  <span class="text-sm">ghost fields</span>
+                </label>
+                <label class="label cursor-pointer gap-2 px-0 py-0">
+                  <Checkbox
+                    size="sm"
+                    checked={formDisabled()}
+                    onChange={(event) => setFormDisabled(event.currentTarget.checked)}
+                  />
+                  <span class="text-sm">disabled</span>
+                </label>
+              </div>
+            </section>
+
+            <section class="flex-1 min-h-0 overflow-auto rounded-box border border-base-300 bg-base-100 p-4 shadow-sm">
+              <div class="grid gap-4 lg:grid-cols-2">
+                <div class="space-y-4">
+                  <h2 class="text-sm font-semibold">Input Family</h2>
+                  <div class="space-y-3 rounded-box border border-base-300 bg-base-200 p-3">
+                    <Input
+                      size={formSize()}
+                      color={formGhost() ? "ghost" : formColor()}
+                      variant={formGhost() ? "ghost" : "bordered"}
+                      placeholder="Input primitive"
+                      value={inputValue()}
+                      disabled={formDisabled()}
+                      onInput={(event) => setInputValue(event.currentTarget.value)}
+                    />
+                    <Select
+                      size={formSize()}
+                      color={formGhost() ? "ghost" : formColor()}
+                      value={selectValue()}
+                      disabled={formDisabled()}
+                      onChange={(event) => setSelectValue(event.currentTarget.value)}
+                    >
+                      <option value="alpha">Alpha</option>
+                      <option value="beta">Beta</option>
+                      <option value="gamma">Gamma</option>
+                    </Select>
+                    <Textarea
+                      size={formSize()}
+                      color={formGhost() ? "ghost" : formColor()}
+                      disabled={formDisabled()}
+                      placeholder="Textarea primitive"
+                      value={textareaValue()}
+                      onInput={(event) => setTextareaValue(event.currentTarget.value)}
+                    />
+                    <FileInput
+                      size={formSize()}
+                      color={formGhost() ? "ghost" : formColor()}
+                      bordered
+                      disabled={formDisabled()}
+                      onChange={(event) => {
+                        const selected = event.currentTarget.files?.[0]?.name ?? "none";
+                        setFileValue(selected);
+                      }}
+                    />
+                    <div class="text-xs opacity-70">
+                      file: {fileValue() || "none"}
+                    </div>
+                  </div>
+                </div>
+
+                <div class="space-y-4">
+                  <h2 class="text-sm font-semibold">Choice Controls</h2>
+                  <div class="space-y-4 rounded-box border border-base-300 bg-base-200 p-3">
+                    <label class="label cursor-pointer justify-start gap-2 px-0 py-0">
+                      <Checkbox
+                        size={formSize()}
+                        color={formColor()}
+                        checked={checkboxValue()}
+                        disabled={formDisabled()}
+                        onChange={(event) => setCheckboxValue(event.currentTarget.checked)}
+                      />
+                      <span class="text-sm">Checkbox primitive</span>
+                    </label>
+
+                    <div class="flex items-center gap-4">
+                      <label class="label cursor-pointer justify-start gap-2 px-0 py-0">
+                        <Radio
+                          name="group-b-radio"
+                          size={formSize()}
+                          color={formColor()}
+                          checked={radioValue() === "one"}
+                          disabled={formDisabled()}
+                          onChange={() => setRadioValue("one")}
+                        />
+                        <span class="text-sm">Option one</span>
+                      </label>
+                      <label class="label cursor-pointer justify-start gap-2 px-0 py-0">
+                        <Radio
+                          name="group-b-radio"
+                          size={formSize()}
+                          color={formColor()}
+                          checked={radioValue() === "two"}
+                          disabled={formDisabled()}
+                          onChange={() => setRadioValue("two")}
+                        />
+                        <span class="text-sm">Option two</span>
+                      </label>
+                    </div>
+
+                    <div class="space-y-2">
+                      <Range
+                        size={formSize()}
+                        color={formColor()}
+                        min={0}
+                        max={100}
+                        step={0.1}
+                        value={rangeValue()}
+                        disabled={formDisabled()}
+                        onInput={(event) => setRangeValue(Number(event.currentTarget.value))}
+                      />
+                      <div class="text-xs opacity-70">range: {rangeValue()}</div>
+                    </div>
+                  </div>
+
+                  <div class="rounded-box border border-base-300 bg-base-200 p-3 text-xs">
+                    <div>input: {inputValue() || "(empty)"}</div>
+                    <div>select: {selectValue() || "(empty)"}</div>
+                    <div>textarea: {textareaValue() || "(empty)"}</div>
+                    <div>checkbox: {String(checkboxValue())}</div>
+                    <div>radio: {radioValue()}</div>
+                  </div>
+                </div>
+              </div>
+            </section>
           </Show>
 
           <Show
@@ -663,16 +872,16 @@ export default function App() {
                 <section class="rounded-box border border-base-300 bg-base-100 p-4 shadow-sm">
                   <div class="flex flex-wrap items-center gap-2">
                     <label class="label cursor-pointer gap-2 px-0 py-0">
-                      <input
-                        type="checkbox"
-                        class="checkbox checkbox-sm"
+                      <Checkbox
+                        size="sm"
                         checked={autoScrollOnNewMessage()}
                         onChange={(event) => setAutoScrollOnNewMessage(event.currentTarget.checked)}
                       />
                       <span class="text-sm">autoScrollOnNewMessage</span>
                     </label>
-                    <select
-                      class="select select-sm select-bordered"
+                    <Select
+                      size="sm"
+                      class="w-32"
                       value={autoScrollBehavior()}
                       onChange={(event) =>
                         setAutoScrollBehavior(event.currentTarget.value as "instant" | "smooth")
@@ -680,39 +889,34 @@ export default function App() {
                     >
                       <option value="instant">instant</option>
                       <option value="smooth">smooth</option>
-                    </select>
-                    <label class="input input-sm input-bordered flex items-center gap-2">
-                      <span class="text-xs">threshold</span>
-                      <input
-                        type="number"
-                        min="0"
-                        value={stickToBottomThreshold()}
-                        onInput={(event) => {
-                          const nextValue = Number(event.currentTarget.value);
-                          setStickToBottomThreshold(Number.isNaN(nextValue) ? 0 : nextValue);
-                        }}
-                        class="w-20"
-                      />
-                    </label>
-                    <button type="button" class="btn btn-sm btn-ghost" onClick={resetChatMessages}>
+                    </Select>
+                    <Input
+                      size="sm"
+                      type="number"
+                      min="0"
+                      class="w-32"
+                      leftIcon={<span class="text-xs">threshold</span>}
+                      value={stickToBottomThreshold()}
+                      onInput={(event) => {
+                        const nextValue = Number(event.currentTarget.value);
+                        setStickToBottomThreshold(Number.isNaN(nextValue) ? 0 : nextValue);
+                      }}
+                    />
+                    <Button size="sm" color="ghost" onClick={resetChatMessages}>
                       Reset messages
-                    </button>
-                    <button type="button" class="btn btn-sm btn-ghost" onClick={appendPanelIncoming}>
+                    </Button>
+                    <Button size="sm" color="ghost" onClick={appendPanelIncoming}>
                       Panel + incoming
-                    </button>
-                    <button type="button" class="btn btn-sm btn-ghost" onClick={appendPanelBurst}>
+                    </Button>
+                    <Button size="sm" color="ghost" onClick={appendPanelBurst}>
                       Panel burst x8
-                    </button>
-                    <button
-                      type="button"
-                      class="btn btn-sm btn-ghost"
-                      onClick={appendBubbleIncoming}
-                    >
+                    </Button>
+                    <Button size="sm" color="ghost" onClick={appendBubbleIncoming}>
                       Bubble + incoming
-                    </button>
-                    <button type="button" class="btn btn-sm btn-ghost" onClick={appendBubbleBurst}>
+                    </Button>
+                    <Button size="sm" color="ghost" onClick={appendBubbleBurst}>
                       Bubble burst x8
-                    </button>
+                    </Button>
                   </div>
                   <p class="mt-3 text-xs opacity-70">
                     Scroll either chat list upward, then click append controls to verify it does not
@@ -768,20 +972,20 @@ export default function App() {
               <div class="flex items-center justify-between gap-4">
                 <div class="flex items-center gap-2">
                   <span class="text-sm font-medium">Dataset</span>
-                  <button
-                    type="button"
-                    class={`btn btn-sm ${datasetMode() === "large" ? "btn-primary" : "btn-ghost"}`}
+                  <Button
+                    size="sm"
+                    color={datasetMode() === "large" ? "primary" : "ghost"}
                     onClick={() => setDatasetMode("large")}
                   >
                     Large (overflow)
-                  </button>
-                  <button
-                    type="button"
-                    class={`btn btn-sm ${datasetMode() === "small" ? "btn-primary" : "btn-ghost"}`}
+                  </Button>
+                  <Button
+                    size="sm"
+                    color={datasetMode() === "small" ? "primary" : "ghost"}
                     onClick={() => setDatasetMode("small")}
                   >
                     Small (no overflow)
-                  </button>
+                  </Button>
                 </div>
                 <div class="text-xs opacity-70">Viewport: {metrics().viewport}</div>
               </div>
@@ -830,6 +1034,8 @@ export default function App() {
               ? "LiveChat mode: use controls to append incoming messages and validate auto-scroll behavior."
               : demoView() === "groupA"
                 ? "Overlay primitives mode: validate modal/drawer/dropdown/tabs interactions and event log."
+                : demoView() === "groupB"
+                  ? "Form primitives mode: validate input/select/textarea/file-input/checkbox/radio/range states."
                 : "GlassPanel mode: visual showcase for blur, accents, and collapsible variants."}
         </div>
       </footer>

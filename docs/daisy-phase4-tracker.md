@@ -23,7 +23,9 @@ Move styling ownership into `@pathscale/ui` so app repos can remove app-level Da
   - baseline compatibility styles are implemented
   - pending parity pass against all modal/drawer/dropdown/tabs variants used by app consumers
 - Group B (form primitives):
-  - `input`, `select`, `textarea`, `file-input`, `checkbox`, `radio`, `range`
+  - baseline compatibility styles implemented for:
+    - `input`, `select`, `textarea`, `file-input`, `checkbox`, `radio`, `range`
+  - pending parity pass against app usage (sizes, color variants, disabled, hover/focus)
 - Group C (semantic UI primitives):
   - `badge`, `alert`, `card`, `tooltip`, `collapse`, `breadcrumbs`, `navbar`
 - Group D (cleanup and parity):

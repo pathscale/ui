@@ -239,6 +239,633 @@
     border-radius: 0 0 var(--radius-field, 0.5rem) var(--radius-field, 0.5rem);
   }
 
+  .input,
+  .select,
+  .textarea,
+  .file-input {
+    --field-bg: var(--color-base-100);
+    --field-border: color-mix(in oklch, var(--color-base-content) 18%, transparent);
+    --field-color: var(--color-base-content);
+    --field-placeholder: color-mix(in oklch, var(--color-base-content) 50%, transparent);
+    --field-focus: color-mix(in oklch, var(--color-base-content) 28%, transparent);
+    --field-file-bg: color-mix(in oklch, var(--color-base-content) 10%, var(--color-base-100));
+    --field-file-color: var(--color-base-content);
+  }
+
+  .input {
+    align-items: center;
+    background: var(--field-bg);
+    border: 1px solid var(--field-border);
+    border-radius: var(--radius-field, 0.5rem);
+    color: var(--field-color);
+    display: inline-flex;
+    gap: 0.5rem;
+    min-height: 2.5rem;
+    padding: 0 0.75rem;
+    transition: border-color 0.15s ease, box-shadow 0.15s ease, background-color 0.15s ease;
+    width: 100%;
+  }
+
+  .input input {
+    background: transparent;
+    border: 0;
+    color: inherit;
+    flex: 1;
+    min-width: 0;
+    outline: none;
+  }
+
+  .input input::placeholder {
+    color: var(--field-placeholder);
+  }
+
+  .input:focus-within {
+    border-color: var(--field-focus);
+    box-shadow: 0 0 0 2px color-mix(in oklch, var(--field-focus) 22%, transparent);
+  }
+
+  .input:has(input:disabled),
+  .input.input-disabled {
+    background: color-mix(in oklch, var(--color-base-content) 6%, var(--color-base-100));
+    cursor: not-allowed;
+    opacity: 0.65;
+  }
+
+  .input:has(input:disabled) input {
+    cursor: not-allowed;
+  }
+
+  .select,
+  .textarea,
+  .file-input {
+    background: var(--field-bg);
+    border: 1px solid var(--field-border);
+    border-radius: var(--radius-field, 0.5rem);
+    color: var(--field-color);
+    min-height: 2.5rem;
+    transition: border-color 0.15s ease, box-shadow 0.15s ease, background-color 0.15s ease;
+  }
+
+  .select:focus-visible,
+  .textarea:focus-visible,
+  .file-input:focus-visible {
+    border-color: var(--field-focus);
+    box-shadow: 0 0 0 2px color-mix(in oklch, var(--field-focus) 22%, transparent);
+    outline: none;
+  }
+
+  .select:disabled,
+  .textarea:disabled,
+  .file-input:disabled {
+    background: color-mix(in oklch, var(--color-base-content) 6%, var(--color-base-100));
+    cursor: not-allowed;
+    opacity: 0.65;
+  }
+
+  .select {
+    appearance: none;
+    background-image:
+      linear-gradient(45deg, transparent 50%, currentColor 50%),
+      linear-gradient(135deg, currentColor 50%, transparent 50%);
+    background-position:
+      calc(100% - 1rem) calc(50% - 2px),
+      calc(100% - 0.7rem) calc(50% - 2px);
+    background-repeat: no-repeat;
+    background-size: 0.35rem 0.35rem, 0.35rem 0.35rem;
+    padding: 0 2rem 0 0.75rem;
+    width: 100%;
+  }
+
+  .select option {
+    background: var(--color-base-100);
+    color: var(--color-base-content);
+  }
+
+  .textarea {
+    padding: 0.625rem 0.75rem;
+    width: 100%;
+  }
+
+  .textarea::placeholder {
+    color: var(--field-placeholder);
+  }
+
+  .file-input {
+    padding: 0;
+    width: 100%;
+  }
+
+  .file-input::file-selector-button {
+    background: var(--field-file-bg);
+    border: 0;
+    border-inline-end: 1px solid var(--field-border);
+    color: var(--field-file-color);
+    cursor: pointer;
+    font-weight: 600;
+    height: 100%;
+    margin-inline-end: 0.75rem;
+    padding: 0 0.875rem;
+    transition: background-color 0.15s ease;
+  }
+
+  .file-input:hover::file-selector-button {
+    background: color-mix(in oklch, var(--field-file-bg) 85%, black);
+  }
+
+  .file-input:disabled::file-selector-button {
+    cursor: not-allowed;
+  }
+
+  .input.input-ghost,
+  .select.select-ghost,
+  .textarea.textarea-ghost,
+  .file-input.file-input-ghost {
+    --field-bg: transparent;
+    --field-border: transparent;
+  }
+
+  .input.input-bordered,
+  .file-input.file-input-bordered {
+    --field-border: color-mix(in oklch, var(--color-base-content) 22%, transparent);
+  }
+
+  .input.input-primary,
+  .select.select-primary,
+  .textarea.textarea-primary,
+  .file-input.file-input-primary {
+    --field-focus: var(--color-primary);
+    --field-border: color-mix(in oklch, var(--color-primary) 35%, var(--color-base-100));
+    --field-file-bg: color-mix(in oklch, var(--color-primary) 16%, var(--color-base-100));
+  }
+
+  .input.input-secondary,
+  .select.select-secondary,
+  .textarea.textarea-secondary,
+  .file-input.file-input-secondary {
+    --field-focus: var(--color-secondary);
+    --field-border: color-mix(in oklch, var(--color-secondary) 35%, var(--color-base-100));
+    --field-file-bg: color-mix(in oklch, var(--color-secondary) 16%, var(--color-base-100));
+  }
+
+  .input.input-accent,
+  .select.select-accent,
+  .textarea.textarea-accent,
+  .file-input.file-input-accent {
+    --field-focus: var(--color-accent);
+    --field-border: color-mix(in oklch, var(--color-accent) 35%, var(--color-base-100));
+    --field-file-bg: color-mix(in oklch, var(--color-accent) 16%, var(--color-base-100));
+  }
+
+  .input.input-info,
+  .select.select-info,
+  .textarea.textarea-info,
+  .file-input.file-input-info {
+    --field-focus: var(--color-info);
+    --field-border: color-mix(in oklch, var(--color-info) 35%, var(--color-base-100));
+    --field-file-bg: color-mix(in oklch, var(--color-info) 16%, var(--color-base-100));
+  }
+
+  .input.input-success,
+  .select.select-success,
+  .textarea.textarea-success,
+  .file-input.file-input-success {
+    --field-focus: var(--color-success);
+    --field-border: color-mix(in oklch, var(--color-success) 35%, var(--color-base-100));
+    --field-file-bg: color-mix(in oklch, var(--color-success) 16%, var(--color-base-100));
+  }
+
+  .input.input-warning,
+  .select.select-warning,
+  .textarea.textarea-warning,
+  .file-input.file-input-warning {
+    --field-focus: var(--color-warning);
+    --field-border: color-mix(in oklch, var(--color-warning) 35%, var(--color-base-100));
+    --field-file-bg: color-mix(in oklch, var(--color-warning) 16%, var(--color-base-100));
+  }
+
+  .input.input-error,
+  .select.select-error,
+  .textarea.textarea-error,
+  .file-input.file-input-error {
+    --field-focus: var(--color-error);
+    --field-border: color-mix(in oklch, var(--color-error) 35%, var(--color-base-100));
+    --field-file-bg: color-mix(in oklch, var(--color-error) 16%, var(--color-base-100));
+  }
+
+  .input.input-xs,
+  .select.select-xs,
+  .textarea.textarea-xs,
+  .file-input.file-input-xs {
+    font-size: 0.75rem;
+    min-height: 1.75rem;
+  }
+
+  .input.input-sm,
+  .select.select-sm,
+  .textarea.textarea-sm,
+  .file-input.file-input-sm {
+    font-size: 0.8125rem;
+    min-height: 2rem;
+  }
+
+  .input.input-md,
+  .select.select-md,
+  .textarea.textarea-md,
+  .file-input.file-input-md {
+    min-height: 2.5rem;
+  }
+
+  .input.input-lg,
+  .select.select-lg,
+  .textarea.textarea-lg,
+  .file-input.file-input-lg {
+    font-size: 1rem;
+    min-height: 3rem;
+  }
+
+  .input.input-xl,
+  .select.select-xl,
+  .textarea.textarea-xl,
+  .file-input.file-input-xl {
+    font-size: 1.125rem;
+    min-height: 3.25rem;
+  }
+
+  .checkbox,
+  .radio {
+    --control-accent: var(--color-primary);
+    appearance: none;
+    background: var(--color-base-100);
+    border: 1px solid color-mix(in oklch, var(--color-base-content) 30%, transparent);
+    box-shadow: inset 0 0 0 0 color-mix(in oklch, var(--control-accent) 75%, transparent);
+    color: var(--color-base-content);
+    cursor: pointer;
+    display: inline-block;
+    flex-shrink: 0;
+    height: 1.25rem;
+    transition: background-color 0.15s ease, border-color 0.15s ease, box-shadow 0.15s ease;
+    width: 1.25rem;
+  }
+
+  .checkbox {
+    --size: calc(var(--size-selector, 0.25rem) * 6);
+    --input-color: var(--control-accent);
+    --checkbox-content: var(--color-primary-content);
+    background-size: auto, calc(var(--noise) * 100%);
+    background-image: none, var(--fx-noise);
+    box-shadow:
+      0 1px oklch(0% 0 0 / calc(var(--depth) * 0.1)) inset,
+      0 0 #0000 inset,
+      0 0 #0000;
+    height: var(--size);
+    padding: 0.25rem;
+    position: relative;
+    transition: background-color 0.2s, box-shadow 0.2s;
+    border-radius: 0.25rem;
+    width: var(--size);
+  }
+
+  .checkbox::before {
+    background: currentColor;
+    box-shadow: 0 3px 0 0 oklch(100% 0 0 / calc(var(--depth) * 0.1)) inset;
+    clip-path: polygon(20% 100%, 20% 80%, 50% 80%, 50% 0%, 70% 0%, 70% 100%);
+    content: "";
+    display: block;
+    font-size: 1rem;
+    height: 100%;
+    line-height: 0.75;
+    opacity: 0;
+    rotate: 45deg;
+    transition: clip-path 0.3s 0.1s, opacity 0.1s 0.1s, rotate 0.3s 0.1s, translate 0.3s 0.1s;
+    width: 100%;
+  }
+
+  .checkbox:checked,
+  .checkbox[aria-checked="true"] {
+    background-color: var(--input-color, #0000);
+    border-color: var(--input-color, color-mix(in oklch, var(--color-base-content) 20%, transparent));
+    box-shadow:
+      0 0 #0000 inset,
+      0 8px 0 -4px oklch(100% 0 0 / calc(var(--depth) * 0.1)) inset,
+      0 1px oklch(0% 0 0 / calc(var(--depth) * 0.1));
+    color: var(--checkbox-content);
+  }
+
+  .checkbox:checked::before,
+  .checkbox[aria-checked="true"]::before {
+    clip-path: polygon(20% 100%, 20% 80%, 50% 80%, 50% 0%, 70% 0%, 70% 100%);
+    opacity: 100%;
+  }
+
+  .checkbox:indeterminate,
+  .checkbox[aria-checked="mixed"] {
+    background: color-mix(in oklch, var(--control-accent) 88%, black);
+    border-color: color-mix(in oklch, var(--control-accent) 78%, black);
+    box-shadow: inset 0 0 0 999px color-mix(in oklch, var(--control-accent) 88%, black);
+    color: var(--color-primary-content);
+  }
+
+  .checkbox:indeterminate::before,
+  .checkbox[aria-checked="mixed"]::before {
+    clip-path: polygon(20% 100%, 20% 80%, 50% 80%, 50% 80%, 80% 80%, 80% 100%);
+    opacity: 1;
+    rotate: none;
+    translate: 0 -35%;
+  }
+
+  .radio {
+    border-radius: 9999px;
+  }
+
+  .radio:checked {
+    border-color: color-mix(in oklch, var(--control-accent) 78%, black);
+    box-shadow:
+      inset 0 0 0 3px var(--color-base-100),
+      inset 0 0 0 999px color-mix(in oklch, var(--control-accent) 88%, black);
+  }
+
+  .checkbox:focus-visible,
+  .radio:focus-visible {
+    outline: 2px solid color-mix(in oklch, var(--control-accent) 55%, transparent);
+    outline-offset: 2px;
+  }
+
+  .checkbox:disabled,
+  .radio:disabled {
+    cursor: not-allowed;
+    opacity: 0.5;
+  }
+
+  .checkbox.checkbox-xs,
+  .radio.radio-xs {
+    height: 0.875rem;
+    width: 0.875rem;
+  }
+
+  .checkbox.checkbox-sm,
+  .radio.radio-sm {
+    height: 1rem;
+    width: 1rem;
+  }
+
+  .checkbox.checkbox-md,
+  .radio.radio-md {
+    height: 1.25rem;
+    width: 1.25rem;
+  }
+
+  .checkbox.checkbox-lg,
+  .radio.radio-lg {
+    height: 1.5rem;
+    width: 1.5rem;
+  }
+
+  .checkbox.checkbox-xl,
+  .radio.radio-xl {
+    height: 1.75rem;
+    width: 1.75rem;
+  }
+
+  .checkbox.checkbox-xs {
+    --size: calc(var(--size-selector, 0.25rem) * 4);
+    padding: 0.125rem;
+  }
+
+  .checkbox.checkbox-sm {
+    --size: calc(var(--size-selector, 0.25rem) * 5);
+    padding: 0.1875rem;
+  }
+
+  .checkbox.checkbox-md {
+    --size: calc(var(--size-selector, 0.25rem) * 6);
+    padding: 0.25rem;
+  }
+
+  .checkbox.checkbox-lg {
+    --size: calc(var(--size-selector, 0.25rem) * 7);
+    padding: 0.3125rem;
+  }
+
+  .checkbox.checkbox-xl {
+    --size: calc(var(--size-selector, 0.25rem) * 8);
+    padding: 0.375rem;
+  }
+
+  .checkbox.checkbox-neutral {
+    --checkbox-content: var(--color-neutral-content);
+    --control-accent: var(--color-neutral);
+  }
+
+  .checkbox.checkbox-primary,
+  .radio.radio-primary {
+    --checkbox-content: var(--color-primary-content);
+    --control-accent: var(--color-primary);
+  }
+
+  .checkbox.checkbox-secondary,
+  .radio.radio-secondary {
+    --checkbox-content: var(--color-secondary-content);
+    --control-accent: var(--color-secondary);
+  }
+
+  .checkbox.checkbox-accent,
+  .radio.radio-accent {
+    --checkbox-content: var(--color-accent-content);
+    --control-accent: var(--color-accent);
+  }
+
+  .checkbox.checkbox-info,
+  .radio.radio-info {
+    --checkbox-content: var(--color-info-content);
+    --control-accent: var(--color-info);
+  }
+
+  .checkbox.checkbox-success,
+  .radio.radio-success {
+    --checkbox-content: var(--color-success-content);
+    --control-accent: var(--color-success);
+  }
+
+  .checkbox.checkbox-warning,
+  .radio.radio-warning {
+    --checkbox-content: var(--color-warning-content);
+    --control-accent: var(--color-warning);
+  }
+
+  .checkbox.checkbox-error,
+  .radio.radio-error {
+    --checkbox-content: var(--color-error-content);
+    --control-accent: var(--color-error);
+  }
+
+  .range {
+    -webkit-appearance: none;
+    appearance: none;
+    --range-thumb: var(--color-base-100);
+    --range-thumb-size: calc(var(--size-selector, 0.25rem) * 6);
+    --range-progress: currentColor;
+    --range-fill: 1;
+    --range-p: 0.25rem;
+    --range-bg: color-mix(in oklab, currentColor 10%, #0000);
+    --radius-selector-max: calc(var(--radius-selector) + var(--radius-selector) + var(--radius-selector));
+    background-color: #0000;
+    border: none;
+    border-radius: calc(var(--radius-selector) + min(var(--range-p), var(--radius-selector-max)));
+    color: var(--color-primary);
+    cursor: pointer;
+    height: var(--range-thumb-size);
+    overflow: hidden;
+    vertical-align: middle;
+    width: clamp(3rem, 20rem, 100%);
+  }
+
+  [dir="rtl"] .range {
+    --range-dir: -1;
+  }
+
+  .range:focus {
+    outline: none;
+  }
+
+  .range:focus-visible {
+    outline: 2px solid;
+    outline-offset: 2px;
+  }
+
+  .range::-webkit-slider-runnable-track {
+    background-color: var(--range-bg);
+    border-radius: var(--radius-selector);
+    height: calc(var(--range-thumb-size) * 0.5);
+    width: 100%;
+  }
+
+  .range::-webkit-slider-thumb {
+    box-sizing: border-box;
+    border-radius: calc(var(--radius-selector) + min(var(--range-p), var(--radius-selector-max)));
+    height: var(--range-thumb-size);
+    width: var(--range-thumb-size);
+    border: var(--range-p) solid;
+    -webkit-appearance: none;
+    appearance: none;
+    color: var(--range-progress);
+    box-shadow:
+      0 -1px oklch(0% 0 0 / calc(var(--depth) * 0.1)) inset,
+      0 8px 0 -4px oklch(100% 0 0 / calc(var(--depth) * 0.1)) inset,
+      0 1px color-mix(in oklab, currentColor calc(var(--depth) * 10%), #0000),
+      0 0 0 2rem var(--range-thumb) inset,
+      calc((var(--range-dir, 1) * -100rem) - (var(--range-dir, 1) * var(--range-thumb-size) / 2))
+        0
+        0
+        calc(100rem * var(--range-fill));
+    background-color: currentColor;
+    position: relative;
+    top: 50%;
+    transition: transform 0.15s ease, box-shadow 0.15s ease, background-color 0.15s ease;
+    transform: translateY(-50%);
+  }
+
+  .range::-moz-range-track {
+    background-color: var(--range-bg);
+    border-radius: var(--radius-selector);
+    height: calc(var(--range-thumb-size) * 0.5);
+    width: 100%;
+  }
+
+  .range::-moz-range-thumb {
+    box-sizing: border-box;
+    border-radius: calc(var(--radius-selector) + min(var(--range-p), var(--radius-selector-max)));
+    height: var(--range-thumb-size);
+    width: var(--range-thumb-size);
+    border: var(--range-p) solid;
+    color: var(--range-progress);
+    box-shadow:
+      0 -1px oklch(0% 0 0 / calc(var(--depth) * 0.1)) inset,
+      0 8px 0 -4px oklch(100% 0 0 / calc(var(--depth) * 0.1)) inset,
+      0 1px color-mix(in oklab, currentColor calc(var(--depth) * 10%), #0000),
+      0 0 0 2rem var(--range-thumb) inset,
+      calc((var(--range-dir, 1) * -100rem) - (var(--range-dir, 1) * var(--range-thumb-size) / 2))
+        0
+        0
+        calc(100rem * var(--range-fill));
+    background-color: currentColor;
+    position: relative;
+    top: 50%;
+    transition: transform 0.15s ease, box-shadow 0.15s ease, background-color 0.15s ease;
+  }
+
+  .range:active::-webkit-slider-thumb {
+    transform: translateY(-50%) scale(1.03);
+  }
+
+  .range:active::-moz-range-thumb {
+    transform: scale(1.03);
+  }
+
+  .range:disabled {
+    cursor: not-allowed;
+    opacity: 0.3;
+  }
+
+  .range.range-xs {
+    --range-thumb-size: calc(var(--size-selector, 0.25rem) * 4);
+  }
+
+  .range.range-sm {
+    --range-thumb-size: calc(var(--size-selector, 0.25rem) * 5);
+  }
+
+  .range.range-md {
+    --range-thumb-size: calc(var(--size-selector, 0.25rem) * 6);
+  }
+
+  .range.range-lg {
+    --range-thumb-size: calc(var(--size-selector, 0.25rem) * 7);
+  }
+
+  .range.range-xl {
+    --range-thumb-size: calc(var(--size-selector, 0.25rem) * 8);
+  }
+
+  .range.range-neutral {
+    --range-thumb: var(--color-neutral-content);
+    color: var(--color-neutral);
+  }
+
+  .range.range-primary {
+    --range-thumb: var(--color-primary-content);
+    color: var(--color-primary);
+  }
+
+  .range.range-secondary {
+    --range-thumb: var(--color-secondary-content);
+    color: var(--color-secondary);
+  }
+
+  .range.range-accent {
+    --range-thumb: var(--color-accent-content);
+    color: var(--color-accent);
+  }
+
+  .range.range-info {
+    --range-thumb: var(--color-info-content);
+    color: var(--color-info);
+  }
+
+  .range.range-success {
+    --range-thumb: var(--color-success-content);
+    color: var(--color-success);
+  }
+
+  .range.range-warning {
+    --range-thumb: var(--color-warning-content);
+    color: var(--color-warning);
+  }
+
+  .range.range-error {
+    --range-thumb: var(--color-error-content);
+    color: var(--color-error);
+  }
+
   .menu {
     background: var(--color-base-100);
     border-radius: var(--radius-box, 0.75rem);
