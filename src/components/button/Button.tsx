@@ -140,7 +140,7 @@ const Button = <E extends ElementType = "button">(
         glass: local.glass,
         "btn-wide": local.wide,
         "btn-block": local.fullWidth,
-        "btn-xs sm:btn-sm md:btn-md lg:btn-lg": local.responsive,
+        "btn-responsive": local.responsive,
         "no-animation": !local.animation,
         "btn-active": local.active,
         "btn-disabled": local.disabled,

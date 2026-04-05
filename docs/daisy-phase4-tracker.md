@@ -39,6 +39,17 @@ Move styling ownership into `@pathscale/ui` so app repos can remove app-level Da
 - Group D (cleanup and parity):
   - started:
     - removed Daisy-dependent `@apply btn ...` from `src/components/sidenav/Sidenav.css`
+    - removed Daisy-prefixed responsive class assumptions in component render paths:
+      - `Button` -> `btn-responsive`
+      - `Badge` -> `badge-responsive`
+      - `Menu` -> `menu-responsive`
+      - `Modal` / `ModalLegacy` -> `modal-responsive-middle`
+      - `Card` responsive side variants -> `card-side-{xs,sm,md,lg}`
+    - replaced Daisy-only utility tokens in TSX:
+      - `Avatar`: `rounded-btn` -> `rounded-lg`, `bg-neutral-focus` -> `bg-neutral`
+      - `LiveChatPanel`: `hover:bg-primary-focus` -> `hover:bg-primary/90`
+    - added compat utility aliases for transition safety:
+      - `rounded-box`, `rounded-field`, `rounded-btn`, `bg-primary-focus`
   - remove remaining Daisy class assumptions in TSX render paths
   - tighten visual parity with current production usage
   - remove app-level Daisy plugin from nofilter after parity verification

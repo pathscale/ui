@@ -32,10 +32,10 @@ export type CardProps = IComponentBaseProps &
 const DYNAMIC_MODIFIERS = {
   side: {
     true: "card-side",
-    xs: "xs:card-side",
-    sm: "sm:card-side",
-    md: "md:card-side",
-    lg: "lg:card-side",
+    xs: "card-side-xs",
+    sm: "card-side-sm",
+    md: "card-side-md",
+    lg: "card-side-lg",
   },
 } as const;
 

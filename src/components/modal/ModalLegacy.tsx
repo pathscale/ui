@@ -27,7 +27,7 @@ export default function ModalLegacy(props: ModalLegacyProps): JSX.Element {
     "modal",
     clsx({
       "modal-open": open,
-      "modal-bottom sm:modal-middle": responsive,
+      "modal-bottom modal-responsive-middle": responsive,
     }),
   );
 

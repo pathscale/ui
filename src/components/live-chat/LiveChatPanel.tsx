@@ -355,7 +355,7 @@ const LiveChatPanel: Component<LiveChatPanelProps> = (props) => {
         </Flex>
         <button
           onClick={local.onClose}
-          class="hover:bg-primary-focus rounded-lg p-1 transition-colors"
+          class="hover:bg-primary/90 rounded-lg p-1 transition-colors"
           aria-label={local.closeLabel ?? "Close chat"}
         >
           <svg

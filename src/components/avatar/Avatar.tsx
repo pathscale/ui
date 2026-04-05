@@ -123,7 +123,7 @@ const Avatar = <E extends ElementType = "div">(
       "ring-offset-base-100 ring-offset-2": local.border,
       [`ring-${local.borderColor}`]: local.border && local.borderColor,
       "rounded-full": local.shape === "circle",
-      "rounded-btn": local.shape === "square",
+      "rounded-lg": local.shape === "square",
       "w-32 h-32": local.size === "lg",
       "w-24 h-24": local.size === "md",
       "w-14 h-14": local.size === "sm",
@@ -134,7 +134,7 @@ const Avatar = <E extends ElementType = "div">(
   // Placeholder wrapper classes
   const placeholderClasses = createMemo(() =>
     clsx(baseInner(), {
-      "bg-neutral-focus": !local.color,
+      "bg-neutral": !local.color,
       "text-neutral-content": !local.color || local.color === "neutral",
       [`bg-${local.color}`]: !!local.color,
       [`text-${local.color}-content`]: !!local.color,
@@ -142,7 +142,7 @@ const Avatar = <E extends ElementType = "div">(
       "ring-offset-base-100 ring-offset-2": local.border,
       [`ring-${local.borderColor}`]: local.border && local.borderColor,
       "rounded-full": local.shape === "circle",
-      "rounded-btn": local.shape === "square",
+      "rounded-lg": local.shape === "square",
       "w-32 h-32 text-3xl": local.size === "lg",
       "w-24 h-24 text-xl": local.size === "md",
       "w-14 h-14": local.size === "sm",

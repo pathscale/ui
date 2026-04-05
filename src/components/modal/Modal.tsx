@@ -111,7 +111,7 @@ export function Modal(props: ModalProps): JSX.Element {
         "modal-top": local.position === "top",
         "modal-middle": local.position === "middle",
         "modal-bottom": local.position === "bottom",
-        "modal-bottom sm:modal-middle": local.responsive,
+        "modal-bottom modal-responsive-middle": local.responsive,
       }),
     ),
   );
