@@ -35,6 +35,12 @@ export type AccordionProps = AccordionBaseProps &
   Omit<JSX.InputHTMLAttributes<HTMLInputElement>, keyof AccordionBaseProps>;
 
 const accordionGroups = new Map<string, Set<() => void>>();
+const TITLE_PART = "title";
+const CONTENT_PART = "content";
+
+type AccordionChild = {
+  props?: Record<string, unknown>;
+};
 
 const Accordion = (props: AccordionProps): JSX.Element => {
   const [local, others] = splitProps(props, [
@@ -138,61 +144,78 @@ const Accordion = (props: AccordionProps): JSX.Element => {
 
   const resolvedChildren = resolveChildren(() => local.children);
 
-  const childrenWithAria = createMemo(() => {
+  const childrenWithAria = createMemo<any>(() => {
     const children = resolvedChildren();
     const arr = Array.isArray(children) ? children : [children];
-    return arr.map((child) => {
-      if (child == null || typeof child !== "object" || !("props" in child))
-        return child;
 
-      if (
-        child.props &&
-        typeof child.props === "object" &&
-        "class" in child.props &&
-        typeof child.props.class === "string" &&
-        child.props.class.includes("collapse-title")
-      ) {
+    const getChildProps = (child: unknown): Record<string, unknown> | null => {
+      if (child == null || typeof child !== "object" || !("props" in child)) {
+        return null;
+      }
+      const candidate = (child as AccordionChild).props;
+      return candidate && typeof candidate === "object" ? candidate : null;
+    };
+
+    return arr.map((child) => {
+      const childProps = getChildProps(child);
+      if (!childProps) {
+        return child;
+      }
+      const childElement = child as unknown as Record<string, unknown> &
+        AccordionChild;
+
+      const collapsePart =
+        childProps["data-collapse-part"] === TITLE_PART ||
+        childProps["data-collapse-part"] === CONTENT_PART
+          ? (childProps["data-collapse-part"] as string)
+          : null;
+
+      if (collapsePart === TITLE_PART) {
+        const originalOnClick =
+          childProps.onClick && typeof childProps.onClick === "function"
+            ? childProps.onClick
+            : undefined;
+        const originalOnKeyDown =
+          childProps.onKeyDown && typeof childProps.onKeyDown === "function"
+            ? childProps.onKeyDown
+            : undefined;
+
         return {
-          ...child,
+          ...childElement,
           props: {
-            ...child.props,
+            ...childProps,
             id: titleId,
             role: "button",
             tabIndex: 0,
             "aria-expanded": expanded(),
             "aria-controls": contentId,
-            onClick: handleToggle,
+            onClick: (e: MouseEvent) => {
+              handleToggle();
+              if (originalOnClick) {
+                originalOnClick(e);
+              }
+            },
             onKeyDown: (e: KeyboardEvent) => {
               if (e.key === "Enter" || e.key === " ") {
                 e.preventDefault();
                 handleToggle();
               }
-              const origOnKeyDown =
-                child.props &&
-                (child.props as { onKeyDown?: (e: KeyboardEvent) => void })
-                  .onKeyDown;
-              if (typeof origOnKeyDown === "function") {
-                origOnKeyDown(e);
+              if (originalOnKeyDown) {
+                originalOnKeyDown(e);
               }
             },
           },
-        };
+        } as any;
       }
 
-      if (
-        child.props &&
-        typeof child.props === "object" &&
-        "class" in child.props &&
-        typeof child.props.class === "string" &&
-        child.props.class.includes("collapse-content")
-      ) {
+      if (collapsePart === CONTENT_PART) {
         return {
-          ...child,
+          ...childElement,
           props: {
-            ...child.props,
+            ...childProps,
             id: contentId,
           },
-        };
+        } as any;
       }
 
       return child;
@@ -225,7 +248,7 @@ const Accordion = (props: AccordionProps): JSX.Element => {
           {...others}
         />
       )}
-      {childrenWithAria()}
+      {childrenWithAria() as any}
     </div>
   );
 };

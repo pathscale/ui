@@ -62,6 +62,10 @@ Move styling ownership into `@pathscale/ui` so app repos can remove app-level Da
     - reduced direct dropdown primitive class assumptions:
       - `Calendar` input mode now uses explicit popover layout (`relative` anchor + `absolute` panel) instead of Daisy `dropdown` / `dropdown-content` class coupling
       - `DropdownMenu` now composes shared `Menu` component and no longer hardcodes `menu` class in its class string
+    - completed step 1/2 coupling cleanup in remaining components:
+      - `Dropdown` item fallback path now renders through shared `DropdownMenu` (no hardcoded `class="dropdown-content"` usage in component JSX)
+      - `Accordion` no longer inspects child class strings; it now uses explicit `data-collapse-part` markers provided by `CollapseTitle` / `CollapseContent`
+      - `Modal` outside-click logic now targets `data-modal-backdrop` selector instead of class-coupled `.modal-backdrop`
   - remove remaining Daisy class assumptions in TSX render paths
   - tighten visual parity with current production usage
   - remove app-level Daisy plugin from nofilter after parity verification

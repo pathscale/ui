@@ -15,6 +15,8 @@ import ModalBody from "./ModalBody";
 import ModalHeader from "./ModalHeader";
 import ModalLegacy from "./ModalLegacy";
 
+const MODAL_BACKDROP_SELECTOR = "[data-modal-backdrop='true']";
+
 export type ModalProps = IComponentBaseProps &
   JSX.HTMLAttributes<HTMLDialogElement> & {
     open?: boolean;
@@ -85,7 +87,7 @@ export function Modal(props: ModalProps): JSX.Element {
 
       if (!dialogRef) return;
 
-      if (target === dialogRef || target.closest(".modal-backdrop")) {
+      if (target === dialogRef || target.closest(MODAL_BACKDROP_SELECTOR)) {
         local.onClose?.();
       }
     };
@@ -158,6 +160,7 @@ export function Modal(props: ModalProps): JSX.Element {
         <form
           method="dialog"
           class="modal-backdrop"
+          data-modal-backdrop="true"
         >
           <button
             type="submit"

@@ -5,6 +5,7 @@ import {
   splitProps,
   createMemo,
   createContext,
+  createUniqueId,
 } from "solid-js";
 import { twMerge } from "tailwind-merge";
 import type { IComponentBaseProps } from "../types";
@@ -93,6 +94,8 @@ const Dropdown = (props: DropdownProps): JSX.Element => {
   ]);
 
   const dropdownCtx = useDropdown(local.hover ? "hover" : "click");
+  const fallbackToggleId = `dropdown-toggle-${createUniqueId()}`;
+  const fallbackMenuId = `dropdown-menu-${createUniqueId()}`;
 
   const classes = createMemo(() => {
     const isOpen = local.open ?? dropdownCtx.open();
@@ -142,13 +145,20 @@ const Dropdown = (props: DropdownProps): JSX.Element => {
           when={local.item}
           fallback={<>{local.children}</>}
         >
-          <label tabIndex={0}>{local.children}</label>
-          <ul
-            class="dropdown-content"
+          <label
+            id={fallbackToggleId}
+            tabIndex={0}
+          >
+            {local.children}
+          </label>
+          <DropdownMenu
+            id={fallbackMenuId}
+            aria-labelledby={fallbackToggleId}
             role="listbox"
+            hideOverflow={false}
           >
             {local.item}
-          </ul>
+          </DropdownMenu>
         </Show>
       </div>
     </DropdownContext.Provider>
