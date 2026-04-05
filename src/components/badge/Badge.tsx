@@ -68,7 +68,7 @@ const Badge = (props: BadgeProps): JSX.Element => {
         "badge-success": local.color === "success",
         "badge-warning": local.color === "warning",
         "badge-error": local.color === "error",
-        "badge-xs md:badge-sm lg:badge-md xl:badge-lg": local.responsive,
+        "badge-responsive": local.responsive,
       }),
     );
 

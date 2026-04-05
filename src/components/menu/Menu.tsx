@@ -43,7 +43,7 @@ const Menu = (props: MenuProps): JSX.Element => {
       local.class,
       local.className,
       clsx({
-        "menu-vertical lg:menu-horizontal": local.responsive,
+        "menu-responsive": local.responsive,
         "menu-xl": local.size === "xl",
         "menu-lg": local.size === "lg",
         "menu-md": local.size === "md",
