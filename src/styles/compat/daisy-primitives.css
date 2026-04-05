@@ -310,6 +310,20 @@
     border-radius: 0 0 var(--radius-field, 0.5rem) var(--radius-field, 0.5rem);
   }
 
+  .label {
+    align-items: center;
+    display: flex;
+    gap: 0.5rem;
+    padding: 0.5rem 0.25rem;
+    width: 100%;
+  }
+
+  .label-text {
+    color: color-mix(in oklch, var(--color-base-content) 88%, transparent);
+    font-size: 0.875rem;
+    line-height: 1.25rem;
+  }
+
   .input,
   .select,
   .textarea,
