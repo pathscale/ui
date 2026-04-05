@@ -10,9 +10,11 @@ export default function CollapseContent(
   props: CollapseContentProps,
 ): JSX.Element {
   const classes = twMerge("collapse-content", props.class);
+
   return (
     <div
       {...props}
+      data-collapse-part="content"
       class={classes}
     />
   );
