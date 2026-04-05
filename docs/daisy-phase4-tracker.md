@@ -50,6 +50,9 @@ Move styling ownership into `@pathscale/ui` so app repos can remove app-level Da
       - `LiveChatPanel`: `hover:bg-primary-focus` -> `hover:bg-primary/90`
     - added compat utility aliases for transition safety:
       - `rounded-box`, `rounded-field`, `rounded-btn`, `bg-primary-focus`
+    - added missing Phase D compat state classes used by components:
+      - button: `btn-active`, `btn-soft`, `btn-dash`
+      - menu: `menu-focus`, `menu-dropdown-toggle`, `menu-dropdown-show`
   - remove remaining Daisy class assumptions in TSX render paths
   - tighten visual parity with current production usage
   - remove app-level Daisy plugin from nofilter after parity verification

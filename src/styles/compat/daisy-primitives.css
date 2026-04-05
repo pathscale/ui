@@ -4,6 +4,7 @@
     --btn-color: var(--color-base-content);
     --btn-fg: var(--btn-color);
     --btn-border: var(--color-base-300);
+    --btn-tone: var(--color-base-content);
     --btn-hover-bg: var(--color-base-300);
     --btn-hover-color: var(--btn-color);
     --btn-hover-border: color-mix(in oklch, var(--color-base-content) 18%, var(--color-base-200));
@@ -76,6 +77,7 @@
   .btn.btn-link {
     --btn-bg: transparent;
     --btn-border: transparent;
+    --btn-tone: var(--color-primary);
     color: var(--color-primary);
     min-height: 0;
     padding: 0;
@@ -83,9 +85,41 @@
     text-underline-offset: 0.2em;
   }
 
+  .btn.btn-soft {
+    --btn-bg: color-mix(in oklch, var(--btn-tone) 16%, var(--color-base-100));
+    --btn-border: color-mix(in oklch, var(--btn-tone) 34%, transparent);
+    --btn-color: color-mix(in oklch, var(--btn-tone) 72%, var(--color-base-content));
+    --btn-hover-bg: color-mix(in oklch, var(--btn-tone) 24%, var(--color-base-100));
+    --btn-hover-border: color-mix(in oklch, var(--btn-tone) 45%, transparent);
+    --btn-hover-color: color-mix(in oklch, var(--btn-tone) 82%, var(--color-base-content));
+  }
+
+  .btn.btn-dash {
+    --btn-bg: transparent;
+    --btn-border: color-mix(in oklch, var(--btn-tone) 55%, transparent);
+    --btn-color: color-mix(in oklch, var(--btn-tone) 82%, var(--color-base-content));
+    --btn-hover-bg: color-mix(in oklch, var(--btn-tone) 12%, transparent);
+    --btn-hover-border: color-mix(in oklch, var(--btn-tone) 82%, transparent);
+    --btn-hover-color: color-mix(in oklch, var(--btn-tone) 92%, var(--color-base-content));
+    border-style: dashed;
+  }
+
+  .btn.btn-dash:hover {
+    border-style: dashed;
+  }
+
+  .btn.btn-active,
+  .btn.btn:active:not(:disabled):not(.btn-disabled) {
+    --btn-bg: var(--btn-hover-bg);
+    --btn-color: var(--btn-hover-color);
+    --btn-fg: var(--btn-hover-color);
+    --btn-border: var(--btn-hover-border);
+  }
+
   .btn.btn-primary {
     --btn-bg: var(--color-primary);
     --btn-border: var(--color-primary);
+    --btn-tone: var(--color-primary);
     --btn-color: var(--color-primary-content);
     --btn-hover-bg: color-mix(in oklch, var(--color-primary) 85%, black);
     --btn-hover-border: color-mix(in oklch, var(--color-primary) 85%, black);
@@ -95,6 +129,7 @@
   .btn.btn-secondary {
     --btn-bg: var(--color-secondary);
     --btn-border: var(--color-secondary);
+    --btn-tone: var(--color-secondary);
     --btn-color: var(--color-secondary-content);
     --btn-hover-bg: color-mix(in oklch, var(--color-secondary) 85%, black);
     --btn-hover-border: color-mix(in oklch, var(--color-secondary) 85%, black);
@@ -104,6 +139,7 @@
   .btn.btn-accent {
     --btn-bg: var(--color-accent);
     --btn-border: var(--color-accent);
+    --btn-tone: var(--color-accent);
     --btn-color: var(--color-accent-content);
     --btn-hover-bg: color-mix(in oklch, var(--color-accent) 85%, black);
     --btn-hover-border: color-mix(in oklch, var(--color-accent) 85%, black);
@@ -113,6 +149,7 @@
   .btn.btn-neutral {
     --btn-bg: var(--color-neutral);
     --btn-border: var(--color-neutral);
+    --btn-tone: var(--color-neutral);
     --btn-color: var(--color-neutral-content);
     --btn-hover-bg: color-mix(in oklch, var(--color-neutral) 85%, black);
     --btn-hover-border: color-mix(in oklch, var(--color-neutral) 85%, black);
@@ -122,6 +159,7 @@
   .btn.btn-info {
     --btn-bg: var(--color-info);
     --btn-border: var(--color-info);
+    --btn-tone: var(--color-info);
     --btn-color: var(--color-info-content);
     --btn-hover-bg: color-mix(in oklch, var(--color-info) 85%, black);
     --btn-hover-border: color-mix(in oklch, var(--color-info) 85%, black);
@@ -131,6 +169,7 @@
   .btn.btn-success {
     --btn-bg: var(--color-success);
     --btn-border: var(--color-success);
+    --btn-tone: var(--color-success);
     --btn-color: var(--color-success-content);
     --btn-hover-bg: color-mix(in oklch, var(--color-success) 85%, black);
     --btn-hover-border: color-mix(in oklch, var(--color-success) 85%, black);
@@ -140,6 +179,7 @@
   .btn.btn-warning {
     --btn-bg: var(--color-warning);
     --btn-border: var(--color-warning);
+    --btn-tone: var(--color-warning);
     --btn-color: var(--color-warning-content);
     --btn-hover-bg: color-mix(in oklch, var(--color-warning) 85%, black);
     --btn-hover-border: color-mix(in oklch, var(--color-warning) 85%, black);
@@ -149,6 +189,7 @@
   .btn.btn-error {
     --btn-bg: var(--color-error);
     --btn-border: var(--color-error);
+    --btn-tone: var(--color-error);
     --btn-color: var(--color-error-content);
     --btn-hover-bg: color-mix(in oklch, var(--color-error) 85%, black);
     --btn-hover-border: color-mix(in oklch, var(--color-error) 85%, black);
@@ -929,18 +970,61 @@
     background: color-mix(in oklch, var(--color-base-content) 10%, transparent);
   }
 
+  .menu :where(li.menu-focus > *),
+  .menu :where(li > *.menu-focus),
+  .menu :where(li > *:focus-visible) {
+    background: color-mix(in oklch, var(--color-base-content) 12%, transparent);
+  }
+
   .menu :where(li > *.menu-active),
+  .menu :where(li.menu-active > *),
   .menu :where(li > *.active) {
     background: color-mix(in oklch, var(--color-primary) 85%, var(--color-base-100));
     color: var(--color-primary-content);
   }
 
   .menu :where(li > *.menu-disabled),
+  .menu :where(li.menu-disabled > *),
   .menu :where(li > *:disabled),
   .menu :where(li[aria-disabled="true"] > *) {
     cursor: not-allowed;
     opacity: 0.5;
     pointer-events: none;
+  }
+
+  .menu :where(.menu-dropdown-toggle) {
+    cursor: pointer;
+    user-select: none;
+  }
+
+  .menu :where(.menu-dropdown-toggle)::after {
+    border-bottom: 1.5px solid currentColor;
+    border-right: 1.5px solid currentColor;
+    content: "";
+    display: inline-block;
+    height: 0.45rem;
+    margin-left: auto;
+    transform: rotate(45deg);
+    transition: transform 0.15s ease;
+    width: 0.45rem;
+  }
+
+  .menu :where(.menu-dropdown-toggle.menu-dropdown-show)::after {
+    transform: rotate(225deg);
+  }
+
+  .menu :where(.menu-dropdown) {
+    border-left: 1px solid color-mix(in oklch, var(--color-base-content) 18%, transparent);
+    display: none;
+    flex-direction: column;
+    gap: 0.125rem;
+    margin: 0.25rem 0 0.25rem 0.75rem;
+    padding: 0.125rem 0 0.125rem 0.5rem;
+  }
+
+  .menu :where(.menu-dropdown.menu-dropdown-show),
+  .menu :where(.menu-dropdown-toggle.menu-dropdown-show + .menu-dropdown) {
+    display: flex;
   }
 
   .menu.menu-vertical {
