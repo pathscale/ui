@@ -3,13 +3,22 @@ import {
   createEffect,
   createMemo,
   createSignal,
+  For,
   onCleanup,
   onMount,
   Show,
 } from "solid-js";
 import {
+  Alert,
+  Badge,
+  Breadcrumbs,
+  BreadcrumbsItem,
   Button,
+  Card,
   Checkbox,
+  Collapse,
+  CollapseContent,
+  CollapseTitle,
   Drawer,
   Dropdown,
   EnhancedTable,
@@ -19,11 +28,13 @@ import {
   LiveChatBubble,
   LiveChatPanel,
   Modal,
+  Navbar,
   Radio,
   Range,
   Select,
   Tabs,
   Textarea,
+  Tooltip,
   type ChatMessage,
   type SendMessagePayload,
   type SendMessageResponse,
@@ -86,7 +97,7 @@ const createChatMessages = (prefix: string, count = 24): ChatMessage[] =>
   }));
 
 export default function App() {
-  const [demoView, setDemoView] = createSignal<"table" | "chat" | "glass" | "groupA" | "groupB">("table");
+  const [demoView, setDemoView] = createSignal<"table" | "chat" | "glass" | "groupA" | "groupB" | "groupC">("table");
   const [datasetMode, setDatasetMode] = createSignal<"large" | "small">("large");
   const [pagination, setPagination] = createSignal<PaginationState>({
     pageIndex: 0,
@@ -128,6 +139,18 @@ export default function App() {
   const [checkboxValue, setCheckboxValue] = createSignal(true);
   const [radioValue, setRadioValue] = createSignal<"one" | "two">("one");
   const [rangeValue, setRangeValue] = createSignal(35);
+  const semanticBadgeColors = [
+    "neutral",
+    "primary",
+    "secondary",
+    "accent",
+    "info",
+    "success",
+    "warning",
+    "error",
+    "ghost",
+  ] as const;
+  const semanticAlertStatuses = ["info", "success", "warning", "error"] as const;
 
   let tableHostRef: HTMLDivElement | undefined;
   let panelOutgoingCount = 0;
@@ -289,10 +312,12 @@ export default function App() {
               ? "EnhancedTable Vertical Scroll Containment Test"
               : demoView() === "chat"
                 ? "LiveChat Auto-Scroll Test Section"
-                : demoView() === "groupA"
+              : demoView() === "groupA"
                   ? "Group A Overlay Primitives Interaction Test"
                   : demoView() === "groupB"
                     ? "Group B Form Primitives Compatibility Test"
+                    : demoView() === "groupC"
+                      ? "Group C Semantic Primitives Compatibility Test"
                   : "GlassPanel Showcase"}
           </h1>
           <div class="flex items-center gap-2">
@@ -330,6 +355,13 @@ export default function App() {
               onClick={() => setDemoView("groupB")}
             >
               Form Primitives
+            </Button>
+            <Button
+              size="xs"
+              color={demoView() === "groupC" ? "primary" : "ghost"}
+              onClick={() => setDemoView("groupC")}
+            >
+              Semantic Primitives
             </Button>
           </div>
         </div>
@@ -864,6 +896,123 @@ export default function App() {
             </section>
           </Show>
 
+          <Show when={demoView() === "groupC"}>
+            <section class="rounded-box border border-base-300 bg-base-100 p-4 shadow-sm">
+              <p class="text-sm opacity-80">
+                Group C baseline: validate semantic primitives while Daisy classes are provided by
+                `@pathscale/ui` compat styles.
+              </p>
+            </section>
+
+            <section class="flex-1 min-h-0 overflow-auto rounded-box border border-base-300 bg-base-100 p-4 shadow-sm">
+              <div class="grid gap-4 lg:grid-cols-2">
+                <div class="space-y-4">
+                  <h2 class="text-sm font-semibold">Badge + Alert + Tooltip</h2>
+
+                  <div class="space-y-3 rounded-box border border-base-300 bg-base-200 p-3">
+                    <div class="flex flex-wrap gap-2">
+                      <For each={semanticBadgeColors}>
+                        {(color) => (
+                          <Badge color={color} size="sm">
+                            {color}
+                          </Badge>
+                        )}
+                      </For>
+                    </div>
+                    <div class="flex flex-wrap gap-2">
+                      <Badge color="primary" variant="soft">soft</Badge>
+                      <Badge color="primary" variant="outline">outline</Badge>
+                      <Badge color="primary" variant="dash">dash</Badge>
+                      <Badge color="secondary" responsive>
+                        responsive
+                      </Badge>
+                    </div>
+                  </div>
+
+                  <div class="space-y-2 rounded-box border border-base-300 bg-base-200 p-3">
+                    <For each={semanticAlertStatuses}>
+                      {(status) => (
+                        <Alert status={status}>
+                          <span class="font-medium uppercase">{status}</span>
+                          <span>Alert baseline check.</span>
+                        </Alert>
+                      )}
+                    </For>
+                    <Alert status="info" variant="soft">
+                      <span>Soft alert variant</span>
+                    </Alert>
+                    <Alert status="warning" variant="outline">
+                      <span>Outline alert variant</span>
+                    </Alert>
+                  </div>
+
+                  <div class="flex flex-wrap items-center gap-4 rounded-box border border-base-300 bg-base-200 p-3">
+                    <Tooltip message="Top tooltip" position="top">
+                      <Button size="sm" color="ghost">Top</Button>
+                    </Tooltip>
+                    <Tooltip message="Right tooltip" position="right" color="primary">
+                      <Button size="sm" color="ghost">Right</Button>
+                    </Tooltip>
+                    <Tooltip message="Open tooltip" open color="info">
+                      <Button size="sm" color="ghost">Always open</Button>
+                    </Tooltip>
+                  </div>
+                </div>
+
+                <div class="space-y-4">
+                  <h2 class="text-sm font-semibold">Card + Collapse + Breadcrumbs + Navbar</h2>
+
+                  <Card border class="bg-base-100 shadow-sm">
+                    <figure class="h-24 bg-gradient-to-r from-primary/20 via-secondary/20 to-accent/20" />
+                    <Card.Body>
+                      <Card.Title>Card Primitive</Card.Title>
+                      <p>Default card body with border and actions.</p>
+                      <Card.Actions class="justify-end">
+                        <Button size="sm" color="ghost">Cancel</Button>
+                        <Button size="sm" color="primary">Apply</Button>
+                      </Card.Actions>
+                    </Card.Body>
+                  </Card>
+
+                  <div class="space-y-2 rounded-box border border-base-300 bg-base-200 p-3">
+                    <Collapse checkbox icon="arrow" class="rounded-box border border-base-300 bg-base-100">
+                      <CollapseTitle>Arrow collapse</CollapseTitle>
+                      <CollapseContent>
+                        <p class="text-sm">Expandable content with checkbox control.</p>
+                      </CollapseContent>
+                    </Collapse>
+                    <Collapse checkbox icon="plus" class="rounded-box border border-base-300 bg-base-100">
+                      <CollapseTitle>Plus collapse</CollapseTitle>
+                      <CollapseContent>
+                        <p class="text-sm">Second variant for icon parity.</p>
+                      </CollapseContent>
+                    </Collapse>
+                  </div>
+
+                  <Breadcrumbs class="rounded-box border border-base-300 bg-base-200 px-3">
+                    <BreadcrumbsItem href="#">Studio</BreadcrumbsItem>
+                    <BreadcrumbsItem href="#">Session</BreadcrumbsItem>
+                    <BreadcrumbsItem>Settings</BreadcrumbsItem>
+                  </Breadcrumbs>
+
+                  <div class="rounded-box border border-base-300 bg-base-200 p-2">
+                    <Navbar class="rounded-box bg-base-100">
+                      <Navbar.Start>
+                        <Button size="sm" color="ghost">Brand</Button>
+                      </Navbar.Start>
+                      <Navbar.Center>
+                        <Badge color="primary" size="sm">live</Badge>
+                      </Navbar.Center>
+                      <Navbar.End>
+                        <Button size="sm" color="ghost">Menu</Button>
+                      </Navbar.End>
+                    </Navbar>
+                  </div>
+                </div>
+              </div>
+            </section>
+          </Show>
+
           <Show
             when={demoView() === "table"}
             fallback={
@@ -1036,6 +1185,8 @@ export default function App() {
                 ? "Overlay primitives mode: validate modal/drawer/dropdown/tabs interactions and event log."
                 : demoView() === "groupB"
                   ? "Form primitives mode: validate input/select/textarea/file-input/checkbox/radio/range states."
+                  : demoView() === "groupC"
+                    ? "Semantic primitives mode: validate badge/alert/card/tooltip/collapse/breadcrumbs/navbar parity."
                 : "GlassPanel mode: visual showcase for blur, accents, and collapsible variants."}
         </div>
       </footer>

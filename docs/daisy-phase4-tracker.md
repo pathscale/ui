@@ -14,6 +14,8 @@ Move styling ownership into `@pathscale/ui` so app repos can remove app-level Da
   - `table` (+ zebra/hover)
   - `toggle` (+ sizes/colors)
   - Group A baseline classes: `modal`, `drawer`, `dropdown`, `tabs`
+  - Group B baseline + parity pass: `input`, `select`, `textarea`, `file-input`, `checkbox`, `radio`, `range`
+  - Group C baseline classes (start): `badge`, `alert`, `card`, `tooltip`, `collapse`, `breadcrumbs`, `navbar`
 - Updated CSS packaging contract:
   - `scripts/copy-css.js` now copies all `src/styles/**/*.css` into `dist/styles/**`
 - Documented CSS usage in README.
@@ -23,11 +25,12 @@ Move styling ownership into `@pathscale/ui` so app repos can remove app-level Da
   - baseline compatibility styles are implemented
   - pending parity pass against all modal/drawer/dropdown/tabs variants used by app consumers
 - Group B (form primitives):
-  - baseline compatibility styles implemented for:
-    - `input`, `select`, `textarea`, `file-input`, `checkbox`, `radio`, `range`
-  - pending parity pass against app usage (sizes, color variants, disabled, hover/focus)
+  - complete in this branch:
+    - parity pass for `input`, `select`, `textarea`, `file-input`, `checkbox`, `radio`, `range`
 - Group C (semantic UI primitives):
-  - `badge`, `alert`, `card`, `tooltip`, `collapse`, `breadcrumbs`, `navbar`
+  - baseline compatibility styles implemented for:
+    - `badge`, `alert`, `card`, `tooltip`, `collapse`, `breadcrumbs`, `navbar`
+  - pending parity pass against app usage (sizes, variants, open/interactive states)
 - Group D (cleanup and parity):
   - remove remaining Daisy class assumptions in TSX render paths
   - tighten visual parity with current production usage

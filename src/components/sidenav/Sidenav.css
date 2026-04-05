@@ -33,7 +33,33 @@
 }
 
 .sidenav-close {
-  @apply btn btn-ghost btn-sm p-1 hover:bg-base-300;
+  align-items: center;
+  background: transparent;
+  border: 1px solid transparent;
+  border-radius: var(--radius-field, 0.5rem);
+  color: var(--color-base-content);
+  cursor: pointer;
+  display: inline-flex;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  justify-content: center;
+  min-height: 2rem;
+  padding: 0.25rem;
+  transition: background-color 0.15s ease, border-color 0.15s ease, color 0.15s ease;
+}
+
+.sidenav-close:hover {
+  background-color: var(--color-base-300);
+}
+
+.sidenav-close:focus-visible {
+  outline: 2px solid color-mix(in oklch, var(--color-primary) 55%, transparent);
+  outline-offset: 2px;
+}
+
+.sidenav-close:disabled {
+  cursor: not-allowed;
+  opacity: 0.45;
 }
 
 .sidenav-content {
