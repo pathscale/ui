@@ -25,14 +25,6 @@ export type DropdownSelectProps = IComponentBaseProps & {
   optionRenderer?: (option: DropdownSelectOption, selected: boolean, highlighted: boolean) => JSX.Element;
 };
 
-const sizeClasses: Record<ComponentSize, string> = {
-  xs: "btn-xs text-xs",
-  sm: "btn-sm text-sm",
-  md: "btn-md text-base",
-  lg: "btn-lg text-lg",
-  xl: "btn-xl text-xl",
-};
-
 /** Inner component that has access to the Dropdown context for open/close control. */
 const DropdownSelectInner = (props: {
   options: DropdownSelectOption[];
@@ -190,11 +182,10 @@ const DropdownSelectInner = (props: {
   return (
     <>
       <Dropdown.Toggle
-        class={twMerge(
-          "btn gap-2 justify-between",
-          sizeClasses[props.size],
-          clsx({ "btn-disabled": props.disabled }),
-        )}
+        button
+        size={props.size}
+        disabled={props.disabled}
+        class="gap-2 justify-between"
         aria-haspopup="listbox"
         aria-expanded={isOpen()}
         aria-controls={listboxId}

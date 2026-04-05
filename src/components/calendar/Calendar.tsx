@@ -154,7 +154,7 @@ const Calendar = (props: CalendarProps): JSX.Element => {
 
   const dropdownClasses = () =>
     twMerge(
-      "dropdown-content bg-base-100 rounded-box shadow-lg z-50 p-2",
+      "absolute left-0 top-full mt-1 bg-base-100 rounded-box shadow-lg z-50 p-2",
       "w-auto",
       clsx({
         "w-80": local.size === "lg",
@@ -199,7 +199,7 @@ const Calendar = (props: CalendarProps): JSX.Element => {
       <div
         data-theme={local.dataTheme}
         style={local.style}
-        class="dropdown"
+        class="relative inline-block"
       >
         <button
           ref={inputRef}

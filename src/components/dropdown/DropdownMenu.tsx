@@ -2,6 +2,7 @@ import { type JSX, splitProps, createMemo } from "solid-js";
 import { twMerge } from "tailwind-merge";
 import type { IComponentBaseProps } from "../types";
 import clsx from "clsx";
+import { Menu } from "../menu";
 
 export type DropdownMenuProps = JSX.HTMLAttributes<HTMLUListElement> &
   IComponentBaseProps & {
@@ -29,7 +30,7 @@ const DropdownMenu = (props: DropdownMenuProps): JSX.Element => {
 
   const classes = createMemo(() =>
     twMerge(
-      "dropdown-content menu p-2 shadow bg-base-100 overflow-y-auto flex-nowrap w-full rounded-box",
+      "dropdown-content p-2 shadow bg-base-100 overflow-y-auto flex-nowrap w-full rounded-box",
       clsx({
         "max-h-50": hideOverflowMemo(),
       }),
@@ -39,12 +40,12 @@ const DropdownMenu = (props: DropdownMenuProps): JSX.Element => {
   );
 
   return (
-    <ul
+    <Menu
       {...others}
       id={local.id}
       aria-labelledby={local["aria-labelledby"]}
-      tabindex={0}
-      data-theme={local.dataTheme}
+      tabIndex={0}
+      dataTheme={local.dataTheme}
       class={classes()}
       style={local.style}
       role={local.role ?? "menu"}

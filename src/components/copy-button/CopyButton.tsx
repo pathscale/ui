@@ -1,6 +1,7 @@
 import { createSignal, splitProps, type Component, type JSX } from "solid-js";
 import { twMerge } from "tailwind-merge";
 import { Show } from "solid-js";
+import Button from "../button";
 
 import type { IComponentBaseProps } from "../types";
 
@@ -45,13 +46,14 @@ const CopyButton: Component<CopyButtonProps> = (props) => {
   };
 
   return (
-    <button
+    <Button
       type="button"
+      size="sm"
+      color="ghost"
       onClick={copy}
       title={local.title || "Copy to clipboard"}
       data-theme={local.dataTheme}
       class={twMerge(
-        "btn btn-sm btn-ghost",
         copied() ? "text-success" : "",
         local.class,
         local.className,
@@ -60,7 +62,7 @@ const CopyButton: Component<CopyButtonProps> = (props) => {
     >
       <Show when={!copied()}>{getContent()}</Show>
       <Show when={copied()}>{getCopiedContent()}</Show>
-    </button>
+    </Button>
   );
 };
 

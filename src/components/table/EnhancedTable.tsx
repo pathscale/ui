@@ -32,6 +32,7 @@ import Button from "../button/Button";
 import Input from "../input/Input";
 import Dropdown from "../dropdown/Dropdown";
 import Loading from "../loading/Loading";
+import Menu from "../menu/Menu";
 
 export type EnhancedTableProps<TData> = Omit<TableProps, "children"> & {
   data: TData[];
@@ -122,7 +123,7 @@ function EnhancedTable<TData>(props: EnhancedTableProps<TData>): JSX.Element {
 
   const pageSizeOptions = [10, 25, 50, 100] as const;
   let pageSizeToggleRef: HTMLButtonElement | undefined;
-  let pageSizeMenuRef: HTMLDivElement | undefined;
+  let pageSizeMenuRef: HTMLUListElement | undefined;
 
   const table = createSolidTable({
     get data() {
@@ -607,23 +608,23 @@ function EnhancedTable<TData>(props: EnhancedTableProps<TData>): JSX.Element {
       </div>
       <Show when={pageSizeMenuOpen()}>
         <Portal mount={ensurePortalRoot()}>
-          <div
+          <Menu
             ref={(el) => {
               pageSizeMenuRef = el;
             }}
             style={pageSizeMenuStyle()}
-            class="menu p-2 shadow bg-base-100 rounded-box border border-base-300 w-24"
+            class="p-2 shadow bg-base-100 rounded-box border border-base-300 w-24"
             role="menu"
             aria-label="Rows per page"
           >
             <For each={pageSizeOptions}>
               {(size) => (
-                <button
+                <Button
                   type="button"
-                  class={clsx(
-                    "btn btn-sm btn-ghost justify-start",
-                    table.getState().pagination.pageSize === size && "btn-active",
-                  )}
+                  size="sm"
+                  color="ghost"
+                  class="justify-start"
+                  active={table.getState().pagination.pageSize === size}
                   aria-pressed={table.getState().pagination.pageSize === size}
                   onClick={() => {
                     table.setPageSize(size);
@@ -631,10 +632,10 @@ function EnhancedTable<TData>(props: EnhancedTableProps<TData>): JSX.Element {
                   }}
                 >
                   {size}
-                </button>
+                </Button>
               )}
             </For>
-          </div>
+          </Menu>
         </Portal>
       </Show>
     </>

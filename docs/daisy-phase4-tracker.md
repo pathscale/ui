@@ -53,6 +53,15 @@ Move styling ownership into `@pathscale/ui` so app repos can remove app-level Da
     - added missing Phase D compat state classes used by components:
       - button: `btn-active`, `btn-soft`, `btn-dash`
       - menu: `menu-focus`, `menu-dropdown-toggle`, `menu-dropdown-show`
+    - removed hardcoded `btn-*` render-path assumptions in internal TSX usage:
+      - `DropdownSelect`: now uses `Dropdown.Toggle` button mode with semantic `size`/`disabled` props
+      - `EnhancedTable` page-size menu: now uses `Button` props (`size`, `color`, `active`) instead of raw `btn` class strings
+    - continued TSX render-path cleanup:
+      - `CopyButton`: now renders via shared `Button` component (`size="sm"`, `color="ghost"`) instead of raw `btn btn-sm btn-ghost` class string
+      - `EnhancedTable` page-size popup container: now renders via shared `Menu` component instead of a raw `class="menu ..."` container
+    - reduced direct dropdown primitive class assumptions:
+      - `Calendar` input mode now uses explicit popover layout (`relative` anchor + `absolute` panel) instead of Daisy `dropdown` / `dropdown-content` class coupling
+      - `DropdownMenu` now composes shared `Menu` component and no longer hardcodes `menu` class in its class string
   - remove remaining Daisy class assumptions in TSX render paths
   - tighten visual parity with current production usage
   - remove app-level Daisy plugin from nofilter after parity verification
