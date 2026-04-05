@@ -16,6 +16,9 @@ Move styling ownership into `@pathscale/ui` so app repos can remove app-level Da
   - Group A baseline classes: `modal`, `drawer`, `dropdown`, `tabs`
   - Group B baseline + parity pass: `input`, `select`, `textarea`, `file-input`, `checkbox`, `radio`, `range`
   - Group C baseline classes (start): `badge`, `alert`, `card`, `tooltip`, `collapse`, `breadcrumbs`, `navbar`
+  - No-Daisy playground baseline:
+    - `playground/src/index.css` no longer imports `@plugin "daisyui"`
+    - `bun run playground:build` succeeds with compat styles only
 - Updated CSS packaging contract:
   - `scripts/copy-css.js` now copies all `src/styles/**/*.css` into `dist/styles/**`
 - Documented CSS usage in README.
@@ -30,8 +33,12 @@ Move styling ownership into `@pathscale/ui` so app repos can remove app-level Da
 - Group C (semantic UI primitives):
   - baseline compatibility styles implemented for:
     - `badge`, `alert`, `card`, `tooltip`, `collapse`, `breadcrumbs`, `navbar`
-  - pending parity pass against app usage (sizes, variants, open/interactive states)
+  - parity status in this branch:
+    - playground parity pass completed against baseline states/variants
+  - pending parity pass against full app usage (sizes, variants, open/interactive states)
 - Group D (cleanup and parity):
+  - started:
+    - removed Daisy-dependent `@apply btn ...` from `src/components/sidenav/Sidenav.css`
   - remove remaining Daisy class assumptions in TSX render paths
   - tighten visual parity with current production usage
   - remove app-level Daisy plugin from nofilter after parity verification
