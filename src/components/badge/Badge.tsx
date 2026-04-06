@@ -38,9 +38,9 @@ const BadgeAnchor = (props: BadgeAnchorProps) => {
 /* -------------------------------------------------------------------------------------------------
  * Badge Root
  * -----------------------------------------------------------------------------------------------*/
-type BadgeColor = "default" | "accent" | "success" | "warning" | "danger";
-type BadgeVariant = "primary" | "secondary" | "soft";
-type BadgeSize = "sm" | "md" | "lg";
+type BadgeColor = "default" | "accent" | "success" | "warning" | "danger" | "neutral" | "primary" | "secondary" | "info" | "error" | "ghost";
+type BadgeVariant = "primary" | "secondary" | "soft" | "outline" | "dash";
+type BadgeSize = "xs" | "sm" | "md" | "lg" | "xl";
 type BadgePlacement = "top-right" | "top-left" | "bottom-right" | "bottom-left";
 
 interface BadgeRootProps extends Omit<JSX.HTMLAttributes<HTMLSpanElement>, "color"> {
