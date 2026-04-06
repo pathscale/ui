@@ -1,3 +1,4 @@
+import "./carousel.css";
 import clsx from "clsx";
 import { splitProps, type JSX, type ParentProps, createMemo } from "solid-js";
 import { twMerge } from "tailwind-merge";

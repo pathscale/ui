@@ -1,3 +1,4 @@
+import "./collapse.css";
 import { type JSX, splitProps, createSignal } from "solid-js";
 import { twMerge } from "tailwind-merge";
 import { clsx } from "clsx";

@@ -1,0 +1,116 @@
+.link {
+  @layer daisyui.l1.l2.l3 {
+    @apply cursor-pointer underline;
+
+    &:focus {
+      @apply outline-hidden;
+    }
+
+    &:focus-visible {
+      outline: 2px solid currentColor;
+      outline-offset: 2px;
+    }
+  }
+}
+
+.link-hover {
+  @layer daisyui.l1.l2 {
+    @apply no-underline hover:underline;
+  }
+}
+
+.link-primary {
+  @layer daisyui.l1.l2 {
+    @apply text-primary;
+
+    @media (hover: hover) {
+      &:hover {
+        color: color-mix(in oklab, var(--color-primary) 80%, #000);
+      }
+    }
+  }
+}
+
+.link-secondary {
+  @layer daisyui.l1.l2 {
+    @apply text-secondary;
+
+    @media (hover: hover) {
+      &:hover {
+        color: color-mix(in oklab, var(--color-secondary) 80%, #000);
+      }
+    }
+  }
+}
+
+.link-accent {
+  @layer daisyui.l1.l2 {
+    @apply text-accent;
+
+    @media (hover: hover) {
+      &:hover {
+        color: color-mix(in oklab, var(--color-accent) 80%, #000);
+      }
+    }
+  }
+}
+
+.link-neutral {
+  @layer daisyui.l1.l2 {
+    @apply text-neutral;
+
+    @media (hover: hover) {
+      &:hover {
+        color: color-mix(in oklab, var(--color-neutral) 80%, #000);
+      }
+    }
+  }
+}
+
+.link-success {
+  @layer daisyui.l1.l2 {
+    @apply text-success;
+
+    @media (hover: hover) {
+      &:hover {
+        color: color-mix(in oklab, var(--color-success) 80%, #000);
+      }
+    }
+  }
+}
+
+.link-info {
+  @layer daisyui.l1.l2 {
+    @apply text-info;
+
+    @media (hover: hover) {
+      &:hover {
+        color: color-mix(in oklab, var(--color-info) 80%, #000);
+      }
+    }
+  }
+}
+
+.link-warning {
+  @layer daisyui.l1.l2 {
+    @apply text-warning;
+
+    @media (hover: hover) {
+      &:hover {
+        color: color-mix(in oklab, var(--color-warning) 80%, #000);
+      }
+    }
+  }
+}
+
+.link-error {
+  @layer daisyui.l1.l2 {
+    @apply text-error;
+
+    @media (hover: hover) {
+      &:hover {
+        color: color-mix(in oklab, var(--color-error) 80%, #000);
+      }
+    }
+  }
+}

@@ -1,4 +1,5 @@
 import "cally";
+import "./input.css";
 import { clsx } from "clsx";
 import { type JSX, createEffect, createSignal, createUniqueId, splitProps } from "solid-js";
 import { twMerge } from "tailwind-merge";

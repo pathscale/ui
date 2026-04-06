@@ -6,19 +6,17 @@ import { pluginIconify } from "rsbuild-plugin-iconify";
 export default defineConfig({
   source: {
     entry: {
-      index: ["./src/index.ts"],
-    },
-  },
-  tools: {
-    rspack: {
-      plugins: [],
+      index: ["./src/**/*.{ts,tsx}"],
     },
   },
   lib: [
     {
-      bundle: true,
-      dts: true,
+      bundle: false,
+      dts: {
+        bundle: false,
+      },
       format: "esm",
+      outBase: "./src",
       autoExternal: {
         dependencies: true,
         peerDependencies: true,
@@ -27,6 +25,23 @@ export default defineConfig({
   ],
   output: {
     target: "web",
+    copy: [
+      {
+        from: "**/*.css",
+        to: "styles",
+        context: "./src/styles",
+      },
+      {
+        from: "**/*.css",
+        to: "components",
+        context: "./src/components",
+      },
+      {
+        from: "index.css",
+        to: ".",
+        context: "./src",
+      },
+    ],
   },
   plugins: [
     pluginBabel({

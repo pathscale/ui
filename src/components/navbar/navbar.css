@@ -1,0 +1,36 @@
+.navbar {
+  @layer daisyui.l1.l2.l3 {
+    @apply flex w-full items-center;
+    padding: 0.5rem;
+    min-height: 4rem;
+  }
+}
+
+:where(.navbar) {
+  @layer daisyui.l1.l2 {
+    @apply relative;
+  }
+}
+
+.navbar-start {
+  @layer daisyui.l1.l2.l3 {
+    @apply inline-flex items-center;
+    width: 50%;
+    justify-content: flex-start;
+  }
+}
+
+.navbar-center {
+  @layer daisyui.l1.l2.l3 {
+    @apply inline-flex items-center;
+    @apply shrink-0;
+  }
+}
+
+.navbar-end {
+  @layer daisyui.l1.l2.l3 {
+    @apply inline-flex items-center;
+    width: 50%;
+    justify-content: flex-end;
+  }
+}

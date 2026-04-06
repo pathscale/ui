@@ -1,3 +1,4 @@
+import "./skeleton.css";
 import type { JSX } from "solid-js";
 import { splitProps, createMemo, children as resolveChildren } from "solid-js";
 import { twMerge } from "tailwind-merge";

@@ -1,3 +1,4 @@
+import "./alert.css";
 import { type JSX, type Component, splitProps, createMemo } from "solid-js";
 import { twMerge } from "tailwind-merge";
 import { clsx } from "clsx";

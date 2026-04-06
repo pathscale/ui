@@ -2,7 +2,17 @@ import { clsx } from "clsx";
 import { type JSX, createContext, splitProps, useContext } from "solid-js";
 import { twMerge } from "tailwind-merge";
 
+<<<<<<< HEAD
 import "./Badge.css";
+=======
+import "./badge.css";
+import type {
+  ComponentColor,
+  ComponentSize,
+  ComponentVariant,
+  IComponentBaseProps,
+} from "../types";
+>>>>>>> 47260b5 (feat: per-component CSS + bundleless mode)
 
 /* -------------------------------------------------------------------------------------------------
  * Badge Context

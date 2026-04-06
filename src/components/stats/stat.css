@@ -1,0 +1,73 @@
+.stats {
+  @layer daisyui.l1.l2.l3 {
+    @apply rounded-box relative inline-grid grid-flow-col overflow-x-auto;
+  }
+}
+
+.stat {
+  @layer daisyui.l1.l2.l3 {
+    @apply inline-grid w-full gap-x-4 px-6 py-4;
+    grid-template-columns: repeat(1, 1fr);
+
+    &:not(:last-child) {
+      border-inline-end: var(--border) dashed color-mix(in oklab, currentColor 10%, #0000);
+      border-block-end: none;
+    }
+  }
+}
+
+.stat-figure {
+  @layer daisyui.l1.l2.l3 {
+    @apply col-start-2 row-span-3 row-start-1 place-self-center justify-self-end;
+  }
+}
+
+.stat-title {
+  @layer daisyui.l1.l2.l3 {
+    @apply text-base-content/60 col-start-1 whitespace-nowrap;
+    font-size: 0.75rem;
+  }
+}
+
+.stat-value {
+  @layer daisyui.l1.l2.l3 {
+    @apply col-start-1 whitespace-nowrap;
+    font-size: 2rem;
+    font-weight: 800;
+  }
+}
+
+.stat-desc {
+  @layer daisyui.l1.l2.l3 {
+    @apply text-base-content/60 col-start-1 whitespace-nowrap;
+    font-size: 0.75rem;
+  }
+}
+
+.stat-actions {
+  @layer daisyui.l1.l2.l3 {
+    @apply col-start-1 whitespace-nowrap;
+  }
+}
+
+.stats-horizontal {
+  @layer daisyui.l1.l2 {
+    @apply grid-flow-col overflow-x-auto;
+
+    .stat:not(:last-child) {
+      border-inline-end: var(--border) dashed color-mix(in oklab, currentColor 10%, #0000);
+      border-block-end: none;
+    }
+  }
+}
+
+.stats-vertical {
+  @layer daisyui.l1.l2 {
+    @apply grid-flow-row overflow-y-auto;
+
+    .stat:not(:last-child) {
+      border-inline-end: none;
+      border-block-end: var(--border) dashed color-mix(in oklab, currentColor 10%, #0000);
+    }
+  }
+}

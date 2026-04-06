@@ -1,3 +1,4 @@
+import "./rating.css";
 import clsx from "clsx";
 import {
   createContext,

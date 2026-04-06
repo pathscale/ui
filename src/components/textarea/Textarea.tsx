@@ -1,3 +1,4 @@
+import "./textarea.css";
 import { splitProps, type JSX } from "solid-js";
 import { twMerge } from "tailwind-merge";
 import { clsx } from "clsx";

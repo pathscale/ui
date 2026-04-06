@@ -1,3 +1,4 @@
+import "./input.css";
 import { type JSX, Show, createMemo, createSignal, splitProps } from "solid-js";
 import { twMerge } from "tailwind-merge";
 import { clsx } from "clsx";

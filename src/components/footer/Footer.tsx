@@ -1,3 +1,4 @@
+import "./footer.css";
 import { type ParentComponent, splitProps } from "solid-js";
 import { twMerge } from "tailwind-merge";
 import clsx from "clsx";

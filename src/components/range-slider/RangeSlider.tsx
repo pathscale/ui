@@ -1,3 +1,4 @@
+import "./range.css";
 import { clsx } from "clsx";
 import { createUniqueId, Show, splitProps, type JSX } from "solid-js";
 import { twMerge } from "tailwind-merge";

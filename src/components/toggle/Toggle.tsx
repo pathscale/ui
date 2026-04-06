@@ -1,3 +1,4 @@
+import "./toggle.css";
 import { clsx } from "clsx";
 import { splitProps, type JSX } from "solid-js";
 import { twMerge } from "tailwind-merge";

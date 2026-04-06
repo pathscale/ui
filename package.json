@@ -22,6 +22,26 @@
   "main": "./dist/index.js",
   "module": "./dist/index.js",
   "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    },
+    "./components/*": {
+      "types": "./dist/components/*/index.d.ts",
+      "import": "./dist/components/*/index.js"
+    },
+    "./stores": {
+      "types": "./dist/stores/index.d.ts",
+      "import": "./dist/stores/index.js"
+    },
+    "./motion": {
+      "types": "./dist/motion/index.d.ts",
+      "import": "./dist/motion/index.js"
+    },
+    "./styles/*": "./dist/styles/*",
+    "./index.css": "./dist/index.css"
+  },
   "devDependencies": {
     "@biomejs/biome": "1.9.4",
     "@felte/solid": "^1.2.11",
@@ -47,8 +67,9 @@
     "cally": "^0.8.0",
     "clsx": "^2.1.1",
     "cssnano": "^7.0.7",
-    "postcss": "^8.5.4",
+    "postcss": "^8.5.8",
     "postcss-cli": "^11.0.1",
+    "postcss-selector-parser": "^7.1.1",
     "solid-js": "^1.9.7",
     "svgo": "^3.3.2",
     "tailwind-merge": "^3.3.0",
@@ -84,7 +105,7 @@
     }
   },
   "scripts": {
-    "build": "bun run scripts/check-contracts.ts && rslib build && bun scripts/copy-css.js",
+    "build": "bun run scripts/check-contracts.ts && rslib build",
     "build:watch": "rslib build --watch",
     "dev": "rslib dev",
     "preview": "rslib preview",
@@ -96,6 +117,6 @@
     "playground:build": "cd playground && bun run build",
     "playground:preview": "cd playground && bun run preview"
   },
-  "sideEffects": false,
+  "sideEffects": ["**/*.css"],
   "type": "module"
 }

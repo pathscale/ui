@@ -1,3 +1,4 @@
+import "./select.css";
 import { splitProps, type JSX, type Component, createMemo } from "solid-js";
 import { twMerge } from "tailwind-merge";
 import { clsx } from "clsx";

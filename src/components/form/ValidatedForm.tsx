@@ -10,7 +10,7 @@ import { createForm } from "@felte/solid";
 import { validator } from "@felte/validator-zod";
 import type { z } from "zod";
 import type { ObjectSetter, Paths } from "@felte/common";
-import Form, { type FormProps } from "./Form";
+import Form, { type FormProps } from "./FormBase";
 
 export type ValidatedFormProps<T extends z.ZodTypeAny> = Omit<
   FormProps,

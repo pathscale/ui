@@ -1,3 +1,4 @@
+import "./checkbox.css";
 import { clsx } from "clsx";
 import { createEffect, onMount, splitProps, type JSX } from "solid-js";
 import { twMerge } from "tailwind-merge";

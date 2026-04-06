@@ -1,3 +1,4 @@
+import "./range.css";
 import { splitProps, createMemo, type JSX, Show, For } from "solid-js";
 import clsx from "clsx";
 import { twMerge } from "tailwind-merge";

@@ -1,3 +1,4 @@
+import "./breadcrumbs.css";
 import { splitProps, type JSX, type Component } from "solid-js";
 import { twMerge } from "tailwind-merge";
 

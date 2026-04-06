@@ -1,3 +1,4 @@
+import "./drawer.css";
 import {
   type JSX,
   type ParentComponent,

@@ -1,3 +1,4 @@
+import "./table.css";
 import { type Component, splitProps, type JSX } from "solid-js";
 import clsx from "clsx";
 import { twMerge } from "tailwind-merge";

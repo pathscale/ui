@@ -1,3 +1,4 @@
+import "./countdown.css";
 import { createMemo, splitProps, type JSX } from "solid-js";
 import { twMerge } from "tailwind-merge";
 

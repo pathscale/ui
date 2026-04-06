@@ -1,3 +1,4 @@
+import "./kbd.css";
 import { type ComponentProps, splitProps } from "solid-js";
 import { twMerge } from "tailwind-merge";
 import { clsx } from "clsx";

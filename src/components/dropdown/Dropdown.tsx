@@ -1,10 +1,10 @@
+import "./dropdown.css";
 import { clsx } from "clsx";
 import {
   type JSX,
   Show,
   splitProps,
   createMemo,
-  createContext,
   createUniqueId,
 } from "solid-js";
 import { twMerge } from "tailwind-merge";
@@ -13,7 +13,16 @@ import DropdownDetails from "./DropdownDetails";
 import DropdownItem from "./DropdownItem";
 import DropdownMenu from "./DropdownMenu";
 import DropdownToggle from "./DropdownToggle";
-import { useDropdown, type DropdownContextType } from "./dropdownContext";
+import {
+  useDropdown,
+  type DropdownContextType,
+  DropdownContext,
+  classesFn,
+} from "./dropdownContext";
+
+// Re-export for external consumers that import from this file
+export { DropdownContext, classesFn } from "./dropdownContext";
+export type { DropdownContextType } from "./dropdownContext";
 
 export type DropdownProps = JSX.HTMLAttributes<HTMLDivElement> &
   IComponentBaseProps & {
@@ -41,35 +50,6 @@ export type DropdownProps = JSX.HTMLAttributes<HTMLDivElement> &
     "aria-labelledby"?: string;
   };
 
-export const classesFn = ({
-  className,
-  horizontal,
-  vertical,
-  end,
-  hover,
-  open,
-}: Pick<
-  DropdownProps,
-  "className" | "horizontal" | "vertical" | "end" | "hover" | "open"
->) =>
-  twMerge(
-    "dropdown",
-    className,
-    clsx({
-      "dropdown-left": horizontal === "left",
-      "dropdown-right": horizontal === "right",
-      "dropdown-top": vertical === "top",
-      "dropdown-bottom": vertical === "bottom",
-      "dropdown-end": end,
-      "dropdown-hover": hover,
-      "dropdown-open": open,
-    }),
-  );
-
-// Create a dropdown context for this component
-export const DropdownContext = createContext<DropdownContextType | undefined>(
-  undefined,
-);
 
 const Dropdown = (props: DropdownProps): JSX.Element => {
   const [local, others] = splitProps(props, [

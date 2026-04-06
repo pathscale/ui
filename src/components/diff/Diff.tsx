@@ -1,3 +1,4 @@
+import "./diff.css";
 import {
   createMemo,
   splitProps,

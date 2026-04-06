@@ -1,3 +1,4 @@
+import "./dock.css";
 import type { JSX } from "solid-js";
 import { splitProps } from "solid-js";
 import { twMerge } from "tailwind-merge";
