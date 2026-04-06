@@ -124,14 +124,19 @@ const SEMANTIC_SETTINGS = {
 } as const;
 
 // NF brand accent colors (used by SVG logo)
+// Set both --nf-accent (theme source) and --color-nf-accent (Tailwind utility target)
 const NF_ACCENT_SETTINGS = {
   light: {
     "--nf-accent": { l: 45, c: 0.2 },
     "--nf-on-accent": { l: 98, c: 0.02 },
+    "--color-nf-accent": { l: 45, c: 0.2 },
+    "--color-nf-on-accent": { l: 98, c: 0.02 },
   },
   dark: {
     "--nf-accent": { l: 58, c: 0.233 },
     "--nf-on-accent": { l: 96, c: 0.018 },
+    "--color-nf-accent": { l: 58, c: 0.233 },
+    "--color-nf-on-accent": { l: 96, c: 0.018 },
   },
 } as const;
 
