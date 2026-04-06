@@ -12,6 +12,7 @@ const SKIP = new Set([
   "showcase-section",
   "props-table",
   "icon",
+  "form",
 ]);
 
 function toPascalCase(kebab: string): string {

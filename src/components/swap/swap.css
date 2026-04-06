@@ -1,94 +1,92 @@
-.swap {
-  @layer daisyui.l1.l2.l3 {
-    @apply relative inline-grid cursor-pointer place-content-center align-middle select-none;
+@layer components {
+  .swap {
+      position: relative;
+      display: inline-grid;
+      cursor: pointer;
+      place-content: center;
+      vertical-align: middle;
+      webkit-user-select: none;
+      user-select: none;
+    }
 
-    input {
-      @apply appearance-none;
+  .swap input {
+      appearance: none;
       border: none;
     }
 
-    > * {
-      @apply col-start-1 row-start-1;
-      @media (prefers-reduced-motion: no-preference) {
-        transition-property: transform, rotate, opacity;
-        transition-duration: 0.2s;
-        transition-timing-function: cubic-bezier(0, 0, 0.2, 1);
-      }
+  .swap > * {
+      grid-column-start: 1;
+      grid-row-start: 1;
     }
 
-    .swap-on,
-    .swap-indeterminate,
-    input:indeterminate ~ .swap-on {
-      @apply opacity-0;
+  @media (prefers-reduced-motion: no-preference) {
+    .swap > * {
+      transition-property: transform, rotate, opacity;
+      transition-duration: 0.2s;
+      transition-timing-function: cubic-bezier(0, 0, 0.2, 1);
+    }
     }
 
-    input:is(:checked, :indeterminate) {
-      & ~ .swap-off {
-        @apply opacity-0;
-      }
+  .swap .swap-on,
+    .swap .swap-indeterminate,
+    .swap input:indeterminate ~ .swap-on {
+      opacity: 0%;
     }
 
-    input:checked ~ .swap-on,
-    input:indeterminate ~ .swap-indeterminate {
-      @apply opacity-100;
+  .swap input:is(:checked, :indeterminate) ~ .swap-off {
+      opacity: 0%;
+    }
+
+  .swap input:checked ~ .swap-on,
+    .swap input:indeterminate ~ .swap-indeterminate {
+      opacity: 100%;
       backface-visibility: visible;
     }
-  }
-}
 
-.swap-active {
-  @layer daisyui.l1.l2 {
-    .swap-off {
-      @apply opacity-0;
+  .swap-rotate .swap-on,
+    .swap-rotate input:indeterminate ~ .swap-on {
+      rotate: 45deg;
     }
 
-    .swap-on {
-      @apply opacity-100;
-    }
-  }
-}
-
-.swap-rotate {
-  @layer daisyui.l1.l2 {
-    .swap-on,
-    input:indeterminate ~ .swap-on {
-      @apply rotate-45;
+  .swap-rotate input:is(:checked, :indeterminate) ~ .swap-on,
+    .swap-rotate.swap-active .swap-on {
+      rotate: 0deg;
     }
 
-    input:is(:checked, :indeterminate) ~ .swap-on,
-    &.swap-active .swap-on {
-      @apply rotate-0;
+  .swap-rotate input:is(:checked, :indeterminate) ~ .swap-off,
+    .swap-rotate.swap-active .swap-off {
+      rotate: calc(45deg * -1);
     }
 
-    input:is(:checked, :indeterminate) ~ .swap-off,
-    &.swap-active .swap-off {
-      @apply -rotate-45;
+  .swap-flip {
+      transform-style: preserve-3d;
+      perspective: 20rem;
     }
-  }
-}
 
-.swap-flip {
-  @layer daisyui.l1.l2 {
-    transform-style: preserve-3d;
-    perspective: 20rem;
-
-    .swap-on,
-    .swap-indeterminate,
-    input:indeterminate ~ .swap-on {
+  .swap-flip .swap-on,
+    .swap-flip .swap-indeterminate,
+    .swap-flip input:indeterminate ~ .swap-on {
       transform: rotateY(180deg);
       backface-visibility: hidden;
     }
 
-    input:is(:checked, :indeterminate) ~ .swap-on,
-    &.swap-active .swap-on {
+  .swap-flip input:is(:checked, :indeterminate) ~ .swap-on,
+    .swap-flip.swap-active .swap-on {
       transform: rotateY(0deg);
     }
 
-    input:is(:checked, :indeterminate) ~ .swap-off,
-    &.swap-active .swap-off {
+  .swap-flip input:is(:checked, :indeterminate) ~ .swap-off,
+    .swap-flip.swap-active .swap-off {
       transform: rotateY(-180deg);
       backface-visibility: hidden;
-      @apply opacity-100;
+      opacity: 100%;
     }
-  }
+
+  .swap-active .swap-off {
+      opacity: 0%;
+    }
+
+  .swap-active .swap-on {
+      opacity: 100%;
+    }
 }

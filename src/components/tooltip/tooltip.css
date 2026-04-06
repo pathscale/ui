@@ -1,13 +1,23 @@
-.tooltip {
-  @layer daisyui.l1.l2.l3 {
-    @apply relative inline-block;
-    --tt-bg: var(--color-neutral);
-    --tt-off: calc(100% + 0.5rem);
-    --tt-tail: calc(100% + 1px + 0.25rem);
+@layer components {
+  .tooltip {
+      position: relative;
+      display: inline-block;
+      --tt-bg: var(--color-neutral);
+      --tt-off: calc(100% + 0.5rem);
+      --tt-tail: calc(100% + 1px + 0.25rem);
+    }
 
-    & > .tooltip-content,
-    &[data-tip]:before {
-      @apply text-neutral-content rounded-field absolute max-w-[20rem] px-2 py-1 text-center whitespace-normal opacity-0;
+  .tooltip > .tooltip-content,
+    .tooltip[data-tip]:before {
+      position: absolute;
+      max-width: 20rem;
+      border-radius: var(--radius-field);
+      padding-inline: calc(0.25rem * 2);
+      padding-block: calc(0.25rem * 1);
+      text-align: center;
+      white-space: normal;
+      color: var(--color-neutral-content);
+      opacity: 0%;
       font-size: 0.875rem;
       line-height: 1.25;
       background-color: var(--tt-bg);
@@ -18,8 +28,8 @@
       content: var(--tw-content);
     }
 
-    &:after {
-      @apply absolute opacity-0;
+  .tooltip:after {
+      opacity: 0%;
       background-color: var(--tt-bg);
       content: "";
       pointer-events: none;
@@ -33,171 +43,156 @@
       mask-image: var(--mask-tooltip);
     }
 
-    @media (prefers-reduced-motion: no-preference) {
-      & > .tooltip-content,
-      &[data-tip]:before,
-      &:after {
-        transition:
-          opacity 0.2s cubic-bezier(0.4, 0, 0.2, 1) 75ms,
-          transform 0.2s cubic-bezier(0.4, 0, 0.2, 1) 75ms;
-      }
+  @media (prefers-reduced-motion: no-preference) {
+    .tooltip > .tooltip-content,
+    .tooltip[data-tip]:before,
+    .tooltip:after {
+      transition: opacity 0.2s cubic-bezier(0.4, 0, 0.2, 1) 75ms, transform 0.2s cubic-bezier(0.4, 0, 0.2, 1) 75ms;
+    }
     }
 
-    &:is([data-tip]:not([data-tip=""]), :has(.tooltip-content:not(:empty))) {
-      &.tooltip-open,
-      &:hover,
-      &:has(:focus-visible) {
-        & > .tooltip-content,
-        &[data-tip]:before,
-        &:after {
-          @apply opacity-100;
-          --tt-pos: 0rem;
-
-          @media (prefers-reduced-motion: no-preference) {
-            transition:
-              opacity 0.2s cubic-bezier(0.4, 0, 0.2, 1) 0s,
-              transform 0.2s cubic-bezier(0.4, 0, 0.2, 1) 0s;
-          }
-        }
-      }
+  .tooltip:is([data-tip]:not([data-tip=""]), :has(.tooltip-content:not(:empty))).tooltip-open > .tooltip-content,
+    .tooltip:is([data-tip]:not([data-tip=""]), :has(.tooltip-content:not(:empty))).tooltip-open[data-tip]:before,
+    .tooltip:is([data-tip]:not([data-tip=""]), :has(.tooltip-content:not(:empty))).tooltip-open:after,
+    .tooltip:is([data-tip]:not([data-tip=""]), :has(.tooltip-content:not(:empty))):hover > .tooltip-content,
+    .tooltip:is([data-tip]:not([data-tip=""]), :has(.tooltip-content:not(:empty))):hover[data-tip]:before,
+    .tooltip:is([data-tip]:not([data-tip=""]), :has(.tooltip-content:not(:empty))):hover:after,
+    .tooltip:is([data-tip]:not([data-tip=""]), :has(.tooltip-content:not(:empty))):has(:focus-visible) > .tooltip-content,
+    .tooltip:is([data-tip]:not([data-tip=""]), :has(.tooltip-content:not(:empty))):has(:focus-visible)[data-tip]:before,
+    .tooltip:is([data-tip]:not([data-tip=""]), :has(.tooltip-content:not(:empty))):has(:focus-visible):after {
+      opacity: 100%;
+      --tt-pos: 0rem;
     }
-  }
-}
 
-.tooltip,
-.tooltip-top {
-  @layer daisyui.l1.l2 {
-    > .tooltip-content,
-    &[data-tip]:before {
+  @media (prefers-reduced-motion: no-preference) {
+    .tooltip:is([data-tip]:not([data-tip=""]), :has(.tooltip-content:not(:empty))).tooltip-open > .tooltip-content,
+    .tooltip:is([data-tip]:not([data-tip=""]), :has(.tooltip-content:not(:empty))).tooltip-open[data-tip]:before,
+    .tooltip:is([data-tip]:not([data-tip=""]), :has(.tooltip-content:not(:empty))).tooltip-open:after,
+    .tooltip:is([data-tip]:not([data-tip=""]), :has(.tooltip-content:not(:empty))):hover > .tooltip-content,
+    .tooltip:is([data-tip]:not([data-tip=""]), :has(.tooltip-content:not(:empty))):hover[data-tip]:before,
+    .tooltip:is([data-tip]:not([data-tip=""]), :has(.tooltip-content:not(:empty))):hover:after,
+    .tooltip:is([data-tip]:not([data-tip=""]), :has(.tooltip-content:not(:empty))):has(:focus-visible) > .tooltip-content,
+    .tooltip:is([data-tip]:not([data-tip=""]), :has(.tooltip-content:not(:empty))):has(:focus-visible)[data-tip]:before,
+    .tooltip:is([data-tip]:not([data-tip=""]), :has(.tooltip-content:not(:empty))):has(:focus-visible):after {
+      transition: opacity 0.2s cubic-bezier(0.4, 0, 0.2, 1) 0s, transform 0.2s cubic-bezier(0.4, 0, 0.2, 1) 0s;
+    }
+    }
+
+  .tooltip > .tooltip-content,
+    .tooltip[data-tip]:before {
       transform: translateX(-50%) translateY(var(--tt-pos, 0.25rem));
       inset: auto auto var(--tt-off) 50%;
     }
 
-    &:after {
+  .tooltip:after {
       transform: translateX(-50%) translateY(var(--tt-pos, 0.25rem));
       inset: auto auto var(--tt-tail) 50%;
     }
-  }
-}
 
-.tooltip-bottom {
-  @layer daisyui.l1.l2 {
-    > .tooltip-content,
-    &[data-tip]:before {
+  .tooltip-bottom > .tooltip-content,
+    .tooltip-bottom[data-tip]:before {
       transform: translateX(-50%) translateY(var(--tt-pos, -0.25rem));
       inset: var(--tt-off) auto auto 50%;
     }
 
-    &:after {
+  .tooltip-bottom:after {
       transform: translateX(-50%) translateY(var(--tt-pos, -0.25rem)) rotate(180deg);
       inset: var(--tt-tail) auto auto 50%;
     }
-  }
-}
 
-.tooltip-left {
-  @layer daisyui.l1.l2 {
-    > .tooltip-content,
-    &[data-tip]:before {
+  .tooltip-left > .tooltip-content,
+    .tooltip-left[data-tip]:before {
       transform: translateX(calc(var(--tt-pos, 0.25rem) - 0.25rem)) translateY(-50%);
       inset: 50% var(--tt-off) auto auto;
     }
 
-    &:after {
+  .tooltip-left:after {
       transform: translateX(var(--tt-pos, 0.25rem)) translateY(-50%) rotate(-90deg);
       inset: 50% calc(var(--tt-tail) + 1px) auto auto;
     }
-  }
-}
 
-.tooltip-right {
-  @layer daisyui.l1.l2 {
-    > .tooltip-content,
-    &[data-tip]:before {
+  .tooltip-right > .tooltip-content,
+    .tooltip-right[data-tip]:before {
       transform: translateX(calc(var(--tt-pos, -0.25rem) + 0.25rem)) translateY(-50%);
       inset: 50% auto auto var(--tt-off);
     }
 
-    &:after {
+  .tooltip-right:after {
       transform: translateX(var(--tt-pos, -0.25rem)) translateY(-50%) rotate(90deg);
       inset: 50% auto auto calc(var(--tt-tail) + 1px);
     }
-  }
-}
 
-.tooltip-primary {
-  @layer daisyui.l1.l2 {
-    --tt-bg: var(--color-primary);
-
-    > .tooltip-content,
-    &[data-tip]:before {
-      @apply text-primary-content;
+  .tooltip-top > .tooltip-content,
+    .tooltip-top[data-tip]:before {
+      transform: translateX(-50%) translateY(var(--tt-pos, 0.25rem));
+      inset: auto auto var(--tt-off) 50%;
     }
-  }
-}
 
-.tooltip-secondary {
-  @layer daisyui.l1.l2 {
-    --tt-bg: var(--color-secondary);
-
-    > .tooltip-content,
-    &[data-tip]:before {
-      @apply text-secondary-content;
+  .tooltip-top:after {
+      transform: translateX(-50%) translateY(var(--tt-pos, 0.25rem));
+      inset: auto auto var(--tt-tail) 50%;
     }
-  }
-}
 
-.tooltip-accent {
-  @layer daisyui.l1.l2 {
-    --tt-bg: var(--color-accent);
-
-    > .tooltip-content,
-    &[data-tip]:before {
-      @apply text-accent-content;
+  .tooltip-accent {
+      --tt-bg: var(--color-accent);
     }
-  }
-}
 
-.tooltip-info {
-  @layer daisyui.l1.l2 {
-    --tt-bg: var(--color-info);
-
-    > .tooltip-content,
-    &[data-tip]:before {
-      @apply text-info-content;
+  .tooltip-accent > .tooltip-content,
+    .tooltip-accent[data-tip]:before {
+      color: var(--color-accent-content);
     }
-  }
-}
 
-.tooltip-success {
-  @layer daisyui.l1.l2 {
-    --tt-bg: var(--color-success);
-
-    > .tooltip-content,
-    &[data-tip]:before {
-      @apply text-success-content;
+  .tooltip-error {
+      --tt-bg: var(--color-error);
     }
-  }
-}
 
-.tooltip-warning {
-  @layer daisyui.l1.l2 {
-    --tt-bg: var(--color-warning);
-
-    > .tooltip-content,
-    &[data-tip]:before {
-      @apply text-warning-content;
+  .tooltip-error > .tooltip-content,
+    .tooltip-error[data-tip]:before {
+      color: var(--color-error-content);
     }
-  }
-}
 
-.tooltip-error {
-  @layer daisyui.l1.l2 {
-    --tt-bg: var(--color-error);
-
-    > .tooltip-content,
-    &[data-tip]:before {
-      @apply text-error-content;
+  .tooltip-info {
+      --tt-bg: var(--color-info);
     }
-  }
+
+  .tooltip-info > .tooltip-content,
+    .tooltip-info[data-tip]:before {
+      color: var(--color-info-content);
+    }
+
+  .tooltip-primary {
+      --tt-bg: var(--color-primary);
+    }
+
+  .tooltip-primary > .tooltip-content,
+    .tooltip-primary[data-tip]:before {
+      color: var(--color-primary-content);
+    }
+
+  .tooltip-secondary {
+      --tt-bg: var(--color-secondary);
+    }
+
+  .tooltip-secondary > .tooltip-content,
+    .tooltip-secondary[data-tip]:before {
+      color: var(--color-secondary-content);
+    }
+
+  .tooltip-success {
+      --tt-bg: var(--color-success);
+    }
+
+  .tooltip-success > .tooltip-content,
+    .tooltip-success[data-tip]:before {
+      color: var(--color-success-content);
+    }
+
+  .tooltip-warning {
+      --tt-bg: var(--color-warning);
+    }
+
+  .tooltip-warning > .tooltip-content,
+    .tooltip-warning[data-tip]:before {
+      color: var(--color-warning-content);
+    }
 }

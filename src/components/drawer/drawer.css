@@ -1,64 +1,124 @@
-.drawer {
-  @layer daisyui.l1.l2.l3 {
-    @apply relative grid;
-    width: 100%;
-    grid-auto-columns: max-content auto;
-  }
-}
+@layer components {
+  .drawer-side {
+      pointer-events: none;
+      visibility: hidden;
+      position: fixed;
+      inset-inline-start: calc(0.25rem * 0);
+      top: calc(0.25rem * 0);
+      z-index: 10;
+      grid-column-start: 1;
+      grid-row-start: 1;
+      display: grid;
+      width: 100%;
+      grid-template-columns: repeat(1, minmax(0, 1fr));
+      grid-template-rows: repeat(1, minmax(0, 1fr));
+      align-items: flex-start;
+      justify-items: start;
+      overscroll-behavior: contain;
+      background-color: transparent;
+      opacity: 0%;
+      transition: opacity 0.2s ease-out 0.1s allow-discrete, visibility 0.3s ease-out 0.1s allow-discrete;
+      height: 100vh;
+      height: 100dvh;
+    }
 
-.drawer-content {
-  @layer daisyui.l1.l2.l3 {
-    @apply col-start-2 row-start-1 min-w-0;
-  }
-}
+  :where(.drawer-side) {
+      overflow-x: hidden;
+      overflow-y: hidden;
+    }
 
-:where(.drawer-side) {
-  @layer daisyui.l1.l2.l3 {
-    @apply overflow-x-hidden overflow-y-hidden;
-  }
-}
-
-.drawer-side {
-  @layer daisyui.l1.l2.l3 {
-    @apply pointer-events-none invisible fixed start-0 top-0 z-10 col-start-1 row-start-1 grid w-full grid-cols-1 grid-rows-1 items-start justify-items-start overscroll-contain bg-transparent opacity-0;
-    transition:
-      opacity 0.2s ease-out 0.1s allow-discrete,
-      visibility 0.3s ease-out 0.1s allow-discrete;
-    height: 100vh;
-    height: 100dvh;
-
-    > .drawer-overlay {
-      @apply sticky top-0 cursor-pointer place-self-stretch;
+  .drawer-side > .drawer-overlay {
+      position: sticky;
+      top: calc(0.25rem * 0);
+      cursor: pointer;
+      place-self: stretch;
       background-color: oklch(0% 0 0 / 40%);
     }
 
-    > * {
-      @apply col-start-1 row-start-1;
+  .drawer-side > * {
+      grid-column-start: 1;
+      grid-row-start: 1;
     }
 
-    > :not(.drawer-overlay) {
-      @apply will-change-transform;
-      transition:
-        translate 0.3s ease-out,
-        width 0.2s ease-out;
+  .drawer-side > :not(.drawer-overlay) {
+      will-change: transform;
+      transition: translate 0.3s ease-out, width 0.2s ease-out;
       translate: -100%;
-
-      [dir="rtl"] & {
-        translate: 100%;
-      }
-    }
-  }
-}
-
-.drawer-toggle {
-  @layer daisyui.l1.l2.l3 {
-    @apply fixed h-0 w-0 appearance-none opacity-0;
-    :where(&:checked ~ .drawer-side) {
-      scrollbar-color: color-mix(in oklch, currentColor 35%, #0000)
-        oklch(0 0 0 / calc(var(--page-has-backdrop, 0) * 0.4));
     }
 
-    :where(:root:has(&:checked)) {
+  [dir="rtl"] .drawer-side > :not(.drawer-overlay) {
+      translate: 100%;
+    }
+
+  .drawer-open > .drawer-toggle:checked ~ .drawer-side {
+      scrollbar-color: revert-layer;
+    }
+
+  :root:has(.drawer-open > .drawer-toggle:checked) {
+      --page-overflow: revert-layer;
+      --page-scroll-gutter: revert-layer;
+      --page-scroll-bg: revert-layer;
+      --page-scroll-transition: revert-layer;
+      --page-has-backdrop: revert-layer;
+      animation: revert-layer;
+      animation-timeline: revert-layer;
+    }
+
+  .drawer-open > .drawer-side {
+      overflow-y: auto;
+    }
+
+  .drawer-open > .drawer-toggle {
+      display: none;
+    }
+
+  .drawer-open > .drawer-toggle ~ .drawer-side {
+      pointer-events: auto;
+      visibility: visible;
+      position: sticky;
+      display: block;
+      width: auto;
+      overscroll-behavior: auto;
+      opacity: 100%;
+    }
+
+  .drawer-open > .drawer-toggle ~ .drawer-side > .drawer-overlay {
+      cursor: default;
+      background-color: transparent;
+    }
+
+  .drawer-open > .drawer-toggle:checked ~ .drawer-side {
+      pointer-events: auto;
+      visibility: visible;
+    }
+
+  .drawer-open > .drawer-toggle ~ .drawer-side > :not(.drawer-overlay) {
+      translate: 0%;
+    }
+
+  [dir="rtl"] .drawer-open > .drawer-toggle ~ .drawer-side > :not(.drawer-overlay) {
+      translate: 0%;
+    }
+
+  .drawer-toggle {
+      position: fixed;
+      height: calc(0.25rem * 0);
+      width: calc(0.25rem * 0);
+      appearance: none;
+      opacity: 0%;
+    }
+
+  :where(.drawer-toggle:checked ~ .drawer-side) {
+      scrollbar-color: currentColor oklch(0 0 0 / calc(var(--page-has-backdrop, 0) * 0.4));
+    }
+
+  @supports (color: color-mix(in lab, red, red)) {
+    :where(.drawer-toggle:checked ~ .drawer-side) {
+      scrollbar-color: color-mix(in oklch, currentColor 35%, #0000) oklch(0 0 0 / calc(var(--page-has-backdrop, 0) * 0.4));
+    }
+    }
+
+  :where(:root:has(.drawer-toggle:checked)) {
       --page-has-backdrop: 1;
       --page-overflow: hidden;
       --page-scroll-bg: var(--page-scroll-bg-on);
@@ -67,100 +127,58 @@
       animation: set-page-has-scroll forwards;
       animation-timeline: scroll();
     }
-  }
 
-  @layer daisyui.l1.l2 {
-    :where(&:checked ~ .drawer-side) {
-      @apply pointer-events-auto visible overflow-y-auto opacity-100;
-
-      > :not(.drawer-overlay) {
-        translate: 0%;
-      }
+  :where(.drawer-toggle:checked ~ .drawer-side) {
+      pointer-events: auto;
+      visibility: visible;
+      overflow-y: auto;
+      opacity: 100%;
     }
 
-    &:focus-visible ~ .drawer-content label.drawer-button {
+  :where(.drawer-toggle:checked ~ .drawer-side) > :not(.drawer-overlay) {
+      translate: 0%;
+    }
+
+  .drawer-toggle:focus-visible ~ .drawer-content label.drawer-button {
       outline: 2px solid;
       outline-offset: 2px;
     }
-  }
-}
 
-.drawer-end {
-  @layer daisyui.l1.l2 {
-    grid-auto-columns: auto max-content;
-
-    > .drawer-toggle {
-      ~ .drawer-content {
-        @apply col-start-1;
-      }
-
-      ~ .drawer-side {
-        @apply col-start-2 justify-items-end;
-      }
-
-      ~ .drawer-side > :not(.drawer-overlay) {
-        translate: 100%;
-
-        [dir="rtl"] & {
-          translate: -100%;
-        }
-      }
-
-      &:checked ~ .drawer-side > :not(.drawer-overlay) {
-        translate: 0%;
-      }
-    }
-  }
-}
-
-.drawer-open {
-  @layer daisyui.l1.l2.l3 {
-    > .drawer-toggle:checked {
-      ~ .drawer-side {
-        scrollbar-color: revert-layer;
-      }
-
-      :root:has(&) {
-        --page-overflow: revert-layer;
-        --page-scroll-gutter: revert-layer;
-        --page-scroll-bg: revert-layer;
-        --page-scroll-transition: revert-layer;
-        --page-has-backdrop: revert-layer;
-        animation: revert-layer;
-        animation-timeline: revert-layer;
-      }
-    }
-  }
-
-  @layer daisyui.l1.l2 {
-    > .drawer-side {
-      @apply overflow-y-auto;
+  .drawer {
+      position: relative;
+      display: grid;
+      width: 100%;
+      grid-auto-columns: max-content auto;
     }
 
-    > .drawer-toggle {
-      @apply hidden;
-
-      ~ .drawer-side {
-        @apply pointer-events-auto visible sticky block w-auto overscroll-auto opacity-100;
-
-        > .drawer-overlay {
-          @apply cursor-default bg-transparent;
-        }
-      }
-
-      &:checked ~ .drawer-side {
-        @apply pointer-events-auto visible;
-      }
+  .drawer-content {
+      grid-column-start: 2;
+      grid-row-start: 1;
+      min-width: calc(0.25rem * 0);
     }
-  }
 
-  @layer daisyui.l1 {
-    > .drawer-toggle ~ .drawer-side > :not(.drawer-overlay) {
+  .drawer-end {
+      grid-auto-columns: auto max-content;
+    }
+
+  .drawer-end > .drawer-toggle ~ .drawer-content {
+      grid-column-start: 1;
+    }
+
+  .drawer-end > .drawer-toggle ~ .drawer-side {
+      grid-column-start: 2;
+      justify-items: end;
+    }
+
+  .drawer-end > .drawer-toggle ~ .drawer-side > :not(.drawer-overlay) {
+      translate: 100%;
+    }
+
+  [dir="rtl"] .drawer-end > .drawer-toggle ~ .drawer-side > :not(.drawer-overlay) {
+      translate: -100%;
+    }
+
+  .drawer-end > .drawer-toggle:checked ~ .drawer-side > :not(.drawer-overlay) {
       translate: 0%;
-
-      [dir="rtl"] & {
-        translate: 0%;
-      }
     }
-  }
 }
