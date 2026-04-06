@@ -1,6 +1,6 @@
 {
   "name": "@pathscale/ui",
-  "version": "0.0.160",
+  "version": "0.0.162",
   "author": "pathscale",
   "repository": {
     "type": "git",
@@ -57,7 +57,7 @@
   },
   "dependencies": {
     "@iconify/tailwind4": "^1.2.1",
-    "@pathscale/ui": "0.0.153",
+    "@pathscale/ui": "^0.0.161",
     "rsbuild-plugin-iconify": "^1.0.3"
   },
   "peerDependencies": {

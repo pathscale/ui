@@ -223,6 +223,16 @@ export { default as Tabs } from "./components/tabs";
 export type { RadioTabProps, TabProps, TabsProps } from "./components/tabs";
 export { default as Textarea } from "./components/textarea";
 export {
+  SizePicker,
+  createSizeStore,
+  getDefaultSizeStore,
+} from "./components/size-picker";
+export type {
+  SizePickerProps,
+  SizeStore,
+  SizePreset,
+} from "./components/size-picker";
+export {
   ThemeColorPicker,
   createHueShiftStore,
   getDefaultHueShiftStore,

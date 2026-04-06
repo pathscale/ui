@@ -123,6 +123,18 @@ const SEMANTIC_SETTINGS = {
   },
 } as const;
 
+// NF brand accent colors (used by SVG logo)
+const NF_ACCENT_SETTINGS = {
+  light: {
+    "--nf-accent": { l: 45, c: 0.2 },
+    "--nf-on-accent": { l: 98, c: 0.02 },
+  },
+  dark: {
+    "--nf-accent": { l: 58, c: 0.233 },
+    "--nf-on-accent": { l: 96, c: 0.018 },
+  },
+} as const;
+
 // Base/neutral colors
 const BASE_COLORS = {
   light: {
@@ -255,6 +267,13 @@ function applyHueShift(targetHue: number, saturation: number = 100) {
     const shifted = toOklch(color.l, scaledChroma, oklchHue);
     root.style.setProperty(varName, shifted);
   }
+
+  // Shift NF brand accent (SVG logo)
+  const nfAccentSettings = NF_ACCENT_SETTINGS[resolvedTheme];
+  for (const [varName, settings] of Object.entries(nfAccentSettings)) {
+    const scaledChroma = settings.c * chromaScale;
+    root.style.setProperty(varName, toOklch(settings.l, scaledChroma, oklchHue));
+  }
 }
 
 function resetHueShift() {
@@ -274,6 +293,9 @@ function resetHueShift() {
     root.style.removeProperty(varName);
   }
   for (const varName of Object.keys(BASE_COLORS.light)) {
+    root.style.removeProperty(varName);
+  }
+  for (const varName of Object.keys(NF_ACCENT_SETTINGS.light)) {
     root.style.removeProperty(varName);
   }
 }
