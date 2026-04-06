@@ -3,7 +3,7 @@ import Input from "../input";
 import type { InputProps } from "../input";
 import { useFormValidation } from "./ValidatedForm";
 import { twMerge } from "tailwind-merge";
-import Form from "./Form";
+import FormLabel from "./Label";
 
 export interface NumberFieldProps extends Omit<InputProps, "type" | "ref"> {
   label?: string;
@@ -89,12 +89,12 @@ export const NumberField: Component<NumberFieldProps> = (props) => {
   return (
     <div class={containerClasses()}>
       {local.label && (
-        <Form.Label
+        <FormLabel
           title={local.label}
           class={local.labelClass}
         >
           {local.required && <span class="text-error ml-1">*</span>}
-        </Form.Label>
+        </FormLabel>
       )}
 
       {local.description && (

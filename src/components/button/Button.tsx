@@ -1,3 +1,4 @@
+import "./btn.css";
 import { clsx } from "clsx";
 import { type JSX, Show, splitProps } from "solid-js";
 import { Dynamic } from "solid-js/web";

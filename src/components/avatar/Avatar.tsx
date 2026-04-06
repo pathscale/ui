@@ -1,3 +1,4 @@
+import "./avatar.css";
 import {
   type JSX,
   splitProps,

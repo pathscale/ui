@@ -1,3 +1,4 @@
+import "./toast.css";
 import { children, createMemo, type JSX, splitProps } from "solid-js";
 import { twMerge } from "tailwind-merge";
 

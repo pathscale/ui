@@ -1,4 +1,6 @@
-import { createSignal, onMount, onCleanup } from "solid-js";
+import { createSignal, onMount, onCleanup, createContext } from "solid-js";
+import { clsx } from "clsx";
+import { twMerge } from "tailwind-merge";
 
 export type DropdownContextType = {
   setOpen: (open: boolean) => void;
@@ -74,3 +76,40 @@ export function useDropdown(
     onLeave,
   };
 }
+
+// Shared context used by Dropdown, DropdownItem, and DropdownDetails
+export const DropdownContext = createContext<DropdownContextType | undefined>(
+  undefined,
+);
+
+// Shared class-name builder used by Dropdown and DropdownDetails
+export type ClassesFnProps = {
+  className?: string;
+  horizontal?: "left" | "right";
+  vertical?: "top" | "bottom";
+  end?: boolean;
+  hover?: boolean;
+  open?: boolean;
+};
+
+export const classesFn = ({
+  className,
+  horizontal,
+  vertical,
+  end,
+  hover,
+  open,
+}: ClassesFnProps) =>
+  twMerge(
+    "dropdown",
+    className,
+    clsx({
+      "dropdown-left": horizontal === "left",
+      "dropdown-right": horizontal === "right",
+      "dropdown-top": vertical === "top",
+      "dropdown-bottom": vertical === "bottom",
+      "dropdown-end": end,
+      "dropdown-hover": hover,
+      "dropdown-open": open,
+    }),
+  );

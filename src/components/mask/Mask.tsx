@@ -1,3 +1,4 @@
+import "./mask.css";
 import { type JSX, splitProps, type Component } from "solid-js";
 import { twMerge } from "tailwind-merge";
 import { clsx } from "clsx";

@@ -1,7 +1,7 @@
 // components/dropdown/Details.tsx
 import { type JSX, splitProps } from "solid-js";
 import { twMerge } from "tailwind-merge";
-import { classesFn } from "./Dropdown";
+import { classesFn } from "./dropdownContext";
 import { Summary } from "./DropdownToggle";
 
 // Remove 'item' and 'hover' from the prop type

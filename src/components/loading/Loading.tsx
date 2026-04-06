@@ -1,3 +1,4 @@
+import "./loading.css";
 import { clsx } from "clsx";
 import { type Component, type JSX, splitProps } from "solid-js";
 import { twMerge } from "tailwind-merge";

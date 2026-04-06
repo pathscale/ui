@@ -1,3 +1,4 @@
+import "./collapse.css";
 import { clsx } from "clsx";
 import {
   createMemo,

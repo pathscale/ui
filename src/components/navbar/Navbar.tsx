@@ -1,3 +1,4 @@
+import "./navbar.css";
 import { type JSX, splitProps } from "solid-js";
 import { Dynamic } from "solid-js/web";
 import { twMerge } from "tailwind-merge";

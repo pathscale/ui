@@ -1,0 +1,179 @@
+.textarea {
+  @layer daisyui.l1.l2.l3 {
+    border: var(--border) solid #0000;
+    @apply bg-base-100 rounded-field min-h-20 shrink appearance-none py-2 align-middle;
+    width: clamp(3rem, 20rem, 100%);
+    padding-inline-start: 0.75rem;
+    padding-inline-end: 0.75rem;
+    font-size: max(var(--font-size, 0.875rem), 0.875rem);
+    touch-action: manipulation;
+    border-color: var(--input-color);
+    box-shadow:
+      0 1px color-mix(in oklab, var(--input-color) calc(var(--depth) * 10%), #0000) inset,
+      0 -1px oklch(100% 0 0 / calc(var(--depth) * 0.1)) inset;
+    --input-color: color-mix(in oklab, var(--color-base-content) 20%, #0000);
+    textarea {
+      @apply appearance-none bg-transparent;
+      border: none;
+
+      &:focus,
+      &:focus-within {
+        @apply outline-hidden;
+      }
+    }
+
+    &:focus,
+    &:focus-within {
+      --input-color: var(--color-base-content);
+      box-shadow: 0 1px color-mix(in oklab, var(--input-color) calc(var(--depth) * 10%), #0000);
+      outline: 2px solid var(--input-color);
+      outline-offset: 2px;
+      isolation: isolate;
+    }
+
+    /* increase font size in iOS so the page won't zoom */
+    @media (pointer: coarse) {
+      @supports (-webkit-touch-callout: none) {
+        &:focus,
+        &:focus-within {
+          --font-size: 1rem;
+        }
+      }
+    }
+
+    &:has(> textarea[disabled]),
+    &:is(:disabled, [disabled]) {
+      @apply border-base-200 bg-base-200 placeholder-base-content text-base-content/40 placeholder-base-content/20 cursor-not-allowed;
+      box-shadow: none;
+    }
+
+    &:has(> textarea[disabled]) > textarea[disabled] {
+      @apply cursor-not-allowed;
+    }
+  }
+}
+
+.textarea-ghost {
+  @layer daisyui.l1.l2 {
+    @apply bg-transparent;
+    box-shadow: none;
+    border-color: #0000;
+
+    &:focus,
+    &:focus-within {
+      @apply text-base-content bg-base-100;
+      border-color: #0000;
+      box-shadow: none;
+    }
+  }
+}
+
+.textarea-neutral {
+  @layer daisyui.l1.l2 {
+    &,
+    &:focus,
+    &:focus-within {
+      --input-color: var(--color-neutral);
+    }
+  }
+}
+
+.textarea-primary {
+  @layer daisyui.l1.l2 {
+    &,
+    &:focus,
+    &:focus-within {
+      --input-color: var(--color-primary);
+    }
+  }
+}
+
+.textarea-secondary {
+  @layer daisyui.l1.l2 {
+    &,
+    &:focus,
+    &:focus-within {
+      --input-color: var(--color-secondary);
+    }
+  }
+}
+
+.textarea-accent {
+  @layer daisyui.l1.l2 {
+    &,
+    &:focus,
+    &:focus-within {
+      --input-color: var(--color-accent);
+    }
+  }
+}
+
+.textarea-info {
+  @layer daisyui.l1.l2 {
+    &,
+    &:focus,
+    &:focus-within {
+      --input-color: var(--color-info);
+    }
+  }
+}
+
+.textarea-success {
+  @layer daisyui.l1.l2 {
+    &,
+    &:focus,
+    &:focus-within {
+      --input-color: var(--color-success);
+    }
+  }
+}
+
+.textarea-warning {
+  @layer daisyui.l1.l2 {
+    &,
+    &:focus,
+    &:focus-within {
+      --input-color: var(--color-warning);
+    }
+  }
+}
+
+.textarea-error {
+  @layer daisyui.l1.l2 {
+    &,
+    &:focus,
+    &:focus-within {
+      --input-color: var(--color-error);
+    }
+  }
+}
+
+.textarea-xs {
+  @layer daisyui.l1.l2 {
+    font-size: max(var(--font-size, 0.6875rem), 0.6875rem);
+  }
+}
+
+.textarea-sm {
+  @layer daisyui.l1.l2 {
+    font-size: max(var(--font-size, 0.75rem), 0.75rem);
+  }
+}
+
+.textarea-md {
+  @layer daisyui.l1.l2 {
+    font-size: max(var(--font-size, 0.875rem), 0.875rem);
+  }
+}
+
+.textarea-lg {
+  @layer daisyui.l1.l2 {
+    font-size: max(var(--font-size, 1.125rem), 1.125rem);
+  }
+}
+
+.textarea-xl {
+  @layer daisyui.l1.l2 {
+    font-size: max(var(--font-size, 1.375rem), 1.375rem);
+  }
+}

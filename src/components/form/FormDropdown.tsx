@@ -8,7 +8,7 @@ import {
 } from "solid-js";
 import { twMerge } from "tailwind-merge";
 import { useFormValidation } from "./ValidatedForm";
-import Form from "./Form";
+import FormLabel from "./Label";
 import Dropdown from "../dropdown";
 import Icon from "../icon";
 
@@ -96,12 +96,12 @@ export const FormDropdown: Component<FormDropdownProps> = (props) => {
 
   return (
     <div class={containerClasses()}>
-      <Form.Label
+      <FormLabel
         title={local.label}
         class={local.labelClass}
       >
         {local.required && <span class="text-error ml-1">*</span>}
-      </Form.Label>
+      </FormLabel>
 
       {local.description && (
         <p class={descriptionClasses()}>{local.description}</p>

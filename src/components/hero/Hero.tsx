@@ -1,3 +1,4 @@
+import "./hero.css";
 import { type ParentComponent, splitProps } from "solid-js";
 import { twMerge } from "tailwind-merge";
 import type { IComponentBaseProps } from "../types";

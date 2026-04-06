@@ -1,3 +1,6 @@
+import "./table.css";
+import "../../styles/compat/components/checkbox.css";
+import "../../styles/compat/components/btn.css";
 import {
   createEffect,
   createMemo,

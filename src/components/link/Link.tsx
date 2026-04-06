@@ -1,3 +1,4 @@
+import "./link.css";
 import {
   splitProps,
   type JSX,

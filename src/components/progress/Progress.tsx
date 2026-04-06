@@ -1,3 +1,4 @@
+import "./progress.css";
 import clsx from "clsx";
 import type { JSX } from "solid-js";
 import { splitProps } from "solid-js";

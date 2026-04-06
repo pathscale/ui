@@ -1,5 +1,5 @@
 import { type JSX, mergeProps, splitProps, useContext } from "solid-js";
-import { DropdownContext } from "./Dropdown";
+import { DropdownContext } from "./dropdownContext";
 
 type AnchorProps = JSX.AnchorHTMLAttributes<HTMLAnchorElement> & {
   closeOnClick?: boolean;

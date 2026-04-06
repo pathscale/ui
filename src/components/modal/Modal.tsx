@@ -1,3 +1,4 @@
+import "./modal.css";
 import {
   type JSX,
   splitProps,

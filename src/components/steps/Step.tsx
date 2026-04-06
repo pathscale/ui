@@ -1,3 +1,4 @@
+import "./step.css";
 import { type JSX, splitProps, createMemo } from "solid-js";
 import { Dynamic } from "solid-js/web";
 import { twMerge } from "tailwind-merge";

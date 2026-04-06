@@ -1,3 +1,4 @@
+import "./stat.css";
 import { splitProps, type JSX, createMemo } from "solid-js";
 import { twMerge } from "tailwind-merge";
 import { clsx } from "clsx";
