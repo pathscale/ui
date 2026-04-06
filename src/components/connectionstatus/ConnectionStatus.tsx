@@ -4,7 +4,7 @@ import Badge from "../badge";
 import Button from "../button";
 import Flex from "../flex";
 import Tooltip from "../tooltip";
-import type { ComponentColor, IComponentBaseProps } from "../types";
+import type { IComponentBaseProps } from "../types";
 
 export type ConnectionState =
   | "connecting"
@@ -100,16 +100,16 @@ export const ConnectionStatus: Component<ConnectionStatusProps> = (props) => {
     twMerge(local.class, local.className),
   );
 
-  const getBadgeColor = createMemo((): ComponentColor => {
+  const getBadgeColor = createMemo(() => {
     switch (local.state) {
       case "connected":
-        return "success";
+        return "success" as const;
       case "connecting":
-        return "warning";
+        return "warning" as const;
       case "error":
-        return "error";
+        return "danger" as const;
       default:
-        return "neutral";
+        return "default" as const;
     }
   });
 

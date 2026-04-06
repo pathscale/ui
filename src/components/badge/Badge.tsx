@@ -1,96 +1,124 @@
 import { clsx } from "clsx";
-import { type JSX, splitProps } from "solid-js";
+import { type JSX, createContext, splitProps, useContext } from "solid-js";
 import { twMerge } from "tailwind-merge";
 
-import type {
-  ComponentColor,
-  ComponentSize,
-  ComponentVariant,
-  IComponentBaseProps,
-} from "../types";
+import "./Badge.css";
 
-type BadgeBaseProps = {
-  size?: ComponentSize;
-  color?: ComponentColor;
-  variant?: ComponentVariant;
-  responsive?: boolean;
-  dataTheme?: string;
-  class?: string;
-  className?: string;
-  style?: JSX.CSSProperties;
-  // ARIA attributes
-  "aria-label"?: string;
-  "aria-describedby"?: string;
-  "aria-labelledby"?: string;
-  role?: "status" | "alert" | "img" | "presentation" | "none";
+/* -------------------------------------------------------------------------------------------------
+ * Badge Context
+ * -----------------------------------------------------------------------------------------------*/
+type BadgeContextType = {
+  // Reserved for future slot-based styling
 };
 
-export type BadgeProps = BadgeBaseProps &
-  IComponentBaseProps &
-  Omit<JSX.HTMLAttributes<HTMLDivElement>, keyof BadgeBaseProps>;
+const BadgeContext = createContext<BadgeContextType>({});
 
-const Badge = (props: BadgeProps): JSX.Element => {
-  const [local, others] = splitProps(props, [
-    "size",
-    "color",
-    "variant",
-    "responsive",
-    "dataTheme",
-    "class",
-    "className",
-    "style",
-    "aria-label",
-    "aria-describedby",
-    "aria-labelledby",
-    "role",
-  ]);
+/* -------------------------------------------------------------------------------------------------
+ * Badge Anchor
+ * -----------------------------------------------------------------------------------------------*/
+interface BadgeAnchorProps extends JSX.HTMLAttributes<HTMLSpanElement> {
+  class?: string;
+  children: JSX.Element;
+}
 
-  const classes = () =>
-    twMerge(
-      "badge",
-      local.class,
-      local.className,
-      clsx({
-        "badge-xl": local.size === "xl",
-        "badge-lg": local.size === "lg",
-        "badge-md": local.size === "md",
-        "badge-sm": local.size === "sm",
-        "badge-xs": local.size === "xs",
-        "badge-soft": local.variant === "soft",
-        "badge-dash": local.variant === "dash",
-        "badge-outline": local.variant === "outline",
-        "badge-neutral": local.color === "neutral",
-        "badge-primary": local.color === "primary",
-        "badge-secondary": local.color === "secondary",
-        "badge-accent": local.color === "accent",
-        "badge-ghost": local.color === "ghost",
-        "badge-info": local.color === "info",
-        "badge-success": local.color === "success",
-        "badge-warning": local.color === "warning",
-        "badge-error": local.color === "error",
-        "badge-responsive": local.responsive,
-      }),
-    );
+const BadgeAnchor = (props: BadgeAnchorProps) => {
+  const [local, others] = splitProps(props, ["children", "class"]);
 
   return (
-    <div
+    <span
       {...others}
-      data-theme={local.dataTheme}
-      class={classes()}
-      style={local.style}
-      role={local.role || "status"}
-      aria-label={local["aria-label"]}
-      aria-describedby={local["aria-describedby"]}
-      aria-labelledby={local["aria-labelledby"]}
-      aria-hidden={
-        local.role === "presentation" || local.role === "none"
-          ? true
-          : undefined
-      }
+      class={twMerge("badge-anchor", local.class)}
+      data-slot="badge-anchor"
     >
-      {props.children}
-    </div>
+      {local.children}
+    </span>
   );
 };
 
-export default Badge;
+/* -------------------------------------------------------------------------------------------------
+ * Badge Root
+ * -----------------------------------------------------------------------------------------------*/
+type BadgeColor = "default" | "accent" | "success" | "warning" | "danger";
+type BadgeVariant = "primary" | "secondary" | "soft";
+type BadgeSize = "sm" | "md" | "lg";
+type BadgePlacement = "top-right" | "top-left" | "bottom-right" | "bottom-left";
+
+interface BadgeRootProps extends Omit<JSX.HTMLAttributes<HTMLSpanElement>, "color"> {
+  class?: string;
+  children?: JSX.Element;
+  color?: BadgeColor;
+  variant?: BadgeVariant;
+  size?: BadgeSize;
+  placement?: BadgePlacement;
+}
+
+const BadgeRoot = (props: BadgeRootProps) => {
+  const [local, others] = splitProps(props, [
+    "children",
+    "class",
+    "color",
+    "variant",
+    "size",
+    "placement",
+  ]);
+
+  const classes = () => {
+    const color = local.color ?? "default";
+    const variant = local.variant ?? "primary";
+    const size = local.size ?? "md";
+    const placement = local.placement ?? "top-right";
+
+    return twMerge(clsx(
+      "badge",
+      `badge--${size}`,
+      `badge--${color}`,
+      `badge--${variant}`,
+      `badge--${placement}`,
+    ), local.class);
+  };
+
+  const badgeChildren = () => {
+    const c = local.children;
+    if (typeof c === "string" || typeof c === "number") {
+      return <BadgeLabel>{c}</BadgeLabel>;
+    }
+    return c;
+  };
+
+  return (
+    <BadgeContext.Provider value={{}}>
+      <span {...others} class={classes()} data-slot="badge">
+        {badgeChildren()}
+      </span>
+    </BadgeContext.Provider>
+  );
+};
+
+/* -------------------------------------------------------------------------------------------------
+ * Badge Label
+ * -----------------------------------------------------------------------------------------------*/
+interface BadgeLabelProps extends JSX.HTMLAttributes<HTMLSpanElement> {
+  class?: string;
+}
+
+const BadgeLabel = (props: BadgeLabelProps) => {
+  const [local, others] = splitProps(props, ["children", "class"]);
+  useContext(BadgeContext);
+
+  return (
+    <span
+      class={twMerge("badge__label", local.class)}
+      data-slot="badge-label"
+      {...others}
+    >
+      {local.children}
+    </span>
+  );
+};
+
+/* -------------------------------------------------------------------------------------------------
+ * Exports
+ * -----------------------------------------------------------------------------------------------*/
+export { BadgeRoot, BadgeLabel, BadgeAnchor };
+
+export type { BadgeRootProps, BadgeLabelProps, BadgeAnchorProps };
