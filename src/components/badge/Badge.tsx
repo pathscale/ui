@@ -2,17 +2,7 @@ import { clsx } from "clsx";
 import { type JSX, createContext, splitProps, useContext } from "solid-js";
 import { twMerge } from "tailwind-merge";
 
-<<<<<<< HEAD
-import "./Badge.css";
-=======
 import "./badge.css";
-import type {
-  ComponentColor,
-  ComponentSize,
-  ComponentVariant,
-  IComponentBaseProps,
-} from "../types";
->>>>>>> 47260b5 (feat: per-component CSS + bundleless mode)
 
 /* -------------------------------------------------------------------------------------------------
  * Badge Context
@@ -72,20 +62,38 @@ const BadgeRoot = (props: BadgeRootProps) => {
     "placement",
   ]);
 
-  const classes = () => {
-    const color = local.color ?? "default";
-    const variant = local.variant ?? "primary";
-    const size = local.size ?? "md";
-    const placement = local.placement ?? "top-right";
-
-    return twMerge(clsx(
+  const classes = () =>
+    twMerge(
       "badge",
-      `badge--${size}`,
-      `badge--${color}`,
-      `badge--${variant}`,
-      `badge--${placement}`,
-    ), local.class);
-  };
+      clsx({
+        "badge-xs": (local.size ?? "md") === "xs",
+        "badge-sm": (local.size ?? "md") === "sm",
+        "badge-md": (local.size ?? "md") === "md",
+        "badge-lg": (local.size ?? "md") === "lg",
+        "badge-xl": (local.size ?? "md") === "xl",
+        "badge-primary": local.color === "primary",
+        "badge-secondary": local.color === "secondary",
+        "badge-accent": local.color === "accent",
+        "badge-neutral": local.color === "neutral",
+        "badge-info": local.color === "info",
+        "badge-success": local.color === "success",
+        "badge-warning": local.color === "warning",
+        "badge-error": local.color === "error" || local.color === "danger",
+        "badge-ghost": local.color === "ghost",
+        "badge-soft": (local.variant ?? "primary") === "soft",
+        "badge-outline": (local.variant ?? "primary") === "outline",
+        "badge-dash": (local.variant ?? "primary") === "dash",
+        "absolute top-0 right-0 translate-x-1/4 -translate-y-1/4":
+          (local.placement ?? "top-right") === "top-right",
+        "absolute top-0 left-0 -translate-x-1/4 -translate-y-1/4":
+          (local.placement ?? "top-right") === "top-left",
+        "absolute right-0 bottom-0 translate-x-1/4 translate-y-1/4":
+          (local.placement ?? "top-right") === "bottom-right",
+        "absolute bottom-0 left-0 -translate-x-1/4 translate-y-1/4":
+          (local.placement ?? "top-right") === "bottom-left",
+      }),
+      local.class,
+    );
 
   const badgeChildren = () => {
     const c = local.children;

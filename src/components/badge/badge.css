@@ -1,4 +1,15 @@
 @layer components {
+  .badge-anchor {
+      position: relative;
+      display: inline-flex;
+      flex-shrink: 0;
+    }
+
+  .badge__label {
+      padding-inline: calc(0.25rem * 0.5);
+      line-height: inherit;
+    }
+
   .badge {
       display: inline-flex;
       align-items: center;
