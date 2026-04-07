@@ -1,5 +1,6 @@
 export { default as Accordion } from "./components/accordion";
-export { default as Alert } from "./components/alert";
+export { default as Alert, AlertRoot, AlertIndicator, AlertContent, AlertTitle, AlertDescription } from "./components/alert";
+export type { AlertStatus, AlertRootProps, AlertIndicatorProps, AlertContentProps, AlertTitleProps, AlertDescriptionProps } from "./components/alert";
 export { default as Artboard, type ArtboardProps } from "./components/artboard";
 export { default as Avatar } from "./components/avatar";
 export { default as Background } from "./components/background";

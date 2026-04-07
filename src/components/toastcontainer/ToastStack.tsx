@@ -13,7 +13,15 @@ import Toast from "../toast";
 import type { ToastProps } from "../toast/Toast";
 import { MotionDiv, resolvePreset } from "../../motion";
 import type { MotionPreset } from "../../motion";
-import { toastStore, type ToastItem } from "../../stores/toastStore";
+import type { AlertStatus } from "../alert";
+import { toastStore, type ToastItem, type ToastType } from "../../stores/toastStore";
+
+const TOAST_STATUS_MAP: Record<ToastType, AlertStatus> = {
+  info: "accent",
+  success: "success",
+  warning: "warning",
+  error: "danger",
+};
 
 export type ToastRenderer = (
   toast: ToastItem,
@@ -33,11 +41,12 @@ export type ToastStackProps = ToastProps & {
 
 const defaultRenderToast: ToastRenderer = (toast, dismiss) => (
   <Alert
-    status={toast.type}
-    class="flex justify-between items-center gap-4"
+    status={TOAST_STATUS_MAP[toast.type]}
     style={{ "min-width": "20rem", "max-width": "32rem" }}
   >
-    <span class="flex-1">{toast.message}</span>
+    <Alert.Content>
+      <Alert.Title>{toast.message}</Alert.Title>
+    </Alert.Content>
     <Button
       size="sm"
       variant="ghost"

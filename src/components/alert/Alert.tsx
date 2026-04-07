@@ -1,91 +1,294 @@
-import "./alert.css";
-import { type JSX, type Component, splitProps, createMemo } from "solid-js";
+import "./Alert.css";
+import {
+  createContext,
+  splitProps,
+  useContext,
+  Show,
+  type Component,
+  type JSX,
+  type ParentComponent,
+} from "solid-js";
 import { twMerge } from "tailwind-merge";
-import { clsx } from "clsx";
-import type { IComponentBaseProps, ComponentVariant } from "../types";
-import { children as resolveChildren } from "solid-js";
+import type { IComponentBaseProps } from "../types";
 
-export type ComponentStatus = "info" | "success" | "warning" | "error";
-export type ComponentLayout = "vertical" | "horizontal";
+/* -------------------------------------------------------------------------------------------------
+ * Alert Context
+ * -----------------------------------------------------------------------------------------------*/
+export type AlertStatus = "default" | "accent" | "success" | "warning" | "danger";
 
-export type AlertProps = IComponentBaseProps &
-  JSX.HTMLAttributes<HTMLDivElement> & {
-    icon?: JSX.Element;
-    layout?: ComponentLayout;
-    status?: ComponentStatus;
-    variant?: ComponentVariant;
-    "aria-atomic"?: boolean;
-    "aria-live"?: "off" | "polite" | "assertive";
-    "aria-relevant"?: string;
-    "aria-label"?: string;
-    "aria-labelledby"?: string;
+type AlertContextValue = {
+  status: () => AlertStatus;
+};
+
+const AlertContext = createContext<AlertContextValue>();
+
+const useAlertContext = () => {
+  const ctx = useContext(AlertContext);
+  if (!ctx) throw new Error("Alert compound components must be used within <Alert>");
+  return ctx;
+};
+
+/* -------------------------------------------------------------------------------------------------
+ * Types
+ * -----------------------------------------------------------------------------------------------*/
+export type AlertRootProps = Omit<JSX.HTMLAttributes<HTMLDivElement>, "children"> &
+  IComponentBaseProps & {
+    status?: AlertStatus;
+    children: JSX.Element;
   };
 
-const Alert: Component<AlertProps> = (props) => {
+export type AlertIndicatorProps = Omit<JSX.HTMLAttributes<HTMLDivElement>, "children"> &
+  IComponentBaseProps & {
+    children?: JSX.Element;
+  };
+
+export type AlertContentProps = Omit<JSX.HTMLAttributes<HTMLDivElement>, "children"> &
+  IComponentBaseProps & {
+    children: JSX.Element;
+  };
+
+export type AlertTitleProps = Omit<JSX.HTMLAttributes<HTMLParagraphElement>, "children"> &
+  IComponentBaseProps & {
+    children: JSX.Element;
+  };
+
+export type AlertDescriptionProps = Omit<JSX.HTMLAttributes<HTMLSpanElement>, "children"> &
+  IComponentBaseProps & {
+    children: JSX.Element;
+  };
+
+/* -------------------------------------------------------------------------------------------------
+ * Default Status Icons
+ * -----------------------------------------------------------------------------------------------*/
+const InfoIcon = () => (
+  <svg
+    aria-hidden="true"
+    data-slot="alert-default-icon"
+    fill="none"
+    height="16"
+    viewBox="0 0 24 24"
+    width="16"
+    xmlns="http://www.w3.org/2000/svg"
+  >
+    <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2" />
+    <path d="M12 16v-4M12 8h.01" stroke="currentColor" stroke-linecap="round" stroke-width="2" />
+  </svg>
+);
+
+const SuccessIcon = () => (
+  <svg
+    aria-hidden="true"
+    data-slot="alert-default-icon"
+    fill="none"
+    height="16"
+    viewBox="0 0 24 24"
+    width="16"
+    xmlns="http://www.w3.org/2000/svg"
+  >
+    <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2" />
+    <path d="M9 12l2 2 4-4" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" />
+  </svg>
+);
+
+const WarningIcon = () => (
+  <svg
+    aria-hidden="true"
+    data-slot="alert-default-icon"
+    fill="none"
+    height="16"
+    viewBox="0 0 24 24"
+    width="16"
+    xmlns="http://www.w3.org/2000/svg"
+  >
+    <path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z" stroke="currentColor" stroke-width="2" />
+    <path d="M12 9v4M12 17h.01" stroke="currentColor" stroke-linecap="round" stroke-width="2" />
+  </svg>
+);
+
+const DangerIcon = () => (
+  <svg
+    aria-hidden="true"
+    data-slot="alert-default-icon"
+    fill="none"
+    height="16"
+    viewBox="0 0 24 24"
+    width="16"
+    xmlns="http://www.w3.org/2000/svg"
+  >
+    <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2" />
+    <path d="M15 9l-6 6M9 9l6 6" stroke="currentColor" stroke-linecap="round" stroke-width="2" />
+  </svg>
+);
+
+const STATUS_ICON_MAP: Record<AlertStatus, Component> = {
+  default: InfoIcon,
+  accent: InfoIcon,
+  success: SuccessIcon,
+  warning: WarningIcon,
+  danger: DangerIcon,
+};
+
+/* -------------------------------------------------------------------------------------------------
+ * Alert Root
+ * -----------------------------------------------------------------------------------------------*/
+const STATUS_CLASS_MAP: Record<AlertStatus, string> = {
+  default: "alert--default",
+  accent: "alert--accent",
+  success: "alert--success",
+  warning: "alert--warning",
+  danger: "alert--danger",
+};
+
+const AlertRoot: ParentComponent<AlertRootProps> = (props) => {
   const [local, others] = splitProps(props, [
-    "icon",
-    "layout",
-    "status",
-    "variant",
-    "dataTheme",
+    "children",
     "class",
     "className",
+    "status",
+    "dataTheme",
     "style",
-    "children",
-    "aria-atomic",
-    "aria-live",
-    "aria-relevant",
-    "aria-label",
-    "aria-labelledby",
   ]);
 
-  const resolvedChildren = resolveChildren(() => local.children);
+  const status = () => local.status ?? "default";
 
-  const classes = createMemo(() =>
-    twMerge(
-      "alert",
-      local.class,
-      local.className,
-      clsx({
-        "alert-vertical": local.layout === "vertical",
-        "alert-horizontal": local.layout === "horizontal",
-        "alert-info": local.status === "info",
-        "alert-success": local.status === "success",
-        "alert-warning": local.status === "warning",
-        "alert-error": local.status === "error",
-        "alert-soft": local.variant === "soft",
-        "alert-dash": local.variant === "dash",
-        "alert-outline": local.variant === "outline",
-      }),
-    ),
-  );
+  const ctx: AlertContextValue = { status };
 
-  const role = "alert";
-  const ariaAtomic = createMemo(() =>
-    local["aria-atomic"] === undefined ? true : local["aria-atomic"],
+  return (
+    <AlertContext.Provider value={ctx}>
+      <div
+        {...others}
+        role="alert"
+        class={twMerge("alert", STATUS_CLASS_MAP[status()], local.class, local.className)}
+        data-slot="alert-root"
+        data-status={status()}
+        data-theme={local.dataTheme}
+        style={local.style}
+      >
+        {local.children}
+      </div>
+    </AlertContext.Provider>
   );
-  const ariaLive = createMemo(() => local["aria-live"] || "assertive");
-  const ariaRelevant = createMemo(() => local["aria-relevant"]);
-  const ariaLabel = createMemo(() => local["aria-label"]);
-  const ariaLabelledby = createMemo(() => local["aria-labelledby"]);
+};
+
+/* -------------------------------------------------------------------------------------------------
+ * Alert Indicator
+ * -----------------------------------------------------------------------------------------------*/
+const AlertIndicator: Component<AlertIndicatorProps> = (props) => {
+  const [local, others] = splitProps(props, [
+    "children",
+    "class",
+    "className",
+    "dataTheme",
+    "style",
+  ]);
+
+  const ctx = useAlertContext();
+
+  const DefaultIcon = () => {
+    const Icon = STATUS_ICON_MAP[ctx.status()];
+    return <Icon />;
+  };
 
   return (
     <div
-      role={role}
       {...others}
+      class={twMerge("alert__indicator", local.class, local.className)}
+      data-slot="alert-indicator"
       data-theme={local.dataTheme}
-      class={classes()}
       style={local.style}
-      aria-atomic={ariaAtomic()}
-      aria-live={ariaLive()}
-      aria-relevant={ariaRelevant()}
-      aria-label={ariaLabel()}
-      aria-labelledby={ariaLabelledby()}
     >
-      {local.icon}
-      {resolvedChildren()}
+      <Show when={local.children} fallback={<DefaultIcon />}>
+        {local.children}
+      </Show>
     </div>
   );
 };
 
+/* -------------------------------------------------------------------------------------------------
+ * Alert Content
+ * -----------------------------------------------------------------------------------------------*/
+const AlertContent: ParentComponent<AlertContentProps> = (props) => {
+  const [local, others] = splitProps(props, [
+    "children",
+    "class",
+    "className",
+    "dataTheme",
+    "style",
+  ]);
+
+  return (
+    <div
+      {...others}
+      class={twMerge("alert__content", local.class, local.className)}
+      data-slot="alert-content"
+      data-theme={local.dataTheme}
+      style={local.style}
+    >
+      {local.children}
+    </div>
+  );
+};
+
+/* -------------------------------------------------------------------------------------------------
+ * Alert Title
+ * -----------------------------------------------------------------------------------------------*/
+const AlertTitle: ParentComponent<AlertTitleProps> = (props) => {
+  const [local, others] = splitProps(props, [
+    "children",
+    "class",
+    "className",
+    "dataTheme",
+    "style",
+  ]);
+
+  return (
+    <p
+      {...others}
+      class={twMerge("alert__title", local.class, local.className)}
+      data-slot="alert-title"
+      data-theme={local.dataTheme}
+      style={local.style}
+    >
+      {local.children}
+    </p>
+  );
+};
+
+/* -------------------------------------------------------------------------------------------------
+ * Alert Description
+ * -----------------------------------------------------------------------------------------------*/
+const AlertDescription: ParentComponent<AlertDescriptionProps> = (props) => {
+  const [local, others] = splitProps(props, [
+    "children",
+    "class",
+    "className",
+    "dataTheme",
+    "style",
+  ]);
+
+  return (
+    <span
+      {...others}
+      class={twMerge("alert__description", local.class, local.className)}
+      data-slot="alert-description"
+      data-theme={local.dataTheme}
+      style={local.style}
+    >
+      {local.children}
+    </span>
+  );
+};
+
+/* -------------------------------------------------------------------------------------------------
+ * Compound Component
+ * -----------------------------------------------------------------------------------------------*/
+const Alert = Object.assign(AlertRoot, {
+  Root: AlertRoot,
+  Indicator: AlertIndicator,
+  Content: AlertContent,
+  Title: AlertTitle,
+  Description: AlertDescription,
+});
+
 export default Alert;
+export { AlertRoot, AlertIndicator, AlertContent, AlertTitle, AlertDescription };

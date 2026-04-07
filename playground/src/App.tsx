@@ -1,5 +1,18 @@
 import { For, createSignal } from "solid-js";
-import { Badge, Button, Checkbox, Dropdown, Input, Radio, RadioGroup, SliderField, Tabs, Toggle, Tooltip } from "@pathscale/ui";
+import {
+  Alert,
+  Badge,
+  Button,
+  Checkbox,
+  Dropdown,
+  Input,
+  Radio,
+  RadioGroup,
+  SliderField,
+  Tabs,
+  Toggle,
+  Tooltip,
+} from "@pathscale/ui";
 
 const BADGE_COLORS = [
   "default",
@@ -11,13 +24,23 @@ const BADGE_COLORS = [
 
 const BADGE_VARIANTS = ["primary", "secondary", "soft"] as const;
 const BADGE_SIZES = ["sm", "md", "lg"] as const;
-const BADGE_PLACEMENTS = ["top-right", "top-left", "bottom-right", "bottom-left"] as const;
+const BADGE_PLACEMENTS = [
+  "top-right",
+  "top-left",
+  "bottom-right",
+  "bottom-left",
+] as const;
 
 const TAB_ITEMS = [
   { key: "overview", label: "Overview", content: "Overview content" },
   { key: "activity", label: "Activity", content: "Recent activity" },
   { key: "settings", label: "Settings", content: "Settings content" },
-  { key: "disabled", label: "Disabled", content: "Disabled content", disabled: true },
+  {
+    key: "disabled",
+    label: "Disabled",
+    content: "Disabled content",
+    disabled: true,
+  },
 ] as const;
 
 const VERTICAL_TAB_ITEMS = [
@@ -45,9 +68,22 @@ const BUTTON_VARIANTS = [
 
 const BUTTON_SIZES = ["sm", "md", "lg"] as const;
 const INPUT_SIZES = ["sm", "md", "lg"] as const;
-const TOGGLE_COLORS = ["default", "accent", "success", "warning", "danger"] as const;
+const TOGGLE_COLORS = [
+  "default",
+  "accent",
+  "success",
+  "warning",
+  "danger",
+] as const;
 const TOGGLE_SIZES = ["sm", "md", "lg"] as const;
 const TOOLTIP_PLACEMENTS = ["top", "bottom", "left", "right"] as const;
+const ALERT_STATUSES = [
+  "default",
+  "accent",
+  "success",
+  "warning",
+  "danger",
+] as const;
 
 export default function App() {
   const [selectedFramework, setSelectedFramework] = createSignal("solid");
@@ -156,12 +192,16 @@ export default function App() {
         <section class="space-y-4 rounded-xl border border-base-300 bg-base-200 p-4">
           <div>
             <h2 class="text-sm font-semibold">Tabs</h2>
-            <p class="text-xs opacity-70">Primary and secondary variants, horizontal + vertical.</p>
+            <p class="text-xs opacity-70">
+              Primary and secondary variants, horizontal + vertical.
+            </p>
           </div>
 
           <div class="grid gap-6 md:grid-cols-2">
             <div class="space-y-3">
-              <h3 class="text-xs font-semibold uppercase opacity-70">Primary</h3>
+              <h3 class="text-xs font-semibold uppercase opacity-70">
+                Primary
+              </h3>
               <Tabs.Root defaultSelectedKey="overview">
                 <Tabs.ListContainer>
                   <Tabs.List aria-label="Primary tabs">
@@ -176,13 +216,17 @@ export default function App() {
                   </Tabs.List>
                 </Tabs.ListContainer>
                 <For each={TAB_ITEMS}>
-                  {(item) => <Tabs.Panel id={item.key}>{item.content}</Tabs.Panel>}
+                  {(item) => (
+                    <Tabs.Panel id={item.key}>{item.content}</Tabs.Panel>
+                  )}
                 </For>
               </Tabs.Root>
             </div>
 
             <div class="space-y-3">
-              <h3 class="text-xs font-semibold uppercase opacity-70">Secondary</h3>
+              <h3 class="text-xs font-semibold uppercase opacity-70">
+                Secondary
+              </h3>
               <Tabs.Root defaultSelectedKey="activity" variant="secondary">
                 <Tabs.ListContainer>
                   <Tabs.List aria-label="Secondary tabs">
@@ -196,7 +240,9 @@ export default function App() {
                   </Tabs.List>
                 </Tabs.ListContainer>
                 <For each={TAB_ITEMS}>
-                  {(item) => <Tabs.Panel id={item.key}>{item.content}</Tabs.Panel>}
+                  {(item) => (
+                    <Tabs.Panel id={item.key}>{item.content}</Tabs.Panel>
+                  )}
                 </For>
               </Tabs.Root>
             </div>
@@ -204,7 +250,9 @@ export default function App() {
 
           <div class="grid gap-6 md:grid-cols-2">
             <div class="space-y-3">
-              <h3 class="text-xs font-semibold uppercase opacity-70">Primary Vertical</h3>
+              <h3 class="text-xs font-semibold uppercase opacity-70">
+                Primary Vertical
+              </h3>
               <Tabs.Root defaultSelectedKey="details" orientation="vertical">
                 <Tabs.ListContainer>
                   <Tabs.List aria-label="Vertical tabs">
@@ -219,14 +267,22 @@ export default function App() {
                   </Tabs.List>
                 </Tabs.ListContainer>
                 <For each={VERTICAL_TAB_ITEMS}>
-                  {(item) => <Tabs.Panel id={item.key}>{item.content}</Tabs.Panel>}
+                  {(item) => (
+                    <Tabs.Panel id={item.key}>{item.content}</Tabs.Panel>
+                  )}
                 </For>
               </Tabs.Root>
             </div>
 
             <div class="space-y-3">
-              <h3 class="text-xs font-semibold uppercase opacity-70">Secondary Vertical</h3>
-              <Tabs.Root defaultSelectedKey="members" orientation="vertical" variant="secondary">
+              <h3 class="text-xs font-semibold uppercase opacity-70">
+                Secondary Vertical
+              </h3>
+              <Tabs.Root
+                defaultSelectedKey="members"
+                orientation="vertical"
+                variant="secondary"
+              >
                 <Tabs.ListContainer>
                   <Tabs.List aria-label="Secondary vertical tabs">
                     <For each={VERTICAL_TAB_ITEMS}>
@@ -239,7 +295,9 @@ export default function App() {
                   </Tabs.List>
                 </Tabs.ListContainer>
                 <For each={VERTICAL_TAB_ITEMS}>
-                  {(item) => <Tabs.Panel id={item.key}>{item.content}</Tabs.Panel>}
+                  {(item) => (
+                    <Tabs.Panel id={item.key}>{item.content}</Tabs.Panel>
+                  )}
                 </For>
               </Tabs.Root>
             </div>
@@ -249,12 +307,16 @@ export default function App() {
         <section class="space-y-4 rounded-xl border border-base-300 bg-base-200 p-4">
           <div>
             <h2 class="text-sm font-semibold">Dropdown</h2>
-            <p class="text-xs opacity-70">Open/close, outside click, keyboard nav, and disabled items.</p>
+            <p class="text-xs opacity-70">
+              Open/close, outside click, keyboard nav, and disabled items.
+            </p>
           </div>
 
           <div class="grid gap-6 md:grid-cols-2">
             <div class="space-y-3">
-              <h3 class="text-xs font-semibold uppercase opacity-70">Start Align</h3>
+              <h3 class="text-xs font-semibold uppercase opacity-70">
+                Start Align
+              </h3>
               <Dropdown.Root>
                 <Dropdown.Trigger>Actions</Dropdown.Trigger>
                 <Dropdown.Menu align="start">
@@ -274,7 +336,9 @@ export default function App() {
             </div>
 
             <div class="space-y-3">
-              <h3 class="text-xs font-semibold uppercase opacity-70">End Align</h3>
+              <h3 class="text-xs font-semibold uppercase opacity-70">
+                End Align
+              </h3>
               <Dropdown.Root class="w-full">
                 <Dropdown.Trigger class="w-full justify-between">
                   Options
@@ -292,7 +356,9 @@ export default function App() {
         <section class="space-y-4 rounded-xl border border-base-300 bg-base-200 p-4">
           <div>
             <h2 class="text-sm font-semibold">Button</h2>
-            <p class="text-xs opacity-70">HeroUI-style variant API matrix with size/state coverage.</p>
+            <p class="text-xs opacity-70">
+              HeroUI-style variant API matrix with size/state coverage.
+            </p>
           </div>
 
           <div class="space-y-3">
@@ -339,7 +405,10 @@ export default function App() {
         <section class="space-y-4 rounded-xl border border-base-300 bg-base-200 p-4">
           <div>
             <h2 class="text-sm font-semibold">Input</h2>
-            <p class="text-xs opacity-70">HeroUI-style baseline with size, focus, disabled, and invalid states.</p>
+            <p class="text-xs opacity-70">
+              HeroUI-style baseline with size, focus, disabled, and invalid
+              states.
+            </p>
           </div>
 
           <div class="space-y-3">
@@ -392,7 +461,9 @@ export default function App() {
           </div>
 
           <div class="space-y-3">
-            <h3 class="text-xs font-semibold uppercase opacity-70">With Slots</h3>
+            <h3 class="text-xs font-semibold uppercase opacity-70">
+              With Slots
+            </h3>
             <div class="grid gap-3 md:grid-cols-2">
               <Input
                 label="Start Content"
@@ -413,12 +484,16 @@ export default function App() {
         <section class="space-y-4 rounded-xl border border-base-300 bg-base-200 p-4">
           <div>
             <h2 class="text-sm font-semibold">Radio + RadioGroup</h2>
-            <p class="text-xs opacity-70">HeroUI-style baseline for selection controls.</p>
+            <p class="text-xs opacity-70">
+              HeroUI-style baseline for selection controls.
+            </p>
           </div>
 
           <div class="grid gap-6 md:grid-cols-2">
             <div class="space-y-3">
-              <h3 class="text-xs font-semibold uppercase opacity-70">Uncontrolled Vertical</h3>
+              <h3 class="text-xs font-semibold uppercase opacity-70">
+                Uncontrolled Vertical
+              </h3>
               <RadioGroup
                 defaultValue="starter"
                 label="Plan"
@@ -431,7 +506,9 @@ export default function App() {
             </div>
 
             <div class="space-y-3">
-              <h3 class="text-xs font-semibold uppercase opacity-70">Controlled Horizontal</h3>
+              <h3 class="text-xs font-semibold uppercase opacity-70">
+                Controlled Horizontal
+              </h3>
               <RadioGroup
                 value={selectedFramework()}
                 onChange={setSelectedFramework}
@@ -451,7 +528,9 @@ export default function App() {
 
           <div class="grid gap-6 md:grid-cols-2">
             <div class="space-y-3">
-              <h3 class="text-xs font-semibold uppercase opacity-70">Invalid State</h3>
+              <h3 class="text-xs font-semibold uppercase opacity-70">
+                Invalid State
+              </h3>
               <RadioGroup
                 isInvalid
                 label="Environment"
@@ -467,7 +546,9 @@ export default function App() {
             </div>
 
             <div class="space-y-3">
-              <h3 class="text-xs font-semibold uppercase opacity-70">Disabled Group</h3>
+              <h3 class="text-xs font-semibold uppercase opacity-70">
+                Disabled Group
+              </h3>
               <RadioGroup
                 isDisabled
                 defaultValue="email"
@@ -484,7 +565,10 @@ export default function App() {
         <section class="space-y-4 rounded-xl border border-base-300 bg-base-200 p-4">
           <div>
             <h2 class="text-sm font-semibold">Checkbox</h2>
-            <p class="text-xs opacity-70">HeroUI-style baseline with checked, indeterminate, and disabled states.</p>
+            <p class="text-xs opacity-70">
+              HeroUI-style baseline with checked, indeterminate, and disabled
+              states.
+            </p>
           </div>
 
           <div class="grid gap-6 md:grid-cols-2">
@@ -501,11 +585,15 @@ export default function App() {
             </div>
 
             <div class="space-y-3">
-              <h3 class="text-xs font-semibold uppercase opacity-70">Controlled + Variant</h3>
+              <h3 class="text-xs font-semibold uppercase opacity-70">
+                Controlled + Variant
+              </h3>
               <div class="flex flex-col gap-3">
                 <Checkbox
                   checked={checkedTerms()}
-                  onChange={(event) => setCheckedTerms(event.currentTarget.checked)}
+                  onChange={(event) =>
+                    setCheckedTerms(event.currentTarget.checked)
+                  }
                 >
                   Accept terms ({checkedTerms() ? "on" : "off"})
                 </Checkbox>
@@ -523,7 +611,9 @@ export default function App() {
         <section class="space-y-4 rounded-xl border border-base-300 bg-base-200 p-4">
           <div>
             <h2 class="text-sm font-semibold">Toggle</h2>
-            <p class="text-xs opacity-70">HeroUI-style switch with color, size, and state coverage.</p>
+            <p class="text-xs opacity-70">
+              HeroUI-style switch with color, size, and state coverage.
+            </p>
           </div>
 
           <div class="grid gap-6 md:grid-cols-2">
@@ -568,7 +658,9 @@ export default function App() {
             </div>
 
             <div class="space-y-3">
-              <h3 class="text-xs font-semibold uppercase opacity-70">Controlled + Description</h3>
+              <h3 class="text-xs font-semibold uppercase opacity-70">
+                Controlled + Description
+              </h3>
               <div class="flex flex-col gap-3">
                 <Toggle
                   checked={toggleOn()}
@@ -591,12 +683,16 @@ export default function App() {
         <section class="space-y-4 rounded-xl border border-base-300 bg-base-200 p-4">
           <div>
             <h2 class="text-sm font-semibold">Slider</h2>
-            <p class="text-xs opacity-70">HeroUI-style range slider with sizes and states.</p>
+            <p class="text-xs opacity-70">
+              HeroUI-style range slider with sizes and states.
+            </p>
           </div>
 
           <div class="grid gap-6 md:grid-cols-2">
             <div class="space-y-3">
-              <h3 class="text-xs font-semibold uppercase opacity-70">Default</h3>
+              <h3 class="text-xs font-semibold uppercase opacity-70">
+                Default
+              </h3>
               <SliderField
                 label="Volume"
                 value={sliderVal()}
@@ -605,7 +701,9 @@ export default function App() {
             </div>
 
             <div class="space-y-3">
-              <h3 class="text-xs font-semibold uppercase opacity-70">Custom Format</h3>
+              <h3 class="text-xs font-semibold uppercase opacity-70">
+                Custom Format
+              </h3>
               <SliderField
                 label="Price"
                 value={sliderVal()}
@@ -664,11 +762,16 @@ export default function App() {
         <section class="space-y-4 rounded-xl border border-base-300 bg-base-200 p-4">
           <div>
             <h2 class="text-sm font-semibold">Tooltip</h2>
-            <p class="text-xs opacity-70">HeroUI-style compound tooltip with placement, arrow, and controlled state.</p>
+            <p class="text-xs opacity-70">
+              HeroUI-style compound tooltip with placement, arrow, and
+              controlled state.
+            </p>
           </div>
 
           <div class="space-y-3">
-            <h3 class="text-xs font-semibold uppercase opacity-70">Placements</h3>
+            <h3 class="text-xs font-semibold uppercase opacity-70">
+              Placements
+            </h3>
             <div class="flex flex-wrap items-center justify-center gap-12 py-8">
               <For each={TOOLTIP_PLACEMENTS}>
                 {(placement) => (
@@ -687,21 +790,23 @@ export default function App() {
           </div>
 
           <div class="space-y-3">
-            <h3 class="text-xs font-semibold uppercase opacity-70">Without Arrow</h3>
+            <h3 class="text-xs font-semibold uppercase opacity-70">
+              Without Arrow
+            </h3>
             <div class="flex flex-wrap items-center gap-6 py-4">
               <Tooltip placement="top">
                 <Tooltip.Trigger>
                   <Button variant="outline">No arrow</Button>
                 </Tooltip.Trigger>
-                <Tooltip.Content>
-                  Simple tooltip text
-                </Tooltip.Content>
+                <Tooltip.Content>Simple tooltip text</Tooltip.Content>
               </Tooltip>
             </div>
           </div>
 
           <div class="space-y-3">
-            <h3 class="text-xs font-semibold uppercase opacity-70">Controlled</h3>
+            <h3 class="text-xs font-semibold uppercase opacity-70">
+              Controlled
+            </h3>
             <div class="flex flex-wrap items-center gap-6 py-4">
               <Tooltip placement="right" isOpen>
                 <Tooltip.Trigger>
@@ -713,6 +818,80 @@ export default function App() {
                 </Tooltip.Content>
               </Tooltip>
             </div>
+          </div>
+        </section>
+
+        <section class="space-y-4 rounded-xl border border-base-300 bg-base-200 p-4">
+          <div>
+            <h2 class="text-sm font-semibold">Alert</h2>
+            <p class="text-xs opacity-70">
+              HeroUI-style compound alert with status variants and slots.
+            </p>
+          </div>
+
+          <div class="space-y-3">
+            <h3 class="text-xs font-semibold uppercase opacity-70">Statuses</h3>
+            <div class="grid gap-3">
+              <For each={ALERT_STATUSES}>
+                {(status) => (
+                  <Alert status={status}>
+                    <Alert.Indicator />
+                    <Alert.Content>
+                      <Alert.Title>
+                        {status.charAt(0).toUpperCase() + status.slice(1)} alert
+                      </Alert.Title>
+                      <Alert.Description>
+                        This is a {status} alert with indicator, title, and
+                        description.
+                      </Alert.Description>
+                    </Alert.Content>
+                  </Alert>
+                )}
+              </For>
+            </div>
+          </div>
+
+          <div class="space-y-3">
+            <h3 class="text-xs font-semibold uppercase opacity-70">
+              With Action
+            </h3>
+            <Alert status="accent">
+              <Alert.Indicator />
+              <Alert.Content>
+                <Alert.Title>Update available</Alert.Title>
+                <Alert.Description>
+                  A new version is available. Refresh to get the latest
+                  features. A new version is available. Refresh to get the
+                  latest features. A new version is available. Refresh to get
+                  the latest features. A new version is available. Refresh to
+                  get the latest features.
+                </Alert.Description>
+              </Alert.Content>
+              <Button size="sm" variant="primary">
+                Refresh
+              </Button>
+            </Alert>
+          </div>
+
+          <div class="space-y-3">
+            <h3 class="text-xs font-semibold uppercase opacity-70">
+              Title Only + Close
+            </h3>
+            <Alert status="success">
+              <Alert.Indicator />
+              <Alert.Content>
+                <Alert.Title>Profile updated successfully</Alert.Title>
+              </Alert.Content>
+              <Button
+                size="sm"
+                variant="ghost"
+                isIconOnly
+                aria-label="Close"
+                class="opacity-70 hover:opacity-100"
+              >
+                ✕
+              </Button>
+            </Alert>
           </div>
         </section>
       </div>
