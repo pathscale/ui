@@ -10,6 +10,7 @@ import {
   Skeleton,
   Checkbox,
   Drawer,
+  FloatingDock,
   Dropdown,
   Input,
   Radio,
@@ -1253,6 +1254,40 @@ export default function App() {
                 )}
               </For>
             </div>
+          </div>
+        </section>
+        <section class="space-y-4 rounded-xl border border-base-300 bg-base-200 p-4">
+          <div>
+            <h2 class="text-sm font-semibold">Floating Dock</h2>
+            <p class="text-xs opacity-70">
+              macOS-style dock with spring magnification, x-nudge, and expanding background.
+            </p>
+          </div>
+
+          <div class="flex items-end justify-center py-8">
+            <FloatingDock
+              items={[
+                { title: "Home", icon: <span class="text-lg">🏠</span>, href: "#" },
+                { title: "Search", icon: <span class="text-lg">🔍</span>, href: "#" },
+                { title: "Messages", icon: <span class="text-lg">💬</span>, href: "#" },
+                { title: "Photos", icon: <span class="text-lg">📷</span>, href: "#" },
+                { title: "Music", icon: <span class="text-lg">🎵</span>, href: "#" },
+                { title: "Settings", icon: <span class="text-lg">⚙️</span>, onClick: () => alert("Settings clicked") },
+              ]}
+            />
+          </div>
+
+          <div class="flex items-end justify-center py-8">
+            <FloatingDock
+              items={[
+                { title: "A", icon: <span class="text-sm font-bold">A</span>, href: "#" },
+                { title: "B", icon: <span class="text-sm font-bold">B</span>, href: "#" },
+                { title: "C", icon: <span class="text-sm font-bold">C</span>, href: "#" },
+                { title: "D", icon: <span class="text-sm font-bold">D</span>, href: "#" },
+              ]}
+              magnify={false}
+              showContainer
+            />
           </div>
         </section>
       </div>
