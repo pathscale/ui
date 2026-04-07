@@ -522,7 +522,7 @@ const DropdownItem = (props: DropdownItemProps): JSX.Element => {
       type={local.type ?? "button"}
       role={local.role ?? "menuitem"}
       class={twMerge("dropdown__item", local.class)}
-      data-slot="dropdown-item"
+      data-slot="menu-item"
       data-disabled={isDisabled() ? "true" : "false"}
       data-focused={ctx?.focusedKey() === itemKey ? "true" : "false"}
       aria-disabled={isDisabled() ? "true" : "false"}
@@ -557,7 +557,7 @@ const DropdownSeparator = (props: DropdownSeparatorProps): JSX.Element => {
       {...others}
       role="separator"
       class={twMerge("dropdown__separator", local.class)}
-      data-slot="dropdown-separator"
+      data-slot="separator"
       aria-orientation="horizontal"
     />
   );
