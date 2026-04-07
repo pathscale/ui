@@ -1,5 +1,5 @@
 import { For, createSignal } from "solid-js";
-import { Badge, Button, Dropdown, Input, Radio, RadioGroup, Tabs } from "@pathscale/ui";
+import { Badge, Button, Checkbox, Dropdown, Input, Radio, RadioGroup, Tabs } from "@pathscale/ui";
 
 const BADGE_COLORS = [
   "default",
@@ -48,6 +48,7 @@ const INPUT_SIZES = ["sm", "md", "lg"] as const;
 
 export default function App() {
   const [selectedFramework, setSelectedFramework] = createSignal("solid");
+  const [checkedTerms, setCheckedTerms] = createSignal(false);
 
   return (
     <main class="min-h-screen bg-base-100 text-base-content p-8">
@@ -469,6 +470,46 @@ export default function App() {
                 <Radio value="email">Email</Radio>
                 <Radio value="sms">SMS</Radio>
               </RadioGroup>
+            </div>
+          </div>
+        </section>
+
+        <section class="space-y-4 rounded-xl border border-base-300 bg-base-200 p-4">
+          <div>
+            <h2 class="text-sm font-semibold">Checkbox</h2>
+            <p class="text-xs opacity-70">HeroUI-style baseline with checked, indeterminate, and disabled states.</p>
+          </div>
+
+          <div class="grid gap-6 md:grid-cols-2">
+            <div class="space-y-3">
+              <h3 class="text-xs font-semibold uppercase opacity-70">States</h3>
+              <div class="flex flex-col gap-3">
+                <Checkbox>Unchecked</Checkbox>
+                <Checkbox defaultChecked>Checked</Checkbox>
+                <Checkbox isIndeterminate>Indeterminate</Checkbox>
+                <Checkbox isDisabled defaultChecked>
+                  Disabled checked
+                </Checkbox>
+              </div>
+            </div>
+
+            <div class="space-y-3">
+              <h3 class="text-xs font-semibold uppercase opacity-70">Controlled + Variant</h3>
+              <div class="flex flex-col gap-3">
+                <Checkbox
+                  checked={checkedTerms()}
+                  onChange={(event) => setCheckedTerms(event.currentTarget.checked)}
+                >
+                  Accept terms ({checkedTerms() ? "on" : "off"})
+                </Checkbox>
+                <Checkbox variant="secondary">Secondary variant</Checkbox>
+                <Checkbox isInvalid defaultChecked>
+                  Invalid checked
+                </Checkbox>
+                <Checkbox description="Description text aligns control to the top.">
+                  With description
+                </Checkbox>
+              </div>
             </div>
           </div>
         </section>

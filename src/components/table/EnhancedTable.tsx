@@ -1,5 +1,4 @@
 import "./table.css";
-import "../checkbox/checkbox.css";
 import {
   createEffect,
   createMemo,
