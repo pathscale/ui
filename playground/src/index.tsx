@@ -1,7 +1,7 @@
 /* @refresh reload */
 import { render } from "solid-js/web";
-import App from "./App";
 import "./index.css";
+import App from "./App";
 
 document.documentElement.setAttribute("data-theme", "dark");
 
