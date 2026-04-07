@@ -1,6 +1,6 @@
 {
   "name": "@pathscale/ui",
-  "version": "0.0.166",
+  "version": "1.1.0",
   "author": "pathscale",
   "repository": {
     "type": "git",
@@ -117,6 +117,8 @@
     "playground:build": "cd playground && bun run build",
     "playground:preview": "cd playground && bun run preview"
   },
-  "sideEffects": ["**/*.css"],
+  "sideEffects": [
+    "**/*.css"
+  ],
   "type": "module"
 }
