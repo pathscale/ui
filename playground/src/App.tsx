@@ -3,6 +3,7 @@ import {
   Alert,
   Avatar,
   Badge,
+  Breadcrumbs,
   Button,
   Checkbox,
   Drawer,
@@ -1076,6 +1077,36 @@ export default function App() {
                 <Avatar.Fallback>+5</Avatar.Fallback>
               </Avatar>
             </div>
+          </div>
+        </section>
+
+        <section class="space-y-4 rounded-xl border border-base-300 bg-base-200 p-4">
+          <div>
+            <h2 class="text-sm font-semibold">Breadcrumbs</h2>
+            <p class="text-xs opacity-70">
+              HeroUI-style compound breadcrumbs with separator and current page.
+            </p>
+          </div>
+
+          <div class="space-y-3">
+            <h3 class="text-xs font-semibold uppercase opacity-70">Default</h3>
+            <Breadcrumbs>
+              <Breadcrumbs.Item href="#">Home</Breadcrumbs.Item>
+              <Breadcrumbs.Item href="#">Products</Breadcrumbs.Item>
+              <Breadcrumbs.Item href="#">Category</Breadcrumbs.Item>
+              <Breadcrumbs.Item isCurrent>Current Page</Breadcrumbs.Item>
+            </Breadcrumbs>
+          </div>
+
+          <div class="space-y-3">
+            <h3 class="text-xs font-semibold uppercase opacity-70">
+              Custom Separator
+            </h3>
+            <Breadcrumbs separator={<span>/</span>}>
+              <Breadcrumbs.Item href="#">Home</Breadcrumbs.Item>
+              <Breadcrumbs.Item href="#">Docs</Breadcrumbs.Item>
+              <Breadcrumbs.Item isCurrent>API</Breadcrumbs.Item>
+            </Breadcrumbs>
           </div>
         </section>
       </div>

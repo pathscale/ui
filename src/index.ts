@@ -6,7 +6,8 @@ export { default as Avatar, AvatarRoot, AvatarImage, AvatarFallback } from "./co
 export type { AvatarSize, AvatarColor, AvatarVariant, AvatarRootProps, AvatarImageProps, AvatarFallbackProps } from "./components/avatar";
 export { default as Background } from "./components/background";
 export { default as Badge } from "./components/badge";
-export { Breadcrumbs, BreadcrumbsItem } from "./components/breadcrumbs";
+export { Breadcrumbs, BreadcrumbsRoot, BreadcrumbsItem } from "./components/breadcrumbs";
+export type { BreadcrumbsRootProps, BreadcrumbsItemProps } from "./components/breadcrumbs";
 export {
   default as BrowserMockup,
   type BrowserMockupProps,
