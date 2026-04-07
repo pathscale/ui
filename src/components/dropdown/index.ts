@@ -1,4 +1,10 @@
-import Dropdown from "./Dropdown";
-export type { DropdownProps } from "./Dropdown";
-
-export default Dropdown;
+export { default, Dropdown } from "./Dropdown";
+export type {
+  DropdownAlign,
+  DropdownRootProps,
+  DropdownTriggerProps,
+  DropdownMenuProps,
+  DropdownItemProps,
+  DropdownGroupProps,
+  DropdownSeparatorProps,
+} from "./Dropdown";

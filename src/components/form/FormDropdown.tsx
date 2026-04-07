@@ -107,8 +107,8 @@ export const FormDropdown: Component<FormDropdownProps> = (props) => {
         <p class={descriptionClasses()}>{local.description}</p>
       )}
 
-      <Dropdown fullWidth>
-        <Dropdown.Toggle
+      <Dropdown.Root class="w-full">
+        <Dropdown.Trigger
           class={dropdownClasses()}
           aria-invalid={hasError()}
           aria-required={local.required}
@@ -127,8 +127,8 @@ export const FormDropdown: Component<FormDropdownProps> = (props) => {
               />
             </span>
           )}
-        </Dropdown.Toggle>
-        <Dropdown.Menu class="w-full">
+        </Dropdown.Trigger>
+        <Dropdown.Menu class="w-full" align="start">
           <For each={local.options}>
             {(option) => (
               <Dropdown.Item
@@ -140,7 +140,7 @@ export const FormDropdown: Component<FormDropdownProps> = (props) => {
             )}
           </For>
         </Dropdown.Menu>
-      </Dropdown>
+      </Dropdown.Root>
 
       <Show when={hasError()}>
         <p class={errorClasses()}>{errors(local.name)}</p>

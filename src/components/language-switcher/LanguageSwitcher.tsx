@@ -57,17 +57,15 @@ const LanguageSwitcher: Component<LanguageSwitcherProps> = (props) => {
   const classes = () => twMerge(clsx(local.class, local.className));
 
   return (
-    <Dropdown
+    <Dropdown.Root
       {...others}
       class={classes()}
       style={local.style}
       role={undefined}
       aria-label={local["aria-label"] ?? "Language selector"}
-      aria-haspopup="menu"
     >
-      <Dropdown.Toggle
-        button
-        size="sm"
+      <Dropdown.Trigger
+        class="btn btn-sm"
         aria-label={`${local.currentLanguageLabel ?? "Current language"}: ${currentLanguageName()}`}
       >
         <Show
@@ -86,7 +84,7 @@ const LanguageSwitcher: Component<LanguageSwitcherProps> = (props) => {
             {local.i18n.locale.toUpperCase()}
           </span>
         </Show>
-      </Dropdown.Toggle>
+      </Dropdown.Trigger>
 
       <Dropdown.Menu class="min-w-32" aria-label={local.optionsLabel ?? "Language options"}>
         <For each={local.i18n.languages}>
@@ -101,7 +99,7 @@ const LanguageSwitcher: Component<LanguageSwitcherProps> = (props) => {
           )}
         </For>
       </Dropdown.Menu>
-    </Dropdown>
+    </Dropdown.Root>
   );
 };
 

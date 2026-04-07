@@ -1,5 +1,5 @@
 import { For } from "solid-js";
-import { Badge, Tabs } from "@pathscale/ui";
+import { Badge, Dropdown, Tabs } from "@pathscale/ui";
 
 const BADGE_COLORS = [
   "default",
@@ -24,6 +24,13 @@ const VERTICAL_TAB_ITEMS = [
   { key: "details", label: "Details", content: "Details panel" },
   { key: "members", label: "Members", content: "Members panel" },
   { key: "billing", label: "Billing", content: "Billing panel" },
+] as const;
+
+const DROPDOWN_ITEMS = [
+  { key: "profile", label: "Profile" },
+  { key: "billing", label: "Billing" },
+  { key: "team", label: "Team settings" },
+  { key: "disabled", label: "Disabled option", disabled: true },
 ] as const;
 
 export default function App() {
@@ -212,6 +219,49 @@ export default function App() {
                   {(item) => <Tabs.Panel id={item.key}>{item.content}</Tabs.Panel>}
                 </For>
               </Tabs.Root>
+            </div>
+          </div>
+        </section>
+
+        <section class="space-y-4 rounded-box border border-base-300 bg-base-200 p-4">
+          <div>
+            <h2 class="text-sm font-semibold">Dropdown</h2>
+            <p class="text-xs opacity-70">Open/close, outside click, keyboard nav, and disabled items.</p>
+          </div>
+
+          <div class="grid gap-6 md:grid-cols-2">
+            <div class="space-y-3">
+              <h3 class="text-xs font-semibold uppercase opacity-70">Start Align</h3>
+              <Dropdown.Root>
+                <Dropdown.Trigger class="btn btn-sm btn-neutral">Actions</Dropdown.Trigger>
+                <Dropdown.Menu align="start">
+                  <Dropdown.Group>
+                    <For each={DROPDOWN_ITEMS}>
+                      {(item) => (
+                        <Dropdown.Item disabled={item.disabled}>
+                          {item.label}
+                        </Dropdown.Item>
+                      )}
+                    </For>
+                  </Dropdown.Group>
+                  <Dropdown.Separator />
+                  <Dropdown.Item class="text-error">Delete</Dropdown.Item>
+                </Dropdown.Menu>
+              </Dropdown.Root>
+            </div>
+
+            <div class="space-y-3">
+              <h3 class="text-xs font-semibold uppercase opacity-70">End Align</h3>
+              <Dropdown.Root class="w-full">
+                <Dropdown.Trigger class="btn btn-sm btn-outline w-full justify-between">
+                  Options
+                </Dropdown.Trigger>
+                <Dropdown.Menu align="end">
+                  <Dropdown.Item>Rename</Dropdown.Item>
+                  <Dropdown.Item>Duplicate</Dropdown.Item>
+                  <Dropdown.Item>Archive</Dropdown.Item>
+                </Dropdown.Menu>
+              </Dropdown.Root>
             </div>
           </div>
         </section>

@@ -1,8 +1,7 @@
-import { type JSX, For, createMemo, createSignal, createUniqueId, createEffect, splitProps, useContext } from "solid-js";
+import { type JSX, For, createMemo, createSignal, createUniqueId, createEffect, splitProps, onCleanup } from "solid-js";
 import { twMerge } from "tailwind-merge";
 import clsx from "clsx";
-import Dropdown from "../dropdown/Dropdown";
-import { DropdownContext } from "../dropdown/Dropdown";
+import Dropdown from "../dropdown";
 import type { ComponentSize, IComponentBaseProps } from "../types";
 
 export type DropdownSelectOption = {
@@ -25,7 +24,6 @@ export type DropdownSelectProps = IComponentBaseProps & {
   optionRenderer?: (option: DropdownSelectOption, selected: boolean, highlighted: boolean) => JSX.Element;
 };
 
-/** Inner component that has access to the Dropdown context for open/close control. */
 const DropdownSelectInner = (props: {
   options: DropdownSelectOption[];
   value?: string;
@@ -36,8 +34,9 @@ const DropdownSelectInner = (props: {
   disabled?: boolean;
   labelRenderer?: (value: string, option?: DropdownSelectOption) => JSX.Element;
   optionRenderer?: (option: DropdownSelectOption, selected: boolean, highlighted: boolean) => JSX.Element;
+  open: boolean;
+  setOpen: (open: boolean) => void;
 }) => {
-  const dropdownCtx = useContext(DropdownContext);
   const [highlightedIndex, setHighlightedIndex] = createSignal(-1);
   const listboxId = createUniqueId();
   let typeaheadBuffer = "";
@@ -50,7 +49,7 @@ const DropdownSelectInner = (props: {
     return opt ? opt.label : props.placeholder;
   });
 
-  const isOpen = () => dropdownCtx?.open() ?? false;
+  const isOpen = () => props.open;
 
   // Find next non-disabled index in a given direction
   const findNextEnabledIndex = (from: number, direction: 1 | -1): number => {
@@ -78,14 +77,14 @@ const DropdownSelectInner = (props: {
   const selectOption = (index: number) => {
     if (index >= 0 && index < props.options.length && !props.options[index].disabled) {
       props.onChange?.(props.options[index].value);
-      dropdownCtx?.setOpen(false);
+      props.setOpen(false);
       setHighlightedIndex(-1);
     }
   };
 
   const openMenu = () => {
     if (!isOpen()) {
-      dropdownCtx?.setOpen(true);
+      props.setOpen(true);
       // Highlight the currently selected option, or first enabled
       const currentIdx = props.options.findIndex((o) => o.value === props.value);
       setHighlightedIndex(currentIdx >= 0 ? currentIdx : findFirstEnabledIndex());
@@ -107,7 +106,7 @@ const DropdownSelectInner = (props: {
     }
   };
 
-  const handleKeyDown: JSX.EventHandlerUnion<HTMLLabelElement, KeyboardEvent> = (e) => {
+  const handleKeyDown: JSX.EventHandlerUnion<HTMLButtonElement, KeyboardEvent> = (e) => {
     if (props.disabled) return;
 
     if (!isOpen()) {
@@ -128,7 +127,7 @@ const DropdownSelectInner = (props: {
       case "Escape":
         e.preventDefault();
         e.stopPropagation();
-        dropdownCtx?.setOpen(false);
+        props.setOpen(false);
         setHighlightedIndex(-1);
         break;
       case "ArrowDown":
@@ -179,13 +178,25 @@ const DropdownSelectInner = (props: {
     }
   });
 
+  onCleanup(() => {
+    if (typeaheadTimer !== undefined) {
+      clearTimeout(typeaheadTimer);
+    }
+  });
+
+  const triggerSizeClasses: Record<ComponentSize, string> = {
+    xs: "btn-xs",
+    sm: "btn-sm",
+    md: "btn-md",
+    lg: "btn-lg",
+    xl: "btn-lg",
+  };
+
   return (
     <>
-      <Dropdown.Toggle
-        button
-        size={props.size}
+      <Dropdown.Trigger
+        class={twMerge("btn btn-neutral gap-2 justify-between", triggerSizeClasses[props.size])}
         disabled={props.disabled}
-        class="gap-2 justify-between"
         aria-haspopup="listbox"
         aria-expanded={isOpen()}
         aria-controls={listboxId}
@@ -218,7 +229,7 @@ const DropdownSelectInner = (props: {
             clip-rule="evenodd"
           />
         </svg>
-      </Dropdown.Toggle>
+      </Dropdown.Trigger>
       <Dropdown.Menu id={listboxId} class="z-10" role="listbox">
         <For each={props.options}>
           {(option, index) => (
@@ -233,6 +244,7 @@ const DropdownSelectInner = (props: {
               })}
               onClick={() => {
                 props.onChange?.(option.value);
+                props.setOpen(false);
                 setHighlightedIndex(-1);
               }}
               onMouseEnter={() => setHighlightedIndex(index())}
@@ -265,7 +277,7 @@ const DropdownSelectInner = (props: {
                       </svg>
                     )}
                     <span class="truncate">{option.label}</span>
-                  </span>
+              </span>
                 )}
             </Dropdown.Item>
           )}
@@ -297,15 +309,18 @@ const DropdownSelect = (props: DropdownSelectProps): JSX.Element => {
   const placeholder = () => local.placeholder ?? "Select...";
   const showCheckmark = () => local.showCheckmark ?? true;
   const size = () => local.size ?? "md";
+  const [open, setOpen] = createSignal(false);
 
   return (
-    <Dropdown
+    <Dropdown.Root
       {...others}
-      role="none"
       class={twMerge(local.class, local.className)}
       style={local.style}
       dataTheme={local.dataTheme}
       aria-label={local["aria-label"] ?? local.label}
+      role="none"
+      open={open()}
+      onOpenChange={setOpen}
     >
       <DropdownSelectInner
         options={local.options}
@@ -317,8 +332,10 @@ const DropdownSelect = (props: DropdownSelectProps): JSX.Element => {
         disabled={local.disabled}
         labelRenderer={local.labelRenderer}
         optionRenderer={local.optionRenderer}
+        open={open()}
+        setOpen={setOpen}
       />
-    </Dropdown>
+    </Dropdown.Root>
   );
 };
 

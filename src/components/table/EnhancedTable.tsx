@@ -710,16 +710,11 @@ function ColumnFilter(props: { column: any }) {
     };
 
     return (
-      <Dropdown class="w-full">
-        <Dropdown.Toggle
-          button
-          size="sm"
-          color="neutral"
-          class="w-full justify-between"
-        >
+      <Dropdown.Root class="w-full">
+        <Dropdown.Trigger class="btn btn-sm btn-neutral w-full justify-between">
           {currentLabel()}
-        </Dropdown.Toggle>
-        <Dropdown.Menu>
+        </Dropdown.Trigger>
+        <Dropdown.Menu align="start">
           <Dropdown.Item
             onClick={() => handleSelect("")}
             aria-selected={!currentValue()}
@@ -739,7 +734,7 @@ function ColumnFilter(props: { column: any }) {
             )}
           </For>
         </Dropdown.Menu>
-      </Dropdown>
+      </Dropdown.Root>
     );
   }
 
