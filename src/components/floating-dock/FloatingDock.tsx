@@ -1,3 +1,4 @@
+import "./FloatingDock.css";
 import {
   type JSX,
   type Component,
@@ -18,13 +19,9 @@ import type { IComponentBaseProps } from "../types";
 /* ------------------------------------------------------------------ */
 
 export type FloatingDockItem = {
-  /** Tooltip label. */
   title: string;
-  /** Icon element rendered inside the dock button. */
   icon: JSX.Element;
-  /** Navigation URL. Ignored when `onClick` is provided. */
   href?: string;
-  /** Click handler. When provided, renders a `<button>` instead of `<a>`. */
   onClick?: (e: MouseEvent) => void;
 };
 
@@ -32,47 +29,27 @@ export type FloatingDockDirection = "top" | "bottom" | "left" | "right";
 
 export type FloatingDockProps = {
   items: FloatingDockItem[];
-  /** Direction the dock is oriented. @default "horizontal" */
   orientation?: "horizontal" | "vertical";
-  /** Where the tooltip appears relative to each icon. @default "top" */
   tooltipDirection?: FloatingDockDirection;
-  /** Where the mobile popup opens. @default "top" */
   mobilePopupDirection?: FloatingDockDirection;
-  /** Gap between items in px. @default 16 */
   gap?: number;
-  /** Icon container resting size in px. @default 40 */
   baseSize?: number;
-  /** Icon container size when hovered/nearest to cursor in px. @default 80 */
   hoverSize?: number;
-  /** Icon resting size in px. @default 20 */
   iconSize?: number;
-  /** Icon size when hovered/nearest in px. @default 40 */
   hoverIconSize?: number;
-  /** Distance in px within which magnification activates. @default 150 */
   magnifyRange?: number;
-  /** Enable the spring magnification effect. @default true */
   magnify?: boolean;
-  /** Show desktop dock. @default true */
+  nudge?: number;
   showDesktop?: boolean;
-  /** Show mobile toggle dock. @default true */
   showMobile?: boolean;
-  /** Show the dock container background. @default true */
   showContainer?: boolean;
-  /** Classes applied to the desktop dock container. */
   desktopClass?: string;
-  /** Classes applied to the mobile dock container. */
   mobileClass?: string;
-  /** Classes applied to each item wrapper. */
   itemClass?: string;
-  /** Classes applied to the tooltip. */
   tooltipClass?: string;
-  /** Icon shown in the mobile toggle button. */
   mobileToggleIcon?: JSX.Element;
-  /** Spring mass. @default 0.1 */
   springMass?: number;
-  /** Spring stiffness. @default 150 */
   springStiffness?: number;
-  /** Spring damping. @default 12 */
   springDamping?: number;
 } & IComponentBaseProps;
 
@@ -87,6 +64,7 @@ type ResolvedConfig = {
   hoverIconSize: number;
   magnifyRange: number;
   magnify: boolean;
+  nudge: number;
   gap: number;
   tooltipDir: FloatingDockDirection;
   springOpts: { mass: number; stiffness: number; damping: number };
@@ -117,15 +95,8 @@ function createSpring(
     set(v: number) { target = v; },
     get() { return current; },
     settled() { return current === target && velocity === 0; },
-    snap() { current = target; velocity = 0; },
     step(dt: number) {
-      if (prefersReducedMotion) {
-        current = target;
-        velocity = 0;
-        return;
-      }
-      // Sub-step for numerical stability — explicit Euler diverges
-      // with small mass (0.1) at dt > ~0.004.
+      if (prefersReducedMotion) { current = target; velocity = 0; return; }
       const substeps = Math.ceil(dt / 0.004);
       const subDt = dt / substeps;
       for (let i = 0; i < substeps; i++) {
@@ -135,8 +106,7 @@ function createSpring(
         current += velocity * subDt;
       }
       if (Math.abs(current - target) < 0.01 && Math.abs(velocity) < 0.01) {
-        current = target;
-        velocity = 0;
+        current = target; velocity = 0;
       }
     },
   };
@@ -150,20 +120,19 @@ function mapRange(value: number, inMin: number, inMax: number, outMin: number, o
 }
 
 /* ------------------------------------------------------------------ */
-/*  Item springs — created per item, animated by parent               */
+/*  Item springs                                                      */
 /* ------------------------------------------------------------------ */
 
 type ItemSprings = {
-  sW: Spring;
-  sH: Spring;
-  sIW: Spring;
-  sIH: Spring;
+  sScale: Spring;
+  sIconScale: Spring;
+  sNudge: Spring;
   wrapRef?: HTMLDivElement;
   iconRef?: HTMLDivElement;
 };
 
 /* ------------------------------------------------------------------ */
-/*  DockItem — rendering only, no rAF                                 */
+/*  DockItem                                                          */
 /* ------------------------------------------------------------------ */
 
 const TOOLTIP_OFFSET = 8;
@@ -218,20 +187,13 @@ const DockItem: Component<{
       ref={wrapRef}
       onMouseEnter={handleMouseEnter}
       onMouseLeave={() => setHovered(false)}
-      class={twMerge(
-        "relative flex items-center justify-center rounded-full bg-base-200 transition-opacity duration-150 hover:opacity-100 active:opacity-60",
-        "opacity-80",
-        cfg.itemClass,
-      )}
+      class={twMerge("floating-dock__item", cfg.itemClass)}
       style={{ width: `${cfg.baseSize}px`, height: `${cfg.baseSize}px` }}
     >
       <Show when={hovered()}>
         <Portal>
           <div
-            class={twMerge(
-              "fixed w-fit rounded-md border border-base-300 bg-base-100 px-2 py-0.5 text-xs whitespace-pre text-base-content animate-fade-in z-[9999] pointer-events-none",
-              cfg.tooltipClass,
-            )}
+            class={twMerge("floating-dock__tooltip", cfg.tooltipClass)}
             style={{
               top: tooltipStyle().top,
               left: tooltipStyle().left,
@@ -242,7 +204,7 @@ const DockItem: Component<{
           </div>
         </Portal>
       </Show>
-      <div ref={iconRef} class="flex items-center justify-center shrink-0">
+      <div ref={iconRef} class="floating-dock__icon">
         {props.item.icon}
       </div>
     </div>
@@ -265,7 +227,7 @@ const DockItem: Component<{
 };
 
 /* ------------------------------------------------------------------ */
-/*  Desktop dock — single rAF loop, batched reads/writes              */
+/*  Desktop dock                                                      */
 /* ------------------------------------------------------------------ */
 
 const FloatingDockDesktop: Component<{
@@ -278,8 +240,8 @@ const FloatingDockDesktop: Component<{
   const isH = () => props.cfg.orientation === "horizontal";
   const cfg = props.cfg;
 
-  // Per-item spring state — indexed by order
   const itemSprings: ItemSprings[] = [];
+  let bgRef: HTMLDivElement | undefined;
 
   let rafId: number | undefined;
   let prevTime = 0;
@@ -287,8 +249,6 @@ const FloatingDockDesktop: Component<{
   let loopRunning = false;
   let anchorCenters: number[] = [];
 
-  /** Snapshot centres on mouse-enter. With transform-based scaling
-   *  layout never changes, so centres are always stable — no snap needed. */
   const captureAnchors = () => {
     anchorCenters = [];
     for (let i = 0; i < itemSprings.length; i++) {
@@ -319,20 +279,29 @@ const FloatingDockDesktop: Component<{
 
     const mp = mousePos();
 
-    // Recompute targets only when mouse position actually changed
     if (mp !== lastMousePos) {
       lastMousePos = mp;
 
-      // Use anchored centres (captured on mouse-enter) so that
-      // mid-animation size changes don't shift distance targets.
       for (let i = 0; i < itemSprings.length; i++) {
         const s = itemSprings[i];
         if (!s.wrapRef || anchorCenters[i] === undefined) continue;
-        const dist = Math.abs(mp - anchorCenters[i]);
-        const ts = mp === Infinity ? cfg.baseSize : mapRange(dist, 0, cfg.magnifyRange, cfg.hoverSize, cfg.baseSize);
-        const ti = mp === Infinity ? cfg.iconSize : mapRange(dist, 0, cfg.magnifyRange, cfg.hoverIconSize, cfg.iconSize);
-        s.sW.set(ts); s.sH.set(ts);
-        s.sIW.set(ti); s.sIH.set(ti);
+        const dist = mp - anchorCenters[i];
+        const absDist = Math.abs(dist);
+
+        // Scale targets
+        const ts = mp === Infinity ? cfg.baseSize : mapRange(absDist, 0, cfg.magnifyRange, cfg.hoverSize, cfg.baseSize);
+        const ti = mp === Infinity ? cfg.iconSize : mapRange(absDist, 0, cfg.magnifyRange, cfg.hoverIconSize, cfg.iconSize);
+        s.sScale.set(ts);
+        s.sIconScale.set(ti);
+
+        // Nudge: items push away from cursor (like macOS dock)
+        if (mp === Infinity || absDist > cfg.magnifyRange) {
+          s.sNudge.set(0);
+        } else {
+          const scale = mapRange(absDist, 0, cfg.magnifyRange, cfg.hoverSize / cfg.baseSize, 1);
+          const nudgeAmount = (-dist / cfg.magnifyRange) * cfg.nudge * scale;
+          s.sNudge.set(nudgeAmount);
+        }
       }
     }
 
@@ -340,33 +309,57 @@ const FloatingDockDesktop: Component<{
     let allSettled = true;
     for (let i = 0; i < itemSprings.length; i++) {
       const s = itemSprings[i];
-      s.sW.step(dt); s.sH.step(dt); s.sIW.step(dt); s.sIH.step(dt);
-      if (allSettled && !(s.sW.settled() && s.sH.settled() && s.sIW.settled() && s.sIH.settled())) {
+      s.sScale.step(dt); s.sIconScale.step(dt); s.sNudge.step(dt);
+      if (allSettled && !(s.sScale.settled() && s.sIconScale.settled() && s.sNudge.settled())) {
         allSettled = false;
       }
     }
 
-    // BATCH WRITE: transform-based scaling — no layout changes,
-    // container stays stable, items scale in place.
+    // Write transforms
     const maxScale = cfg.hoverSize / cfg.baseSize;
     const maxIconScale = cfg.hoverIconSize / cfg.iconSize;
     for (let i = 0; i < itemSprings.length; i++) {
       const s = itemSprings[i];
       if (s.wrapRef) {
-        const scale = Math.max(0.8, Math.min(s.sW.get() / cfg.baseSize, maxScale));
-        s.wrapRef.style.transform = `scale(${scale})`;
+        const scale = Math.max(0.8, Math.min(s.sScale.get() / cfg.baseSize, maxScale));
+        const nudge = s.sNudge.get();
+        if (isH()) {
+          s.wrapRef.style.transform = `translateX(${nudge}px) scale(${scale})`;
+        } else {
+          s.wrapRef.style.transform = `translateY(${nudge}px) scale(${scale})`;
+        }
       }
       if (s.iconRef) {
-        const iconScale = Math.max(0.8, Math.min(s.sIW.get() / cfg.iconSize, maxIconScale));
+        const iconScale = Math.max(0.8, Math.min(s.sIconScale.get() / cfg.iconSize, maxIconScale));
         s.iconRef.style.transform = `scale(${iconScale})`;
       }
     }
 
-    if (allSettled) {
-      stopLoop();
-      return;
+    // Expand background to cover magnified items
+    if (bgRef && props.showContainer) {
+      let minEdge = Infinity;
+      let maxEdge = -Infinity;
+      for (let i = 0; i < itemSprings.length; i++) {
+        const s = itemSprings[i];
+        if (!s.wrapRef) continue;
+        const scale = s.sScale.get() / cfg.baseSize;
+        const nudge = s.sNudge.get();
+        const halfScaled = (cfg.baseSize * scale) / 2;
+        const center = anchorCenters[i] + nudge;
+        minEdge = Math.min(minEdge, center - halfScaled);
+        maxEdge = Math.max(maxEdge, center + halfScaled);
+      }
+      if (isH() && minEdge !== Infinity) {
+        const barRect = bgRef.parentElement?.getBoundingClientRect();
+        if (barRect) {
+          const pad = 16;
+          bgRef.style.left = `${minEdge - barRect.left - pad}px`;
+          bgRef.style.right = `${barRect.right - maxEdge - pad}px`;
+        }
+      }
     }
 
+    if (allSettled) { stopLoop(); return; }
     rafId = requestAnimationFrame(tick);
   };
 
@@ -380,27 +373,25 @@ const FloatingDockDesktop: Component<{
       onMouseMove={(e) => { setMousePos(isH() ? e.clientX : e.clientY); startLoop(); }}
       onMouseLeave={() => { setMousePos(Infinity); startLoop(); }}
       class={twMerge(
-        "mx-auto flex overflow-visible",
-        "items-center",
-        props.showContainer && "rounded-2xl bg-base-100 shadow-[0px_1px_0px_0px_var(--color-base-300)_inset,0px_1px_0px_0px_var(--color-base-100)]",
-        isH() && props.showContainer && "px-4 py-2",
-        !isH() && props.showContainer && "py-4 px-2",
+        "floating-dock__bar",
+        isH() ? "floating-dock__bar--horizontal" : "floating-dock__bar--vertical",
         props.class,
       )}
       style={{
-        "flex-direction": isH() ? "row" : "column",
         gap: `${cfg.gap}px`,
+        padding: props.showContainer ? (isH() ? "0.5rem 1rem" : "1rem 0.5rem") : undefined,
         ...(isH() ? { height: `${cfg.baseSize + 16}px` } : { width: `${cfg.baseSize + 16}px` }),
       }}
     >
+      <Show when={props.showContainer}>
+        <div ref={bgRef} class="floating-dock__bg" />
+      </Show>
       <For each={props.items}>
         {(item, idx) => {
-          // Create springs for this item
           const springs: ItemSprings = {
-            sW: createSpring(cfg.baseSize, cfg.springOpts),
-            sH: createSpring(cfg.baseSize, cfg.springOpts),
-            sIW: createSpring(cfg.iconSize, cfg.springOpts),
-            sIH: createSpring(cfg.iconSize, cfg.springOpts),
+            sScale: createSpring(cfg.baseSize, cfg.springOpts),
+            sIconScale: createSpring(cfg.iconSize, cfg.springOpts),
+            sNudge: createSpring(0, cfg.springOpts),
           };
           itemSprings[idx()] = springs;
 
@@ -424,11 +415,11 @@ const FloatingDockDesktop: Component<{
 /*  Mobile dock                                                       */
 /* ------------------------------------------------------------------ */
 
-const MOBILE_POPUP: Record<FloatingDockDirection, string> = {
-  top: "absolute inset-x-0 bottom-full mb-2 flex flex-col gap-2",
-  bottom: "absolute inset-x-0 top-full mt-2 flex flex-col gap-2",
-  left: "absolute right-full top-0 mr-2 flex flex-col gap-2",
-  right: "absolute left-full top-0 ml-2 flex flex-col gap-2",
+const MOBILE_POPUP_CLASS: Record<FloatingDockDirection, string> = {
+  top: "floating-dock__mobile-popup--top",
+  bottom: "floating-dock__mobile-popup--bottom",
+  left: "floating-dock__mobile-popup--left",
+  right: "floating-dock__mobile-popup--right",
 };
 
 const FloatingDockMobile: Component<{
@@ -446,16 +437,15 @@ const FloatingDockMobile: Component<{
   };
 
   return (
-    <div class={twMerge("relative block md:hidden", props.class)}>
+    <div class={twMerge("floating-dock__mobile", props.class)}>
       <Show when={open()}>
-        <div class={MOBILE_POPUP[props.popupDirection]}>
+        <div class={twMerge("floating-dock__mobile-popup", MOBILE_POPUP_CLASS[props.popupDirection])}>
           <For each={props.items}>
             {(item, idx) => (
               <div
-                class="animate-fade-in"
+                class="floating-dock__mobile-item"
                 style={{
                   "animation-delay": `${(props.items.length - 1 - idx()) * 0.05}s`,
-                  "animation-fill-mode": "backwards",
                 }}
               >
                 <Show
@@ -464,18 +454,18 @@ const FloatingDockMobile: Component<{
                     <Show
                       when={item.href}
                       fallback={
-                        <div class="flex items-center justify-center rounded-full bg-base-100" style={{ width: `${props.cfg.baseSize}px`, height: `${props.cfg.baseSize}px` }} title={item.title}>
+                        <div class="floating-dock__item" style={{ width: `${props.cfg.baseSize}px`, height: `${props.cfg.baseSize}px` }} title={item.title}>
                           {item.icon}
                         </div>
                       }
                     >
-                      <a href={item.href} class="flex items-center justify-center rounded-full bg-base-100" style={{ width: `${props.cfg.baseSize}px`, height: `${props.cfg.baseSize}px` }} title={item.title}>
+                      <a href={item.href} class="floating-dock__item" style={{ width: `${props.cfg.baseSize}px`, height: `${props.cfg.baseSize}px` }} title={item.title}>
                         {item.icon}
                       </a>
                     </Show>
                   }
                 >
-                  <button type="button" onClick={(e) => handleItemClick(item, e)} class="flex items-center justify-center rounded-full bg-base-100 cursor-pointer border-0 p-0" style={{ width: `${props.cfg.baseSize}px`, height: `${props.cfg.baseSize}px` }} title={item.title}>
+                  <button type="button" onClick={(e) => handleItemClick(item, e)} class="floating-dock__mobile-toggle" style={{ width: `${props.cfg.baseSize}px`, height: `${props.cfg.baseSize}px` }} title={item.title}>
                     {item.icon}
                   </button>
                 </Show>
@@ -487,11 +477,11 @@ const FloatingDockMobile: Component<{
       <button
         type="button"
         onClick={() => setOpen(!open())}
-        class="flex items-center justify-center rounded-full bg-base-200 cursor-pointer border-0 p-0"
+        class="floating-dock__mobile-toggle"
         style={{ width: `${props.cfg.baseSize}px`, height: `${props.cfg.baseSize}px` }}
       >
         {props.toggleIcon ?? (
-          <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-base-content/60" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style={{ color: "color-mix(in oklab, var(--color-base-content) 60%, transparent)" }}>
             <path d="M4 6h16" /><path d="M4 12h16" /><path d="M4 18h16" />
           </svg>
         )}
@@ -508,7 +498,7 @@ const FloatingDock = (rawProps: FloatingDockProps): JSX.Element => {
   const [local, others] = splitProps(rawProps, [
     "items", "orientation", "tooltipDirection", "mobilePopupDirection", "gap",
     "baseSize", "hoverSize", "iconSize", "hoverIconSize", "magnifyRange",
-    "magnify", "showDesktop", "showMobile", "showContainer",
+    "magnify", "nudge", "showDesktop", "showMobile", "showContainer",
     "desktopClass", "mobileClass", "itemClass", "tooltipClass", "mobileToggleIcon",
     "springMass", "springStiffness", "springDamping",
     "class", "className", "dataTheme", "style",
@@ -519,22 +509,23 @@ const FloatingDock = (rawProps: FloatingDockProps): JSX.Element => {
     hoverSize: local.hoverSize ?? 80,
     iconSize: local.iconSize ?? 20,
     hoverIconSize: local.hoverIconSize ?? 40,
-    magnifyRange: local.magnifyRange ?? 150,
+    magnifyRange: local.magnifyRange ?? 110,
     magnify: local.magnify !== false,
-    gap: local.gap ?? 16,
+    nudge: local.nudge ?? 40,
+    gap: local.gap ?? 12,
     tooltipDir: local.tooltipDirection ?? "top",
     orientation: local.orientation ?? "horizontal",
     itemClass: local.itemClass,
     tooltipClass: local.tooltipClass,
     springOpts: {
       mass: local.springMass ?? 0.1,
-      stiffness: local.springStiffness ?? 150,
+      stiffness: local.springStiffness ?? 170,
       damping: local.springDamping ?? 12,
     },
   });
 
   return (
-    <div data-theme={local.dataTheme} style={local.style} {...others}>
+    <div class="floating-dock" data-theme={local.dataTheme} style={local.style} {...others}>
       <Show when={local.showDesktop !== false}>
         <FloatingDockDesktop
           items={local.items}
