@@ -506,13 +506,13 @@ const FloatingDock = (rawProps: FloatingDockProps): JSX.Element => {
 
   const cfg = (): ResolvedConfig => ({
     baseSize: local.baseSize ?? 40,
-    hoverSize: local.hoverSize ?? 80,
+    hoverSize: local.hoverSize ?? 64,
     iconSize: local.iconSize ?? 20,
-    hoverIconSize: local.hoverIconSize ?? 40,
+    hoverIconSize: local.hoverIconSize ?? 20,
     magnifyRange: local.magnifyRange ?? 110,
     magnify: local.magnify !== false,
-    nudge: local.nudge ?? 40,
-    gap: local.gap ?? 12,
+    nudge: local.nudge ?? 20,
+    gap: local.gap ?? 8,
     tooltipDir: local.tooltipDirection ?? "top",
     orientation: local.orientation ?? "horizontal",
     itemClass: local.itemClass,

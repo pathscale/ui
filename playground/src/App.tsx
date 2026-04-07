@@ -1264,30 +1264,38 @@ export default function App() {
             </p>
           </div>
 
-          <div class="flex items-end justify-center py-8">
-            <FloatingDock
-              items={[
-                { title: "Home", icon: <span class="text-lg">🏠</span>, href: "#" },
-                { title: "Search", icon: <span class="text-lg">🔍</span>, href: "#" },
-                { title: "Messages", icon: <span class="text-lg">💬</span>, href: "#" },
-                { title: "Photos", icon: <span class="text-lg">📷</span>, href: "#" },
-                { title: "Music", icon: <span class="text-lg">🎵</span>, href: "#" },
-                { title: "Settings", icon: <span class="text-lg">⚙️</span>, onClick: () => alert("Settings clicked") },
-              ]}
-            />
+          <div class="space-y-2">
+            <h3 class="text-xs font-semibold uppercase opacity-70">Functional Buttons</h3>
+            <div class="flex items-end justify-center py-8">
+              <FloatingDock
+                items={[
+                  { title: "Microphone", icon: <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" x2="12" y1="19" y2="22"/></svg>, onClick: () => alert("Mic toggled") },
+                  { title: "Camera", icon: <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.5 4h-5L7 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3l-2.5-3Z"/><circle cx="12" cy="13" r="3"/></svg>, onClick: () => alert("Camera toggled") },
+                  { title: "Screen Share", icon: <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="14" x="2" y="3" rx="2"/><line x1="8" x2="16" y1="21" y2="21"/><line x1="12" x2="12" y1="17" y2="21"/></svg>, onClick: () => alert("Screen share") },
+                  { title: "Chat", icon: <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7.9 20A9 9 0 1 0 4 16.1L2 22Z"/></svg>, onClick: () => alert("Chat opened") },
+                  { title: "Settings", icon: <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/><circle cx="12" cy="12" r="3"/></svg>, onClick: () => alert("Settings") },
+                  { title: "Leave", icon: <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>, onClick: () => alert("Leave call") },
+                ]}
+              />
+            </div>
           </div>
 
-          <div class="flex items-end justify-center py-8">
-            <FloatingDock
-              items={[
-                { title: "A", icon: <span class="text-sm font-bold">A</span>, href: "#" },
-                { title: "B", icon: <span class="text-sm font-bold">B</span>, href: "#" },
-                { title: "C", icon: <span class="text-sm font-bold">C</span>, href: "#" },
-                { title: "D", icon: <span class="text-sm font-bold">D</span>, href: "#" },
-              ]}
-              magnify={false}
-              showContainer
-            />
+          <div class="space-y-2">
+            <h3 class="text-xs font-semibold uppercase opacity-70">No Magnification</h3>
+            <div class="flex items-end justify-center py-8">
+              <FloatingDock
+                items={[
+                  { title: "Bold", icon: <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M6 12h9a4 4 0 0 1 0 8H7a1 1 0 0 1-1-1V5a1 1 0 0 1 1-1h7a4 4 0 0 1 0 8"/></svg>, onClick: () => {} },
+                  { title: "Italic", icon: <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" x2="10" y1="4" y2="4"/><line x1="14" x2="5" y1="20" y2="20"/><line x1="15" x2="9" y1="4" y2="20"/></svg>, onClick: () => {} },
+                  { title: "Underline", icon: <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 4v6a6 6 0 0 0 12 0V4"/><line x1="4" x2="20" y1="20" y2="20"/></svg>, onClick: () => {} },
+                  { title: "Link", icon: <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>, onClick: () => {} },
+                ]}
+                magnify={false}
+                baseSize={36}
+                iconSize={16}
+                gap={8}
+              />
+            </div>
           </div>
         </section>
       </div>
