@@ -15,6 +15,11 @@
   --color-secondary-content: var(--color-secondary-content);
   --color-accent: var(--color-accent);
   --color-accent-content: var(--color-accent-content);
+  --color-accent-foreground: var(--color-accent-foreground);
+  --color-accent-soft: var(--color-accent-soft);
+  --color-accent-soft-foreground: var(--color-accent-soft-foreground);
+  --color-accent-soft-hover: var(--color-accent-soft-hover);
+  --color-accent-hover: var(--color-accent-hover);
   --color-neutral: var(--color-neutral);
   --color-neutral-content: var(--color-neutral-content);
 
@@ -23,10 +28,27 @@
   --color-info-content: var(--color-info-content);
   --color-success: var(--color-success);
   --color-success-content: var(--color-success-content);
+  --color-success-foreground: var(--color-success-foreground);
+  --color-success-soft: var(--color-success-soft);
+  --color-success-soft-foreground: var(--color-success-soft-foreground);
   --color-warning: var(--color-warning);
   --color-warning-content: var(--color-warning-content);
+  --color-warning-foreground: var(--color-warning-foreground);
+  --color-warning-soft: var(--color-warning-soft);
+  --color-warning-soft-foreground: var(--color-warning-soft-foreground);
   --color-error: var(--color-error);
   --color-error-content: var(--color-error-content);
+  --color-danger: var(--color-danger);
+  --color-danger-foreground: var(--color-danger-foreground);
+  --color-danger-soft: var(--color-danger-soft);
+  --color-danger-soft-foreground: var(--color-danger-soft-foreground);
+
+  /* HeroUI generic tokens */
+  --color-default: var(--color-default);
+  --color-default-foreground: var(--color-default-foreground);
+  --color-default-hover: var(--color-default-hover);
+  --color-background: var(--color-background);
+  --color-foreground: var(--color-foreground);
 
   /* Base background colors */
   --color-base-100: var(--color-base-100);

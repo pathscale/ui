@@ -1,5 +1,5 @@
 import { For, createSignal } from "solid-js";
-import { Badge, Button, Checkbox, Dropdown, Input, Radio, RadioGroup, Tabs } from "@pathscale/ui";
+import { Badge, Button, Checkbox, Dropdown, Input, Radio, RadioGroup, Tabs, Toggle } from "@pathscale/ui";
 
 const BADGE_COLORS = [
   "default",
@@ -45,10 +45,13 @@ const BUTTON_VARIANTS = [
 
 const BUTTON_SIZES = ["sm", "md", "lg"] as const;
 const INPUT_SIZES = ["sm", "md", "lg"] as const;
+const TOGGLE_COLORS = ["default", "accent", "success", "warning", "danger"] as const;
+const TOGGLE_SIZES = ["sm", "md", "lg"] as const;
 
 export default function App() {
   const [selectedFramework, setSelectedFramework] = createSignal("solid");
   const [checkedTerms, setCheckedTerms] = createSignal(false);
+  const [toggleOn, setToggleOn] = createSignal(false);
 
   return (
     <main class="min-h-screen bg-base-100 text-base-content p-8">
@@ -509,6 +512,73 @@ export default function App() {
                 <Checkbox description="Description text aligns control to the top.">
                   With description
                 </Checkbox>
+              </div>
+            </div>
+          </div>
+        </section>
+        <section class="space-y-4 rounded-xl border border-base-300 bg-base-200 p-4">
+          <div>
+            <h2 class="text-sm font-semibold">Toggle</h2>
+            <p class="text-xs opacity-70">HeroUI-style switch with color, size, and state coverage.</p>
+          </div>
+
+          <div class="grid gap-6 md:grid-cols-2">
+            <div class="space-y-3">
+              <h3 class="text-xs font-semibold uppercase opacity-70">Colors</h3>
+              <div class="flex flex-col gap-3">
+                <For each={TOGGLE_COLORS}>
+                  {(color) => (
+                    <Toggle color={color} defaultChecked>
+                      {color}
+                    </Toggle>
+                  )}
+                </For>
+              </div>
+            </div>
+
+            <div class="space-y-3">
+              <h3 class="text-xs font-semibold uppercase opacity-70">Sizes</h3>
+              <div class="flex flex-col gap-3">
+                <For each={TOGGLE_SIZES}>
+                  {(size) => (
+                    <Toggle size={size} defaultChecked color="accent">
+                      {size}
+                    </Toggle>
+                  )}
+                </For>
+              </div>
+            </div>
+          </div>
+
+          <div class="grid gap-6 md:grid-cols-2">
+            <div class="space-y-3">
+              <h3 class="text-xs font-semibold uppercase opacity-70">States</h3>
+              <div class="flex flex-col gap-3">
+                <Toggle>Unchecked</Toggle>
+                <Toggle defaultChecked>Checked</Toggle>
+                <Toggle isDisabled>Disabled off</Toggle>
+                <Toggle isDisabled defaultChecked>
+                  Disabled on
+                </Toggle>
+              </div>
+            </div>
+
+            <div class="space-y-3">
+              <h3 class="text-xs font-semibold uppercase opacity-70">Controlled + Description</h3>
+              <div class="flex flex-col gap-3">
+                <Toggle
+                  checked={toggleOn()}
+                  onChange={(event) => setToggleOn(event.currentTarget.checked)}
+                >
+                  Notifications ({toggleOn() ? "on" : "off"})
+                </Toggle>
+                <Toggle
+                  description="We'll send you updates about new features."
+                  defaultChecked
+                  color="success"
+                >
+                  Email updates
+                </Toggle>
               </div>
             </div>
           </div>

@@ -1,1 +1,1 @@
-export { default, type ToggleProps } from "./Toggle";
+export { default, type ToggleProps, type ToggleColor, type ToggleSize } from "./Toggle";

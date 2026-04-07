@@ -7,6 +7,11 @@
     --color-secondary-content: var(--color-white);
     --color-accent: var(--color-sky-500);
     --color-accent-content: var(--color-white);
+    --color-accent-foreground: var(--color-white);
+    --color-accent-soft: color-mix(in oklab, var(--color-sky-500) 20%, var(--color-gray-900));
+    --color-accent-soft-foreground: var(--color-sky-400);
+    --color-accent-soft-hover: color-mix(in oklab, var(--color-sky-500) 28%, var(--color-gray-900));
+    --color-accent-hover: var(--color-sky-400);
     --color-neutral: var(--color-gray-700);
     --color-neutral-content: var(--color-gray-100);
 
@@ -15,10 +20,27 @@
     --color-info-content: var(--color-gray-900);
     --color-success: var(--color-emerald-500);
     --color-success-content: var(--color-gray-900);
+    --color-success-foreground: var(--color-white);
+    --color-success-soft: color-mix(in oklab, var(--color-emerald-500) 20%, var(--color-gray-900));
+    --color-success-soft-foreground: var(--color-emerald-400);
     --color-warning: var(--color-amber-400);
     --color-warning-content: var(--color-gray-900);
+    --color-warning-foreground: var(--color-gray-900);
+    --color-warning-soft: color-mix(in oklab, var(--color-amber-400) 20%, var(--color-gray-900));
+    --color-warning-soft-foreground: var(--color-amber-300);
     --color-error: var(--color-rose-500);
     --color-error-content: var(--color-white);
+    --color-danger: var(--color-rose-500);
+    --color-danger-foreground: var(--color-white);
+    --color-danger-soft: color-mix(in oklab, var(--color-rose-500) 20%, var(--color-gray-900));
+    --color-danger-soft-foreground: var(--color-rose-400);
+
+    /* HeroUI generic tokens */
+    --color-default: var(--color-gray-700);
+    --color-default-foreground: var(--color-gray-100);
+    --color-default-hover: var(--color-gray-600);
+    --color-background: var(--color-gray-900);
+    --color-foreground: var(--color-gray-100);
 
     /* Base background colors */
     --color-base-100: var(--color-gray-900);

@@ -2,8 +2,8 @@ import { clsx } from "clsx";
 import { createUniqueId, Show, splitProps, type JSX } from "solid-js";
 import { twMerge } from "tailwind-merge";
 
-import type { ComponentColor, ComponentSize, IComponentBaseProps } from "../types";
-import Toggle from "../toggle/Toggle";
+import type { IComponentBaseProps } from "../types";
+import Toggle, { type ToggleColor, type ToggleSize } from "../toggle/Toggle";
 
 type SwitchFieldBaseProps = {
   label: string;
@@ -11,8 +11,8 @@ type SwitchFieldBaseProps = {
   checked?: boolean;
   onChange?: (checked: boolean) => void;
   disabled?: boolean;
-  size?: ComponentSize;
-  color?: ComponentColor;
+  size?: ToggleSize;
+  color?: ToggleColor;
   error?: string;
   dataTheme?: string;
   class?: string;

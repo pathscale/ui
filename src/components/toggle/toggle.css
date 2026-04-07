@@ -1,234 +1,228 @@
 @layer components {
   .toggle {
-      border: var(--border) solid currentColor;
-      color: var(--input-color);
-      position: relative;
-      display: inline-grid;
-      flex-shrink: 0;
-      cursor: pointer;
-      appearance: none;
-      place-content: center;
-      vertical-align: middle;
-      webkit-user-select: none;
-      user-select: none;
-      grid-template-columns: 0fr 1fr 1fr;
-      --radius-selector-max: calc(
-        var(--radius-selector) + var(--radius-selector) + var(--radius-selector)
-        );
-      border-radius: calc( var(--radius-selector) + min(var(--toggle-p), var(--radius-selector-max)) + min(var(--border), var(--radius-selector-max)) );
-      padding: var(--toggle-p);
-      box-shadow: 0 1px currentColor inset;
-      transition: color 0.3s, grid-template-columns 0.2s;
-      --input-color: var(--color-base-content);
-      --toggle-p: calc(var(--size) * 0.125);
-      --size: calc(var(--size-selector, 0.25rem) * 6);
-      width: calc((var(--size) * 2) - (var(--border) + var(--toggle-p)) * 2);
-      height: var(--size);
-    }
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.75rem;
+    color: var(--color-base-content);
+    cursor: pointer;
+    user-select: none;
+    -webkit-tap-highlight-color: transparent;
 
-  @supports (color: color-mix(in lab, red, red)) {
-    .toggle {
-      box-shadow: 0 1px color-mix(in oklab, currentColor calc(var(--depth) * 10%), #0000) inset;
-    }
-    }
+    --switch-control-bg: var(--color-default);
+    --switch-control-bg-hover: color-mix(in oklab, var(--switch-control-bg), transparent 20%);
+    --switch-control-bg-pressed: var(--switch-control-bg-hover);
+    --switch-control-bg-checked: var(--color-accent);
+    --switch-control-bg-checked-hover: color-mix(in oklab, var(--switch-control-bg-checked), #000 8%);
+  }
 
-  @supports (color: color-mix(in lab, red, red)) {
-    .toggle {
-      --input-color: color-mix(in oklab, var(--color-base-content) 50%, #0000);
-    }
-    }
+  .toggle__input {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    margin: -1px;
+    border: 0;
+    padding: 0;
+    overflow: hidden;
+    white-space: nowrap;
+    clip-path: inset(50%);
+  }
 
-  .toggle > * {
-      z-index: 1;
-      grid-column: span 1 / span 1;
-      grid-column-start: 2;
-      grid-row-start: 1;
-      height: 100%;
-      cursor: pointer;
-      appearance: none;
-      background-color: transparent;
-      padding: calc(0.25rem * 0.5);
-      transition: opacity 0.2s, rotate 0.4s;
-      border: none;
-    }
+  .toggle__control {
+    position: relative;
+    display: flex;
+    flex-shrink: 0;
+    align-items: center;
+    overflow: hidden;
+    border-radius: 9999px;
+    height: 1.25rem;
+    width: 2.5rem;
+    background-color: var(--switch-control-bg);
+    transition:
+      background-color 250ms ease,
+      box-shadow 150ms ease;
+  }
 
-  .toggle > *:focus {
-      --tw-outline-style: none;
-      outline-style: none;
-    }
+  .toggle__thumb {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 9999px;
+    background-color: white;
+    margin-inline-start: 0.125rem;
+    height: 1rem;
+    width: 1.375rem;
+    box-shadow:
+      0 0 5px 0 oklch(0% 0 0 / 0.02),
+      0 2px 10px 0 oklch(0% 0 0 / 0.06),
+      0 0 1px 0 oklch(0% 0 0 / 0.3);
+    transition:
+      margin 300ms ease,
+      background-color 200ms ease;
+  }
 
-  @media (forced-colors: active) {
-    .toggle > *:focus {
-      outline: 2px solid transparent;
-      outline-offset: 2px;
-    }
-    }
+  .toggle__icon {
+    display: flex;
+    width: 100%;
+    height: 100%;
+    align-items: center;
+    justify-content: center;
+  }
 
-  .toggle > *:nth-child(2) {
-      color: var(--color-base-100);
-      rotate: 0deg;
-    }
+  .toggle__content {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+  }
 
-  .toggle > *:nth-child(3) {
-      color: var(--color-base-100);
-      opacity: 0%;
-      rotate: -15deg;
-    }
+  .toggle__description {
+    color: color-mix(in oklab, var(--color-base-content) 62%, transparent);
+    font-size: 0.75rem;
+    line-height: 1rem;
+  }
 
-  .toggle:has(:checked) > :nth-child(2) {
-      opacity: 0%;
-      rotate: 15deg;
-    }
+  /* ── Focus state ── */
 
-  .toggle:has(:checked) > :nth-child(3) {
-      opacity: 100%;
-      rotate: 0deg;
-    }
+  .toggle:focus-within .toggle__control,
+  .toggle__input:focus-visible + .toggle__control,
+  .toggle[data-focus-visible="true"] .toggle__control {
+    box-shadow: 0 0 0 3px color-mix(in oklab, var(--switch-control-bg-checked) 22%, transparent);
+  }
 
-  .toggle:before {
-      position: relative;
-      inset-inline-start: calc(0.25rem * 0);
-      grid-column-start: 2;
-      grid-row-start: 1;
-      aspect-ratio: 1 / 1;
-      height: 100%;
-      width: 100%;
-      border-radius: var(--radius-selector);
-      background-color: currentcolor;
-      translate: 0;
-      --tw-content: "";
-      content: var(--tw-content);
-      transition: background-color 0.1s, translate 0.2s, inset-inline-start 0.2s;
-      box-shadow: 0 -1px oklch(0% 0 0 / calc(var(--depth) * 0.1)) inset, 0 8px 0 -4px oklch(100% 0 0 / calc(var(--depth) * 0.1)) inset, 0 1px currentColor;
-      background-size: auto, calc(var(--noise) * 100%);
-      background-image: none, var(--fx-noise);
-    }
+  /* ── Hover state ── */
 
-  @supports (color: color-mix(in lab, red, red)) {
-    .toggle:before {
-      box-shadow: 0 -1px oklch(0% 0 0 / calc(var(--depth) * 0.1)) inset, 0 8px 0 -4px oklch(100% 0 0 / calc(var(--depth) * 0.1)) inset, 0 1px color-mix(in oklab, currentColor calc(var(--depth) * 10%), #0000);
+  @media (hover: hover) {
+    .toggle:hover .toggle__control,
+    .toggle[data-hovered="true"] .toggle__control {
+      background-color: var(--switch-control-bg-hover);
     }
-    }
+  }
 
-  @media (forced-colors: active) {
-    .toggle:before {
-      outline-style: var(--tw-outline-style);
-      outline-width: 1px;
-      outline-offset: calc(1px * -1);
-    }
-    }
+  /* ── Pressed state ── */
 
-  @media print {
-    .toggle:before {
-      outline: 0.25rem solid;
-      outline-offset: -1rem;
-    }
-    }
+  .toggle:active .toggle__control,
+  .toggle[data-pressed="true"] .toggle__control {
+    background-color: var(--switch-control-bg-pressed);
+  }
 
-  .toggle:focus-visible,
-    .toggle:has(:focus-visible) {
-      outline: 2px solid currentColor;
-      outline-offset: 2px;
-    }
+  /* ── Checked state ── */
 
-  .toggle:checked,
-    .toggle[aria-checked="true"],
-    .toggle:has(> input:checked) {
-      grid-template-columns: 1fr 1fr 0fr;
-      background-color: var(--color-base-100);
-      --input-color: var(--color-base-content);
-    }
+  .toggle[data-selected="true"] .toggle__control {
+    background-color: var(--switch-control-bg-checked);
+  }
 
-  .toggle:checked:before,
-    .toggle[aria-checked="true"]:before,
-    .toggle:has(> input:checked):before {
-      background-color: currentcolor;
-    }
+  .toggle[data-selected="true"] .toggle__thumb {
+    margin-inline-start: calc(100% - 1.5rem);
+    box-shadow:
+      0 0 5px 0 oklch(0% 0 0 / 0.02),
+      0 2px 10px 0 oklch(0% 0 0 / 0.06),
+      0 0 1px 0 oklch(0% 0 0 / 0.3);
+  }
 
-  @starting-style {
-    .toggle:checked:before,
-    .toggle[aria-checked="true"]:before,
-    .toggle:has(> input:checked):before {
-      opacity: 0;
-    }
-    }
+  /* ── Checked + Hover ── */
 
-  .toggle:indeterminate {
-      grid-template-columns: 0.5fr 1fr 0.5fr;
+  @media (hover: hover) {
+    .toggle[data-selected="true"]:hover .toggle__control,
+    .toggle[data-selected="true"][data-hovered="true"] .toggle__control {
+      background-color: var(--switch-control-bg-checked-hover);
     }
+  }
 
-  .toggle:disabled {
-      cursor: not-allowed;
-      opacity: 30%;
-    }
+  /* ── Checked + Pressed ── */
 
-  .toggle:disabled:before {
-      background-color: transparent;
-      border: var(--border) solid currentColor;
-    }
+  .toggle[data-selected="true"]:active .toggle__control,
+  .toggle[data-selected="true"][data-pressed="true"] .toggle__control {
+    background-color: var(--switch-control-bg-checked-hover);
+  }
 
-  .toggle-accent:checked,
-    .toggle-accent[aria-checked="true"] {
-      --input-color: var(--color-accent);
-    }
+  /* ── Size: sm ── */
 
-  .toggle-error:checked,
-    .toggle-error[aria-checked="true"] {
-      --input-color: var(--color-error);
-    }
+  .toggle--sm .toggle__control {
+    height: 1rem;
+    width: 2rem;
+  }
 
-  .toggle-info:checked,
-    .toggle-info[aria-checked="true"] {
-      --input-color: var(--color-info);
-    }
+  .toggle--sm .toggle__thumb {
+    height: 0.75rem;
+    width: 1.03125rem;
+  }
 
-  .toggle-lg:is([type="checkbox"]),
-    .toggle-lg:has([type="checkbox"]) {
-      --size: calc(var(--size-selector, 0.25rem) * 7);
-    }
+  .toggle--sm[data-selected="true"] .toggle__thumb {
+    margin-inline-start: calc(100% - 1.15625rem);
+  }
 
-  .toggle-md:is([type="checkbox"]),
-    .toggle-md:has([type="checkbox"]) {
-      --size: calc(var(--size-selector, 0.25rem) * 6);
-    }
+  /* ── Size: md (default) ── */
 
-  .toggle-neutral:checked,
-    .toggle-neutral[aria-checked="true"] {
-      --input-color: var(--color-neutral);
-    }
+  .toggle--md {
+    /* Default size */
+  }
 
-  .toggle-primary:checked,
-    .toggle-primary[aria-checked="true"] {
-      --input-color: var(--color-primary);
-    }
+  /* ── Size: lg ── */
 
-  .toggle-secondary:checked,
-    .toggle-secondary[aria-checked="true"] {
-      --input-color: var(--color-secondary);
-    }
+  .toggle--lg .toggle__control {
+    height: 1.5rem;
+    width: 3rem;
+  }
 
-  .toggle-sm:is([type="checkbox"]),
-    .toggle-sm:has([type="checkbox"]) {
-      --size: calc(var(--size-selector, 0.25rem) * 5);
-    }
+  .toggle--lg .toggle__thumb {
+    height: 1.25rem;
+    width: 1.71875rem;
+  }
 
-  .toggle-success:checked,
-    .toggle-success[aria-checked="true"] {
-      --input-color: var(--color-success);
-    }
+  .toggle--lg[data-selected="true"] .toggle__thumb {
+    margin-inline-start: calc(100% - 1.84375rem);
+  }
 
-  .toggle-warning:checked,
-    .toggle-warning[aria-checked="true"] {
-      --input-color: var(--color-warning);
-    }
+  /* ── Color: default ── */
 
-  .toggle-xl:is([type="checkbox"]),
-    .toggle-xl:has([type="checkbox"]) {
-      --size: calc(var(--size-selector, 0.25rem) * 8);
-    }
+  .toggle--default {
+    --switch-control-bg-checked: var(--color-default-foreground);
+    --switch-control-bg-checked-hover: color-mix(in oklab, var(--switch-control-bg-checked), #000 8%);
+  }
 
-  .toggle-xs:is([type="checkbox"]),
-    .toggle-xs:has([type="checkbox"]) {
-      --size: calc(var(--size-selector, 0.25rem) * 4);
-    }
+  /* ── Color: accent (default) ── */
+
+  .toggle--accent {
+    --switch-control-bg-checked: var(--color-accent);
+    --switch-control-bg-checked-hover: color-mix(in oklab, var(--switch-control-bg-checked), #000 8%);
+  }
+
+  /* ── Color: success ── */
+
+  .toggle--success {
+    --switch-control-bg-checked: var(--color-success);
+    --switch-control-bg-checked-hover: color-mix(in oklab, var(--switch-control-bg-checked), #000 8%);
+  }
+
+  /* ── Color: warning ── */
+
+  .toggle--warning {
+    --switch-control-bg-checked: var(--color-warning);
+    --switch-control-bg-checked-hover: color-mix(in oklab, var(--switch-control-bg-checked), #000 8%);
+  }
+
+  /* ── Color: danger ── */
+
+  .toggle--danger {
+    --switch-control-bg-checked: var(--color-danger);
+    --switch-control-bg-checked-hover: color-mix(in oklab, var(--switch-control-bg-checked), #000 8%);
+  }
+
+  /* ── Disabled state ── */
+
+  .toggle--disabled,
+  .toggle[data-disabled="true"] {
+    cursor: not-allowed;
+    opacity: 0.55;
+  }
+
+  .toggle--disabled .toggle__thumb,
+  .toggle[data-disabled="true"] .toggle__thumb {
+    background-color: color-mix(in oklab, var(--color-default-foreground) 20%, transparent);
+  }
+
+  .toggle--disabled[data-selected="true"] .toggle__thumb,
+  .toggle[data-disabled="true"][data-selected="true"] .toggle__thumb {
+    opacity: 0.4;
+  }
 }
