@@ -1,0 +1,124 @@
+@layer components {
+  /* -------------------------------------------------------------------------------------------------
+   * Root
+   * -----------------------------------------------------------------------------------------------*/
+  .avatar {
+    position: relative;
+    display: inline-flex;
+    flex-shrink: 0;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    border-radius: 9999px;
+    width: 2.5rem;
+    height: 2.5rem;
+    background-color: var(--color-base-200);
+  }
+
+  /* -------------------------------------------------------------------------------------------------
+   * Size modifiers
+   * -----------------------------------------------------------------------------------------------*/
+  .avatar--sm {
+    width: 2rem;
+    height: 2rem;
+  }
+
+  /* md is default — no extra styles */
+
+  .avatar--lg {
+    width: 3rem;
+    height: 3rem;
+  }
+
+  .avatar--lg .avatar__fallback {
+    font-size: 1rem;
+  }
+
+  /* -------------------------------------------------------------------------------------------------
+   * Image
+   * -----------------------------------------------------------------------------------------------*/
+  .avatar__image {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    aspect-ratio: 1 / 1;
+    object-fit: cover;
+    transition: opacity 250ms ease;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .avatar__image {
+      transition: none;
+    }
+  }
+
+  /* -------------------------------------------------------------------------------------------------
+   * Fallback
+   * -----------------------------------------------------------------------------------------------*/
+  .avatar__fallback {
+    display: flex;
+    width: 100%;
+    height: 100%;
+    align-items: center;
+    justify-content: center;
+    background-color: var(--color-base-200);
+    font-size: 0.875rem;
+    font-weight: 500;
+  }
+
+  /* -------------------------------------------------------------------------------------------------
+   * Fallback color modifiers
+   * -----------------------------------------------------------------------------------------------*/
+  .avatar__fallback--default {
+    color: var(--color-base-content);
+  }
+
+  .avatar__fallback--accent {
+    color: var(--color-accent);
+  }
+
+  .avatar__fallback--success {
+    color: var(--color-success);
+  }
+
+  .avatar__fallback--warning {
+    color: var(--color-warning);
+  }
+
+  .avatar__fallback--danger {
+    color: var(--color-error);
+  }
+
+  /* -------------------------------------------------------------------------------------------------
+   * Variant: soft
+   * -----------------------------------------------------------------------------------------------*/
+  .avatar--soft {
+    background-color: transparent;
+  }
+
+  .avatar--soft .avatar__fallback--accent {
+    background-color: color-mix(in oklab, var(--color-accent) 12%, transparent);
+    color: var(--color-accent);
+  }
+
+  .avatar--soft .avatar__fallback--success {
+    background-color: color-mix(in oklab, var(--color-success) 12%, transparent);
+    color: var(--color-success);
+  }
+
+  .avatar--soft .avatar__fallback--warning {
+    background-color: color-mix(in oklab, var(--color-warning) 12%, transparent);
+    color: var(--color-warning);
+  }
+
+  .avatar--soft .avatar__fallback--danger {
+    background-color: color-mix(in oklab, var(--color-error) 12%, transparent);
+    color: var(--color-error);
+  }
+
+  .avatar--soft .avatar__fallback--default {
+    background-color: var(--color-base-200);
+    color: var(--color-base-content);
+  }
+}
