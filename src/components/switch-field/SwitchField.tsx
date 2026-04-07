@@ -1,4 +1,5 @@
 import { splitProps, Show, type JSX } from "solid-js";
+import { twMerge } from "tailwind-merge";
 import Toggle from "../toggle/Toggle";
 import type { IComponentBaseProps } from "../types";
 import type { ToggleColor, ToggleSize } from "../toggle/Toggle";
@@ -43,8 +44,7 @@ const SwitchField = (props: SwitchFieldProps): JSX.Element => {
         color={local.color}
         description={local.description}
         dataTheme={local.dataTheme}
-        class={local.class}
-        className={local.className}
+        class={twMerge(local.class, local.className)}
         style={local.style}
         onChange={(e) => local.onChange?.(e.currentTarget.checked)}
       >
