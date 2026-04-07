@@ -175,7 +175,7 @@ export { default as Progress } from "./components/progress";
 export { PropsTable } from "./components/props-table";
 export { default as RadialProgress } from "./components/radialprogress";
 export { default as Radio } from "./components/radio";
-export { RadioGroup, type RadioGroupProps, type RadioGroupOption } from "./components/radio-group";
+export { RadioGroup, type RadioGroupProps, type RadioGroupOrientation, type RadioGroupVariant } from "./components/radio-group";
 export { default as Range } from "./components/range";
 export { SliderField, type SliderFieldProps } from "./components/range-slider";
 export { Rating } from "./components/rating";

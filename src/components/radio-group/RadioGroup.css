@@ -1,0 +1,58 @@
+@layer components {
+  .radio-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    width: fit-content;
+  }
+
+  .radio-group__label {
+    color: var(--color-base-content);
+    font-size: 0.875rem;
+    font-weight: 500;
+    line-height: 1.25rem;
+  }
+
+  .radio-group__description {
+    color: color-mix(in oklab, var(--color-base-content) 62%, transparent);
+    font-size: 0.75rem;
+    line-height: 1rem;
+  }
+
+  .radio-group__error {
+    color: var(--color-error);
+    font-size: 0.75rem;
+    line-height: 1rem;
+  }
+
+  .radio-group__items {
+    display: flex;
+    gap: 1rem;
+  }
+
+  .radio-group--vertical .radio-group__items {
+    flex-direction: column;
+  }
+
+  .radio-group--horizontal .radio-group__items {
+    flex-direction: row;
+    flex-wrap: wrap;
+  }
+
+  .radio-group--secondary .radio__control {
+    box-shadow: none;
+    background-color: var(--color-base-100);
+  }
+
+  @media (hover: hover) {
+    .radio-group--secondary .radio:not([data-selected="true"]):hover .radio__control,
+    .radio-group--secondary .radio:not([data-selected="true"])[data-hovered="true"] .radio__control {
+      border-color: color-mix(in oklab, var(--color-base-content) 24%, transparent);
+      background-color: var(--color-base-200);
+    }
+  }
+
+  .radio-group--disabled {
+    opacity: 0.75;
+  }
+}

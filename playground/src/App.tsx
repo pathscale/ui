@@ -1,5 +1,5 @@
-import { For } from "solid-js";
-import { Badge, Button, Dropdown, Input, Tabs } from "@pathscale/ui";
+import { For, createSignal } from "solid-js";
+import { Badge, Button, Dropdown, Input, Radio, RadioGroup, Tabs } from "@pathscale/ui";
 
 const BADGE_COLORS = [
   "default",
@@ -47,6 +47,8 @@ const BUTTON_SIZES = ["sm", "md", "lg"] as const;
 const INPUT_SIZES = ["sm", "md", "lg"] as const;
 
 export default function App() {
+  const [selectedFramework, setSelectedFramework] = createSignal("solid");
+
   return (
     <main class="min-h-screen bg-base-100 text-base-content p-8">
       <div class="mx-auto max-w-5xl space-y-8">
@@ -396,6 +398,77 @@ export default function App() {
                 endContent={<span aria-hidden="true">USD</span>}
                 fullWidth
               />
+            </div>
+          </div>
+        </section>
+
+        <section class="space-y-4 rounded-xl border border-base-300 bg-base-200 p-4">
+          <div>
+            <h2 class="text-sm font-semibold">Radio + RadioGroup</h2>
+            <p class="text-xs opacity-70">HeroUI-style baseline for selection controls.</p>
+          </div>
+
+          <div class="grid gap-6 md:grid-cols-2">
+            <div class="space-y-3">
+              <h3 class="text-xs font-semibold uppercase opacity-70">Uncontrolled Vertical</h3>
+              <RadioGroup
+                defaultValue="starter"
+                label="Plan"
+                description="Pick one option."
+              >
+                <Radio value="starter">Starter</Radio>
+                <Radio value="pro">Pro</Radio>
+                <Radio value="enterprise">Enterprise</Radio>
+              </RadioGroup>
+            </div>
+
+            <div class="space-y-3">
+              <h3 class="text-xs font-semibold uppercase opacity-70">Controlled Horizontal</h3>
+              <RadioGroup
+                value={selectedFramework()}
+                onChange={setSelectedFramework}
+                orientation="horizontal"
+                variant="secondary"
+                label="Framework"
+                description={`Selected: ${selectedFramework()}`}
+              >
+                <Radio value="solid">Solid</Radio>
+                <Radio value="react">React</Radio>
+                <Radio value="vue" disabled>
+                  Vue (disabled)
+                </Radio>
+              </RadioGroup>
+            </div>
+          </div>
+
+          <div class="grid gap-6 md:grid-cols-2">
+            <div class="space-y-3">
+              <h3 class="text-xs font-semibold uppercase opacity-70">Invalid State</h3>
+              <RadioGroup
+                isInvalid
+                label="Environment"
+                errorMessage="Select at least one environment."
+              >
+                <Radio value="dev" isInvalid>
+                  Development
+                </Radio>
+                <Radio value="staging" isInvalid>
+                  Staging
+                </Radio>
+              </RadioGroup>
+            </div>
+
+            <div class="space-y-3">
+              <h3 class="text-xs font-semibold uppercase opacity-70">Disabled Group</h3>
+              <RadioGroup
+                isDisabled
+                defaultValue="email"
+                label="Notification Channel"
+                description="This group is disabled."
+              >
+                <Radio value="email">Email</Radio>
+                <Radio value="sms">SMS</Radio>
+              </RadioGroup>
             </div>
           </div>
         </section>

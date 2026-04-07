@@ -1,89 +1,111 @@
-import "./radio.css";
-import clsx from "clsx";
-import { splitProps, type JSX, createMemo } from "solid-js";
+import "./Radio.css";
+import { Show, splitProps, useContext, type Component, type JSX } from "solid-js";
 import { twMerge } from "tailwind-merge";
+import { RadioGroupContext } from "../radio-group/context";
 import type { IComponentBaseProps } from "../types";
 
-export type ComponentColor =
-  | "primary"
-  | "secondary"
-  | "accent"
-  | "info"
-  | "success"
-  | "warning"
-  | "error";
+const invokeEventHandler = (handler: unknown, event: Event) => {
+  if (typeof handler === "function") {
+    (handler as (event: Event) => void)(event);
+    return;
+  }
 
-export type ComponentSize = "xs" | "sm" | "md" | "lg" | "xl";
+  if (Array.isArray(handler) && typeof handler[0] === "function") {
+    handler[0](handler[1], event);
+  }
+};
 
-export type RadioProps = Omit<
-  JSX.InputHTMLAttributes<HTMLInputElement>,
-  "size"
-> &
+export type RadioProps = Omit<JSX.InputHTMLAttributes<HTMLInputElement>, "type" | "children"> &
   IComponentBaseProps & {
-    color?: ComponentColor;
-    size?: ComponentSize;
-    // ARIA attributes
-    "aria-label"?: string;
-    "aria-describedby"?: string;
-    "aria-invalid"?: boolean;
-    "aria-required"?: boolean;
-    "aria-labelledby"?: string;
-    "aria-checked"?: boolean;
+    children?: JSX.Element;
+    description?: JSX.Element;
+    indicator?: JSX.Element;
+    isDisabled?: boolean;
+    isInvalid?: boolean;
   };
 
-const Radio = (props: RadioProps): JSX.Element => {
-  const [local, rest] = splitProps(props, [
+const Radio: Component<RadioProps> = (props) => {
+  const group = useContext(RadioGroupContext);
+  const [local, others] = splitProps(props, [
     "class",
     "className",
-    "color",
-    "size",
+    "children",
+    "description",
+    "indicator",
+    "isDisabled",
+    "isInvalid",
+    "disabled",
+    "checked",
+    "value",
     "name",
-    "type",
+    "onChange",
     "dataTheme",
-    "aria-label",
-    "aria-describedby",
     "aria-invalid",
-    "aria-required",
-    "aria-labelledby",
-    "aria-checked",
   ]);
 
-  const classes = createMemo(() =>
-    twMerge(
-      "radio",
-      local.class,
-      local.className,
-      clsx({
-        "radio-xs": local.size === "xs",
-        "radio-sm": local.size === "sm",
-        "radio-md": local.size === "md",
-        "radio-lg": local.size === "lg",
-        "radio-xl": local.size === "xl",
-        "radio-primary": local.color === "primary",
-        "radio-secondary": local.color === "secondary",
-        "radio-accent": local.color === "accent",
-        "radio-info": local.color === "info",
-        "radio-success": local.color === "success",
-        "radio-warning": local.color === "warning",
-        "radio-error": local.color === "error",
-      }),
-    ),
-  );
+  const value = () => (local.value != null ? String(local.value) : undefined);
+  const isGrouped = () => Boolean(group && value() !== undefined);
+  const isSelected = () => (isGrouped() ? group?.value() === value() : Boolean(local.checked));
+  const isDisabled = () =>
+    Boolean(local.isDisabled) || Boolean(local.disabled) || Boolean(group?.isDisabled());
+  const isInvalid = () =>
+    Boolean(local.isInvalid) || Boolean(local["aria-invalid"]) || Boolean(group?.isInvalid());
+  const name = () => local.name ?? group?.name();
+  const ariaInvalid = () => local["aria-invalid"] ?? (isInvalid() ? true : undefined);
+
+  const hasContent = () => local.children != null || local.description != null;
+
+  const handleChange: JSX.EventHandlerUnion<HTMLInputElement, Event> = (event) => {
+    invokeEventHandler(local.onChange, event);
+    if (event.defaultPrevented) return;
+
+    if (event.currentTarget.checked && group && value() !== undefined) {
+      group.selectValue(value() as string, event);
+    }
+  };
 
   return (
-    <input
-      {...rest}
-      name={local.name}
-      type="radio"
-      class={classes()}
+    <label
+      class={twMerge("radio", isDisabled() && "radio--disabled", local.class, local.className)}
       data-theme={local.dataTheme}
-      aria-label={local["aria-label"]}
-      aria-describedby={local["aria-describedby"]}
-      aria-invalid={local["aria-invalid"]}
-      aria-required={local["aria-required"]}
-      aria-labelledby={local["aria-labelledby"]}
-      aria-checked={local["aria-checked"]}
-    />
+      data-slot="radio"
+      data-selected={isSelected() ? "true" : "false"}
+      data-disabled={isDisabled() ? "true" : "false"}
+      data-invalid={isInvalid() ? "true" : "false"}
+      aria-disabled={isDisabled() ? "true" : "false"}
+    >
+      <input
+        {...others}
+        type="radio"
+        value={local.value}
+        name={name()}
+        checked={isGrouped() ? isSelected() : local.checked}
+        disabled={isDisabled()}
+        class="radio__input"
+        data-slot="radio-input"
+        aria-invalid={ariaInvalid()}
+        onChange={handleChange}
+      />
+
+      <span class="radio__control" data-slot="radio-control" aria-hidden="true">
+        <span class="radio__indicator" data-slot="radio-indicator">
+          {local.indicator}
+        </span>
+      </span>
+
+      <Show when={hasContent()}>
+        <span class="radio__content" data-slot="radio-content">
+          <Show when={local.children}>
+            <span data-slot="label">{local.children}</span>
+          </Show>
+          <Show when={local.description}>
+            <span class="radio__description" data-slot="description">
+              {local.description}
+            </span>
+          </Show>
+        </span>
+      </Show>
+    </label>
   );
 };
 
