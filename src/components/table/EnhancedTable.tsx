@@ -459,7 +459,7 @@ function EnhancedTable<TData>(props: EnhancedTableProps<TData>): JSX.Element {
                       <Loading
                         variant="spinner"
                         size="lg"
-                        color="primary"
+                        color="accent"
                       />
                     )}
                   </Table.Cell>

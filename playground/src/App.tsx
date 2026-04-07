@@ -5,6 +5,7 @@ import {
   Badge,
   Breadcrumbs,
   Button,
+  Loading,
   Progress,
   Skeleton,
   Checkbox,
@@ -1210,6 +1211,47 @@ export default function App() {
               <Skeleton class="h-32 w-full rounded-lg" />
               <Skeleton class="h-4 w-3/4 rounded" />
               <Skeleton class="h-3 w-1/2 rounded" />
+            </div>
+          </div>
+        </section>
+
+        <section class="space-y-4 rounded-xl border border-base-300 bg-base-200 p-4">
+          <div>
+            <h2 class="text-sm font-semibold">Loading / Spinner</h2>
+            <p class="text-xs opacity-70">
+              HeroUI-style SVG spinner with sizes, colors, and legacy CSS variants.
+            </p>
+          </div>
+
+          <div class="space-y-3">
+            <h3 class="text-xs font-semibold uppercase opacity-70">Sizes</h3>
+            <div class="flex items-center gap-4">
+              <For each={["xs", "sm", "md", "lg", "xl"] as const}>
+                {(size) => <Loading size={size} color="accent" />}
+              </For>
+            </div>
+          </div>
+
+          <div class="space-y-3">
+            <h3 class="text-xs font-semibold uppercase opacity-70">Colors</h3>
+            <div class="flex items-center gap-4">
+              <For each={["current", "accent", "success", "warning", "danger"] as const}>
+                {(color) => <Loading size="lg" color={color} />}
+              </For>
+            </div>
+          </div>
+
+          <div class="space-y-3">
+            <h3 class="text-xs font-semibold uppercase opacity-70">Variants</h3>
+            <div class="flex items-center gap-6">
+              <For each={["spinner", "dots", "ring", "ball", "bars", "infinity"] as const}>
+                {(variant) => (
+                  <div class="flex flex-col items-center gap-2">
+                    <Loading size="lg" variant={variant} color="accent" />
+                    <span class="text-xs opacity-70">{variant}</span>
+                  </div>
+                )}
+              </For>
             </div>
           </div>
         </section>

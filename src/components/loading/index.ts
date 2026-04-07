@@ -1,1 +1,7 @@
-export { default, type LoadingProps } from "./Loading";
+export {
+  default,
+  type LoadingProps,
+  type SpinnerSize,
+  type SpinnerColor,
+  type SpinnerVariant,
+} from "./Loading";
