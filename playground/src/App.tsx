@@ -1,5 +1,5 @@
 import { For, createSignal } from "solid-js";
-import { Badge, Button, Checkbox, Dropdown, Input, Radio, RadioGroup, SliderField, Tabs, Toggle } from "@pathscale/ui";
+import { Badge, Button, Checkbox, Dropdown, Input, Radio, RadioGroup, SliderField, Tabs, Toggle, Tooltip } from "@pathscale/ui";
 
 const BADGE_COLORS = [
   "default",
@@ -47,6 +47,7 @@ const BUTTON_SIZES = ["sm", "md", "lg"] as const;
 const INPUT_SIZES = ["sm", "md", "lg"] as const;
 const TOGGLE_COLORS = ["default", "accent", "success", "warning", "danger"] as const;
 const TOGGLE_SIZES = ["sm", "md", "lg"] as const;
+const TOOLTIP_PLACEMENTS = ["top", "bottom", "left", "right"] as const;
 
 export default function App() {
   const [selectedFramework, setSelectedFramework] = createSignal("solid");
@@ -657,6 +658,61 @@ export default function App() {
               onChange={() => {}}
               disabled
             />
+          </div>
+        </section>
+
+        <section class="space-y-4 rounded-xl border border-base-300 bg-base-200 p-4">
+          <div>
+            <h2 class="text-sm font-semibold">Tooltip</h2>
+            <p class="text-xs opacity-70">HeroUI-style compound tooltip with placement, arrow, and controlled state.</p>
+          </div>
+
+          <div class="space-y-3">
+            <h3 class="text-xs font-semibold uppercase opacity-70">Placements</h3>
+            <div class="flex flex-wrap items-center justify-center gap-12 py-8">
+              <For each={TOOLTIP_PLACEMENTS}>
+                {(placement) => (
+                  <Tooltip placement={placement}>
+                    <Tooltip.Trigger>
+                      <Button variant="secondary">{placement}</Button>
+                    </Tooltip.Trigger>
+                    <Tooltip.Content>
+                      <Tooltip.Arrow />
+                      Tooltip on {placement}
+                    </Tooltip.Content>
+                  </Tooltip>
+                )}
+              </For>
+            </div>
+          </div>
+
+          <div class="space-y-3">
+            <h3 class="text-xs font-semibold uppercase opacity-70">Without Arrow</h3>
+            <div class="flex flex-wrap items-center gap-6 py-4">
+              <Tooltip placement="top">
+                <Tooltip.Trigger>
+                  <Button variant="outline">No arrow</Button>
+                </Tooltip.Trigger>
+                <Tooltip.Content>
+                  Simple tooltip text
+                </Tooltip.Content>
+              </Tooltip>
+            </div>
+          </div>
+
+          <div class="space-y-3">
+            <h3 class="text-xs font-semibold uppercase opacity-70">Controlled</h3>
+            <div class="flex flex-wrap items-center gap-6 py-4">
+              <Tooltip placement="right" isOpen>
+                <Tooltip.Trigger>
+                  <Button variant="primary">Always open</Button>
+                </Tooltip.Trigger>
+                <Tooltip.Content>
+                  <Tooltip.Arrow />
+                  Controlled tooltip (always visible)
+                </Tooltip.Content>
+              </Tooltip>
+            </div>
           </div>
         </section>
       </div>

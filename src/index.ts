@@ -265,7 +265,8 @@ export type {
 } from "./components/toastcontainer";
 export { default as Toggle } from "./components/toggle";
 export { SwitchField, type SwitchFieldProps } from "./components/switch-field";
-export { default as Tooltip } from "./components/tooltip";
+export { default as Tooltip, TooltipRoot, TooltipTrigger, TooltipContent, TooltipArrow } from "./components/tooltip";
+export type { TooltipPlacement, TooltipRootProps, TooltipTriggerProps, TooltipContentProps, TooltipArrowProps } from "./components/tooltip";
 export { VideoPreview, type VideoPreviewProps } from "./components/video-preview";
 export {
   default as WindowMockup,

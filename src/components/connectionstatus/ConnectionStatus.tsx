@@ -178,47 +178,49 @@ export const ConnectionStatus: Component<ConnectionStatusProps> = (props) => {
       data-theme={local.dataTheme}
       {...others}
     >
-      <Tooltip
-        position="bottom"
-        message={getTooltipText()}
-      >
-        <Flex
-          align="center"
-          gap="sm"
-        >
-          <Show when={local.showDetails}>
-            <Flex
-              direction="col"
-              align="start"
-              gap="sm"
-            >
+      <Tooltip placement="bottom">
+        <Tooltip.Trigger>
+          <Flex
+            align="center"
+            gap="sm"
+          >
+            <Show when={local.showDetails}>
+              <Flex
+                direction="col"
+                align="start"
+                gap="sm"
+              >
+                <Badge
+                  color={getBadgeColor()}
+                  size="sm"
+                >
+                  {getStatusText()}
+                </Badge>
+                <Show when={local.serviceName}>
+                  <span class="text-xs text-base-content/70">
+                    {local.serviceName}
+                  </span>
+                </Show>
+                <Show when={local.showUrl && displayUrl()}>
+                  <span class="text-xs font-mono text-base-content/70">
+                    {displayUrl()}
+                  </span>
+                </Show>
+              </Flex>
+            </Show>
+            <Show when={!local.showDetails}>
               <Badge
                 color={getBadgeColor()}
                 size="sm"
               >
                 {getStatusText()}
               </Badge>
-              <Show when={local.serviceName}>
-                <span class="text-xs text-base-content/70">
-                  {local.serviceName}
-                </span>
-              </Show>
-              <Show when={local.showUrl && displayUrl()}>
-                <span class="text-xs font-mono text-base-content/70">
-                  {displayUrl()}
-                </span>
-              </Show>
-            </Flex>
-          </Show>
-          <Show when={!local.showDetails}>
-            <Badge
-              color={getBadgeColor()}
-              size="sm"
-            >
-              {getStatusText()}
-            </Badge>
-          </Show>
-        </Flex>
+            </Show>
+          </Flex>
+        </Tooltip.Trigger>
+        <Tooltip.Content>
+          {getTooltipText()}
+        </Tooltip.Content>
       </Tooltip>
 
       <Show when={shouldShowReconnectButton()}>
