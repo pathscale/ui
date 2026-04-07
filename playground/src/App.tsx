@@ -5,6 +5,7 @@ import {
   Badge,
   Breadcrumbs,
   Button,
+  EmptyState,
   Loading,
   Progress,
   Skeleton,
@@ -1315,6 +1316,51 @@ export default function App() {
                 mobileMode="dock"
                 baseSize={36}
               />
+            </div>
+          </div>
+        </section>
+
+        <section class="space-y-4 rounded-xl border border-base-300 bg-base-200 p-4">
+          <div>
+            <h2 class="text-sm font-semibold">Empty State</h2>
+            <p class="text-xs opacity-70">
+              Compound empty state for lists, tables, and search results.
+            </p>
+          </div>
+
+          <div class="space-y-3">
+            <h3 class="text-xs font-semibold uppercase opacity-70">Simple</h3>
+            <div class="rounded-lg border border-base-300 bg-base-100">
+              <EmptyState>
+                <EmptyState.Icon>
+                  <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/></svg>
+                </EmptyState.Icon>
+                <EmptyState.Title>No documents</EmptyState.Title>
+                <EmptyState.Description>
+                  Get started by creating a new document.
+                </EmptyState.Description>
+                <EmptyState.Actions>
+                  <Button size="sm" variant="primary">New Document</Button>
+                </EmptyState.Actions>
+              </EmptyState>
+            </div>
+          </div>
+
+          <div class="space-y-3">
+            <h3 class="text-xs font-semibold uppercase opacity-70">Search Results</h3>
+            <div class="rounded-lg border border-base-300 bg-base-100">
+              <EmptyState>
+                <EmptyState.Icon>
+                  <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+                </EmptyState.Icon>
+                <EmptyState.Title>No results found</EmptyState.Title>
+                <EmptyState.Description>
+                  Try adjusting your search or filter to find what you're looking for.
+                </EmptyState.Description>
+                <EmptyState.Actions>
+                  <Button size="sm" variant="secondary">Clear filters</Button>
+                </EmptyState.Actions>
+              </EmptyState>
             </div>
           </div>
         </section>
