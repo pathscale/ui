@@ -220,7 +220,15 @@ export type {
 export { createStreamingTableStore } from "./components/streaming-table";
 export type { StreamingTableStore } from "./components/streaming-table";
 export { default as Tabs } from "./components/tabs";
-export type { RadioTabProps, TabProps, TabsProps } from "./components/tabs";
+export type {
+  TabsRootProps,
+  TabListContainerProps,
+  TabListProps,
+  TabProps,
+  TabIndicatorProps,
+  TabSeparatorProps,
+  TabPanelProps,
+} from "./components/tabs";
 export { default as Textarea } from "./components/textarea";
 export {
   SizePicker,

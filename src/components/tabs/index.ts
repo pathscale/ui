@@ -1,4 +1,10 @@
-export { default } from "./Tabs";
-export type { TabProps } from "./Tab";
-export type { TabsProps } from "./Tabs";
-export type { RadioTabProps } from "./RadioTab";
+export { default, Tabs } from "./Tabs";
+export type {
+  TabsRootProps,
+  TabListContainerProps,
+  TabListProps,
+  TabProps,
+  TabIndicatorProps,
+  TabSeparatorProps,
+  TabPanelProps,
+} from "./Tabs";

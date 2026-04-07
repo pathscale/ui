@@ -1,0 +1,202 @@
+@layer components {
+  .tabs {
+    display: flex;
+    gap: 0.5rem;
+  }
+
+  .tabs[data-orientation="horizontal"] {
+    flex-direction: column;
+  }
+
+  .tabs[data-orientation="vertical"] {
+    flex-direction: row;
+  }
+
+  .tabs__list-container {
+    position: relative;
+  }
+
+  .tabs__list {
+    display: inline-flex;
+    background-color: var(--color-base-200);
+    padding: 0.25rem;
+    border-radius: calc(var(--radius-box) + 0.25rem);
+  }
+
+  .tabs__list[data-orientation="horizontal"] {
+    flex-direction: row;
+    width: 100%;
+  }
+
+  .tabs__list[data-orientation="vertical"] {
+    flex-direction: column;
+    gap: 0.25rem;
+  }
+
+  .tabs__list[data-orientation="vertical"] .tabs__tab {
+    min-width: 5rem;
+  }
+
+  .tabs__tab {
+    position: relative;
+    z-index: 1;
+    cursor: pointer;
+
+    display: flex;
+    height: 2rem;
+    width: 100%;
+    align-items: center;
+    justify-content: center;
+    border-radius: 1.5rem;
+    padding-inline: 1rem;
+    text-align: center;
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: var(--color-base-content);
+    opacity: 0.7;
+    outline: none;
+    background: none;
+    border: 0;
+
+    transition:
+      color 150ms ease,
+      background-color 150ms ease,
+      box-shadow 150ms ease,
+      opacity 150ms ease;
+  }
+
+  .tabs__tab[data-selected="true"] {
+    opacity: 1;
+  }
+
+  .tabs__tab[data-selected="true"] .tabs__separator {
+    opacity: 0;
+  }
+
+  .tabs__tab[data-selected="true"] + .tabs__tab .tabs__separator {
+    opacity: 0;
+  }
+
+  .tabs__tab:disabled,
+  .tabs__tab[data-disabled="true"],
+  .tabs__tab[aria-disabled="true"] {
+    cursor: not-allowed;
+    opacity: 0.4;
+  }
+
+  @media (hover: hover) {
+    .tabs__tab:not([data-selected="true"]):not([data-disabled="true"]):hover {
+      opacity: 0.85;
+    }
+  }
+
+  .tabs__tab:focus-visible,
+  .tabs__tab[data-focus-visible="true"] {
+    outline: 2px solid currentColor;
+    outline-offset: 2px;
+  }
+
+  .tabs__separator {
+    background-color: var(--color-base-content);
+    opacity: 0.25;
+    border-radius: 4px;
+    position: absolute;
+    pointer-events: none;
+    transition: opacity 150ms ease;
+  }
+
+  .tabs__list[data-orientation="horizontal"] .tabs__separator {
+    left: 0;
+    top: 25%;
+    width: 1px;
+    height: 50%;
+  }
+
+  .tabs__list[data-orientation="vertical"] .tabs__separator {
+    top: 0;
+    left: 5%;
+    width: 90%;
+    height: 1px;
+  }
+
+  .tabs__panel {
+    width: 100%;
+    padding: 0.5rem;
+    outline: none;
+  }
+
+  .tabs__panel[data-orientation="horizontal"] {
+    margin-top: 1rem;
+  }
+
+  .tabs__panel[data-orientation="vertical"] {
+    margin-left: 1rem;
+  }
+
+  .tabs__indicator {
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    border-radius: var(--radius-box);
+    width: 100%;
+    height: 100%;
+    background-color: var(--color-base-100);
+    box-shadow: 0 1px 2px oklch(0% 0 0 / 0.12);
+    transition-duration: 250ms;
+    transition-property: translate, width, height;
+    transition-timing-function: ease;
+  }
+
+  .tabs--secondary .tabs__list {
+    background-color: transparent;
+    padding: 0;
+    border-radius: 0;
+  }
+
+  .tabs--secondary .tabs__list[data-orientation="horizontal"] {
+    border-bottom: 1px solid var(--color-base-300);
+    max-width: 100%;
+    overflow-x: auto;
+    overflow-y: clip;
+    scrollbar-width: none;
+  }
+
+  .tabs--secondary .tabs__list[data-orientation="horizontal"]::-webkit-scrollbar {
+    display: none;
+  }
+
+  .tabs--secondary .tabs__list[data-orientation="vertical"] {
+    border-left: 1px solid var(--color-base-300);
+  }
+
+  .tabs--secondary .tabs__tab {
+    border-radius: 0;
+  }
+
+  .tabs--secondary .tabs__tab[data-selected="true"] {
+    color: var(--color-base-content);
+  }
+
+  .tabs--secondary .tabs__separator {
+    display: none;
+  }
+
+  .tabs--secondary .tabs__indicator {
+    background-color: var(--color-accent);
+    box-shadow: none;
+    border-radius: 0;
+  }
+
+  .tabs--secondary[data-orientation="horizontal"] .tabs__indicator {
+    top: auto;
+    bottom: 0;
+    height: 2px;
+  }
+
+  .tabs--secondary[data-orientation="vertical"] .tabs__indicator {
+    left: 0;
+    top: 0;
+    width: 2px;
+    height: 100%;
+  }
+}
