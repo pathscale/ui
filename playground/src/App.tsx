@@ -1,5 +1,5 @@
 import { For } from "solid-js";
-import { Badge, Button, Dropdown, Tabs } from "@pathscale/ui";
+import { Badge, Button, Dropdown, Input, Tabs } from "@pathscale/ui";
 
 const BADGE_COLORS = [
   "default",
@@ -44,6 +44,7 @@ const BUTTON_VARIANTS = [
 ] as const;
 
 const BUTTON_SIZES = ["sm", "md", "lg"] as const;
+const INPUT_SIZES = ["sm", "md", "lg"] as const;
 
 export default function App() {
   return (
@@ -321,6 +322,80 @@ export default function App() {
               <Button variant="outline" fullWidth class="max-w-xs">
                 Full Width
               </Button>
+            </div>
+          </div>
+        </section>
+
+        <section class="space-y-4 rounded-xl border border-base-300 bg-base-200 p-4">
+          <div>
+            <h2 class="text-sm font-semibold">Input</h2>
+            <p class="text-xs opacity-70">HeroUI-style baseline with size, focus, disabled, and invalid states.</p>
+          </div>
+
+          <div class="space-y-3">
+            <h3 class="text-xs font-semibold uppercase opacity-70">Sizes</h3>
+            <div class="grid gap-3 md:grid-cols-3">
+              <For each={INPUT_SIZES}>
+                {(size) => (
+                  <Input
+                    size={size}
+                    label={`Size ${size.toUpperCase()}`}
+                    placeholder={`Input ${size}`}
+                    helperText="Helper text"
+                    fullWidth
+                  />
+                )}
+              </For>
+            </div>
+          </div>
+
+          <div class="space-y-3">
+            <h3 class="text-xs font-semibold uppercase opacity-70">States</h3>
+            <div class="grid gap-3 md:grid-cols-2">
+              <Input
+                label="Default"
+                placeholder="Type here"
+                helperText="This is a helper message"
+                fullWidth
+              />
+              <Input
+                label="Focused (autofocus)"
+                placeholder="Focused input"
+                autofocus
+                fullWidth
+              />
+              <Input
+                label="Disabled"
+                placeholder="Disabled input"
+                disabled
+                helperText="Disabled state"
+                fullWidth
+              />
+              <Input
+                label="Invalid"
+                placeholder="Invalid input"
+                isInvalid
+                errorMessage="Please enter a valid value"
+                fullWidth
+              />
+            </div>
+          </div>
+
+          <div class="space-y-3">
+            <h3 class="text-xs font-semibold uppercase opacity-70">With Slots</h3>
+            <div class="grid gap-3 md:grid-cols-2">
+              <Input
+                label="Start Content"
+                placeholder="Search..."
+                startContent={<span aria-hidden="true">S</span>}
+                fullWidth
+              />
+              <Input
+                label="End Content"
+                placeholder="Amount"
+                endContent={<span aria-hidden="true">USD</span>}
+                fullWidth
+              />
             </div>
           </div>
         </section>

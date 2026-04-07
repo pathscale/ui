@@ -1,141 +1,300 @@
-import "./input.css";
-import { type JSX, Show, createMemo, createSignal, splitProps } from "solid-js";
+import "./Input.css";
+import {
+  Show,
+  createContext,
+  createUniqueId,
+  splitProps,
+  useContext,
+  type Accessor,
+  type Component,
+  type JSX,
+} from "solid-js";
 import { twMerge } from "tailwind-merge";
-import { clsx } from "clsx";
+type InputSize = "sm" | "md" | "lg";
 
-import type {
-  ComponentColor,
-  ComponentSize,
-  IComponentBaseProps,
-} from "../types";
-
-type InputBaseProps = {
-  size?: ComponentSize;
-  color?: ComponentColor;
-  variant?: "bordered" | "ghost" | "flushed";
-  fullWidth?: boolean;
-  dataTheme?: string;
-  class?: string;
-  className?: string;
-  style?: JSX.CSSProperties;
-  rightIcon?: JSX.Element;
-  leftIcon?: JSX.Element;
-  placeholder?: string;
-  ref?: HTMLInputElement | ((el: HTMLInputElement) => void);
-  // ARIA attributes
-  "aria-label"?: string;
-  "aria-describedby"?: string;
-  "aria-invalid"?: boolean;
-  "aria-required"?: boolean;
+type InputContextValue = {
+  fieldId: Accessor<string>;
+  helperId: Accessor<string>;
+  size: Accessor<InputSize>;
+  isDisabled: Accessor<boolean>;
+  isInvalid: Accessor<boolean>;
+  fullWidth: Accessor<boolean>;
 };
 
-export type InputProps = InputBaseProps &
-  IComponentBaseProps &
-  Omit<JSX.InputHTMLAttributes<HTMLInputElement>, keyof InputBaseProps>;
+const InputContext = createContext<InputContextValue>();
 
-const Input = (props: InputProps): JSX.Element => {
+type InputRootProps = Omit<JSX.HTMLAttributes<HTMLDivElement>, "children"> & {
+  children: JSX.Element;
+  size?: InputSize;
+  fullWidth?: boolean;
+  isDisabled?: boolean;
+  isInvalid?: boolean;
+  dataTheme?: string;
+  className?: string;
+};
+
+const InputRoot: Component<InputRootProps> = (props) => {
   const [local, others] = splitProps(props, [
-    "size",
-    "color",
-    "variant",
-    "fullWidth",
-    "dataTheme",
+    "children",
     "class",
     "className",
-    "style",
-    "leftIcon",
-    "rightIcon",
-    "placeholder",
-    "type",
-    "ref",
-    "aria-label",
-    "aria-describedby",
-    "aria-invalid",
-    "aria-required",
+    "size",
+    "fullWidth",
+    "isDisabled",
+    "isInvalid",
+    "dataTheme",
   ]);
-  const [passwordVisible, setPasswordVisible] = createSignal(false);
 
-  const inputType = createMemo(() => {
-    if (local.type === "password") {
-      return passwordVisible() ? "text" : "password";
-    }
-    return local.type;
-  });
+  const baseId = createUniqueId();
 
-  const colorFocusMap: Record<string, string> = {
-    primary: "focus-within:border-primary",
-    success: "focus-within:border-success",
-    warning: "focus-within:border-warning",
-    error: "focus-within:border-error",
-    info: "focus-within:border-info",
-    default: "focus-within:border-base-content",
-  };
+  const size = () => local.size ?? "md";
+  const isDisabled = () => Boolean(local.isDisabled);
+  const isInvalid = () => Boolean(local.isInvalid);
+  const fullWidth = () => Boolean(local.fullWidth);
 
-  const labelClasses = () =>
+  return (
+    <InputContext.Provider
+      value={{
+        fieldId: () => `${baseId}-field`,
+        helperId: () => `${baseId}-helper`,
+        size,
+        isDisabled,
+        isInvalid,
+        fullWidth,
+      }}
+    >
+      <div
+        {...others}
+        class={twMerge(
+          "input-root",
+          fullWidth() && "input-root--full-width",
+          local.class,
+          local.className,
+        )}
+        data-theme={local.dataTheme}
+        data-slot="input-root"
+      >
+        {local.children}
+      </div>
+    </InputContext.Provider>
+  );
+};
+
+const SIZE_CLASS_MAP: Record<InputSize, string> = {
+  sm: "input-control--sm",
+  md: "input-control--md",
+  lg: "input-control--lg",
+};
+
+type InputFieldProps = Omit<JSX.InputHTMLAttributes<HTMLInputElement>, "size" | "children" | "disabled"> & {
+  size?: InputSize;
+  isDisabled?: boolean;
+  disabled?: boolean;
+  isInvalid?: boolean;
+  fullWidth?: boolean;
+  startContent?: JSX.Element;
+  endContent?: JSX.Element;
+  dataTheme?: string;
+  className?: string;
+};
+
+const InputField: Component<InputFieldProps> = (props) => {
+  const ctx = useContext(InputContext);
+  const [local, others] = splitProps(props, [
+    "class",
+    "className",
+    "size",
+    "isDisabled",
+    "disabled",
+    "isInvalid",
+    "fullWidth",
+    "startContent",
+    "endContent",
+    "dataTheme",
+    "id",
+    "aria-invalid",
+  ]);
+
+  const size = () => local.size ?? ctx?.size() ?? "md";
+  const isDisabled = () => Boolean(local.isDisabled) || Boolean(local.disabled) || Boolean(ctx?.isDisabled());
+  const isInvalid = () =>
+    Boolean(local.isInvalid) || Boolean(local["aria-invalid"]) || Boolean(ctx?.isInvalid());
+  const fullWidth = () => Boolean(local.fullWidth) || Boolean(ctx?.fullWidth());
+  const inputId = () => local.id ?? ctx?.fieldId();
+  const ariaInvalid = () => local["aria-invalid"] ?? (isInvalid() ? true : undefined);
+
+  const controlClasses = () =>
     twMerge(
-      "input",
-      "items-center gap-2 focus-within:outline-none",
+      "input-control",
+      SIZE_CLASS_MAP[size()],
+      fullWidth() && "input-control--full-width",
+      isDisabled() && "input-control--disabled",
+      isInvalid() && "input-control--invalid",
       local.class,
       local.className,
-      colorFocusMap[local.color || "default"],
-      clsx({
-        "input-bordered": local.variant === "bordered" || !local.variant,
-        "input-ghost": local.variant === "ghost" || local.color === "ghost",
-        "w-full": local.fullWidth !== false,
-        "input-xl": local.size === "xl",
-        "input-lg": local.size === "lg",
-        "input-md": local.size === "md",
-        "input-sm": local.size === "sm",
-        "input-xs": local.size === "xs",
-        "input-primary": local.color === "primary",
-        "input-secondary": local.color === "secondary",
-        "input-accent": local.color === "accent",
-        "input-info": local.color === "info",
-        "input-success": local.color === "success",
-        "input-warning": local.color === "warning",
-        "input-error": local.color === "error",
-      }),
     );
 
-  const inputClasses = () => "grow bg-transparent focus:outline-none";
+  return (
+    <div
+      class={controlClasses()}
+      data-theme={local.dataTheme}
+      data-slot="input-control"
+      data-disabled={isDisabled() ? "true" : "false"}
+      data-invalid={isInvalid() ? "true" : "false"}
+    >
+      <Show when={local.startContent}>
+        <span class="input-slot input-slot--start" data-slot="input-start-content">
+          {local.startContent}
+        </span>
+      </Show>
+      <input
+        {...others}
+        id={inputId()}
+        class="input-field"
+        disabled={isDisabled()}
+        aria-disabled={isDisabled() ? "true" : "false"}
+        aria-invalid={ariaInvalid()}
+        data-slot="input-field"
+      />
+      <Show when={local.endContent}>
+        <span class="input-slot input-slot--end" data-slot="input-end-content">
+          {local.endContent}
+        </span>
+      </Show>
+    </div>
+  );
+};
+
+type InputLabelProps = JSX.LabelHTMLAttributes<HTMLLabelElement> & {
+  className?: string;
+};
+
+const InputLabel: Component<InputLabelProps> = (props) => {
+  const ctx = useContext(InputContext);
+  const [local, others] = splitProps(props, ["class", "className", "for", "children"]);
 
   return (
     <label
-      class={labelClasses()}
-      data-theme={local.dataTheme}
+      {...others}
+      for={local.for ?? ctx?.fieldId()}
+      class={twMerge("input-label", local.class, local.className)}
+      data-slot="input-label"
     >
-      <Show when={local.leftIcon}>{local.leftIcon}</Show>
-      <input
-        {...others}
-        type={inputType()}
-        ref={local.ref}
-        aria-label={local["aria-label"]}
-        aria-describedby={local["aria-describedby"]}
-        aria-invalid={local["aria-invalid"]}
-        aria-required={local["aria-required"]}
-        placeholder={local["placeholder"]}
-        style={local.style}
-        class={inputClasses()}
-      />
-      <Show when={local.rightIcon}>
-        <span
-          onClick={() => setPasswordVisible(!passwordVisible())}
-          class={local.type === "password" ? "cursor-pointer" : ""}
-          role={local.type === "password" ? "button" : undefined}
-          aria-label={
-            local.type === "password"
-              ? passwordVisible()
-                ? "Hide password"
-                : "Show password"
-              : undefined
-          }
-          tabIndex={local.type === "password" ? 0 : undefined}
-        >
-          {local.rightIcon}
-        </span>
-      </Show>
+      {local.children}
     </label>
   );
 };
 
+type InputHelperProps = JSX.HTMLAttributes<HTMLParagraphElement> & {
+  invalid?: boolean;
+  className?: string;
+};
+
+const InputHelper: Component<InputHelperProps> = (props) => {
+  const ctx = useContext(InputContext);
+  const [local, others] = splitProps(props, ["class", "className", "invalid", "id", "children"]);
+
+  const invalid = () => Boolean(local.invalid) || Boolean(ctx?.isInvalid());
+
+  return (
+    <p
+      {...others}
+      id={local.id ?? ctx?.helperId()}
+      class={twMerge("input-helper", invalid() && "input-helper--invalid", local.class, local.className)}
+      data-slot="input-helper"
+    >
+      {local.children}
+    </p>
+  );
+};
+
+type InputProps = Omit<InputFieldProps, "id" | "aria-describedby"> & {
+  id?: string;
+  label?: JSX.Element;
+  helperText?: JSX.Element;
+  errorMessage?: JSX.Element;
+};
+
+const InputBase: Component<InputProps> = (props) => {
+  const generatedId = createUniqueId();
+  const [local, fieldProps] = splitProps(props, [
+    "id",
+    "size",
+    "fullWidth",
+    "isDisabled",
+    "disabled",
+    "isInvalid",
+    "label",
+    "helperText",
+    "errorMessage",
+    "class",
+    "className",
+    "aria-invalid",
+    "dataTheme",
+  ]);
+
+  const inputId = () => local.id ?? `${generatedId}-input`;
+  const isDisabled = () => Boolean(local.isDisabled) || Boolean(local.disabled);
+  const isInvalid = () =>
+    Boolean(local.isInvalid) || Boolean(local["aria-invalid"]) || local.errorMessage != null;
+
+  const helperContent = () => local.errorMessage ?? local.helperText;
+  const hasHelper = () => helperContent() != null;
+  const helperId = () => `${inputId()}-helper`;
+
+  return (
+    <InputRoot
+      size={local.size}
+      fullWidth={local.fullWidth ?? true}
+      isDisabled={isDisabled()}
+      isInvalid={isInvalid()}
+      dataTheme={local.dataTheme}
+    >
+      <>
+        <Show when={local.label}>
+          <InputLabel>{local.label}</InputLabel>
+        </Show>
+        <InputField
+          {...fieldProps}
+          id={inputId()}
+          size={local.size}
+          isDisabled={isDisabled()}
+          isInvalid={isInvalid()}
+          aria-describedby={hasHelper() ? helperId() : undefined}
+          class={local.class}
+          className={local.className}
+          dataTheme={local.dataTheme}
+        />
+        <Show when={hasHelper()}>
+          <InputHelper id={helperId()} invalid={isInvalid()}>
+            {helperContent()}
+          </InputHelper>
+        </Show>
+      </>
+    </InputRoot>
+  );
+};
+
+type InputComponent = Component<InputProps> & {
+  Root: Component<InputRootProps>;
+  Field: Component<InputFieldProps>;
+  Label: Component<InputLabelProps>;
+  Helper: Component<InputHelperProps>;
+};
+
+const Input = Object.assign(InputBase, {
+  Root: InputRoot,
+  Field: InputField,
+  Label: InputLabel,
+  Helper: InputHelper,
+}) as InputComponent;
+
 export default Input;
+export type {
+  InputProps,
+  InputSize,
+  InputRootProps,
+  InputFieldProps,
+  InputLabelProps,
+  InputHelperProps,
+};

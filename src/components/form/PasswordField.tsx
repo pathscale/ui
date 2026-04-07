@@ -109,7 +109,7 @@ export const PasswordField: Component<PasswordFieldProps> = (props) => {
         aria-invalid={hasError()}
         aria-required={local.required}
         class={inputClasses()}
-        rightIcon={
+        endContent={
           <span
             class="cursor-pointer"
             onClick={togglePassword}
