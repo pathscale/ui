@@ -4,6 +4,7 @@ import {
   Badge,
   Button,
   Checkbox,
+  Drawer,
   Dropdown,
   Input,
   Radio,
@@ -892,6 +893,101 @@ export default function App() {
                 ✕
               </Button>
             </Alert>
+          </div>
+        </section>
+
+        <section class="space-y-4 rounded-xl border border-base-300 bg-base-200 p-4">
+          <div>
+            <h2 class="text-sm font-semibold">Drawer</h2>
+            <p class="text-xs opacity-70">
+              HeroUI-style compound drawer with placements and backdrop variants.
+            </p>
+          </div>
+
+          <div class="space-y-3">
+            <h3 class="text-xs font-semibold uppercase opacity-70">
+              Placements
+            </h3>
+            <div class="flex flex-wrap gap-3">
+              <For each={["bottom", "top", "left", "right"] as const}>
+                {(placement) => (
+                  <Drawer>
+                    <Drawer.Trigger>
+                      <Button variant="secondary">{placement}</Button>
+                    </Drawer.Trigger>
+                    <Drawer.Backdrop>
+                      <Drawer.Content placement={placement}>
+                        <Drawer.Dialog>
+                          <Drawer.CloseTrigger />
+                          {placement === "bottom" && <Drawer.Handle />}
+                          <Drawer.Header>
+                            <Drawer.Heading>
+                              {placement.charAt(0).toUpperCase() + placement.slice(1)} Drawer
+                            </Drawer.Heading>
+                          </Drawer.Header>
+                          <Drawer.Body>
+                            <p>This drawer slides in from the {placement} edge.</p>
+                          </Drawer.Body>
+                          <Drawer.Footer>
+                            <Drawer.Close>
+                              <Button size="sm" variant="secondary">
+                                Cancel
+                              </Button>
+                            </Drawer.Close>
+                            <Drawer.Close>
+                              <Button size="sm" variant="primary">
+                                Done
+                              </Button>
+                            </Drawer.Close>
+                          </Drawer.Footer>
+                          {placement === "top" && <Drawer.Handle />}
+                        </Drawer.Dialog>
+                      </Drawer.Content>
+                    </Drawer.Backdrop>
+                  </Drawer>
+                )}
+              </For>
+            </div>
+          </div>
+
+          <div class="space-y-3">
+            <h3 class="text-xs font-semibold uppercase opacity-70">
+              Backdrop Variants
+            </h3>
+            <div class="flex flex-wrap gap-3">
+              <For each={["opaque", "blur", "transparent"] as const}>
+                {(variant) => (
+                  <Drawer>
+                    <Drawer.Trigger>
+                      <Button variant="outline">{variant}</Button>
+                    </Drawer.Trigger>
+                    <Drawer.Backdrop variant={variant}>
+                      <Drawer.Content>
+                        <Drawer.Dialog>
+                          <Drawer.Handle />
+                          <Drawer.CloseTrigger />
+                          <Drawer.Header>
+                            <Drawer.Heading>
+                              Backdrop: {variant}
+                            </Drawer.Heading>
+                          </Drawer.Header>
+                          <Drawer.Body>
+                            <p>This drawer uses the {variant} backdrop variant.</p>
+                          </Drawer.Body>
+                          <Drawer.Footer>
+                            <Drawer.Close>
+                              <Button size="sm" variant="primary">
+                                Close
+                              </Button>
+                            </Drawer.Close>
+                          </Drawer.Footer>
+                        </Drawer.Dialog>
+                      </Drawer.Content>
+                    </Drawer.Backdrop>
+                  </Drawer>
+                )}
+              </For>
+            </div>
           </div>
         </section>
       </div>
