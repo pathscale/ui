@@ -1,19 +1,29 @@
 import type { JSX } from "solid-js";
 import { twMerge } from "tailwind-merge";
 import Avatar from "../avatar";
-import type { AvatarProps } from "../avatar";
+import type { AvatarRootProps } from "../avatar";
 import type { IComponentBaseProps } from "../types";
 
-export type ChatBubbleAvatarProps = AvatarProps & IComponentBaseProps;
+export type ChatBubbleAvatarProps = {
+  src?: string;
+  alt?: string;
+  fallback?: string;
+} & Omit<AvatarRootProps, "children"> &
+  IComponentBaseProps;
 
 const ChatBubbleAvatar = (props: ChatBubbleAvatarProps): JSX.Element => {
   return (
     <Avatar
-      {...props}
-      size={props.size ?? "xs"}
-      shape={props.shape ?? "circle"}
+      size={props.size ?? "sm"}
+      color={props.color}
+      variant={props.variant}
       class={twMerge("chat-image", props.class)}
-    />
+      dataTheme={props.dataTheme}
+      style={props.style}
+    >
+      {props.src && <Avatar.Image src={props.src} alt={props.alt} />}
+      <Avatar.Fallback>{props.fallback ?? props.alt?.charAt(0) ?? "?"}</Avatar.Fallback>
+    </Avatar>
   );
 };
 

@@ -1,6 +1,7 @@
 import { For, createSignal } from "solid-js";
 import {
   Alert,
+  Avatar,
   Badge,
   Button,
   Checkbox,
@@ -987,6 +988,93 @@ export default function App() {
                   </Drawer>
                 )}
               </For>
+            </div>
+          </div>
+        </section>
+
+        <section class="space-y-4 rounded-xl border border-base-300 bg-base-200 p-4">
+          <div>
+            <h2 class="text-sm font-semibold">Avatar</h2>
+            <p class="text-xs opacity-70">
+              HeroUI-style compound avatar with image, fallback, sizes, and colors.
+            </p>
+          </div>
+
+          <div class="space-y-3">
+            <h3 class="text-xs font-semibold uppercase opacity-70">Sizes</h3>
+            <div class="flex items-center gap-4">
+              <For each={["sm", "md", "lg"] as const}>
+                {(size) => (
+                  <Avatar size={size}>
+                    <Avatar.Fallback>{size.toUpperCase()}</Avatar.Fallback>
+                  </Avatar>
+                )}
+              </For>
+            </div>
+          </div>
+
+          <div class="space-y-3">
+            <h3 class="text-xs font-semibold uppercase opacity-70">Colors</h3>
+            <div class="flex items-center gap-4">
+              <For each={["default", "accent", "success", "warning", "danger"] as const}>
+                {(color) => (
+                  <Avatar color={color}>
+                    <Avatar.Fallback>{color.charAt(0).toUpperCase()}</Avatar.Fallback>
+                  </Avatar>
+                )}
+              </For>
+            </div>
+          </div>
+
+          <div class="space-y-3">
+            <h3 class="text-xs font-semibold uppercase opacity-70">Soft Variant</h3>
+            <div class="flex items-center gap-4">
+              <For each={["accent", "success", "warning", "danger"] as const}>
+                {(color) => (
+                  <Avatar color={color} variant="soft">
+                    <Avatar.Fallback>{color.charAt(0).toUpperCase()}</Avatar.Fallback>
+                  </Avatar>
+                )}
+              </For>
+            </div>
+          </div>
+
+          <div class="space-y-3">
+            <h3 class="text-xs font-semibold uppercase opacity-70">With Image</h3>
+            <div class="flex items-center gap-4">
+              <Avatar>
+                <Avatar.Image src="https://i.pravatar.cc/150?u=a" alt="User A" />
+                <Avatar.Fallback>A</Avatar.Fallback>
+              </Avatar>
+              <Avatar>
+                <Avatar.Image src="https://i.pravatar.cc/150?u=b" alt="User B" />
+                <Avatar.Fallback>B</Avatar.Fallback>
+              </Avatar>
+              <Avatar>
+                <Avatar.Image src="https://invalid-url.test/x.jpg" alt="Broken" />
+                <Avatar.Fallback>?</Avatar.Fallback>
+              </Avatar>
+            </div>
+          </div>
+
+          <div class="space-y-3">
+            <h3 class="text-xs font-semibold uppercase opacity-70">Group</h3>
+            <div class="flex items-center -space-x-2">
+              <Avatar class="ring-2 ring-base-100">
+                <Avatar.Image src="https://i.pravatar.cc/150?u=1" alt="User 1" />
+                <Avatar.Fallback>1</Avatar.Fallback>
+              </Avatar>
+              <Avatar class="ring-2 ring-base-100">
+                <Avatar.Image src="https://i.pravatar.cc/150?u=2" alt="User 2" />
+                <Avatar.Fallback>2</Avatar.Fallback>
+              </Avatar>
+              <Avatar class="ring-2 ring-base-100">
+                <Avatar.Image src="https://i.pravatar.cc/150?u=3" alt="User 3" />
+                <Avatar.Fallback>3</Avatar.Fallback>
+              </Avatar>
+              <Avatar class="ring-2 ring-base-100">
+                <Avatar.Fallback>+5</Avatar.Fallback>
+              </Avatar>
             </div>
           </div>
         </section>

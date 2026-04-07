@@ -1,215 +1,221 @@
-import "./avatar.css";
+import "./Avatar.css";
 import {
-  type JSX,
+  createContext,
+  createSignal,
   splitProps,
+  useContext,
   Show,
-  children as resolveChildren,
-  createMemo,
+  onMount,
+  type Component,
+  type JSX,
+  type ParentComponent,
 } from "solid-js";
-import { Dynamic } from "solid-js/web";
 import { twMerge } from "tailwind-merge";
-import { clsx } from "clsx";
-import AvatarGroup from "./AvatarGroup";
-import type {
-  IComponentBaseProps,
-  ComponentColor,
-  ComponentShape,
-  ComponentSize,
-} from "../types";
+import type { IComponentBaseProps } from "../types";
 
-type ElementType = keyof JSX.IntrinsicElements;
+/* -------------------------------------------------------------------------------------------------
+ * Avatar Context
+ * -----------------------------------------------------------------------------------------------*/
+export type AvatarSize = "sm" | "md" | "lg";
+export type AvatarColor = "default" | "accent" | "success" | "warning" | "danger";
+export type AvatarVariant = "default" | "soft";
 
-type AvatarBaseProps = {
-  src?: string;
-  letters?: string;
-  size?: ComponentSize | number;
-  shape?: ComponentShape;
-  color?: Exclude<ComponentColor, "ghost">;
-  border?: boolean;
-  borderColor?: Exclude<ComponentColor, "ghost">;
-  online?: boolean;
-  offline?: boolean;
-  innerClass?: string;
-  as?: ElementType;
-  class?: string;
-  className?: string;
-  style?: JSX.CSSProperties;
-  children?: JSX.Element;
+type AvatarContextValue = {
+  size: () => AvatarSize;
+  color: () => AvatarColor;
+  variant: () => AvatarVariant;
+  imageLoaded: () => boolean;
+  setImageLoaded: (v: boolean) => void;
 };
 
-type PropsOf<E extends ElementType> = JSX.IntrinsicElements[E];
+const AvatarContext = createContext<AvatarContextValue>();
 
-export type AvatarProps<E extends ElementType = "div"> = Omit<
-  PropsOf<E>,
-  "color"
-> &
-  AvatarBaseProps &
-  IComponentBaseProps;
+const useAvatarContext = () => {
+  const ctx = useContext(AvatarContext);
+  if (!ctx) throw new Error("Avatar compound components must be used within <Avatar>");
+  return ctx;
+};
 
-// Void elements rarely used here, but we'll allow generic `as`
-const VoidElementList: ElementType[] = [
-  "area",
-  "base",
-  "br",
-  "col",
-  "embed",
-  "hr",
-  "img",
-  "input",
-  "link",
-  "keygen",
-  "meta",
-  "param",
-  "source",
-  "track",
-  "wbr",
-];
-
-const Avatar = <E extends ElementType = "div">(
-  props: AvatarProps<E>,
-): JSX.Element => {
-  const [local, others] = splitProps(
-    props as AvatarBaseProps & Record<string, unknown>,
-    [
-      "src",
-      "letters",
-      "size",
-      "shape",
-      "color",
-      "border",
-      "borderColor",
-      "online",
-      "offline",
-      "innerClass",
-      "as",
-      "class",
-      "className",
-      "style",
-      "children",
-      "dataTheme",
-    ],
-  );
-
-  const resolvedChildren = resolveChildren(() => local.children);
-  const Tag = createMemo(() => local.as || "div");
-
-  // Container classes
-  const containerClass = createMemo(() =>
-    twMerge(
-      "avatar",
-      local.class,
-      local.className,
-      clsx({
-        "avatar-online": local.online,
-        "avatar-offline": local.offline,
-        "avatar-placeholder": !local.src,
-      }),
-    ),
-  );
-
-  // Inner element dimensions
-  const customSizeStyle = createMemo(() =>
-    typeof local.size === "number"
-      ? { width: `${local.size}px`, height: `${local.size}px` }
-      : undefined,
-  );
-
-  // Shared inner classes
-  const baseInner = createMemo(() => twMerge(local.innerClass));
-
-  // Image wrapper classes
-  const imgClasses = createMemo(() =>
-    clsx(baseInner(), {
-      ring: local.border,
-      "ring-offset-base-100 ring-offset-2": local.border,
-      [`ring-${local.borderColor}`]: local.border && local.borderColor,
-      "rounded-full": local.shape === "circle",
-      "rounded-lg": local.shape === "square",
-      "w-32 h-32": local.size === "lg",
-      "w-24 h-24": local.size === "md",
-      "w-14 h-14": local.size === "sm",
-      "w-10 h-10": local.size === "xs",
-    }),
-  );
-
-  // Placeholder wrapper classes
-  const placeholderClasses = createMemo(() =>
-    clsx(baseInner(), {
-      "bg-neutral": !local.color,
-      "text-neutral-content": !local.color || local.color === "neutral",
-      [`bg-${local.color}`]: !!local.color,
-      [`text-${local.color}-content`]: !!local.color,
-      ring: local.border,
-      "ring-offset-base-100 ring-offset-2": local.border,
-      [`ring-${local.borderColor}`]: local.border && local.borderColor,
-      "rounded-full": local.shape === "circle",
-      "rounded-lg": local.shape === "square",
-      "w-32 h-32 text-3xl": local.size === "lg",
-      "w-24 h-24 text-xl": local.size === "md",
-      "w-14 h-14": local.size === "sm",
-      "w-10 h-10": local.size === "xs",
-    }),
-  );
-
-  // Check if child is a single string
-  const isStringChild = createMemo(() => {
-    const child = resolvedChildren();
-    return typeof child === "string";
-  });
-
-  const renderContents = () => {
-    // If src => image avatar
-    return local.src ? (
-      <div
-        class={imgClasses()}
-        style={customSizeStyle()}
-      >
-        <img src={local.src} />
-      </div>
-    ) : local.letters || isStringChild() ? (
-      <div
-        class={placeholderClasses()}
-        style={customSizeStyle()}
-      >
-        <span>{local.letters ?? resolvedChildren()}</span>
-      </div>
-    ) : (
-      <div
-        class={imgClasses()}
-        style={customSizeStyle()}
-      >
-        {resolvedChildren()}
-      </div>
-    );
+/* -------------------------------------------------------------------------------------------------
+ * Types
+ * -----------------------------------------------------------------------------------------------*/
+export type AvatarRootProps = Omit<JSX.HTMLAttributes<HTMLSpanElement>, "children"> &
+  IComponentBaseProps & {
+    children: JSX.Element;
+    size?: AvatarSize;
+    color?: AvatarColor;
+    variant?: AvatarVariant;
   };
 
-  // Render void tags (unlikely) or normal
-  if (VoidElementList.includes(Tag())) {
-    return (
-      <Dynamic
-        component={Tag()}
-        {...others}
-        data-theme={local.dataTheme}
-        class={containerClass()}
-        style={local.style}
-      />
-    );
-  }
+export type AvatarImageProps = Omit<JSX.ImgHTMLAttributes<HTMLImageElement>, "children"> &
+  IComponentBaseProps;
+
+export type AvatarFallbackProps = Omit<JSX.HTMLAttributes<HTMLSpanElement>, "children"> &
+  IComponentBaseProps & {
+    children?: JSX.Element;
+    delayMs?: number;
+  };
+
+/* -------------------------------------------------------------------------------------------------
+ * Avatar Root
+ * -----------------------------------------------------------------------------------------------*/
+const SIZE_CLASS_MAP: Record<AvatarSize, string> = {
+  sm: "avatar--sm",
+  md: "",
+  lg: "avatar--lg",
+};
+
+const VARIANT_CLASS_MAP: Record<AvatarVariant, string> = {
+  default: "",
+  soft: "avatar--soft",
+};
+
+const AvatarRoot: ParentComponent<AvatarRootProps> = (props) => {
+  const [local, others] = splitProps(props, [
+    "children",
+    "class",
+    "className",
+    "size",
+    "color",
+    "variant",
+    "dataTheme",
+    "style",
+  ]);
+
+  const [imageLoaded, setImageLoaded] = createSignal(false);
+  const size = () => local.size ?? "md";
+  const color = () => local.color ?? "default";
+  const variant = () => local.variant ?? "default";
+
+  const ctx: AvatarContextValue = {
+    size,
+    color,
+    variant,
+    imageLoaded,
+    setImageLoaded,
+  };
 
   return (
-    <Dynamic
-      component={Tag()}
-      {...others}
-      data-theme={local.dataTheme}
-      class={containerClass()}
-      style={local.style}
-    >
-      {renderContents()}
-    </Dynamic>
+    <AvatarContext.Provider value={ctx}>
+      <span
+        {...others}
+        class={twMerge(
+          "avatar",
+          SIZE_CLASS_MAP[size()],
+          VARIANT_CLASS_MAP[variant()],
+          local.class,
+          local.className,
+        )}
+        data-slot="avatar-root"
+        data-theme={local.dataTheme}
+        style={local.style}
+      >
+        {local.children}
+      </span>
+    </AvatarContext.Provider>
   );
 };
 
-// Attach Group
-export default Object.assign(Avatar, {
-  Group: AvatarGroup,
+/* -------------------------------------------------------------------------------------------------
+ * Avatar Image
+ * -----------------------------------------------------------------------------------------------*/
+const AvatarImage: Component<AvatarImageProps> = (props) => {
+  const [local, others] = splitProps(props, [
+    "class",
+    "className",
+    "dataTheme",
+    "style",
+    "src",
+    "alt",
+    "onLoad",
+    "onError",
+  ]);
+
+  const ctx = useAvatarContext();
+
+  const handleLoad: JSX.EventHandlerUnion<HTMLImageElement, Event> = (e) => {
+    ctx.setImageLoaded(true);
+    if (typeof local.onLoad === "function") local.onLoad(e);
+  };
+
+  const handleError = (e: Event & { currentTarget: HTMLImageElement }) => {
+    ctx.setImageLoaded(false);
+    if (typeof local.onError === "function") (local.onError as (e: Event) => void)(e);
+  };
+
+  return (
+    <img
+      {...others}
+      src={local.src}
+      alt={local.alt}
+      class={twMerge("avatar__image", local.class, local.className)}
+      data-slot="avatar-image"
+      style={local.style}
+      onLoad={handleLoad}
+      onError={handleError}
+    />
+  );
+};
+
+/* -------------------------------------------------------------------------------------------------
+ * Avatar Fallback
+ * -----------------------------------------------------------------------------------------------*/
+const COLOR_CLASS_MAP: Record<AvatarColor, string> = {
+  default: "avatar__fallback--default",
+  accent: "avatar__fallback--accent",
+  success: "avatar__fallback--success",
+  warning: "avatar__fallback--warning",
+  danger: "avatar__fallback--danger",
+};
+
+const AvatarFallback: ParentComponent<AvatarFallbackProps> = (props) => {
+  const [local, others] = splitProps(props, [
+    "children",
+    "class",
+    "className",
+    "dataTheme",
+    "style",
+    "delayMs",
+  ]);
+
+  const ctx = useAvatarContext();
+  const [showFallback, setShowFallback] = createSignal(!local.delayMs);
+
+  onMount(() => {
+    if (local.delayMs) {
+      const timer = setTimeout(() => setShowFallback(true), local.delayMs);
+      return () => clearTimeout(timer);
+    }
+  });
+
+  return (
+    <Show when={showFallback() && !ctx.imageLoaded()}>
+      <span
+        {...others}
+        class={twMerge(
+          "avatar__fallback",
+          COLOR_CLASS_MAP[ctx.color()],
+          local.class,
+          local.className,
+        )}
+        data-slot="avatar-fallback"
+        data-theme={local.dataTheme}
+        style={local.style}
+      >
+        {local.children}
+      </span>
+    </Show>
+  );
+};
+
+/* -------------------------------------------------------------------------------------------------
+ * Compound Component
+ * -----------------------------------------------------------------------------------------------*/
+const Avatar = Object.assign(AvatarRoot, {
+  Root: AvatarRoot,
+  Image: AvatarImage,
+  Fallback: AvatarFallback,
 });
+
+export default Avatar;
+export { AvatarRoot, AvatarImage, AvatarFallback };
