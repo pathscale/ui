@@ -32,6 +32,8 @@ export type FloatingDockProps = {
   orientation?: "horizontal" | "vertical";
   tooltipDirection?: FloatingDockDirection;
   mobilePopupDirection?: FloatingDockDirection;
+  /** How to render on mobile: "burger" shows a toggle popup, "dock" shows the full dock bar. @default "burger" */
+  mobileMode?: "burger" | "dock";
   gap?: number;
   baseSize?: number;
   hoverSize?: number;
@@ -496,7 +498,7 @@ const FloatingDockMobile: Component<{
 
 const FloatingDock = (rawProps: FloatingDockProps): JSX.Element => {
   const [local, others] = splitProps(rawProps, [
-    "items", "orientation", "tooltipDirection", "mobilePopupDirection", "gap",
+    "items", "orientation", "tooltipDirection", "mobilePopupDirection", "mobileMode", "gap",
     "baseSize", "hoverSize", "iconSize", "hoverIconSize", "magnifyRange",
     "magnify", "nudge", "showDesktop", "showMobile", "showContainer",
     "desktopClass", "mobileClass", "itemClass", "tooltipClass", "mobileToggleIcon",
@@ -535,13 +537,25 @@ const FloatingDock = (rawProps: FloatingDockProps): JSX.Element => {
         />
       </Show>
       <Show when={local.showMobile !== false}>
-        <FloatingDockMobile
-          items={local.items}
-          class={local.mobileClass}
-          toggleIcon={local.mobileToggleIcon}
-          popupDirection={local.mobilePopupDirection ?? "top"}
-          cfg={cfg()}
-        />
+        <Show
+          when={local.mobileMode !== "dock"}
+          fallback={
+            <FloatingDockDesktop
+              items={local.items}
+              class={twMerge("floating-dock__bar--mobile-dock", local.mobileClass)}
+              cfg={cfg()}
+              showContainer={local.showContainer !== false}
+            />
+          }
+        >
+          <FloatingDockMobile
+            items={local.items}
+            class={local.mobileClass}
+            toggleIcon={local.mobileToggleIcon}
+            popupDirection={local.mobilePopupDirection ?? "top"}
+            cfg={cfg()}
+          />
+        </Show>
       </Show>
     </div>
   );

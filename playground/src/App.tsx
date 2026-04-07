@@ -1297,6 +1297,26 @@ export default function App() {
               />
             </div>
           </div>
+
+          <div class="space-y-2">
+            <h3 class="text-xs font-semibold uppercase opacity-70">
+              Mobile: Dock Mode (resize to see)
+            </h3>
+            <p class="text-xs opacity-50">
+              mobileMode="dock" shows the full bar on mobile instead of a burger menu.
+            </p>
+            <div class="flex items-end justify-center py-8">
+              <FloatingDock
+                items={[
+                  { title: "Mic", icon: <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" x2="12" y1="19" y2="22"/></svg>, onClick: () => {} },
+                  { title: "Cam", icon: <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.5 4h-5L7 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3l-2.5-3Z"/><circle cx="12" cy="13" r="3"/></svg>, onClick: () => {} },
+                  { title: "End", icon: <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>, onClick: () => {} },
+                ]}
+                mobileMode="dock"
+                baseSize={36}
+              />
+            </div>
+          </div>
         </section>
       </div>
     </main>

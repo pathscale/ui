@@ -1,5 +1,5 @@
 import "./range.css";
-import { Show, createSignal, splitProps, type Component, type JSX } from "solid-js";
+import { Show, createSignal, createUniqueId, splitProps, type Component, type JSX } from "solid-js";
 import { twMerge } from "tailwind-merge";
 import type { IComponentBaseProps } from "../types";
 
@@ -65,6 +65,7 @@ const SliderField: Component<SliderFieldProps> = (props) => {
   const size = () => local.size ?? "md";
   const isDisabled = () => Boolean(local.disabled);
 
+  const labelId = createUniqueId();
   const [dragging, setDragging] = createSignal(false);
   const [focusVisible, setFocusVisible] = createSignal(false);
 
@@ -181,7 +182,7 @@ const SliderField: Component<SliderFieldProps> = (props) => {
       style={local.style}
     >
       <Show when={local.label}>
-        <span data-slot="label">{local.label}</span>
+        <span id={labelId} data-slot="label">{local.label}</span>
         <span class="slider__output" data-slot="slider-output" aria-live="polite">
           {formattedValue()}
         </span>
@@ -213,6 +214,7 @@ const SliderField: Component<SliderFieldProps> = (props) => {
           aria-valuemax={max()}
           aria-valuenow={local.value}
           aria-valuetext={formattedValue()}
+          aria-labelledby={local.label ? labelId : undefined}
           aria-disabled={isDisabled() ? "true" : undefined}
           onKeyDown={handleKeyDown}
           onFocus={handleFocus}

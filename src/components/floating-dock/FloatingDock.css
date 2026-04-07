@@ -160,10 +160,19 @@
     .floating-dock__bar {
       display: none;
     }
+
+    /* mobileMode="dock": show the full bar on mobile instead of burger */
+    .floating-dock__bar--mobile-dock {
+      display: flex;
+    }
   }
 
   @media (min-width: 768px) {
     .floating-dock__mobile {
+      display: none;
+    }
+
+    .floating-dock__bar--mobile-dock {
       display: none;
     }
   }
