@@ -1,6 +1,7 @@
 import "./Tabs.css";
 import {
   createContext,
+  createEffect,
   createMemo,
   createSignal,
   createUniqueId,
@@ -37,6 +38,17 @@ type TabsContextValue = {
 
 const TabsContext = createContext<TabsContextValue>();
 
+const invokeEventHandler = (handler: unknown, event: Event) => {
+  if (typeof handler === "function") {
+    (handler as (event: Event) => void)(event);
+    return;
+  }
+
+  if (Array.isArray(handler) && typeof handler[0] === "function") {
+    handler[0](handler[1], event);
+  }
+};
+
 type TabsRootProps = Omit<JSX.HTMLAttributes<HTMLDivElement>, "onChange"> & {
   children: JSX.Element;
   orientation?: TabsOrientation;
@@ -50,7 +62,6 @@ const TabsRoot = (props: TabsRootProps): JSX.Element => {
   const [local, others] = splitProps(props, [
     "children",
     "class",
-    "className",
     "orientation",
     "variant",
     "selectedKey",
@@ -100,7 +111,6 @@ const TabsRoot = (props: TabsRootProps): JSX.Element => {
       "tabs",
       local.variant === "secondary" && "tabs--secondary",
       local.class,
-      local.className,
     );
 
   const context = createMemo<TabsContextValue>(() => ({
@@ -132,11 +142,11 @@ const TabsRoot = (props: TabsRootProps): JSX.Element => {
 type TabListContainerProps = JSX.HTMLAttributes<HTMLDivElement>;
 
 const TabListContainer = (props: TabListContainerProps): JSX.Element => {
-  const [local, others] = splitProps(props, ["class", "className", "children"]);
+  const [local, others] = splitProps(props, ["class", "children"]);
   return (
     <div
       {...others}
-      class={twMerge("tabs__list-container", local.class, local.className)}
+      class={twMerge("tabs__list-container", local.class)}
       data-slot="tabs-list-container"
     >
       {local.children}
@@ -150,31 +160,124 @@ type TabListProps = JSX.HTMLAttributes<HTMLDivElement> & {
 
 const TabList = (props: TabListProps): JSX.Element => {
   const ctx = useContext(TabsContext);
-  const [local, others] = splitProps(props, ["class", "className", "children"]);
+  const [local, others] = splitProps(props, ["class", "children", "ref"]);
+
+  const [indicatorStyle, setIndicatorStyle] = createSignal<JSX.CSSProperties>({
+    "--tabs-indicator-x": "0px",
+    "--tabs-indicator-y": "0px",
+    "--tabs-indicator-width": "0px",
+    "--tabs-indicator-height": "0px",
+  });
+  const [indicatorVisible, setIndicatorVisible] = createSignal(false);
+  const [indicatorReady, setIndicatorReady] = createSignal(false);
+  let listRef: HTMLDivElement | undefined;
+  let rafId: number | undefined;
 
   if (!ctx) {
     return <div {...others}>{local.children}</div>;
   }
 
+  const setListRef = (element: HTMLDivElement) => {
+    listRef = element;
+    if (typeof local.ref === "function") {
+      local.ref(element);
+    }
+  };
+
+  const measureIndicator = () => {
+    if (!listRef) return;
+    const selectedTab = ctx.tabs().find((tab) => tab.key === ctx.selectedKey());
+    if (!selectedTab) {
+      setIndicatorVisible(false);
+      return;
+    }
+
+    const listRect = listRef.getBoundingClientRect();
+    const tabRect = selectedTab.ref.getBoundingClientRect();
+
+    let x = tabRect.left - listRect.left + listRef.scrollLeft;
+    let y = tabRect.top - listRect.top + listRef.scrollTop;
+    let width = tabRect.width;
+    let height = tabRect.height;
+
+    if (ctx.variant === "secondary" && ctx.orientation === "horizontal") {
+      y += height - 2;
+      height = 2;
+    }
+
+    if (ctx.variant === "secondary" && ctx.orientation === "vertical") {
+      x = 0;
+      width = 2;
+    }
+
+    setIndicatorStyle({
+      "--tabs-indicator-x": `${x}px`,
+      "--tabs-indicator-y": `${y}px`,
+      "--tabs-indicator-width": `${width}px`,
+      "--tabs-indicator-height": `${height}px`,
+    });
+    setIndicatorVisible(true);
+    setIndicatorReady(true);
+  };
+
+  const scheduleMeasure = () => {
+    if (rafId !== undefined) {
+      cancelAnimationFrame(rafId);
+    }
+    rafId = requestAnimationFrame(() => {
+      rafId = undefined;
+      measureIndicator();
+    });
+  };
+
+  createEffect(() => {
+    ctx.selectedKey();
+    ctx.tabs();
+    scheduleMeasure();
+  });
+
+  createEffect(() => {
+    if (!listRef) return;
+    const observer = new ResizeObserver(() => scheduleMeasure());
+    observer.observe(listRef);
+    for (const tab of ctx.tabs()) {
+      observer.observe(tab.ref);
+    }
+    onCleanup(() => observer.disconnect());
+  });
+
+  onMount(() => {
+    scheduleMeasure();
+    window.addEventListener("resize", scheduleMeasure);
+    onCleanup(() => {
+      window.removeEventListener("resize", scheduleMeasure);
+      if (rafId !== undefined) {
+        cancelAnimationFrame(rafId);
+      }
+    });
+  });
+
   return (
     <div
       {...others}
+      ref={setListRef}
       role="tablist"
       aria-orientation={ctx.orientation}
-      class={twMerge("tabs__list", local.class, local.className)}
+      class={twMerge("tabs__list", local.class)}
       data-slot="tabs-list"
       data-orientation={ctx.orientation}
     >
       {local.children}
+      <span
+        class="tabs__indicator"
+        data-slot="tabs-indicator"
+        data-ready={indicatorReady() ? "true" : "false"}
+        data-visible={indicatorVisible() ? "true" : "false"}
+        style={indicatorStyle()}
+      />
     </div>
   );
 };
-
-type TabItemContextValue = {
-  isSelected: Accessor<boolean>;
-};
-
-const TabItemContext = createContext<TabItemContextValue>();
 
 type TabProps = Omit<JSX.ButtonHTMLAttributes<HTMLButtonElement>, "id"> & {
   id: TabKey;
@@ -185,7 +288,6 @@ const Tab = (props: TabProps): JSX.Element => {
   const ctx = useContext(TabsContext);
   const [local, others] = splitProps(props, [
     "class",
-    "className",
     "children",
     "id",
     "isDisabled",
@@ -196,11 +298,7 @@ const Tab = (props: TabProps): JSX.Element => {
   let tabRef: HTMLButtonElement | undefined;
 
   if (!ctx) {
-    return (
-      <button {...others} class={twMerge("tabs__tab", local.class, local.className)}>
-        {local.children}
-      </button>
-    );
+    return <button {...others} class={twMerge("tabs__tab", local.class)}>{local.children}</button>;
   }
 
   const isSelected = createMemo(() => ctx.selectedKey() === local.id);
@@ -231,7 +329,7 @@ const Tab = (props: TabProps): JSX.Element => {
   };
 
   const handleKeyDown: JSX.EventHandlerUnion<HTMLButtonElement, KeyboardEvent> = (event) => {
-    local.onKeyDown?.(event);
+    invokeEventHandler(local.onKeyDown, event);
     if (event.defaultPrevented) return;
 
     if (isDisabled()) return;
@@ -261,53 +359,41 @@ const Tab = (props: TabProps): JSX.Element => {
   };
 
   const handleClick: JSX.EventHandlerUnion<HTMLButtonElement, MouseEvent> = (event) => {
-    local.onClick?.(event);
+    invokeEventHandler(local.onClick, event);
     if (event.defaultPrevented) return;
     if (isDisabled()) return;
     ctx.setSelectedKey(local.id);
   };
 
-  const classes = () => twMerge("tabs__tab", local.class, local.className);
+  const classes = () => twMerge("tabs__tab", local.class);
 
   return (
-    <TabItemContext.Provider value={{ isSelected }}>
-      <button
-        {...others}
-        ref={tabRef}
-        id={ctx.getTabId(local.id)}
-        role="tab"
-        class={classes()}
-        data-slot="tabs-tab"
-        data-selected={isSelected() ? "true" : "false"}
-        data-disabled={isDisabled() ? "true" : "false"}
-        aria-selected={isSelected()}
-        aria-controls={ctx.getPanelId(local.id)}
-        aria-disabled={isDisabled()}
-        disabled={isDisabled()}
-        tabIndex={isSelected() ? 0 : -1}
-        onKeyDown={handleKeyDown}
-        onClick={handleClick}
-      >
-        {local.children}
-      </button>
-    </TabItemContext.Provider>
+    <button
+      {...others}
+      ref={tabRef}
+      id={ctx.getTabId(local.id)}
+      role="tab"
+      class={classes()}
+      data-slot="tabs-tab"
+      data-selected={isSelected() ? "true" : "false"}
+      data-disabled={isDisabled() ? "true" : "false"}
+      aria-selected={isSelected()}
+      aria-controls={ctx.getPanelId(local.id)}
+      aria-disabled={isDisabled()}
+      disabled={isDisabled()}
+      tabIndex={isSelected() ? 0 : -1}
+      onKeyDown={handleKeyDown}
+      onClick={handleClick}
+    >
+      {local.children}
+    </button>
   );
 };
 
 type TabIndicatorProps = JSX.HTMLAttributes<HTMLSpanElement>;
 
-const TabIndicator = (props: TabIndicatorProps): JSX.Element | null => {
-  const item = useContext(TabItemContext);
-  if (!item?.isSelected()) return null;
-  const [local, others] = splitProps(props, ["class", "className"]);
-
-  return (
-    <span
-      {...others}
-      class={twMerge("tabs__indicator", local.class, local.className)}
-      data-slot="tabs-indicator"
-    />
-  );
+const TabIndicator = (): JSX.Element | null => {
+  return null;
 };
 
 type TabPanelProps = Omit<JSX.HTMLAttributes<HTMLDivElement>, "id"> & {
@@ -316,7 +402,7 @@ type TabPanelProps = Omit<JSX.HTMLAttributes<HTMLDivElement>, "id"> & {
 
 const TabPanel = (props: TabPanelProps): JSX.Element => {
   const ctx = useContext(TabsContext);
-  const [local, others] = splitProps(props, ["class", "className", "children", "id"]);
+  const [local, others] = splitProps(props, ["class", "children", "id"]);
 
   if (!ctx) {
     return <div {...others}>{local.children}</div>;
@@ -330,7 +416,7 @@ const TabPanel = (props: TabPanelProps): JSX.Element => {
       id={ctx.getPanelId(local.id)}
       role="tabpanel"
       aria-labelledby={ctx.getTabId(local.id)}
-      class={twMerge("tabs__panel", local.class, local.className)}
+      class={twMerge("tabs__panel", local.class)}
       data-slot="tabs-panel"
       data-orientation={ctx.orientation}
       hidden={!isSelected()}
@@ -343,12 +429,12 @@ const TabPanel = (props: TabPanelProps): JSX.Element => {
 type TabSeparatorProps = JSX.HTMLAttributes<HTMLSpanElement>;
 
 const TabSeparator = (props: TabSeparatorProps): JSX.Element => {
-  const [local, others] = splitProps(props, ["class", "className"]);
+  const [local, others] = splitProps(props, ["class"]);
   return (
     <span
       {...others}
       aria-hidden="true"
-      class={twMerge("tabs__separator", local.class, local.className)}
+      class={twMerge("tabs__separator", local.class)}
       data-slot="tabs-separator"
     />
   );

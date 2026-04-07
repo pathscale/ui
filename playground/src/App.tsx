@@ -1,5 +1,5 @@
 import { For } from "solid-js";
-import { Badge } from "@pathscale/ui";
+import { Badge, Tabs } from "@pathscale/ui";
 
 const BADGE_COLORS = [
   "default",
@@ -12,6 +12,19 @@ const BADGE_COLORS = [
 const BADGE_VARIANTS = ["primary", "secondary", "soft"] as const;
 const BADGE_SIZES = ["sm", "md", "lg"] as const;
 const BADGE_PLACEMENTS = ["top-right", "top-left", "bottom-right", "bottom-left"] as const;
+
+const TAB_ITEMS = [
+  { key: "overview", label: "Overview", content: "Overview content" },
+  { key: "activity", label: "Activity", content: "Recent activity" },
+  { key: "settings", label: "Settings", content: "Settings content" },
+  { key: "disabled", label: "Disabled", content: "Disabled content", disabled: true },
+] as const;
+
+const VERTICAL_TAB_ITEMS = [
+  { key: "details", label: "Details", content: "Details panel" },
+  { key: "members", label: "Members", content: "Members panel" },
+  { key: "billing", label: "Billing", content: "Billing panel" },
+] as const;
 
 export default function App() {
   return (
@@ -107,6 +120,99 @@ export default function App() {
                 </Badge.Anchor>
               )}
             </For>
+          </div>
+        </section>
+
+        <section class="space-y-4 rounded-box border border-base-300 bg-base-200 p-4">
+          <div>
+            <h2 class="text-sm font-semibold">Tabs</h2>
+            <p class="text-xs opacity-70">Primary and secondary variants, horizontal + vertical.</p>
+          </div>
+
+          <div class="grid gap-6 md:grid-cols-2">
+            <div class="space-y-3">
+              <h3 class="text-xs font-semibold uppercase opacity-70">Primary</h3>
+              <Tabs.Root defaultSelectedKey="overview">
+                <Tabs.ListContainer>
+                  <Tabs.List aria-label="Primary tabs">
+                    <For each={TAB_ITEMS}>
+                      {(item) => (
+                        <Tabs.Tab id={item.key} isDisabled={item.disabled}>
+                          <span>{item.label}</span>
+                          <Tabs.Separator />
+                        </Tabs.Tab>
+                      )}
+                    </For>
+                  </Tabs.List>
+                </Tabs.ListContainer>
+                <For each={TAB_ITEMS}>
+                  {(item) => <Tabs.Panel id={item.key}>{item.content}</Tabs.Panel>}
+                </For>
+              </Tabs.Root>
+            </div>
+
+            <div class="space-y-3">
+              <h3 class="text-xs font-semibold uppercase opacity-70">Secondary</h3>
+              <Tabs.Root defaultSelectedKey="activity" variant="secondary">
+                <Tabs.ListContainer>
+                  <Tabs.List aria-label="Secondary tabs">
+                    <For each={TAB_ITEMS}>
+                      {(item) => (
+                        <Tabs.Tab id={item.key} isDisabled={item.disabled}>
+                          <span>{item.label}</span>
+                        </Tabs.Tab>
+                      )}
+                    </For>
+                  </Tabs.List>
+                </Tabs.ListContainer>
+                <For each={TAB_ITEMS}>
+                  {(item) => <Tabs.Panel id={item.key}>{item.content}</Tabs.Panel>}
+                </For>
+              </Tabs.Root>
+            </div>
+          </div>
+
+          <div class="grid gap-6 md:grid-cols-2">
+            <div class="space-y-3">
+              <h3 class="text-xs font-semibold uppercase opacity-70">Primary Vertical</h3>
+              <Tabs.Root defaultSelectedKey="details" orientation="vertical">
+                <Tabs.ListContainer>
+                  <Tabs.List aria-label="Vertical tabs">
+                    <For each={VERTICAL_TAB_ITEMS}>
+                      {(item) => (
+                        <Tabs.Tab id={item.key}>
+                          <span>{item.label}</span>
+                          <Tabs.Separator />
+                        </Tabs.Tab>
+                      )}
+                    </For>
+                  </Tabs.List>
+                </Tabs.ListContainer>
+                <For each={VERTICAL_TAB_ITEMS}>
+                  {(item) => <Tabs.Panel id={item.key}>{item.content}</Tabs.Panel>}
+                </For>
+              </Tabs.Root>
+            </div>
+
+            <div class="space-y-3">
+              <h3 class="text-xs font-semibold uppercase opacity-70">Secondary Vertical</h3>
+              <Tabs.Root defaultSelectedKey="members" orientation="vertical" variant="secondary">
+                <Tabs.ListContainer>
+                  <Tabs.List aria-label="Secondary vertical tabs">
+                    <For each={VERTICAL_TAB_ITEMS}>
+                      {(item) => (
+                        <Tabs.Tab id={item.key}>
+                          <span>{item.label}</span>
+                        </Tabs.Tab>
+                      )}
+                    </For>
+                  </Tabs.List>
+                </Tabs.ListContainer>
+                <For each={VERTICAL_TAB_ITEMS}>
+                  {(item) => <Tabs.Panel id={item.key}>{item.content}</Tabs.Panel>}
+                </For>
+              </Tabs.Root>
+            </div>
           </div>
         </section>
       </div>
