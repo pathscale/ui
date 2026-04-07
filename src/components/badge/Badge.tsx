@@ -1,17 +1,8 @@
 import { clsx } from "clsx";
-import { type JSX, createContext, splitProps, useContext } from "solid-js";
+import { type JSX, splitProps } from "solid-js";
 import { twMerge } from "tailwind-merge";
 
 import "./Badge.css";
-
-/* -------------------------------------------------------------------------------------------------
- * Badge Context
- * -----------------------------------------------------------------------------------------------*/
-type BadgeContextType = {
-  // Reserved for future slot-based styling
-};
-
-const BadgeContext = createContext<BadgeContextType>({});
 
 /* -------------------------------------------------------------------------------------------------
  * Badge Anchor
@@ -38,46 +29,36 @@ const BadgeAnchor = (props: BadgeAnchorProps) => {
 /* -------------------------------------------------------------------------------------------------
  * Badge Root
  * -----------------------------------------------------------------------------------------------*/
-type BadgeColor = "default" | "accent" | "success" | "warning" | "danger" | "neutral" | "primary" | "secondary" | "info" | "error" | "ghost";
-type BadgeVariant = "primary" | "secondary" | "soft" | "outline" | "dash";
-type BadgeSize = "xs" | "sm" | "md" | "lg" | "xl";
+type BadgeColor = "default" | "accent" | "success" | "warning" | "danger";
+type BadgeVariant = "primary" | "secondary" | "soft";
+type BadgeSize = "sm" | "md" | "lg";
 type BadgePlacement = "top-right" | "top-left" | "bottom-right" | "bottom-left";
 
 const BADGE_SIZE_CLASS: Record<BadgeSize, string> = {
-  xs: "badge--size-xs",
-  sm: "badge--size-sm",
-  md: "badge--size-md",
-  lg: "badge--size-lg",
-  xl: "badge--size-xl",
+  sm: "badge--sm",
+  md: "badge--md",
+  lg: "badge--lg",
 };
 
 const BADGE_COLOR_CLASS: Record<BadgeColor, string> = {
-  default: "badge--color-default",
-  accent: "badge--color-accent",
-  success: "badge--color-success",
-  warning: "badge--color-warning",
-  danger: "badge--color-danger",
-  neutral: "badge--color-neutral",
-  primary: "badge--color-primary",
-  secondary: "badge--color-secondary",
-  info: "badge--color-info",
-  error: "badge--color-error",
-  ghost: "badge--color-ghost",
+  default: "badge--default",
+  accent: "badge--accent",
+  success: "badge--success",
+  warning: "badge--warning",
+  danger: "badge--danger",
 };
 
 const BADGE_VARIANT_CLASS: Record<BadgeVariant, string> = {
-  primary: "badge--variant-primary",
-  secondary: "badge--variant-secondary",
-  soft: "badge--variant-soft",
-  outline: "badge--variant-outline",
-  dash: "badge--variant-dash",
+  primary: "badge--primary",
+  secondary: "badge--secondary",
+  soft: "badge--soft",
 };
 
 const BADGE_PLACEMENT_CLASS: Record<BadgePlacement, string> = {
-  "top-right": "badge--placement-top-right",
-  "top-left": "badge--placement-top-left",
-  "bottom-right": "badge--placement-bottom-right",
-  "bottom-left": "badge--placement-bottom-left",
+  "top-right": "badge--top-right",
+  "top-left": "badge--top-left",
+  "bottom-right": "badge--bottom-right",
+  "bottom-left": "badge--bottom-left",
 };
 
 interface BadgeRootProps extends Omit<JSX.HTMLAttributes<HTMLSpanElement>, "color"> {
@@ -103,6 +84,7 @@ const BadgeRoot = (props: BadgeRootProps) => {
     const size = local.size ?? "md";
     const color = local.color ?? "default";
     const variant = local.variant ?? "primary";
+    const placement = local.placement ?? "top-right";
 
     return twMerge(
       clsx(
@@ -110,7 +92,7 @@ const BadgeRoot = (props: BadgeRootProps) => {
         BADGE_SIZE_CLASS[size],
         BADGE_COLOR_CLASS[color],
         BADGE_VARIANT_CLASS[variant],
-        local.placement && BADGE_PLACEMENT_CLASS[local.placement],
+        BADGE_PLACEMENT_CLASS[placement],
         local.class,
       ),
     );
@@ -125,11 +107,9 @@ const BadgeRoot = (props: BadgeRootProps) => {
   };
 
   return (
-    <BadgeContext.Provider value={{}}>
-      <span {...others} class={classes()} data-slot="badge">
-        {badgeChildren()}
-      </span>
-    </BadgeContext.Provider>
+    <span {...others} class={classes()} data-slot="badge">
+      {badgeChildren()}
+    </span>
   );
 };
 
@@ -142,7 +122,6 @@ interface BadgeLabelProps extends JSX.HTMLAttributes<HTMLSpanElement> {
 
 const BadgeLabel = (props: BadgeLabelProps) => {
   const [local, others] = splitProps(props, ["children", "class"]);
-  useContext(BadgeContext);
 
   return (
     <span

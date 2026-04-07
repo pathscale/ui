@@ -1,26 +1,21 @@
 @layer components {
-  .badge-anchor {
-    position: relative;
-    display: inline-flex;
-    flex-shrink: 0;
-  }
-
   .badge {
     display: inline-flex;
     flex-shrink: 0;
     align-items: center;
     justify-content: center;
     gap: 0.125rem;
-    min-width: 1.75rem;
+    font-weight: 500;
+
     min-height: 1.75rem;
+    min-width: 1.75rem;
     border-radius: 1.5rem;
     font-size: 0.75rem;
-    font-weight: 500;
     line-height: 1.34;
 
-    --badge-bg: var(--color-default, var(--color-base-200));
-    --badge-fg: var(--color-default-foreground, var(--color-base-content));
-    --badge-border: var(--color-background, var(--color-base-100));
+    --badge-bg: var(--color-default);
+    --badge-fg: var(--color-default-foreground);
+    --badge-border: var(--color-background);
 
     background-color: var(--badge-bg);
     color: var(--badge-fg);
@@ -31,281 +26,139 @@
     padding-inline: 0.125rem;
   }
 
-  .badge--size-md {
-    /* Default size */
+  .badge-anchor {
+    position: relative;
+    display: inline-flex;
+    flex-shrink: 0;
   }
 
-  .badge--size-lg {
-    min-width: 2rem;
+  .badge--lg {
     min-height: 2rem;
+    min-width: 2rem;
     border-radius: 1rem;
     font-size: 0.875rem;
     line-height: 1.43;
   }
 
-  .badge--size-sm {
-    min-width: 1rem;
+  .badge--md {
+    /* Default size */
+  }
+
+  .badge--sm {
     min-height: 1rem;
+    min-width: 1rem;
     border-radius: 0.75rem;
     font-size: 10px;
     line-height: 1.34;
   }
 
-  .badge--size-xs {
-    min-width: 0.75rem;
-    min-height: 0.75rem;
-    border-radius: 0.5rem;
-    font-size: 9px;
-    line-height: 1.2;
+  .badge--accent {
+    --badge-fg: var(--color-accent);
   }
 
-  .badge--size-xl {
-    min-width: 2.25rem;
-    min-height: 2.25rem;
-    border-radius: 1rem;
-    font-size: 0.875rem;
-    line-height: 1.43;
+  .badge--default {
+    --badge-fg: var(--color-default-foreground);
   }
 
-  .badge--placement-top-right {
+  .badge--success {
+    --badge-fg: var(--color-success);
+  }
+
+  .badge--warning {
+    --badge-fg: var(--color-warning);
+  }
+
+  .badge--danger {
+    --badge-fg: var(--color-danger);
+  }
+
+  .badge--primary {
+    /* Compound variants handle tokens */
+  }
+
+  .badge--secondary {
+    /* Base behavior */
+  }
+
+  .badge--soft {
+    /* Compound variants handle tokens */
+  }
+
+  .badge--top-right {
     position: absolute;
     top: 0;
     right: 0;
     transform: translate(25%, -25%);
   }
 
-  .badge--placement-top-left {
+  .badge--top-left {
     position: absolute;
     top: 0;
     left: 0;
     transform: translate(-25%, -25%);
   }
 
-  .badge--placement-bottom-right {
+  .badge--bottom-right {
     position: absolute;
     right: 0;
     bottom: 0;
     transform: translate(25%, 25%);
   }
 
-  .badge--placement-bottom-left {
+  .badge--bottom-left {
     position: absolute;
     bottom: 0;
     left: 0;
     transform: translate(-25%, 25%);
   }
 
-  .badge--color-default {
-    --badge-fg: var(--color-default-foreground, var(--color-base-content));
-  }
-
-  .badge--color-accent {
-    --badge-fg: var(--color-accent);
-  }
-
-  .badge--color-success {
-    --badge-fg: var(--color-success);
-  }
-
-  .badge--color-warning {
-    --badge-fg: var(--color-warning);
-  }
-
-  .badge--color-danger {
-    --badge-fg: var(--color-danger, var(--color-error));
-  }
-
-  .badge--color-neutral {
-    --badge-fg: var(--color-neutral);
-  }
-
-  .badge--color-primary {
-    --badge-fg: var(--color-primary);
-  }
-
-  .badge--color-secondary {
-    --badge-fg: var(--color-secondary);
-  }
-
-  .badge--color-info {
-    --badge-fg: var(--color-info);
-  }
-
-  .badge--color-error {
-    --badge-fg: var(--color-error);
-  }
-
-  .badge--color-ghost {
-    --badge-fg: currentColor;
-  }
-
-  .badge--variant-primary {
-    /* compound variants below */
-  }
-
-  .badge--variant-secondary {
-    /* default background with colored text */
-  }
-
-  .badge--variant-soft {
-    /* compound variants below */
-  }
-
-  .badge--variant-outline {
-    --badge-border: var(--badge-bg);
-    background-color: transparent;
-  }
-
-  .badge--variant-dash {
-    --badge-border: var(--badge-bg);
-    background-color: transparent;
-    border-style: dashed;
-  }
-
-  .badge--variant-primary.badge--color-accent {
+  .badge--primary.badge--accent {
     --badge-bg: var(--color-accent);
-    --badge-fg: var(--color-accent-foreground, var(--color-accent-content));
+    --badge-fg: var(--color-accent-foreground);
   }
 
-  .badge--variant-primary.badge--color-default {
-    --badge-bg: var(--color-default, var(--color-base-content));
-    --badge-fg: var(--color-default-foreground, var(--color-base-100));
+  .badge--primary.badge--default {
+    --badge-bg: var(--color-default);
+    --badge-fg: var(--color-default-foreground);
   }
 
-  .badge--variant-primary.badge--color-success {
+  .badge--primary.badge--success {
     --badge-bg: var(--color-success);
-    --badge-fg: var(--color-success-foreground, var(--color-success-content));
+    --badge-fg: var(--color-success-foreground);
   }
 
-  .badge--variant-primary.badge--color-warning {
+  .badge--primary.badge--warning {
     --badge-bg: var(--color-warning);
-    --badge-fg: var(--color-warning-foreground, var(--color-warning-content));
+    --badge-fg: var(--color-warning-foreground);
   }
 
-  .badge--variant-primary.badge--color-danger {
-    --badge-bg: var(--color-danger, var(--color-error));
-    --badge-fg: var(--color-danger-foreground, var(--color-error-content));
+  .badge--primary.badge--danger {
+    --badge-bg: var(--color-danger);
+    --badge-fg: var(--color-danger-foreground);
   }
 
-  .badge--variant-primary.badge--color-neutral {
-    --badge-bg: var(--color-neutral);
-    --badge-fg: var(
-      --color-neutral-foreground,
-      var(--color-neutral-content)
-    );
+  .badge--soft.badge--accent {
+    --badge-bg: var(--color-accent-soft);
+    --badge-fg: var(--color-accent-soft-foreground);
   }
 
-  .badge--variant-primary.badge--color-info {
-    --badge-bg: var(--color-info);
-    --badge-fg: var(--color-info-foreground, var(--color-info-content));
+  .badge--soft.badge--default {
+    --badge-bg: var(--color-default);
+    --badge-fg: var(--color-default-foreground);
   }
 
-  .badge--variant-primary.badge--color-error {
-    --badge-bg: var(--color-error);
-    --badge-fg: var(--color-error-foreground, var(--color-error-content));
+  .badge--soft.badge--success {
+    --badge-bg: var(--color-success-soft);
+    --badge-fg: var(--color-success-soft-foreground);
   }
 
-  .badge--variant-primary.badge--color-primary {
-    --badge-bg: var(--color-primary);
-    --badge-fg: var(--color-primary-content);
+  .badge--soft.badge--warning {
+    --badge-bg: var(--color-warning-soft);
+    --badge-fg: var(--color-warning-soft-foreground);
   }
 
-  .badge--variant-primary.badge--color-secondary {
-    --badge-bg: var(--color-secondary);
-    --badge-fg: var(--color-secondary-content);
-  }
-
-  .badge--variant-soft.badge--color-accent {
-    --badge-bg: var(
-      --color-accent-soft,
-      color-mix(in oklab, var(--color-accent) 15%, var(--color-base-100))
-    );
-    --badge-fg: var(
-      --color-accent-soft-foreground,
-      var(--color-accent-content)
-    );
-  }
-
-  .badge--variant-soft.badge--color-default {
-    --badge-bg: var(--color-default, var(--color-base-200));
-    --badge-fg: var(--color-default-foreground, var(--color-base-content));
-  }
-
-  .badge--variant-soft.badge--color-success {
-    --badge-bg: var(
-      --color-success-soft,
-      color-mix(in oklab, var(--color-success) 15%, var(--color-base-100))
-    );
-    --badge-fg: var(
-      --color-success-soft-foreground,
-      var(--color-success-content)
-    );
-  }
-
-  .badge--variant-soft.badge--color-warning {
-    --badge-bg: var(
-      --color-warning-soft,
-      color-mix(in oklab, var(--color-warning) 15%, var(--color-base-100))
-    );
-    --badge-fg: var(
-      --color-warning-soft-foreground,
-      var(--color-warning-content)
-    );
-  }
-
-  .badge--variant-soft.badge--color-danger {
-    --badge-bg: var(
-      --color-danger-soft,
-      color-mix(
-        in oklab,
-        var(--color-danger, var(--color-error)) 15%,
-        var(--color-base-100)
-      )
-    );
-    --badge-fg: var(
-      --color-danger-soft-foreground,
-      var(--color-error-content)
-    );
-  }
-
-  .badge--variant-soft.badge--color-neutral {
-    --badge-bg: var(
-      --color-neutral-soft,
-      color-mix(in oklab, var(--color-neutral) 15%, var(--color-base-100))
-    );
-    --badge-fg: var(
-      --color-neutral-soft-foreground,
-      var(--color-neutral-content)
-    );
-  }
-
-  .badge--variant-soft.badge--color-info {
-    --badge-bg: var(
-      --color-info-soft,
-      color-mix(in oklab, var(--color-info) 15%, var(--color-base-100))
-    );
-    --badge-fg: var(--color-info-soft-foreground, var(--color-info-content));
-  }
-
-  .badge--variant-soft.badge--color-error {
-    --badge-bg: var(
-      --color-error-soft,
-      color-mix(in oklab, var(--color-error) 15%, var(--color-base-100))
-    );
-    --badge-fg: var(--color-error-soft-foreground, var(--color-error-content));
-  }
-
-  .badge--variant-soft.badge--color-primary {
-    --badge-bg: color-mix(in oklab, var(--color-primary) 15%, var(--color-base-100));
-    --badge-fg: var(--color-primary-content);
-  }
-
-  .badge--variant-soft.badge--color-secondary {
-    --badge-bg: color-mix(
-      in oklab,
-      var(--color-secondary) 15%,
-      var(--color-base-100)
-    );
-    --badge-fg: var(--color-secondary-content);
+  .badge--soft.badge--danger {
+    --badge-bg: var(--color-danger-soft);
+    --badge-fg: var(--color-danger-soft-foreground);
   }
 }
