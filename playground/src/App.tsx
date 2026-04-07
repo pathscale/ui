@@ -1,5 +1,5 @@
 import { For, createSignal } from "solid-js";
-import { Badge, Button, Checkbox, Dropdown, Input, Radio, RadioGroup, Tabs, Toggle } from "@pathscale/ui";
+import { Badge, Button, Checkbox, Dropdown, Input, Radio, RadioGroup, SliderField, Tabs, Toggle } from "@pathscale/ui";
 
 const BADGE_COLORS = [
   "default",
@@ -52,6 +52,9 @@ export default function App() {
   const [selectedFramework, setSelectedFramework] = createSignal("solid");
   const [checkedTerms, setCheckedTerms] = createSignal(false);
   const [toggleOn, setToggleOn] = createSignal(false);
+  const [sliderVal, setSliderVal] = createSignal(30);
+  const [sliderSm, setSliderSm] = createSignal(50);
+  const [sliderLg, setSliderLg] = createSignal(70);
 
   return (
     <main class="min-h-screen bg-base-100 text-base-content p-8">
@@ -581,6 +584,79 @@ export default function App() {
                 </Toggle>
               </div>
             </div>
+          </div>
+        </section>
+
+        <section class="space-y-4 rounded-xl border border-base-300 bg-base-200 p-4">
+          <div>
+            <h2 class="text-sm font-semibold">Slider</h2>
+            <p class="text-xs opacity-70">HeroUI-style range slider with sizes and states.</p>
+          </div>
+
+          <div class="grid gap-6 md:grid-cols-2">
+            <div class="space-y-3">
+              <h3 class="text-xs font-semibold uppercase opacity-70">Default</h3>
+              <SliderField
+                label="Volume"
+                value={sliderVal()}
+                onChange={setSliderVal}
+              />
+            </div>
+
+            <div class="space-y-3">
+              <h3 class="text-xs font-semibold uppercase opacity-70">Custom Format</h3>
+              <SliderField
+                label="Price"
+                value={sliderVal()}
+                onChange={setSliderVal}
+                min={0}
+                max={1000}
+                step={10}
+                formatValue={(v) => `$${v}`}
+              />
+            </div>
+          </div>
+
+          <div class="grid gap-6 md:grid-cols-3">
+            <div class="space-y-3">
+              <h3 class="text-xs font-semibold uppercase opacity-70">Small</h3>
+              <SliderField
+                label="Brightness"
+                value={sliderSm()}
+                onChange={setSliderSm}
+                size="sm"
+              />
+            </div>
+
+            <div class="space-y-3">
+              <h3 class="text-xs font-semibold uppercase opacity-70">Medium</h3>
+              <SliderField
+                label="Contrast"
+                value={sliderVal()}
+                onChange={setSliderVal}
+                size="md"
+              />
+            </div>
+
+            <div class="space-y-3">
+              <h3 class="text-xs font-semibold uppercase opacity-70">Large</h3>
+              <SliderField
+                label="Saturation"
+                value={sliderLg()}
+                onChange={setSliderLg}
+                size="lg"
+              />
+            </div>
+          </div>
+
+          <div class="space-y-3">
+            <h3 class="text-xs font-semibold uppercase opacity-70">Disabled</h3>
+            <SliderField
+              label="Locked"
+              value={60}
+              onChange={() => {}}
+              disabled
+            />
           </div>
         </section>
       </div>
