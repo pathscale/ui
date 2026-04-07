@@ -259,7 +259,7 @@ export const CookieConsent: Component<CookieConsentProps> = (props) => {
                 class="flex-col sm:flex-row sm:items-center shrink-0"
               >
                 <Button
-                  color="primary"
+                  variant="primary"
                   size="sm"
                   class="w-full sm:w-auto transition-transform duration-150 hover:scale-[1.02] active:scale-[0.98]"
                   onClick={handleAcceptAll}
@@ -267,7 +267,7 @@ export const CookieConsent: Component<CookieConsentProps> = (props) => {
                   {texts().acceptAll}
                 </Button>
                 <Button
-                  color="ghost"
+                  variant="ghost"
                   size="sm"
                   class="w-full sm:w-auto"
                   onClick={handleDecline}
@@ -305,8 +305,8 @@ export const CookieConsent: Component<CookieConsentProps> = (props) => {
               </h2>
               <Button
                 size="sm"
-                color="ghost"
-                shape="circle"
+                variant="ghost"
+                isIconOnly
                 onClick={handleManageClose}
                 aria-label={texts().closeLabel}
               >
@@ -351,11 +351,11 @@ export const CookieConsent: Component<CookieConsentProps> = (props) => {
             </Flex>
 
             <Flex gap="sm" justify="end">
-              <Button color="ghost" size="sm" onClick={handleManageClose}>
+              <Button variant="ghost" size="sm" onClick={handleManageClose}>
                 {texts().cancel}
               </Button>
               <Button
-                color="primary"
+                variant="primary"
                 size="sm"
                 class="transition-transform duration-150 hover:scale-[1.02] active:scale-[0.98]"
                 onClick={handleManageSave}

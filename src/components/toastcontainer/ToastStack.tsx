@@ -40,7 +40,7 @@ const defaultRenderToast: ToastRenderer = (toast, dismiss) => (
     <span class="flex-1">{toast.message}</span>
     <Button
       size="sm"
-      color="ghost"
+      variant="ghost"
       onClick={(event) => {
         event.stopPropagation();
         dismiss();

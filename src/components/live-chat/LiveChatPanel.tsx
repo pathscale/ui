@@ -439,9 +439,9 @@ const LiveChatPanel: Component<LiveChatPanelProps> = (props) => {
           />
           <Button
             onClick={handleSend}
-            disabled={!inputValue().trim() || isSending()}
+            isDisabled={!inputValue().trim() || isSending()}
             class="px-4 py-2"
-            color="primary"
+            variant="primary"
           >
             <Show
               when={!isSending()}

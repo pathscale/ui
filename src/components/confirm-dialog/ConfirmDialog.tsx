@@ -4,7 +4,8 @@ import { twMerge } from "tailwind-merge";
 
 import Modal from "../modal/Modal";
 import Button from "../button/Button";
-import type { ComponentColor, IComponentBaseProps } from "../types";
+import type { ButtonVariant } from "../button";
+import type { IComponentBaseProps } from "../types";
 
 export type ConfirmDialogProps = ParentProps<
   IComponentBaseProps &
@@ -16,7 +17,7 @@ export type ConfirmDialogProps = ParentProps<
       message?: JSX.Element;
       confirmText?: string;
       cancelText?: string;
-      confirmColor?: ComponentColor;
+      confirmVariant?: ButtonVariant;
       loading?: boolean;
     }
 >;
@@ -31,7 +32,7 @@ export default function ConfirmDialog(props: ConfirmDialogProps): JSX.Element {
     "children",
     "confirmText",
     "cancelText",
-    "confirmColor",
+    "confirmVariant",
     "loading",
     "dataTheme",
     "class",
@@ -61,17 +62,17 @@ export default function ConfirmDialog(props: ConfirmDialogProps): JSX.Element {
       </Modal.Body>
       <Modal.Actions class="flex justify-end gap-2">
         <Button
-          color="ghost"
+          variant="ghost"
           onClick={local.onClose}
-          disabled={local.loading}
+          isDisabled={local.loading}
         >
           {local.cancelText ?? "Cancel"}
         </Button>
         <Button
-          color={local.confirmColor ?? "error"}
+          variant={local.confirmVariant ?? "danger"}
           onClick={local.onConfirm}
-          loading={local.loading}
-          disabled={local.loading}
+          isPending={local.loading}
+          isDisabled={local.loading}
         >
           {local.confirmText ?? "Confirm"}
         </Button>

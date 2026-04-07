@@ -1,208 +1,91 @@
-import "./btn.css";
-import { clsx } from "clsx";
-import { type JSX, Show, splitProps } from "solid-js";
-import { Dynamic } from "solid-js/web";
+import "./Button.css";
+import { Show, splitProps, type JSX } from "solid-js";
 import { twMerge } from "tailwind-merge";
 
-import Loading from "../loading/Loading";
-import type {
-  ComponentColor,
-  ComponentShape,
-  ComponentSize,
-  ComponentVariant,
-  IComponentBaseProps,
-} from "../types";
+type ButtonVariant =
+  | "primary"
+  | "secondary"
+  | "tertiary"
+  | "outline"
+  | "ghost"
+  | "danger"
+  | "danger-soft";
 
-type ElementType = keyof JSX.IntrinsicElements;
+type ButtonSize = "sm" | "md" | "lg";
 
-type ButtonBaseProps = {
-  shape?: ComponentShape;
-  size?: ComponentSize;
-  color?: ComponentColor;
-  variant?: ComponentVariant | "link";
-  glass?: boolean;
-  wide?: boolean;
+type ButtonProps = Omit<JSX.ButtonHTMLAttributes<HTMLButtonElement>, "disabled"> & {
+  variant?: ButtonVariant;
+  size?: ButtonSize;
+  isIconOnly?: boolean;
   fullWidth?: boolean;
-  responsive?: boolean;
-  animation?: boolean;
-  loading?: boolean;
-  active?: boolean;
-  startIcon?: JSX.Element;
-  endIcon?: JSX.Element;
-  disabled?: boolean;
-  as?: ElementType;
-  children?: JSX.Element;
-  dataTheme?: string;
-  class?: string;
+  isDisabled?: boolean;
+  isPending?: boolean;
   className?: string;
-  style?: JSX.CSSProperties;
-  // ARIA attributes
-  "aria-label"?: string;
-  "aria-describedby"?: string;
-  "aria-pressed"?: boolean;
-  "aria-expanded"?: boolean;
-  "aria-controls"?: string;
-  "aria-haspopup"?: string;
-  "aria-role"?: string;
 };
 
-type PropsOf<E extends ElementType> = JSX.IntrinsicElements[E];
+const VARIANT_CLASS_MAP: Record<ButtonVariant, string> = {
+  primary: "button--primary",
+  secondary: "button--secondary",
+  tertiary: "button--tertiary",
+  outline: "button--outline",
+  ghost: "button--ghost",
+  danger: "button--danger",
+  "danger-soft": "button--danger-soft",
+};
 
-export type ButtonProps<E extends ElementType = "button"> = Omit<
-  PropsOf<E>,
-  keyof ButtonBaseProps | "color" | "size"
-> &
-  ButtonBaseProps &
-  IComponentBaseProps;
+const SIZE_CLASS_MAP: Record<ButtonSize, string> = {
+  sm: "button--sm",
+  md: "button--md",
+  lg: "button--lg",
+};
 
-// https://developer.mozilla.org/en-US/docs/Glossary/Void_element
-const VoidElementList: ElementType[] = [
-  "area",
-  "base",
-  "br",
-  "col",
-  "embed",
-  "hr",
-  "img",
-  "input",
-  "link",
-  "keygen",
-  "meta",
-  "param",
-  "source",
-  "track",
-  "wbr",
-];
+const Button = (props: ButtonProps): JSX.Element => {
+  const [local, others] = splitProps(props, [
+    "children",
+    "class",
+    "className",
+    "variant",
+    "size",
+    "isIconOnly",
+    "fullWidth",
+    "isDisabled",
+    "isPending",
+    "type",
+  ]);
 
-const Button = <E extends ElementType = "button">(
-  props: ButtonProps<E>,
-): JSX.Element => {
-  const [local, others] = splitProps(
-    props as ButtonBaseProps & Record<string, unknown>,
-    [
-      "children",
-      "shape",
-      "size",
-      "variant",
-      "color",
-      "glass",
-      "startIcon",
-      "endIcon",
-      "wide",
-      "fullWidth",
-      "responsive",
-      "animation",
-      "loading",
-      "active",
-      "disabled",
-      "dataTheme",
-      "class",
-      "className",
-      "style",
-      "as",
-      "aria-label",
-      "aria-describedby",
-      "aria-pressed",
-      "aria-expanded",
-      "aria-controls",
-      "aria-haspopup",
-      "aria-role",
-    ],
-  );
-
-  const normalizeAriaValue = (value: unknown) => {
-    return typeof value === "boolean" ? String(value) : value;
-  };
+  const variant = () => local.variant ?? "primary";
+  const size = () => local.size ?? "md";
+  const disabled = () => Boolean(local.isDisabled) || Boolean(local.isPending);
 
   const classes = () =>
     twMerge(
-      "btn",
-      clsx(((local.startIcon && !local.loading) || local.endIcon) && "gap-2", {
-        "btn-xl": local.size === "xl",
-        "btn-lg": local.size === "lg",
-        "btn-md": local.size === "md",
-        "btn-sm": local.size === "sm",
-        "btn-xs": local.size === "xs",
-        "btn-circle": local.shape === "circle",
-        "btn-square": local.shape === "square",
-        "btn-soft": local.variant === "soft",
-        "btn-dash": local.variant === "dash",
-        "btn-outline": local.variant === "outline",
-        "btn-link": local.variant === "link",
-        "btn-neutral": local.color === "neutral",
-        "btn-primary": local.color === "primary",
-        "btn-secondary": local.color === "secondary",
-        "btn-accent": local.color === "accent",
-        "btn-info": local.color === "info",
-        "btn-success": local.color === "success",
-        "btn-warning": local.color === "warning",
-        "btn-error": local.color === "error",
-        "btn-ghost": local.color === "ghost",
-        glass: local.glass,
-        "btn-wide": local.wide,
-        "btn-block": local.fullWidth,
-        "btn-responsive": local.responsive,
-        "no-animation": !local.animation,
-        "btn-active": local.active,
-        "btn-disabled": local.disabled,
-        "cursor-not-allowed": local.disabled,
-      }),
+      "button",
+      VARIANT_CLASS_MAP[variant()],
+      SIZE_CLASS_MAP[size()],
+      local.isIconOnly && "button--icon-only",
+      local.fullWidth && "button--full-width",
       local.class,
       local.className,
     );
 
-  const Tag = local.as || "button";
-
-  if (VoidElementList.includes(Tag as ElementType)) {
-    return (
-      <Dynamic
-        component={Tag}
-        {...others}
-        data-theme={local.dataTheme}
-        class={classes()}
-        style={local.style}
-        disabled={local.disabled}
-        aria-label={local["aria-label"]}
-        aria-describedby={local["aria-describedby"]}
-        aria-pressed={normalizeAriaValue(local["aria-pressed"])}
-        aria-expanded={normalizeAriaValue(local["aria-expanded"])}
-        aria-controls={local["aria-controls"]}
-        aria-haspopup={normalizeAriaValue(local["aria-haspopup"])}
-        aria-disabled={local.disabled}
-        role={local["aria-role"]}
-      />
-    );
-  }
-
   return (
-    <Dynamic
-      component={Tag}
+    <button
       {...others}
-      data-theme={local.dataTheme}
+      type={local.type ?? "button"}
       class={classes()}
-      style={local.style}
-      disabled={local.disabled}
-      aria-label={local["aria-label"]}
-      aria-describedby={local["aria-describedby"]}
-      aria-pressed={normalizeAriaValue(local["aria-pressed"])}
-      aria-expanded={normalizeAriaValue(local["aria-expanded"])}
-      aria-controls={local["aria-controls"]}
-      aria-haspopup={normalizeAriaValue(local["aria-haspopup"])}
-      aria-disabled={local.disabled}
-      role={local["aria-role"]}
+      data-slot="button"
+      data-pending={local.isPending ? "true" : "false"}
+      disabled={disabled()}
+      aria-disabled={disabled() ? "true" : "false"}
     >
-      <Show when={local.loading}>
-        <Loading
-          size={local.size}
-          color={local.color}
-          variant="spinner"
-        />
+      <Show when={local.isPending}>
+        <span class="button__spinner" data-slot="spinner" aria-hidden="true" />
       </Show>
-      <Show when={local.startIcon && !local.loading}>{local.startIcon}</Show>
       {local.children}
-      <Show when={local.endIcon}>{local.endIcon}</Show>
-    </Dynamic>
+    </button>
   );
 };
 
 export default Button;
+
+export type { ButtonProps, ButtonVariant, ButtonSize };

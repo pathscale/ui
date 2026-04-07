@@ -120,8 +120,8 @@ export const PWAInstallPrompt: Component<PWAInstallPromptProps> = (props) => {
         >
           <Button
             size="sm"
-            color="ghost"
-            shape="circle"
+            variant="ghost"
+            isIconOnly
             class="absolute top-2 right-2"
             onClick={handleDismiss}
             aria-label={texts().closeLabel}
@@ -146,10 +146,10 @@ export const PWAInstallPrompt: Component<PWAInstallPromptProps> = (props) => {
             </Flex>
 
             <Card.Actions class="mt-4">
-              <Button color="primary" class="flex-1" onClick={handleInstall}>
+              <Button variant="primary" class="flex-1" onClick={handleInstall}>
               {texts().installButton}
               </Button>
-              <Button color="ghost" class="flex-1" onClick={handleDismiss}>
+              <Button variant="ghost" class="flex-1" onClick={handleDismiss}>
               {texts().notNowButton}
               </Button>
             </Card.Actions>

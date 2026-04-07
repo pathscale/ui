@@ -1,6 +1,5 @@
 import "./table.css";
 import "../checkbox/checkbox.css";
-import "../button/btn.css";
 import {
   createEffect,
   createMemo,
@@ -236,8 +235,7 @@ function EnhancedTable<TData>(props: EnhancedTableProps<TData>): JSX.Element {
           </div>
           <div class="flex gap-2 justify-end">
             <Button
-              size="xs"
-              color="neutral"
+              size="sm"
               variant="outline"
               onClick={() => {
                 col.setFilterValue(undefined);
@@ -247,8 +245,8 @@ function EnhancedTable<TData>(props: EnhancedTableProps<TData>): JSX.Element {
               Clear
             </Button>
             <Button
-              size="xs"
-              color="primary"
+              size="sm"
+              variant="primary"
               onClick={() => setOpenFilterFor(null)}
             >
               Apply
@@ -484,9 +482,9 @@ function EnhancedTable<TData>(props: EnhancedTableProps<TData>): JSX.Element {
                         <Show when={local.expandable}>
                           <Table.Cell class="w-6">
                             <Button
-                              size="xs"
-                              color="ghost"
-                              shape="circle"
+                              size="sm"
+                              variant="ghost"
+                              isIconOnly
                               onClick={row.getToggleExpandedHandler()}
                             >
                               {row.getIsExpanded()
@@ -544,7 +542,7 @@ function EnhancedTable<TData>(props: EnhancedTableProps<TData>): JSX.Element {
                   <span class="opacity-70">Rows per page</span>
                   <Button
                     size="sm"
-                    color="ghost"
+                    variant="ghost"
                     aria-haspopup="menu"
                     aria-expanded={pageSizeMenuOpen()}
                     onClick={(event) => {
@@ -566,36 +564,36 @@ function EnhancedTable<TData>(props: EnhancedTableProps<TData>): JSX.Element {
                   <div class="join">
                     <Button
                       size="sm"
-                      color="ghost"
+                      variant="ghost"
                       class="join-item"
-                      disabled={!table.getCanPreviousPage()}
+                      isDisabled={!table.getCanPreviousPage()}
                       onClick={() => table.setPageIndex(0)}
                     >
                       {local.firstPageIcon ?? "|<<"}
                     </Button>
                     <Button
                       size="sm"
-                      color="ghost"
+                      variant="ghost"
                       class="join-item"
-                      disabled={!table.getCanPreviousPage()}
+                      isDisabled={!table.getCanPreviousPage()}
                       onClick={() => table.previousPage()}
                     >
                       {local.prevPageIcon ?? "<<"}
                     </Button>
                     <Button
                       size="sm"
-                      color="ghost"
+                      variant="ghost"
                       class="join-item"
-                      disabled={!table.getCanNextPage()}
+                      isDisabled={!table.getCanNextPage()}
                       onClick={() => table.nextPage()}
                     >
                       {local.nextPageIcon ?? ">>"}
                     </Button>
                     <Button
                       size="sm"
-                      color="ghost"
+                      variant="ghost"
                       class="join-item"
-                      disabled={!table.getCanNextPage()}
+                      isDisabled={!table.getCanNextPage()}
                       onClick={() =>
                         table.setPageIndex(table.getPageCount() - 1)
                       }
@@ -625,9 +623,12 @@ function EnhancedTable<TData>(props: EnhancedTableProps<TData>): JSX.Element {
                 <Button
                   type="button"
                   size="sm"
-                  color="ghost"
+                  variant={
+                    table.getState().pagination.pageSize === size
+                      ? "secondary"
+                      : "ghost"
+                  }
                   class="justify-start"
-                  active={table.getState().pagination.pageSize === size}
                   aria-pressed={table.getState().pagination.pageSize === size}
                   onClick={() => {
                     table.setPageSize(size);

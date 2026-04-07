@@ -48,8 +48,8 @@ const SizePicker: Component<SizePickerProps> = (props) => {
         {(preset) => (
           <Button
             type="button"
-            size="xs"
-            color={store().size() === preset ? "primary" : "ghost"}
+            size="sm"
+            variant={store().size() === preset ? "primary" : "ghost"}
             onClick={() => handleClick(preset)}
             role="radio"
             aria-checked={store().size() === preset}

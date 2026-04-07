@@ -39,10 +39,10 @@ const FormActions = (props: FormActionsProps): JSX.Element => {
   const submitButton = (fullWidth?: boolean) => (
     <Button
       type="submit"
-      color="primary"
+      variant="primary"
       fullWidth={fullWidth}
-      loading={local.isLoading}
-      disabled={!isValid() || local.isLoading}
+      isPending={local.isLoading}
+      isDisabled={!isValid() || local.isLoading}
       aria-busy={local.isLoading}
     >
       {submitText()}
@@ -82,7 +82,7 @@ const FormActions = (props: FormActionsProps): JSX.Element => {
               variant="outline"
               fullWidth
               onClick={local.onCancel}
-              disabled={local.isLoading}
+              isDisabled={local.isLoading}
             >
               {cancelText()}
             </Button>

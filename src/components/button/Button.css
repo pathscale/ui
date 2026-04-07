@@ -1,0 +1,184 @@
+@layer components {
+  .button {
+    position: relative;
+    isolation: isolate;
+    display: inline-flex;
+    height: 2.5rem;
+    width: fit-content;
+    transform-origin: center;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    white-space: nowrap;
+    border-radius: 1.5rem;
+    border: 0;
+    padding-inline: 1rem;
+    font-size: 0.875rem;
+    font-weight: 500;
+    line-height: 1;
+    user-select: none;
+    outline: none;
+    cursor: pointer;
+    transition:
+      transform 250ms ease,
+      background-color 100ms ease,
+      box-shadow 100ms ease,
+      color 100ms ease,
+      opacity 100ms ease;
+    --button-bg: transparent;
+    --button-bg-hover: var(--button-bg);
+    --button-bg-pressed: var(--button-bg-hover);
+    --button-fg: currentColor;
+    --button-border: transparent;
+    background-color: var(--button-bg);
+    border: 1px solid var(--button-border);
+    color: var(--button-fg);
+  }
+
+  .button:focus-visible,
+  .button[data-focus-visible="true"] {
+    outline: 2px solid currentColor;
+    outline-offset: 2px;
+  }
+
+  .button:disabled,
+  .button[aria-disabled="true"] {
+    cursor: not-allowed;
+    opacity: 0.5;
+  }
+
+  .button[data-pending="true"] {
+    cursor: progress;
+  }
+
+  .button:active,
+  .button[data-pressed="true"] {
+    transform: scale(0.97);
+    background-color: var(--button-bg-pressed);
+  }
+
+  @media (hover: hover) {
+    .button:hover,
+    .button[data-hovered="true"] {
+      background-color: var(--button-bg-hover);
+    }
+  }
+
+  .button svg:not([data-slot="spinner"] svg) {
+    pointer-events: none;
+    margin-block: 0.125rem;
+    height: 1rem;
+    width: 1rem;
+    flex-shrink: 0;
+    align-self: center;
+  }
+
+  .button--sm {
+    height: 2.25rem;
+    padding-inline: 0.75rem;
+  }
+
+  .button--md {
+  }
+
+  .button--lg {
+    height: 2.75rem;
+    font-size: 1rem;
+    padding-inline: 1.125rem;
+  }
+
+  .button--sm:active,
+  .button--sm[data-pressed="true"] {
+    transform: scale(0.98);
+  }
+
+  .button--lg:active,
+  .button--lg[data-pressed="true"] {
+    transform: scale(0.96);
+  }
+
+  .button--primary {
+    --button-bg: var(--color-accent);
+    --button-bg-hover: color-mix(in oklab, var(--color-accent), #000 8%);
+    --button-bg-pressed: color-mix(in oklab, var(--color-accent), #000 12%);
+    --button-fg: var(--color-accent-content);
+  }
+
+  .button--secondary {
+    --button-bg: var(--color-base-200);
+    --button-bg-hover: var(--color-base-300);
+    --button-bg-pressed: color-mix(in oklab, var(--color-base-300), #000 10%);
+    --button-fg: var(--color-base-content);
+  }
+
+  .button--tertiary {
+    --button-bg: var(--color-base-100);
+    --button-bg-hover: var(--color-base-200);
+    --button-bg-pressed: var(--color-base-300);
+    --button-fg: var(--color-base-content);
+    --button-border: var(--color-base-300);
+  }
+
+  .button--outline {
+    --button-bg: transparent;
+    --button-bg-hover: color-mix(in oklab, var(--color-base-300), transparent 35%);
+    --button-bg-pressed: color-mix(in oklab, var(--color-base-300), transparent 10%);
+    --button-fg: var(--color-base-content);
+    --button-border: var(--color-base-300);
+  }
+
+  .button--ghost {
+    --button-bg: transparent;
+    --button-bg-hover: var(--color-base-200);
+    --button-bg-pressed: var(--color-base-300);
+    --button-fg: var(--color-base-content);
+  }
+
+  .button--danger {
+    --button-bg: var(--color-error);
+    --button-bg-hover: color-mix(in oklab, var(--color-error), #000 8%);
+    --button-bg-pressed: color-mix(in oklab, var(--color-error), #000 12%);
+    --button-fg: var(--color-error-content);
+  }
+
+  .button--danger-soft {
+    --button-bg: color-mix(in oklab, var(--color-error), var(--color-base-100) 86%);
+    --button-bg-hover: color-mix(in oklab, var(--color-error), var(--color-base-100) 80%);
+    --button-bg-pressed: color-mix(in oklab, var(--color-error), var(--color-base-100) 74%);
+    --button-fg: var(--color-error);
+  }
+
+  .button--icon-only {
+    width: 2.5rem;
+    padding-inline: 0;
+  }
+
+  .button--icon-only.button--sm {
+    width: 2.25rem;
+  }
+
+  .button--icon-only.button--lg {
+    width: 2.75rem;
+  }
+
+  .button--full-width {
+    width: 100%;
+  }
+
+  .button__spinner {
+    display: inline-block;
+    width: 1rem;
+    height: 1rem;
+    border-radius: 9999px;
+    border: 2px solid currentColor;
+    border-right-color: transparent;
+    animation: button-spinner 700ms linear infinite;
+    flex-shrink: 0;
+  }
+
+  @keyframes button-spinner {
+    to {
+      transform: rotate(360deg);
+    }
+  }
+}

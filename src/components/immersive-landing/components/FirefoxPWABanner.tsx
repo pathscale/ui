@@ -128,8 +128,8 @@ export const FirefoxPWABanner: Component<FirefoxPWABannerProps> = (props) => {
         >
           <Button
             size="sm"
-            color="ghost"
-            shape="circle"
+            variant="ghost"
+            isIconOnly
             class="absolute top-2 right-2"
             onClick={handleDismiss}
             aria-label={texts().closeLabel}
@@ -165,10 +165,10 @@ export const FirefoxPWABanner: Component<FirefoxPWABannerProps> = (props) => {
             </Flex>
 
             <Card.Actions class="mt-4">
-              <Button color="primary" class="flex-1" onClick={handleAction}>
+              <Button variant="primary" class="flex-1" onClick={handleAction}>
                 {texts().installButton}
               </Button>
-              <Button color="ghost" class="flex-1" onClick={handleDismiss}>
+              <Button variant="ghost" class="flex-1" onClick={handleDismiss}>
                 {texts().dismissButton}
               </Button>
             </Card.Actions>

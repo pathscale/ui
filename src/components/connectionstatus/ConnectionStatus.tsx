@@ -226,8 +226,8 @@ export const ConnectionStatus: Component<ConnectionStatusProps> = (props) => {
           onClick={handleReconnect}
           variant="outline"
           size="sm"
-          disabled={local.state === "connecting"}
-          loading={local.state === "connecting"}
+          isDisabled={local.state === "connecting"}
+          isPending={local.state === "connecting"}
         >
           Reconnect
         </Button>

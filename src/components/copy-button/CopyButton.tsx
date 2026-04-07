@@ -49,7 +49,7 @@ const CopyButton: Component<CopyButtonProps> = (props) => {
     <Button
       type="button"
       size="sm"
-      color="ghost"
+      variant="ghost"
       onClick={copy}
       title={local.title || "Copy to clipboard"}
       data-theme={local.dataTheme}

@@ -461,8 +461,9 @@ const StreamingTable = <TData,>(props: StreamingTableProps<TData>) => {
             <Button
               class="join-item"
               onClick={prevPage}
-              disabled={currentPage() === 0}
+              isDisabled={currentPage() === 0}
               size="sm"
+              variant="ghost"
             >
               «
             </Button>
@@ -474,8 +475,8 @@ const StreamingTable = <TData,>(props: StreamingTableProps<TData>) => {
                   <Button
                     class="join-item"
                     onClick={() => goToPage(pageNum)}
-                    active={isActive()}
                     size="sm"
+                    variant={isActive() ? "primary" : "ghost"}
                   >
                     {pageNum + 1}
                   </Button>
@@ -486,8 +487,9 @@ const StreamingTable = <TData,>(props: StreamingTableProps<TData>) => {
             <Button
               class="join-item"
               onClick={nextPage}
-              disabled={currentPage() === totalPages() - 1}
+              isDisabled={currentPage() === totalPages() - 1}
               size="sm"
+              variant="ghost"
             >
               »
             </Button>
