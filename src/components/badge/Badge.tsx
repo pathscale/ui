@@ -2,7 +2,7 @@ import { clsx } from "clsx";
 import { type JSX, createContext, splitProps, useContext } from "solid-js";
 import { twMerge } from "tailwind-merge";
 
-import "./badge.css";
+import "./Badge.css";
 
 /* -------------------------------------------------------------------------------------------------
  * Badge Context
@@ -43,6 +43,43 @@ type BadgeVariant = "primary" | "secondary" | "soft" | "outline" | "dash";
 type BadgeSize = "xs" | "sm" | "md" | "lg" | "xl";
 type BadgePlacement = "top-right" | "top-left" | "bottom-right" | "bottom-left";
 
+const BADGE_SIZE_CLASS: Record<BadgeSize, string> = {
+  xs: "badge--size-xs",
+  sm: "badge--size-sm",
+  md: "badge--size-md",
+  lg: "badge--size-lg",
+  xl: "badge--size-xl",
+};
+
+const BADGE_COLOR_CLASS: Record<BadgeColor, string> = {
+  default: "badge--color-default",
+  accent: "badge--color-accent",
+  success: "badge--color-success",
+  warning: "badge--color-warning",
+  danger: "badge--color-danger",
+  neutral: "badge--color-neutral",
+  primary: "badge--color-primary",
+  secondary: "badge--color-secondary",
+  info: "badge--color-info",
+  error: "badge--color-error",
+  ghost: "badge--color-ghost",
+};
+
+const BADGE_VARIANT_CLASS: Record<BadgeVariant, string> = {
+  primary: "badge--variant-primary",
+  secondary: "badge--variant-secondary",
+  soft: "badge--variant-soft",
+  outline: "badge--variant-outline",
+  dash: "badge--variant-dash",
+};
+
+const BADGE_PLACEMENT_CLASS: Record<BadgePlacement, string> = {
+  "top-right": "badge--placement-top-right",
+  "top-left": "badge--placement-top-left",
+  "bottom-right": "badge--placement-bottom-right",
+  "bottom-left": "badge--placement-bottom-left",
+};
+
 interface BadgeRootProps extends Omit<JSX.HTMLAttributes<HTMLSpanElement>, "color"> {
   class?: string;
   children?: JSX.Element;
@@ -62,38 +99,23 @@ const BadgeRoot = (props: BadgeRootProps) => {
     "placement",
   ]);
 
-  const classes = () =>
-    twMerge(
-      "badge",
-      clsx({
-        "badge-xs": (local.size ?? "md") === "xs",
-        "badge-sm": (local.size ?? "md") === "sm",
-        "badge-md": (local.size ?? "md") === "md",
-        "badge-lg": (local.size ?? "md") === "lg",
-        "badge-xl": (local.size ?? "md") === "xl",
-        "badge-primary": local.color === "primary",
-        "badge-secondary": local.color === "secondary",
-        "badge-accent": local.color === "accent",
-        "badge-neutral": local.color === "neutral",
-        "badge-info": local.color === "info",
-        "badge-success": local.color === "success",
-        "badge-warning": local.color === "warning",
-        "badge-error": local.color === "error" || local.color === "danger",
-        "badge-ghost": local.color === "ghost",
-        "badge-soft": (local.variant ?? "primary") === "soft",
-        "badge-outline": (local.variant ?? "primary") === "outline",
-        "badge-dash": (local.variant ?? "primary") === "dash",
-        "absolute top-0 right-0 translate-x-1/4 -translate-y-1/4":
-          (local.placement ?? "top-right") === "top-right",
-        "absolute top-0 left-0 -translate-x-1/4 -translate-y-1/4":
-          (local.placement ?? "top-right") === "top-left",
-        "absolute right-0 bottom-0 translate-x-1/4 translate-y-1/4":
-          (local.placement ?? "top-right") === "bottom-right",
-        "absolute bottom-0 left-0 -translate-x-1/4 translate-y-1/4":
-          (local.placement ?? "top-right") === "bottom-left",
-      }),
-      local.class,
+  const classes = () => {
+    const size = local.size ?? "md";
+    const color = local.color ?? "default";
+    const variant = local.variant ?? "primary";
+    const placement = local.placement ?? "top-right";
+
+    return twMerge(
+      clsx(
+        "badge",
+        BADGE_SIZE_CLASS[size],
+        BADGE_COLOR_CLASS[color],
+        BADGE_VARIANT_CLASS[variant],
+        BADGE_PLACEMENT_CLASS[placement],
+        local.class,
+      ),
     );
+  };
 
   const badgeChildren = () => {
     const c = local.children;
