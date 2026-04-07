@@ -1,33 +1,49 @@
-import "./skeleton.css";
-import type { JSX } from "solid-js";
-import { splitProps, createMemo, children as resolveChildren } from "solid-js";
+import "./Skeleton.css";
+import { splitProps, type Component, type JSX } from "solid-js";
 import { twMerge } from "tailwind-merge";
 import type { IComponentBaseProps } from "../types";
 
-export type SkeletonProps = JSX.HTMLAttributes<HTMLDivElement> &
-  IComponentBaseProps;
+/* -------------------------------------------------------------------------------------------------
+ * Types
+ * -----------------------------------------------------------------------------------------------*/
+export type SkeletonAnimation = "shimmer" | "pulse" | "none";
 
-const Skeleton = (props: SkeletonProps): JSX.Element => {
+export type SkeletonProps = Omit<JSX.HTMLAttributes<HTMLDivElement>, "children"> &
+  IComponentBaseProps & {
+    animationType?: SkeletonAnimation;
+  };
+
+/* -------------------------------------------------------------------------------------------------
+ * Animation class map
+ * -----------------------------------------------------------------------------------------------*/
+const ANIMATION_CLASS_MAP: Record<SkeletonAnimation, string> = {
+  shimmer: "skeleton--shimmer",
+  pulse: "skeleton--pulse",
+  none: "skeleton--none",
+};
+
+/* -------------------------------------------------------------------------------------------------
+ * Skeleton
+ * -----------------------------------------------------------------------------------------------*/
+const Skeleton: Component<SkeletonProps> = (props) => {
   const [local, others] = splitProps(props, [
-    "dataTheme",
     "class",
     "className",
-    "children",
+    "animationType",
+    "dataTheme",
+    "style",
   ]);
 
-  const resolvedChildren = resolveChildren(() => local.children);
-  const classes = createMemo(() =>
-    twMerge("skeleton", local.class, local.className),
-  );
+  const animation = () => local.animationType ?? "shimmer";
 
   return (
     <div
       {...others}
+      class={twMerge("skeleton", ANIMATION_CLASS_MAP[animation()], local.class, local.className)}
+      data-slot="skeleton"
       data-theme={local.dataTheme}
-      class={classes()}
-    >
-      {resolvedChildren()}
-    </div>
+      style={local.style}
+    />
   );
 };
 

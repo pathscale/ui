@@ -6,6 +6,7 @@ import {
   Breadcrumbs,
   Button,
   Progress,
+  Skeleton,
   Checkbox,
   Drawer,
   Dropdown,
@@ -1170,6 +1171,46 @@ export default function App() {
                 <Progress.Fill />
               </Progress.Track>
             </Progress>
+          </div>
+        </section>
+
+        <section class="space-y-4 rounded-xl border border-base-300 bg-base-200 p-4">
+          <div>
+            <h2 class="text-sm font-semibold">Skeleton</h2>
+            <p class="text-xs opacity-70">
+              HeroUI-style skeleton with shimmer, pulse, and none animations.
+            </p>
+          </div>
+
+          <div class="space-y-3">
+            <h3 class="text-xs font-semibold uppercase opacity-70">Shimmer (default)</h3>
+            <div class="flex items-center gap-4">
+              <Skeleton class="h-12 w-12 rounded-full" />
+              <div class="flex flex-col gap-2">
+                <Skeleton class="h-4 w-40 rounded" />
+                <Skeleton class="h-3 w-28 rounded" />
+              </div>
+            </div>
+          </div>
+
+          <div class="space-y-3">
+            <h3 class="text-xs font-semibold uppercase opacity-70">Pulse</h3>
+            <div class="flex items-center gap-4">
+              <Skeleton animationType="pulse" class="h-12 w-12 rounded-full" />
+              <div class="flex flex-col gap-2">
+                <Skeleton animationType="pulse" class="h-4 w-40 rounded" />
+                <Skeleton animationType="pulse" class="h-3 w-28 rounded" />
+              </div>
+            </div>
+          </div>
+
+          <div class="space-y-3">
+            <h3 class="text-xs font-semibold uppercase opacity-70">Card Skeleton</h3>
+            <div class="w-64 space-y-3 rounded-xl border border-base-300 bg-base-100 p-4">
+              <Skeleton class="h-32 w-full rounded-lg" />
+              <Skeleton class="h-4 w-3/4 rounded" />
+              <Skeleton class="h-3 w-1/2 rounded" />
+            </div>
           </div>
         </section>
       </div>

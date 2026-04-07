@@ -1,0 +1,95 @@
+@layer components {
+  /* -------------------------------------------------------------------------------------------------
+   * Base
+   * -----------------------------------------------------------------------------------------------*/
+  .skeleton {
+    pointer-events: none;
+    position: relative;
+    overflow: hidden;
+    border-radius: var(--radius-field, 0.25rem);
+    background-color: color-mix(in oklab, var(--color-base-300) 70%, transparent);
+  }
+
+  /* -------------------------------------------------------------------------------------------------
+   * Shimmer animation
+   * -----------------------------------------------------------------------------------------------*/
+  .skeleton--shimmer::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    transform: translateX(-100%);
+    background: linear-gradient(
+      90deg,
+      transparent 0%,
+      color-mix(in oklab, var(--color-base-300) 50%, transparent) 50%,
+      transparent 100%
+    );
+    animation: skeleton-shimmer 1.5s ease-in-out infinite;
+  }
+
+  @keyframes skeleton-shimmer {
+    100% {
+      transform: translateX(100%);
+    }
+  }
+
+  /* Parent with nested skeletons: single synchronized shimmer */
+  .skeleton--shimmer:has(.skeleton)::after {
+    content: none;
+  }
+
+  .skeleton--shimmer:has(.skeleton)::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: 10;
+    pointer-events: none;
+    transform: translateX(-100%);
+    background: linear-gradient(
+      90deg,
+      transparent 0%,
+      oklch(100% 0 0 / 0.5) 50%,
+      transparent 100%
+    );
+    mix-blend-mode: overlay;
+    animation: skeleton-shimmer 1.5s ease-in-out infinite;
+  }
+
+  .skeleton--shimmer:has(.skeleton) .skeleton::after {
+    content: none;
+  }
+
+  /* -------------------------------------------------------------------------------------------------
+   * Pulse animation
+   * -----------------------------------------------------------------------------------------------*/
+  .skeleton--pulse {
+    animation: skeleton-pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+  }
+
+  @keyframes skeleton-pulse {
+    0%, 100% {
+      opacity: 1;
+    }
+    50% {
+      opacity: 0.5;
+    }
+  }
+
+  /* -------------------------------------------------------------------------------------------------
+   * No animation
+   * -----------------------------------------------------------------------------------------------*/
+  .skeleton--none {
+    /* Static placeholder, no animation */
+  }
+
+  /* -------------------------------------------------------------------------------------------------
+   * Reduced motion
+   * -----------------------------------------------------------------------------------------------*/
+  @media (prefers-reduced-motion: reduce) {
+    .skeleton--shimmer::after,
+    .skeleton--shimmer::before,
+    .skeleton--pulse {
+      animation: none;
+    }
+  }
+}
