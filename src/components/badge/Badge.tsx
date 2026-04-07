@@ -103,7 +103,6 @@ const BadgeRoot = (props: BadgeRootProps) => {
     const size = local.size ?? "md";
     const color = local.color ?? "default";
     const variant = local.variant ?? "primary";
-    const placement = local.placement ?? "top-right";
 
     return twMerge(
       clsx(
@@ -111,7 +110,7 @@ const BadgeRoot = (props: BadgeRootProps) => {
         BADGE_SIZE_CLASS[size],
         BADGE_COLOR_CLASS[color],
         BADGE_VARIANT_CLASS[variant],
-        BADGE_PLACEMENT_CLASS[placement],
+        local.placement && BADGE_PLACEMENT_CLASS[local.placement],
         local.class,
       ),
     );
