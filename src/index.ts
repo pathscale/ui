@@ -175,7 +175,8 @@ export {
   default as PhoneMockup,
   type PhoneMockupProps,
 } from "./components/phonemockup";
-export { default as Progress } from "./components/progress";
+export { default as Progress, ProgressRoot, ProgressOutput, ProgressTrack, ProgressFill } from "./components/progress";
+export type { ProgressSize, ProgressColor, ProgressRootProps, ProgressOutputProps, ProgressTrackProps, ProgressFillProps } from "./components/progress";
 export { PropsTable } from "./components/props-table";
 export { default as RadialProgress } from "./components/radialprogress";
 export { default as Radio } from "./components/radio";

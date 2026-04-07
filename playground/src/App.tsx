@@ -5,6 +5,7 @@ import {
   Badge,
   Breadcrumbs,
   Button,
+  Progress,
   Checkbox,
   Drawer,
   Dropdown,
@@ -1107,6 +1108,68 @@ export default function App() {
               <Breadcrumbs.Item href="#">Docs</Breadcrumbs.Item>
               <Breadcrumbs.Item isCurrent>API</Breadcrumbs.Item>
             </Breadcrumbs>
+          </div>
+        </section>
+
+        <section class="space-y-4 rounded-xl border border-base-300 bg-base-200 p-4">
+          <div>
+            <h2 class="text-sm font-semibold">Progress</h2>
+            <p class="text-xs opacity-70">
+              HeroUI-style compound progress bar with sizes, colors, and indeterminate.
+            </p>
+          </div>
+
+          <div class="space-y-3">
+            <h3 class="text-xs font-semibold uppercase opacity-70">Default</h3>
+            <Progress value={60} label="Loading" size="md" color="accent">
+              <Progress.Output />
+              <Progress.Track>
+                <Progress.Fill />
+              </Progress.Track>
+            </Progress>
+          </div>
+
+          <div class="space-y-3">
+            <h3 class="text-xs font-semibold uppercase opacity-70">Sizes</h3>
+            <div class="grid gap-4">
+              <For each={["sm", "md", "lg"] as const}>
+                {(size) => (
+                  <Progress value={45} label={size} size={size} color="accent">
+                    <Progress.Output />
+                    <Progress.Track>
+                      <Progress.Fill />
+                    </Progress.Track>
+                  </Progress>
+                )}
+              </For>
+            </div>
+          </div>
+
+          <div class="space-y-3">
+            <h3 class="text-xs font-semibold uppercase opacity-70">Colors</h3>
+            <div class="grid gap-4">
+              <For each={["default", "accent", "success", "warning", "danger"] as const}>
+                {(color) => (
+                  <Progress value={70} label={color} color={color}>
+                    <Progress.Output />
+                    <Progress.Track>
+                      <Progress.Fill />
+                    </Progress.Track>
+                  </Progress>
+                )}
+              </For>
+            </div>
+          </div>
+
+          <div class="space-y-3">
+            <h3 class="text-xs font-semibold uppercase opacity-70">
+              Indeterminate
+            </h3>
+            <Progress isIndeterminate label="Processing" color="accent">
+              <Progress.Track>
+                <Progress.Fill />
+              </Progress.Track>
+            </Progress>
           </div>
         </section>
       </div>
