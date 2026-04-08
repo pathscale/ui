@@ -11,6 +11,7 @@ import {
   Skeleton,
   Checkbox,
   ColorArea,
+  ColorField,
   Drawer,
   FloatingDock,
   Dropdown,
@@ -98,6 +99,7 @@ export default function App() {
   const [selectedFramework, setSelectedFramework] = createSignal("solid");
   const [checkedTerms, setCheckedTerms] = createSignal(false);
   const [colorAreaValue, setColorAreaValue] = createSignal({ h: 210, s: 75, v: 80 });
+  const [colorFieldValue, setColorFieldValue] = createSignal("#3B82F6");
   const [toggleOn, setToggleOn] = createSignal(false);
   const [sliderVal, setSliderVal] = createSignal(30);
   const [sliderSm, setSliderSm] = createSignal(50);
@@ -1385,6 +1387,35 @@ export default function App() {
             <div class="space-y-3">
               <h3 class="text-xs font-semibold uppercase opacity-70">Disabled</h3>
               <ColorArea value={{ h: 40, s: 70, v: 85 }} isDisabled />
+            </div>
+          </div>
+        </section>
+
+        <section class="space-y-4 rounded-xl border border-base-300 bg-base-200 p-4">
+          <div>
+            <h2 class="text-sm font-semibold">ColorField</h2>
+            <p class="text-xs opacity-70">Text input for color editing with parsing, formatting, and validation.</p>
+          </div>
+
+          <div class="grid gap-6 md:grid-cols-2">
+            <div class="space-y-3">
+              <h3 class="text-xs font-semibold uppercase opacity-70">Controlled (HEX)</h3>
+              <ColorField
+                value={colorFieldValue()}
+                onChange={setColorFieldValue}
+                format="hex"
+                placeholder="#RRGGBB"
+              />
+              <p class="text-xs opacity-70">Current: {colorFieldValue()}</p>
+            </div>
+
+            <div class="space-y-3">
+              <h3 class="text-xs font-semibold uppercase opacity-70">Formats + Disabled</h3>
+              <div class="flex flex-col gap-3">
+                <ColorField defaultValue="rgb(59, 130, 246)" format="rgb" />
+                <ColorField defaultValue="hsl(217, 91%, 60%)" format="hsl" />
+                <ColorField value="#9CA3AF" isDisabled format="hex" />
+              </div>
             </div>
           </div>
         </section>

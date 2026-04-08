@@ -1,0 +1,88 @@
+@layer components {
+  .color-field {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+    width: fit-content;
+  }
+
+  .color-field--full-width {
+    width: 100%;
+  }
+
+  .color-field__group {
+    position: relative;
+    display: inline-flex;
+    height: 2.25rem;
+    width: fit-content;
+    min-width: 7rem;
+    align-items: center;
+    overflow: hidden;
+    border-radius: 0.75rem;
+    border: 1px solid var(--color-base-300);
+    background-color: var(--color-base-100);
+    color: var(--color-base-content);
+    box-shadow: 0 1px 0 oklch(100% 0 0 / calc(var(--depth) * 0.1)) inset;
+    transition:
+      background-color 150ms ease,
+      border-color 150ms ease,
+      box-shadow 150ms ease;
+  }
+
+  .color-field__group--full-width {
+    width: 100%;
+  }
+
+  @media (hover: hover) {
+    .color-field__group:hover:not(:focus-within):not([data-disabled="true"]) {
+      background-color: var(--color-base-200);
+      border-color: color-mix(in oklab, var(--color-base-content) 22%, transparent);
+    }
+  }
+
+  .color-field__group:focus-within {
+    border-color: var(--color-accent);
+    box-shadow: 0 0 0 3px color-mix(in oklab, var(--color-accent) 24%, transparent);
+  }
+
+  .color-field__group--invalid,
+  .color-field__group[data-invalid="true"] {
+    border-color: var(--color-error);
+    background-color: var(--color-base-100);
+  }
+
+  .color-field__group--invalid:focus-within,
+  .color-field__group[data-invalid="true"]:focus-within {
+    box-shadow: 0 0 0 3px color-mix(in oklab, var(--color-error) 24%, transparent);
+  }
+
+  .color-field__group[data-disabled="true"] {
+    cursor: not-allowed;
+    border-color: var(--color-base-300);
+    background-color: var(--color-base-200);
+    color: color-mix(in oklab, var(--color-base-content) 55%, transparent);
+    box-shadow: none;
+    opacity: 0.85;
+  }
+
+  .color-field__input {
+    width: 100%;
+    height: 100%;
+    border: 0;
+    background: transparent;
+    color: inherit;
+    font-size: 0.875rem;
+    line-height: 1.25rem;
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+    padding-inline: 0.75rem;
+    outline: none;
+  }
+
+  .color-field__input::placeholder {
+    color: color-mix(in oklab, var(--color-base-content) 45%, transparent);
+  }
+
+  .color-field__input:disabled {
+    cursor: not-allowed;
+  }
+}
