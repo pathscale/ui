@@ -1,0 +1,12 @@
+@layer components {
+  .color-swatch-picker {
+    display: inline-flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .color-swatch-picker[data-disabled="true"] {
+    opacity: 0.7;
+  }
+}

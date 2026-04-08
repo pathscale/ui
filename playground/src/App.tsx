@@ -14,6 +14,7 @@ import {
   ColorField,
   ColorSlider,
   ColorSwatch,
+  ColorSwatchPicker,
   ColorPicker,
   Drawer,
   FloatingDock,
@@ -107,6 +108,7 @@ export default function App() {
   const [colorSliderHue, setColorSliderHue] = createSignal(220);
   const [colorSliderAlpha, setColorSliderAlpha] = createSignal(0.75);
   const [selectedSwatch, setSelectedSwatch] = createSignal("#3B82F6");
+  const [selectedSwatchPicker, setSelectedSwatchPicker] = createSignal("#3B82F6");
   const [toggleOn, setToggleOn] = createSignal(false);
   const [sliderVal, setSliderVal] = createSignal(30);
   const [sliderSm, setSliderSm] = createSignal(50);
@@ -1471,6 +1473,44 @@ export default function App() {
                 <ColorSwatch color="#8B5CF6" size="lg" />
                 <ColorSwatch color="#8B5CF6" size="xl" />
                 <ColorSwatch color="#9CA3AF" isDisabled />
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section class="space-y-4 rounded-xl border border-base-300 bg-base-200 p-4">
+          <div>
+            <h2 class="text-sm font-semibold">ColorSwatchPicker</h2>
+            <p class="text-xs opacity-70">Single-select palette built from ColorSwatch primitives.</p>
+          </div>
+
+          <div class="grid gap-6 md:grid-cols-2">
+            <div class="space-y-3">
+              <h3 class="text-xs font-semibold uppercase opacity-70">Controlled</h3>
+              <ColorSwatchPicker value={selectedSwatchPicker()} onChange={setSelectedSwatchPicker}>
+                <ColorSwatch color="#3B82F6" />
+                <ColorSwatch color="#EF4444" />
+                <ColorSwatch color="#10B981" />
+                <ColorSwatch color="#F59E0B" />
+                <ColorSwatch color="#8B5CF6" />
+              </ColorSwatchPicker>
+              <p class="text-xs opacity-70">Selected: {selectedSwatchPicker()}</p>
+            </div>
+
+            <div class="space-y-3">
+              <h3 class="text-xs font-semibold uppercase opacity-70">Uncontrolled + Disabled</h3>
+              <div class="flex flex-col gap-3">
+                <ColorSwatchPicker defaultValue="#10B981">
+                  <ColorSwatch color="#3B82F6" shape="square" />
+                  <ColorSwatch color="#10B981" shape="square" />
+                  <ColorSwatch color="#F59E0B" shape="square" />
+                </ColorSwatchPicker>
+
+                <ColorSwatchPicker isDisabled defaultValue="#9CA3AF">
+                  <ColorSwatch color="#9CA3AF" />
+                  <ColorSwatch color="#6B7280" />
+                  <ColorSwatch color="#4B5563" />
+                </ColorSwatchPicker>
               </div>
             </div>
           </div>

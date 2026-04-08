@@ -29,6 +29,8 @@ export { default as ColorSlider } from "./components/color-slider";
 export type { ColorSliderProps, ColorSliderType } from "./components/color-slider";
 export { default as ColorSwatch } from "./components/color-swatch";
 export type { ColorSwatchProps, ColorSwatchShape, ColorSwatchSize } from "./components/color-swatch";
+export { default as ColorSwatchPicker } from "./components/color-swatch-picker";
+export type { ColorSwatchPickerProps } from "./components/color-swatch-picker";
 export { default as ColorPicker } from "./components/color-picker";
 export type { ColorPickerProps, ColorPickerAreaProps, ColorPickerSliderProps, ColorPickerFieldProps } from "./components/color-picker";
 export { default as LegacyColorPicker } from "./components/colorpicker";

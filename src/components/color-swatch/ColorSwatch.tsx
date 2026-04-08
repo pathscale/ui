@@ -1,6 +1,7 @@
 import "./ColorSwatch.css";
-import { splitProps, type Component, type JSX } from "solid-js";
+import { splitProps, useContext, type Component, type JSX } from "solid-js";
 import { twMerge } from "tailwind-merge";
+import { ColorSwatchPickerContext } from "../color-swatch-picker/ColorSwatchPicker";
 import type { IComponentBaseProps } from "../types";
 
 const invokeEventHandler = (handler: unknown, event: Event) => {
@@ -43,6 +44,8 @@ const sizeClassMap: Record<ColorSwatchSize, string> = {
 };
 
 const ColorSwatch: Component<ColorSwatchProps> = (props) => {
+  const picker = useContext(ColorSwatchPickerContext);
+
   const [local, others] = splitProps(props, [
     "class",
     "className",
@@ -61,16 +64,36 @@ const ColorSwatch: Component<ColorSwatchProps> = (props) => {
     "dataTheme",
     "aria-label",
     "role",
+    "tabIndex",
   ]);
 
+  const isInsidePicker = () => Boolean(picker);
+  const hasPickerSelection = () => (picker ? picker.value() !== undefined : false);
   const shape = () => local.shape ?? "circle";
   const size = () => local.size ?? "md";
-  const isDisabled = () => Boolean(local.isDisabled) || Boolean(local.disabled);
-  const isSelected = () => Boolean(local.isSelected);
+
+  const isDisabled = () => {
+    const localDisabled = Boolean(local.isDisabled) || Boolean(local.disabled);
+    const pickerDisabled = picker ? picker.isDisabled() : false;
+    return localDisabled || pickerDisabled;
+  };
+
+  const isSelected = () => {
+    if (local.isSelected !== undefined) {
+      return Boolean(local.isSelected);
+    }
+
+    if (!picker) {
+      return false;
+    }
+
+    return picker.value() === local.color;
+  };
 
   const emitSelection = () => {
     local.onSelect?.(local.color);
     local.onChange?.(local.color);
+    picker?.select(local.color);
   };
 
   const handleClick: JSX.EventHandlerUnion<HTMLButtonElement, MouseEvent> = (event) => {
@@ -98,6 +121,22 @@ const ColorSwatch: Component<ColorSwatchProps> = (props) => {
     };
   };
 
+  const tabIndex = () => {
+    if (local.tabIndex !== undefined) {
+      return local.tabIndex;
+    }
+
+    if (!isInsidePicker()) {
+      return undefined;
+    }
+
+    if (!hasPickerSelection()) {
+      return 0;
+    }
+
+    return isSelected() ? 0 : -1;
+  };
+
   return (
     <button
       {...others}
@@ -111,12 +150,16 @@ const ColorSwatch: Component<ColorSwatchProps> = (props) => {
       )}
       data-theme={local.dataTheme}
       data-slot="color-swatch"
+      data-color-value={local.color}
+      data-picker-item={isInsidePicker() ? "true" : "false"}
       data-selected={isSelected() ? "true" : "false"}
       data-disabled={isDisabled() ? "true" : "false"}
       disabled={isDisabled()}
-      role={local.role ?? "option"}
+      role={local.role ?? (isInsidePicker() ? "radio" : "option")}
+      tabIndex={tabIndex()}
       aria-label={local["aria-label"] ?? local.colorName ?? `Color ${local.color}`}
       aria-selected={isSelected() ? "true" : "false"}
+      aria-checked={isInsidePicker() ? (isSelected() ? "true" : "false") : undefined}
       aria-disabled={isDisabled() ? "true" : "false"}
       style={style()}
       onClick={handleClick}
