@@ -20,6 +20,7 @@ import {
   FloatingDock,
   Dropdown,
   Input,
+  Pagination,
   Radio,
   RadioGroup,
   SliderField,
@@ -117,6 +118,9 @@ export default function App() {
   const [sliderVal, setSliderVal] = createSignal(30);
   const [sliderSm, setSliderSm] = createSignal(50);
   const [sliderLg, setSliderLg] = createSignal(70);
+  const [basicPage, setBasicPage] = createSignal(1);
+  const [largePage, setLargePage] = createSignal(8);
+  const [controlledPage, setControlledPage] = createSignal(3);
 
   return (
     <main class="min-h-screen bg-base-100 text-base-content p-8">
@@ -503,6 +507,42 @@ export default function App() {
                 fullWidth
               />
             </div>
+          </div>
+        </section>
+
+        <section class="space-y-4 rounded-xl border border-base-300 bg-base-200 p-4">
+          <div>
+            <h2 class="text-sm font-semibold">Pagination</h2>
+            <p class="text-xs opacity-70">
+              HeroUI-style pagination with previous/next, active state, and ellipsis.
+            </p>
+          </div>
+
+          <div class="space-y-3">
+            <h3 class="text-xs font-semibold uppercase opacity-70">Basic</h3>
+            <Pagination page={basicPage()} total={6} onChange={setBasicPage} />
+          </div>
+
+          <div class="space-y-3">
+            <h3 class="text-xs font-semibold uppercase opacity-70">Large Set (Ellipsis)</h3>
+            <Pagination page={largePage()} total={24} onChange={setLargePage} />
+          </div>
+
+          <div class="space-y-3">
+            <h3 class="text-xs font-semibold uppercase opacity-70">Controlled</h3>
+            <div class="flex flex-wrap items-center gap-2">
+              <Button size="sm" variant="secondary" onClick={() => setControlledPage(1)}>
+                First
+              </Button>
+              <Button size="sm" variant="secondary" onClick={() => setControlledPage(10)}>
+                Last
+              </Button>
+              <Button size="sm" variant="secondary" onClick={() => setControlledPage((prev) => Math.min(10, prev + 1))}>
+                +1
+              </Button>
+            </div>
+            <Pagination page={controlledPage()} total={10} onChange={setControlledPage} />
+            <p class="text-xs opacity-70">Controlled page value: {controlledPage()}</p>
           </div>
         </section>
 

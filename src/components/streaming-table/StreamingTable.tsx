@@ -2,7 +2,6 @@ import { For, createEffect, createMemo, splitProps, createSignal, Show } from "s
 import { twMerge } from "tailwind-merge";
 import Table from "../table";
 import type { TableRootProps } from "../table";
-import Button from "../button";
 import Icon from "../icon";
 import Pagination from "../pagination";
 import {
@@ -365,40 +364,6 @@ const StreamingTable = <TData,>(props: StreamingTableProps<TData>) => {
     }
   };
 
-  const nextPage = () => goToPage(currentPage() + 1);
-  const prevPage = () => goToPage(currentPage() - 1);
-
-  // Compute visible page numbers (show max 5)
-  const visiblePageNumbers = createMemo(() => {
-    const total = totalPages();
-    const current = currentPage();
-    const pages: number[] = [];
-
-    if (total <= 5) {
-      // Show all pages if 5 or fewer
-      for (let i = 0; i < total; i++) {
-        pages.push(i);
-      }
-    } else {
-      // Show current page and 2 on each side
-      let start = Math.max(0, current - 2);
-      let end = Math.min(total - 1, current + 2);
-
-      // Adjust if near the start or end
-      if (current < 2) {
-        end = Math.min(total - 1, 4);
-      } else if (current > total - 3) {
-        start = Math.max(0, total - 5);
-      }
-
-      for (let i = start; i <= end; i++) {
-        pages.push(i);
-      }
-    }
-
-    return pages;
-  });
-
   return (
     <div class={twMerge(local.class, local.className)}>
       <Table {...tableProps}>
@@ -462,48 +427,12 @@ const StreamingTable = <TData,>(props: StreamingTableProps<TData>) => {
       </Table>
 
       <Show when={enablePagination && totalPages() > 0}>
-        <div class="flex justify-center items-center gap-2 mt-4">
-          <Pagination>
-            <Button
-              class="join-item"
-              onClick={prevPage}
-              isDisabled={currentPage() === 0}
-              size="sm"
-              variant="ghost"
-            >
-              «
-            </Button>
-
-            <For each={visiblePageNumbers()}>
-              {(pageNum) => {
-                const isActive = () => pageNum === currentPage();
-                return (
-                  <Button
-                    class="join-item"
-                    onClick={() => goToPage(pageNum)}
-                    size="sm"
-                    variant={isActive() ? "primary" : "ghost"}
-                  >
-                    {pageNum + 1}
-                  </Button>
-                );
-              }}
-            </For>
-
-            <Button
-              class="join-item"
-              onClick={nextPage}
-              isDisabled={currentPage() === totalPages() - 1}
-              size="sm"
-              variant="ghost"
-            >
-              »
-            </Button>
-          </Pagination>
-
-          <span class="text-sm ml-2">
-            Page {currentPage() + 1} of {totalPages()}
-          </span>
+        <div class="mt-4">
+          <Pagination
+            page={currentPage() + 1}
+            total={totalPages()}
+            onChange={(page) => goToPage(page - 1)}
+          />
         </div>
       </Show>
     </div>
