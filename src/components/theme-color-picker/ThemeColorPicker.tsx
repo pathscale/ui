@@ -3,7 +3,10 @@ import { twMerge } from "tailwind-merge";
 import { clsx } from "clsx";
 import type { ColorValue, ColorPickerContextType, ColorFormat } from "../colorpicker";
 import { ColorPickerContext, ColorWheelFlower } from "../colorpicker";
+import { createColorFromHsl, parseColor } from "../colorpicker/ColorUtils";
 import Button from "../button";
+import ColorField from "../color-field";
+import ColorSlider from "../color-slider";
 import Icon from "../icon";
 import type { IComponentBaseProps } from "../types";
 import { createHueShiftStore, type HueShiftStore } from "./hueShift";
@@ -28,15 +31,12 @@ export interface ThemeColorPickerProps extends IComponentBaseProps {
   children?: JSX.Element;
 }
 
-// Convert hue and saturation to a ColorValue for the picker
 function hueToColorValue(hue: number | null, sat: number): ColorValue {
-  const h = hue ?? 0;
-  const s = hue === null ? 0 : sat;
-  return {
-    rgb: { r: 255, g: 255, b: 255, a: 1 },
-    hsl: { h, s, l: 50, a: 1 },
-    hex: "#ffffff",
-  };
+  if (hue === null) {
+    return createColorFromHsl(0, 0, 100, 1);
+  }
+
+  return createColorFromHsl(hue, sat, 50, 1);
 }
 
 const ThemeColorPicker: Component<ThemeColorPickerProps> = (props) => {
@@ -55,30 +55,49 @@ const ThemeColorPicker: Component<ThemeColorPickerProps> = (props) => {
   const [featureAvailable, setFeatureAvailable] = createSignal(true);
   let containerRef: HTMLDivElement | undefined;
 
-  // Create store with configurable prefix
   const store = createMemo<HueShiftStore>(() =>
     createHueShiftStore(local.storagePrefix ?? "theme")
   );
 
-  // Track color value for the picker
   const colorValue = createMemo(() =>
     hueToColorValue(store().hueShift(), store().hueSaturation())
   );
 
-  const handleColorChange = (color: ColorValue) => {
-    const hue = color.hsl.h;
-    const saturation = color.hsl.s;
-    // Check if it's the white center (low saturation = reset)
-    if (saturation < 10 && color.hsl.l > 90) {
+  const setThemeColor = (hue: number | null, saturation: number) => {
+    if (hue === null) {
       store().setHueShift(null);
       local.onColorChange?.(null, 100);
-    } else {
-      store().setHueShift(hue, saturation);
-      local.onColorChange?.(hue, saturation);
+      return;
     }
+
+    const normalizedHue = ((hue % 360) + 360) % 360;
+    const normalizedSaturation = Math.max(0, Math.min(100, saturation));
+    store().setHueShift(normalizedHue, normalizedSaturation);
+    local.onColorChange?.(normalizedHue, normalizedSaturation);
   };
 
-  // Close on outside click
+  const handleColorChange = (color: ColorValue) => {
+    const { h, s, l } = color.hsl;
+
+    if (s < 10 && l > 90) {
+      setThemeColor(null, 100);
+      return;
+    }
+
+    setThemeColor(h, s);
+  };
+
+  const handleHueChange = (hue: number) => {
+    const saturation = store().hueShift() === null ? 100 : store().hueSaturation();
+    setThemeColor(hue, saturation);
+  };
+
+  const handleFieldChange = (value: string) => {
+    const parsed = parseColor(value);
+    if (!parsed) return;
+    handleColorChange(parsed);
+  };
+
   createEffect(() => {
     if (!isOpen()) return;
 
@@ -88,7 +107,6 @@ const ThemeColorPicker: Component<ThemeColorPickerProps> = (props) => {
       }
     };
 
-    // Delay to avoid immediate close from the button click
     const timer = setTimeout(() => {
       document.addEventListener("click", handleClickOutside);
     }, 0);
@@ -99,17 +117,15 @@ const ThemeColorPicker: Component<ThemeColorPickerProps> = (props) => {
     });
   });
 
-  // Close on Escape
   const handleKeyDown = (e: KeyboardEvent) => {
     if (e.key === "Escape" && isOpen()) {
       setIsOpen(false);
     }
   };
 
-  // Check availability on mount
   createEffect(() => {
     const timer = setTimeout(() => {
-      setFeatureAvailable(true); // Always show the icon
+      setFeatureAvailable(true);
     }, 0);
     onCleanup(() => clearTimeout(timer));
   });
@@ -149,9 +165,28 @@ const ThemeColorPicker: Component<ThemeColorPickerProps> = (props) => {
         </Button>
 
         <Show when={isOpen()}>
-          <div class="absolute right-0 mt-2 p-6 bg-base-100 rounded-lg shadow-xl border border-base-300 z-50">
+          <div class="absolute right-0 z-50 mt-2 w-[248px] rounded-lg border border-base-300 bg-base-100 p-4 shadow-xl">
             <ColorPickerContext.Provider value={contextValue()}>
-              <ColorWheelFlower class="color-wheel-custom" />
+              <div class="space-y-3">
+                <div class="flex justify-center">
+                  <ColorWheelFlower class="color-wheel-custom" />
+                </div>
+
+                <ColorSlider
+                  type="hue"
+                  value={colorValue().hsl.h}
+                  onChange={handleHueChange}
+                  aria-label="Theme hue"
+                />
+
+                <ColorField
+                  value={colorValue().hex.toUpperCase()}
+                  format="hex"
+                  onChange={handleFieldChange}
+                  aria-label="Theme color value"
+                  fullWidth
+                />
+              </div>
             </ColorPickerContext.Provider>
           </div>
         </Show>

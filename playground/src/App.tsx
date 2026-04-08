@@ -26,6 +26,7 @@ import {
   Tabs,
   Toggle,
   Tooltip,
+  ThemeColorPicker,
 } from "@pathscale/ui";
 
 const BADGE_COLORS = [
@@ -105,6 +106,8 @@ export default function App() {
   const [colorAreaValue, setColorAreaValue] = createSignal({ h: 210, s: 75, v: 80 });
   const [colorFieldValue, setColorFieldValue] = createSignal("#3B82F6");
   const [colorPickerValue, setColorPickerValue] = createSignal("#3B82F6");
+  const [themeHue, setThemeHue] = createSignal<number | null>(null);
+  const [themeSaturation, setThemeSaturation] = createSignal(100);
   const [colorSliderHue, setColorSliderHue] = createSignal(220);
   const [colorSliderAlpha, setColorSliderAlpha] = createSignal(0.75);
   const [selectedSwatch, setSelectedSwatch] = createSignal("#3B82F6");
@@ -1566,6 +1569,35 @@ export default function App() {
             </div>
           </div>
         </section>
+        <section class="space-y-4 rounded-xl border border-base-300 bg-base-200 p-4">
+          <div>
+            <h2 class="text-sm font-semibold">ThemeColorPicker (Flower Wheel)</h2>
+            <p class="text-xs opacity-70">Top-right flower wheel demo with synced hue slider + hex field.</p>
+          </div>
+
+          <div class="grid gap-6 md:grid-cols-2">
+            <div class="space-y-3">
+              <h3 class="text-xs font-semibold uppercase opacity-70">Interactive</h3>
+              <div class="flex items-center gap-3">
+                <ThemeColorPicker
+                  onColorChange={(hue, saturation) => {
+                    setThemeHue(hue);
+                    setThemeSaturation(saturation);
+                  }}
+                />
+                <span class="text-xs opacity-70">Open the palette button to test flower selection.</span>
+              </div>
+            </div>
+
+            <div class="space-y-2 rounded-lg border border-base-300 bg-base-100 p-3 text-xs">
+              <p>
+                Hue: {themeHue() === null ? "neutral" : `${Math.round(themeHue() ?? 0)}deg`}
+              </p>
+              <p>Saturation: {Math.round(themeSaturation())}%</p>
+            </div>
+          </div>
+        </section>
+
       </div>
     </main>
   );
