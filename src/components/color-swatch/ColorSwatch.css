@@ -1,0 +1,84 @@
+@layer components {
+  .color-swatch {
+    position: relative;
+    box-sizing: border-box;
+    width: 2rem;
+    height: 2rem;
+    flex-shrink: 0;
+    cursor: pointer;
+    background:
+      linear-gradient(var(--color-swatch-current), var(--color-swatch-current)),
+      repeating-conic-gradient(#efefef 0% 25%, #f7f7f7 0% 50%) 50% / 1rem 1rem;
+    box-shadow: inset 0 0 0 1px oklch(0% 0 0 / 0.14);
+    transition:
+      transform 140ms ease,
+      box-shadow 140ms ease,
+      opacity 140ms ease;
+    outline: none;
+  }
+
+  .color-swatch:hover:not([data-disabled="true"]) {
+    transform: scale(1.03);
+  }
+
+  .color-swatch[data-selected="true"] {
+    box-shadow:
+      0 0 0 2px var(--color-base-100),
+      0 0 0 4px var(--color-accent),
+      inset 0 0 0 1px oklch(0% 0 0 / 0.14);
+  }
+
+  .color-swatch:focus-visible,
+  .color-swatch[data-focus-visible="true"] {
+    box-shadow:
+      0 0 0 3px color-mix(in oklab, var(--color-accent) 24%, transparent),
+      inset 0 0 0 1px oklch(0% 0 0 / 0.14);
+  }
+
+  .color-swatch[data-selected="true"]:focus-visible,
+  .color-swatch[data-selected="true"][data-focus-visible="true"] {
+    box-shadow:
+      0 0 0 2px var(--color-base-100),
+      0 0 0 4px var(--color-accent),
+      0 0 0 7px color-mix(in oklab, var(--color-accent) 24%, transparent),
+      inset 0 0 0 1px oklch(0% 0 0 / 0.14);
+  }
+
+  .color-swatch[data-disabled="true"] {
+    cursor: not-allowed;
+    opacity: 0.45;
+  }
+
+  .color-swatch--circle {
+    border-radius: 9999px;
+  }
+
+  .color-swatch--square {
+    border-radius: 0.5rem;
+  }
+
+  .color-swatch--xs {
+    width: 1rem;
+    height: 1rem;
+  }
+
+  .color-swatch--sm {
+    width: 1.5rem;
+    height: 1.5rem;
+  }
+
+  .color-swatch--md {
+    width: 2rem;
+    height: 2rem;
+  }
+
+  .color-swatch--lg {
+    width: 2.25rem;
+    height: 2.25rem;
+  }
+
+  .color-swatch--xl {
+    width: 2.5rem;
+    height: 2.5rem;
+  }
+}

@@ -27,6 +27,8 @@ export { default as ColorField } from "./components/color-field";
 export type { ColorFieldProps, ColorFieldFormat } from "./components/color-field";
 export { default as ColorSlider } from "./components/color-slider";
 export type { ColorSliderProps, ColorSliderType } from "./components/color-slider";
+export { default as ColorSwatch } from "./components/color-swatch";
+export type { ColorSwatchProps, ColorSwatchShape, ColorSwatchSize } from "./components/color-swatch";
 export { default as ColorPicker } from "./components/color-picker";
 export type { ColorPickerProps, ColorPickerAreaProps, ColorPickerSliderProps, ColorPickerFieldProps } from "./components/color-picker";
 export { default as LegacyColorPicker } from "./components/colorpicker";

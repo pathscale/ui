@@ -13,6 +13,7 @@ import {
   ColorArea,
   ColorField,
   ColorSlider,
+  ColorSwatch,
   ColorPicker,
   Drawer,
   FloatingDock,
@@ -105,6 +106,7 @@ export default function App() {
   const [colorPickerValue, setColorPickerValue] = createSignal("#3B82F6");
   const [colorSliderHue, setColorSliderHue] = createSignal(220);
   const [colorSliderAlpha, setColorSliderAlpha] = createSignal(0.75);
+  const [selectedSwatch, setSelectedSwatch] = createSignal("#3B82F6");
   const [toggleOn, setToggleOn] = createSignal(false);
   const [sliderVal, setSliderVal] = createSignal(30);
   const [sliderSm, setSliderSm] = createSignal(50);
@@ -1420,6 +1422,55 @@ export default function App() {
                 <ColorField defaultValue="rgb(59, 130, 246)" format="rgb" />
                 <ColorField defaultValue="hsl(217, 91%, 60%)" format="hsl" />
                 <ColorField value="#9CA3AF" isDisabled format="hex" />
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section class="space-y-4 rounded-xl border border-base-300 bg-base-200 p-4">
+          <div>
+            <h2 class="text-sm font-semibold">ColorSwatch</h2>
+            <p class="text-xs opacity-70">Single selectable swatch with keyboard and disabled states.</p>
+          </div>
+
+          <div class="grid gap-6 md:grid-cols-2">
+            <div class="space-y-3">
+              <h3 class="text-xs font-semibold uppercase opacity-70">Selectable</h3>
+              <div class="flex flex-wrap items-center gap-3" role="listbox" aria-label="Color swatches">
+                <ColorSwatch
+                  color="#3B82F6"
+                  isSelected={selectedSwatch() === "#3B82F6"}
+                  onSelect={setSelectedSwatch}
+                />
+                <ColorSwatch
+                  color="#EF4444"
+                  isSelected={selectedSwatch() === "#EF4444"}
+                  onSelect={setSelectedSwatch}
+                />
+                <ColorSwatch
+                  color="#10B981"
+                  isSelected={selectedSwatch() === "#10B981"}
+                  onSelect={setSelectedSwatch}
+                />
+                <ColorSwatch
+                  color="rgba(59, 130, 246, 0.4)"
+                  shape="square"
+                  isSelected={selectedSwatch() === "rgba(59, 130, 246, 0.4)"}
+                  onSelect={setSelectedSwatch}
+                />
+              </div>
+              <p class="text-xs opacity-70">Selected: {selectedSwatch()}</p>
+            </div>
+
+            <div class="space-y-3">
+              <h3 class="text-xs font-semibold uppercase opacity-70">Sizes + Disabled</h3>
+              <div class="flex items-center gap-3">
+                <ColorSwatch color="#8B5CF6" size="xs" />
+                <ColorSwatch color="#8B5CF6" size="sm" />
+                <ColorSwatch color="#8B5CF6" size="md" />
+                <ColorSwatch color="#8B5CF6" size="lg" />
+                <ColorSwatch color="#8B5CF6" size="xl" />
+                <ColorSwatch color="#9CA3AF" isDisabled />
               </div>
             </div>
           </div>
