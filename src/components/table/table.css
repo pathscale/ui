@@ -16,7 +16,9 @@
 
   .table-root--primary {
     background-color: var(--color-base-200);
-    border-radius: 0.75rem;
+    padding-inline: 0.25rem;
+    padding-bottom: 0.25rem;
+    border-radius: calc(var(--radius-box, 1rem) * 1.25);
   }
 
   /* --------------------------------------------------------------------------
@@ -92,13 +94,13 @@
   }
 
   .table-root--secondary .table__column:first-child {
-    border-top-left-radius: 0.75rem;
-    border-bottom-left-radius: 0.75rem;
+    border-top-left-radius: 1rem;
+    border-bottom-left-radius: 1rem;
   }
 
   .table-root--secondary .table__column:last-child {
-    border-top-right-radius: 0.75rem;
-    border-bottom-right-radius: 0.75rem;
+    border-top-right-radius: 1rem;
+    border-bottom-right-radius: 1rem;
   }
 
   .table-root--secondary .table__body tr:first-child td:first-child,
@@ -194,20 +196,20 @@
   /* --------------------------------------------------------------------------
      Table Body (<tbody>)
      -------------------------------------------------------------------------- */
-  .table-root--secondary .table__body tr:first-child td:first-child {
-    border-top-left-radius: 0.5rem;
+  .table__body tr:first-child td:first-child {
+    border-top-left-radius: 1rem;
   }
 
-  .table-root--secondary .table__body tr:first-child td:last-child {
-    border-top-right-radius: 0.5rem;
+  .table__body tr:first-child td:last-child {
+    border-top-right-radius: 1rem;
   }
 
-  .table-root--secondary .table__body tr:last-child td:first-child {
-    border-bottom-left-radius: 0.5rem;
+  .table__body tr:last-child td:first-child {
+    border-bottom-left-radius: 1rem;
   }
 
-  .table-root--secondary .table__body tr:last-child td:last-child {
-    border-bottom-right-radius: 0.5rem;
+  .table__body tr:last-child td:last-child {
+    border-bottom-right-radius: 1rem;
   }
 
   /* --------------------------------------------------------------------------
