@@ -12,6 +12,7 @@ import {
   Checkbox,
   ColorArea,
   ColorField,
+  ColorSlider,
   ColorPicker,
   Drawer,
   FloatingDock,
@@ -102,6 +103,8 @@ export default function App() {
   const [colorAreaValue, setColorAreaValue] = createSignal({ h: 210, s: 75, v: 80 });
   const [colorFieldValue, setColorFieldValue] = createSignal("#3B82F6");
   const [colorPickerValue, setColorPickerValue] = createSignal("#3B82F6");
+  const [colorSliderHue, setColorSliderHue] = createSignal(220);
+  const [colorSliderAlpha, setColorSliderAlpha] = createSignal(0.75);
   const [toggleOn, setToggleOn] = createSignal(false);
   const [sliderVal, setSliderVal] = createSignal(30);
   const [sliderSm, setSliderSm] = createSignal(50);
@@ -1424,6 +1427,32 @@ export default function App() {
 
         <section class="space-y-4 rounded-xl border border-base-300 bg-base-200 p-4">
           <div>
+            <h2 class="text-sm font-semibold">ColorSlider</h2>
+            <p class="text-xs opacity-70">Single-axis slider for hue and alpha control.</p>
+          </div>
+
+          <div class="grid gap-6 md:grid-cols-2">
+            <div class="space-y-3">
+              <h3 class="text-xs font-semibold uppercase opacity-70">Hue</h3>
+              <ColorSlider type="hue" value={colorSliderHue()} onChange={setColorSliderHue} />
+              <p class="text-xs opacity-70">Hue: {Math.round(colorSliderHue())}°</p>
+            </div>
+
+            <div class="space-y-3">
+              <h3 class="text-xs font-semibold uppercase opacity-70">Alpha</h3>
+              <ColorSlider
+                type="alpha"
+                value={colorSliderAlpha()}
+                onChange={setColorSliderAlpha}
+                style={{ "--color-slider-alpha-color": "rgb(59 130 246)" }}
+              />
+              <p class="text-xs opacity-70">Alpha: {(colorSliderAlpha() * 100).toFixed(0)}%</p>
+            </div>
+          </div>
+        </section>
+
+        <section class="space-y-4 rounded-xl border border-base-300 bg-base-200 p-4">
+          <div>
             <h2 class="text-sm font-semibold">ColorPicker</h2>
             <p class="text-xs opacity-70">Composed color selection with synced area and field.</p>
           </div>
@@ -1439,6 +1468,8 @@ export default function App() {
               <h3 class="text-xs font-semibold uppercase opacity-70">Custom Composition</h3>
               <ColorPicker defaultValue="#EF4444">
                 <ColorPicker.Area />
+                <ColorPicker.Slider type="hue" />
+                <ColorPicker.Slider type="alpha" />
                 <ColorPicker.Field format="rgb" />
               </ColorPicker>
             </div>

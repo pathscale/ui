@@ -17,6 +17,11 @@
     max-width: 14rem;
   }
 
+  .color-picker__slider {
+    width: 100%;
+    max-width: 14rem;
+  }
+
   .color-picker__field {
     width: 100%;
   }

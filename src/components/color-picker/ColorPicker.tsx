@@ -13,6 +13,7 @@ import {
 import { twMerge } from "tailwind-merge";
 import ColorArea, { type ColorAreaProps, type ColorAreaValue } from "../color-area";
 import ColorField, { type ColorFieldProps } from "../color-field";
+import ColorSlider, { type ColorSliderProps, type ColorSliderType } from "../color-slider";
 import { formatColor, parseColor, rgbToHex } from "../colorpicker/ColorUtils";
 import type { IComponentBaseProps } from "../types";
 
@@ -21,6 +22,7 @@ const DEFAULT_COLOR = "#3B82F6";
 type NormalizedColorState = {
   hex: string;
   hsv: ColorAreaValue;
+  alpha: number;
 };
 
 type ColorPickerContextValue = {
@@ -28,6 +30,7 @@ type ColorPickerContextValue = {
   isDisabled: Accessor<boolean>;
   setFromArea: (value: ColorAreaValue) => void;
   setFromField: (value: string) => void;
+  setFromSlider: (type: ColorSliderType, value: number) => void;
 };
 
 const ColorPickerContext = createContext<ColorPickerContextValue>();
@@ -41,6 +44,8 @@ const normalizeHsv = (value: ColorAreaValue): ColorAreaValue => ({
   s: clamp(value.s, 0, 100),
   v: clamp(value.v, 0, 100),
 });
+
+const normalizeAlpha = (value: number) => clamp(value, 0, 1);
 
 const normalizeHex = (value: string) => {
   const trimmed = value.trim();
@@ -120,6 +125,16 @@ const hsvToRgb = (h: number, s: number, v: number) => {
   };
 };
 
+const formatOutputColor = (value: NormalizedColorState) => {
+  if (value.alpha >= 1) {
+    return value.hex;
+  }
+
+  const rgb = hsvToRgb(value.hsv.h, value.hsv.s, value.hsv.v);
+  const alpha = Number(value.alpha.toFixed(2));
+  return `rgba(${rgb.r}, ${rgb.g}, ${rgb.b}, ${alpha})`;
+};
+
 const toColorState = (value?: string | null): NormalizedColorState | null => {
   if (!value) return null;
 
@@ -128,8 +143,9 @@ const toColorState = (value?: string | null): NormalizedColorState | null => {
 
   const hex = normalizeHex(formatColor(parsed, "hex"));
   const hsv = rgbToHsv(parsed.rgb.r, parsed.rgb.g, parsed.rgb.b);
+  const alpha = normalizeAlpha(parsed.rgb.a ?? 1);
 
-  return { hex, hsv };
+  return { hex, hsv, alpha };
 };
 
 const fallbackState = (): NormalizedColorState => {
@@ -139,6 +155,7 @@ const fallbackState = (): NormalizedColorState => {
   return {
     hex: DEFAULT_COLOR,
     hsv: { h: 0, s: 75, v: 96 },
+    alpha: 1,
   };
 };
 
@@ -173,6 +190,72 @@ const ColorPickerArea: Component<ColorPickerAreaProps> = (props) => {
       isDisabled={ctx.isDisabled()}
       class={twMerge("color-picker__area", local.class, local.className)}
       dataTheme={local.dataTheme}
+      onChange={handleChange}
+    />
+  );
+};
+
+export type ColorPickerSliderProps = Omit<ColorSliderProps, "value" | "onChange" | "isDisabled"> & {
+  onChange?: (value: number) => void;
+};
+
+const ColorPickerSlider: Component<ColorPickerSliderProps> = (props) => {
+  const ctx = useContext(ColorPickerContext);
+  const [local, others] = splitProps(props, [
+    "class",
+    "className",
+    "onChange",
+    "type",
+    "style",
+    "dataTheme",
+  ]);
+
+  const sliderType = () => local.type ?? "hue";
+
+  if (!ctx) {
+    return (
+      <ColorSlider
+        {...others}
+        type={sliderType()}
+        class={twMerge("color-picker__slider", local.class, local.className)}
+        dataTheme={local.dataTheme}
+        style={local.style}
+        onChange={local.onChange}
+      />
+    );
+  }
+
+  const value = () => (sliderType() === "alpha" ? ctx.value().alpha : ctx.value().hsv.h);
+
+  const handleChange = (next: number) => {
+    ctx.setFromSlider(sliderType(), next);
+    local.onChange?.(next);
+  };
+
+  const sliderStyle = (): JSX.CSSProperties => {
+    const userStyle = local.style as JSX.CSSProperties | undefined;
+
+    if (sliderType() !== "alpha") {
+      return { ...userStyle };
+    }
+
+    const rgb = hsvToRgb(ctx.value().hsv.h, ctx.value().hsv.s, ctx.value().hsv.v);
+
+    return {
+      "--color-slider-alpha-color": `rgb(${rgb.r} ${rgb.g} ${rgb.b})`,
+      ...userStyle,
+    };
+  };
+
+  return (
+    <ColorSlider
+      {...others}
+      type={sliderType()}
+      value={value()}
+      isDisabled={ctx.isDisabled()}
+      class={twMerge("color-picker__slider", local.class, local.className)}
+      dataTheme={local.dataTheme}
+      style={sliderStyle()}
       onChange={handleChange}
     />
   );
@@ -273,7 +356,7 @@ const ColorPickerRoot: Component<ColorPickerProps> = (props) => {
     if (!isControlled()) {
       setInternalState(next);
     }
-    local.onChange?.(next.hex);
+    local.onChange?.(formatOutputColor(next));
   };
 
   const setFromArea = (nextValue: ColorAreaValue) => {
@@ -281,7 +364,30 @@ const ColorPickerRoot: Component<ColorPickerProps> = (props) => {
     const rgb = hsvToRgb(hsv.h, hsv.s, hsv.v);
     const hex = normalizeHex(rgbToHex(rgb.r, rgb.g, rgb.b));
 
-    emitChange({ hex, hsv });
+    emitChange({ hex, hsv, alpha: currentState().alpha });
+  };
+
+  const setFromSlider = (type: ColorSliderType, value: number) => {
+    if (type === "alpha") {
+      emitChange({
+        ...currentState(),
+        alpha: normalizeAlpha(value),
+      });
+      return;
+    }
+
+    const hsv = normalizeHsv({
+      ...currentState().hsv,
+      h: value,
+    });
+    const rgb = hsvToRgb(hsv.h, hsv.s, hsv.v);
+    const hex = normalizeHex(rgbToHex(rgb.r, rgb.g, rgb.b));
+
+    emitChange({
+      hex,
+      hsv,
+      alpha: currentState().alpha,
+    });
   };
 
   const setFromField = (nextValue: string) => {
@@ -295,6 +401,7 @@ const ColorPickerRoot: Component<ColorPickerProps> = (props) => {
     isDisabled: () => Boolean(local.isDisabled),
     setFromArea,
     setFromField,
+    setFromSlider,
   }));
 
   return (
@@ -309,6 +416,7 @@ const ColorPickerRoot: Component<ColorPickerProps> = (props) => {
         {local.children ?? (
           <>
             <ColorPickerArea />
+            <ColorPickerSlider type="hue" />
             <ColorPickerField />
           </>
         )}
@@ -320,6 +428,7 @@ const ColorPickerRoot: Component<ColorPickerProps> = (props) => {
 const ColorPicker = Object.assign(ColorPickerRoot, {
   Root: ColorPickerRoot,
   Area: ColorPickerArea,
+  Slider: ColorPickerSlider,
   Field: ColorPickerField,
 });
 
@@ -328,5 +437,6 @@ export {
   ColorPicker,
   ColorPickerRoot,
   ColorPickerArea,
+  ColorPickerSlider,
   ColorPickerField,
 };
