@@ -16,8 +16,6 @@
 
   .table-root--primary {
     background-color: var(--color-base-200);
-    padding-inline: 0.25rem;
-    padding-bottom: 0.25rem;
     border-radius: 0.75rem;
   }
 
@@ -196,19 +194,19 @@
   /* --------------------------------------------------------------------------
      Table Body (<tbody>)
      -------------------------------------------------------------------------- */
-  .table__body tr:first-child td:first-child {
+  .table-root--secondary .table__body tr:first-child td:first-child {
     border-top-left-radius: 0.5rem;
   }
 
-  .table__body tr:first-child td:last-child {
+  .table-root--secondary .table__body tr:first-child td:last-child {
     border-top-right-radius: 0.5rem;
   }
 
-  .table__body tr:last-child td:first-child {
+  .table-root--secondary .table__body tr:last-child td:first-child {
     border-bottom-left-radius: 0.5rem;
   }
 
-  .table__body tr:last-child td:last-child {
+  .table-root--secondary .table__body tr:last-child td:last-child {
     border-bottom-right-radius: 0.5rem;
   }
 
