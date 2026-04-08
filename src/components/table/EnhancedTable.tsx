@@ -200,9 +200,67 @@ function EnhancedTable<TData>(props: EnhancedTableProps<TData>): JSX.Element {
   const anyFilterActive = () =>
     (table.getState().columnFilters as any[]).length > 0;
 
+  const filterTriggerRefs = new Map<string, HTMLSpanElement>();
+  const [filterPanelStyle, setFilterPanelStyle] = createSignal<JSX.CSSProperties>({
+    position: "fixed",
+    top: "0px",
+    left: "0px",
+    "z-index": 1300,
+  });
+  let filterPanelRef: HTMLDivElement | undefined;
+
+  const updateFilterPanelPosition = () => {
+    const colId = openFilterFor();
+    if (!colId) return;
+    const triggerEl = filterTriggerRefs.get(colId);
+    if (!triggerEl) return;
+
+    const rect = triggerEl.getBoundingClientRect();
+    const panelWidth = 224; // w-56 = 14rem = 224px
+    const offset = 6;
+    const viewportPadding = 8;
+
+    let left = rect.right - panelWidth;
+    left = Math.max(viewportPadding, Math.min(left, window.innerWidth - panelWidth - viewportPadding));
+
+    let top = rect.bottom + offset;
+    if (filterPanelRef) {
+      const panelHeight = filterPanelRef.getBoundingClientRect().height;
+      if (top + panelHeight > window.innerHeight - viewportPadding) {
+        const above = rect.top - panelHeight - offset;
+        if (above >= viewportPadding) top = above;
+        else top = Math.max(viewportPadding, window.innerHeight - panelHeight - viewportPadding);
+      }
+    }
+
+    setFilterPanelStyle({
+      position: "fixed",
+      top: `${top}px`,
+      left: `${left}px`,
+      "z-index": 1300,
+    });
+  };
+
+  createEffect(() => {
+    if (!openFilterFor()) return;
+    requestAnimationFrame(() => {
+      updateFilterPanelPosition();
+      requestAnimationFrame(updateFilterPanelPosition);
+    });
+
+    const onViewportChange = () => updateFilterPanelPosition();
+    window.addEventListener("resize", onViewportChange);
+    window.addEventListener("scroll", onViewportChange, true);
+    onCleanup(() => {
+      window.removeEventListener("resize", onViewportChange);
+      window.removeEventListener("scroll", onViewportChange, true);
+    });
+  });
+
   const FilterIconTrigger = (props: { colId: string; disabled?: boolean }) => (
     <span
-      class="cursor-pointer ml-auto"
+      ref={(el) => filterTriggerRefs.set(props.colId, el)}
+      class="cursor-pointer ml-auto shrink-0"
       classList={{
         "opacity-50 pointer-events-none": props.disabled,
         "text-primary": openFilterFor() === props.colId,
@@ -222,36 +280,40 @@ function EnhancedTable<TData>(props: EnhancedTableProps<TData>): JSX.Element {
     const colId = col.id as string;
     return (
       <Show when={openFilterFor() === colId}>
-        <div
-          class={
-            local.filterPanelClass ??
-            "absolute right-0 top-full mt-1 z-20 bg-base-100 border border-base-300 shadow rounded-box p-2 w-56"
-          }
-          onClick={(e) => e.stopPropagation()}
-        >
-          <div class="mb-2">
-            <ColumnFilter column={col} />
+        <Portal mount={typeof document === "undefined" ? undefined : document.body}>
+          <div
+            ref={(el) => { filterPanelRef = el; }}
+            style={filterPanelStyle()}
+            class={
+              local.filterPanelClass ??
+              "z-[1300] w-56 border border-nf-border bg-nf-surface-1 shadow-lg rounded-box p-2"
+            }
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div class="mb-2">
+              <ColumnFilter column={col} />
+            </div>
+            <div class="flex gap-2 justify-end">
+              <Button
+                size="sm"
+                variant="outline"
+                onClick={() => {
+                  col.setFilterValue(undefined);
+                  setOpenFilterFor(null);
+                }}
+              >
+                Clear
+              </Button>
+              <Button
+                size="sm"
+                variant="primary"
+                onClick={() => setOpenFilterFor(null)}
+              >
+                Apply
+              </Button>
+            </div>
           </div>
-          <div class="flex gap-2 justify-end">
-            <Button
-              size="sm"
-              variant="outline"
-              onClick={() => {
-                col.setFilterValue(undefined);
-                setOpenFilterFor(null);
-              }}
-            >
-              Clear
-            </Button>
-            <Button
-              size="sm"
-              variant="primary"
-              onClick={() => setOpenFilterFor(null)}
-            >
-              Apply
-            </Button>
-          </div>
-        </div>
+        </Portal>
       </Show>
     );
   };
@@ -429,7 +491,6 @@ function EnhancedTable<TData>(props: EnhancedTableProps<TData>): JSX.Element {
                               >
                                 {local.sortNeutralIcon}
                               </Show>
-                              <div class="grow" />
                               <Show when={canFilter}>
                                 <FilterIconTrigger colId={colId} />
                               </Show>
