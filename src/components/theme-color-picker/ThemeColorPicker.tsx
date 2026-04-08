@@ -1,4 +1,4 @@
-import { type Component, type JSX, Show, createSignal, createMemo, createEffect, onCleanup, splitProps } from "solid-js";
+import { type Component, type JSX, Show, For, createSignal, createMemo, createEffect, onCleanup, splitProps } from "solid-js";
 import { twMerge } from "tailwind-merge";
 import { clsx } from "clsx";
 import type { ColorValue, ColorPickerContextType, ColorFormat } from "../colorpicker";
@@ -174,15 +174,17 @@ const ThemeColorPicker: Component<ThemeColorPickerProps> = (props) => {
                 </div>
 
                 <div class="flex flex-col gap-1.5">
-                  {GRAYSCALE_SWATCHES.map((g, i) => (
-                    <button
-                      type="button"
-                      class="h-6 w-6 rounded-full border border-white/20 transition-transform hover:scale-110"
-                      style={{ "background-color": `oklch(${[95, 80, 60, 40, 25, 5][i]}% 0 0)` }}
-                      aria-label={g.label}
-                      onClick={() => handleGrayscale(g.lightness)}
-                    />
-                  ))}
+                  <For each={GRAYSCALE_SWATCHES}>
+                    {(g, i) => (
+                      <button
+                        type="button"
+                        class="h-6 w-6 rounded-full border border-white/20 transition-transform hover:scale-110"
+                        style={{ "background-color": `oklch(${[95, 80, 60, 40, 25, 5][i()]}% 0 0)` }}
+                        aria-label={g.label}
+                        onClick={() => handleGrayscale(g.lightness)}
+                      />
+                    )}
+                  </For>
                 </div>
               </div>
             </ColorPickerContext.Provider>
