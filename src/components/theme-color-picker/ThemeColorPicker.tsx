@@ -85,17 +85,18 @@ const ThemeColorPicker: Component<ThemeColorPickerProps> = (props) => {
     setThemeColor(h, s);
   };
 
-  const GRAYSCALE_HUES: { label: string; hsl: [number, number, number] }[] = [
-    { label: "White", hsl: [0, 0, 100] },
-    { label: "Light gray", hsl: [0, 0, 80] },
-    { label: "Gray", hsl: [0, 0, 60] },
-    { label: "Dark gray", hsl: [0, 0, 40] },
-    { label: "Charcoal", hsl: [0, 0, 20] },
-    { label: "Black", hsl: [0, 0, 0] },
+  const GRAYSCALE_SWATCHES = [
+    { label: "White", lightness: 10 },
+    { label: "Light gray", lightness: 5 },
+    { label: "Gray", lightness: 0 },
+    { label: "Dark gray", lightness: -5 },
+    { label: "Charcoal", lightness: -10 },
+    { label: "Black", lightness: -15 },
   ];
 
-  const handleGrayscale = (hsl: [number, number, number]) => {
-    setThemeColor(null, 100);
+  const handleGrayscale = (lightnessOffset: number) => {
+    store().setHueShift(0, 0, lightnessOffset);
+    local.onColorChange?.(0, 0);
   };
 
   createEffect(() => {
@@ -173,13 +174,13 @@ const ThemeColorPicker: Component<ThemeColorPickerProps> = (props) => {
                 </div>
 
                 <div class="flex flex-col gap-1.5">
-                  {GRAYSCALE_HUES.map((g) => (
+                  {GRAYSCALE_SWATCHES.map((g, i) => (
                     <button
                       type="button"
                       class="h-6 w-6 rounded-full border border-white/20 transition-transform hover:scale-110"
-                      style={{ "background-color": `hsl(${g.hsl[0]}, ${g.hsl[1]}%, ${g.hsl[2]}%)` }}
+                      style={{ "background-color": `oklch(${[95, 80, 60, 40, 25, 5][i]}% 0 0)` }}
                       aria-label={g.label}
-                      onClick={() => handleGrayscale(g.hsl)}
+                      onClick={() => handleGrayscale(g.lightness)}
                     />
                   ))}
                 </div>

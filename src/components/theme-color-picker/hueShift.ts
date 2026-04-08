@@ -213,19 +213,21 @@ function getResolvedTheme(): "light" | "dark" {
   return window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
 }
 
-function applyHueShift(targetHue: number, saturation: number = 100) {
+function applyHueShift(targetHue: number, saturation: number = 100, lightnessOffset: number = 0) {
   if (!checkCspAllowsInlineStyles()) return;
 
   const root = document.documentElement;
   const oklchHue = hslHueToOklchHue(targetHue);
-  const chromaScale = MIN_CHROMA_SCALE + (1 - MIN_CHROMA_SCALE) * (saturation / 100);
+  const chromaScale = saturation === 0 ? 0 : MIN_CHROMA_SCALE + (1 - MIN_CHROMA_SCALE) * (saturation / 100);
   const resolvedTheme = getResolvedTheme();
+
+  const clampL = (l: number) => Math.max(0, Math.min(100, l + lightnessOffset));
 
   // Set PRIMARY colors
   const primarySettings = PRIMARY_SETTINGS[resolvedTheme];
   for (const [varName, settings] of Object.entries(primarySettings)) {
     const scaledChroma = settings.c * chromaScale;
-    root.style.setProperty(varName, toOklch(settings.l, scaledChroma, oklchHue));
+    root.style.setProperty(varName, toOklch(clampL(settings.l), scaledChroma, oklchHue));
   }
 
   // Set HARMONY colors
@@ -238,7 +240,7 @@ function applyHueShift(targetHue: number, saturation: number = 100) {
       hue = oklchHue + HARMONY_OFFSETS.accent;
     }
     const scaledChroma = settings.c * chromaScale;
-    root.style.setProperty(varName, toOklch(settings.l, scaledChroma, hue));
+    root.style.setProperty(varName, toOklch(clampL(settings.l), scaledChroma, hue));
   }
 
   // Set SEMANTIC colors
@@ -251,9 +253,9 @@ function applyHueShift(targetHue: number, saturation: number = 100) {
     else if (varName.includes("info")) baseHue = SEMANTIC_BASE_HUES.info;
 
     const tintedHue = getTintedHue(baseHue, oklchHue);
-    const semanticChromaScale = MIN_CHROMA_SCALE + (1 - MIN_CHROMA_SCALE) * Math.sqrt(saturation / 100);
+    const semanticChromaScale = saturation === 0 ? 0 : MIN_CHROMA_SCALE + (1 - MIN_CHROMA_SCALE) * Math.sqrt(saturation / 100);
     const scaledChroma = settings.c * semanticChromaScale;
-    root.style.setProperty(varName, toOklch(settings.l, scaledChroma, tintedHue));
+    root.style.setProperty(varName, toOklch(clampL(settings.l), scaledChroma, tintedHue));
   }
 
   // Shift gradient colors
@@ -269,7 +271,7 @@ function applyHueShift(targetHue: number, saturation: number = 100) {
   for (const [varName, color] of Object.entries(baseColors)) {
     const baseChroma = Math.max(color.c, BASE_CHROMA_BOOST);
     const scaledChroma = baseChroma * chromaScale;
-    const shifted = toOklch(color.l, scaledChroma, oklchHue);
+    const shifted = toOklch(clampL(color.l), scaledChroma, oklchHue);
     root.style.setProperty(varName, shifted);
   }
 
@@ -277,7 +279,7 @@ function applyHueShift(targetHue: number, saturation: number = 100) {
   const nfAccentSettings = NF_ACCENT_SETTINGS[resolvedTheme];
   for (const [varName, settings] of Object.entries(nfAccentSettings)) {
     const scaledChroma = settings.c * chromaScale;
-    root.style.setProperty(varName, toOklch(settings.l, scaledChroma, oklchHue));
+    root.style.setProperty(varName, toOklch(clampL(settings.l), scaledChroma, oklchHue));
   }
 }
 
@@ -308,7 +310,8 @@ function resetHueShift() {
 export interface HueShiftStore {
   hueShift: () => number | null;
   hueSaturation: () => number;
-  setHueShift: (hue: number | null, saturation?: number) => void;
+  hueLightness: () => number;
+  setHueShift: (hue: number | null, saturation?: number, lightness?: number) => void;
   isAvailable: () => boolean;
 }
 
@@ -319,6 +322,7 @@ export interface HueShiftStore {
 export function createHueShiftStore(storagePrefix: string): HueShiftStore {
   const STORAGE_KEY = `${storagePrefix}_hue_shift`;
   const STORAGE_KEY_SAT = `${storagePrefix}_hue_saturation`;
+  const STORAGE_KEY_LIT = `${storagePrefix}_hue_lightness`;
 
   const getInitialHueShift = (): number | null => {
     if (typeof window === "undefined") return null;
@@ -340,23 +344,37 @@ export function createHueShiftStore(storagePrefix: string): HueShiftStore {
     return 100;
   };
 
+  const getInitialLightness = (): number => {
+    if (typeof window === "undefined") return 0;
+    const saved = localStorage.getItem(STORAGE_KEY_LIT);
+    if (saved !== null) {
+      const parsed = parseFloat(saved);
+      if (!isNaN(parsed)) return parsed;
+    }
+    return 0;
+  };
+
   const [hueShift, setHueShiftInternal] = createSignal<number | null>(getInitialHueShift());
   const [hueSaturation, setHueSaturationInternal] = createSignal<number>(getInitialSaturation());
+  const [hueLightness, setHueLightnessInternal] = createSignal<number>(getInitialLightness());
 
   // Apply hue shift on changes
   createEffect(() => {
     const shift = hueShift();
     const sat = hueSaturation();
+    const lit = hueLightness();
     if (typeof window === "undefined") return;
 
     if (shift === null) {
       localStorage.removeItem(STORAGE_KEY);
       localStorage.removeItem(STORAGE_KEY_SAT);
+      localStorage.removeItem(STORAGE_KEY_LIT);
       resetHueShift();
     } else {
       localStorage.setItem(STORAGE_KEY, String(shift));
       localStorage.setItem(STORAGE_KEY_SAT, String(sat));
-      applyHueShift(shift, sat);
+      localStorage.setItem(STORAGE_KEY_LIT, String(lit));
+      applyHueShift(shift, sat, lit);
     }
   });
 
@@ -370,8 +388,9 @@ export function createHueShiftStore(storagePrefix: string): HueShiftStore {
         ) {
           const shift = hueShift();
           const sat = hueSaturation();
+          const lit = hueLightness();
           if (shift !== null) {
-            requestAnimationFrame(() => applyHueShift(shift, sat));
+            requestAnimationFrame(() => applyHueShift(shift, sat, lit));
           }
         }
       }
@@ -383,14 +402,16 @@ export function createHueShiftStore(storagePrefix: string): HueShiftStore {
     });
   }
 
-  const setHueShift = (hue: number | null, saturation: number = 100) => {
+  const setHueShift = (hue: number | null, saturation: number = 100, lightness: number = 0) => {
     setHueShiftInternal(hue);
     setHueSaturationInternal(saturation);
+    setHueLightnessInternal(lightness);
   };
 
   return {
     hueShift,
     hueSaturation,
+    hueLightness,
     setHueShift,
     isAvailable: () => checkCspAllowsInlineStyles(),
   };
