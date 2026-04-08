@@ -160,13 +160,13 @@ const GlassPanel = (props: GlassPanelProps): JSX.Element => {
 
       <div
         id={contentId}
-        class={`grid transition-[grid-template-rows,opacity] duration-200 ease-in-out overflow-hidden ${(local.collapsible && !isOpen()) ? "" : contentClasses()}`}
+        class={`grid transition-[grid-template-rows,opacity] duration-200 ease-in-out ${local.collapsible ? "overflow-hidden" : ""} ${(local.collapsible && !isOpen()) ? "" : contentClasses()}`}
         style={{
           "grid-template-rows": (!local.collapsible || isOpen()) ? "1fr" : "0fr",
           opacity: (!local.collapsible || isOpen()) ? "1" : "0",
         }}
       >
-        <div class="overflow-hidden">
+        <div class={local.collapsible ? "overflow-hidden" : ""}>
           {local.children}
         </div>
       </div>
