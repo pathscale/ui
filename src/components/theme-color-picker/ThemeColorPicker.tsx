@@ -3,10 +3,8 @@ import { twMerge } from "tailwind-merge";
 import { clsx } from "clsx";
 import type { ColorValue, ColorPickerContextType, ColorFormat } from "../colorpicker";
 import { ColorPickerContext, ColorWheelFlower } from "../colorpicker";
-import { createColorFromHsl, parseColor } from "../colorpicker/ColorUtils";
+import { createColorFromHsl } from "../colorpicker/ColorUtils";
 import Button from "../button";
-import ColorField from "../color-field";
-import ColorSlider from "../color-slider";
 import Icon from "../icon";
 import type { IComponentBaseProps } from "../types";
 import { createHueShiftStore, type HueShiftStore } from "./hueShift";
@@ -87,15 +85,17 @@ const ThemeColorPicker: Component<ThemeColorPickerProps> = (props) => {
     setThemeColor(h, s);
   };
 
-  const handleHueChange = (hue: number) => {
-    const saturation = store().hueShift() === null ? 100 : store().hueSaturation();
-    setThemeColor(hue, saturation);
-  };
+  const GRAYSCALE_HUES: { label: string; hsl: [number, number, number] }[] = [
+    { label: "White", hsl: [0, 0, 100] },
+    { label: "Light gray", hsl: [0, 0, 80] },
+    { label: "Gray", hsl: [0, 0, 60] },
+    { label: "Dark gray", hsl: [0, 0, 40] },
+    { label: "Charcoal", hsl: [0, 0, 20] },
+    { label: "Black", hsl: [0, 0, 0] },
+  ];
 
-  const handleFieldChange = (value: string) => {
-    const parsed = parseColor(value);
-    if (!parsed) return;
-    handleColorChange(parsed);
+  const handleGrayscale = (hsl: [number, number, number]) => {
+    setThemeColor(null, 100);
   };
 
   createEffect(() => {
@@ -165,27 +165,24 @@ const ThemeColorPicker: Component<ThemeColorPickerProps> = (props) => {
         </Button>
 
         <Show when={isOpen()}>
-          <div class="absolute right-0 z-50 mt-2 w-[248px] rounded-lg border border-base-300 bg-base-100 p-4 shadow-xl">
+          <div class="absolute right-0 z-50 mt-2 rounded-lg bg-base-200/80 p-4 shadow-xl backdrop-blur-sm">
             <ColorPickerContext.Provider value={contextValue()}>
-              <div class="space-y-3">
+              <div class="flex items-center gap-3">
                 <div class="flex justify-center">
                   <ColorWheelFlower class="color-wheel-custom" />
                 </div>
 
-                <ColorSlider
-                  type="hue"
-                  value={colorValue().hsl.h}
-                  onChange={handleHueChange}
-                  aria-label="Theme hue"
-                />
-
-                <ColorField
-                  value={colorValue().hex.toUpperCase()}
-                  format="hex"
-                  onChange={handleFieldChange}
-                  aria-label="Theme color value"
-                  fullWidth
-                />
+                <div class="flex flex-col gap-1.5">
+                  {GRAYSCALE_HUES.map((g) => (
+                    <button
+                      type="button"
+                      class="h-6 w-6 rounded-full border border-white/20 transition-transform hover:scale-110"
+                      style={{ "background-color": `hsl(${g.hsl[0]}, ${g.hsl[1]}%, ${g.hsl[2]}%)` }}
+                      aria-label={g.label}
+                      onClick={() => handleGrayscale(g.hsl)}
+                    />
+                  ))}
+                </div>
               </div>
             </ColorPickerContext.Provider>
           </div>
