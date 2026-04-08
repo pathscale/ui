@@ -28,14 +28,14 @@ import {
 } from "@tanstack/solid-table";
 import clsx from "clsx";
 import Checkbox from "../checkbox/Checkbox";
-import Table, { type TableProps } from "./Table";
+import Table, { type TableRootProps } from "./Table";
 import Button from "../button/Button";
 import Input from "../input/Input";
 import Dropdown from "../dropdown/Dropdown";
 import Loading from "../loading/Loading";
 import Menu from "../menu/Menu";
 
-export type EnhancedTableProps<TData> = Omit<TableProps, "children"> & {
+export type EnhancedTableProps<TData> = Omit<TableRootProps, "children"> & {
   data: TData[];
   columns: ColumnDef<TData, any>[];
   sorting?: Accessor<SortingState>;
@@ -420,28 +420,25 @@ function EnhancedTable<TData>(props: EnhancedTableProps<TData>): JSX.Element {
 
   return (
     <>
-      <div class="enhanced-table-root flex h-full min-h-0 w-full flex-col">
-        <div class="enhanced-table-scroll flex-1 min-h-0 overflow-y-auto overflow-x-auto">
-          <Table
-            {...tableProps}
-            class={clsx(tableProps.class, "table-auto")}
-          >
-            <Table.Head noCell>
+      <Table {...tableProps}>
+        <Table.ScrollContainer class="flex-1 min-h-0 overflow-y-auto">
+          <Table.Content class={clsx(tableProps.class, "table-auto")}>
+            <Table.Header>
               <For each={headerGroups()}>
                 {(hg) => (
                   <Table.Row>
                     <Show when={local.expandable}>
-                      <Table.HeadCell class="w-6" />
+                      <Table.Column class="w-6" />
                     </Show>
 
                     <Show when={local.enableRowSelection}>
-                      <Table.HeadCell class="w-8">
+                      <Table.Column class="w-8">
                         <Checkbox
                           checked={table.getIsAllPageRowsSelected()}
                           indeterminate={table.getIsSomePageRowsSelected()}
                           onChange={table.getToggleAllPageRowsSelectedHandler()}
                         />
-                      </Table.HeadCell>
+                      </Table.Column>
                     </Show>
 
                     <For each={hg.headers}>
@@ -457,7 +454,7 @@ function EnhancedTable<TData>(props: EnhancedTableProps<TData>): JSX.Element {
                           header.column.getCanFilter();
 
                         return (
-                          <Table.HeadCell
+                          <Table.Column
                             class={
                               canSort
                                 ? "relative cursor-pointer select-none"
@@ -498,14 +495,14 @@ function EnhancedTable<TData>(props: EnhancedTableProps<TData>): JSX.Element {
                                 <FilterPanel column={header.column} />
                               </Show>
                             </div>
-                          </Table.HeadCell>
+                          </Table.Column>
                         );
                       }}
                     </For>
                   </Table.Row>
                 )}
               </For>
-            </Table.Head>
+            </Table.Header>
 
             <Table.Body>
               {local.loading ? (
@@ -584,89 +581,87 @@ function EnhancedTable<TData>(props: EnhancedTableProps<TData>): JSX.Element {
                 </For>
               )}
             </Table.Body>
-          </Table>
-        </div>
+          </Table.Content>
+        </Table.ScrollContainer>
         <Show when={shouldShowPagination()}>
-          <div class="enhanced-table-footer shrink-0 border-t border-base-300">
-            <div class="px-4 py-3">
-              <div
-                class={clsx(
-                  "flex items-center w-full",
-                  local.paginationPosition === "bottomLeft" && "justify-start",
-                  local.paginationPosition === "bottomCenter" &&
-                    "justify-center",
-                  local.paginationPosition === "bottomRight" && "justify-end",
-                )}
-              >
-                <div class="flex items-center gap-2">
-                  <span class="opacity-70">Rows per page</span>
+          <Table.Footer>
+            <div
+              class={clsx(
+                "flex items-center w-full",
+                local.paginationPosition === "bottomLeft" && "justify-start",
+                local.paginationPosition === "bottomCenter" &&
+                  "justify-center",
+                local.paginationPosition === "bottomRight" && "justify-end",
+              )}
+            >
+              <div class="flex items-center gap-2">
+                <span class="opacity-70">Rows per page</span>
+                <Button
+                  size="sm"
+                  variant="ghost"
+                  aria-haspopup="menu"
+                  aria-expanded={pageSizeMenuOpen()}
+                  onClick={(event) => {
+                    event.stopPropagation();
+                    togglePageSizeMenu();
+                  }}
+                  ref={(el) => {
+                    pageSizeToggleRef = el as HTMLButtonElement;
+                  }}
+                >
+                  {table.getState().pagination.pageSize}
+                </Button>
+              </div>
+              <div class="flex items-center gap-3 ml-4">
+                <span class="opacity-70">
+                  Page {table.getState().pagination.pageIndex + 1} of{" "}
+                  {table.getPageCount() || 1}
+                </span>
+                <div class="join">
                   <Button
                     size="sm"
                     variant="ghost"
-                    aria-haspopup="menu"
-                    aria-expanded={pageSizeMenuOpen()}
-                    onClick={(event) => {
-                      event.stopPropagation();
-                      togglePageSizeMenu();
-                    }}
-                    ref={(el) => {
-                      pageSizeToggleRef = el as HTMLButtonElement;
-                    }}
+                    class="join-item"
+                    isDisabled={!table.getCanPreviousPage()}
+                    onClick={() => table.setPageIndex(0)}
                   >
-                    {table.getState().pagination.pageSize}
+                    {local.firstPageIcon ?? "|<<"}
                   </Button>
-                </div>
-                <div class="flex items-center gap-3 ml-4">
-                  <span class="opacity-70">
-                    Page {table.getState().pagination.pageIndex + 1} of{" "}
-                    {table.getPageCount() || 1}
-                  </span>
-                  <div class="join">
-                    <Button
-                      size="sm"
-                      variant="ghost"
-                      class="join-item"
-                      isDisabled={!table.getCanPreviousPage()}
-                      onClick={() => table.setPageIndex(0)}
-                    >
-                      {local.firstPageIcon ?? "|<<"}
-                    </Button>
-                    <Button
-                      size="sm"
-                      variant="ghost"
-                      class="join-item"
-                      isDisabled={!table.getCanPreviousPage()}
-                      onClick={() => table.previousPage()}
-                    >
-                      {local.prevPageIcon ?? "<<"}
-                    </Button>
-                    <Button
-                      size="sm"
-                      variant="ghost"
-                      class="join-item"
-                      isDisabled={!table.getCanNextPage()}
-                      onClick={() => table.nextPage()}
-                    >
-                      {local.nextPageIcon ?? ">>"}
-                    </Button>
-                    <Button
-                      size="sm"
-                      variant="ghost"
-                      class="join-item"
-                      isDisabled={!table.getCanNextPage()}
-                      onClick={() =>
-                        table.setPageIndex(table.getPageCount() - 1)
-                      }
-                    >
-                      {local.lastPageIcon ?? ">>|"}
-                    </Button>
-                  </div>
+                  <Button
+                    size="sm"
+                    variant="ghost"
+                    class="join-item"
+                    isDisabled={!table.getCanPreviousPage()}
+                    onClick={() => table.previousPage()}
+                  >
+                    {local.prevPageIcon ?? "<<"}
+                  </Button>
+                  <Button
+                    size="sm"
+                    variant="ghost"
+                    class="join-item"
+                    isDisabled={!table.getCanNextPage()}
+                    onClick={() => table.nextPage()}
+                  >
+                    {local.nextPageIcon ?? ">>"}
+                  </Button>
+                  <Button
+                    size="sm"
+                    variant="ghost"
+                    class="join-item"
+                    isDisabled={!table.getCanNextPage()}
+                    onClick={() =>
+                      table.setPageIndex(table.getPageCount() - 1)
+                    }
+                  >
+                    {local.lastPageIcon ?? ">>|"}
+                  </Button>
                 </div>
               </div>
             </div>
-          </div>
+          </Table.Footer>
         </Show>
-      </div>
+      </Table>
       <Show when={pageSizeMenuOpen()}>
         <Portal mount={ensurePortalRoot()}>
           <Menu

@@ -1,7 +1,7 @@
 import { For, createEffect, createMemo, splitProps, createSignal, Show } from "solid-js";
 import { twMerge } from "tailwind-merge";
 import Table from "../table";
-import type { TableProps } from "../table";
+import type { TableRootProps } from "../table";
 import Button from "../button";
 import Icon from "../icon";
 import Pagination from "../pagination";
@@ -39,7 +39,7 @@ export type StreamingTableProps<TData> = {
   enableSorting?: boolean;
   /** Initial sorting state (default: null) */
   initialSorting?: SortingState;
-} & Omit<TableProps, "children">;
+} & Omit<TableRootProps, "children">;
 
 const StreamingTable = <TData,>(props: StreamingTableProps<TData>) => {
   const [local, tableProps] = splitProps(props, [
@@ -402,26 +402,30 @@ const StreamingTable = <TData,>(props: StreamingTableProps<TData>) => {
   return (
     <div class={twMerge(local.class, local.className)}>
       <Table {...tableProps}>
-        <Table.Head>
-          <For each={local.columns}>
-            {(col, index) => {
-              const isSortable = local.enableSorting && col.enableSorting !== false;
+        <Table.ScrollContainer>
+          <Table.Content>
+            <Table.Header>
+              <Table.Row>
+                <For each={local.columns}>
+                  {(col, index) => {
+                    const isSortable = local.enableSorting && col.enableSorting !== false;
 
-              return (
-                <Table.HeadCell>
-                  <div
-                    class={isSortable ? "flex items-center gap-2 cursor-pointer select-none" : ""}
-                    onClick={() => isSortable && handleSort(col, index())}
-                  >
-                    <span>{col.header}</span>
-                    {renderSortIndicator(col, index())}
-                  </div>
-                </Table.HeadCell>
-              );
-            }}
-          </For>
-        </Table.Head>
-        <tbody>
+                    return (
+                      <Table.Column>
+                        <div
+                          class={isSortable ? "flex items-center gap-2 cursor-pointer select-none" : ""}
+                          onClick={() => isSortable && handleSort(col, index())}
+                        >
+                          <span>{col.header}</span>
+                          {renderSortIndicator(col, index())}
+                        </div>
+                      </Table.Column>
+                    );
+                  }}
+                </For>
+              </Table.Row>
+            </Table.Header>
+            <Table.Body>
           <Show
             when={paginatedRows().length > 0}
             fallback={
@@ -452,7 +456,9 @@ const StreamingTable = <TData,>(props: StreamingTableProps<TData>) => {
               )}
             </For>
           </Show>
-        </tbody>
+            </Table.Body>
+          </Table.Content>
+        </Table.ScrollContainer>
       </Table>
 
       <Show when={enablePagination && totalPages() > 0}>

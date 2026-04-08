@@ -1,148 +1,282 @@
+/* ==========================================================================
+   Table — HeroUI-style data display component for structured tabular data.
+   ========================================================================== */
+
 @layer components {
-  .table {
-      font-size: 0.875rem;
-      position: relative;
-      width: 100%;
-      border-collapse: separate;
-      --tw-border-spacing-x: calc(0.25rem * 0);
-      --tw-border-spacing-y: calc(0.25rem * 0);
-      border-spacing: var(--tw-border-spacing-x) var(--tw-border-spacing-y);
-      border-radius: var(--radius-box);
-      text-align: left;
-    }
+  /* --------------------------------------------------------------------------
+     Table Root — Outer container for table + optional footer.
+     -------------------------------------------------------------------------- */
+  .table-root {
+    position: relative;
+    display: grid;
+    width: 100%;
+    overflow: clip;
+    grid-template-columns: minmax(0, 1fr);
+  }
 
-  .table:where(:dir(rtl), [dir="rtl"], [dir="rtl"] *) {
-      text-align: right;
-    }
+  .table-root--primary {
+    background-color: var(--color-base-200);
+    padding-inline: 0.25rem;
+    padding-bottom: 0.25rem;
+    border-radius: calc(var(--radius-box, 1rem) * 1.25);
+  }
 
-  @media (hover: hover) {
-    .table tr.row-hover:hover,
-    .table tr.row-hover:nth-child(even):hover {
-      background-color: var(--color-base-200);
-    }
-    }
+  /* --------------------------------------------------------------------------
+     Scroll Container
+     -------------------------------------------------------------------------- */
+  .table__scroll-container {
+    overflow-x: auto;
+    scrollbar-width: thin;
+    scrollbar-color: oklch(0% 0 0 / 0.15) transparent;
+  }
 
-  .table :where(th, td) {
-      padding-inline: calc(0.25rem * 4);
-      padding-block: calc(0.25rem * 3);
-      vertical-align: middle;
-    }
+  .table__scroll-container::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
 
-  .table :where(thead, tfoot) {
-      white-space: nowrap;
-      color: var(--color-base-content);
-      font-size: 0.875rem;
-      font-weight: 600;
-    }
+  .table__scroll-container::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  .table__scroll-container::-webkit-scrollbar-thumb {
+    background: oklch(0% 0 0 / 0.15);
+    border-radius: 3px;
+  }
+
+  :is([data-theme="dark"], .dark) .table__scroll-container {
+    scrollbar-color: oklch(100% 0 0 / 0.15) transparent;
+  }
+
+  :is([data-theme="dark"], .dark) .table__scroll-container::-webkit-scrollbar-thumb {
+    background: oklch(100% 0 0 / 0.15);
+  }
+
+  /* --------------------------------------------------------------------------
+     Table Content (<table>)
+     -------------------------------------------------------------------------- */
+  .table__content {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    font-size: 0.875rem;
+    text-align: left;
+  }
+
+  .table__content:where(:dir(rtl), [dir="rtl"], [dir="rtl"] *) {
+    text-align: right;
+  }
+
+  .table-root--primary .table__content {
+    overflow: clip;
+  }
+
+  /* --------------------------------------------------------------------------
+     Table Header (<thead>)
+     -------------------------------------------------------------------------- */
+  .table__header {
+    background-color: var(--color-base-200);
+  }
 
   @supports (color: color-mix(in lab, red, red)) {
-    .table :where(thead, tfoot) {
+    .table__header {
+      border-bottom: 1px solid color-mix(in oklch, var(--color-base-content) 8%, transparent);
+    }
+  }
+
+  .table-root--secondary .table__header {
+    border-bottom: 0;
+    background: transparent;
+  }
+
+  .table-root--secondary .table__column {
+    background-color: var(--color-base-200);
+  }
+
+  .table-root--secondary .table__column:first-child {
+    border-top-left-radius: 1rem;
+    border-bottom-left-radius: 1rem;
+  }
+
+  .table-root--secondary .table__column:last-child {
+    border-top-right-radius: 1rem;
+    border-bottom-right-radius: 1rem;
+  }
+
+  .table-root--secondary .table__body tr:first-child td:first-child,
+  .table-root--secondary .table__body tr:first-child td:last-child,
+  .table-root--secondary .table__body tr:last-child td:first-child,
+  .table-root--secondary .table__body tr:last-child td:last-child {
+    border-radius: 0;
+  }
+
+  .table-root--secondary .table__row .table__cell {
+    background-color: transparent;
+  }
+
+  @supports (color: color-mix(in lab, red, red)) {
+    .table-root--secondary .table__row .table__cell {
+      border-bottom: 1px solid color-mix(in oklch, var(--color-base-content) 5%, transparent);
+    }
+  }
+
+  @media (hover: hover) {
+    .table-root--secondary .table__row:hover .table__cell {
+      background-color: var(--color-base-200);
+    }
+
+    .table-root--secondary .table__row:hover .table__cell:first-child {
+      border-top-left-radius: 1rem;
+      border-bottom-left-radius: 1rem;
+    }
+
+    .table-root--secondary .table__row:hover .table__cell:last-child {
+      border-top-right-radius: 1rem;
+      border-bottom-right-radius: 1rem;
+    }
+  }
+
+  /* --------------------------------------------------------------------------
+     Table Column (<th>)
+     -------------------------------------------------------------------------- */
+  .table__column {
+    position: relative;
+    padding-inline: 1rem;
+    padding-block: 0.625rem;
+    text-align: left;
+    font-size: 0.75rem;
+    font-weight: 500;
+    white-space: nowrap;
+    vertical-align: middle;
+  }
+
+  @supports (color: color-mix(in lab, red, red)) {
+    .table__column {
       color: color-mix(in oklab, var(--color-base-content) 60%, transparent);
     }
-    }
+  }
 
-  .table :where(tfoot tr:first-child :is(td, th)) {
-      border-top: var(--border) solid var(--color-base-content);
-    }
-
-  @supports (color: color-mix(in lab, red, red)) {
-    .table :where(tfoot tr:first-child :is(td, th)) {
-      border-top: var(--border) solid color-mix(in oklch, var(--color-base-content) 5%, #0000);
-    }
-    }
-
-  .table :where(.table-pin-rows thead tr) {
-      position: sticky;
-      top: calc(0.25rem * 0);
-      z-index: 1;
-      background-color: var(--color-base-100);
-    }
-
-  .table :where(.table-pin-rows tfoot tr) {
-      position: sticky;
-      bottom: calc(0.25rem * 0);
-      z-index: 1;
-      background-color: var(--color-base-100);
-    }
-
-  .table :where(.table-pin-cols tr th) {
-      position: sticky;
-      right: calc(0.25rem * 0);
-      left: calc(0.25rem * 0);
-      background-color: var(--color-base-100);
-    }
-
-  .table :where(thead tr :is(td, th), tbody tr:not(:last-child) :is(td, th)) {
-      border-bottom: var(--border) solid var(--color-base-content);
-    }
+  .table__column::after {
+    content: "";
+    position: absolute;
+    top: 50%;
+    right: 0;
+    height: 1rem;
+    width: 1px;
+    transform: translateY(-50%);
+    border-radius: 1px;
+  }
 
   @supports (color: color-mix(in lab, red, red)) {
-    .table :where(thead tr :is(td, th), tbody tr:not(:last-child) :is(td, th)) {
-      border-bottom: var(--border) solid color-mix(in oklch, var(--color-base-content) 5%, #0000);
+    .table__column::after {
+      background-color: color-mix(in oklch, var(--color-base-content) 10%, transparent);
     }
-    }
+  }
 
-  .table {
-      display: table;
-    }
+  .table__column:last-child:not(:only-child)::after {
+    content: none;
+  }
 
-  .table-zebra tbody tr:where(:nth-child(even)) {
-      background-color: var(--color-base-200);
-    }
-
-  .table-zebra tbody tr:where(:nth-child(even)) :where(.table-pin-cols tr th) {
-      background-color: var(--color-base-200);
-    }
+  .table__column[data-allows-sorting="true"] {
+    cursor: pointer;
+  }
 
   @media (hover: hover) {
-    .table-zebra tbody tr.row-hover:hover,
-    .table-zebra tbody tr.row-hover:where(:nth-child(even)):hover {
-      background-color: var(--color-base-300);
+    .table__column[data-allows-sorting="true"]:hover {
+      color: var(--color-base-content);
     }
-    }
+  }
 
-  .table-lg :not(thead, tfoot) tr {
-      font-size: 1.125rem;
-    }
+  .table__column:focus-visible {
+    border-radius: 0.5rem;
+    outline: none;
+    box-shadow: inset 0 0 0 2px var(--color-accent);
+  }
 
-  .table-lg :where(th, td) {
-      padding-inline: calc(0.25rem * 5);
-      padding-block: calc(0.25rem * 4);
-    }
+  /* --------------------------------------------------------------------------
+     Table Body (<tbody>)
+     -------------------------------------------------------------------------- */
+  .table__body tr:first-child td:first-child {
+    border-top-left-radius: 1rem;
+  }
 
-  .table-md :not(thead, tfoot) tr {
-      font-size: 0.875rem;
-    }
+  .table__body tr:first-child td:last-child {
+    border-top-right-radius: 1rem;
+  }
 
-  .table-md :where(th, td) {
-      padding-inline: calc(0.25rem * 4);
-      padding-block: calc(0.25rem * 3);
-    }
+  .table__body tr:last-child td:first-child {
+    border-bottom-left-radius: 1rem;
+  }
 
-  .table-sm :not(thead, tfoot) tr {
-      font-size: 0.75rem;
-    }
+  .table__body tr:last-child td:last-child {
+    border-bottom-right-radius: 1rem;
+  }
 
-  .table-sm :where(th, td) {
-      padding-inline: calc(0.25rem * 3);
-      padding-block: calc(0.25rem * 2);
-    }
+  /* --------------------------------------------------------------------------
+     Table Row (<tr>)
+     -------------------------------------------------------------------------- */
+  .table__row {
+    position: relative;
+    height: 100%;
+  }
 
-  .table-xl :not(thead, tfoot) tr {
-      font-size: 1.375rem;
+  @media (hover: hover) {
+    .table__row:hover .table__cell {
+      background-color: var(--color-base-200);
     }
+  }
 
-  .table-xl :where(th, td) {
-      padding-inline: calc(0.25rem * 6);
-      padding-block: calc(0.25rem * 5);
-    }
+  .table__row[data-selected="true"] .table__cell {
+    background-color: var(--color-base-200);
+  }
 
-  .table-xs :not(thead, tfoot) tr {
-      font-size: 0.6875rem;
-    }
+  .table__row[aria-disabled="true"],
+  .table__row[data-disabled="true"] {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
 
-  .table-xs :where(th, td) {
-      padding-inline: calc(0.25rem * 2);
-      padding-block: calc(0.25rem * 1);
+  .table__row:focus-visible {
+    outline: none;
+    box-shadow: inset 0 0 0 2px var(--color-accent);
+  }
+
+  /* --------------------------------------------------------------------------
+     Table Cell (<td>)
+     -------------------------------------------------------------------------- */
+  .table__cell {
+    height: 100%;
+    background-color: var(--color-base-100);
+    padding-inline: 1rem;
+    padding-block: 0.75rem;
+    vertical-align: middle;
+    font-size: 0.875rem;
+    color: var(--color-base-content);
+  }
+
+  @supports (color: color-mix(in lab, red, red)) {
+    .table__cell {
+      border-bottom: 1px solid color-mix(in oklch, var(--color-base-content) 5%, transparent);
     }
+  }
+
+  .table__body tr:last-child .table__cell {
+    border-bottom: none;
+  }
+
+  .table__cell:focus-visible {
+    border-radius: 0.5rem;
+    outline: none;
+    box-shadow: inset 0 0 0 2px var(--color-accent);
+  }
+
+  /* --------------------------------------------------------------------------
+     Table Footer (div outside <table>)
+     -------------------------------------------------------------------------- */
+  .table__footer {
+    display: flex;
+    align-items: center;
+    padding-inline: 1rem;
+    padding-block: 0.625rem;
+  }
 }
