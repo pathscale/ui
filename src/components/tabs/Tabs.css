@@ -51,6 +51,7 @@
     border-radius: 1.5rem;
     padding-inline: 1rem;
     text-align: center;
+    white-space: nowrap;
     font-size: 0.875rem;
     font-weight: 500;
     color: var(--color-base-content);
