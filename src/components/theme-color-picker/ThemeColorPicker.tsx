@@ -96,7 +96,7 @@ const ThemeColorPicker: Component<ThemeColorPickerProps> = (props) => {
 
   const handleGrayscale = (lightnessOffset: number) => {
     store().setHueShift(0, 0, lightnessOffset);
-    local.onColorChange?.(0, 0);
+    local.onColorChange?.(null, 0);
   };
 
   createEffect(() => {
