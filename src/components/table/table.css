@@ -18,7 +18,7 @@
     background-color: var(--color-base-200);
     padding-inline: 0.25rem;
     padding-bottom: 0.25rem;
-    border-radius: var(--radius-box, 0.75rem);
+    border-radius: 0.75rem;
   }
 
   /* --------------------------------------------------------------------------
