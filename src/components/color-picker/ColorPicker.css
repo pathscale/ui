@@ -1,0 +1,23 @@
+@layer components {
+  .color-picker {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    width: fit-content;
+    min-width: 14rem;
+    max-width: 100%;
+  }
+
+  .color-picker[data-disabled="true"] {
+    opacity: 0.9;
+  }
+
+  .color-picker__area {
+    width: 100%;
+    max-width: 14rem;
+  }
+
+  .color-picker__field {
+    width: 100%;
+  }
+}

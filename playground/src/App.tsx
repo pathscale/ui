@@ -12,6 +12,7 @@ import {
   Checkbox,
   ColorArea,
   ColorField,
+  ColorPicker,
   Drawer,
   FloatingDock,
   Dropdown,
@@ -100,6 +101,7 @@ export default function App() {
   const [checkedTerms, setCheckedTerms] = createSignal(false);
   const [colorAreaValue, setColorAreaValue] = createSignal({ h: 210, s: 75, v: 80 });
   const [colorFieldValue, setColorFieldValue] = createSignal("#3B82F6");
+  const [colorPickerValue, setColorPickerValue] = createSignal("#3B82F6");
   const [toggleOn, setToggleOn] = createSignal(false);
   const [sliderVal, setSliderVal] = createSignal(30);
   const [sliderSm, setSliderSm] = createSignal(50);
@@ -1416,6 +1418,29 @@ export default function App() {
                 <ColorField defaultValue="hsl(217, 91%, 60%)" format="hsl" />
                 <ColorField value="#9CA3AF" isDisabled format="hex" />
               </div>
+            </div>
+          </div>
+        </section>
+
+        <section class="space-y-4 rounded-xl border border-base-300 bg-base-200 p-4">
+          <div>
+            <h2 class="text-sm font-semibold">ColorPicker</h2>
+            <p class="text-xs opacity-70">Composed color selection with synced area and field.</p>
+          </div>
+
+          <div class="grid gap-6 md:grid-cols-2">
+            <div class="space-y-3">
+              <h3 class="text-xs font-semibold uppercase opacity-70">Controlled</h3>
+              <ColorPicker value={colorPickerValue()} onChange={setColorPickerValue} />
+              <p class="text-xs opacity-70">Current: {colorPickerValue()}</p>
+            </div>
+
+            <div class="space-y-3">
+              <h3 class="text-xs font-semibold uppercase opacity-70">Custom Composition</h3>
+              <ColorPicker defaultValue="#EF4444">
+                <ColorPicker.Area />
+                <ColorPicker.Field format="rgb" />
+              </ColorPicker>
             </div>
           </div>
         </section>

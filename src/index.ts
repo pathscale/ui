@@ -25,7 +25,9 @@ export { default as ColorArea } from "./components/color-area";
 export type { ColorAreaProps, ColorAreaValue } from "./components/color-area";
 export { default as ColorField } from "./components/color-field";
 export type { ColorFieldProps, ColorFieldFormat } from "./components/color-field";
-export { default as ColorPicker } from "./components/colorpicker";
+export { default as ColorPicker } from "./components/color-picker";
+export type { ColorPickerProps, ColorPickerAreaProps, ColorPickerFieldProps } from "./components/color-picker";
+export { default as LegacyColorPicker } from "./components/colorpicker";
 export {
   AlphaSlider,
   ColorInput,
@@ -47,8 +49,8 @@ export type {
   ColorFormat,
   ColorInputProps,
   ColorPickerContextType,
-  ColorPickerMode,
-  ColorPickerProps,
+  ColorPickerMode as LegacyColorPickerMode,
+  ColorPickerProps as LegacyColorPickerProps,
   ColorPreviewProps,
   ColorSwatchesProps,
   ColorValue,
