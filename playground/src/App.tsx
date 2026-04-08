@@ -10,6 +10,7 @@ import {
   Progress,
   Skeleton,
   Checkbox,
+  ColorArea,
   Drawer,
   FloatingDock,
   Dropdown,
@@ -96,6 +97,7 @@ const ALERT_STATUSES = [
 export default function App() {
   const [selectedFramework, setSelectedFramework] = createSignal("solid");
   const [checkedTerms, setCheckedTerms] = createSignal(false);
+  const [colorAreaValue, setColorAreaValue] = createSignal({ h: 210, s: 75, v: 80 });
   const [toggleOn, setToggleOn] = createSignal(false);
   const [sliderVal, setSliderVal] = createSignal(30);
   const [sliderSm, setSliderSm] = createSignal(50);
@@ -1361,6 +1363,28 @@ export default function App() {
                   <Button size="sm" variant="secondary">Clear filters</Button>
                 </EmptyState.Actions>
               </EmptyState>
+            </div>
+          </div>
+        </section>
+
+        <section class="space-y-4 rounded-xl border border-base-300 bg-base-200 p-4">
+          <div>
+            <h2 class="text-sm font-semibold">ColorArea</h2>
+            <p class="text-xs opacity-70">HSV saturation/brightness area with pointer and keyboard interaction.</p>
+          </div>
+
+          <div class="grid gap-6 md:grid-cols-2">
+            <div class="space-y-3">
+              <h3 class="text-xs font-semibold uppercase opacity-70">Controlled</h3>
+              <ColorArea value={colorAreaValue()} onChange={setColorAreaValue} />
+              <p class="text-xs opacity-70">
+                H {Math.round(colorAreaValue().h)} S {Math.round(colorAreaValue().s)} V {Math.round(colorAreaValue().v)}
+              </p>
+            </div>
+
+            <div class="space-y-3">
+              <h3 class="text-xs font-semibold uppercase opacity-70">Disabled</h3>
+              <ColorArea value={{ h: 40, s: 70, v: 85 }} isDisabled />
             </div>
           </div>
         </section>
