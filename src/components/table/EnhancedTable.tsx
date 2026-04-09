@@ -12,13 +12,7 @@ import {
 } from "solid-js";
 import { Portal } from "solid-js/web";
 import {
-  createSolidTable,
   flexRender,
-  getCoreRowModel,
-  getSortedRowModel,
-  getFilteredRowModel,
-  getPaginationRowModel,
-  getExpandedRowModel,
   type ColumnDef,
   type SortingState,
   type ColumnFiltersState,
@@ -28,12 +22,21 @@ import {
 } from "@tanstack/solid-table";
 import clsx from "clsx";
 import Checkbox from "../checkbox/Checkbox";
-import Table, { type TableRootProps, type TableSortDescriptor } from "./Table";
+import Table, { type TableRootProps } from "./Table";
 import Button from "../button/Button";
 import Input from "../input/Input";
 import Dropdown from "../dropdown/Dropdown";
 import Loading from "../loading/Loading";
 import Menu from "../menu/Menu";
+import {
+  useAnchoredOverlayPosition,
+  useTableExpansion,
+  useTableFiltering,
+  useTableModel,
+  useTablePagination,
+  useTableSelection,
+  useTableSorting,
+} from "./hooks";
 
 export type EnhancedTableProps<TData> = Omit<TableRootProps, "children"> & {
   data: TData[];
@@ -112,61 +115,63 @@ function EnhancedTable<TData>(props: EnhancedTableProps<TData>): JSX.Element {
     "lastPageIcon",
   ]);
 
-  const [openFilterFor, setOpenFilterFor] = createSignal<string | null>(null);
   const [pageSizeMenuOpen, setPageSizeMenuOpen] = createSignal(false);
-  const [pageSizeMenuStyle, setPageSizeMenuStyle] = createSignal<JSX.CSSProperties>({
-    position: "fixed",
-    top: "0px",
-    left: "0px",
-    "min-width": "96px",
-    "z-index": 1300,
+
+  const sortingModel = useTableSorting({
+    sorting: local.sorting,
+    setSorting: local.setSorting,
+    initialSorting: [],
   });
 
-  const pageSizeOptions = [10, 25, 50, 100] as const;
+  const paginationModel = useTablePagination({
+    pagination: local.pagination,
+    setPagination: local.setPagination,
+    initialPagination: { pageIndex: 0, pageSize: 10 },
+    pageSizeOptions: [10, 25, 50, 100] as const,
+  });
+
+  const selectionModel = useTableSelection({
+    rowSelection: local.rowSelection,
+    setRowSelection: local.setRowSelection,
+    initialRowSelection: {},
+  });
+
+  const filteringModel = useTableFiltering({
+    columnFilters: local.columnFilters,
+    setColumnFilters: local.setColumnFilters,
+    initialColumnFilters: [],
+    globalFilter: local.globalFilter,
+    setGlobalFilter: local.setGlobalFilter,
+    initialGlobalFilter: "",
+  });
+
+  const expansionModel = useTableExpansion({
+    expanded: local.expanded,
+    setExpanded: local.setExpanded,
+    initialExpanded: {},
+  });
+
   let pageSizeToggleRef: HTMLButtonElement | undefined;
   let pageSizeMenuRef: HTMLUListElement | undefined;
 
-  const table = createSolidTable({
-    get data() {
-      return local.data;
-    },
-    get columns() {
-      return local.columns;
-    },
-    state: {
-      get sorting() {
-        return local.sorting?.() || [];
-      },
-      get columnFilters() {
-        return local.columnFilters?.() || [];
-      },
-      get pagination() {
-        return local.pagination?.() || { pageIndex: 0, pageSize: 10 };
-      },
-      get globalFilter() {
-        return local.globalFilter?.() || "";
-      },
-      get rowSelection() {
-        return local.rowSelection?.() || {};
-      },
-      get expanded() {
-        return local.expanded?.() || {};
-      },
-    },
-    onSortingChange: local.setSorting,
-    onColumnFiltersChange: local.setColumnFilters,
-    onPaginationChange: local.setPagination,
-    onGlobalFilterChange: local.setGlobalFilter,
-    onRowSelectionChange: local.setRowSelection,
-    onExpandedChange: local.setExpanded,
-    getCoreRowModel: getCoreRowModel(),
-    getSortedRowModel: getSortedRowModel(),
-    getFilteredRowModel: getFilteredRowModel(),
-    getPaginationRowModel: getPaginationRowModel(),
-    getExpandedRowModel: getExpandedRowModel(),
+  const table = useTableModel({
+    data: () => local.data,
+    columns: () => local.columns,
+    sorting: sortingModel.sorting,
+    setSorting: sortingModel.setSorting,
+    columnFilters: filteringModel.columnFilters,
+    setColumnFilters: filteringModel.setColumnFilters,
+    pagination: paginationModel.pagination,
+    setPagination: paginationModel.setPagination,
+    globalFilter: filteringModel.globalFilter,
+    setGlobalFilter: filteringModel.setGlobalFilter,
+    rowSelection: selectionModel.rowSelection,
+    setRowSelection: selectionModel.setRowSelection,
+    expanded: expansionModel.expanded,
+    setExpanded: expansionModel.setExpanded,
     enableSorting: local.enableSorting !== false,
     enableFilters: !!local.enableFilters,
-    manualPagination: !local.enablePagination,
+    enablePagination: !!local.enablePagination,
     enableRowSelection: !!local.enableRowSelection,
     enableExpanding: true,
     getRowCanExpand: () => !!local.expandable,
@@ -190,23 +195,8 @@ function EnhancedTable<TData>(props: EnhancedTableProps<TData>): JSX.Element {
 
   const headerGroups = () => table.getHeaderGroups();
 
-  const sortDescriptor = createMemo<TableSortDescriptor | undefined>(() => {
-    const activeSort = table.getState().sorting[0];
-    if (!activeSort) return undefined;
-    return {
-      column: activeSort.id,
-      direction: activeSort.desc ? "descending" : "ascending",
-    };
-  });
-
-  const handleSortChange = (descriptor: TableSortDescriptor) => {
-    table.setSorting([
-      {
-        id: descriptor.column,
-        desc: descriptor.direction === "descending",
-      },
-    ]);
-  };
+  const sortDescriptor = sortingModel.sortDescriptor;
+  const handleSortChange = sortingModel.setSortDescriptor;
 
   const totalColumns = createMemo(
     () =>
@@ -215,64 +205,28 @@ function EnhancedTable<TData>(props: EnhancedTableProps<TData>): JSX.Element {
       (local.expandable ? 1 : 0),
   );
 
-  const anyFilterActive = () =>
-    (table.getState().columnFilters as any[]).length > 0;
-
   const filterTriggerRefs = new Map<string, HTMLSpanElement>();
-  const [filterPanelStyle, setFilterPanelStyle] = createSignal<JSX.CSSProperties>({
-    position: "fixed",
-    top: "0px",
-    left: "0px",
-    "z-index": 1300,
-  });
   let filterPanelRef: HTMLDivElement | undefined;
-
-  const updateFilterPanelPosition = () => {
-    const colId = openFilterFor();
-    if (!colId) return;
-    const triggerEl = filterTriggerRefs.get(colId);
-    if (!triggerEl) return;
-
-    const rect = triggerEl.getBoundingClientRect();
-    const panelWidth = 224; // w-56 = 14rem = 224px
-    const offset = 6;
-    const viewportPadding = 8;
-
-    let left = rect.right - panelWidth;
-    left = Math.max(viewportPadding, Math.min(left, window.innerWidth - panelWidth - viewportPadding));
-
-    let top = rect.bottom + offset;
-    if (filterPanelRef) {
-      const panelHeight = filterPanelRef.getBoundingClientRect().height;
-      if (top + panelHeight > window.innerHeight - viewportPadding) {
-        const above = rect.top - panelHeight - offset;
-        if (above >= viewportPadding) top = above;
-        else top = Math.max(viewportPadding, window.innerHeight - panelHeight - viewportPadding);
-      }
-    }
-
-    setFilterPanelStyle({
-      position: "fixed",
-      top: `${top}px`,
-      left: `${left}px`,
-      "z-index": 1300,
-    });
-  };
-
-  createEffect(() => {
-    if (!openFilterFor()) return;
-    requestAnimationFrame(() => {
-      updateFilterPanelPosition();
-      requestAnimationFrame(updateFilterPanelPosition);
-    });
-
-    const onViewportChange = () => updateFilterPanelPosition();
-    window.addEventListener("resize", onViewportChange);
-    window.addEventListener("scroll", onViewportChange, true);
-    onCleanup(() => {
-      window.removeEventListener("resize", onViewportChange);
-      window.removeEventListener("scroll", onViewportChange, true);
-    });
+  const filterPanelAnchor = () =>
+    filteringModel.openFilterFor()
+      ? filterTriggerRefs.get(filteringModel.openFilterFor()!)
+      : undefined;
+  const filterPanelPosition = useAnchoredOverlayPosition({
+    isOpen: () => Boolean(filteringModel.openFilterFor()),
+    getAnchor: filterPanelAnchor,
+    getOverlay: () => filterPanelRef,
+    width: 224,
+    zIndex: 1300,
+  });
+  const pageSizeMenuPosition = useAnchoredOverlayPosition({
+    isOpen: pageSizeMenuOpen,
+    getAnchor: () => pageSizeToggleRef,
+    getOverlay: () => pageSizeMenuRef,
+    minWidth: () =>
+      pageSizeToggleRef
+        ? Math.max(pageSizeToggleRef.getBoundingClientRect().width, 96)
+        : 96,
+    zIndex: 1300,
   });
 
   const FilterIconTrigger = (props: { colId: string; disabled?: boolean }) => (
@@ -281,12 +235,11 @@ function EnhancedTable<TData>(props: EnhancedTableProps<TData>): JSX.Element {
       class="cursor-pointer ml-auto shrink-0"
       classList={{
         "opacity-50 pointer-events-none": props.disabled,
-        "text-primary": openFilterFor() === props.colId,
+        "text-primary": filteringModel.openFilterFor() === props.colId,
       }}
       onClick={(e) => {
         e.stopPropagation();
-        if (!props.disabled)
-          setOpenFilterFor((c) => (c === props.colId ? null : props.colId));
+        if (!props.disabled) filteringModel.toggleFilter(props.colId);
       }}
     >
       {local.filterIcon}
@@ -297,11 +250,11 @@ function EnhancedTable<TData>(props: EnhancedTableProps<TData>): JSX.Element {
     const col = props.column;
     const colId = col.id as string;
     return (
-      <Show when={openFilterFor() === colId}>
+      <Show when={filteringModel.openFilterFor() === colId}>
         <Portal mount={typeof document === "undefined" ? undefined : document.body}>
           <div
             ref={(el) => { filterPanelRef = el; }}
-            style={filterPanelStyle()}
+            style={filterPanelPosition.style()}
             class={
               local.filterPanelClass ??
               "z-[1300] w-56 border border-nf-border bg-nf-surface-1 shadow-lg rounded-box p-2"
@@ -317,7 +270,7 @@ function EnhancedTable<TData>(props: EnhancedTableProps<TData>): JSX.Element {
                 variant="outline"
                 onClick={() => {
                   col.setFilterValue(undefined);
-                  setOpenFilterFor(null);
+                  filteringModel.closeFilter();
                 }}
               >
                 Clear
@@ -325,7 +278,7 @@ function EnhancedTable<TData>(props: EnhancedTableProps<TData>): JSX.Element {
               <Button
                 size="sm"
                 variant="primary"
-                onClick={() => setOpenFilterFor(null)}
+                onClick={() => filteringModel.closeFilter()}
               >
                 Apply
               </Button>
@@ -348,49 +301,6 @@ function EnhancedTable<TData>(props: EnhancedTableProps<TData>): JSX.Element {
     return root;
   };
 
-  const updatePageSizeMenuPosition = () => {
-    const toggleEl = pageSizeToggleRef;
-    const menuEl = pageSizeMenuRef;
-    if (!toggleEl || !menuEl) return;
-
-    const viewportPadding = 8;
-    const gap = 4;
-    const toggleRect = toggleEl.getBoundingClientRect();
-    const menuRect = menuEl.getBoundingClientRect();
-    const menuWidth = menuRect.width || Math.max(toggleRect.width, 96);
-    const menuHeight = menuRect.height || 0;
-
-    const viewportWidth = window.innerWidth;
-    const viewportHeight = window.innerHeight;
-
-    let left = toggleRect.right - menuWidth;
-    left = Math.max(
-      viewportPadding,
-      Math.min(left, viewportWidth - menuWidth - viewportPadding),
-    );
-
-    const spaceBelow = viewportHeight - toggleRect.bottom;
-    const spaceAbove = toggleRect.top;
-    const shouldOpenUp =
-      spaceBelow < menuHeight + gap && spaceAbove > menuHeight + gap;
-
-    let top = shouldOpenUp
-      ? toggleRect.top - menuHeight - gap
-      : toggleRect.bottom + gap;
-    top = Math.max(
-      viewportPadding,
-      Math.min(top, viewportHeight - menuHeight - viewportPadding),
-    );
-
-    setPageSizeMenuStyle({
-      position: "fixed",
-      top: `${top}px`,
-      left: `${left}px`,
-      "min-width": `${Math.max(toggleRect.width, 96)}px`,
-      "z-index": 1300,
-    });
-  };
-
   const closePageSizeMenu = () => setPageSizeMenuOpen(false);
   const togglePageSizeMenu = () => setPageSizeMenuOpen((current) => !current);
 
@@ -404,11 +314,6 @@ function EnhancedTable<TData>(props: EnhancedTableProps<TData>): JSX.Element {
     if (!pageSizeMenuOpen()) return;
     ensurePortalRoot();
 
-    requestAnimationFrame(() => {
-      updatePageSizeMenuPosition();
-      requestAnimationFrame(updatePageSizeMenuPosition);
-    });
-
     const onPointerDown = (event: PointerEvent) => {
       const target = event.target as Node | null;
       if (!target) return;
@@ -421,18 +326,12 @@ function EnhancedTable<TData>(props: EnhancedTableProps<TData>): JSX.Element {
       if (event.key === "Escape") closePageSizeMenu();
     };
 
-    const onViewportChange = () => updatePageSizeMenuPosition();
-
     document.addEventListener("pointerdown", onPointerDown);
     document.addEventListener("keydown", onKeyDown);
-    window.addEventListener("resize", onViewportChange);
-    window.addEventListener("scroll", onViewportChange, true);
 
     onCleanup(() => {
       document.removeEventListener("pointerdown", onPointerDown);
       document.removeEventListener("keydown", onKeyDown);
-      window.removeEventListener("resize", onViewportChange);
-      window.removeEventListener("scroll", onViewportChange, true);
     });
   });
 
@@ -689,12 +588,12 @@ function EnhancedTable<TData>(props: EnhancedTableProps<TData>): JSX.Element {
             ref={(el) => {
               pageSizeMenuRef = el;
             }}
-            style={pageSizeMenuStyle()}
+            style={pageSizeMenuPosition.style()}
             class="p-2 shadow bg-base-100 rounded-box border border-base-300 w-24"
             role="menu"
             aria-label="Rows per page"
           >
-            <For each={pageSizeOptions}>
+            <For each={paginationModel.pageSizeOptions()}>
               {(size) => (
                 <Button
                   type="button"

@@ -37,3 +37,29 @@ export type {
 
 export { default as EnhancedTable } from "./EnhancedTable";
 export type { EnhancedTableProps } from "./EnhancedTable";
+export {
+  useTableModel,
+  useTableSorting,
+  useTablePagination,
+  useTableFiltering,
+  useTableSelection,
+  useTableExpansion,
+  useAnchoredOverlayPosition,
+} from "./hooks";
+export type {
+  UseTableModelOptions,
+  UseTableSortingOptions,
+  UseTableSortingResult,
+  HookSortDirection,
+  HookSortDescriptor,
+  UseTablePaginationOptions,
+  UseTablePaginationResult,
+  UseTableFilteringOptions,
+  UseTableFilteringResult,
+  UseTableSelectionOptions,
+  UseTableSelectionResult,
+  TableSelectionState,
+  UseTableExpansionOptions,
+  UseTableExpansionResult,
+  UseAnchoredOverlayPositionOptions,
+} from "./hooks";

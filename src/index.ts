@@ -232,8 +232,32 @@ export type {
   TableSortDirection,
   TableSortDescriptor,
   TableColumnRenderProps,
+  UseTableModelOptions,
+  UseTableSortingOptions,
+  UseTableSortingResult,
+  HookSortDirection,
+  HookSortDescriptor,
+  UseTablePaginationOptions,
+  UseTablePaginationResult,
+  UseTableFilteringOptions,
+  UseTableFilteringResult,
+  UseTableSelectionOptions,
+  UseTableSelectionResult,
+  TableSelectionState,
+  UseTableExpansionOptions,
+  UseTableExpansionResult,
+  UseAnchoredOverlayPositionOptions,
 } from "./components/table";
 export type { EnhancedTableProps } from "./components/table/EnhancedTable";
+export {
+  useTableModel,
+  useTableSorting,
+  useTablePagination,
+  useTableFiltering,
+  useTableSelection,
+  useTableExpansion,
+  useAnchoredOverlayPosition,
+} from "./components/table";
 export { StreamingTable } from "./components/streaming-table";
 export type { StreamingTableProps } from "./components/streaming-table";
 export type {
