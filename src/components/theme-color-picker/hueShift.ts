@@ -29,43 +29,15 @@ const checkCspAllowsInlineStyles = (): boolean => {
 // Full saturation (100) = full chroma, low saturation = reduced chroma
 const MIN_CHROMA_SCALE = 0.3;
 
-// HSL to OKLCH hue conversion for perceptually accurate colors
-function hslHueToOklchHue(hslHue: number): number {
-  const h = ((hslHue % 360) + 360) % 360;
-
-  const controlPoints: [number, number][] = [
-    [0, 29],     // Red
-    [30, 55],    // Orange
-    [60, 100],   // Yellow
-    [120, 145],  // Green
-    [180, 195],  // Cyan
-    [240, 265],  // Blue
-    [300, 330],  // Magenta
-    [360, 389],  // Red (wrapped)
-  ];
-
-  for (let i = 0; i < controlPoints.length - 1; i++) {
-    const [h1, o1] = controlPoints[i];
-    const [h2, o2] = controlPoints[i + 1];
-    if (h >= h1 && h <= h2) {
-      const t = (h - h1) / (h2 - h1);
-      const oklchHue = o1 + t * (o2 - o1);
-      return ((oklchHue % 360) + 360) % 360;
-    }
-  }
-
-  return h;
-}
-
 // Primary color settings
 const PRIMARY_SETTINGS = {
   light: {
-    "--color-primary": { l: 45, c: 0.2 },
+    "--color-primary": { l: 58, c: 0.22 },
     "--color-primary-content": { l: 98, c: 0.02 },
   },
   dark: {
-    "--color-primary": { l: 58, c: 0.233 },
-    "--color-primary-content": { l: 96, c: 0.018 },
+    "--color-primary": { l: 75, c: 0.18 },
+    "--color-primary-content": { l: 15, c: 0.02 },
   },
 } as const;
 
@@ -79,14 +51,14 @@ const HARMONY_SETTINGS = {
   light: {
     "--color-secondary": { l: 68, c: 0.162 },
     "--color-secondary-content": { l: 98, c: 0.026 },
-    "--color-accent": { l: 60, c: 0.118 },
+    "--color-accent": { l: 62, c: 0.14 },
     "--color-accent-content": { l: 98, c: 0.014 },
   },
   dark: {
-    "--color-secondary": { l: 63, c: 0.237 },
-    "--color-secondary-content": { l: 97, c: 0.013 },
-    "--color-accent": { l: 70, c: 0.14 },
-    "--color-accent-content": { l: 98, c: 0.014 },
+    "--color-secondary": { l: 72, c: 0.16 },
+    "--color-secondary-content": { l: 15, c: 0.013 },
+    "--color-accent": { l: 78, c: 0.12 },
+    "--color-accent-content": { l: 15, c: 0.014 },
   },
 } as const;
 
@@ -127,16 +99,16 @@ const SEMANTIC_SETTINGS = {
 // Set both --nf-accent (theme source) and --color-nf-accent (Tailwind utility target)
 const NF_ACCENT_SETTINGS = {
   light: {
-    "--nf-accent": { l: 45, c: 0.2 },
+    "--nf-accent": { l: 58, c: 0.22 },
     "--nf-on-accent": { l: 98, c: 0.02 },
-    "--color-nf-accent": { l: 45, c: 0.2 },
+    "--color-nf-accent": { l: 58, c: 0.22 },
     "--color-nf-on-accent": { l: 98, c: 0.02 },
   },
   dark: {
-    "--nf-accent": { l: 58, c: 0.233 },
-    "--nf-on-accent": { l: 96, c: 0.018 },
-    "--color-nf-accent": { l: 58, c: 0.233 },
-    "--color-nf-on-accent": { l: 96, c: 0.018 },
+    "--nf-accent": { l: 75, c: 0.18 },
+    "--nf-on-accent": { l: 15, c: 0.02 },
+    "--color-nf-accent": { l: 75, c: 0.18 },
+    "--color-nf-on-accent": { l: 15, c: 0.02 },
   },
 } as const;
 
@@ -217,7 +189,7 @@ function applyHueShift(targetHue: number, saturation: number = 100, lightnessOff
   if (!checkCspAllowsInlineStyles()) return;
 
   const root = document.documentElement;
-  const oklchHue = hslHueToOklchHue(targetHue);
+  const oklchHue = ((targetHue % 360) + 360) % 360;
   const chromaScale = saturation === 0 ? 0 : MIN_CHROMA_SCALE + (1 - MIN_CHROMA_SCALE) * (saturation / 100);
   const resolvedTheme = getResolvedTheme();
 

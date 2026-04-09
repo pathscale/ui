@@ -149,9 +149,8 @@ const hueDistance = (a: number, b: number) => {
 const isNearColor = (color: ColorValue, item: ColorItem) => {
   const hueDelta = hueDistance(color.hsl.h, item.hue);
   const saturationDelta = Math.abs(color.hsl.s - item.saturation);
-  const lightnessDelta = Math.abs(color.hsl.l - item.lightness);
 
-  return hueDelta <= 2 && saturationDelta <= 2 && lightnessDelta <= 2;
+  return hueDelta <= 5 && saturationDelta <= 15;
 };
 
 // Static layout — positions are the same regardless of theme
@@ -385,7 +384,7 @@ const ColorWheelFlower = (props: ColorWheelFlowerProps): JSX.Element => {
       const hueDelta = hueDistance(current.hsl.h, item.hue);
       const saturationDelta = Math.abs(current.hsl.s - item.saturation);
       const lightnessDelta = Math.abs(current.hsl.l - item.lightness);
-      const score = hueDelta * 1.4 + saturationDelta * 0.8 + lightnessDelta * 0.55;
+      const score = hueDelta * 2.0 + saturationDelta * 1.0 + lightnessDelta * 0.1;
 
       if (score < bestScore) {
         bestScore = score;
