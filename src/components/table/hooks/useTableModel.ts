@@ -21,6 +21,7 @@ import type { TableSelectionState } from "./useTableSelection";
 export interface UseTableModelOptions<TData> {
   data: Accessor<TData[]> | TData[];
   columns: Accessor<ColumnDef<TData, any>[]> | ColumnDef<TData, any>[];
+  getRowId?: (originalRow: TData, index: number, parent?: Row<TData>) => string;
   sorting?: Accessor<SortingState>;
   setSorting?: OnChangeFn<SortingState>;
   columnFilters?: Accessor<ColumnFiltersState>;
@@ -54,6 +55,7 @@ export const useTableModel = <TData,>(
     get columns() {
       return columnsAccessor();
     },
+    getRowId: options.getRowId,
     state: {
       get sorting() {
         return options.sorting?.() ?? [];

@@ -1,4 +1,4 @@
-import { createMemo, createSignal, type Accessor } from "solid-js";
+import { createMemo, createSignal, type Accessor, type JSX } from "solid-js";
 import type {
   ColumnFiltersState,
   OnChangeFn,
@@ -19,6 +19,21 @@ export interface UseTableFilteringResult {
   setColumnFilters: OnChangeFn<ColumnFiltersState>;
   globalFilter: Accessor<string>;
   setGlobalFilter: OnChangeFn<string>;
+  getColumnFilterValue: (columnId: string) => string;
+  setColumnFilterValue: (columnId: string, value: string) => void;
+  getColumnFilterProps: (
+    columnId: string,
+    options?: {
+      afterChange?: (value: string) => void;
+    },
+  ) => {
+    readonly value: string;
+    onInput: JSX.EventHandler<HTMLInputElement | HTMLTextAreaElement, InputEvent>;
+    onChange: JSX.EventHandler<
+      HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement,
+      Event
+    >;
+  };
   openFilterFor: Accessor<string | null>;
   closeFilter: () => void;
   toggleFilter: (columnId: string) => void;
@@ -60,6 +75,51 @@ export const useTableFiltering = (
     setOpenFilterFor((current) => (current === columnId ? null : columnId));
   };
 
+  const getColumnFilterValue = (columnId: string) => {
+    const filter = columnFilters().find((entry) => entry.id === columnId);
+    return typeof filter?.value === "string" ? filter.value : "";
+  };
+
+  const setColumnFilterValue = (columnId: string, value: string) => {
+    setColumnFilters((previous) => {
+      const next = previous.filter((entry) => entry.id !== columnId);
+      if (value.trim().length > 0) {
+        next.push({ id: columnId, value });
+      }
+      return next;
+    });
+  };
+
+  const getColumnFilterProps = (
+    columnId: string,
+    bindingOptions?: {
+      afterChange?: (value: string) => void;
+    },
+  ) => {
+    const applyValue = (value: string) => {
+      setColumnFilterValue(columnId, value);
+      bindingOptions?.afterChange?.(value);
+    };
+
+    return {
+      get value() {
+        return getColumnFilterValue(columnId);
+      },
+      onInput: (event: InputEvent & {
+        currentTarget: HTMLInputElement | HTMLTextAreaElement;
+        target: Element;
+      }) => {
+        applyValue(event.currentTarget.value);
+      },
+      onChange: (event: Event & {
+        currentTarget: HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement;
+        target: Element;
+      }) => {
+        applyValue(event.currentTarget.value);
+      },
+    };
+  };
+
   const anyFilterActive = createMemo(() => columnFilters().length > 0);
 
   return {
@@ -67,6 +127,9 @@ export const useTableFiltering = (
     setColumnFilters,
     globalFilter,
     setGlobalFilter,
+    getColumnFilterValue,
+    setColumnFilterValue,
+    getColumnFilterProps,
     openFilterFor,
     closeFilter,
     toggleFilter,

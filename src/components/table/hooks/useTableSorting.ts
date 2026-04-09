@@ -1,6 +1,6 @@
 import { createMemo, createSignal, type Accessor } from "solid-js";
 import type { OnChangeFn, SortingState } from "@tanstack/solid-table";
-import { resolveUpdater } from "./helpers";
+import { resolveUpdater, toSortDescriptor, toSortingState } from "./helpers";
 
 export type HookSortDirection = "ascending" | "descending";
 
@@ -40,21 +40,11 @@ export const useTableSorting = (
   };
 
   const sortDescriptor = createMemo<HookSortDescriptor | undefined>(() => {
-    const activeSort = sorting()[0];
-    if (!activeSort) return undefined;
-    return {
-      column: activeSort.id,
-      direction: activeSort.desc ? "descending" : "ascending",
-    };
+    return toSortDescriptor(sorting());
   });
 
   const setSortDescriptor = (descriptor: HookSortDescriptor) => {
-    setSorting([
-      {
-        id: descriptor.column,
-        desc: descriptor.direction === "descending",
-      },
-    ]);
+    setSorting(toSortingState(descriptor));
   };
 
   return {

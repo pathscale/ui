@@ -364,6 +364,47 @@ const TableCell: Component<TableCellProps> = (props) => {
 };
 
 /* -------------------------------------------------------------------------------------------------
+ * Table Expanded Row
+ * -----------------------------------------------------------------------------------------------*/
+export type TableExpandedRowProps = JSX.HTMLAttributes<HTMLTableRowElement> &
+  IComponentBaseProps & {
+    colSpan: number;
+    cellClass?: string;
+    cellClassName?: string;
+    cellDataTheme?: string;
+  };
+
+const TableExpandedRow: Component<TableExpandedRowProps> = (props) => {
+  const [local, rest] = splitProps(props, [
+    "children",
+    "class",
+    "className",
+    "dataTheme",
+    "colSpan",
+    "cellClass",
+    "cellClassName",
+    "cellDataTheme",
+  ]);
+
+  return (
+    <TableRow
+      class={twMerge("table__expanded-row", local.class, local.className)}
+      data-theme={local.dataTheme}
+      data-slot="table-expanded-row"
+      {...rest}
+    >
+      <TableCell
+        colSpan={local.colSpan}
+        class={twMerge("table__expanded-cell", local.cellClass, local.cellClassName)}
+        dataTheme={local.cellDataTheme ?? local.dataTheme}
+      >
+        {local.children}
+      </TableCell>
+    </TableRow>
+  );
+};
+
+/* -------------------------------------------------------------------------------------------------
  * Table Footer (div outside <table>)
  * -----------------------------------------------------------------------------------------------*/
 export type TableFooterProps = JSX.HTMLAttributes<HTMLDivElement> &
@@ -386,6 +427,62 @@ const TableFooter: Component<TableFooterProps> = (props) => {
     >
       {local.children}
     </div>
+  );
+};
+
+/* -------------------------------------------------------------------------------------------------
+ * Table Page Size
+ * -----------------------------------------------------------------------------------------------*/
+export type TablePageSizeProps = Omit<
+  JSX.SelectHTMLAttributes<HTMLSelectElement>,
+  "onChange"
+> &
+  IComponentBaseProps & {
+    value: number;
+    options: readonly number[];
+    onChange: (value: number) => void;
+    label?: JSX.Element;
+    selectClass?: string;
+    selectClassName?: string;
+  };
+
+const TablePageSize: Component<TablePageSizeProps> = (props) => {
+  const [local, rest] = splitProps(props, [
+    "class",
+    "className",
+    "dataTheme",
+    "value",
+    "options",
+    "onChange",
+    "label",
+    "selectClass",
+    "selectClassName",
+  ]);
+
+  return (
+    <label
+      class={twMerge("table__page-size", local.class, local.className)}
+      data-theme={local.dataTheme}
+      data-slot="table-page-size"
+    >
+      <span class="table__page-size-label" data-slot="table-page-size-label">
+        {local.label ?? "Rows"}
+      </span>
+      <select
+        {...rest}
+        class={twMerge(
+          "table__page-size-select",
+          local.selectClass,
+          local.selectClassName,
+        )}
+        value={local.value}
+        onChange={(event) => local.onChange(Number(event.currentTarget.value))}
+      >
+        {local.options.map((option) => (
+          <option value={option}>{option}</option>
+        ))}
+      </select>
+    </label>
   );
 };
 
@@ -516,7 +613,9 @@ export {
   TableBody,
   TableRow,
   TableCell,
+  TableExpandedRow,
   TableFooter,
+  TablePageSize,
   TableResizableContainer,
   TableColumnResizer,
   TableLoadMore,
@@ -532,7 +631,9 @@ export default Object.assign(TableRoot, {
   Body: TableBody,
   Row: TableRow,
   Cell: TableCell,
+  ExpandedRow: TableExpandedRow,
   Footer: TableFooter,
+  PageSize: TablePageSize,
   ResizableContainer: TableResizableContainer,
   ColumnResizer: TableColumnResizer,
   LoadMore: TableLoadMore,

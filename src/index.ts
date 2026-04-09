@@ -256,6 +256,8 @@ export {
   useTableFiltering,
   useTableSelection,
   useTableExpansion,
+  toSortDescriptor,
+  toSortingState,
   useAnchoredOverlayPosition,
 } from "./components/table";
 export { StreamingTable } from "./components/streaming-table";

@@ -30,5 +30,6 @@ export {
   useTableModel,
   type UseTableModelOptions,
 } from "./useTableModel";
+export { toSortDescriptor, toSortingState } from "./helpers";
 export { useAnchoredOverlayPosition } from "./useAnchoredOverlayPosition";
 export type { UseAnchoredOverlayPositionOptions } from "./useAnchoredOverlayPosition";

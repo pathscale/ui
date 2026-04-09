@@ -5,13 +5,14 @@ import {
   Input,
   Pagination,
   Table,
+  toSortDescriptor,
+  toSortingState,
   useTableExpansion,
   useTableFiltering,
   useTableModel,
   useTablePagination,
   useTableSelection,
   useTableSorting,
-  type TableSortDescriptor,
 } from "@pathscale/ui";
 import { flexRender, type ColumnDef } from "@tanstack/solid-table";
 
@@ -106,7 +107,7 @@ const STATUS_TONE_CLASS_MAP: Record<HookTableRow["status"], string> = {
   Offline: "bg-base-300 text-base-content/70",
 };
 
-const getSortIconName = (direction: TableSortDescriptor["direction"] | undefined) => {
+const getSortIconName = (direction: "ascending" | "descending" | undefined) => {
   if (direction === "ascending") return "icon-[lucide--arrow-up]";
   if (direction === "descending") return "icon-[lucide--arrow-down]";
   return "icon-[lucide--arrow-down-up]";
@@ -124,9 +125,8 @@ export const TableHooksExample = () => {
   const filtering = useTableFiltering();
   const expansion = useTableExpansion();
 
-  const hostFilterValue = createMemo(() => {
-    const filter = filtering.columnFilters().find((entry) => entry.id === "host");
-    return typeof filter?.value === "string" ? filter.value : "";
+  const hostFilter = filtering.getColumnFilterProps("host", {
+    afterChange: () => pagination.firstPage(),
   });
 
   const columns = createMemo<ColumnDef<HookTableRow>[]>(() => [
@@ -224,6 +224,7 @@ export const TableHooksExample = () => {
   const table = useTableModel({
     data: HOOK_TABLE_ROWS,
     columns,
+    getRowId: (row) => row.id,
     sorting: sorting.sorting,
     setSorting: sorting.setSorting,
     columnFilters: filtering.columnFilters,
@@ -259,21 +260,6 @@ export const TableHooksExample = () => {
     return `Showing ${start}-${end} of ${total}`;
   });
 
-  const handleSortChange = (descriptor: TableSortDescriptor) => {
-    sorting.setSortDescriptor(descriptor);
-  };
-
-  const updateHostFilter = (value: string) => {
-    filtering.setColumnFilters((previous) => {
-      const next = previous.filter((entry) => entry.id !== "host");
-      if (value.trim().length > 0) {
-        next.push({ id: "host", value });
-      }
-      return next;
-    });
-    pagination.firstPage();
-  };
-
   return (
     <section class="space-y-4 rounded-xl border border-base-300 bg-base-200 p-4">
       <div class="space-y-1">
@@ -287,27 +273,20 @@ export const TableHooksExample = () => {
       <div class="grid gap-3 md:grid-cols-[minmax(0,1fr)_auto_auto] md:items-end">
         <Input
           label="Filter by host"
-          value={hostFilterValue()}
-          onInput={(event) => updateHostFilter(event.currentTarget.value)}
+          value={hostFilter.value}
+          onInput={hostFilter.onInput}
           placeholder="Search host name"
-          helperText="Filtering is wired manually through useTableFiltering."
+          helperText="Column filter binding comes directly from useTableFiltering."
         />
 
-        <label class="flex items-center gap-2 text-xs font-medium uppercase tracking-[0.16em] opacity-70">
-          Rows
-          <select
-            class="rounded-md border border-base-300 bg-base-100 px-3 py-2 text-sm normal-case text-base-content"
-            value={pagination.pagination().pageSize}
-            onChange={(event) => {
-              pagination.setPageSize(Number(event.currentTarget.value));
-              pagination.firstPage();
-            }}
-          >
-            <For each={pagination.pageSizeOptions()}>
-              {(size) => <option value={size}>{size}</option>}
-            </For>
-          </select>
-        </label>
+        <Table.PageSize
+          value={pagination.pagination().pageSize}
+          options={pagination.pageSizeOptions()}
+          onChange={(size) => {
+            pagination.setPageSize(size);
+            pagination.firstPage();
+          }}
+        />
 
         <div class="rounded-lg border border-base-300 bg-base-100 px-3 py-2 text-xs">
           <div>{rangeLabel()}</div>
@@ -318,8 +297,8 @@ export const TableHooksExample = () => {
       <Table.Root>
         <Table.ScrollContainer>
           <Table.Content
-            sortDescriptor={sorting.sortDescriptor()}
-            onSortChange={handleSortChange}
+            sortDescriptor={toSortDescriptor(sorting.sorting())}
+            onSortChange={(descriptor) => sorting.setSorting(toSortingState(descriptor))}
           >
             <Table.Header>
               <For each={table.getHeaderGroups()}>
@@ -395,16 +374,14 @@ export const TableHooksExample = () => {
                       </Table.Row>
 
                       <Show when={row.getIsExpanded()}>
-                        <Table.Row class="bg-base-200/50">
-                          <Table.Cell colSpan={visibleColumnCount()}>
-                            <div class="space-y-2 py-2">
-                              <div class="text-xs font-semibold uppercase tracking-[0.16em] opacity-60">
-                                Expanded row content
-                              </div>
-                              <p class="text-sm">{row.original.summary}</p>
+                        <Table.ExpandedRow colSpan={visibleColumnCount()}>
+                          <div class="space-y-2 py-2">
+                            <div class="text-xs font-semibold uppercase tracking-[0.16em] opacity-60">
+                              Expanded row content
                             </div>
-                          </Table.Cell>
-                        </Table.Row>
+                            <p class="text-sm">{row.original.summary}</p>
+                          </div>
+                        </Table.ExpandedRow>
                       </Show>
                     </>
                   )}
@@ -416,8 +393,8 @@ export const TableHooksExample = () => {
 
         <Table.Footer class="items-center justify-between gap-3">
           <div class="text-xs opacity-70">
-            Sort: {sorting.sortDescriptor()?.column ?? "none"} /{" "}
-            {sorting.sortDescriptor()?.direction ?? "none"}
+            Sort: {toSortDescriptor(sorting.sorting())?.column ?? "none"} /{" "}
+            {toSortDescriptor(sorting.sorting())?.direction ?? "none"}
           </div>
 
           <Pagination
@@ -430,4 +407,3 @@ export const TableHooksExample = () => {
     </section>
   );
 };
-

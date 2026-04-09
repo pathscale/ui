@@ -8,7 +8,9 @@ export {
   TableBody,
   TableRow,
   TableCell,
+  TableExpandedRow,
   TableFooter,
+  TablePageSize,
   TableResizableContainer,
   TableColumnResizer,
   TableLoadMore,
@@ -24,7 +26,9 @@ export type {
   TableBodyProps,
   TableRowProps,
   TableCellProps,
+  TableExpandedRowProps,
   TableFooterProps,
+  TablePageSizeProps,
   TableResizableContainerProps,
   TableColumnResizerProps,
   TableLoadMoreProps,
@@ -44,6 +48,8 @@ export {
   useTableFiltering,
   useTableSelection,
   useTableExpansion,
+  toSortDescriptor,
+  toSortingState,
   useAnchoredOverlayPosition,
 } from "./hooks";
 export type {
