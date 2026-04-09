@@ -30,6 +30,7 @@ import {
   ThemeColorPicker,
 } from "@pathscale/ui";
 import { TableExamples } from "./examples/TableExamples";
+import { TableHooksExample } from "./examples/TableHooksExample";
 
 const BADGE_COLORS = [
   "default",
@@ -1640,6 +1641,7 @@ export default function App() {
         </section>
 
         <TableExamples />
+        <TableHooksExample />
 
       </div>
     </main>
