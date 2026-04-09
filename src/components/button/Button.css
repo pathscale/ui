@@ -98,10 +98,10 @@
   }
 
   .button--primary {
-    --button-bg: var(--color-accent);
-    --button-bg-hover: color-mix(in oklab, var(--color-accent), #000 8%);
-    --button-bg-pressed: color-mix(in oklab, var(--color-accent), #000 12%);
-    --button-fg: var(--color-accent-content);
+    --button-bg: var(--color-primary);
+    --button-bg-hover: color-mix(in oklab, var(--color-primary), #000 8%);
+    --button-bg-pressed: color-mix(in oklab, var(--color-primary), #000 12%);
+    --button-fg: var(--color-primary-content);
   }
 
   .button--secondary {
