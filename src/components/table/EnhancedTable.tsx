@@ -1,4 +1,4 @@
-import "./table.css";
+import "./Table.css";
 import {
   createEffect,
   createMemo,
@@ -28,7 +28,7 @@ import {
 } from "@tanstack/solid-table";
 import clsx from "clsx";
 import Checkbox from "../checkbox/Checkbox";
-import Table, { type TableRootProps } from "./Table";
+import Table, { type TableRootProps, type TableSortDescriptor } from "./Table";
 import Button from "../button/Button";
 import Input from "../input/Input";
 import Dropdown from "../dropdown/Dropdown";
@@ -189,6 +189,24 @@ function EnhancedTable<TData>(props: EnhancedTableProps<TData>): JSX.Element {
   });
 
   const headerGroups = () => table.getHeaderGroups();
+
+  const sortDescriptor = createMemo<TableSortDescriptor | undefined>(() => {
+    const activeSort = table.getState().sorting[0];
+    if (!activeSort) return undefined;
+    return {
+      column: activeSort.id,
+      direction: activeSort.desc ? "descending" : "ascending",
+    };
+  });
+
+  const handleSortChange = (descriptor: TableSortDescriptor) => {
+    table.setSorting([
+      {
+        id: descriptor.column,
+        desc: descriptor.direction === "descending",
+      },
+    ]);
+  };
 
   const totalColumns = createMemo(
     () =>
@@ -422,17 +440,21 @@ function EnhancedTable<TData>(props: EnhancedTableProps<TData>): JSX.Element {
     <>
       <Table {...tableProps}>
         <Table.ScrollContainer class="flex-1 min-h-0 overflow-y-auto">
-          <Table.Content class={clsx(tableProps.class, "table-auto")}>
+          <Table.Content
+            class={clsx(tableProps.class, "table-auto")}
+            sortDescriptor={sortDescriptor()}
+            onSortChange={handleSortChange}
+          >
             <Table.Header>
               <For each={headerGroups()}>
                 {(hg) => (
                   <Table.Row>
                     <Show when={local.expandable}>
-                      <Table.Column class="w-6" />
+                      <Table.Column id="expand-control" class="w-6" />
                     </Show>
 
                     <Show when={local.enableRowSelection}>
-                      <Table.Column class="w-8">
+                      <Table.Column id="selection-control" class="w-8">
                         <Checkbox
                           checked={table.getIsAllPageRowsSelected()}
                           indeterminate={table.getIsSomePageRowsSelected()}
@@ -455,46 +477,45 @@ function EnhancedTable<TData>(props: EnhancedTableProps<TData>): JSX.Element {
 
                         return (
                           <Table.Column
+                            id={colId}
+                            allowsSorting={canSort}
                             class={
                               canSort
                                 ? "relative cursor-pointer select-none"
                                 : "relative"
                             }
-                            onClick={
-                              canSort
-                                ? header.column.getToggleSortingHandler()
-                                : undefined
-                            }
                           >
-                            <div class="flex items-center gap-2">
-                              <div class="truncate">
-                                {flexRender(
-                                  header.column.columnDef.header,
-                                  header.getContext(),
-                                )}
+                            {({ sortDirection }) => (
+                              <div class="flex items-center gap-2">
+                                <div class="truncate">
+                                  {flexRender(
+                                    header.column.columnDef.header,
+                                    header.getContext(),
+                                  )}
+                                </div>
+                                <Show when={sortDirection === "ascending"}>
+                                  {local.sortAscIcon}
+                                </Show>
+                                <Show when={sortDirection === "descending"}>
+                                  {local.sortDescIcon}
+                                </Show>
+                                <Show
+                                  when={
+                                    canSort &&
+                                    sortDirection === undefined &&
+                                    local.sortNeutralIcon
+                                  }
+                                >
+                                  {local.sortNeutralIcon}
+                                </Show>
+                                <Show when={canFilter}>
+                                  <FilterIconTrigger colId={colId} />
+                                </Show>
+                                <Show when={canFilter}>
+                                  <FilterPanel column={header.column} />
+                                </Show>
                               </div>
-                              <Show when={header.column.getIsSorted() === "asc"}>
-                                {local.sortAscIcon}
-                              </Show>
-                              <Show when={header.column.getIsSorted() === "desc"}>
-                                {local.sortDescIcon}
-                              </Show>
-                              <Show
-                                when={
-                                  canSort &&
-                                  header.column.getIsSorted() === false &&
-                                  local.sortNeutralIcon
-                                }
-                              >
-                                {local.sortNeutralIcon}
-                              </Show>
-                              <Show when={canFilter}>
-                                <FilterIconTrigger colId={colId} />
-                              </Show>
-                              <Show when={canFilter}>
-                                <FilterPanel column={header.column} />
-                              </Show>
-                            </div>
+                            )}
                           </Table.Column>
                         );
                       }}

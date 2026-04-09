@@ -1,4 +1,19 @@
 export { default } from "./Table";
+export {
+  TableRoot,
+  TableScrollContainer,
+  TableContent,
+  TableHeader,
+  TableColumn,
+  TableBody,
+  TableRow,
+  TableCell,
+  TableFooter,
+  TableResizableContainer,
+  TableColumnResizer,
+  TableLoadMore,
+  TableLoadMoreContent,
+} from "./Table";
 export type {
   TableRootProps as TableProps,
   TableRootProps,
@@ -10,7 +25,14 @@ export type {
   TableRowProps,
   TableCellProps,
   TableFooterProps,
+  TableResizableContainerProps,
+  TableColumnResizerProps,
+  TableLoadMoreProps,
+  TableLoadMoreContentProps,
   TableVariant,
+  TableSortDirection,
+  TableSortDescriptor,
+  TableColumnRenderProps,
 } from "./Table";
 
 export { default as EnhancedTable } from "./EnhancedTable";

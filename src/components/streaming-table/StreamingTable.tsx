@@ -1,7 +1,7 @@
 import { For, createEffect, createMemo, splitProps, createSignal, Show } from "solid-js";
 import { twMerge } from "tailwind-merge";
 import Table from "../table";
-import type { TableRootProps } from "../table";
+import type { TableRootProps, TableSortDescriptor } from "../table";
 import Icon from "../icon";
 import Pagination from "../pagination";
 import {
@@ -12,7 +12,6 @@ import type {
   StreamingColumnDef,
   StreamingConfig,
   SortingState,
-  SortDirection,
 } from "./types";
 
 export type StreamingTableProps<TData> = {
@@ -174,27 +173,19 @@ const StreamingTable = <TData,>(props: StreamingTableProps<TData>) => {
     return col.id ?? (col.accessorKey as string) ?? `column-${index}`;
   };
 
-  // Toggle sort direction for a column
-  const handleSort = (col: StreamingColumnDef<TData>, index: number) => {
-    if (!local.enableSorting || col.enableSorting === false) return;
+  const sortDescriptor = createMemo<TableSortDescriptor | undefined>(() => {
+    const sorting = sortingState();
+    if (!sorting.columnId || !sorting.direction) return undefined;
+    return {
+      column: sorting.columnId,
+      direction: sorting.direction === "asc" ? "ascending" : "descending",
+    };
+  });
 
-    const columnId = getColumnId(col, index);
-    const current = sortingState();
-
-    let newDirection: SortDirection = "asc";
-
-    if (current.columnId === columnId) {
-      // Cycle through: asc -> desc -> null
-      if (current.direction === "asc") {
-        newDirection = "desc";
-      } else if (current.direction === "desc") {
-        newDirection = null;
-      }
-    }
-
+  const handleSortChange = (descriptor: TableSortDescriptor) => {
     setSortingState({
-      columnId: newDirection === null ? null : columnId,
-      direction: newDirection,
+      columnId: descriptor.column,
+      direction: descriptor.direction === "ascending" ? "asc" : "desc",
     });
   };
 
@@ -289,13 +280,10 @@ const StreamingTable = <TData,>(props: StreamingTableProps<TData>) => {
   });
 
   // Render sort indicator
-  const renderSortIndicator = (col: StreamingColumnDef<TData>, index: number) => {
-    if (!local.enableSorting || col.enableSorting === false) return null;
+  const renderSortIndicator = (sortDirection?: "ascending" | "descending") => {
+    if (!local.enableSorting) return null;
 
-    const columnId = getColumnId(col, index);
-    const sorting = sortingState();
-
-    if (sorting.columnId !== columnId || !sorting.direction) {
+    if (!sortDirection) {
       return (
         <Icon
           name="icon-[mdi-light--unfold-more-horizontal]"
@@ -306,7 +294,7 @@ const StreamingTable = <TData,>(props: StreamingTableProps<TData>) => {
       );
     }
 
-    return sorting.direction === "asc" ? (
+    return sortDirection === "ascending" ? (
       <Icon name="icon-[mdi-light--chevron-up]" width={16} height={16} />
     ) : (
       <Icon name="icon-[mdi-light--chevron-down]" width={16} height={16} />
@@ -368,22 +356,25 @@ const StreamingTable = <TData,>(props: StreamingTableProps<TData>) => {
     <div class={twMerge(local.class, local.className)}>
       <Table {...tableProps}>
         <Table.ScrollContainer>
-          <Table.Content>
+          <Table.Content
+            sortDescriptor={sortDescriptor()}
+            onSortChange={handleSortChange}
+          >
             <Table.Header>
               <Table.Row>
                 <For each={local.columns}>
                   {(col, index) => {
+                    const columnId = getColumnId(col, index());
                     const isSortable = local.enableSorting && col.enableSorting !== false;
 
                     return (
-                      <Table.Column>
-                        <div
-                          class={isSortable ? "flex items-center gap-2 cursor-pointer select-none" : ""}
-                          onClick={() => isSortable && handleSort(col, index())}
-                        >
-                          <span>{col.header}</span>
-                          {renderSortIndicator(col, index())}
-                        </div>
+                      <Table.Column id={columnId} allowsSorting={isSortable}>
+                        {({ sortDirection }) => (
+                          <div class={isSortable ? "flex items-center gap-2 cursor-pointer select-none" : ""}>
+                            <span>{col.header}</span>
+                            {renderSortIndicator(isSortable ? sortDirection : undefined)}
+                          </div>
+                        )}
                       </Table.Column>
                     );
                   }}

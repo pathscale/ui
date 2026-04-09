@@ -227,7 +227,12 @@ export {
 } from "./components/svgbackground";
 export { default as Swap } from "./components/swap";
 export { default as Table, EnhancedTable } from "./components/table";
-export type { TableProps } from "./components/table";
+export type {
+  TableProps,
+  TableSortDirection,
+  TableSortDescriptor,
+  TableColumnRenderProps,
+} from "./components/table";
 export type { EnhancedTableProps } from "./components/table/EnhancedTable";
 export { StreamingTable } from "./components/streaming-table";
 export type { StreamingTableProps } from "./components/streaming-table";

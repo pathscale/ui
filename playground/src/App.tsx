@@ -27,9 +27,9 @@ import {
   Tabs,
   Toggle,
   Tooltip,
-  Table,
   ThemeColorPicker,
 } from "@pathscale/ui";
+import { TableExamples } from "./examples/TableExamples";
 
 const BADGE_COLORS = [
   "default",
@@ -1639,87 +1639,7 @@ export default function App() {
           </div>
         </section>
 
-        {/* ── Table ── */}
-        <section class="space-y-4">
-          <h2 class="text-lg font-bold">Table</h2>
-
-          <h3 class="text-sm font-semibold opacity-70">Primary variant</h3>
-          <Table variant="primary">
-            <Table.ScrollContainer>
-              <Table.Content>
-                <Table.Header>
-                  <Table.Row>
-                    <Table.Column>Name</Table.Column>
-                    <Table.Column>Role</Table.Column>
-                    <Table.Column>Status</Table.Column>
-                    <Table.Column>Email</Table.Column>
-                  </Table.Row>
-                </Table.Header>
-                <Table.Body>
-                  <Table.Row>
-                    <Table.Cell>Kate Moore</Table.Cell>
-                    <Table.Cell>CEO</Table.Cell>
-                    <Table.Cell>Active</Table.Cell>
-                    <Table.Cell>kate@acme.com</Table.Cell>
-                  </Table.Row>
-                  <Table.Row>
-                    <Table.Cell>John Smith</Table.Cell>
-                    <Table.Cell>CTO</Table.Cell>
-                    <Table.Cell>Active</Table.Cell>
-                    <Table.Cell>john@acme.com</Table.Cell>
-                  </Table.Row>
-                  <Table.Row>
-                    <Table.Cell>Sara Johnson</Table.Cell>
-                    <Table.Cell>CMO</Table.Cell>
-                    <Table.Cell>On Leave</Table.Cell>
-                    <Table.Cell>sara@acme.com</Table.Cell>
-                  </Table.Row>
-                  <Table.Row>
-                    <Table.Cell>Michael Brown</Table.Cell>
-                    <Table.Cell>CFO</Table.Cell>
-                    <Table.Cell>Active</Table.Cell>
-                    <Table.Cell>michael@acme.com</Table.Cell>
-                  </Table.Row>
-                </Table.Body>
-              </Table.Content>
-            </Table.ScrollContainer>
-            <Table.Footer>
-              <span class="text-xs opacity-70">Showing 4 of 4 results</span>
-            </Table.Footer>
-          </Table>
-
-          <h3 class="text-sm font-semibold opacity-70">Secondary variant</h3>
-          <Table variant="secondary">
-            <Table.ScrollContainer>
-              <Table.Content>
-                <Table.Header>
-                  <Table.Row>
-                    <Table.Column>Product</Table.Column>
-                    <Table.Column>Price</Table.Column>
-                    <Table.Column>Stock</Table.Column>
-                  </Table.Row>
-                </Table.Header>
-                <Table.Body>
-                  <Table.Row>
-                    <Table.Cell>Widget A</Table.Cell>
-                    <Table.Cell>$29.99</Table.Cell>
-                    <Table.Cell>142</Table.Cell>
-                  </Table.Row>
-                  <Table.Row>
-                    <Table.Cell>Widget B</Table.Cell>
-                    <Table.Cell>$49.99</Table.Cell>
-                    <Table.Cell>38</Table.Cell>
-                  </Table.Row>
-                  <Table.Row>
-                    <Table.Cell>Widget C</Table.Cell>
-                    <Table.Cell>$19.99</Table.Cell>
-                    <Table.Cell>500</Table.Cell>
-                  </Table.Row>
-                </Table.Body>
-              </Table.Content>
-            </Table.ScrollContainer>
-          </Table>
-        </section>
+        <TableExamples />
 
       </div>
     </main>
