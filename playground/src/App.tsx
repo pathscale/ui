@@ -23,6 +23,7 @@ import {
   Pagination,
   Radio,
   RadioGroup,
+  Select,
   SliderField,
   Tabs,
   Toggle,
@@ -122,6 +123,11 @@ export default function App() {
   const [basicPage, setBasicPage] = createSignal(1);
   const [largePage, setLargePage] = createSignal(8);
   const [controlledPage, setControlledPage] = createSignal(3);
+  const [controlledState, setControlledState] = createSignal<string | null>("california");
+  const [selectedRegions, setSelectedRegions] = createSignal<string[]>([
+    "north-america",
+    "europe",
+  ]);
 
   return (
     <main class="min-h-screen bg-base-100 text-base-content p-8">
@@ -379,6 +385,134 @@ export default function App() {
                   <Dropdown.Item>Archive</Dropdown.Item>
                 </Dropdown.Menu>
               </Dropdown.Root>
+            </div>
+          </div>
+        </section>
+
+        <section class="space-y-4 rounded-xl border border-base-300 bg-base-200 p-4">
+          <div>
+            <h2 class="text-sm font-semibold">Select</h2>
+            <p class="text-xs opacity-70">
+              HeroUI-style compound select with controlled, multiple, and disabled states.
+            </p>
+          </div>
+
+          <div class="grid gap-6 md:grid-cols-2">
+            <div class="space-y-3">
+              <h3 class="text-xs font-semibold uppercase opacity-70">Basic</h3>
+              <Select placeholder="Select a state">
+                <Select.Trigger>
+                  <Select.Value />
+                  <Select.Indicator />
+                </Select.Trigger>
+                <Select.Popover>
+                  <Select.Listbox>
+                    <Select.Option value="florida" textValue="Florida">
+                      Florida
+                    </Select.Option>
+                    <Select.Option value="california" textValue="California">
+                      California
+                    </Select.Option>
+                    <Select.Option value="texas" textValue="Texas">
+                      Texas
+                    </Select.Option>
+                    <Select.Option value="washington" textValue="Washington">
+                      Washington
+                    </Select.Option>
+                  </Select.Listbox>
+                </Select.Popover>
+              </Select>
+            </div>
+
+            <div class="space-y-3">
+              <h3 class="text-xs font-semibold uppercase opacity-70">Controlled</h3>
+              <Select
+                value={controlledState()}
+                onChange={(value) => setControlledState(typeof value === "string" ? value : null)}
+                fullWidth
+                placeholder="Select a state"
+              >
+                <Select.Trigger>
+                  <Select.Value />
+                  <Select.Indicator />
+                </Select.Trigger>
+                <Select.Popover>
+                  <Select.Listbox>
+                    <Select.Option value="california" textValue="California">
+                      California
+                    </Select.Option>
+                    <Select.Option value="nevada" textValue="Nevada">
+                      Nevada
+                    </Select.Option>
+                    <Select.Option value="new-york" textValue="New York">
+                      New York
+                    </Select.Option>
+                  </Select.Listbox>
+                </Select.Popover>
+              </Select>
+              <p class="text-xs opacity-70">Selected: {controlledState() ?? "none"}</p>
+            </div>
+          </div>
+
+          <div class="grid gap-6 md:grid-cols-2">
+            <div class="space-y-3">
+              <h3 class="text-xs font-semibold uppercase opacity-70">Multiple</h3>
+              <Select
+                selectionMode="multiple"
+                value={selectedRegions()}
+                onChange={(value) =>
+                  setSelectedRegions(Array.isArray(value) ? value : value ? [value] : [])
+                }
+                placeholder="Select regions"
+                fullWidth
+              >
+                <Select.Trigger>
+                  <Select.Value />
+                  <Select.Indicator />
+                </Select.Trigger>
+                <Select.Popover>
+                  <Select.Listbox>
+                    <Select.Option value="north-america" textValue="North America">
+                      North America
+                    </Select.Option>
+                    <Select.Option value="europe" textValue="Europe">
+                      Europe
+                    </Select.Option>
+                    <Select.Option value="asia" textValue="Asia">
+                      Asia
+                    </Select.Option>
+                    <Select.Option value="latam" textValue="Latin America">
+                      Latin America
+                    </Select.Option>
+                  </Select.Listbox>
+                </Select.Popover>
+              </Select>
+              <p class="text-xs opacity-70">Selected: {selectedRegions().join(", ")}</p>
+            </div>
+
+            <div class="space-y-3">
+              <h3 class="text-xs font-semibold uppercase opacity-70">Disabled</h3>
+              <Select
+                value="california"
+                isDisabled
+                variant="secondary"
+                placeholder="Select a state"
+              >
+                <Select.Trigger>
+                  <Select.Value />
+                  <Select.Indicator />
+                </Select.Trigger>
+                <Select.Popover>
+                  <Select.Listbox>
+                    <Select.Option value="california" textValue="California">
+                      California
+                    </Select.Option>
+                    <Select.Option value="oregon" textValue="Oregon">
+                      Oregon
+                    </Select.Option>
+                  </Select.Listbox>
+                </Select.Popover>
+              </Select>
             </div>
           </div>
         </section>

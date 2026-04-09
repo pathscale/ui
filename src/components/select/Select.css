@@ -1,0 +1,244 @@
+@layer components {
+  .ui-select {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+  }
+
+  .ui-select--full-width {
+    width: 100%;
+  }
+
+  .ui-select__trigger {
+    position: relative;
+    isolation: isolate;
+    display: inline-flex;
+    min-height: 2.25rem;
+    width: fit-content;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.5rem;
+    border-radius: 1rem;
+    border: 1px solid var(--color-field-border, var(--color-base-300));
+    background-color: var(--color-field, var(--color-base-100));
+    padding: 0.5rem 0.75rem;
+    text-align: left;
+    font-size: 0.875rem;
+    line-height: 1.25;
+    color: var(--color-field-foreground, var(--color-base-content));
+    cursor: pointer;
+    user-select: none;
+    outline: none;
+    box-shadow:
+      0 1px 2px oklch(0% 0 0 / 0.06),
+      0 1px 0 oklch(100% 0 0 / 0.04) inset;
+    transition:
+      background-color 150ms ease,
+      border-color 150ms ease,
+      box-shadow 150ms ease,
+      transform 150ms ease,
+      color 150ms ease;
+  }
+
+  .ui-select__trigger--full-width {
+    width: 100%;
+  }
+
+  @media (hover: hover) {
+    .ui-select__trigger:hover:not(:disabled) {
+      background-color: var(--color-base-200);
+      border-color: color-mix(in oklch, var(--color-base-content) 10%, transparent);
+    }
+  }
+
+  .ui-select__trigger:focus-visible,
+  .ui-select__trigger[data-focus-visible="true"] {
+    outline: 2px solid var(--color-accent);
+    outline-offset: 2px;
+    border-color: var(--color-accent);
+    background-color: color-mix(in oklch, var(--color-accent) 8%, var(--color-base-100));
+  }
+
+  .ui-select__trigger:active:not(:disabled) {
+    transform: scale(0.99);
+  }
+
+  .ui-select__trigger:disabled,
+  .ui-select[data-disabled="true"] .ui-select__trigger,
+  .ui-select__trigger[aria-disabled="true"] {
+    cursor: not-allowed;
+    opacity: 0.55;
+    background-color: var(--color-base-200);
+  }
+
+  .ui-select--secondary .ui-select__trigger {
+    border-color: transparent;
+    background-color: var(--color-base-200);
+    box-shadow: none;
+  }
+
+  @media (hover: hover) {
+    .ui-select--secondary .ui-select__trigger:hover:not(:disabled) {
+      background-color: var(--color-base-300);
+    }
+  }
+
+  .ui-select__value {
+    flex: 1;
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .ui-select__value[data-placeholder="true"] {
+    color: color-mix(in oklch, var(--color-base-content) 42%, transparent);
+  }
+
+  .ui-select__indicator {
+    display: inline-flex;
+    width: 1rem;
+    height: 1rem;
+    flex-shrink: 0;
+    align-items: center;
+    justify-content: center;
+    color: color-mix(in oklch, var(--color-base-content) 55%, transparent);
+    transition:
+      transform 150ms ease,
+      color 150ms ease;
+  }
+
+  .ui-select__indicator svg {
+    width: 100%;
+    height: 100%;
+  }
+
+  .ui-select__indicator[data-open="true"] {
+    transform: rotate(180deg);
+    color: var(--color-base-content);
+  }
+
+  .ui-select__popover {
+    display: none;
+    position: absolute;
+    z-index: 80;
+    top: calc(100% + 0.375rem);
+    inset-inline-start: 0;
+    min-width: max(100%, 14rem);
+    max-width: min(30rem, calc(100vw - 2rem));
+    max-height: min(24rem, 70vh);
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    border-radius: 1.5rem;
+    border: 1px solid color-mix(in oklch, var(--color-base-content) 8%, transparent);
+    background-color: var(--color-base-100);
+    box-shadow:
+      0 20px 32px oklch(0% 0 0 / 0.16),
+      0 8px 18px oklch(0% 0 0 / 0.1);
+    visibility: hidden;
+    opacity: 0;
+    transform: translateY(-4px) scale(0.98);
+    transform-origin: top;
+    pointer-events: none;
+    transition:
+      opacity 150ms cubic-bezier(0.22, 1, 0.36, 1),
+      transform 150ms cubic-bezier(0.22, 1, 0.36, 1),
+      visibility 150ms ease;
+  }
+
+  .ui-select__popover[data-open="true"] {
+    display: block;
+    visibility: visible;
+    opacity: 1;
+    transform: translateY(0) scale(1);
+    pointer-events: auto;
+  }
+
+  .ui-select__listbox {
+    display: flex;
+    flex-direction: column;
+    gap: 0.125rem;
+    padding: 0.375rem;
+    outline: none;
+  }
+
+  .ui-select__option {
+    display: flex;
+    min-height: 2.25rem;
+    width: 100%;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem;
+    border: 0;
+    border-radius: 1rem;
+    background: transparent;
+    padding: 0.5rem 0.625rem;
+    text-align: start;
+    font-size: 0.875rem;
+    line-height: 1.2;
+    color: var(--color-base-content);
+    cursor: pointer;
+    outline: none;
+    transition:
+      background-color 150ms ease,
+      color 120ms ease,
+      transform 150ms ease,
+      opacity 120ms ease;
+  }
+
+  .ui-select__option-label {
+    min-width: 0;
+    flex: 1;
+  }
+
+  .ui-select__option-indicator {
+    display: inline-flex;
+    width: 1rem;
+    height: 1rem;
+    flex-shrink: 0;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transform: scale(0.85);
+    transition:
+      opacity 120ms ease,
+      transform 150ms ease;
+  }
+
+  .ui-select__option-indicator svg {
+    width: 100%;
+    height: 100%;
+  }
+
+  .ui-select__option[data-selected="true"] .ui-select__option-indicator {
+    opacity: 1;
+    transform: scale(1);
+  }
+
+  .ui-select__option[data-focused="true"],
+  .ui-select__option:focus-visible {
+    background-color: var(--color-base-200);
+  }
+
+  @media (hover: hover) {
+    .ui-select__option:hover:not(:disabled):not([data-disabled="true"]) {
+      background-color: var(--color-base-200);
+    }
+  }
+
+  .ui-select__option:active:not(:disabled):not([data-disabled="true"]) {
+    transform: scale(0.99);
+    background-color: var(--color-base-300);
+  }
+
+  .ui-select__option[data-selected="true"] {
+    color: var(--color-base-content);
+  }
+
+  .ui-select__option:disabled,
+  .ui-select__option[data-disabled="true"] {
+    cursor: not-allowed;
+    opacity: 0.45;
+  }
+}
