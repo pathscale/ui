@@ -29,6 +29,35 @@ const checkCspAllowsInlineStyles = (): boolean => {
 // Full saturation (100) = full chroma, low saturation = reduced chroma
 const MIN_CHROMA_SCALE = 0.3;
 
+// HSL to OKLCH hue conversion — HSL and OKLCH hue wheels don't align
+// (e.g. HSL yellow ~54° maps to OKLCH ~100°, HSL red ~0° maps to OKLCH ~29°)
+function hslHueToOklchHue(hslHue: number): number {
+  const h = ((hslHue % 360) + 360) % 360;
+
+  const controlPoints: [number, number][] = [
+    [0, 29],     // Red
+    [30, 55],    // Orange
+    [60, 100],   // Yellow
+    [120, 145],  // Green
+    [180, 195],  // Cyan
+    [240, 265],  // Blue
+    [300, 330],  // Magenta
+    [360, 389],  // Red (wrapped)
+  ];
+
+  for (let i = 0; i < controlPoints.length - 1; i++) {
+    const [h1, o1] = controlPoints[i];
+    const [h2, o2] = controlPoints[i + 1];
+    if (h >= h1 && h <= h2) {
+      const t = (h - h1) / (h2 - h1);
+      const oklchHue = o1 + t * (o2 - o1);
+      return ((oklchHue % 360) + 360) % 360;
+    }
+  }
+
+  return h;
+}
+
 // Primary color settings
 const PRIMARY_SETTINGS = {
   light: {
@@ -189,7 +218,7 @@ function applyHueShift(targetHue: number, saturation: number = 100, lightnessOff
   if (!checkCspAllowsInlineStyles()) return;
 
   const root = document.documentElement;
-  const oklchHue = ((targetHue % 360) + 360) % 360;
+  const oklchHue = hslHueToOklchHue(targetHue);
   const chromaScale = saturation === 0 ? 0 : MIN_CHROMA_SCALE + (1 - MIN_CHROMA_SCALE) * (saturation / 100);
   const resolvedTheme = getResolvedTheme();
 
