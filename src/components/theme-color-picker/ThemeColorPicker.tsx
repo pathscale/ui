@@ -162,6 +162,7 @@ const ThemeColorPicker: Component<ThemeColorPickerProps> = (props) => {
         <Button
           type="button"
           size="sm"
+          variant="ghost"
           onClick={() => setIsOpen(!isOpen())}
           aria-label={local["aria-label"] ?? "Change theme color"}
           aria-expanded={isOpen()}

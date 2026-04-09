@@ -108,8 +108,8 @@ const GlassPanel = (props: GlassPanelProps): JSX.Element => {
   const glassStyle = (): JSX.CSSProperties => {
     const base: JSX.CSSProperties = { ...((local.style as JSX.CSSProperties) || {}) };
     if (!local.transparent) {
-      base.background = "color-mix(in srgb, var(--color-base-200) 85%, transparent)";
-      base.border = "1px solid color-mix(in srgb, var(--color-base-content) 8%, transparent)";
+      base.background = "color-mix(in srgb, var(--color-base-300) 50%, var(--color-base-200))";
+      base.border = "1px solid color-mix(in srgb, var(--color-base-content) 12%, transparent)";
     }
     if (local.glow) {
       base["box-shadow"] = "inset 0 1px 0 color-mix(in srgb, var(--color-base-content) 5%, transparent)";
