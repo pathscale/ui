@@ -20,6 +20,10 @@ export interface ThemeColorPickerProps extends IComponentBaseProps {
    */
   onColorChange?: (hue: number | null, saturation: number) => void;
   /**
+   * Callback to switch light/dark theme (triggered by grayscale selection)
+   */
+  onThemeSwitch?: (theme: "light" | "dark") => void;
+  /**
    * ARIA label for the button
    */
   "aria-label"?: string;
@@ -41,6 +45,7 @@ const ThemeColorPicker: Component<ThemeColorPickerProps> = (props) => {
   const [local, others] = splitProps(props, [
     "storagePrefix",
     "onColorChange",
+    "onThemeSwitch",
     "aria-label",
     "children",
     "class",
@@ -97,6 +102,12 @@ const ThemeColorPicker: Component<ThemeColorPickerProps> = (props) => {
   const handleGrayscale = (lightnessOffset: number) => {
     store().setHueShift(0, 0, lightnessOffset);
     local.onColorChange?.(null, 0);
+
+    if (lightnessOffset >= 5) {
+      local.onThemeSwitch?.("light");
+    } else if (lightnessOffset <= -10) {
+      local.onThemeSwitch?.("dark");
+    }
   };
 
   createEffect(() => {
