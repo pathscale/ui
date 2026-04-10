@@ -26,8 +26,9 @@ const checkCspAllowsInlineStyles = (): boolean => {
 };
 
 // CSS variables that get overridden when the user picks a theme color.
-// Kept minimal on purpose — picked color is applied verbatim, nothing
-// derived. Secondary/accent/semantic/base stay on the stylesheet defaults.
+// Primary/content are set to the picked hex verbatim. Backgrounds and the
+// body gradient are mixed with the picked color at low percentages so the
+// whole app picks up the hue without going full pastel.
 const PRIMARY_VARS = [
   "--color-primary",
   "--nf-accent",
@@ -39,6 +40,42 @@ const CONTENT_VARS = [
   "--nf-on-accent",
   "--color-nf-on-accent",
 ] as const;
+
+// Per-theme anchor values for the background variables. These match the
+// consumer's neutral defaults so the tinted versions stay close to the
+// originals when the mix ratio is small. Tuned visually.
+type BackgroundVar = {
+  name: string;
+  anchor: string; // CSS color the picked hex is mixed into
+  mix: number; // % of picked color in the mix (0-100)
+};
+
+const BACKGROUND_VARS: Record<"light" | "dark", readonly BackgroundVar[]> = {
+  light: [
+    { name: "--color-base-100", anchor: "oklch(98% 0.001 106.423)", mix: 4 },
+    { name: "--color-base-200", anchor: "oklch(97% 0.001 106.424)", mix: 5 },
+    { name: "--color-base-300", anchor: "oklch(92% 0.003 48.717)", mix: 7 },
+    { name: "--gradient-start", anchor: "#ffffff", mix: 18 },
+    { name: "--gradient-end", anchor: "#f5f5f5", mix: 10 },
+  ],
+  dark: [
+    { name: "--color-base-100", anchor: "oklch(13% 0.028 261.692)", mix: 8 },
+    { name: "--color-base-200", anchor: "oklch(21% 0.034 264.665)", mix: 9 },
+    { name: "--color-base-300", anchor: "oklch(27% 0.033 256.848)", mix: 11 },
+    { name: "--gradient-start", anchor: "#0f1420", mix: 20 },
+    { name: "--gradient-end", anchor: "#060910", mix: 12 },
+  ],
+};
+
+function getResolvedTheme(): "light" | "dark" {
+  if (typeof document === "undefined") return "light";
+  const dataTheme = document.documentElement.getAttribute("data-theme");
+  if (dataTheme === "dark") return "dark";
+  if (dataTheme === "light") return "light";
+  return window.matchMedia("(prefers-color-scheme: dark)").matches
+    ? "dark"
+    : "light";
+}
 
 function parseHex(hex: string): { r: number; g: number; b: number } | null {
   let h = hex.trim();
@@ -86,12 +123,19 @@ function applyThemeColor(hex: string) {
 
   const root = document.documentElement;
   const content = pickContentColor(rgb.r, rgb.g, rgb.b);
+  const resolvedTheme = getResolvedTheme();
 
   for (const varName of PRIMARY_VARS) {
     root.style.setProperty(varName, hex);
   }
   for (const varName of CONTENT_VARS) {
     root.style.setProperty(varName, content);
+  }
+  for (const { name, anchor, mix } of BACKGROUND_VARS[resolvedTheme]) {
+    root.style.setProperty(
+      name,
+      `color-mix(in oklab, ${hex} ${mix}%, ${anchor})`,
+    );
   }
 }
 
@@ -104,6 +148,11 @@ function resetHueShift() {
   }
   for (const varName of CONTENT_VARS) {
     root.style.removeProperty(varName);
+  }
+  // Background anchors are identical across themes in terms of var names, so
+  // clearing one set is enough.
+  for (const { name } of BACKGROUND_VARS.light) {
+    root.style.removeProperty(name);
   }
 }
 
