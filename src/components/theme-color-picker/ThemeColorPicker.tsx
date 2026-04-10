@@ -59,25 +59,28 @@ const ThemeColorPicker: Component<ThemeColorPickerProps> = (props) => {
   const [featureAvailable, setFeatureAvailable] = createSignal(true);
   let containerRef: HTMLDivElement | undefined;
 
-  const store = createMemo<HueShiftStore>(() =>
-    createHueShiftStore(local.storagePrefix ?? "theme")
-  );
+  // Create the store exactly once during component setup. We used to wrap
+  // this in createMemo to guard against storagePrefix changes, but in
+  // practice the prop is stable and the extra layer opened up a race where
+  // memo re-computation could leak stale signals and a dead MutationObserver,
+  // breaking subsequent applyThemeColor calls.
+  const store: HueShiftStore = createHueShiftStore(local.storagePrefix ?? "theme");
 
-  const colorValue = createMemo(() => hexToColorValue(store().themeColor()));
+  const colorValue = createMemo(() => hexToColorValue(store.themeColor()));
 
   const handleColorChange = (color: ColorValue) => {
     const { s, l } = color.hsl;
 
     // "Near-white, low saturation" = the flower's center reset swatch.
     if (s < 10 && l > 90) {
-      store().setThemeColor(null);
+      store.setThemeColor(null);
       local.onColorChange?.(null, 100);
       return;
     }
 
     // Apply the picked Material color verbatim. No derivation: the swatch
     // the user clicked is exactly what lands on --color-primary.
-    store().setThemeColor(color.hex);
+    store.setThemeColor(color.hex);
     local.onColorChange?.(color.hsl.h, color.hsl.s);
   };
 
@@ -111,7 +114,7 @@ const ThemeColorPicker: Component<ThemeColorPickerProps> = (props) => {
     // resetHueShift is still needed before onThemeSwitch so the store's
     // MutationObserver can't re-apply a stale color after the data-theme
     // mutation (see the 1.1.28 race-fix commit for full context).
-    store().setThemeColor(null);
+    store.setThemeColor(null);
     resetHueShift();
     local.onColorChange?.(null, 0);
     local.onThemeSwitch?.(swatch.theme);
@@ -179,7 +182,7 @@ const ThemeColorPicker: Component<ThemeColorPickerProps> = (props) => {
               name="icon-[mdi--palette]"
               width={16}
               height={16}
-              class={store().themeColor() !== null ? "text-primary" : undefined}
+              class={store.themeColor() !== null ? "text-primary" : undefined}
             />
           )}
         </Button>

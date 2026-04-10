@@ -125,16 +125,21 @@ function applyThemeColor(hex: string) {
   const content = pickContentColor(rgb.r, rgb.g, rgb.b);
   const resolvedTheme = getResolvedTheme();
 
+  // !important on every setProperty so the inline override beats anything
+  // the consumer's stylesheets try to layer on top — we hit both the
+  // --color-* tokens Tailwind 4 exposes and the raw --nf-* source vars the
+  // consumer chains from them.
   for (const varName of PRIMARY_VARS) {
-    root.style.setProperty(varName, hex);
+    root.style.setProperty(varName, hex, "important");
   }
   for (const varName of CONTENT_VARS) {
-    root.style.setProperty(varName, content);
+    root.style.setProperty(varName, content, "important");
   }
   for (const { name, anchor, mix } of BACKGROUND_VARS[resolvedTheme]) {
     root.style.setProperty(
       name,
       `color-mix(in oklab, ${hex} ${mix}%, ${anchor})`,
+      "important",
     );
   }
 }
