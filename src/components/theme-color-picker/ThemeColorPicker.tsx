@@ -7,7 +7,7 @@ import { createColorFromHsl, parseColor } from "../colorpicker/ColorUtils";
 import Button from "../button";
 import Icon from "../icon";
 import type { IComponentBaseProps } from "../types";
-import { createHueShiftStore, resetHueShift, type HueShiftStore } from "./hueShift";
+import { createHueShiftStore, type HueShiftStore } from "./hueShift";
 
 export interface ThemeColorPickerProps extends IComponentBaseProps {
   /**
@@ -81,29 +81,33 @@ const ThemeColorPicker: Component<ThemeColorPickerProps> = (props) => {
     local.onColorChange?.(color.hsl.h, color.hsl.s);
   };
 
-  const GRAYSCALE_SWATCHES = [
-    { label: "White", theme: "light" as const },
-    { label: "Light gray", theme: "light" as const },
-    { label: "Gray", theme: "light" as const },
-    { label: "Dark gray", theme: "dark" as const },
-    { label: "Charcoal", theme: "dark" as const },
-    { label: "Black", theme: "dark" as const },
+  // Tailwind-style neutral grays, tuned so adjacent swatches are visually
+  // distinct. Each swatch applies its hex as --color-primary just like the
+  // Material flower swatches do — the strip is just a grayscale palette.
+  // Theme side (light vs dark) is picked by which half of the strip the
+  // swatch lives on: top three → light, bottom three → dark.
+  type GrayscaleSwatch = {
+    label: string;
+    hex: string;
+    theme: "light" | "dark";
+  };
+
+  const GRAYSCALE_SWATCHES: GrayscaleSwatch[] = [
+    { label: "White", hex: "#fafafa", theme: "light" },
+    { label: "Light gray", hex: "#d4d4d4", theme: "light" },
+    { label: "Gray", hex: "#737373", theme: "light" },
+    { label: "Dark gray", hex: "#404040", theme: "dark" },
+    { label: "Charcoal", hex: "#262626", theme: "dark" },
+    { label: "Black", hex: "#0a0a0a", theme: "dark" },
   ];
 
-  const handleGrayscale = (theme: "light" | "dark") => {
-    // Grayscale swatches clear any picked theme color and switch light/dark.
-    // The top half of the strip maps to light, the bottom half to dark, so
-    // every swatch does something — no dead middle values.
-    //
-    // Clear inline CSS vars synchronously BEFORE triggering the theme
-    // switch. If we only relied on the store's createEffect to run
-    // resetHueShift, the consumer's data-theme mutation could race with
-    // the effect and fire the MutationObserver while the override still
-    // looks active, re-applying the tint on the wrong theme.
-    store().setThemeColor(null);
-    resetHueShift();
+  const handleGrayscale = (swatch: GrayscaleSwatch) => {
+    // Apply the clicked gray verbatim as the theme color (same path as any
+    // Material swatch). Also switch light/dark so the chosen gray lands on
+    // the appropriate backdrop.
+    store().setThemeColor(swatch.hex);
     local.onColorChange?.(null, 0);
-    local.onThemeSwitch?.(theme);
+    local.onThemeSwitch?.(swatch.theme);
   };
 
   createEffect(() => {
@@ -183,13 +187,13 @@ const ThemeColorPicker: Component<ThemeColorPickerProps> = (props) => {
 
                 <div class="flex flex-col gap-1.5">
                   <For each={GRAYSCALE_SWATCHES}>
-                    {(g, i) => (
+                    {(g) => (
                       <button
                         type="button"
                         class="h-6 w-6 rounded-full border border-white/20 transition-transform hover:scale-110"
-                        style={{ "background-color": `oklch(${[95, 80, 60, 40, 25, 5][i()]}% 0 0)` }}
+                        style={{ "background-color": `${g.hex}` }}
                         aria-label={g.label}
-                        onClick={() => handleGrayscale(g.theme)}
+                        onClick={() => handleGrayscale(g)}
                       />
                     )}
                   </For>
