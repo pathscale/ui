@@ -334,5 +334,18 @@ export type {
   UseVirtualRowsResult,
   VirtualRowsRange,
 } from "./primitives/virtualizer";
+export {
+  useStreamingBuffer,
+  useStreamingSubscription,
+} from "./primitives/streaming";
+export type {
+  StreamingBufferStrategy,
+  StreamingSubscribeFn,
+  StreamingSubscriptionObserver,
+  UseStreamingBufferOptions,
+  UseStreamingBufferResult,
+  UseStreamingSubscriptionOptions,
+  UseStreamingSubscriptionResult,
+} from "./primitives/streaming";
 
 export { default } from "./components/connectionstatus";

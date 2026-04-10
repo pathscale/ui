@@ -33,6 +33,7 @@ import {
 import { TableExamples } from "./examples/TableExamples";
 import { TableHooksExample } from "./examples/TableHooksExample";
 import { TableVirtualizedExample } from "./examples/TableVirtualizedExample";
+import { StreamingComposableExample } from "./examples/StreamingComposableExample";
 
 const BADGE_COLORS = [
   "default",
@@ -1778,6 +1779,7 @@ export default function App() {
         <TableExamples />
         <TableHooksExample />
         <TableVirtualizedExample />
+        <StreamingComposableExample />
 
       </div>
     </main>
