@@ -7,7 +7,7 @@ import { createColorFromHsl, parseColor } from "../colorpicker/ColorUtils";
 import Button from "../button";
 import Icon from "../icon";
 import type { IComponentBaseProps } from "../types";
-import { createHueShiftStore, resetHueShift, type HueShiftStore } from "./hueShift";
+import { createHueShiftStore, type HueShiftStore } from "./hueShift";
 
 export interface ThemeColorPickerProps extends IComponentBaseProps {
   /**
@@ -59,57 +59,32 @@ const ThemeColorPicker: Component<ThemeColorPickerProps> = (props) => {
   const [featureAvailable, setFeatureAvailable] = createSignal(true);
   let containerRef: HTMLDivElement | undefined;
 
-  // Create the store exactly once during component setup. We used to wrap
-  // this in createMemo to guard against storagePrefix changes, but in
-  // practice the prop is stable and the extra layer opened up a race where
-  // memo re-computation could leak stale signals and a dead MutationObserver,
-  // breaking subsequent applyThemeColor calls.
   const store: HueShiftStore = createHueShiftStore(local.storagePrefix ?? "theme");
 
   const colorValue = createMemo(() => hexToColorValue(store.themeColor()));
 
   const handleColorChange = (color: ColorValue) => {
-    // eslint-disable-next-line no-console
-    console.log("[tcp] handleColorChange ENTER", {
-      hex: color.hex,
-      hsl: color.hsl,
-      rgb: color.rgb,
-    });
     const { s, l } = color.hsl;
 
-    // "Near-white, low saturation" = the flower's center reset swatch.
     if (s < 10 && l > 90) {
-      // eslint-disable-next-line no-console
-      console.log("[tcp] handleColorChange -> center swatch, clearing");
       store.setThemeColor(null);
       local.onColorChange?.(null, 100);
       return;
     }
 
-    // Apply the picked Material color verbatim. No derivation: the swatch
-    // the user clicked is exactly what lands on --color-primary.
-    // eslint-disable-next-line no-console
-    console.log("[tcp] handleColorChange -> setThemeColor", color.hex);
     store.setThemeColor(color.hex);
     local.onColorChange?.(color.hsl.h, color.hsl.s);
   };
 
-  // Grayscale strip is a pure light/dark theme switcher. The hex on each
-  // swatch is cosmetic only — it paints the circle so the user sees a
-  // gradient, but clicks do NOT apply that gray to --color-primary. Doing
-  // so led to "white on white" when clicking the lightest swatch on a
-  // light theme, because primary ended up matching the background.
-  //
-  // Theme mapping is inverted on purpose: the white/near-white swatches
-  // switch TO dark theme, the black/near-black swatches switch TO light.
-  // The mental model is "the circle shows what you're leaving, not where
-  // you're going" — click white, get away from white.
   type GrayscaleSwatch = {
     label: string;
     hex: string;
     theme: "light" | "dark";
   };
 
+  // Theme mapping is inverted so every swatch lands on a contrasting
+  // background — lights → dark mode, darks → light mode. Keeps the picked
+  // gray readable and avoids the white-on-white trap.
   const GRAYSCALE_SWATCHES: GrayscaleSwatch[] = [
     { label: "White", hex: "#fafafa", theme: "dark" },
     { label: "Light gray", hex: "#d4d4d4", theme: "dark" },
@@ -120,23 +95,13 @@ const ThemeColorPicker: Component<ThemeColorPickerProps> = (props) => {
   ];
 
   const handleGrayscale = (swatch: GrayscaleSwatch) => {
-    // eslint-disable-next-line no-console
-    console.log("[tcp] handleGrayscale ENTER", swatch);
-    // Clear any picked theme color and switch light/dark. Synchronous
-    // resetHueShift is still needed before onThemeSwitch so the store's
-    // MutationObserver can't re-apply a stale color after the data-theme
-    // mutation (see the 1.1.28 race-fix commit for full context).
-    store.setThemeColor(null);
-    resetHueShift();
-    local.onColorChange?.(null, 0);
-    // eslint-disable-next-line no-console
-    console.log("[tcp] handleGrayscale -> onThemeSwitch", swatch.theme);
+    // Switch theme first so data-theme is updated before the store effect
+    // reads it inside applyThemeColor. Solid's effect flush order (consumer
+    // theme effect → picker store effect) lets applyThemeColor see the new
+    // data-theme and pick the correct background anchors on the first pass.
     local.onThemeSwitch?.(swatch.theme);
-    // eslint-disable-next-line no-console
-    console.log(
-      "[tcp] handleGrayscale AFTER onThemeSwitch, data-theme=",
-      document.documentElement.getAttribute("data-theme"),
-    );
+    store.setThemeColor(swatch.hex);
+    local.onColorChange?.(null, 0);
   };
 
   createEffect(() => {
