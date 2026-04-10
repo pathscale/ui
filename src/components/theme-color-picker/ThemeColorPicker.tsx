@@ -66,7 +66,7 @@ const ThemeColorPicker: Component<ThemeColorPickerProps> = (props) => {
     hueToColorValue(store().hueShift(), store().hueSaturation())
   );
 
-  const setThemeColor = (hue: number | null, saturation: number) => {
+  const setThemeColor = (hue: number | null, saturation: number, lightnessOffset: number = 0) => {
     if (hue === null) {
       store().setHueShift(null);
       local.onColorChange?.(null, 100);
@@ -75,7 +75,7 @@ const ThemeColorPicker: Component<ThemeColorPickerProps> = (props) => {
 
     const normalizedHue = ((hue % 360) + 360) % 360;
     const normalizedSaturation = Math.max(0, Math.min(100, saturation));
-    store().setHueShift(normalizedHue, normalizedSaturation);
+    store().setHueShift(normalizedHue, normalizedSaturation, lightnessOffset);
     local.onColorChange?.(normalizedHue, normalizedSaturation);
   };
 
@@ -87,7 +87,11 @@ const ThemeColorPicker: Component<ThemeColorPickerProps> = (props) => {
       return;
     }
 
-    setThemeColor(h, s);
+    // Material 500 sits around l≈58; offset from that baseline so the
+    // outer (Material 800, darker) and inner (Material 200, paler) rings
+    // actually produce distinct themes instead of collapsing onto the same primary.
+    const lightnessOffset = l - 58;
+    setThemeColor(h, s, lightnessOffset);
   };
 
   const GRAYSCALE_SWATCHES = [
