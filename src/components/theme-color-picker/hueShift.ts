@@ -203,8 +203,11 @@ export function createHueShiftStore(storagePrefix: string): HueShiftStore {
   });
 
   // Re-apply theme color when the light/dark theme attribute changes.
-  // Content color is luminance-based, so it doesn't need recomputing on theme
-  // switch — but we still re-set the CSS vars in case another module cleared them.
+  // Background anchors are theme-dependent, so on every theme switch the
+  // color-mix() targets need to swap. We schedule this after the current
+  // microtask so any concurrent setThemeColor(null) has a chance to flush
+  // its null signal first — otherwise we'd race with grayscale buttons
+  // that clear the color *and* switch the theme in one click.
   if (typeof window !== "undefined") {
     const observer = new MutationObserver((mutations) => {
       for (const mutation of mutations) {
@@ -212,10 +215,12 @@ export function createHueShiftStore(storagePrefix: string): HueShiftStore {
           mutation.type === "attributes" &&
           mutation.attributeName === "data-theme"
         ) {
-          const color = themeColor();
-          if (color !== null) {
-            requestAnimationFrame(() => applyThemeColor(color));
-          }
+          requestAnimationFrame(() => {
+            const color = themeColor();
+            if (color !== null) {
+              applyThemeColor(color);
+            }
+          });
         }
       }
     });

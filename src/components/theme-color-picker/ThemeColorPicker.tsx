@@ -7,7 +7,7 @@ import { createColorFromHsl, parseColor } from "../colorpicker/ColorUtils";
 import Button from "../button";
 import Icon from "../icon";
 import type { IComponentBaseProps } from "../types";
-import { createHueShiftStore, type HueShiftStore } from "./hueShift";
+import { createHueShiftStore, resetHueShift, type HueShiftStore } from "./hueShift";
 
 export interface ThemeColorPickerProps extends IComponentBaseProps {
   /**
@@ -94,7 +94,14 @@ const ThemeColorPicker: Component<ThemeColorPickerProps> = (props) => {
     // Grayscale swatches clear any picked theme color and switch light/dark.
     // The top half of the strip maps to light, the bottom half to dark, so
     // every swatch does something — no dead middle values.
+    //
+    // Clear inline CSS vars synchronously BEFORE triggering the theme
+    // switch. If we only relied on the store's createEffect to run
+    // resetHueShift, the consumer's data-theme mutation could race with
+    // the effect and fire the MutationObserver while the override still
+    // looks active, re-applying the tint on the wrong theme.
     store().setThemeColor(null);
+    resetHueShift();
     local.onColorChange?.(null, 0);
     local.onThemeSwitch?.(theme);
   };
