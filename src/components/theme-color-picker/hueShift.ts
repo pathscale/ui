@@ -1,5 +1,13 @@
 import { createSignal, createEffect } from "solid-js";
 
+// Temporary diagnostic logger — remove once the picker flow is confirmed.
+// Logs every store transition, every DOM write, and every read-back so we
+// can trace from the click to the cascade.
+const log = (...args: unknown[]) => {
+  // eslint-disable-next-line no-console
+  console.log("[tcp]", ...args);
+};
+
 // CSP detection: Test if inline styles are allowed
 let cspAllowsInlineStyles: boolean | null = null;
 
@@ -10,13 +18,21 @@ const checkCspAllowsInlineStyles = (): boolean => {
   try {
     const testEl = document.createElement("div");
     testEl.style.setProperty("--csp-test", "1");
+    if (!document.body) {
+      log("csp check: document.body missing, assuming allowed");
+      cspAllowsInlineStyles = true;
+      return true;
+    }
     document.body.appendChild(testEl);
     const computed = getComputedStyle(testEl).getPropertyValue("--csp-test");
     document.body.removeChild(testEl);
     cspAllowsInlineStyles = computed === "1";
-  } catch {
+  } catch (err) {
+    log("csp check: threw, disabling", err);
     cspAllowsInlineStyles = false;
   }
+
+  log("csp check result:", cspAllowsInlineStyles);
 
   if (!cspAllowsInlineStyles) {
     console.info("[themeColor] CSP blocks inline styles - theme color customization disabled");
@@ -116,14 +132,23 @@ function pickContentColor(r: number, g: number, b: number): string {
 }
 
 function applyThemeColor(hex: string) {
-  if (!checkCspAllowsInlineStyles()) return;
+  log("applyThemeColor ENTER", hex);
+  if (!checkCspAllowsInlineStyles()) {
+    log("applyThemeColor BAILED: csp blocks");
+    return;
+  }
 
   const rgb = parseHex(hex);
-  if (!rgb) return;
+  if (!rgb) {
+    log("applyThemeColor BAILED: parseHex returned null for", hex);
+    return;
+  }
 
   const root = document.documentElement;
   const content = pickContentColor(rgb.r, rgb.g, rgb.b);
   const resolvedTheme = getResolvedTheme();
+  log("applyThemeColor resolvedTheme=", resolvedTheme, "content=", content);
+  log("applyThemeColor data-theme attr=", root.getAttribute("data-theme"));
 
   // !important on every setProperty so the inline override beats anything
   // the consumer's stylesheets try to layer on top — we hit both the
@@ -142,10 +167,34 @@ function applyThemeColor(hex: string) {
       "important",
     );
   }
+
+  // Read-back: verify what actually landed on the element AND what the
+  // browser computes for the consumer-facing tokens. If inline says one
+  // thing but computed says another, some CSS rule is winning the cascade.
+  const inlineStyle = root.getAttribute("style") ?? "";
+  log("applyThemeColor inline style attr length=", inlineStyle.length);
+  log(
+    "applyThemeColor inline snippet:",
+    inlineStyle.slice(0, 400) + (inlineStyle.length > 400 ? "…" : ""),
+  );
+  const cs = getComputedStyle(root);
+  log("applyThemeColor computed --color-primary=", cs.getPropertyValue("--color-primary").trim());
+  log("applyThemeColor computed --nf-accent=", cs.getPropertyValue("--nf-accent").trim());
+  log("applyThemeColor computed --color-nf-accent=", cs.getPropertyValue("--color-nf-accent").trim());
+  log("applyThemeColor computed --color-primary-content=", cs.getPropertyValue("--color-primary-content").trim());
+  log("applyThemeColor computed --nf-on-accent=", cs.getPropertyValue("--nf-on-accent").trim());
+  log("applyThemeColor computed --gradient-start=", cs.getPropertyValue("--gradient-start").trim());
+  log("applyThemeColor computed --gradient-end=", cs.getPropertyValue("--gradient-end").trim());
+  log("applyThemeColor computed --color-base-100=", cs.getPropertyValue("--color-base-100").trim());
+  log("applyThemeColor EXIT");
 }
 
 function resetHueShift() {
-  if (!checkCspAllowsInlineStyles()) return;
+  log("resetHueShift ENTER");
+  if (!checkCspAllowsInlineStyles()) {
+    log("resetHueShift BAILED: csp blocks");
+    return;
+  }
 
   const root = document.documentElement;
   for (const varName of PRIMARY_VARS) {
@@ -159,6 +208,12 @@ function resetHueShift() {
   for (const { name } of BACKGROUND_VARS.light) {
     root.style.removeProperty(name);
   }
+  const inlineStyle = root.getAttribute("style") ?? "";
+  log("resetHueShift inline style attr length after=", inlineStyle.length);
+  const cs = getComputedStyle(root);
+  log("resetHueShift computed --nf-accent=", cs.getPropertyValue("--nf-accent").trim());
+  log("resetHueShift computed --color-nf-accent=", cs.getPropertyValue("--color-nf-accent").trim());
+  log("resetHueShift EXIT");
 }
 
 export interface HueShiftStore {
@@ -173,7 +228,11 @@ export interface HueShiftStore {
  * Creates a theme color store with configurable storage prefix.
  * @param storagePrefix - Prefix for localStorage keys (e.g., "myapp" becomes "myapp_theme_color")
  */
+let storeInstanceCounter = 0;
+
 export function createHueShiftStore(storagePrefix: string): HueShiftStore {
+  const storeId = ++storeInstanceCounter;
+  log(`createHueShiftStore INIT id=${storeId} prefix=${storagePrefix}`);
   const STORAGE_KEY = `${storagePrefix}_theme_color`;
   // Legacy keys cleaned up on init so old installs stop bleeding into the new flow.
   const LEGACY_KEYS = [
@@ -192,10 +251,13 @@ export function createHueShiftStore(storagePrefix: string): HueShiftStore {
     return null;
   };
 
-  const [themeColor, setThemeColorInternal] = createSignal<string | null>(getInitial());
+  const initial = getInitial();
+  log(`createHueShiftStore id=${storeId} initial localStorage value=`, initial);
+  const [themeColor, setThemeColorInternal] = createSignal<string | null>(initial);
 
   createEffect(() => {
     const color = themeColor();
+    log(`store id=${storeId} effect fired, themeColor=`, color);
     if (typeof window === "undefined") return;
 
     if (color === null) {
@@ -220,8 +282,16 @@ export function createHueShiftStore(storagePrefix: string): HueShiftStore {
           mutation.type === "attributes" &&
           mutation.attributeName === "data-theme"
         ) {
+          log(
+            `store id=${storeId} observer saw data-theme change to=`,
+            document.documentElement.getAttribute("data-theme"),
+          );
           requestAnimationFrame(() => {
             const color = themeColor();
+            log(
+              `store id=${storeId} observer rAF fired, themeColor=`,
+              color,
+            );
             if (color !== null) {
               applyThemeColor(color);
             }
@@ -237,11 +307,15 @@ export function createHueShiftStore(storagePrefix: string): HueShiftStore {
   }
 
   const setThemeColor = (color: string | null) => {
+    log(`store id=${storeId} setThemeColor called with=`, color);
     if (color === null) {
       setThemeColorInternal(null);
       return;
     }
-    if (!parseHex(color)) return;
+    if (!parseHex(color)) {
+      log(`store id=${storeId} setThemeColor REJECTED (parseHex failed)`);
+      return;
+    }
     setThemeColorInternal(color);
   };
 

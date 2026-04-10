@@ -69,10 +69,18 @@ const ThemeColorPicker: Component<ThemeColorPickerProps> = (props) => {
   const colorValue = createMemo(() => hexToColorValue(store.themeColor()));
 
   const handleColorChange = (color: ColorValue) => {
+    // eslint-disable-next-line no-console
+    console.log("[tcp] handleColorChange ENTER", {
+      hex: color.hex,
+      hsl: color.hsl,
+      rgb: color.rgb,
+    });
     const { s, l } = color.hsl;
 
     // "Near-white, low saturation" = the flower's center reset swatch.
     if (s < 10 && l > 90) {
+      // eslint-disable-next-line no-console
+      console.log("[tcp] handleColorChange -> center swatch, clearing");
       store.setThemeColor(null);
       local.onColorChange?.(null, 100);
       return;
@@ -80,6 +88,8 @@ const ThemeColorPicker: Component<ThemeColorPickerProps> = (props) => {
 
     // Apply the picked Material color verbatim. No derivation: the swatch
     // the user clicked is exactly what lands on --color-primary.
+    // eslint-disable-next-line no-console
+    console.log("[tcp] handleColorChange -> setThemeColor", color.hex);
     store.setThemeColor(color.hex);
     local.onColorChange?.(color.hsl.h, color.hsl.s);
   };
@@ -110,6 +120,8 @@ const ThemeColorPicker: Component<ThemeColorPickerProps> = (props) => {
   ];
 
   const handleGrayscale = (swatch: GrayscaleSwatch) => {
+    // eslint-disable-next-line no-console
+    console.log("[tcp] handleGrayscale ENTER", swatch);
     // Clear any picked theme color and switch light/dark. Synchronous
     // resetHueShift is still needed before onThemeSwitch so the store's
     // MutationObserver can't re-apply a stale color after the data-theme
@@ -117,7 +129,14 @@ const ThemeColorPicker: Component<ThemeColorPickerProps> = (props) => {
     store.setThemeColor(null);
     resetHueShift();
     local.onColorChange?.(null, 0);
+    // eslint-disable-next-line no-console
+    console.log("[tcp] handleGrayscale -> onThemeSwitch", swatch.theme);
     local.onThemeSwitch?.(swatch.theme);
+    // eslint-disable-next-line no-console
+    console.log(
+      "[tcp] handleGrayscale AFTER onThemeSwitch, data-theme=",
+      document.documentElement.getAttribute("data-theme"),
+    );
   };
 
   createEffect(() => {
