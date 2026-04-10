@@ -80,7 +80,7 @@ const HARMONY_SETTINGS = {
   light: {
     "--color-secondary": { l: 68, c: 0.162 },
     "--color-secondary-content": { l: 98, c: 0.026 },
-    "--color-accent": { l: 62, c: 0.14 },
+    "--color-accent": { l: 62, c: 0.2 },
     "--color-accent-content": { l: 98, c: 0.014 },
   },
   dark: {
@@ -155,13 +155,16 @@ const BASE_COLORS = {
   },
 } as const;
 
-const BASE_CHROMA_BOOST = 0.025;
+const BASE_CHROMA_BOOST = {
+  light: 0,
+  dark: 0.025,
+} as const;
 
 // Gradient colors in HSL format
 const GRADIENT_COLORS = {
   light: {
-    "--gradient-start": { h: 347, s: 47, l: 93 },
-    "--gradient-end": { h: 199, s: 45, l: 93 },
+    "--gradient-start": { h: 347, s: 8, l: 96 },
+    "--gradient-end": { h: 199, s: 8, l: 97 },
   },
   dark: {
     "--gradient-start": { h: 261, s: 38, l: 15 },
@@ -269,10 +272,12 @@ function applyHueShift(targetHue: number, saturation: number = 100, lightnessOff
 
   // Shift base colors
   const baseColors = BASE_COLORS[resolvedTheme];
+  const baseBoost = BASE_CHROMA_BOOST[resolvedTheme];
   for (const [varName, color] of Object.entries(baseColors)) {
-    const baseChroma = Math.max(color.c, BASE_CHROMA_BOOST);
+    const baseChroma = Math.max(color.c, baseBoost);
     const scaledChroma = baseChroma * chromaScale;
-    const shifted = toOklch(clampL(color.l), scaledChroma, oklchHue);
+    const hue = baseBoost > 0 ? oklchHue : color.h;
+    const shifted = toOklch(clampL(color.l), scaledChroma, hue);
     root.style.setProperty(varName, shifted);
   }
 
