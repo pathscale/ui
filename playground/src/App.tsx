@@ -32,6 +32,7 @@ import {
 } from "@pathscale/ui";
 import { TableExamples } from "./examples/TableExamples";
 import { TableHooksExample } from "./examples/TableHooksExample";
+import { TableVirtualizedExample } from "./examples/TableVirtualizedExample";
 
 const BADGE_COLORS = [
   "default",
@@ -1776,6 +1777,7 @@ export default function App() {
 
         <TableExamples />
         <TableHooksExample />
+        <TableVirtualizedExample />
 
       </div>
     </main>

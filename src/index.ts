@@ -328,4 +328,11 @@ export * from "./stores";
 // Motion
 export * from "./motion";
 
+export { useVirtualRows } from "./primitives/virtualizer";
+export type {
+  UseVirtualRowsOptions,
+  UseVirtualRowsResult,
+  VirtualRowsRange,
+} from "./primitives/virtualizer";
+
 export { default } from "./components/connectionstatus";
