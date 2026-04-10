@@ -7,7 +7,7 @@ import { createColorFromHsl, parseColor } from "../colorpicker/ColorUtils";
 import Button from "../button";
 import Icon from "../icon";
 import type { IComponentBaseProps } from "../types";
-import { createHueShiftStore, type HueShiftStore } from "./hueShift";
+import { createHueShiftStore, resetHueShift, type HueShiftStore } from "./hueShift";
 
 export interface ThemeColorPickerProps extends IComponentBaseProps {
   /**
@@ -81,11 +81,16 @@ const ThemeColorPicker: Component<ThemeColorPickerProps> = (props) => {
     local.onColorChange?.(color.hsl.h, color.hsl.s);
   };
 
-  // Tailwind-style neutral grays, tuned so adjacent swatches are visually
-  // distinct. Each swatch applies its hex as --color-primary just like the
-  // Material flower swatches do — the strip is just a grayscale palette.
-  // Theme side (light vs dark) is picked by which half of the strip the
-  // swatch lives on: top three → light, bottom three → dark.
+  // Grayscale strip is a pure light/dark theme switcher. The hex on each
+  // swatch is cosmetic only — it paints the circle so the user sees a
+  // gradient, but clicks do NOT apply that gray to --color-primary. Doing
+  // so led to "white on white" when clicking the lightest swatch on a
+  // light theme, because primary ended up matching the background.
+  //
+  // Theme mapping is inverted on purpose: the white/near-white swatches
+  // switch TO dark theme, the black/near-black swatches switch TO light.
+  // The mental model is "the circle shows what you're leaving, not where
+  // you're going" — click white, get away from white.
   type GrayscaleSwatch = {
     label: string;
     hex: string;
@@ -93,19 +98,21 @@ const ThemeColorPicker: Component<ThemeColorPickerProps> = (props) => {
   };
 
   const GRAYSCALE_SWATCHES: GrayscaleSwatch[] = [
-    { label: "White", hex: "#fafafa", theme: "light" },
-    { label: "Light gray", hex: "#d4d4d4", theme: "light" },
-    { label: "Gray", hex: "#737373", theme: "light" },
-    { label: "Dark gray", hex: "#404040", theme: "dark" },
-    { label: "Charcoal", hex: "#262626", theme: "dark" },
-    { label: "Black", hex: "#0a0a0a", theme: "dark" },
+    { label: "White", hex: "#fafafa", theme: "dark" },
+    { label: "Light gray", hex: "#d4d4d4", theme: "dark" },
+    { label: "Gray", hex: "#737373", theme: "dark" },
+    { label: "Dark gray", hex: "#404040", theme: "light" },
+    { label: "Charcoal", hex: "#262626", theme: "light" },
+    { label: "Black", hex: "#0a0a0a", theme: "light" },
   ];
 
   const handleGrayscale = (swatch: GrayscaleSwatch) => {
-    // Apply the clicked gray verbatim as the theme color (same path as any
-    // Material swatch). Also switch light/dark so the chosen gray lands on
-    // the appropriate backdrop.
-    store().setThemeColor(swatch.hex);
+    // Clear any picked theme color and switch light/dark. Synchronous
+    // resetHueShift is still needed before onThemeSwitch so the store's
+    // MutationObserver can't re-apply a stale color after the data-theme
+    // mutation (see the 1.1.28 race-fix commit for full context).
+    store().setThemeColor(null);
+    resetHueShift();
     local.onColorChange?.(null, 0);
     local.onThemeSwitch?.(swatch.theme);
   };
