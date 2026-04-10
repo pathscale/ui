@@ -82,26 +82,21 @@ const ThemeColorPicker: Component<ThemeColorPickerProps> = (props) => {
   };
 
   const GRAYSCALE_SWATCHES = [
-    { label: "White", lightness: 10 },
-    { label: "Light gray", lightness: 5 },
-    { label: "Gray", lightness: 0 },
-    { label: "Dark gray", lightness: -5 },
-    { label: "Charcoal", lightness: -10 },
-    { label: "Black", lightness: -15 },
+    { label: "White", theme: "light" as const },
+    { label: "Light gray", theme: "light" as const },
+    { label: "Gray", theme: "light" as const },
+    { label: "Dark gray", theme: "dark" as const },
+    { label: "Charcoal", theme: "dark" as const },
+    { label: "Black", theme: "dark" as const },
   ];
 
-  const handleGrayscale = (lightnessOffset: number) => {
-    // Grayscale swatches reset any picked color and switch light/dark theme.
-    // The lightnessOffset number is repurposed as a directional hint: positive
-    // values (white/light gray) → light theme, negative (charcoal/black) → dark.
+  const handleGrayscale = (theme: "light" | "dark") => {
+    // Grayscale swatches clear any picked theme color and switch light/dark.
+    // The top half of the strip maps to light, the bottom half to dark, so
+    // every swatch does something — no dead middle values.
     store().setThemeColor(null);
     local.onColorChange?.(null, 0);
-
-    if (lightnessOffset >= 5) {
-      local.onThemeSwitch?.("light");
-    } else if (lightnessOffset <= -10) {
-      local.onThemeSwitch?.("dark");
-    }
+    local.onThemeSwitch?.(theme);
   };
 
   createEffect(() => {
@@ -187,7 +182,7 @@ const ThemeColorPicker: Component<ThemeColorPickerProps> = (props) => {
                         class="h-6 w-6 rounded-full border border-white/20 transition-transform hover:scale-110"
                         style={{ "background-color": `oklch(${[95, 80, 60, 40, 25, 5][i()]}% 0 0)` }}
                         aria-label={g.label}
-                        onClick={() => handleGrayscale(g.lightness)}
+                        onClick={() => handleGrayscale(g.theme)}
                       />
                     )}
                   </For>
