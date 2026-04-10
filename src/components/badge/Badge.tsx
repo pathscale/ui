@@ -32,7 +32,7 @@ const BadgeAnchor = (props: BadgeAnchorProps) => {
 type BadgeColor = "default" | "accent" | "success" | "warning" | "danger";
 type BadgeVariant = "primary" | "secondary" | "soft";
 type BadgeSize = "sm" | "md" | "lg";
-type BadgePlacement = "top-right" | "top-left" | "bottom-right" | "bottom-left";
+type BadgePlacement = "none" | "top-right" | "top-left" | "bottom-right" | "bottom-left";
 
 const BADGE_SIZE_CLASS: Record<BadgeSize, string> = {
   sm: "badge--sm",
@@ -55,6 +55,7 @@ const BADGE_VARIANT_CLASS: Record<BadgeVariant, string> = {
 };
 
 const BADGE_PLACEMENT_CLASS: Record<BadgePlacement, string> = {
+  none: "",
   "top-right": "badge--top-right",
   "top-left": "badge--top-left",
   "bottom-right": "badge--bottom-right",
@@ -84,7 +85,7 @@ const BadgeRoot = (props: BadgeRootProps) => {
     const size = local.size ?? "md";
     const color = local.color ?? "default";
     const variant = local.variant ?? "primary";
-    const placement = local.placement ?? "top-right";
+    const placement = local.placement ?? "none";
 
     return twMerge(
       clsx(
