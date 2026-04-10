@@ -19,273 +19,79 @@ const checkCspAllowsInlineStyles = (): boolean => {
   }
 
   if (!cspAllowsInlineStyles) {
-    console.info("[hueShift] CSP blocks inline styles - hue customization disabled");
+    console.info("[themeColor] CSP blocks inline styles - theme color customization disabled");
   }
 
   return cspAllowsInlineStyles;
 };
 
-// Saturation scaling: pastel colors (low saturation) should produce subtler themes
-// Full saturation (100) = full chroma, low saturation = reduced chroma
-const MIN_CHROMA_SCALE = 0.3;
+// CSS variables that get overridden when the user picks a theme color.
+// Kept minimal on purpose — picked color is applied verbatim, nothing
+// derived. Secondary/accent/semantic/base stay on the stylesheet defaults.
+const PRIMARY_VARS = [
+  "--color-primary",
+  "--nf-accent",
+  "--color-nf-accent",
+] as const;
 
-// HSL to OKLCH hue conversion — HSL and OKLCH hue wheels don't align
-// (e.g. HSL yellow ~54° maps to OKLCH ~100°, HSL red ~0° maps to OKLCH ~29°)
-function hslHueToOklchHue(hslHue: number): number {
-  const h = ((hslHue % 360) + 360) % 360;
+const CONTENT_VARS = [
+  "--color-primary-content",
+  "--nf-on-accent",
+  "--color-nf-on-accent",
+] as const;
 
-  const controlPoints: [number, number][] = [
-    [0, 29],     // Red
-    [30, 55],    // Orange
-    [60, 100],   // Yellow
-    [120, 145],  // Green
-    [180, 195],  // Cyan
-    [240, 265],  // Blue
-    [300, 330],  // Magenta
-    [360, 389],  // Red (wrapped)
-  ];
-
-  for (let i = 0; i < controlPoints.length - 1; i++) {
-    const [h1, o1] = controlPoints[i];
-    const [h2, o2] = controlPoints[i + 1];
-    if (h >= h1 && h <= h2) {
-      const t = (h - h1) / (h2 - h1);
-      const oklchHue = o1 + t * (o2 - o1);
-      return ((oklchHue % 360) + 360) % 360;
-    }
+function parseHex(hex: string): { r: number; g: number; b: number } | null {
+  let h = hex.trim();
+  if (h.startsWith("#")) h = h.slice(1);
+  if (h.length === 3) {
+    h = h.split("").map((c) => c + c).join("");
   }
-
-  return h;
+  if (h.length !== 6) return null;
+  const r = Number.parseInt(h.slice(0, 2), 16);
+  const g = Number.parseInt(h.slice(2, 4), 16);
+  const b = Number.parseInt(h.slice(4, 6), 16);
+  if (Number.isNaN(r) || Number.isNaN(g) || Number.isNaN(b)) return null;
+  return { r, g, b };
 }
 
-// Primary color settings
-const PRIMARY_SETTINGS = {
-  light: {
-    "--color-primary": { l: 58, c: 0.22 },
-    "--color-primary-content": { l: 98, c: 0.02 },
-  },
-  dark: {
-    "--color-primary": { l: 75, c: 0.18 },
-    "--color-primary-content": { l: 15, c: 0.02 },
-  },
-} as const;
-
-// Harmony colors offsets
-const HARMONY_OFFSETS = {
-  secondary: 108,
-  accent: -94,
-} as const;
-
-const HARMONY_SETTINGS = {
-  light: {
-    "--color-secondary": { l: 68, c: 0.162 },
-    "--color-secondary-content": { l: 98, c: 0.026 },
-    "--color-accent": { l: 62, c: 0.2 },
-    "--color-accent-content": { l: 98, c: 0.014 },
-  },
-  dark: {
-    "--color-secondary": { l: 72, c: 0.16 },
-    "--color-secondary-content": { l: 15, c: 0.013 },
-    "--color-accent": { l: 78, c: 0.12 },
-    "--color-accent-content": { l: 15, c: 0.014 },
-  },
-} as const;
-
-// Semantic colors
-const SEMANTIC_BASE_HUES = {
-  success: 140,
-  warning: 55,
-  error: 10,
-  info: 220,
-} as const;
-
-const SEMANTIC_TINT_FACTOR = 0.12;
-
-const SEMANTIC_SETTINGS = {
-  light: {
-    "--color-success": { l: 72, c: 0.219 },
-    "--color-success-content": { l: 98, c: 0.018 },
-    "--color-warning": { l: 70, c: 0.213 },
-    "--color-warning-content": { l: 98, c: 0.016 },
-    "--color-error": { l: 65, c: 0.241 },
-    "--color-error-content": { l: 97, c: 0.014 },
-    "--color-info": { l: 68, c: 0.169 },
-    "--color-info-content": { l: 97, c: 0.013 },
-  },
-  dark: {
-    "--color-success": { l: 76, c: 0.233 },
-    "--color-success-content": { l: 98, c: 0.031 },
-    "--color-warning": { l: 79, c: 0.184 },
-    "--color-warning-content": { l: 98, c: 0.026 },
-    "--color-error": { l: 64, c: 0.246 },
-    "--color-error-content": { l: 96, c: 0.015 },
-    "--color-info": { l: 71, c: 0.143 },
-    "--color-info-content": { l: 98, c: 0.019 },
-  },
-} as const;
-
-// NF brand accent colors (used by SVG logo)
-// Set both --nf-accent (theme source) and --color-nf-accent (Tailwind utility target)
-const NF_ACCENT_SETTINGS = {
-  light: {
-    "--nf-accent": { l: 58, c: 0.22 },
-    "--nf-on-accent": { l: 98, c: 0.02 },
-    "--color-nf-accent": { l: 58, c: 0.22 },
-    "--color-nf-on-accent": { l: 98, c: 0.02 },
-  },
-  dark: {
-    "--nf-accent": { l: 75, c: 0.18 },
-    "--nf-on-accent": { l: 15, c: 0.02 },
-    "--color-nf-accent": { l: 75, c: 0.18 },
-    "--color-nf-on-accent": { l: 15, c: 0.02 },
-  },
-} as const;
-
-// Base/neutral colors
-const BASE_COLORS = {
-  light: {
-    "--color-base-100": { l: 98, c: 0.001, h: 106.423 },
-    "--color-base-200": { l: 97, c: 0.001, h: 106.424 },
-    "--color-base-300": { l: 92, c: 0.003, h: 48.717 },
-  },
-  dark: {
-    "--color-base-100": { l: 13, c: 0.028, h: 261.692 },
-    "--color-base-200": { l: 21, c: 0.034, h: 264.665 },
-    "--color-base-300": { l: 27, c: 0.033, h: 256.848 },
-  },
-} as const;
-
-const BASE_CHROMA_BOOST = {
-  light: 0,
-  dark: 0.025,
-} as const;
-
-// Gradient colors in HSL format
-const GRADIENT_COLORS = {
-  light: {
-    "--gradient-start": { h: 347, s: 8, l: 96 },
-    "--gradient-end": { h: 199, s: 8, l: 97 },
-  },
-  dark: {
-    "--gradient-start": { h: 261, s: 38, l: 15 },
-    "--gradient-end": { h: 220, s: 54, l: 8 },
-  },
-} as const;
-
-function toOklch(l: number, c: number, h: number) {
-  const normalizedH = ((h % 360) + 360) % 360;
-  return `oklch(${l}% ${c} ${normalizedH})`;
-}
-
-function hslToHex(h: number, s: number, l: number): string {
-  const normalizedH = ((h % 360) + 360) % 360;
-  const sNorm = s / 100;
-  const lNorm = l / 100;
-
-  const c = (1 - Math.abs(2 * lNorm - 1)) * sNorm;
-  const x = c * (1 - Math.abs(((normalizedH / 60) % 2) - 1));
-  const m = lNorm - c / 2;
-
-  let r = 0, g = 0, b = 0;
-
-  if (normalizedH < 60) { r = c; g = x; b = 0; }
-  else if (normalizedH < 120) { r = x; g = c; b = 0; }
-  else if (normalizedH < 180) { r = 0; g = c; b = x; }
-  else if (normalizedH < 240) { r = 0; g = x; b = c; }
-  else if (normalizedH < 300) { r = x; g = 0; b = c; }
-  else { r = c; g = 0; b = x; }
-
-  const toHex = (n: number) => {
-    const hex = Math.round((n + m) * 255).toString(16);
-    return hex.length === 1 ? "0" + hex : hex;
+// WCAG 2.1 relative luminance
+function relativeLuminance(r: number, g: number, b: number): number {
+  const toLin = (c: number) => {
+    const s = c / 255;
+    return s <= 0.03928 ? s / 12.92 : ((s + 0.055) / 1.055) ** 2.4;
   };
-
-  return `#${toHex(r)}${toHex(g)}${toHex(b)}`;
+  return 0.2126 * toLin(r) + 0.7152 * toLin(g) + 0.0722 * toLin(b);
 }
 
-function getTintedHue(baseHue: number, targetHue: number): number {
-  let diff = targetHue - baseHue;
-  if (diff > 180) diff -= 360;
-  if (diff < -180) diff += 360;
-  return baseHue + diff * SEMANTIC_TINT_FACTOR;
+// Pick the readable content color for a given background.
+// Compares contrast against white and near-black (#111) and picks the winner.
+// Threshold is biased slightly towards white text because mid-tones read
+// better against white than against black for most Material 500/600 shades.
+function pickContentColor(r: number, g: number, b: number): string {
+  const bgL = relativeLuminance(r, g, b);
+  const whiteL = 1;
+  const darkL = relativeLuminance(0x11, 0x11, 0x11);
+
+  const contrastWithWhite = (whiteL + 0.05) / (bgL + 0.05);
+  const contrastWithDark = (bgL + 0.05) / (darkL + 0.05);
+
+  return contrastWithWhite >= contrastWithDark ? "#ffffff" : "#111111";
 }
 
-function getResolvedTheme(): "light" | "dark" {
-  const dataTheme = document.documentElement.getAttribute("data-theme");
-  if (dataTheme === "dark") return "dark";
-  if (dataTheme === "light") return "light";
-  return window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
-}
-
-function applyHueShift(targetHue: number, saturation: number = 100, lightnessOffset: number = 0) {
+function applyThemeColor(hex: string) {
   if (!checkCspAllowsInlineStyles()) return;
 
+  const rgb = parseHex(hex);
+  if (!rgb) return;
+
   const root = document.documentElement;
-  const oklchHue = hslHueToOklchHue(targetHue);
-  const chromaScale = saturation === 0 ? 0 : MIN_CHROMA_SCALE + (1 - MIN_CHROMA_SCALE) * (saturation / 100);
-  const resolvedTheme = getResolvedTheme();
+  const content = pickContentColor(rgb.r, rgb.g, rgb.b);
 
-  const clampL = (l: number) => Math.max(0, Math.min(100, l + lightnessOffset));
-
-  // Set PRIMARY colors
-  const primarySettings = PRIMARY_SETTINGS[resolvedTheme];
-  for (const [varName, settings] of Object.entries(primarySettings)) {
-    const scaledChroma = settings.c * chromaScale;
-    root.style.setProperty(varName, toOklch(clampL(settings.l), scaledChroma, oklchHue));
+  for (const varName of PRIMARY_VARS) {
+    root.style.setProperty(varName, hex);
   }
-
-  // Set HARMONY colors
-  const harmonySettings = HARMONY_SETTINGS[resolvedTheme];
-  for (const [varName, settings] of Object.entries(harmonySettings)) {
-    let hue = oklchHue;
-    if (varName.includes("secondary")) {
-      hue = oklchHue + HARMONY_OFFSETS.secondary;
-    } else if (varName.includes("accent")) {
-      hue = oklchHue + HARMONY_OFFSETS.accent;
-    }
-    const scaledChroma = settings.c * chromaScale;
-    root.style.setProperty(varName, toOklch(clampL(settings.l), scaledChroma, hue));
-  }
-
-  // Set SEMANTIC colors
-  const semanticSettings = SEMANTIC_SETTINGS[resolvedTheme];
-  for (const [varName, settings] of Object.entries(semanticSettings)) {
-    let baseHue = 0;
-    if (varName.includes("success")) baseHue = SEMANTIC_BASE_HUES.success;
-    else if (varName.includes("warning")) baseHue = SEMANTIC_BASE_HUES.warning;
-    else if (varName.includes("error")) baseHue = SEMANTIC_BASE_HUES.error;
-    else if (varName.includes("info")) baseHue = SEMANTIC_BASE_HUES.info;
-
-    const tintedHue = getTintedHue(baseHue, oklchHue);
-    const semanticChromaScale = saturation === 0 ? 0 : MIN_CHROMA_SCALE + (1 - MIN_CHROMA_SCALE) * Math.sqrt(saturation / 100);
-    const scaledChroma = settings.c * semanticChromaScale;
-    root.style.setProperty(varName, toOklch(clampL(settings.l), scaledChroma, tintedHue));
-  }
-
-  // Shift gradient colors
-  const gradients = GRADIENT_COLORS[resolvedTheme];
-  for (const [varName, color] of Object.entries(gradients)) {
-    const scaledSat = color.s * (saturation / 100);
-    const shifted = hslToHex(targetHue + (varName.includes("end") ? 40 : 0), scaledSat, color.l);
-    root.style.setProperty(varName, shifted);
-  }
-
-  // Shift base colors
-  const baseColors = BASE_COLORS[resolvedTheme];
-  const baseBoost = BASE_CHROMA_BOOST[resolvedTheme];
-  for (const [varName, color] of Object.entries(baseColors)) {
-    const baseChroma = Math.max(color.c, baseBoost);
-    const scaledChroma = baseChroma * chromaScale;
-    const hue = baseBoost > 0 ? oklchHue : color.h;
-    const shifted = toOklch(clampL(color.l), scaledChroma, hue);
-    root.style.setProperty(varName, shifted);
-  }
-
-  // Shift NF brand accent (SVG logo)
-  const nfAccentSettings = NF_ACCENT_SETTINGS[resolvedTheme];
-  for (const [varName, settings] of Object.entries(nfAccentSettings)) {
-    const scaledChroma = settings.c * chromaScale;
-    root.style.setProperty(varName, toOklch(clampL(settings.l), scaledChroma, oklchHue));
+  for (const varName of CONTENT_VARS) {
+    root.style.setProperty(varName, content);
   }
 }
 
@@ -293,98 +99,63 @@ function resetHueShift() {
   if (!checkCspAllowsInlineStyles()) return;
 
   const root = document.documentElement;
-  for (const varName of Object.keys(PRIMARY_SETTINGS.light)) {
+  for (const varName of PRIMARY_VARS) {
     root.style.removeProperty(varName);
   }
-  for (const varName of Object.keys(HARMONY_SETTINGS.light)) {
-    root.style.removeProperty(varName);
-  }
-  for (const varName of Object.keys(SEMANTIC_SETTINGS.light)) {
-    root.style.removeProperty(varName);
-  }
-  for (const varName of Object.keys(GRADIENT_COLORS.light)) {
-    root.style.removeProperty(varName);
-  }
-  for (const varName of Object.keys(BASE_COLORS.light)) {
-    root.style.removeProperty(varName);
-  }
-  for (const varName of Object.keys(NF_ACCENT_SETTINGS.light)) {
+  for (const varName of CONTENT_VARS) {
     root.style.removeProperty(varName);
   }
 }
 
 export interface HueShiftStore {
-  hueShift: () => number | null;
-  hueSaturation: () => number;
-  hueLightness: () => number;
-  setHueShift: (hue: number | null, saturation?: number, lightness?: number) => void;
+  /** Current theme color as a hex string, or null when no override is active. */
+  themeColor: () => string | null;
+  /** Set (or clear with null) the theme color. Hex strings only. */
+  setThemeColor: (color: string | null) => void;
   isAvailable: () => boolean;
 }
 
 /**
- * Creates a hue shift store with configurable storage prefix.
- * @param storagePrefix - Prefix for localStorage keys (e.g., "myapp" becomes "myapp_hue_shift")
+ * Creates a theme color store with configurable storage prefix.
+ * @param storagePrefix - Prefix for localStorage keys (e.g., "myapp" becomes "myapp_theme_color")
  */
 export function createHueShiftStore(storagePrefix: string): HueShiftStore {
-  const STORAGE_KEY = `${storagePrefix}_hue_shift`;
-  const STORAGE_KEY_SAT = `${storagePrefix}_hue_saturation`;
-  const STORAGE_KEY_LIT = `${storagePrefix}_hue_lightness`;
+  const STORAGE_KEY = `${storagePrefix}_theme_color`;
+  // Legacy keys cleaned up on init so old installs stop bleeding into the new flow.
+  const LEGACY_KEYS = [
+    `${storagePrefix}_hue_shift`,
+    `${storagePrefix}_hue_saturation`,
+    `${storagePrefix}_hue_lightness`,
+  ];
 
-  const getInitialHueShift = (): number | null => {
+  const getInitial = (): string | null => {
     if (typeof window === "undefined") return null;
-    const saved = localStorage.getItem(STORAGE_KEY);
-    if (saved !== null) {
-      const parsed = parseFloat(saved);
-      if (!isNaN(parsed)) return parsed;
+    for (const key of LEGACY_KEYS) {
+      localStorage.removeItem(key);
     }
+    const saved = localStorage.getItem(STORAGE_KEY);
+    if (saved && parseHex(saved)) return saved;
     return null;
   };
 
-  const getInitialSaturation = (): number => {
-    if (typeof window === "undefined") return 100;
-    const saved = localStorage.getItem(STORAGE_KEY_SAT);
-    if (saved !== null) {
-      const parsed = parseFloat(saved);
-      if (!isNaN(parsed)) return parsed;
-    }
-    return 100;
-  };
+  const [themeColor, setThemeColorInternal] = createSignal<string | null>(getInitial());
 
-  const getInitialLightness = (): number => {
-    if (typeof window === "undefined") return 0;
-    const saved = localStorage.getItem(STORAGE_KEY_LIT);
-    if (saved !== null) {
-      const parsed = parseFloat(saved);
-      if (!isNaN(parsed)) return parsed;
-    }
-    return 0;
-  };
-
-  const [hueShift, setHueShiftInternal] = createSignal<number | null>(getInitialHueShift());
-  const [hueSaturation, setHueSaturationInternal] = createSignal<number>(getInitialSaturation());
-  const [hueLightness, setHueLightnessInternal] = createSignal<number>(getInitialLightness());
-
-  // Apply hue shift on changes
   createEffect(() => {
-    const shift = hueShift();
-    const sat = hueSaturation();
-    const lit = hueLightness();
+    const color = themeColor();
     if (typeof window === "undefined") return;
 
-    if (shift === null) {
+    if (color === null) {
       localStorage.removeItem(STORAGE_KEY);
-      localStorage.removeItem(STORAGE_KEY_SAT);
-      localStorage.removeItem(STORAGE_KEY_LIT);
       resetHueShift();
     } else {
-      localStorage.setItem(STORAGE_KEY, String(shift));
-      localStorage.setItem(STORAGE_KEY_SAT, String(sat));
-      localStorage.setItem(STORAGE_KEY_LIT, String(lit));
-      applyHueShift(shift, sat, lit);
+      localStorage.setItem(STORAGE_KEY, color);
+      applyThemeColor(color);
     }
   });
 
-  // Re-apply hue shift when theme changes
+  // Re-apply theme color when the light/dark theme attribute changes.
+  // Content color is luminance-based, so it doesn't need recomputing on theme
+  // switch — but we still re-set the CSS vars in case another module cleared them.
   if (typeof window !== "undefined") {
     const observer = new MutationObserver((mutations) => {
       for (const mutation of mutations) {
@@ -392,11 +163,9 @@ export function createHueShiftStore(storagePrefix: string): HueShiftStore {
           mutation.type === "attributes" &&
           mutation.attributeName === "data-theme"
         ) {
-          const shift = hueShift();
-          const sat = hueSaturation();
-          const lit = hueLightness();
-          if (shift !== null) {
-            requestAnimationFrame(() => applyHueShift(shift, sat, lit));
+          const color = themeColor();
+          if (color !== null) {
+            requestAnimationFrame(() => applyThemeColor(color));
           }
         }
       }
@@ -408,17 +177,18 @@ export function createHueShiftStore(storagePrefix: string): HueShiftStore {
     });
   }
 
-  const setHueShift = (hue: number | null, saturation: number = 100, lightness: number = 0) => {
-    setHueShiftInternal(hue);
-    setHueSaturationInternal(saturation);
-    setHueLightnessInternal(lightness);
+  const setThemeColor = (color: string | null) => {
+    if (color === null) {
+      setThemeColorInternal(null);
+      return;
+    }
+    if (!parseHex(color)) return;
+    setThemeColorInternal(color);
   };
 
   return {
-    hueShift,
-    hueSaturation,
-    hueLightness,
-    setHueShift,
+    themeColor,
+    setThemeColor,
     isAvailable: () => checkCspAllowsInlineStyles(),
   };
 }

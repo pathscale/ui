@@ -37,6 +37,11 @@ type ColorItem = {
   id: string;
   rgb: string;
   hex: string;
+  // Exact original channels — used so consumers can apply the picked color
+  // verbatim without suffering the HSL round-trip drift baked into hslToRgb.
+  r: number;
+  g: number;
+  b: number;
   offsetX: number;
   offsetY: number;
   hue: number;
@@ -76,6 +81,9 @@ const createColorItem = (
     id,
     rgb,
     hex: rgbToHex(r, g, b).toUpperCase(),
+    r,
+    g,
+    b,
     offsetX,
     offsetY,
     hue: hsl.hue,
@@ -439,14 +447,20 @@ const ColorWheelFlower = (props: ColorWheelFlowerProps): JSX.Element => {
       return;
     }
 
-    context.onChange(
-      createColorFromHsl(
-        item.hue,
-        item.saturation,
-        item.lightness,
-        context.color().hsl.a,
-      ),
-    );
+    // Build the ColorValue from the item's original integer RGB so the
+    // downstream consumer receives the exact Material hex it rendered,
+    // not an HSL round-tripped approximation.
+    const alpha = context.color().hsl.a;
+    context.onChange({
+      rgb: { r: item.r, g: item.g, b: item.b, a: alpha },
+      hsl: {
+        h: item.hue,
+        s: item.saturation,
+        l: item.lightness,
+        a: alpha,
+      },
+      hex: item.hex,
+    });
   };
 
   createEffect(() => {

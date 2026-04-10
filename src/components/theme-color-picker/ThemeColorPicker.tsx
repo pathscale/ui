@@ -3,7 +3,7 @@ import { twMerge } from "tailwind-merge";
 import { clsx } from "clsx";
 import type { ColorValue, ColorPickerContextType, ColorFormat } from "../colorpicker";
 import { ColorPickerContext, ColorWheelFlower } from "../colorpicker";
-import { createColorFromHsl } from "../colorpicker/ColorUtils";
+import { createColorFromHsl, parseColor } from "../colorpicker/ColorUtils";
 import Button from "../button";
 import Icon from "../icon";
 import type { IComponentBaseProps } from "../types";
@@ -11,12 +11,14 @@ import { createHueShiftStore, type HueShiftStore } from "./hueShift";
 
 export interface ThemeColorPickerProps extends IComponentBaseProps {
   /**
-   * Prefix for localStorage keys (e.g., "myapp" becomes "myapp_hue_shift")
+   * Prefix for localStorage keys (e.g., "myapp" becomes "myapp_theme_color")
    * @default "theme"
    */
   storagePrefix?: string;
   /**
-   * Callback when color changes
+   * Callback when color changes. Passes the hex string (or null on reset).
+   * Kept with legacy `(hue, saturation)` signature for backward compatibility —
+   * hue is derived from the picked hex, saturation is forwarded as-is.
    */
   onColorChange?: (hue: number | null, saturation: number) => void;
   /**
@@ -33,12 +35,11 @@ export interface ThemeColorPickerProps extends IComponentBaseProps {
   children?: JSX.Element;
 }
 
-function hueToColorValue(hue: number | null, sat: number): ColorValue {
-  if (hue === null) {
+function hexToColorValue(hex: string | null): ColorValue {
+  if (hex === null) {
     return createColorFromHsl(0, 0, 100, 1);
   }
-
-  return createColorFromHsl(hue, sat, 50, 1);
+  return parseColor(hex) ?? createColorFromHsl(0, 0, 100, 1);
 }
 
 const ThemeColorPicker: Component<ThemeColorPickerProps> = (props) => {
@@ -62,36 +63,22 @@ const ThemeColorPicker: Component<ThemeColorPickerProps> = (props) => {
     createHueShiftStore(local.storagePrefix ?? "theme")
   );
 
-  const colorValue = createMemo(() =>
-    hueToColorValue(store().hueShift(), store().hueSaturation())
-  );
+  const colorValue = createMemo(() => hexToColorValue(store().themeColor()));
 
-  const setThemeColor = (hue: number | null, saturation: number, lightnessOffset: number = 0) => {
-    if (hue === null) {
-      store().setHueShift(null);
+  const handleColorChange = (color: ColorValue) => {
+    const { s, l } = color.hsl;
+
+    // "Near-white, low saturation" = the flower's center reset swatch.
+    if (s < 10 && l > 90) {
+      store().setThemeColor(null);
       local.onColorChange?.(null, 100);
       return;
     }
 
-    const normalizedHue = ((hue % 360) + 360) % 360;
-    const normalizedSaturation = Math.max(0, Math.min(100, saturation));
-    store().setHueShift(normalizedHue, normalizedSaturation, lightnessOffset);
-    local.onColorChange?.(normalizedHue, normalizedSaturation);
-  };
-
-  const handleColorChange = (color: ColorValue) => {
-    const { h, s, l } = color.hsl;
-
-    if (s < 10 && l > 90) {
-      setThemeColor(null, 100);
-      return;
-    }
-
-    // Material 500 sits around l≈58; offset from that baseline so the
-    // outer (Material 800, darker) and inner (Material 200, paler) rings
-    // actually produce distinct themes instead of collapsing onto the same primary.
-    const lightnessOffset = l - 58;
-    setThemeColor(h, s, lightnessOffset);
+    // Apply the picked Material color verbatim. No derivation: the swatch
+    // the user clicked is exactly what lands on --color-primary.
+    store().setThemeColor(color.hex);
+    local.onColorChange?.(color.hsl.h, color.hsl.s);
   };
 
   const GRAYSCALE_SWATCHES = [
@@ -104,7 +91,10 @@ const ThemeColorPicker: Component<ThemeColorPickerProps> = (props) => {
   ];
 
   const handleGrayscale = (lightnessOffset: number) => {
-    store().setHueShift(0, 0, lightnessOffset);
+    // Grayscale swatches reset any picked color and switch light/dark theme.
+    // The lightnessOffset number is repurposed as a directional hint: positive
+    // values (white/light gray) → light theme, negative (charcoal/black) → dark.
+    store().setThemeColor(null);
     local.onColorChange?.(null, 0);
 
     if (lightnessOffset >= 5) {
@@ -176,7 +166,7 @@ const ThemeColorPicker: Component<ThemeColorPickerProps> = (props) => {
               name="icon-[mdi--palette]"
               width={16}
               height={16}
-              class={store().hueShift() !== null ? "text-primary" : undefined}
+              class={store().themeColor() !== null ? "text-primary" : undefined}
             />
           )}
         </Button>
