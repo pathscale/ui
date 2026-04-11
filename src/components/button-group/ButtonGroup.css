@@ -1,0 +1,117 @@
+@layer components {
+  .button-group {
+    display: inline-flex;
+    height: auto;
+    align-items: center;
+    justify-content: center;
+    gap: 0;
+  }
+
+  .button-group--horizontal {
+    flex-direction: row;
+  }
+
+  .button-group--vertical {
+    flex-direction: column;
+  }
+
+  .button-group .button {
+    border-radius: 0;
+  }
+
+  .button-group--horizontal .button:first-child {
+    border-start-start-radius: 1.5rem;
+    border-end-start-radius: 1.5rem;
+  }
+
+  .button-group--horizontal .button:last-child {
+    border-start-end-radius: 1.5rem;
+    border-end-end-radius: 1.5rem;
+  }
+
+  .button-group--horizontal .button:first-child:last-child {
+    border-radius: 1.5rem;
+  }
+
+  .button-group--vertical .button:first-child {
+    border-top-left-radius: 1.5rem;
+    border-top-right-radius: 1.5rem;
+  }
+
+  .button-group--vertical .button:last-child {
+    border-bottom-left-radius: 1.5rem;
+    border-bottom-right-radius: 1.5rem;
+  }
+
+  .button-group--vertical .button:first-child:last-child {
+    border-radius: 1.5rem;
+  }
+
+  .button-group .button:active,
+  .button-group .button[data-pressed="true"] {
+    transform: none;
+  }
+
+  .button-group .button:focus-visible,
+  .button-group .button[data-focus-visible="true"] {
+    outline-offset: -1px;
+  }
+
+  .button-group__separator {
+    background-color: currentColor;
+    opacity: 0.15;
+    border-radius: 4px;
+    position: absolute;
+    pointer-events: none;
+    transition: opacity 150ms var(--ease-smooth);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .button-group__separator {
+      transition: none;
+    }
+  }
+
+  .button-group--horizontal .button-group__separator {
+    left: -1px;
+    top: 25%;
+    width: 1px;
+    height: 50%;
+  }
+
+  .button-group--vertical .button-group__separator {
+    left: 25%;
+    top: -1px;
+    width: 50%;
+    height: 1px;
+  }
+
+  .button-group--horizontal .button--outline:first-child {
+    border-inline-end-width: 0;
+  }
+
+  .button-group--horizontal .button--outline:last-child {
+    border-inline-start-width: 0;
+  }
+
+  .button-group--horizontal .button--outline:not(:first-child):not(:last-child) {
+    border-inline-width: 0;
+  }
+
+  .button-group--vertical .button--outline:first-child {
+    border-bottom-width: 0;
+  }
+
+  .button-group--vertical .button--outline:last-child {
+    border-top-width: 0;
+  }
+
+  .button-group--vertical .button--outline:not(:first-child):not(:last-child) {
+    border-top-width: 0;
+    border-bottom-width: 0;
+  }
+
+  .button-group--full-width {
+    width: 100%;
+  }
+}

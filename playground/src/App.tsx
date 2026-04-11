@@ -5,6 +5,7 @@ import {
   Badge,
   Breadcrumbs,
   Button,
+  ButtonGroup,
   Card,
   Chip,
   EmptyState,
@@ -815,6 +816,111 @@ export default function App() {
               <Button variant="outline" fullWidth class="max-w-xs">
                 Full Width
               </Button>
+            </div>
+          </div>
+        </section>
+
+        <section class="space-y-4 rounded-xl border border-base-300 bg-base-200 p-4">
+          <div>
+            <h2 class="text-sm font-semibold">Button Group</h2>
+            <p class="text-xs opacity-70">
+              HeroUI-style grouped buttons with orientation, shared variants, and separators.
+            </p>
+          </div>
+
+          <div class="space-y-3">
+            <h3 class="text-xs font-semibold uppercase opacity-70">Default</h3>
+            <ButtonGroup>
+              <Button>Overview</Button>
+              <Button>
+                <ButtonGroup.Separator />
+                Activity
+              </Button>
+              <Button>
+                <ButtonGroup.Separator />
+                Settings
+              </Button>
+            </ButtonGroup>
+          </div>
+
+          <div class="space-y-3">
+            <h3 class="text-xs font-semibold uppercase opacity-70">Sizes</h3>
+            <div class="flex flex-wrap items-center gap-3">
+              <For each={BUTTON_SIZES}>
+                {(size) => (
+                  <ButtonGroup size={size} variant="secondary">
+                    <Button>Left</Button>
+                    <Button>
+                      <ButtonGroup.Separator />
+                      Center
+                    </Button>
+                    <Button>
+                      <ButtonGroup.Separator />
+                      Right
+                    </Button>
+                  </ButtonGroup>
+                )}
+              </For>
+            </div>
+          </div>
+
+          <div class="space-y-3">
+            <h3 class="text-xs font-semibold uppercase opacity-70">Variants + Disabled</h3>
+            <div class="flex flex-wrap items-center gap-3">
+              <ButtonGroup variant="outline">
+                <Button>Month</Button>
+                <Button>
+                  <ButtonGroup.Separator />
+                  Week
+                </Button>
+                <Button>
+                  <ButtonGroup.Separator />
+                  Day
+                </Button>
+              </ButtonGroup>
+
+              <ButtonGroup variant="danger-soft" isDisabled>
+                <Button>Save</Button>
+                <Button>
+                  <ButtonGroup.Separator />
+                  Publish
+                </Button>
+              </ButtonGroup>
+            </div>
+          </div>
+
+          <div class="space-y-3">
+            <h3 class="text-xs font-semibold uppercase opacity-70">Orientation + Full Width</h3>
+            <div class="grid gap-3 md:grid-cols-2">
+              <div class="space-y-2">
+                <p class="text-xs opacity-70">Horizontal</p>
+                <ButtonGroup fullWidth variant="secondary">
+                  <Button>List</Button>
+                  <Button>
+                    <ButtonGroup.Separator />
+                    Board
+                  </Button>
+                  <Button>
+                    <ButtonGroup.Separator />
+                    Timeline
+                  </Button>
+                </ButtonGroup>
+              </div>
+
+              <div class="space-y-2">
+                <p class="text-xs opacity-70">Vertical</p>
+                <ButtonGroup orientation="vertical" class="w-48" variant="tertiary" fullWidth>
+                  <Button>Account</Button>
+                  <Button>
+                    <ButtonGroup.Separator />
+                    Security
+                  </Button>
+                  <Button>
+                    <ButtonGroup.Separator />
+                    Billing
+                  </Button>
+                </ButtonGroup>
+              </div>
             </div>
           </div>
         </section>

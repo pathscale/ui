@@ -1,6 +1,7 @@
 import "./Button.css";
-import { Show, splitProps, type JSX } from "solid-js";
+import { Show, splitProps, useContext, type JSX } from "solid-js";
 import { twMerge } from "tailwind-merge";
+import { ButtonGroupContext } from "../button-group/ButtonGroupContext";
 
 type ButtonVariant =
   | "primary"
@@ -53,9 +54,13 @@ const Button = (props: ButtonProps): JSX.Element => {
     "type",
   ]);
 
-  const variant = () => local.variant ?? "primary";
-  const size = () => local.size ?? "md";
-  const disabled = () => Boolean(local.isDisabled) || Boolean(local.isPending);
+  const buttonGroupContext = useContext(ButtonGroupContext);
+
+  const variant = () => local.variant ?? buttonGroupContext?.variant() ?? "primary";
+  const size = () => local.size ?? buttonGroupContext?.size() ?? "md";
+  const fullWidth = () => local.fullWidth ?? buttonGroupContext?.fullWidth();
+  const disabled = () =>
+    Boolean(local.isDisabled ?? buttonGroupContext?.isDisabled()) || Boolean(local.isPending);
 
   const classes = () =>
     twMerge(
@@ -63,7 +68,7 @@ const Button = (props: ButtonProps): JSX.Element => {
       VARIANT_CLASS_MAP[variant()],
       SIZE_CLASS_MAP[size()],
       local.isIconOnly && "button--icon-only",
-      local.fullWidth && "button--full-width",
+      fullWidth() && "button--full-width",
       local.class,
       local.className,
     );

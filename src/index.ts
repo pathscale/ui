@@ -15,6 +15,13 @@ export {
 export { default as BottomSheet } from "./components/bottom-sheet/BottomSheet";
 export type { BottomSheetProps } from "./components/bottom-sheet/BottomSheet";
 export { default as Button } from "./components/button";
+export { default as ButtonGroup, ButtonGroupRoot, ButtonGroupSeparator } from "./components/button-group";
+export type {
+  ButtonGroupProps,
+  ButtonGroupRootProps,
+  ButtonGroupSeparatorProps,
+  ButtonGroupOrientation,
+} from "./components/button-group";
 export { default as Calendar, type CalendarProps } from "./components/calendar";
 export { default as Card } from "./components/card";
 export type {
