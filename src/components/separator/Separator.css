@@ -1,0 +1,35 @@
+@layer components {
+  .separator {
+    display: block;
+    flex-shrink: 0;
+    border-radius: 0.25rem;
+
+    --separator-color: var(--color-separator, var(--color-base-300));
+
+    background-color: var(--separator-color);
+  }
+
+  .separator--horizontal {
+    width: 100%;
+    height: 1px;
+  }
+
+  .separator--vertical {
+    width: 1px;
+    height: auto;
+    min-height: 0.5rem;
+    align-self: stretch;
+  }
+
+  .separator--default {
+    --separator-color: var(--color-separator, var(--color-base-300));
+  }
+
+  .separator--secondary {
+    --separator-color: var(--color-separator-secondary, var(--color-base-300));
+  }
+
+  .separator--tertiary {
+    --separator-color: var(--color-separator-tertiary, var(--color-base-200));
+  }
+}

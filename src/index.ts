@@ -213,6 +213,8 @@ export type {
   RatingProps,
 } from "./components/rating";
 export { default as Select } from "./components/select";
+export { default as Separator } from "./components/separator";
+export type { SeparatorProps, SeparatorOrientation, SeparatorVariant } from "./components/separator";
 export { ShowcaseSection } from "./components/showcase-section";
 export { default as ShowcaseBlock } from "./components/showcase/ShowcaseBlock";
 export {

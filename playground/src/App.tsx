@@ -27,6 +27,7 @@ import {
   Radio,
   RadioGroup,
   Select,
+  Separator,
   SliderField,
   Tabs,
   Toggle,
@@ -59,6 +60,7 @@ const CHIP_SIZES = ["sm", "md", "lg"] as const;
 const CHIP_COLORS = ["default", "primary", "accent", "success", "warning", "danger"] as const;
 const CARD_VARIANTS = ["default", "flat", "bordered", "shadow"] as const;
 const SURFACE_VARIANTS = ["default", "secondary", "tertiary", "transparent"] as const;
+const SEPARATOR_VARIANTS = ["default", "secondary", "tertiary"] as const;
 
 const TAB_ITEMS = [
   { key: "overview", label: "Overview", content: "Overview content" },
@@ -266,6 +268,49 @@ export default function App() {
                 </div>
               )}
             </For>
+          </div>
+        </section>
+
+        <section class="space-y-4 rounded-xl border border-base-300 bg-base-200 p-4">
+          <div>
+            <h2 class="text-sm font-semibold">Separator</h2>
+            <p class="text-xs opacity-70">
+              HeroUI-style separator with orientation and variant support.
+            </p>
+          </div>
+
+          <div class="space-y-3">
+            <p class="text-xs font-semibold uppercase opacity-70">Horizontal</p>
+            <div class="space-y-2 rounded-xl border border-base-300 bg-base-100 p-3">
+              <p class="text-sm">Profile Settings</p>
+              <Separator />
+              <p class="text-sm opacity-80">Team preferences and notification controls.</p>
+            </div>
+          </div>
+
+          <div class="space-y-3">
+            <p class="text-xs font-semibold uppercase opacity-70">Vertical</p>
+            <div class="flex h-8 items-center gap-3 rounded-xl border border-base-300 bg-base-100 px-3">
+              <span class="text-sm">Blog</span>
+              <Separator orientation="vertical" />
+              <span class="text-sm">Docs</span>
+              <Separator orientation="vertical" />
+              <span class="text-sm">Source</span>
+            </div>
+          </div>
+
+          <div class="space-y-3">
+            <p class="text-xs font-semibold uppercase opacity-70">Variants</p>
+            <div class="space-y-3 rounded-xl border border-base-300 bg-base-100 p-3">
+              <For each={SEPARATOR_VARIANTS}>
+                {(variant) => (
+                  <div class="space-y-1">
+                    <p class="text-xs uppercase opacity-70">{variant}</p>
+                    <Separator variant={variant} />
+                  </div>
+                )}
+              </For>
+            </div>
           </div>
         </section>
 
