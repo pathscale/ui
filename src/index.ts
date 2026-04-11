@@ -285,6 +285,21 @@ export {
   toSortingState,
   useAnchoredOverlayPosition,
 } from "./components/table";
+export { default as Tag } from "./components/tag";
+export type {
+  TagProps,
+  TagRootProps,
+  TagRemoveButtonProps,
+  TagSize,
+  TagVariant,
+} from "./components/tag";
+export { default as TagGroup, TagGroupRoot, TagGroupList } from "./components/tag-group";
+export type {
+  TagGroupProps,
+  TagGroupRootProps,
+  TagGroupListProps,
+  TagSelectionMode,
+} from "./components/tag-group";
 export { StreamingTable } from "./components/streaming-table";
 export type { StreamingTableProps } from "./components/streaming-table";
 export type {

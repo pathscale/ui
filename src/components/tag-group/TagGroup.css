@@ -1,0 +1,22 @@
+@layer components {
+  .tag-group {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+  }
+
+  .tag-group__list {
+    position: relative;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.375rem;
+  }
+
+  .tag-group [slot="description"],
+  .tag-group [data-slot="description"],
+  .tag-group [slot="errorMessage"],
+  .tag-group [data-slot="error-message"] {
+    padding: 0.25rem;
+  }
+}

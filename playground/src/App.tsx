@@ -32,6 +32,8 @@ import {
   Select,
   Separator,
   SliderField,
+  Tag,
+  TagGroup,
   Tabs,
   Toggle,
   Tooltip,
@@ -146,6 +148,16 @@ export default function App() {
   ]);
   const [showRemovableChip, setShowRemovableChip] = createSignal(true);
   const [cardPressCount, setCardPressCount] = createSignal(0);
+  const [selectedTag, setSelectedTag] = createSignal<Set<string>>(new Set(["news"]));
+  const [selectedTopics, setSelectedTopics] = createSignal<Set<string>>(
+    new Set(["design", "docs"]),
+  );
+  const [removableTags, setRemovableTags] = createSignal<string[]>([
+    "react",
+    "solid",
+    "svelte",
+    "vue",
+  ]);
 
   return (
     <main class="min-h-screen bg-base-100 text-base-content p-8">
@@ -970,6 +982,106 @@ export default function App() {
                 <CloseButton />
               </div>
             </div>
+          </div>
+        </section>
+
+        <section class="space-y-4 rounded-xl border border-base-300 bg-base-200 p-4">
+          <div>
+            <h2 class="text-sm font-semibold">Tag + TagGroup</h2>
+            <p class="text-xs opacity-70">
+              HeroUI-style tags with group-driven variants, selection modes, and remove support.
+            </p>
+          </div>
+
+          <div class="grid gap-6 md:grid-cols-2">
+            <div class="space-y-3">
+              <h3 class="text-xs font-semibold uppercase opacity-70">Single Selection</h3>
+              <TagGroup
+                selectionMode="single"
+                selectedKeys={selectedTag()}
+                onSelectionChange={(keys) => setSelectedTag(new Set(keys))}
+              >
+                <TagGroup.List>
+                  <Tag id="news">News</Tag>
+                  <Tag id="travel">Travel</Tag>
+                  <Tag id="gaming">Gaming</Tag>
+                </TagGroup.List>
+                <span class="text-xs opacity-70" data-slot="description">
+                  Selected: {Array.from(selectedTag()).join(", ") || "None"}
+                </span>
+              </TagGroup>
+            </div>
+
+            <div class="space-y-3">
+              <h3 class="text-xs font-semibold uppercase opacity-70">Multiple + Surface</h3>
+              <TagGroup
+                selectionMode="multiple"
+                selectedKeys={selectedTopics()}
+                onSelectionChange={(keys) => setSelectedTopics(new Set(keys))}
+                variant="surface"
+                size="lg"
+              >
+                <TagGroup.List>
+                  <Tag id="design">Design</Tag>
+                  <Tag id="docs">Documentation</Tag>
+                  <Tag id="api">API</Tag>
+                  <Tag id="research">Research</Tag>
+                </TagGroup.List>
+              </TagGroup>
+            </div>
+          </div>
+
+          <div class="space-y-3">
+            <h3 class="text-xs font-semibold uppercase opacity-70">Removable</h3>
+            <TagGroup
+              selectionMode="multiple"
+              onRemove={(keys) =>
+                setRemovableTags((prev) => prev.filter((tag) => !keys.has(tag)))
+              }
+            >
+              <TagGroup.List
+                items={removableTags()}
+                renderEmptyState={() => (
+                  <span class="text-xs opacity-70" data-slot="description">
+                    No tags left
+                  </span>
+                )}
+              >
+                {(item) => (
+                  <Tag id={String(item)} textValue={String(item)}>
+                    {String(item)}
+                  </Tag>
+                )}
+              </TagGroup.List>
+            </TagGroup>
+          </div>
+
+          <div class="space-y-3">
+            <h3 class="text-xs font-semibold uppercase opacity-70">Custom Remove Button</h3>
+            <TagGroup selectionMode="single" onRemove={() => undefined}>
+              <TagGroup.List>
+                <Tag id="alpha">
+                  {(state) => (
+                    <>
+                      Alpha
+                      {state.allowsRemoving && (
+                        <Tag.RemoveButton>
+                          <svg viewBox="0 0 16 16" fill="none" aria-hidden="true" role="presentation">
+                            <path
+                              d="M4 8h8M8 4v8"
+                              stroke="currentColor"
+                              stroke-width="1.6"
+                              stroke-linecap="round"
+                            />
+                          </svg>
+                        </Tag.RemoveButton>
+                      )}
+                    </>
+                  )}
+                </Tag>
+                <Tag id="beta">Beta</Tag>
+              </TagGroup.List>
+            </TagGroup>
           </div>
         </section>
 
