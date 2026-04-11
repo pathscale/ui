@@ -6,6 +6,7 @@ import NavbarSection from "./NavbarSection";
 import NavbarStack from "./NavbarStack";
 import NavbarRow from "./NavbarRow";
 import type { IComponentBaseProps } from "../types";
+import { CLASSES } from "./Navbar.classes";
 
 export type NavbarProps = JSX.HTMLAttributes<HTMLElement> &
   IComponentBaseProps & {
@@ -25,7 +26,7 @@ const Navbar = (props: NavbarProps): JSX.Element => {
   ]);
 
   const Tag = (local.as || "div") as keyof JSX.IntrinsicElements;
-  const classes = () => twMerge("navbar", local.class, local.className);
+  const classes = () => twMerge(CLASSES.Navbar.base, local.class, local.className);
 
   return (
     <Dynamic

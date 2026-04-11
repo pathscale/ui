@@ -1,14 +1,12 @@
 import {
   type JSX,
-  type ParentProps,
   splitProps,
   createMemo,
   children as resolveChildren,
 } from "solid-js";
 import { twMerge } from "tailwind-merge";
-import { clsx } from "clsx";
 import type { IComponentBaseProps } from "../types";
-import NavbarRow from "./NavbarRow";
+import { CLASSES } from "./Navbar.classes";
 
 export type NavbarStackProps = JSX.HTMLAttributes<HTMLDivElement> &
   IComponentBaseProps & {
@@ -33,13 +31,11 @@ const NavbarStack = (props: NavbarStackProps): JSX.Element => {
 
   const classes = createMemo(() =>
     twMerge(
-      "navbar-stack",
+      CLASSES.Stack.base,
+      local.sticky && CLASSES.Stack.flag.sticky,
+      local.container && CLASSES.Stack.flag.container,
       local.class,
       local.className,
-      clsx({
-        "sticky top-0 z-30": local.sticky,
-        "max-w-screen-xl mx-auto px-4": local.container,
-      }),
     ),
   );
 

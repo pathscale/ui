@@ -1,6 +1,6 @@
 import { type JSX, splitProps } from "solid-js";
-import { clsx } from "clsx";
 import { twMerge } from "tailwind-merge";
+import { CLASSES } from "./Navbar.classes";
 
 export type NavbarSectionProps = JSX.HTMLAttributes<HTMLDivElement> & {
   section: "start" | "center" | "end";
@@ -20,13 +20,9 @@ const NavbarSection = (props: NavbarSectionProps): JSX.Element => {
 
   const classes = () =>
     twMerge(
+      CLASSES.Section.variant[local.section],
       local.class,
       local.className,
-      clsx({
-        "navbar-start": local.section === "start",
-        "navbar-center": local.section === "center",
-        "navbar-end": local.section === "end",
-      }),
     );
 
   return (
