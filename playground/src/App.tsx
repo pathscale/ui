@@ -11,6 +11,7 @@ import {
   Loading,
   Progress,
   Skeleton,
+  Surface,
   Checkbox,
   ColorArea,
   ColorField,
@@ -57,6 +58,7 @@ const CHIP_VARIANTS = ["solid", "flat", "bordered"] as const;
 const CHIP_SIZES = ["sm", "md", "lg"] as const;
 const CHIP_COLORS = ["default", "primary", "accent", "success", "warning", "danger"] as const;
 const CARD_VARIANTS = ["default", "flat", "bordered", "shadow"] as const;
+const SURFACE_VARIANTS = ["default", "secondary", "tertiary", "transparent"] as const;
 
 const TAB_ITEMS = [
   { key: "overview", label: "Overview", content: "Overview content" },
@@ -229,6 +231,41 @@ export default function App() {
                 </Card>
               </Card.Body>
             </Card>
+          </div>
+        </section>
+
+        <section class="space-y-4 rounded-xl border border-base-300 bg-base-200 p-4">
+          <div>
+            <h2 class="text-sm font-semibold">Surface</h2>
+            <p class="text-xs opacity-70">
+              HeroUI-parity surface primitive with default/secondary/tertiary/transparent variants.
+            </p>
+          </div>
+
+          <Surface class="rounded-2xl border border-base-300 p-4">
+            <h3 class="text-sm font-semibold">Default Surface</h3>
+            <p class="text-sm opacity-80">
+              Base container for grouping content with foreground/background contrast.
+            </p>
+          </Surface>
+
+          <div class="grid gap-4 md:grid-cols-2">
+            <For each={SURFACE_VARIANTS}>
+              {(variant) => (
+                <div class="space-y-2">
+                  <p class="text-xs font-semibold uppercase opacity-70">{variant}</p>
+                  <Surface
+                    variant={variant}
+                    class="flex min-h-32 flex-col gap-2 rounded-2xl border border-base-300 p-4"
+                  >
+                    <h4 class="text-sm font-semibold">Surface {variant}</h4>
+                    <p class="text-xs opacity-75">
+                      Variant `{variant}` from HeroUI surface model.
+                    </p>
+                  </Surface>
+                </div>
+              )}
+            </For>
           </div>
         </section>
 

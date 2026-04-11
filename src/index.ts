@@ -225,6 +225,18 @@ export {
 } from "./components/sidenav";
 export { default as Skeleton } from "./components/skeleton";
 export { SkipLink, type SkipLinkProps } from "./components/skip-link";
+export {
+  default as Surface,
+  SurfaceRoot,
+  SurfaceContext,
+  surfaceVariants,
+} from "./components/surface";
+export type {
+  SurfaceVariant,
+  SurfaceVariants,
+  SurfaceProps,
+  SurfaceRootProps,
+} from "./components/surface";
 export { default as Stack } from "./components/stack";
 export { default as StatCard } from "./components/stat-card";
 export { default as Stats } from "./components/stats";
