@@ -17,6 +17,14 @@ export type { BottomSheetProps } from "./components/bottom-sheet/BottomSheet";
 export { default as Button } from "./components/button";
 export { default as Calendar, type CalendarProps } from "./components/calendar";
 export { default as Card } from "./components/card";
+export type {
+  CardVariant,
+  CardProps,
+  CardRootProps,
+  CardHeaderProps,
+  CardBodyProps,
+  CardFooterProps,
+} from "./components/card";
 export { default as Carousel } from "./components/carousel";
 export type { CarouselItemProps, CarouselProps } from "./components/carousel";
 export { default as ChatBubble } from "./components/chatbubble";

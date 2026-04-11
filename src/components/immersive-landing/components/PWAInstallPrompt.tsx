@@ -113,11 +113,7 @@ export const PWAInstallPrompt: Component<PWAInstallPromptProps> = (props) => {
         aria-labelledby="pwa-install-title"
         class="fixed bottom-4 left-4 right-4 md:left-auto md:right-4 md:max-w-sm z-51 animate-slide-up"
       >
-        <Card
-          shadow="lg"
-          background="base-100"
-          class="relative border border-base-300"
-        >
+        <Card variant="shadow" class="relative border border-base-300">
           <Button
             size="sm"
             variant="ghost"
@@ -136,24 +132,23 @@ export const PWAInstallPrompt: Component<PWAInstallPromptProps> = (props) => {
               </div>
 
               <Flex direction="col" gap="sm" class="flex-1 min-w-0 pr-6">
-                <Card.Title id="pwa-install-title" tag="h3" class="text-base">
+                <h3 id="pwa-install-title" class="text-base font-medium leading-6">
                   {texts().title}
-                </Card.Title>
+                </h3>
                 <p class="text-sm text-base-content/70">
                   {texts().description}
                 </p>
               </Flex>
             </Flex>
-
-            <Card.Actions class="mt-4">
-              <Button variant="primary" class="flex-1" onClick={handleInstall}>
-              {texts().installButton}
-              </Button>
-              <Button variant="ghost" class="flex-1" onClick={handleDismiss}>
-              {texts().notNowButton}
-              </Button>
-            </Card.Actions>
           </Card.Body>
+          <Card.Footer class="mt-1">
+            <Button variant="primary" class="flex-1" onClick={handleInstall}>
+              {texts().installButton}
+            </Button>
+            <Button variant="ghost" class="flex-1" onClick={handleDismiss}>
+              {texts().notNowButton}
+            </Button>
+          </Card.Footer>
         </Card>
       </div>
     </Show>

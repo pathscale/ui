@@ -5,6 +5,7 @@ import {
   Badge,
   Breadcrumbs,
   Button,
+  Card,
   Chip,
   EmptyState,
   Loading,
@@ -55,6 +56,7 @@ const BADGE_PLACEMENTS = [
 const CHIP_VARIANTS = ["solid", "flat", "bordered"] as const;
 const CHIP_SIZES = ["sm", "md", "lg"] as const;
 const CHIP_COLORS = ["default", "primary", "accent", "success", "warning", "danger"] as const;
+const CARD_VARIANTS = ["default", "flat", "bordered", "shadow"] as const;
 
 const TAB_ITEMS = [
   { key: "overview", label: "Overview", content: "Overview content" },
@@ -135,14 +137,100 @@ export default function App() {
     "europe",
   ]);
   const [showRemovableChip, setShowRemovableChip] = createSignal(true);
+  const [cardPressCount, setCardPressCount] = createSignal(0);
 
   return (
     <main class="min-h-screen bg-base-100 text-base-content p-8">
       <div class="mx-auto max-w-5xl space-y-8">
         <header class="space-y-2">
-          <h1 class="text-2xl font-semibold">Badge Playground</h1>
-          <p class="text-sm opacity-70">Minimal test surface for Badge only.</p>
+          <h1 class="text-2xl font-semibold">Component Playground</h1>
+          <p class="text-sm opacity-70">Focused migration test surfaces for HeroUI parity.</p>
         </header>
+
+        <section class="space-y-4 rounded-xl border border-base-300 bg-base-200 p-4">
+          <div>
+            <h2 class="text-sm font-semibold">Card</h2>
+            <p class="text-xs opacity-70">
+              Compound API with static variants and optional hoverable/pressable interactions.
+            </p>
+          </div>
+
+          <div class="grid gap-4 md:grid-cols-2">
+            <Card class="min-h-36">
+              <p class="text-sm">Basic card content with the default surface styling.</p>
+            </Card>
+
+            <Card variant="bordered" class="min-h-36">
+              <Card.Header>
+                <h3 class="text-sm font-medium">Header / Body / Footer</h3>
+                <p class="text-xs opacity-70">Structured slots for consistent spacing.</p>
+              </Card.Header>
+              <Card.Body>
+                <p class="text-sm opacity-80">Use `Card.Body` for the main content block.</p>
+              </Card.Body>
+              <Card.Footer>
+                <Button size="sm" variant="outline">
+                  Secondary action
+                </Button>
+                <Button size="sm">Primary action</Button>
+              </Card.Footer>
+            </Card>
+          </div>
+
+          <div class="space-y-2">
+            <h3 class="text-xs font-semibold uppercase opacity-70">Variants</h3>
+            <div class="grid gap-3 md:grid-cols-2 xl:grid-cols-4">
+              <For each={CARD_VARIANTS}>
+                {(variant) => (
+                  <Card variant={variant} class="min-h-28">
+                    <Card.Header>
+                      <h4 class="text-xs font-semibold uppercase tracking-wide">{variant}</h4>
+                    </Card.Header>
+                    <Card.Body>
+                      <p class="text-xs opacity-75">Static map variant: `{variant}`.</p>
+                    </Card.Body>
+                  </Card>
+                )}
+              </For>
+            </div>
+          </div>
+
+          <div class="grid gap-4 lg:grid-cols-2">
+            <Card
+              variant="shadow"
+              isHoverable
+              isPressable
+              class="min-h-36 select-none"
+              onClick={() => setCardPressCount((count) => count + 1)}
+            >
+              <Card.Header>
+                <h3 class="text-sm font-medium">Interactive Card</h3>
+              </Card.Header>
+              <Card.Body>
+                <p class="text-sm opacity-80">
+                  Hover and click (or press Enter/Space while focused) to test behavior.
+                </p>
+              </Card.Body>
+              <Card.Footer>
+                <span class="text-xs opacity-70">Pressed {cardPressCount()} times</span>
+              </Card.Footer>
+            </Card>
+
+            <Card variant="flat" class="min-h-36">
+              <Card.Header>
+                <h3 class="text-sm font-medium">Nested Content</h3>
+              </Card.Header>
+              <Card.Body>
+                <p class="text-sm opacity-80">Cards can nest for grouped layouts.</p>
+                <Card variant="bordered">
+                  <Card.Body>
+                    <p class="text-xs opacity-75">Nested bordered card inside `Card.Body`.</p>
+                  </Card.Body>
+                </Card>
+              </Card.Body>
+            </Card>
+          </div>
+        </section>
 
         <section class="space-y-3 rounded-xl border border-base-300 bg-base-200 p-4">
           <h2 class="text-sm font-semibold">Colors</h2>

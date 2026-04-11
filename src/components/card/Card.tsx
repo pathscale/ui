@@ -1,121 +1,173 @@
-import "./card.css";
-import { clsx } from "clsx";
-import { splitProps, type JSX } from "solid-js";
+import "./Card.css";
+import { splitProps, type Component, type JSX, type ParentComponent } from "solid-js";
 import { twMerge } from "tailwind-merge";
 
-import type {
-  ComponentSize,
-  ComponentVariant,
-  ComponentColor,
-  IComponentBaseProps,
-} from "../types";
-import CardActions from "./CardActions";
-import CardBody from "./CardBody";
-import CardImage from "./CardImage";
-import CardTitle from "./CardTitle";
+import type { IComponentBaseProps } from "../types";
 
-export type CardProps = IComponentBaseProps &
-  JSX.HTMLAttributes<HTMLDivElement> & {
-    size?: ComponentSize;
-    border?: boolean;
-    variant?: Exclude<ComponentVariant, "soft"> | "border";
-    imageFull?: boolean;
-    side?: ComponentSize | boolean;
-    background?: ComponentColor | "base-100" | "base-200" | "base-300";
-    shadow?: "none" | "sm" | "md" | "lg" | "xl";
-    fullWidth?: boolean;
-    "aria-label"?: string;
-    "aria-describedby"?: string;
-    "aria-labelledby"?: string;
-    role?: string;
+export type CardVariant = "default" | "flat" | "bordered" | "shadow";
+
+type CardContextlessProps<T extends HTMLElement> = Omit<JSX.HTMLAttributes<T>, "children"> &
+  IComponentBaseProps & {
+    children?: JSX.Element;
   };
 
-const DYNAMIC_MODIFIERS = {
-  side: {
-    true: "card-side",
-    xs: "card-side-xs",
-    sm: "card-side-sm",
-    md: "card-side-md",
-    lg: "card-side-lg",
-  },
-} as const;
+export type CardRootProps = CardContextlessProps<HTMLDivElement> & {
+  variant?: CardVariant;
+  isHoverable?: boolean;
+  isPressable?: boolean;
+};
 
-const Card = (props: CardProps): JSX.Element => {
+export type CardHeaderProps = CardContextlessProps<HTMLDivElement>;
+export type CardBodyProps = CardContextlessProps<HTMLDivElement>;
+export type CardFooterProps = CardContextlessProps<HTMLDivElement>;
+
+const CARD_VARIANT_CLASS: Record<CardVariant, string> = {
+  default: "card--default",
+  flat: "card--flat",
+  bordered: "card--bordered",
+  shadow: "card--shadow",
+};
+
+const invokeEventHandler = (handler: unknown, event: Event) => {
+  if (typeof handler === "function") {
+    (handler as (event: Event) => void)(event);
+    return;
+  }
+
+  if (Array.isArray(handler) && typeof handler[0] === "function") {
+    handler[0](handler[1], event);
+  }
+};
+
+const CardRoot: ParentComponent<CardRootProps> = (props) => {
   const [local, others] = splitProps(props, [
-    "size",
-    "border",
-    "variant",
-    "imageFull",
-    "side",
-    "background",
-    "shadow",
-    "fullWidth",
+    "children",
     "class",
     "className",
     "dataTheme",
     "style",
-    "aria-label",
-    "aria-describedby",
-    "aria-labelledby",
+    "variant",
+    "isHoverable",
+    "isPressable",
+    "onKeyDown",
     "role",
+    "tabIndex",
   ]);
 
-  const classes = twMerge(
-    "card",
-    local.class,
-    local.className,
-    clsx({
-      "w-full": local.fullWidth,
-      "shadow-sm": local.shadow === "sm",
-      "shadow-md": local.shadow === "md",
-      "shadow-lg": local.shadow === "lg",
-      "shadow-xl": local.shadow === "xl",
-      "shadow-none": local.shadow === "none",
-      "bg-base-100": local.background === "base-100",
-      "bg-base-200": local.background === "base-200",
-      "bg-base-300": local.background === "base-300",
-      "bg-primary": local.background === "primary",
-      "bg-secondary": local.background === "secondary",
-      "bg-accent": local.background === "accent",
-      "bg-neutral": local.background === "neutral",
-      "bg-info": local.background === "info",
-      "bg-success": local.background === "success",
-      "bg-warning": local.background === "warning",
-      "bg-error": local.background === "error",
-      "card-xl": local.size === "xl",
-      "card-lg": local.size === "lg",
-      "card-md": local.size === "md",
-      "card-sm": local.size === "sm",
-      "card-xs": local.size === "xs",
-      "card-dash": local.variant === "dash",
-      "card-border":
-        local.border !== false ||
-        local.variant === "outline" ||
-        local.variant === "border",
-      "image-full": local.imageFull,
-      [DYNAMIC_MODIFIERS.side[
-        local.side?.toString() as keyof typeof DYNAMIC_MODIFIERS.side
-      ] ?? ""]: !!local.side,
-    }),
-  );
+  const variant = () => local.variant ?? "default";
+
+  const handleKeyDown: JSX.EventHandlerUnion<HTMLDivElement, KeyboardEvent> = (event) => {
+    invokeEventHandler(local.onKeyDown, event);
+    if (event.defaultPrevented || !local.isPressable) return;
+
+    if (event.key !== "Enter" && event.key !== " ") return;
+
+    if (event.target !== event.currentTarget) return;
+
+    event.preventDefault();
+    event.currentTarget.click();
+  };
 
   return (
     <div
       {...others}
-      class={classes}
+      class={twMerge(
+        "card",
+        CARD_VARIANT_CLASS[variant()],
+        local.isHoverable && "card--hoverable",
+        local.isPressable && "card--pressable",
+        local.class,
+        local.className,
+      )}
+      data-slot="card"
+      data-variant={variant()}
+      data-hoverable={local.isHoverable ? "true" : "false"}
+      data-pressable={local.isPressable ? "true" : "false"}
       data-theme={local.dataTheme}
       style={local.style}
-      role={local.role}
-      aria-label={local["aria-label"]}
-      aria-describedby={local["aria-describedby"]}
-      aria-labelledby={local["aria-labelledby"]}
-    />
+      role={local.role ?? (local.isPressable ? "button" : undefined)}
+      tabIndex={local.tabIndex ?? (local.isPressable ? 0 : undefined)}
+      onKeyDown={handleKeyDown}
+    >
+      {local.children}
+    </div>
   );
 };
 
-Card.Actions = CardActions;
-Card.Body = CardBody;
-Card.Title = CardTitle;
-Card.Image = CardImage;
+const CardHeader: Component<CardHeaderProps> = (props) => {
+  const [local, others] = splitProps(props, [
+    "children",
+    "class",
+    "className",
+    "dataTheme",
+    "style",
+  ]);
+
+  return (
+    <div
+      {...others}
+      class={twMerge("card__header", local.class, local.className)}
+      data-slot="card-header"
+      data-theme={local.dataTheme}
+      style={local.style}
+    >
+      {local.children}
+    </div>
+  );
+};
+
+const CardBody: Component<CardBodyProps> = (props) => {
+  const [local, others] = splitProps(props, [
+    "children",
+    "class",
+    "className",
+    "dataTheme",
+    "style",
+  ]);
+
+  return (
+    <div
+      {...others}
+      class={twMerge("card__body", local.class, local.className)}
+      data-slot="card-body"
+      data-theme={local.dataTheme}
+      style={local.style}
+    >
+      {local.children}
+    </div>
+  );
+};
+
+const CardFooter: Component<CardFooterProps> = (props) => {
+  const [local, others] = splitProps(props, [
+    "children",
+    "class",
+    "className",
+    "dataTheme",
+    "style",
+  ]);
+
+  return (
+    <div
+      {...others}
+      class={twMerge("card__footer", local.class, local.className)}
+      data-slot="card-footer"
+      data-theme={local.dataTheme}
+      style={local.style}
+    >
+      {local.children}
+    </div>
+  );
+};
+
+const Card = Object.assign(CardRoot, {
+  Root: CardRoot,
+  Header: CardHeader,
+  Body: CardBody,
+  Content: CardBody,
+  Footer: CardFooter,
+});
 
 export default Card;
+export { Card, CardRoot, CardHeader, CardBody, CardFooter };
+export type { CardRootProps as CardProps };
