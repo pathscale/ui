@@ -21,6 +21,8 @@ export { default as Carousel } from "./components/carousel";
 export type { CarouselItemProps, CarouselProps } from "./components/carousel";
 export { default as ChatBubble } from "./components/chatbubble";
 export { default as Checkbox } from "./components/checkbox";
+export { default as Chip } from "./components/chip";
+export type { ChipProps, ChipRootProps, ChipLabelProps, ChipVariant, ChipColor, ChipSize } from "./components/chip";
 export { default as ColorArea } from "./components/color-area";
 export type { ColorAreaProps, ColorAreaValue } from "./components/color-area";
 export { default as ColorField } from "./components/color-field";

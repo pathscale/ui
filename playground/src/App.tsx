@@ -5,6 +5,7 @@ import {
   Badge,
   Breadcrumbs,
   Button,
+  Chip,
   EmptyState,
   Loading,
   Progress,
@@ -51,6 +52,9 @@ const BADGE_PLACEMENTS = [
   "bottom-right",
   "bottom-left",
 ] as const;
+const CHIP_VARIANTS = ["solid", "flat", "bordered"] as const;
+const CHIP_SIZES = ["sm", "md", "lg"] as const;
+const CHIP_COLORS = ["default", "primary", "accent", "success", "warning", "danger"] as const;
 
 const TAB_ITEMS = [
   { key: "overview", label: "Overview", content: "Overview content" },
@@ -130,6 +134,7 @@ export default function App() {
     "north-america",
     "europe",
   ]);
+  const [showRemovableChip, setShowRemovableChip] = createSignal(true);
 
   return (
     <main class="min-h-screen bg-base-100 text-base-content p-8">
@@ -224,6 +229,82 @@ export default function App() {
                 </Badge.Anchor>
               )}
             </For>
+          </div>
+        </section>
+
+        <section class="space-y-4 rounded-xl border border-base-300 bg-base-200 p-4">
+          <div>
+            <h2 class="text-sm font-semibold">Chip</h2>
+            <p class="text-xs opacity-70">
+              Solid, flat, bordered variants with size, color, icon, and removable behavior.
+            </p>
+          </div>
+
+          <div class="space-y-3">
+            <h3 class="text-xs font-semibold uppercase opacity-70">Variants + Colors</h3>
+            <For each={CHIP_VARIANTS}>
+              {(variant) => (
+                <div class="flex flex-wrap items-center gap-3">
+                  <For each={CHIP_COLORS}>
+                    {(color) => (
+                      <Chip variant={variant} color={color}>
+                        {variant}/{color}
+                      </Chip>
+                    )}
+                  </For>
+                </div>
+              )}
+            </For>
+          </div>
+
+          <div class="space-y-3">
+            <h3 class="text-xs font-semibold uppercase opacity-70">Sizes</h3>
+            <div class="flex flex-wrap items-center gap-3">
+              <For each={CHIP_SIZES}>
+                {(size) => (
+                  <Chip size={size} variant="flat" color="accent">
+                    {size}
+                  </Chip>
+                )}
+              </For>
+            </div>
+          </div>
+
+          <div class="space-y-3">
+            <h3 class="text-xs font-semibold uppercase opacity-70">Start/End Content + Remove</h3>
+            <div class="flex flex-wrap items-center gap-3">
+              <Chip
+                variant="flat"
+                color="primary"
+                startContent={<span class="h-2 w-2 rounded-full bg-current opacity-70" />}
+              >
+                Live stream
+              </Chip>
+              <Chip
+                variant="bordered"
+                color="success"
+                endContent={<span class="text-[10px] font-semibold uppercase">OK</span>}
+              >
+                Connection
+              </Chip>
+              {showRemovableChip() ? (
+                <Chip
+                  variant="solid"
+                  color="danger"
+                  onRemove={() => setShowRemovableChip(false)}
+                >
+                  Remove me
+                </Chip>
+              ) : (
+                <Button
+                  size="sm"
+                  variant="outline"
+                  onClick={() => setShowRemovableChip(true)}
+                >
+                  Reset removable chip
+                </Button>
+              )}
+            </div>
           </div>
         </section>
 
