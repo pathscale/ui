@@ -4,7 +4,7 @@ import { twMerge } from "tailwind-merge";
 
 import type { ButtonSize, ButtonVariant } from "../button";
 import type { IComponentBaseProps } from "../types";
-import { ButtonGroupContext } from "./ButtonGroupContext";
+import { ButtonGroupContext } from "./context";
 
 export type ButtonGroupOrientation = "horizontal" | "vertical";
 

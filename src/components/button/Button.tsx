@@ -1,7 +1,7 @@
 import "./Button.css";
 import { Show, splitProps, useContext, type JSX } from "solid-js";
 import { twMerge } from "tailwind-merge";
-import { ButtonGroupContext } from "../button-group/ButtonGroupContext";
+import { ButtonGroupContext } from "../button-group/context";
 
 type ButtonVariant =
   | "primary"
