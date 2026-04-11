@@ -1,6 +1,7 @@
 import "./Checkbox.css";
-import { Show, createEffect, createSignal, splitProps, type Component, type JSX } from "solid-js";
+import { Show, createEffect, createSignal, splitProps, useContext, type Component, type JSX } from "solid-js";
 import { twMerge } from "tailwind-merge";
+import { CheckboxGroupContext } from "../checkbox-group/context";
 import type { IComponentBaseProps } from "../types";
 
 const invokeEventHandler = (handler: unknown, event: Event) => {
@@ -35,6 +36,7 @@ export type CheckboxProps = Omit<JSX.InputHTMLAttributes<HTMLInputElement>, "typ
 
 const Checkbox: Component<CheckboxProps> = (props) => {
   let inputRef: HTMLInputElement | undefined;
+  const group = useContext(CheckboxGroupContext);
 
   const [local, others] = splitProps(props, [
     "class",
@@ -48,6 +50,8 @@ const Checkbox: Component<CheckboxProps> = (props) => {
     "variant",
     "checked",
     "defaultChecked",
+    "value",
+    "name",
     "disabled",
     "onChange",
     "dataTheme",
@@ -57,11 +61,21 @@ const Checkbox: Component<CheckboxProps> = (props) => {
   const [internalSelected, setInternalSelected] = createSignal(Boolean(local.defaultChecked));
 
   const isControlled = () => local.checked !== undefined;
-  const isSelected = () => (isControlled() ? Boolean(local.checked) : internalSelected());
-  const isDisabled = () => Boolean(local.isDisabled) || Boolean(local.disabled);
-  const isInvalid = () => Boolean(local.isInvalid) || Boolean(local["aria-invalid"]);
+  const optionValue = () => (local.value != null ? String(local.value) : undefined);
+  const isGrouped = () => Boolean(group && optionValue() !== undefined);
+  const isSelected = () =>
+    isGrouped()
+      ? Boolean(group?.value().includes(optionValue() as string))
+      : isControlled()
+      ? Boolean(local.checked)
+      : internalSelected();
+  const isDisabled = () =>
+    Boolean(local.isDisabled) || Boolean(local.disabled) || Boolean(group?.isDisabled());
+  const isInvalid = () =>
+    Boolean(local.isInvalid) || Boolean(local["aria-invalid"]) || Boolean(group?.isInvalid());
   const isIndeterminate = () => Boolean(local.isIndeterminate) || Boolean(local.indeterminate);
-  const variant = () => local.variant ?? "primary";
+  const variant = () => local.variant ?? group?.variant() ?? "primary";
+  const name = () => local.name ?? group?.name();
   const hasContent = () => local.children != null || local.description != null;
 
   createEffect(() => {
@@ -73,6 +87,11 @@ const Checkbox: Component<CheckboxProps> = (props) => {
     invokeEventHandler(local.onChange, event);
     if (event.defaultPrevented) return;
     if (isDisabled()) return;
+
+    if (group && optionValue() !== undefined) {
+      group.toggleValue(optionValue() as string, event.currentTarget.checked, event);
+      return;
+    }
 
     if (!isControlled()) {
       setInternalSelected(event.currentTarget.checked);
@@ -105,6 +124,8 @@ const Checkbox: Component<CheckboxProps> = (props) => {
         type="checkbox"
         class="checkbox__input"
         data-slot="checkbox-input"
+        value={local.value}
+        name={name()}
         checked={isSelected()}
         disabled={isDisabled()}
         aria-invalid={local["aria-invalid"] ?? (isInvalid() ? true : undefined)}

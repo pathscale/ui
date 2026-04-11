@@ -8,6 +8,7 @@ import {
   ButtonGroup,
   Card,
   Chip,
+  CheckboxGroup,
   EmptyState,
   Loading,
   Progress,
@@ -120,6 +121,7 @@ const ALERT_STATUSES = [
 export default function App() {
   const [selectedFramework, setSelectedFramework] = createSignal("solid");
   const [checkedTerms, setCheckedTerms] = createSignal(false);
+  const [selectedChannels, setSelectedChannels] = createSignal<string[]>(["email", "push"]);
   const [colorAreaValue, setColorAreaValue] = createSignal({ h: 210, s: 75, v: 80 });
   const [colorFieldValue, setColorFieldValue] = createSignal("#3B82F6");
   const [colorPickerValue, setColorPickerValue] = createSignal("#3B82F6");
@@ -1235,6 +1237,60 @@ export default function App() {
                   Email updates
                 </Toggle>
               </div>
+            </div>
+          </div>
+        </section>
+
+        <section class="space-y-4 rounded-xl border border-base-300 bg-base-200 p-4">
+          <div>
+            <h2 class="text-sm font-semibold">Checkbox Group</h2>
+            <p class="text-xs opacity-70">
+              HeroUI-style grouped checkboxes with shared variant and controlled values.
+            </p>
+          </div>
+
+          <div class="grid gap-6 md:grid-cols-2">
+            <div class="space-y-3">
+              <h3 class="text-xs font-semibold uppercase opacity-70">Basic</h3>
+              <CheckboxGroup name="interests-basic">
+                <Checkbox value="design">Design</Checkbox>
+                <Checkbox value="engineering">Engineering</Checkbox>
+                <Checkbox value="product">Product</Checkbox>
+              </CheckboxGroup>
+            </div>
+
+            <div class="space-y-3">
+              <h3 class="text-xs font-semibold uppercase opacity-70">Uncontrolled</h3>
+              <CheckboxGroup name="interests-uncontrolled" defaultValue={["docs", "qa"]}>
+                <Checkbox value="docs">Documentation</Checkbox>
+                <Checkbox value="qa">Quality Assurance</Checkbox>
+                <Checkbox value="research">Research</Checkbox>
+              </CheckboxGroup>
+            </div>
+          </div>
+
+          <div class="grid gap-6 md:grid-cols-2">
+            <div class="space-y-3">
+              <h3 class="text-xs font-semibold uppercase opacity-70">Controlled</h3>
+              <CheckboxGroup
+                name="channels"
+                value={selectedChannels()}
+                onChange={setSelectedChannels}
+                variant="secondary"
+              >
+                <Checkbox value="email">Email</Checkbox>
+                <Checkbox value="sms">SMS</Checkbox>
+                <Checkbox value="push">Push</Checkbox>
+              </CheckboxGroup>
+              <p class="text-xs opacity-70">Selected: {selectedChannels().join(", ") || "None"}</p>
+            </div>
+
+            <div class="space-y-3">
+              <h3 class="text-xs font-semibold uppercase opacity-70">Disabled</h3>
+              <CheckboxGroup name="disabled-flags" isDisabled defaultValue={["feature-1"]}>
+                <Checkbox value="feature-1">Feature Flag 1</Checkbox>
+                <Checkbox value="feature-2">Feature Flag 2</Checkbox>
+              </CheckboxGroup>
             </div>
           </div>
         </section>

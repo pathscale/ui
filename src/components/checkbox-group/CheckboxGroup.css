@@ -1,0 +1,10 @@
+@layer components {
+  .checkbox-group {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .checkbox-group [data-slot="checkbox"] {
+    margin-top: 1rem;
+  }
+}
