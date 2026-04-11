@@ -40,6 +40,8 @@ export { default as CheckboxGroup } from "./components/checkbox-group";
 export type { CheckboxGroupProps, CheckboxGroupVariant } from "./components/checkbox-group";
 export { default as Chip } from "./components/chip";
 export type { ChipProps, ChipRootProps, ChipLabelProps, ChipVariant, ChipColor, ChipSize } from "./components/chip";
+export { default as CloseButton } from "./components/close-button";
+export type { CloseButtonProps, CloseButtonVariant } from "./components/close-button";
 export { default as ColorArea } from "./components/color-area";
 export type { ColorAreaProps, ColorAreaValue } from "./components/color-area";
 export { default as ColorField } from "./components/color-field";

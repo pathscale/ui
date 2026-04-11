@@ -21,6 +21,7 @@ import {
   ColorSwatch,
   ColorSwatchPicker,
   ColorPicker,
+  CloseButton,
   Drawer,
   FloatingDock,
   Dropdown,
@@ -922,6 +923,51 @@ export default function App() {
                     Billing
                   </Button>
                 </ButtonGroup>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section class="space-y-4 rounded-xl border border-base-300 bg-base-200 p-4">
+          <div>
+            <h2 class="text-sm font-semibold">Close Button</h2>
+            <p class="text-xs opacity-70">
+              HeroUI-style close button with default icon fallback and interactive states.
+            </p>
+          </div>
+
+          <div class="space-y-3">
+            <h3 class="text-xs font-semibold uppercase opacity-70">Default + Disabled</h3>
+            <div class="flex flex-wrap items-center gap-3">
+              <CloseButton />
+              <CloseButton aria-label="Dismiss panel" />
+              <CloseButton isDisabled />
+              <CloseButton isPending />
+            </div>
+          </div>
+
+          <div class="space-y-3">
+            <h3 class="text-xs font-semibold uppercase opacity-70">Custom Icon</h3>
+            <div class="flex flex-wrap items-center gap-3">
+              <CloseButton aria-label="Close with custom icon">
+                <svg viewBox="0 0 16 16" fill="none" aria-hidden="true" role="presentation">
+                  <path
+                    d="M4 8h8M8 4v8"
+                    stroke="currentColor"
+                    stroke-width="1.6"
+                    stroke-linecap="round"
+                  />
+                </svg>
+              </CloseButton>
+            </div>
+          </div>
+
+          <div class="space-y-3">
+            <h3 class="text-xs font-semibold uppercase opacity-70">Inside Header</h3>
+            <div class="max-w-md rounded-xl border border-base-300 bg-base-100 p-4">
+              <div class="flex items-center justify-between gap-3">
+                <h4 class="text-sm font-medium">Modal Header</h4>
+                <CloseButton />
               </div>
             </div>
           </div>
