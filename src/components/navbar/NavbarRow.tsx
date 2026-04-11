@@ -5,8 +5,8 @@ import {
   children as resolveChildren,
 } from "solid-js";
 import { twMerge } from "tailwind-merge";
-import { clsx } from "clsx";
 import type { IComponentBaseProps, ComponentColor } from "../types";
+import { CLASSES } from "./Navbar.classes";
 
 export type NavbarRowProps = JSX.HTMLAttributes<HTMLDivElement> &
   IComponentBaseProps & {
@@ -29,22 +29,15 @@ const NavbarRow = (props: NavbarRowProps): JSX.Element => {
 
   const resolvedChildren = resolveChildren(() => local.children);
 
+  const colorKey = (): keyof typeof CLASSES.Row.color =>
+    !local.color || local.color === "ghost" ? "ghost" : local.color;
+
   const classes = createMemo(() =>
     twMerge(
-      "flex items-center",
-      clsx({
-        "border-b border-gray-200": local.bordered === true,
-        "px-4 py-2": local.padded !== false,
-        "bg-base-100": !local.color || local.color === "ghost", // Default to base-100 (usually light bg, dark text)
-        "bg-neutral text-neutral-content": local.color === "neutral",
-        "bg-primary text-primary-content": local.color === "primary",
-        "bg-secondary text-secondary-content": local.color === "secondary",
-        "bg-accent text-accent-content": local.color === "accent",
-        "bg-info text-info-content": local.color === "info",
-        "bg-success text-success-content": local.color === "success",
-        "bg-warning text-warning-content": local.color === "warning",
-        "bg-error text-error-content": local.color === "error",
-      }),
+      ...CLASSES.Row.base,
+      local.bordered === true && CLASSES.Row.flag.bordered,
+      local.padded !== false && CLASSES.Row.flag.padded,
+      CLASSES.Row.color[colorKey()],
       local.class,
       local.className,
     ),

@@ -10,6 +10,7 @@ import {
 } from "solid-js";
 import { twMerge } from "tailwind-merge";
 import type { IComponentBaseProps } from "../types";
+import { CLASSES } from "./Breadcrumbs.classes";
 
 /* -------------------------------------------------------------------------------------------------
  * Breadcrumbs Context
@@ -87,7 +88,7 @@ const BreadcrumbsRoot: ParentComponent<BreadcrumbsRootProps> = (props) => {
       <nav
         {...others}
         aria-label="Breadcrumbs"
-        class={twMerge("breadcrumbs", local.class, local.className)}
+        class={twMerge(CLASSES.Root.base, local.class, local.className)}
         data-slot="breadcrumbs"
         data-theme={local.dataTheme}
         style={local.style}
@@ -101,6 +102,8 @@ const BreadcrumbsRoot: ParentComponent<BreadcrumbsRootProps> = (props) => {
 /* -------------------------------------------------------------------------------------------------
  * Breadcrumbs Item
  * -----------------------------------------------------------------------------------------------*/
+const [ITEM_CLASS, LINK_CLASS, SEPARATOR_CLASS] = CLASSES.Item.base;
+
 const BreadcrumbsItem: Component<BreadcrumbsItemProps> = (props) => {
   const [local, others] = splitProps(props, [
     "children",
@@ -117,7 +120,7 @@ const BreadcrumbsItem: Component<BreadcrumbsItemProps> = (props) => {
   return (
     <li
       {...others}
-      class={twMerge("breadcrumbs__item", local.class, local.className)}
+      class={twMerge(ITEM_CLASS, local.class, local.className)}
       data-slot="breadcrumbs-item"
       data-theme={local.dataTheme}
       style={local.style}
@@ -126,7 +129,7 @@ const BreadcrumbsItem: Component<BreadcrumbsItemProps> = (props) => {
         when={local.href && !local.isCurrent}
         fallback={
           <span
-            class="breadcrumbs__link"
+            class={LINK_CLASS}
             data-slot="breadcrumbs-link"
             data-current={local.isCurrent ? "true" : undefined}
             aria-current={local.isCurrent ? "page" : undefined}
@@ -137,14 +140,14 @@ const BreadcrumbsItem: Component<BreadcrumbsItemProps> = (props) => {
       >
         <a
           href={local.href}
-          class="breadcrumbs__link"
+          class={LINK_CLASS}
           data-slot="breadcrumbs-link"
         >
           {local.children}
         </a>
       </Show>
       <Show when={!local.isCurrent}>
-        <span class="breadcrumbs__separator" data-slot="breadcrumbs-separator">
+        <span class={SEPARATOR_CLASS} data-slot="breadcrumbs-separator">
           {ctx.separator() ?? <ChevronRight />}
         </span>
       </Show>

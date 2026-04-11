@@ -2,17 +2,10 @@ import "./Button.css";
 import { Show, splitProps, useContext, type JSX } from "solid-js";
 import { twMerge } from "tailwind-merge";
 import { ButtonGroupContext } from "../button-group/context";
+import { CLASSES } from "./Button.classes";
 
-type ButtonVariant =
-  | "primary"
-  | "secondary"
-  | "tertiary"
-  | "outline"
-  | "ghost"
-  | "danger"
-  | "danger-soft";
-
-type ButtonSize = "sm" | "md" | "lg";
+export type ButtonVariant = keyof typeof CLASSES.variant;
+export type ButtonSize = keyof typeof CLASSES.size;
 
 type ButtonProps = Omit<JSX.ButtonHTMLAttributes<HTMLButtonElement>, "disabled"> & {
   variant?: ButtonVariant;
@@ -24,22 +17,6 @@ type ButtonProps = Omit<JSX.ButtonHTMLAttributes<HTMLButtonElement>, "disabled">
   startIcon?: JSX.Element;
   endIcon?: JSX.Element;
   className?: string;
-};
-
-const VARIANT_CLASS_MAP: Record<ButtonVariant, string> = {
-  primary: "button--primary",
-  secondary: "button--secondary",
-  tertiary: "button--tertiary",
-  outline: "button--outline",
-  ghost: "button--ghost",
-  danger: "button--danger",
-  "danger-soft": "button--danger-soft",
-};
-
-const SIZE_CLASS_MAP: Record<ButtonSize, string> = {
-  sm: "button--sm",
-  md: "button--md",
-  lg: "button--lg",
 };
 
 const Button = (props: ButtonProps): JSX.Element => {
@@ -68,11 +45,11 @@ const Button = (props: ButtonProps): JSX.Element => {
 
   const classes = () =>
     twMerge(
-      "button",
-      VARIANT_CLASS_MAP[variant()],
-      SIZE_CLASS_MAP[size()],
-      local.isIconOnly && "button--icon-only",
-      fullWidth() && "button--full-width",
+      CLASSES.base,
+      CLASSES.variant[variant()],
+      CLASSES.size[size()],
+      local.isIconOnly && CLASSES.flag.isIconOnly,
+      fullWidth() && CLASSES.flag.fullWidth,
       local.class,
       local.className,
     );
@@ -88,16 +65,16 @@ const Button = (props: ButtonProps): JSX.Element => {
       aria-disabled={disabled() ? "true" : "false"}
     >
       <Show when={local.isPending}>
-        <span class="button__spinner" data-slot="spinner" aria-hidden="true" />
+        <span class={CLASSES.slot.spinner} data-slot="spinner" aria-hidden="true" />
       </Show>
       <Show when={local.startIcon}>
-        <span class="button__icon button__icon--start" data-slot="button-start-icon">
+        <span class={twMerge(CLASSES.slot.icon, CLASSES.slot.iconStart)} data-slot="button-start-icon">
           {local.startIcon}
         </span>
       </Show>
       {local.children}
       <Show when={local.endIcon}>
-        <span class="button__icon button__icon--end" data-slot="button-end-icon">
+        <span class={twMerge(CLASSES.slot.icon, CLASSES.slot.iconEnd)} data-slot="button-end-icon">
           {local.endIcon}
         </span>
       </Show>
@@ -107,4 +84,4 @@ const Button = (props: ButtonProps): JSX.Element => {
 
 export default Button;
 
-export type { ButtonProps, ButtonVariant, ButtonSize };
+export type { ButtonProps };
