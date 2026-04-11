@@ -10,6 +10,7 @@ import {
   Chip,
   CheckboxGroup,
   EmptyState,
+  ListBox,
   Loading,
   Progress,
   Skeleton,
@@ -121,6 +122,24 @@ const ALERT_STATUSES = [
   "danger",
 ] as const;
 
+const LISTBOX_USERS = [
+  { id: "bob", name: "Bob", email: "bob@heroui.com" },
+  { id: "fred", name: "Fred", email: "fred@heroui.com" },
+  { id: "martha", name: "Martha", email: "martha@heroui.com" },
+] as const;
+
+const LISTBOX_TOPICS = [
+  { id: "design", label: "Design" },
+  { id: "docs", label: "Documentation" },
+  { id: "api", label: "API" },
+  { id: "research", label: "Research" },
+] as const;
+
+const LISTBOX_LONG_ITEMS = Array.from({ length: 20 }, (_, index) => ({
+  id: `item-${index + 1}`,
+  label: `List item ${index + 1}`,
+}));
+
 export default function App() {
   const [selectedFramework, setSelectedFramework] = createSignal("solid");
   const [checkedTerms, setCheckedTerms] = createSignal(false);
@@ -158,6 +177,11 @@ export default function App() {
     "svelte",
     "vue",
   ]);
+  const [selectedListUser, setSelectedListUser] = createSignal<Set<string>>(new Set(["bob"]));
+  const [selectedListTopics, setSelectedListTopics] = createSignal<Set<string>>(
+    new Set(["design", "api"]),
+  );
+  const [lastListAction, setLastListAction] = createSignal<string | null>(null);
 
   return (
     <main class="min-h-screen bg-base-100 text-base-content p-8">
@@ -1082,6 +1106,130 @@ export default function App() {
                 <Tag id="beta">Beta</Tag>
               </TagGroup.List>
             </TagGroup>
+          </div>
+        </section>
+
+        <section class="space-y-4 rounded-xl border border-base-300 bg-base-200 p-4">
+          <div>
+            <h2 class="text-sm font-semibold">ListBox</h2>
+            <p class="text-xs opacity-70">
+              HeroUI-style ListBox with item indicators, section grouping, and keyboard selection.
+            </p>
+          </div>
+
+          <div class="grid gap-6 lg:grid-cols-2">
+            <div class="space-y-3">
+              <h3 class="text-xs font-semibold uppercase opacity-70">Single Selection</h3>
+              <ListBox
+                selectionMode="single"
+                selectedKeys={selectedListUser()}
+                onSelectionChange={(keys) => setSelectedListUser(new Set(keys))}
+                class="max-w-xs rounded-3xl border border-base-300 bg-base-100 p-2"
+              >
+                <For each={LISTBOX_USERS}>
+                  {(user) => (
+                    <ListBox.Item id={user.id} textValue={user.name}>
+                      <div class="flex flex-col">
+                        <span data-slot="label">{user.name}</span>
+                        <span class="text-xs opacity-70" data-slot="description">
+                          {user.email}
+                        </span>
+                      </div>
+                      <ListBox.ItemIndicator />
+                    </ListBox.Item>
+                  )}
+                </For>
+              </ListBox>
+              <p class="text-xs opacity-70">
+                Selected: {Array.from(selectedListUser()).join(", ") || "None"}
+              </p>
+            </div>
+
+            <div class="space-y-3">
+              <h3 class="text-xs font-semibold uppercase opacity-70">Multiple Selection</h3>
+              <ListBox
+                selectionMode="multiple"
+                selectedKeys={selectedListTopics()}
+                onSelectionChange={(keys) => setSelectedListTopics(new Set(keys))}
+                items={LISTBOX_TOPICS}
+                class="max-w-xs rounded-3xl border border-base-300 bg-base-100 p-2"
+              >
+                {(item) => {
+                  const topic = item as (typeof LISTBOX_TOPICS)[number];
+                  return (
+                    <ListBox.Item id={topic.id} textValue={topic.label}>
+                      <span data-slot="label">{topic.label}</span>
+                      <ListBox.ItemIndicator />
+                    </ListBox.Item>
+                  );
+                }}
+              </ListBox>
+              <p class="text-xs opacity-70">
+                Selected: {Array.from(selectedListTopics()).join(", ") || "None"}
+              </p>
+            </div>
+          </div>
+
+          <div class="grid gap-6 lg:grid-cols-2">
+            <div class="space-y-3">
+              <h3 class="text-xs font-semibold uppercase opacity-70">Sections + Disabled Item</h3>
+              <ListBox
+                selectionMode="none"
+                disabledKeys={["delete-file"]}
+                onAction={(key) => setLastListAction(key)}
+                class="max-w-xs rounded-3xl border border-base-300 bg-base-100 p-2"
+              >
+                <ListBox.Section title={<span class="px-2 py-1 text-xs font-semibold">Actions</span>}>
+                  <ListBox.Item id="new-file" textValue="New file">
+                    <div class="flex flex-col">
+                      <span data-slot="label">New file</span>
+                      <span class="text-xs opacity-70" data-slot="description">
+                        Create a new file
+                      </span>
+                    </div>
+                  </ListBox.Item>
+                  <ListBox.Item id="edit-file" textValue="Edit file">
+                    <div class="flex flex-col">
+                      <span data-slot="label">Edit file</span>
+                      <span class="text-xs opacity-70" data-slot="description">
+                        Make changes
+                      </span>
+                    </div>
+                  </ListBox.Item>
+                </ListBox.Section>
+                <Separator />
+                <ListBox.Section title={<span class="px-2 py-1 text-xs font-semibold">Danger Zone</span>}>
+                  <ListBox.Item id="delete-file" textValue="Delete file" variant="danger">
+                    <div class="flex flex-col">
+                      <span data-slot="label">Delete file</span>
+                      <span class="text-xs opacity-70" data-slot="description">
+                        Move to trash
+                      </span>
+                    </div>
+                  </ListBox.Item>
+                </ListBox.Section>
+              </ListBox>
+              <p class="text-xs opacity-70">Last action: {lastListAction() ?? "None"}</p>
+            </div>
+
+            <div class="space-y-3">
+              <h3 class="text-xs font-semibold uppercase opacity-70">Long List (Scrollable)</h3>
+              <ListBox
+                selectionMode="multiple"
+                class="max-h-56 max-w-xs overflow-y-auto rounded-3xl border border-base-300 bg-base-100 p-2"
+                items={LISTBOX_LONG_ITEMS}
+              >
+                {(item) => {
+                  const entry = item as (typeof LISTBOX_LONG_ITEMS)[number];
+                  return (
+                    <ListBox.Item id={entry.id} textValue={entry.label}>
+                      <span data-slot="label">{entry.label}</span>
+                      <ListBox.ItemIndicator />
+                    </ListBox.Item>
+                  );
+                }}
+              </ListBox>
+            </div>
           </div>
         </section>
 

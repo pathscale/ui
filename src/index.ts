@@ -168,6 +168,27 @@ export { default as Join } from "./components/join";
 export { default as Kbd } from "./components/kbd";
 export { default as Link } from "./components/link";
 export {
+  default as ListBox,
+  ListBoxRoot,
+  ListBoxItem,
+  ListBoxItemRoot,
+  ListBoxItemIndicator,
+  ListBoxSection,
+  ListBoxSectionRoot,
+} from "./components/list-box";
+export type {
+  ListBoxProps,
+  ListBoxRootProps,
+  ListBoxSelectionMode,
+  ListBoxVariant,
+  ListBoxItemProps,
+  ListBoxItemRootProps,
+  ListBoxItemIndicatorProps,
+  ListBoxItemRenderProps,
+  ListBoxSectionProps,
+  ListBoxSectionRootProps,
+} from "./components/list-box";
+export {
   LiveChatBubble,
   LiveChatPanel,
 } from "./components/live-chat";
