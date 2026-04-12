@@ -113,6 +113,10 @@ export type { DrawerPlacement, DrawerBackdropVariant, DrawerRootProps, DrawerTri
 export { default as Dropdown } from "./components/dropdown";
 export { DropdownSelect, type DropdownSelectProps, type DropdownSelectOption } from "./components/dropdown-select";
 export { EmptyState, type EmptyStateProps } from "./components/empty-state";
+export { default as ErrorMessage, ErrorMessageRoot } from "./components/error-message";
+export type { ErrorMessageProps, ErrorMessageRootProps } from "./components/error-message";
+export { default as FieldError, FieldErrorRoot } from "./components/field-error";
+export type { FieldErrorProps, FieldErrorRootProps, FieldErrorRenderProps } from "./components/field-error";
 export { default as FileInput } from "./components/fileinput";
 export { default as FloatingDock } from "./components/floating-dock";
 export type { FloatingDockProps, FloatingDockItem, FloatingDockDirection } from "./components/floating-dock";

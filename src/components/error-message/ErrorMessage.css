@@ -1,0 +1,20 @@
+@layer components {
+  .error-message {
+    height: auto;
+    font-size: 0.75rem;
+    line-height: 1rem;
+    text-wrap: wrap;
+    overflow-wrap: break-word;
+    word-break: break-word;
+    color: var(--color-danger);
+    transition:
+      opacity 150ms var(--ease-out),
+      height 350ms var(--ease-smooth);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .error-message {
+      transition: none;
+    }
+  }
+}

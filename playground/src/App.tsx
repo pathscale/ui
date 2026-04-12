@@ -10,6 +10,8 @@ import {
   Chip,
   CheckboxGroup,
   EmptyState,
+  ErrorMessage,
+  FieldError,
   ListBox,
   Loading,
   Menu,
@@ -192,6 +194,8 @@ export default function App() {
   const [selectedMenuMode, setSelectedMenuMode] = createSignal<Set<string>>(new Set(["preview"]));
   const [selectedMenuFilters, setSelectedMenuFilters] = createSignal<Set<string>>(new Set(["all"]));
   const [lastMenuAction, setLastMenuAction] = createSignal<string | null>(null);
+  const [emailError, setEmailError] = createSignal<string>("Email is required.");
+  const [usernameError, setUsernameError] = createSignal<string>("Username is required.");
 
   return (
     <main class="min-h-screen bg-base-100 text-base-content p-8">
@@ -525,6 +529,83 @@ export default function App() {
             <Description>
               Use a clear, human-readable name. You can rename it later.
             </Description>
+          </div>
+        </section>
+
+        <section class="space-y-4 rounded-xl border border-base-300 bg-base-200 p-4">
+          <div>
+            <h2 class="text-sm font-semibold">ErrorMessage &amp; FieldError</h2>
+            <p class="text-xs opacity-70">
+              Error text primitives for standalone feedback and field-level validation messages.
+            </p>
+          </div>
+
+          <div class="space-y-2 rounded-xl border border-base-300 bg-base-100 p-3">
+            <ErrorMessage>Something went wrong while saving your profile settings.</ErrorMessage>
+          </div>
+
+          <div class="space-y-2 rounded-xl border border-base-300 bg-base-100 p-3">
+            <Label htmlFor="field-error-email-demo">Email</Label>
+            <input
+              id="field-error-email-demo"
+              type="email"
+              aria-invalid={emailError() ? "true" : undefined}
+              aria-describedby="field-error-email-demo-message"
+              placeholder="you@example.com"
+              class="h-10 w-full rounded-xl border border-base-300 bg-base-100 px-3 text-sm text-base-content outline-none focus:border-accent"
+              onInput={(event) => {
+                const value = event.currentTarget.value.trim();
+                if (!value) {
+                  setEmailError("Email is required.");
+                  return;
+                }
+                if (!value.includes("@")) {
+                  setEmailError("Please enter a valid email address.");
+                  return;
+                }
+                setEmailError("");
+              }}
+            />
+            <FieldError id="field-error-email-demo-message" isVisible={Boolean(emailError())}>
+              {emailError()}
+            </FieldError>
+          </div>
+
+          <div class="grid gap-3 md:grid-cols-2">
+            <div class="space-y-2 rounded-xl border border-base-300 bg-base-100 p-3">
+              <Label htmlFor="field-error-username-demo">Username</Label>
+              <input
+                id="field-error-username-demo"
+                type="text"
+                aria-invalid={usernameError() ? "true" : undefined}
+                aria-describedby="field-error-username-demo-message"
+                placeholder="min 3 characters"
+                class="h-10 w-full rounded-xl border border-base-300 bg-base-100 px-3 text-sm text-base-content outline-none focus:border-accent"
+                onInput={(event) => {
+                  const value = event.currentTarget.value.trim();
+                  if (!value) {
+                    setUsernameError("Username is required.");
+                    return;
+                  }
+                  if (value.length < 3) {
+                    setUsernameError("Username must be at least 3 characters.");
+                    return;
+                  }
+                  setUsernameError("");
+                }}
+              />
+              <FieldError id="field-error-username-demo-message" isVisible={Boolean(usernameError())}>
+                {usernameError()}
+              </FieldError>
+            </div>
+
+            <div class="space-y-2 rounded-xl border border-base-300 bg-base-100 p-3">
+              <p class="text-sm font-medium">Visibility State</p>
+              <FieldError isVisible={false}>
+                This message stays hidden until the visible state changes.
+              </FieldError>
+              <FieldError isVisible>Password must include at least one special character.</FieldError>
+            </div>
           </div>
         </section>
 

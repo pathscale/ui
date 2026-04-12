@@ -1,0 +1,27 @@
+@layer components {
+  .field-error {
+    height: 0;
+    padding-inline: 0.25rem;
+    font-size: 0.75rem;
+    line-height: 1rem;
+    text-wrap: wrap;
+    overflow-wrap: break-word;
+    word-break: break-word;
+    color: var(--color-danger);
+    opacity: 0;
+    transition:
+      opacity 150ms var(--ease-out),
+      height 350ms var(--ease-smooth);
+  }
+
+  .field-error[data-visible="true"] {
+    height: auto;
+    opacity: 1;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .field-error {
+      transition: none;
+    }
+  }
+}
