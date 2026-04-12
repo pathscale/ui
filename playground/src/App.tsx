@@ -12,6 +12,7 @@ import {
   EmptyState,
   ListBox,
   Loading,
+  Menu,
   Progress,
   Skeleton,
   Surface,
@@ -182,6 +183,9 @@ export default function App() {
     new Set(["design", "api"]),
   );
   const [lastListAction, setLastListAction] = createSignal<string | null>(null);
+  const [selectedMenuMode, setSelectedMenuMode] = createSignal<Set<string>>(new Set(["preview"]));
+  const [selectedMenuFilters, setSelectedMenuFilters] = createSignal<Set<string>>(new Set(["all"]));
+  const [lastMenuAction, setLastMenuAction] = createSignal<string | null>(null);
 
   return (
     <main class="min-h-screen bg-base-100 text-base-content p-8">
@@ -1229,6 +1233,117 @@ export default function App() {
                   );
                 }}
               </ListBox>
+            </div>
+          </div>
+        </section>
+
+        <section class="space-y-4 rounded-xl border border-base-300 bg-base-200 p-4">
+          <div>
+            <h2 class="text-sm font-semibold">Menu</h2>
+            <p class="text-xs opacity-70">
+              HeroUI-style menu with item indicators, disabled states, sections, and actions.
+            </p>
+          </div>
+
+          <div class="grid gap-6 lg:grid-cols-2">
+            <div class="space-y-3">
+              <h3 class="text-xs font-semibold uppercase opacity-70">Single Selection</h3>
+              <Menu
+                selectionMode="single"
+                selectedKeys={selectedMenuMode()}
+                onSelectionChange={(keys) => setSelectedMenuMode(new Set(keys))}
+                class="max-w-xs rounded-3xl border border-base-300 bg-base-100 p-2"
+              >
+                <Menu.Item id="preview" textValue="Preview">
+                  <span data-slot="label">Preview</span>
+                  <Menu.ItemIndicator />
+                </Menu.Item>
+                <Menu.Item id="edit" textValue="Edit">
+                  <span data-slot="label">Edit</span>
+                  <Menu.ItemIndicator />
+                </Menu.Item>
+                <Menu.Item id="duplicate" textValue="Duplicate">
+                  <span data-slot="label">Duplicate</span>
+                  <Menu.ItemIndicator />
+                </Menu.Item>
+              </Menu>
+              <p class="text-xs opacity-70">
+                Selected: {Array.from(selectedMenuMode()).join(", ") || "None"}
+              </p>
+            </div>
+
+            <div class="space-y-3">
+              <h3 class="text-xs font-semibold uppercase opacity-70">Disabled + Action</h3>
+              <Menu
+                selectionMode="none"
+                disabledKeys={["archive"]}
+                onAction={(key) => setLastMenuAction(key)}
+                class="max-w-xs rounded-3xl border border-base-300 bg-base-100 p-2"
+              >
+                <Menu.Item id="share" textValue="Share">
+                  <span data-slot="label">Share</span>
+                </Menu.Item>
+                <Menu.Item id="archive" textValue="Archive">
+                  <span data-slot="label">Archive</span>
+                </Menu.Item>
+                <Menu.Item id="delete" textValue="Delete" variant="danger">
+                  <span data-slot="label">Delete</span>
+                </Menu.Item>
+              </Menu>
+              <p class="text-xs opacity-70">Last action: {lastMenuAction() ?? "None"}</p>
+            </div>
+          </div>
+
+          <div class="grid gap-6 lg:grid-cols-2">
+            <div class="space-y-3">
+              <h3 class="text-xs font-semibold uppercase opacity-70">Sections</h3>
+              <Menu
+                selectionMode="none"
+                onAction={(key) => setLastMenuAction(key)}
+                class="max-w-xs rounded-3xl border border-base-300 bg-base-100 p-2"
+              >
+                <Menu.Section title={<span class="px-2 py-1 text-xs font-semibold">File</span>}>
+                  <Menu.Item id="new" textValue="New">
+                    <span data-slot="label">New</span>
+                  </Menu.Item>
+                  <Menu.Item id="open" textValue="Open">
+                    <span data-slot="label">Open</span>
+                  </Menu.Item>
+                </Menu.Section>
+                <Separator />
+                <Menu.Section title={<span class="px-2 py-1 text-xs font-semibold">Advanced</span>}>
+                  <Menu.Item id="history" textValue="History" hasSubmenu>
+                    <span data-slot="label">History</span>
+                    <Menu.Item.SubmenuIndicator />
+                  </Menu.Item>
+                </Menu.Section>
+              </Menu>
+            </div>
+
+            <div class="space-y-3">
+              <h3 class="text-xs font-semibold uppercase opacity-70">Multiple + Dot Indicator</h3>
+              <Menu
+                selectionMode="multiple"
+                selectedKeys={selectedMenuFilters()}
+                onSelectionChange={(keys) => setSelectedMenuFilters(new Set(keys))}
+                class="max-w-xs rounded-3xl border border-base-300 bg-base-100 p-2"
+              >
+                <Menu.Item id="all" textValue="All">
+                  <span data-slot="label">All</span>
+                  <Menu.ItemIndicator type="dot" />
+                </Menu.Item>
+                <Menu.Item id="mentions" textValue="Mentions">
+                  <span data-slot="label">Mentions</span>
+                  <Menu.ItemIndicator type="dot" />
+                </Menu.Item>
+                <Menu.Item id="unread" textValue="Unread">
+                  <span data-slot="label">Unread</span>
+                  <Menu.ItemIndicator type="dot" />
+                </Menu.Item>
+              </Menu>
+              <p class="text-xs opacity-70">
+                Selected: {Array.from(selectedMenuFilters()).join(", ") || "None"}
+              </p>
             </div>
           </div>
         </section>

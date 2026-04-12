@@ -152,7 +152,7 @@ function EnhancedTable<TData>(props: EnhancedTableProps<TData>): JSX.Element {
   });
 
   let pageSizeToggleRef: HTMLButtonElement | undefined;
-  let pageSizeMenuRef: HTMLUListElement | undefined;
+  let pageSizeMenuRef: HTMLDivElement | undefined;
 
   const table = useTableModel({
     data: () => local.data,

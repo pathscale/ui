@@ -216,7 +216,29 @@ export type {
   Language,
 } from "./components/language-switcher";
 export { default as Mask } from "./components/mask";
-export { Menu } from "./components/menu";
+export {
+  default as Menu,
+  MenuRoot,
+  MenuItem,
+  MenuItemRoot,
+  MenuItemIndicator,
+  MenuItemSubmenuIndicator,
+  MenuSection,
+  MenuSectionRoot,
+} from "./components/menu";
+export type {
+  MenuProps,
+  MenuRootProps,
+  MenuSelectionMode,
+  MenuItemProps,
+  MenuItemRootProps,
+  MenuItemIndicatorProps,
+  MenuItemSubmenuIndicatorProps,
+  MenuItemRenderProps,
+  MenuItemVariant,
+  MenuSectionProps,
+  MenuSectionRootProps,
+} from "./components/menu";
 export { default as Modal } from "./components/modal";
 export { default as Navbar } from "./components/navbar";
 export type { NavbarProps } from "./components/navbar";
