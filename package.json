@@ -107,7 +107,8 @@
     }
   },
   "scripts": {
-    "build": "bun run scripts/check-contracts.ts && rslib build",
+    "build": "bun run scripts/check-contracts.ts && rslib build && bun run postbuild:manifest",
+    "postbuild:manifest": "bun run ../rebuild-plugin-ui-css-purge/src/generate-manifest.ts src/components --out dist/purge-manifest.json",
     "build:watch": "rslib build --watch",
     "dev": "rslib dev",
     "preview": "rslib preview",
