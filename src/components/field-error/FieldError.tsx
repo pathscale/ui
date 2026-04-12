@@ -2,8 +2,8 @@ import "./FieldError.css";
 import { createMemo, splitProps, type Accessor, type Component, type JSX } from "solid-js";
 import { twMerge } from "tailwind-merge";
 
-import type { FormController } from "../form/hooks";
-import { useFieldError } from "../form/hooks";
+import type { FormController } from "../../hooks/form";
+import { useFieldError } from "../../hooks/form";
 import type { IComponentBaseProps } from "../types";
 
 export type FieldErrorRenderProps = {

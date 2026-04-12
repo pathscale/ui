@@ -16,6 +16,7 @@ import {
   Fieldset,
   Form,
   useForm,
+  useFieldProps,
   DateField,
   ListBox,
   Loading,
@@ -183,7 +184,9 @@ const FORM_VALIDATION_SCHEMA = z.object({
     .string()
     .min(1, "Email is required.")
     .email("Provide a valid email."),
-  demoRole: z.string().min(1, "Role is required."),
+  demoQuery: z.string().min(2, "Search query must be at least 2 characters."),
+  demoSeats: z.number().min(1, "Seats must be at least 1."),
+  demoDate: z.string().min(1, "Launch date is required."),
 });
 
 const FORM_CONTROLLED_SCHEMA = z.object({
@@ -248,7 +251,6 @@ export default function App() {
     "Building HeroUI parity components in Solid.",
   );
   const [controlledSearchValue, setControlledSearchValue] = createSignal("analytics");
-  const [controlledFormEmail, setControlledFormEmail] = createSignal("team@pathscale.com");
   const [controlledNumberValue, setControlledNumberValue] = createSignal<number | undefined>(3);
   const [controlledDateValue, setControlledDateValue] = createSignal("2026-04-11");
   const [controlledTimeValue, setControlledTimeValue] = createSignal("13:30");
@@ -257,21 +259,31 @@ export default function App() {
     initialValues: {
       demoName: "",
       demoEmail: "",
-      demoRole: "",
+      demoQuery: "",
+      demoSeats: 5,
+      demoDate: "",
     },
     onSubmit: (values) => {
-      setFormSummary(`Validated submit: ${values.demoName} • ${values.demoEmail} • ${values.demoRole}`);
+      setFormSummary(
+        `Validated submit: ${values.demoName} • ${values.demoEmail} • query:${values.demoQuery} • seats:${values.demoSeats} • ${values.demoDate}`,
+      );
     },
   });
   const controlledForm = useForm({
     schema: FORM_CONTROLLED_SCHEMA,
     initialValues: {
-      controlledEmail: controlledFormEmail(),
+      controlledEmail: "team@pathscale.com",
     },
     onSubmit: (values) => {
       setFormSummary(`Controlled submit: ${values.controlledEmail}`);
     },
   });
+  const demoNameField = useFieldProps("demoName", { form: validatedForm });
+  const demoEmailField = useFieldProps("demoEmail", { form: validatedForm });
+  const demoQueryField = useFieldProps("demoQuery", { form: validatedForm });
+  const demoSeatsField = useFieldProps("demoSeats", { form: validatedForm });
+  const demoDateField = useFieldProps("demoDate", { form: validatedForm });
+  const controlledEmailField = useFieldProps("controlledEmail", { form: controlledForm });
 
   return (
     <main class="min-h-screen bg-base-100 text-base-content p-8">
@@ -1108,7 +1120,10 @@ export default function App() {
                 </Label>
                 <Input
                   id="form-demo-name"
-                  name="demoName"
+                  name={demoNameField.name()}
+                  value={String(demoNameField.value() ?? "")}
+                  onInput={demoNameField.onInput}
+                  onBlur={demoNameField.onBlur}
                   placeholder="Pathscale user"
                   fullWidth
                 />
@@ -1121,7 +1136,10 @@ export default function App() {
                 </Label>
                 <Input
                   id="form-demo-email"
-                  name="demoEmail"
+                  name={demoEmailField.name()}
+                  value={String(demoEmailField.value() ?? "")}
+                  onInput={demoEmailField.onInput}
+                  onBlur={demoEmailField.onBlur}
                   type="email"
                   placeholder="name@email.com"
                   fullWidth
@@ -1131,16 +1149,63 @@ export default function App() {
               </div>
 
               <div class="space-y-1">
-                <Label htmlFor="form-demo-role">
-                  Role
+                <Label htmlFor="form-demo-query">
+                  Search Query
                 </Label>
-                <Input
-                  id="form-demo-role"
-                  name="demoRole"
-                  placeholder="Engineer"
+                <SearchField
+                  id="form-demo-query"
+                  name={demoQueryField.name()}
+                  value={String(demoQueryField.value() ?? "")}
+                  onChange={demoQueryField.onChange}
+                  onBlur={demoQueryField.onBlur}
                   fullWidth
-                />
-                <FieldError name="demoRole" />
+                >
+                  <SearchField.Group>
+                    <SearchField.SearchIcon />
+                    <SearchField.Input id="form-demo-query" />
+                    <SearchField.ClearButton />
+                  </SearchField.Group>
+                </SearchField>
+                <FieldError name="demoQuery" />
+              </div>
+
+              <div class="grid gap-3 sm:grid-cols-2">
+                <div class="space-y-1">
+                  <Label htmlFor="form-demo-seats">Seats</Label>
+                  <NumberField
+                    id="form-demo-seats"
+                    name={demoSeatsField.name()}
+                    value={Number(demoSeatsField.value() ?? 0)}
+                    onChange={demoSeatsField.onChange}
+                    onBlur={demoSeatsField.onBlur}
+                    min={1}
+                    fullWidth
+                  >
+                    <NumberField.Group>
+                      <NumberField.DecrementButton />
+                      <NumberField.Input id="form-demo-seats" />
+                      <NumberField.IncrementButton />
+                    </NumberField.Group>
+                  </NumberField>
+                  <FieldError name="demoSeats" />
+                </div>
+
+                <div class="space-y-1">
+                  <Label htmlFor="form-demo-date">Launch Date</Label>
+                  <DateField
+                    id="form-demo-date"
+                    name={demoDateField.name()}
+                    value={String(demoDateField.value() ?? "")}
+                    onChange={demoDateField.onChange}
+                    onBlur={demoDateField.onBlur}
+                    fullWidth
+                  >
+                    <DateField.Group>
+                      <DateField.Input id="form-demo-date" />
+                    </DateField.Group>
+                  </DateField>
+                  <FieldError name="demoDate" />
+                </div>
               </div>
 
               <Button type="submit">Submit</Button>
@@ -1153,13 +1218,10 @@ export default function App() {
               <Label htmlFor="form-controlled-email">Controlled Field</Label>
               <Input
                 id="form-controlled-email"
-                name="controlledEmail"
-                value={controlledFormEmail()}
-                onInput={(event) => {
-                  const nextValue = event.currentTarget.value;
-                  setControlledFormEmail(nextValue);
-                  controlledForm.setFieldValue("controlledEmail", nextValue);
-                }}
+                name={controlledEmailField.name()}
+                value={String(controlledEmailField.value() ?? "")}
+                onInput={controlledEmailField.onInput}
+                onBlur={controlledEmailField.onBlur}
                 placeholder="team@pathscale.com"
                 fullWidth
               />
@@ -1174,9 +1236,7 @@ export default function App() {
                   size="sm"
                   variant="outline"
                   onClick={() => {
-                    const nextValue = "hello@pathscale.com";
-                    setControlledFormEmail(nextValue);
-                    controlledForm.setFieldValue("controlledEmail", nextValue);
+                    controlledEmailField.onChange("hello@pathscale.com");
                   }}
                 >
                   Autofill

@@ -27,11 +27,13 @@ const GROUP_VARIANT_CLASS_MAP: Record<DateFieldVariant, string> = {
 
 type DateFieldContextValue = {
   value: Accessor<string>;
+  name: Accessor<string | undefined>;
   variant: Accessor<DateFieldVariant>;
   fullWidth: Accessor<boolean>;
   isDisabled: Accessor<boolean>;
   isInvalid: Accessor<boolean>;
   isRequired: Accessor<boolean>;
+  onBlur: Accessor<JSX.EventHandlerUnion<HTMLInputElement, FocusEvent> | undefined>;
   setValue: (nextValue: string) => void;
 };
 
@@ -55,12 +57,14 @@ export type DateFieldRenderProps = {
   isRequired: boolean;
 };
 
-export type DateFieldRootProps = Omit<JSX.HTMLAttributes<HTMLDivElement>, "children" | "onChange"> &
+export type DateFieldRootProps = Omit<JSX.HTMLAttributes<HTMLDivElement>, "children" | "onChange" | "onBlur"> &
   IComponentBaseProps & {
     children?: JSX.Element | ((props: DateFieldRenderProps) => JSX.Element);
+    name?: string;
     value?: string;
     defaultValue?: string;
     onChange?: (value: string) => void;
+    onBlur?: JSX.EventHandlerUnion<HTMLInputElement, FocusEvent>;
     fullWidth?: boolean;
     variant?: DateFieldVariant;
     isDisabled?: boolean;
@@ -109,9 +113,11 @@ const DateFieldRoot: ParentComponent<DateFieldRootProps> = (props) => {
     "className",
     "dataTheme",
     "style",
+    "name",
     "value",
     "defaultValue",
     "onChange",
+    "onBlur",
     "fullWidth",
     "variant",
     "isDisabled",
@@ -147,11 +153,13 @@ const DateFieldRoot: ParentComponent<DateFieldRootProps> = (props) => {
 
   const contextValue: DateFieldContextValue = {
     value,
+    name: () => local.name,
     variant,
     fullWidth,
     isDisabled,
     isInvalid,
     isRequired,
+    onBlur: () => local.onBlur,
     setValue,
   };
 
@@ -223,12 +231,25 @@ const DateFieldGroup: ParentComponent<DateFieldGroupProps> = (props) => {
 
 const DateFieldInput: Component<DateFieldInputProps> = (props) => {
   const context = useContext(DateFieldContext);
-  const [local, others] = splitProps(props, ["class", "className", "dataTheme", "style", "onInput"]);
+  const [local, others] = splitProps(props, [
+    "class",
+    "className",
+    "dataTheme",
+    "style",
+    "onInput",
+    "onBlur",
+    "name",
+  ]);
 
   const handleInput: JSX.EventHandlerUnion<HTMLInputElement, InputEvent> = (event) => {
     invokeEventHandler(local.onInput, event);
     if (event.defaultPrevented) return;
     context?.setValue(event.currentTarget.value);
+  };
+
+  const handleBlur: JSX.EventHandlerUnion<HTMLInputElement, FocusEvent> = (event) => {
+    invokeEventHandler(local.onBlur, event);
+    invokeEventHandler(context?.onBlur(), event);
   };
 
   return (
@@ -239,12 +260,14 @@ const DateFieldInput: Component<DateFieldInputProps> = (props) => {
       data-slot="date-input-group-input"
       data-theme={local.dataTheme}
       style={local.style}
+      name={local.name ?? context?.name()}
       value={context?.value() ?? ""}
       disabled={context?.isDisabled()}
       required={context?.isRequired()}
       aria-invalid={context?.isInvalid() ? "true" : undefined}
       aria-disabled={context?.isDisabled() ? "true" : undefined}
       onInput={handleInput}
+      onBlur={handleBlur}
     />
   );
 };

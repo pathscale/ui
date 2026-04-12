@@ -5,7 +5,7 @@ import {
   type FormController,
   type FormPathQuery,
 } from "./useForm";
-import { normalizeFieldError, toAccessor } from "./utils";
+import { normalizeFieldError } from "./utils";
 
 type AnyFormController = FormController<Record<string, unknown>>;
 
@@ -25,6 +25,21 @@ export type UseFieldMetaResult = {
   error: Accessor<string | undefined>;
   touched: Accessor<boolean>;
   invalid: Accessor<boolean>;
+};
+
+const isFormController = (value: unknown): value is AnyFormController => {
+  if (typeof value !== "function") {
+    return false;
+  }
+
+  const candidate = value as Partial<AnyFormController>;
+
+  return (
+    typeof candidate.errors === "function" &&
+    typeof candidate.touched === "function" &&
+    typeof candidate.data === "function" &&
+    typeof candidate.setFieldValue === "function"
+  );
 };
 
 const resolveFieldName = (name: FieldName): Accessor<string | undefined> => {
@@ -56,7 +71,11 @@ export const useFieldMeta = (
 
   const controller = createMemo<AnyFormController | undefined>(() => {
     if (options.form) {
-      return toAccessor(options.form)();
+      if (isFormController(options.form)) {
+        return options.form;
+      }
+
+      return (options.form as Accessor<AnyFormController | undefined>)();
     }
 
     const currentElement = options.element?.();

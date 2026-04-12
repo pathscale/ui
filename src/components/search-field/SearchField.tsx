@@ -23,10 +23,12 @@ const VARIANT_CLASS_MAP: Record<SearchFieldVariant, string> = {
 
 type SearchFieldContextValue = {
   value: Accessor<string>;
+  name: Accessor<string | undefined>;
   variant: Accessor<SearchFieldVariant>;
   fullWidth: Accessor<boolean>;
   isDisabled: Accessor<boolean>;
   isInvalid: Accessor<boolean>;
+  onBlur: Accessor<JSX.EventHandlerUnion<HTMLInputElement, FocusEvent> | undefined>;
   setValue: (nextValue: string) => void;
   clearValue: () => void;
 };
@@ -51,12 +53,14 @@ export type SearchFieldRenderProps = {
   isDisabled: boolean;
 };
 
-export type SearchFieldRootProps = Omit<JSX.HTMLAttributes<HTMLDivElement>, "children" | "onChange"> &
+export type SearchFieldRootProps = Omit<JSX.HTMLAttributes<HTMLDivElement>, "children" | "onChange" | "onBlur"> &
   IComponentBaseProps & {
     children?: JSX.Element | ((props: SearchFieldRenderProps) => JSX.Element);
+    name?: string;
     value?: string;
     defaultValue?: string;
     onChange?: (value: string) => void;
+    onBlur?: JSX.EventHandlerUnion<HTMLInputElement, FocusEvent>;
     fullWidth?: boolean;
     variant?: SearchFieldVariant;
     isDisabled?: boolean;
@@ -94,9 +98,11 @@ const SearchFieldRoot: ParentComponent<SearchFieldRootProps> = (props) => {
     "className",
     "dataTheme",
     "style",
+    "name",
     "value",
     "defaultValue",
     "onChange",
+    "onBlur",
     "fullWidth",
     "variant",
     "isDisabled",
@@ -130,10 +136,12 @@ const SearchFieldRoot: ParentComponent<SearchFieldRootProps> = (props) => {
 
   const contextValue: SearchFieldContextValue = {
     value,
+    name: () => local.name,
     variant,
     fullWidth,
     isDisabled,
     isInvalid,
+    onBlur: () => local.onBlur,
     setValue,
     clearValue: () => setValue(""),
   };
@@ -207,12 +215,25 @@ const SearchFieldGroup: ParentComponent<SearchFieldGroupProps> = (props) => {
 
 const SearchFieldInput: Component<SearchFieldInputProps> = (props) => {
   const context = useContext(SearchFieldContext);
-  const [local, others] = splitProps(props, ["class", "className", "dataTheme", "style", "onInput"]);
+  const [local, others] = splitProps(props, [
+    "class",
+    "className",
+    "dataTheme",
+    "style",
+    "onInput",
+    "onBlur",
+    "name",
+  ]);
 
   const handleInput: JSX.EventHandlerUnion<HTMLInputElement, InputEvent> = (event) => {
     invokeEventHandler(local.onInput, event);
     if (event.defaultPrevented) return;
     context?.setValue(event.currentTarget.value);
+  };
+
+  const handleBlur: JSX.EventHandlerUnion<HTMLInputElement, FocusEvent> = (event) => {
+    invokeEventHandler(local.onBlur, event);
+    invokeEventHandler(context?.onBlur(), event);
   };
 
   return (
@@ -223,11 +244,13 @@ const SearchFieldInput: Component<SearchFieldInputProps> = (props) => {
       data-slot="search-field-input"
       data-theme={local.dataTheme}
       style={local.style}
+      name={local.name ?? context?.name()}
       value={context?.value() ?? ""}
       disabled={context?.isDisabled()}
       aria-invalid={context?.isInvalid() ? "true" : undefined}
       aria-disabled={context?.isDisabled() ? "true" : undefined}
       onInput={handleInput}
+      onBlur={handleBlur}
     />
   );
 };

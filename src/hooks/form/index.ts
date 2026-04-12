@@ -14,3 +14,4 @@ export {
 } from "./useFieldMeta";
 export { useFieldError } from "./useFieldError";
 export { useField, type UseFieldResult } from "./useField";
+export { useFieldProps, type UseFieldPropsResult } from "./useFieldProps";

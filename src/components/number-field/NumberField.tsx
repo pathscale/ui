@@ -23,6 +23,7 @@ const VARIANT_CLASS_MAP: Record<NumberFieldVariant, string> = {
 
 type NumberFieldContextValue = {
   valueText: Accessor<string>;
+  name: Accessor<string | undefined>;
   variant: Accessor<NumberFieldVariant>;
   fullWidth: Accessor<boolean>;
   isDisabled: Accessor<boolean>;
@@ -30,6 +31,7 @@ type NumberFieldContextValue = {
   min: Accessor<number | undefined>;
   max: Accessor<number | undefined>;
   step: Accessor<number>;
+  onBlur: Accessor<JSX.EventHandlerUnion<HTMLInputElement, FocusEvent> | undefined>;
   setFromInput: (nextValue: string, event?: Event) => void;
   increment: (event?: Event) => void;
   decrement: (event?: Event) => void;
@@ -78,12 +80,14 @@ export type NumberFieldRenderProps = {
   isDisabled: boolean;
 };
 
-export type NumberFieldRootProps = Omit<JSX.HTMLAttributes<HTMLDivElement>, "children" | "onChange"> &
+export type NumberFieldRootProps = Omit<JSX.HTMLAttributes<HTMLDivElement>, "children" | "onChange" | "onBlur"> &
   IComponentBaseProps & {
     children?: JSX.Element | ((props: NumberFieldRenderProps) => JSX.Element);
+    name?: string;
     value?: number;
     defaultValue?: number;
     onChange?: (value: number | undefined) => void;
+    onBlur?: JSX.EventHandlerUnion<HTMLInputElement, FocusEvent>;
     min?: number;
     max?: number;
     step?: number;
@@ -126,9 +130,11 @@ const NumberFieldRoot: ParentComponent<NumberFieldRootProps> = (props) => {
     "className",
     "dataTheme",
     "style",
+    "name",
     "value",
     "defaultValue",
     "onChange",
+    "onBlur",
     "min",
     "max",
     "step",
@@ -204,6 +210,7 @@ const NumberFieldRoot: ParentComponent<NumberFieldRootProps> = (props) => {
 
   const contextValue: NumberFieldContextValue = {
     valueText: inputValue,
+    name: () => local.name,
     variant,
     fullWidth,
     isDisabled,
@@ -211,6 +218,7 @@ const NumberFieldRoot: ParentComponent<NumberFieldRootProps> = (props) => {
     min,
     max,
     step,
+    onBlur: () => local.onBlur,
     setFromInput,
     increment: () => adjustValue(1),
     decrement: () => adjustValue(-1),
@@ -283,12 +291,25 @@ const NumberFieldGroup: ParentComponent<NumberFieldGroupProps> = (props) => {
 
 const NumberFieldInput: Component<NumberFieldInputProps> = (props) => {
   const context = useContext(NumberFieldContext);
-  const [local, others] = splitProps(props, ["class", "className", "dataTheme", "style", "onInput"]);
+  const [local, others] = splitProps(props, [
+    "class",
+    "className",
+    "dataTheme",
+    "style",
+    "onInput",
+    "onBlur",
+    "name",
+  ]);
 
   const handleInput: JSX.EventHandlerUnion<HTMLInputElement, InputEvent> = (event) => {
     invokeEventHandler(local.onInput, event);
     if (event.defaultPrevented) return;
     context?.setFromInput(event.currentTarget.value, event);
+  };
+
+  const handleBlur: JSX.EventHandlerUnion<HTMLInputElement, FocusEvent> = (event) => {
+    invokeEventHandler(local.onBlur, event);
+    invokeEventHandler(context?.onBlur(), event);
   };
 
   return (
@@ -300,6 +321,7 @@ const NumberFieldInput: Component<NumberFieldInputProps> = (props) => {
       data-slot="number-field-input"
       data-theme={local.dataTheme}
       style={local.style}
+      name={local.name ?? context?.name()}
       value={context?.valueText() ?? ""}
       disabled={context?.isDisabled()}
       aria-invalid={context?.isInvalid() ? "true" : undefined}
@@ -308,6 +330,7 @@ const NumberFieldInput: Component<NumberFieldInputProps> = (props) => {
       max={context?.max()}
       step={context?.step()}
       onInput={handleInput}
+      onBlur={handleBlur}
     />
   );
 };

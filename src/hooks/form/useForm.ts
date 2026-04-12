@@ -32,9 +32,6 @@ export type FormController<TValues extends AnyValues = AnyValues> = FormDirectiv
   setWarnings: (...args: unknown[]) => unknown;
   setTouched: (...args: unknown[]) => unknown;
   reset: () => void;
-  getFieldValue: (name: string) => unknown;
-  getFieldError: (name: string) => unknown;
-  getFieldTouched: (name: string) => boolean;
   setFieldValue: (name: string, value: unknown) => void;
 };
 
@@ -137,9 +134,6 @@ export const useForm = <TValues extends AnyValues = AnyValues>(
     setWarnings,
     setTouched,
     reset,
-    getFieldValue: (name: string) => data(name),
-    getFieldError: (name: string) => errors(name),
-    getFieldTouched: (name: string) => Boolean(touched(name)),
     setFieldValue: (name: string, value: unknown) => {
       (
         setData as unknown as (path: string, nextValue: unknown) => void

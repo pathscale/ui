@@ -190,15 +190,20 @@ export type {
 export {
   default as Form,
   FormRoot,
+} from "./components/form";
+export {
   useForm,
   useField,
+  useFieldProps,
   useFieldError,
   useFieldMeta,
-} from "./components/form";
+} from "./hooks/form";
 export { useDesktop } from "./components/utils";
 export type {
   FormProps,
   FormRootProps,
+} from "./components/form";
+export type {
   FormController,
   FormDirective,
   FormPathQuery,
@@ -207,7 +212,8 @@ export type {
   UseFieldOptions,
   UseFieldMetaResult,
   UseFieldResult,
-} from "./components/form";
+  UseFieldPropsResult,
+} from "./hooks/form";
 export { default as Grid } from "./components/grid";
 export { default as Hero } from "./components/hero";
 export { default as Header, HeaderRoot } from "./components/header";
