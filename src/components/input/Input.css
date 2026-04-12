@@ -123,15 +123,16 @@
     cursor: not-allowed;
   }
 
-  .input-slot {
+  .input__icon {
     display: inline-flex;
     align-items: center;
     justify-content: center;
     flex-shrink: 0;
     color: color-mix(in oklab, var(--color-base-content) 72%, transparent);
+    pointer-events: none;
   }
 
-  .input-slot svg {
+  .input__icon > * {
     width: 1rem;
     height: 1rem;
   }

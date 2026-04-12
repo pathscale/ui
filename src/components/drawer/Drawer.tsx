@@ -97,6 +97,8 @@ export type DrawerHandleProps = JSX.HTMLAttributes<HTMLDivElement> & IComponentB
 export type DrawerCloseTriggerProps = Omit<JSX.HTMLAttributes<HTMLButtonElement>, "children"> &
   IComponentBaseProps & {
     children?: JSX.Element;
+    startIcon?: JSX.Element;
+    endIcon?: JSX.Element;
   };
 
 /* -------------------------------------------------------------------------------------------------
@@ -505,6 +507,8 @@ const DrawerCloseTrigger: Component<DrawerCloseTriggerProps> = (props) => {
     "className",
     "dataTheme",
     "style",
+    "startIcon",
+    "endIcon",
     "onClick",
   ]);
 
@@ -526,28 +530,17 @@ const DrawerCloseTrigger: Component<DrawerCloseTriggerProps> = (props) => {
       aria-label="Close"
       onClick={handleClick}
     >
-      <Show
-        when={local.children}
-        fallback={
-          <svg
-            aria-hidden="true"
-            fill="none"
-            height="16"
-            viewBox="0 0 24 24"
-            width="16"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <path
-              d="M18 6L6 18M6 6l12 12"
-              stroke="currentColor"
-              stroke-linecap="round"
-              stroke-width="2"
-            />
-          </svg>
-        }
-      >
-        {local.children}
-      </Show>
+      {local.startIcon ? (
+        <span class="drawer__close-icon drawer__close-icon--start" data-slot="drawer-close-trigger-start-icon">
+          {local.startIcon}
+        </span>
+      ) : null}
+      {local.children}
+      {local.endIcon ? (
+        <span class="drawer__close-icon drawer__close-icon--end" data-slot="drawer-close-trigger-end-icon">
+          {local.endIcon}
+        </span>
+      ) : null}
     </button>
   );
 };

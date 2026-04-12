@@ -66,6 +66,7 @@ const TAG_VARIANT_CLASS_MAP: Record<TagVariant, string> = {
 type TagContextValue = {
   allowsRemoving: () => boolean;
   isDisabled: () => boolean;
+  removeIcon: () => JSX.Element | undefined;
   remove: (event: Event) => void;
 };
 
@@ -78,6 +79,8 @@ export type TagRootProps = Omit<JSX.HTMLAttributes<HTMLDivElement>, "children"> 
     isDisabled?: boolean;
     size?: TagSize;
     variant?: TagVariant;
+    startIcon?: JSX.Element;
+    endIcon?: JSX.Element;
     children?: JSX.Element | ((props: TagRenderProps) => JSX.Element);
   };
 
@@ -101,6 +104,8 @@ const TagRoot: ParentComponent<TagRootProps> = (props) => {
     "isDisabled",
     "size",
     "variant",
+    "startIcon",
+    "endIcon",
     "onClick",
     "onKeyDown",
     "role",
@@ -168,6 +173,7 @@ const TagRoot: ParentComponent<TagRootProps> = (props) => {
       value={{
         allowsRemoving,
         isDisabled,
+        removeIcon: () => local.endIcon,
         remove,
       }}
     >
@@ -199,9 +205,19 @@ const TagRoot: ParentComponent<TagRootProps> = (props) => {
           when={isRenderFnChild()}
           fallback={
             <>
+              <Show when={local.startIcon}>
+                <span class="tag__icon tag__icon--start" data-slot="tag-start-icon">
+                  {local.startIcon}
+                </span>
+              </Show>
               {resolvedChildren()}
-              <Show when={allowsRemoving()}>
-                <TagRemoveButton />
+              <Show when={allowsRemoving() && local.endIcon}>
+                <TagRemoveButton>{local.endIcon}</TagRemoveButton>
+              </Show>
+              <Show when={!allowsRemoving() && local.endIcon}>
+                <span class="tag__icon tag__icon--end" data-slot="tag-end-icon">
+                  {local.endIcon}
+                </span>
               </Show>
             </>
           }
@@ -215,6 +231,11 @@ const TagRoot: ParentComponent<TagRootProps> = (props) => {
 
 const TagRemoveButton: Component<TagRemoveButtonProps> = (props) => {
   const context = useContext(TagContext);
+  const hasIcon = () =>
+    props.children != null ||
+    props.startIcon != null ||
+    props.endIcon != null ||
+    context?.removeIcon() != null;
   const [local, others] = splitProps(props, [
     "children",
     "class",
@@ -233,6 +254,7 @@ const TagRemoveButton: Component<TagRemoveButtonProps> = (props) => {
   };
 
   if (!context?.allowsRemoving()) return null;
+  if (!hasIcon()) return null;
 
   return (
     <CloseButton
@@ -245,7 +267,7 @@ const TagRemoveButton: Component<TagRemoveButtonProps> = (props) => {
       isDisabled={local.isDisabled ?? context.isDisabled()}
       onClick={handleClick}
     >
-      {local.children}
+      {local.children ?? context.removeIcon()}
     </CloseButton>
   );
 };

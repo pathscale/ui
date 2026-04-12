@@ -36,13 +36,17 @@
     color: var(--tag-fg);
   }
 
-  .tag svg {
+  .tag__icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
     pointer-events: none;
+  }
+
+  .tag__icon > * {
     width: 0.75rem;
     height: 0.75rem;
-    flex-shrink: 0;
-    align-self: center;
-    color: currentColor;
   }
 
   .tag:is([data-disabled="true"], [aria-disabled="true"]) {
@@ -109,11 +113,9 @@
     color: inherit;
   }
 
-  .tag__remove-button svg {
+  .tag__remove-button > * {
     width: inherit;
     height: inherit;
-    flex-shrink: 0;
-    align-self: center;
-    color: currentColor;
+    pointer-events: none;
   }
 }

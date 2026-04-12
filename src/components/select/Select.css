@@ -109,14 +109,25 @@
       color 150ms ease;
   }
 
-  .ui-select__indicator svg {
-    width: 100%;
-    height: 100%;
-  }
-
   .ui-select__indicator[data-open="true"] {
     transform: rotate(180deg);
     color: var(--color-base-content);
+  }
+
+  .ui-select__icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    width: 1rem;
+    height: 1rem;
+    pointer-events: none;
+  }
+
+  .ui-select__icon > * {
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
   }
 
   .ui-select__popover {
@@ -204,11 +215,6 @@
     transition:
       opacity 120ms ease,
       transform 150ms ease;
-  }
-
-  .ui-select__option-indicator svg {
-    width: 100%;
-    height: 100%;
   }
 
   .ui-select__option[data-selected="true"] .ui-select__option-indicator {

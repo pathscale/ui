@@ -408,7 +408,10 @@ const SelectRoot: Component<SelectRootProps> = (props) => {
 };
 
 export type SelectTriggerProps = JSX.ButtonHTMLAttributes<HTMLButtonElement> &
-  IComponentBaseProps;
+  IComponentBaseProps & {
+    startIcon?: JSX.Element;
+    endIcon?: JSX.Element;
+  };
 
 const SelectTrigger: Component<SelectTriggerProps> = (props) => {
   const ctx = useContext(SelectContext);
@@ -418,6 +421,8 @@ const SelectTrigger: Component<SelectTriggerProps> = (props) => {
     "className",
     "dataTheme",
     "disabled",
+    "startIcon",
+    "endIcon",
     "onClick",
     "onKeyDown",
     "ref",
@@ -432,7 +437,17 @@ const SelectTrigger: Component<SelectTriggerProps> = (props) => {
         data-theme={local.dataTheme}
         type={local.type ?? "button"}
       >
+        {local.startIcon ? (
+          <span class="ui-select__icon ui-select__icon--start" data-slot="ui-select-trigger-start-icon">
+            {local.startIcon}
+          </span>
+        ) : null}
         {local.children}
+        {local.endIcon ? (
+          <span class="ui-select__icon ui-select__icon--end" data-slot="ui-select-trigger-end-icon">
+            {local.endIcon}
+          </span>
+        ) : null}
       </button>
     );
   }
@@ -516,7 +531,17 @@ const SelectTrigger: Component<SelectTriggerProps> = (props) => {
       onClick={handleClick}
       onKeyDown={handleKeyDown}
     >
+      {local.startIcon ? (
+        <span class="ui-select__icon ui-select__icon--start" data-slot="ui-select-trigger-start-icon">
+          {local.startIcon}
+        </span>
+      ) : null}
       {local.children}
+      {local.endIcon ? (
+        <span class="ui-select__icon ui-select__icon--end" data-slot="ui-select-trigger-end-icon">
+          {local.endIcon}
+        </span>
+      ) : null}
     </button>
   );
 };
@@ -551,7 +576,10 @@ const SelectValue: Component<SelectValueProps> = (props) => {
 };
 
 export type SelectIndicatorProps = JSX.HTMLAttributes<HTMLSpanElement> &
-  IComponentBaseProps;
+  IComponentBaseProps & {
+    startIcon?: JSX.Element;
+    endIcon?: JSX.Element;
+  };
 
 const SelectIndicator: Component<SelectIndicatorProps> = (props) => {
   const ctx = useContext(SelectContext);
@@ -560,6 +588,8 @@ const SelectIndicator: Component<SelectIndicatorProps> = (props) => {
     "class",
     "className",
     "dataTheme",
+    "startIcon",
+    "endIcon",
   ]);
 
   return (
@@ -571,11 +601,17 @@ const SelectIndicator: Component<SelectIndicatorProps> = (props) => {
       data-open={ctx?.open() ? "true" : "false"}
       aria-hidden="true"
     >
-      {local.children ?? (
-        <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.75">
-          <path d="M5 7.5L10 12.5L15 7.5" stroke-linecap="round" stroke-linejoin="round" />
-        </svg>
-      )}
+      {local.startIcon ? (
+        <span class="ui-select__icon ui-select__icon--start" data-slot="ui-select-indicator-start-icon">
+          {local.startIcon}
+        </span>
+      ) : null}
+      {local.children}
+      {local.endIcon ? (
+        <span class="ui-select__icon ui-select__icon--end" data-slot="ui-select-indicator-end-icon">
+          {local.endIcon}
+        </span>
+      ) : null}
     </span>
   );
 };
@@ -638,6 +674,8 @@ export type SelectOptionProps = Omit<JSX.ButtonHTMLAttributes<HTMLButtonElement>
     value: SelectKey;
     textValue?: string;
     isDisabled?: boolean;
+    startIcon?: JSX.Element;
+    endIcon?: JSX.Element;
   };
 
 const SelectOption: Component<SelectOptionProps> = (props) => {
@@ -651,6 +689,8 @@ const SelectOption: Component<SelectOptionProps> = (props) => {
     "textValue",
     "isDisabled",
     "disabled",
+    "startIcon",
+    "endIcon",
     "onClick",
     "onKeyDown",
     "onMouseEnter",
@@ -666,7 +706,19 @@ const SelectOption: Component<SelectOptionProps> = (props) => {
         data-theme={local.dataTheme}
         type={local.type ?? "button"}
       >
+        {local.startIcon ? (
+          <span class="ui-select__icon ui-select__icon--start" data-slot="ui-select-option-start-icon">
+            {local.startIcon}
+          </span>
+        ) : null}
         {local.children}
+        {local.endIcon ? (
+          <span class="ui-select__option-indicator" data-slot="ui-select-option-indicator" aria-hidden="true">
+            <span class="ui-select__icon ui-select__icon--end" data-slot="ui-select-option-end-icon">
+              {local.endIcon}
+            </span>
+          </span>
+        ) : null}
       </button>
     );
   }
@@ -789,14 +841,21 @@ const SelectOption: Component<SelectOptionProps> = (props) => {
       onFocus={() => ctx.setFocusedKey(key())}
       onKeyDown={handleKeyDown}
     >
+      {local.startIcon ? (
+        <span class="ui-select__icon ui-select__icon--start" data-slot="ui-select-option-start-icon">
+          {local.startIcon}
+        </span>
+      ) : null}
       <span class="ui-select__option-label" data-slot="ui-select-option-label">
         {local.children}
       </span>
-      <span class="ui-select__option-indicator" data-slot="ui-select-option-indicator" aria-hidden="true">
-        <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2">
-          <path d="M5.5 10.5L8.5 13.5L14.5 7.5" stroke-linecap="round" stroke-linejoin="round" />
-        </svg>
-      </span>
+      {local.endIcon ? (
+        <span class="ui-select__option-indicator" data-slot="ui-select-option-indicator" aria-hidden="true">
+          <span class="ui-select__icon ui-select__icon--end" data-slot="ui-select-option-end-icon">
+            {local.endIcon}
+          </span>
+        </span>
+      ) : null}
     </button>
   );
 };

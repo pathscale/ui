@@ -21,6 +21,8 @@ type ButtonProps = Omit<JSX.ButtonHTMLAttributes<HTMLButtonElement>, "disabled">
   fullWidth?: boolean;
   isDisabled?: boolean;
   isPending?: boolean;
+  startIcon?: JSX.Element;
+  endIcon?: JSX.Element;
   className?: string;
 };
 
@@ -51,6 +53,8 @@ const Button = (props: ButtonProps): JSX.Element => {
     "fullWidth",
     "isDisabled",
     "isPending",
+    "startIcon",
+    "endIcon",
     "type",
   ]);
 
@@ -86,7 +90,17 @@ const Button = (props: ButtonProps): JSX.Element => {
       <Show when={local.isPending}>
         <span class="button__spinner" data-slot="spinner" aria-hidden="true" />
       </Show>
+      <Show when={local.startIcon}>
+        <span class="button__icon button__icon--start" data-slot="button-start-icon">
+          {local.startIcon}
+        </span>
+      </Show>
       {local.children}
+      <Show when={local.endIcon}>
+        <span class="button__icon button__icon--end" data-slot="button-end-icon">
+          {local.endIcon}
+        </span>
+      </Show>
     </button>
   );
 };

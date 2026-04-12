@@ -36,25 +36,12 @@ interface ChipRootProps extends Omit<JSX.HTMLAttributes<HTMLSpanElement>, "color
   variant?: ChipVariant;
   color?: ChipColor;
   size?: ChipSize;
-  startContent?: JSX.Element;
-  endContent?: JSX.Element;
+  startIcon?: JSX.Element;
+  endIcon?: JSX.Element;
   onRemove?: () => void;
   removeButtonLabel?: string;
   isDisabled?: boolean;
 }
-
-const ChipRemoveIcon = () => (
-  <svg
-    viewBox="0 0 20 20"
-    fill="none"
-    stroke="currentColor"
-    stroke-width="1.75"
-    stroke-linecap="round"
-    aria-hidden="true"
-  >
-    <path d="M6 6l8 8M14 6l-8 8" />
-  </svg>
-);
 
 const ChipRoot = (props: ChipRootProps): JSX.Element => {
   const [local, others] = splitProps(props, [
@@ -64,8 +51,8 @@ const ChipRoot = (props: ChipRootProps): JSX.Element => {
     "variant",
     "color",
     "size",
-    "startContent",
-    "endContent",
+    "startIcon",
+    "endIcon",
     "onRemove",
     "removeButtonLabel",
     "isDisabled",
@@ -109,18 +96,13 @@ const ChipRoot = (props: ChipRootProps): JSX.Element => {
       data-disabled={local.isDisabled ? "true" : "false"}
       data-removable={local.onRemove ? "true" : "false"}
     >
-      <Show when={local.startContent}>
-        <span class="chip__start" data-slot="chip-start">
-          {local.startContent}
+      <Show when={local.startIcon}>
+        <span class="chip__icon chip__icon--start" data-slot="chip-start-icon">
+          {local.startIcon}
         </span>
       </Show>
       {chipChildren()}
-      <Show when={local.endContent}>
-        <span class="chip__end" data-slot="chip-end">
-          {local.endContent}
-        </span>
-      </Show>
-      <Show when={local.onRemove}>
+      <Show when={local.onRemove && local.endIcon}>
         <button
           type="button"
           class="chip__remove"
@@ -129,8 +111,17 @@ const ChipRoot = (props: ChipRootProps): JSX.Element => {
           onClick={handleRemove}
           disabled={Boolean(local.isDisabled)}
         >
-          <ChipRemoveIcon />
+          <Show when={local.endIcon}>
+            <span class="chip__remove-icon" data-slot="chip-remove-icon">
+              {local.endIcon}
+            </span>
+          </Show>
         </button>
+      </Show>
+      <Show when={!local.onRemove && local.endIcon}>
+        <span class="chip__icon chip__icon--end" data-slot="chip-end-icon">
+          {local.endIcon}
+        </span>
       </Show>
     </span>
   );

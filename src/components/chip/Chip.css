@@ -130,28 +130,25 @@
     padding-inline: 0.125rem;
   }
 
-  .chip__start,
-  .chip__end {
+  .chip__icon {
     display: inline-flex;
     align-items: center;
     justify-content: center;
     flex-shrink: 0;
   }
 
-  .chip__start svg,
-  .chip__end svg {
+  .chip__icon > * {
     width: 0.875rem;
     height: 0.875rem;
+    pointer-events: none;
   }
 
-  .chip--sm .chip__start svg,
-  .chip--sm .chip__end svg {
+  .chip--sm .chip__icon > * {
     width: 0.75rem;
     height: 0.75rem;
   }
 
-  .chip--lg .chip__start svg,
-  .chip--lg .chip__end svg {
+  .chip--lg .chip__icon > * {
     width: 1rem;
     height: 1rem;
   }
@@ -172,9 +169,14 @@
     transition: background-color 120ms ease;
   }
 
-  .chip__remove svg {
+  .chip__remove-icon,
+  .chip__remove-icon > * {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
     width: 100%;
     height: 100%;
+    pointer-events: none;
   }
 
   .chip__remove:focus-visible {

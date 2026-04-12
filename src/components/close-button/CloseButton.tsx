@@ -15,6 +15,8 @@ export type CloseButtonProps = Omit<JSX.ButtonHTMLAttributes<HTMLButtonElement>,
     variant?: CloseButtonVariant;
     isDisabled?: boolean;
     isPending?: boolean;
+    startIcon?: JSX.Element;
+    endIcon?: JSX.Element;
     className?: string;
   };
 
@@ -26,6 +28,8 @@ const CloseButton: Component<CloseButtonProps> = (props) => {
     "variant",
     "isDisabled",
     "isPending",
+    "startIcon",
+    "endIcon",
     "type",
     "dataTheme",
     "style",
@@ -53,22 +57,17 @@ const CloseButton: Component<CloseButtonProps> = (props) => {
       disabled={disabled()}
       aria-disabled={disabled() ? "true" : "false"}
     >
-      {local.children ?? (
-        <svg
-          aria-hidden="true"
-          data-slot="close-button-icon"
-          fill="none"
-          role="presentation"
-          viewBox="0 0 16 16"
-        >
-          <path
-            clip-rule="evenodd"
-            d="M3.47 3.47a.75.75 0 0 1 1.06 0L8 6.94l3.47-3.47a.75.75 0 1 1 1.06 1.06L9.06 8l3.47 3.47a.75.75 0 1 1-1.06 1.06L8 9.06l-3.47 3.47a.75.75 0 0 1-1.06-1.06L6.94 8 3.47 4.53a.75.75 0 0 1 0-1.06Z"
-            fill="currentColor"
-            fill-rule="evenodd"
-          />
-        </svg>
-      )}
+      {local.startIcon ? (
+        <span class="close-button__icon close-button__icon--start" data-slot="close-button-start-icon">
+          {local.startIcon}
+        </span>
+      ) : null}
+      {local.children}
+      {local.endIcon ? (
+        <span class="close-button__icon close-button__icon--end" data-slot="close-button-end-icon">
+          {local.endIcon}
+        </span>
+      ) : null}
     </button>
   );
 };

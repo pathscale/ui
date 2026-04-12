@@ -2,6 +2,7 @@ import "./SearchField.css";
 import {
   createContext,
   createSignal,
+  Show,
   splitProps,
   useContext,
   type Accessor,
@@ -56,6 +57,8 @@ export type SearchFieldRenderProps = {
 export type SearchFieldRootProps = Omit<JSX.HTMLAttributes<HTMLDivElement>, "children" | "onChange" | "onBlur"> &
   IComponentBaseProps & {
     children?: JSX.Element | ((props: SearchFieldRenderProps) => JSX.Element);
+    startIcon?: JSX.Element;
+    endIcon?: JSX.Element;
     name?: string;
     value?: string;
     defaultValue?: string;
@@ -81,7 +84,7 @@ export type SearchFieldInputProps = Omit<
     onInput?: JSX.EventHandlerUnion<HTMLInputElement, InputEvent>;
   };
 
-export type SearchFieldSearchIconProps = JSX.SvgSVGAttributes<SVGSVGElement> &
+export type SearchFieldSearchIconProps = JSX.HTMLAttributes<HTMLSpanElement> &
   IComponentBaseProps & {
     children?: JSX.Element;
   };
@@ -94,6 +97,8 @@ export type SearchFieldClearButtonProps = Omit<CloseButtonProps, "onClick"> &
 const SearchFieldRoot: ParentComponent<SearchFieldRootProps> = (props) => {
   const [local, others] = splitProps(props, [
     "children",
+    "startIcon",
+    "endIcon",
     "class",
     "className",
     "dataTheme",
@@ -172,9 +177,13 @@ const SearchFieldRoot: ParentComponent<SearchFieldRootProps> = (props) => {
           local.children
         ) : (
           <SearchFieldGroup>
-            <SearchFieldSearchIcon />
+            <Show when={local.startIcon}>
+              <SearchFieldSearchIcon>{local.startIcon}</SearchFieldSearchIcon>
+            </Show>
             <SearchFieldInput />
-            <SearchFieldClearButton />
+            <Show when={local.endIcon}>
+              <SearchFieldClearButton>{local.endIcon}</SearchFieldClearButton>
+            </Show>
           </SearchFieldGroup>
         )}
       </div>
@@ -258,43 +267,27 @@ const SearchFieldInput: Component<SearchFieldInputProps> = (props) => {
 const SearchFieldSearchIcon: Component<SearchFieldSearchIconProps> = (props) => {
   const [local, others] = splitProps(props, ["children", "class", "className", "dataTheme", "style"]);
 
-  if (local.children) {
-    return (
-      <svg
-        {...others}
-        class={twMerge("search-field__search-icon", local.class, local.className)}
-        data-slot="search-field-search-icon"
-        data-theme={local.dataTheme}
-        style={local.style}
-      >
-        {local.children}
-      </svg>
-    );
-  }
+  if (!local.children) return null;
 
   return (
-    <svg
+    <span
       {...others}
-      aria-hidden="true"
       class={twMerge("search-field__search-icon", local.class, local.className)}
       data-slot="search-field-search-icon"
       data-theme={local.dataTheme}
       style={local.style}
-      fill="none"
-      role="presentation"
-      viewBox="0 0 16 16"
     >
-      <path
-        d="M7.25 2.75a4.5 4.5 0 1 0 2.846 7.985l2.459 2.458a.75.75 0 1 0 1.06-1.06l-2.458-2.46A4.5 4.5 0 0 0 7.25 2.75Zm-3 4.5a3 3 0 1 1 6 0 3 3 0 0 1-6 0Z"
-        fill="currentColor"
-      />
-    </svg>
+      {local.children}
+    </span>
   );
 };
 
 const SearchFieldClearButton: Component<SearchFieldClearButtonProps> = (props) => {
   const context = useContext(SearchFieldContext);
+  const hasIcon = () => props.children != null || props.startIcon != null || props.endIcon != null;
   const [local, others] = splitProps(props, ["class", "className", "dataTheme", "style", "onClick"]);
+
+  if (!hasIcon()) return null;
 
   const handleClick: JSX.EventHandlerUnion<HTMLButtonElement, MouseEvent> = (event) => {
     invokeEventHandler(local.onClick, event);

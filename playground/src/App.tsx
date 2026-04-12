@@ -40,6 +40,7 @@ import {
   Dropdown,
   Description,
   Header,
+  Icon,
   Input,
   InputGroup,
   InputOTP,
@@ -192,6 +193,11 @@ const FORM_VALIDATION_SCHEMA = z.object({
 const FORM_CONTROLLED_SCHEMA = z.object({
   controlledEmail: z.string().email("Provide a valid controlled email."),
 });
+
+const searchIcon = () => <Icon name="icon-[lucide--search]" width={16} height={16} />;
+const closeIcon = () => <Icon name="icon-[lucide--x]" width={16} height={16} />;
+const chevronDownIcon = () => <Icon name="icon-[lucide--chevron-down]" width={20} height={20} />;
+const checkIcon = () => <Icon name="icon-[lucide--check]" width={20} height={20} />;
 
 export default function App() {
   const [selectedFramework, setSelectedFramework] = createSignal("solid");
@@ -751,10 +757,7 @@ export default function App() {
               <Label htmlFor="input-group-website">Website</Label>
               <InputGroup fullWidth>
                 <InputGroup.Prefix>
-                  <svg aria-hidden="true" fill="none" viewBox="0 0 24 24" class="size-4">
-                    <circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="2" />
-                    <path d="M3 12h18M12 3c3 3.5 3 14.5 0 18M12 3c-3 3.5-3 14.5 0 18" stroke="currentColor" stroke-width="2" />
-                  </svg>
+                  <Icon name="icon-[lucide--globe]" width={16} height={16} />
                 </InputGroup.Prefix>
                 <InputGroup.Input id="input-group-website" value="pathscale" />
                 <InputGroup.Suffix>.io</InputGroup.Suffix>
@@ -868,9 +871,9 @@ export default function App() {
             >
               <Label htmlFor="search-field-controlled">Search repositories</Label>
               <SearchField.Group>
-                <SearchField.SearchIcon />
+                <SearchField.SearchIcon>{searchIcon()}</SearchField.SearchIcon>
                 <SearchField.Input id="search-field-controlled" placeholder="Search..." />
-                <SearchField.ClearButton />
+                <SearchField.ClearButton endIcon={closeIcon()} />
               </SearchField.Group>
               <Description>Query: {controlledSearchValue() || "Empty"}</Description>
             </SearchField>
@@ -882,9 +885,9 @@ export default function App() {
             >
               <Label htmlFor="search-field-secondary">Secondary variant</Label>
               <SearchField.Group>
-                <SearchField.SearchIcon />
+                <SearchField.SearchIcon>{searchIcon()}</SearchField.SearchIcon>
                 <SearchField.Input id="search-field-secondary" placeholder="Try 'analytics'" />
-                <SearchField.ClearButton />
+                <SearchField.ClearButton endIcon={closeIcon()} />
               </SearchField.Group>
             </SearchField>
           </div>
@@ -909,10 +912,10 @@ export default function App() {
               <Label htmlFor="combo-box-controlled">Favorite Animal</Label>
               <ComboBox.InputGroup>
                 <ComboBox.Input id="combo-box-controlled" placeholder="Search animals..." />
-                <ComboBox.Trigger />
+                <ComboBox.Trigger endIcon={chevronDownIcon()} />
               </ComboBox.InputGroup>
               <ComboBox.Popover>
-                <ComboBox.List />
+                <ComboBox.List endIcon={checkIcon()} />
               </ComboBox.Popover>
               <Description>
                 Selected:{" "}
@@ -932,10 +935,10 @@ export default function App() {
               <Label htmlFor="combo-box-filtering">Controlled Input Value</Label>
               <ComboBox.InputGroup>
                 <ComboBox.Input id="combo-box-filtering" placeholder="Type to filter..." />
-                <ComboBox.Trigger />
+                <ComboBox.Trigger endIcon={chevronDownIcon()} />
               </ComboBox.InputGroup>
               <ComboBox.Popover>
-                <ComboBox.List />
+                <ComboBox.List endIcon={checkIcon()} />
               </ComboBox.Popover>
               <Description>Input value: {comboInputValue() || "Empty"}</Description>
             </ComboBox>
@@ -950,10 +953,10 @@ export default function App() {
               <Label htmlFor="combo-box-disabled">Disabled</Label>
               <ComboBox.InputGroup>
                 <ComboBox.Input id="combo-box-disabled" placeholder="Disabled combobox" />
-                <ComboBox.Trigger />
+                <ComboBox.Trigger endIcon={chevronDownIcon()} />
               </ComboBox.InputGroup>
               <ComboBox.Popover>
-                <ComboBox.List />
+                <ComboBox.List endIcon={checkIcon()} />
               </ComboBox.Popover>
             </ComboBox>
 
@@ -968,10 +971,10 @@ export default function App() {
               <Label htmlFor="combo-box-long-list">Long List (Manual Trigger)</Label>
               <ComboBox.InputGroup>
                 <ComboBox.Input id="combo-box-long-list" placeholder="Open and browse..." />
-                <ComboBox.Trigger />
+                <ComboBox.Trigger endIcon={chevronDownIcon()} />
               </ComboBox.InputGroup>
               <ComboBox.Popover>
-                <ComboBox.List />
+                <ComboBox.List endIcon={checkIcon()} />
               </ComboBox.Popover>
               <Description>Popover open: {comboIsOpen() ? "true" : "false"}</Description>
             </ComboBox>
@@ -1161,9 +1164,9 @@ export default function App() {
                   fullWidth
                 >
                   <SearchField.Group>
-                    <SearchField.SearchIcon />
+                    <SearchField.SearchIcon>{searchIcon()}</SearchField.SearchIcon>
                     <SearchField.Input id="form-demo-query" />
-                    <SearchField.ClearButton />
+                    <SearchField.ClearButton endIcon={closeIcon()} />
                   </SearchField.Group>
                 </SearchField>
                 <FieldError name="demoQuery" />
@@ -1385,19 +1388,19 @@ export default function App() {
           </div>
 
           <div class="space-y-3">
-            <h3 class="text-xs font-semibold uppercase opacity-70">Start/End Content + Remove</h3>
+            <h3 class="text-xs font-semibold uppercase opacity-70">Start/End Icon + Remove</h3>
             <div class="flex flex-wrap items-center gap-3">
               <Chip
                 variant="flat"
                 color="primary"
-                startContent={<span class="h-2 w-2 rounded-full bg-current opacity-70" />}
+                startIcon={<Icon name="icon-[lucide--dot]" width={12} height={12} />}
               >
                 Live stream
               </Chip>
               <Chip
                 variant="bordered"
                 color="success"
-                endContent={<span class="text-[10px] font-semibold uppercase">OK</span>}
+                endIcon={<Icon name="icon-[lucide--check]" width={14} height={14} />}
               >
                 Connection
               </Chip>
@@ -1405,6 +1408,7 @@ export default function App() {
                 <Chip
                   variant="solid"
                   color="danger"
+                  endIcon={closeIcon()}
                   onRemove={() => setShowRemovableChip(false)}
                 >
                   Remove me
@@ -1600,20 +1604,20 @@ export default function App() {
               <Select placeholder="Select a state">
                 <Select.Trigger>
                   <Select.Value />
-                  <Select.Indicator />
+                  <Select.Indicator endIcon={chevronDownIcon()} />
                 </Select.Trigger>
                 <Select.Popover>
                   <Select.Listbox>
-                    <Select.Option value="florida" textValue="Florida">
+                    <Select.Option value="florida" textValue="Florida" endIcon={checkIcon()}>
                       Florida
                     </Select.Option>
-                    <Select.Option value="california" textValue="California">
+                    <Select.Option value="california" textValue="California" endIcon={checkIcon()}>
                       California
                     </Select.Option>
-                    <Select.Option value="texas" textValue="Texas">
+                    <Select.Option value="texas" textValue="Texas" endIcon={checkIcon()}>
                       Texas
                     </Select.Option>
-                    <Select.Option value="washington" textValue="Washington">
+                    <Select.Option value="washington" textValue="Washington" endIcon={checkIcon()}>
                       Washington
                     </Select.Option>
                   </Select.Listbox>
@@ -1631,17 +1635,17 @@ export default function App() {
               >
                 <Select.Trigger>
                   <Select.Value />
-                  <Select.Indicator />
+                  <Select.Indicator endIcon={chevronDownIcon()} />
                 </Select.Trigger>
                 <Select.Popover>
                   <Select.Listbox>
-                    <Select.Option value="california" textValue="California">
+                    <Select.Option value="california" textValue="California" endIcon={checkIcon()}>
                       California
                     </Select.Option>
-                    <Select.Option value="nevada" textValue="Nevada">
+                    <Select.Option value="nevada" textValue="Nevada" endIcon={checkIcon()}>
                       Nevada
                     </Select.Option>
-                    <Select.Option value="new-york" textValue="New York">
+                    <Select.Option value="new-york" textValue="New York" endIcon={checkIcon()}>
                       New York
                     </Select.Option>
                   </Select.Listbox>
@@ -1665,20 +1669,20 @@ export default function App() {
               >
                 <Select.Trigger>
                   <Select.Value />
-                  <Select.Indicator />
+                  <Select.Indicator endIcon={chevronDownIcon()} />
                 </Select.Trigger>
                 <Select.Popover>
                   <Select.Listbox>
-                    <Select.Option value="north-america" textValue="North America">
+                    <Select.Option value="north-america" textValue="North America" endIcon={checkIcon()}>
                       North America
                     </Select.Option>
-                    <Select.Option value="europe" textValue="Europe">
+                    <Select.Option value="europe" textValue="Europe" endIcon={checkIcon()}>
                       Europe
                     </Select.Option>
-                    <Select.Option value="asia" textValue="Asia">
+                    <Select.Option value="asia" textValue="Asia" endIcon={checkIcon()}>
                       Asia
                     </Select.Option>
-                    <Select.Option value="latam" textValue="Latin America">
+                    <Select.Option value="latam" textValue="Latin America" endIcon={checkIcon()}>
                       Latin America
                     </Select.Option>
                   </Select.Listbox>
@@ -1697,14 +1701,14 @@ export default function App() {
               >
                 <Select.Trigger>
                   <Select.Value />
-                  <Select.Indicator />
+                  <Select.Indicator endIcon={chevronDownIcon()} />
                 </Select.Trigger>
                 <Select.Popover>
                   <Select.Listbox>
-                    <Select.Option value="california" textValue="California">
+                    <Select.Option value="california" textValue="California" endIcon={checkIcon()}>
                       California
                     </Select.Option>
-                    <Select.Option value="oregon" textValue="Oregon">
+                    <Select.Option value="oregon" textValue="Oregon" endIcon={checkIcon()}>
                       Oregon
                     </Select.Option>
                   </Select.Listbox>
@@ -1872,33 +1876,27 @@ export default function App() {
           <div>
             <h2 class="text-sm font-semibold">Close Button</h2>
             <p class="text-xs opacity-70">
-              HeroUI-style close button with default icon fallback and interactive states.
+              HeroUI-style close button with explicit icon props and interactive states.
             </p>
           </div>
 
           <div class="space-y-3">
             <h3 class="text-xs font-semibold uppercase opacity-70">Default + Disabled</h3>
             <div class="flex flex-wrap items-center gap-3">
-              <CloseButton />
-              <CloseButton aria-label="Dismiss panel" />
-              <CloseButton isDisabled />
-              <CloseButton isPending />
+              <CloseButton endIcon={closeIcon()} />
+              <CloseButton aria-label="Dismiss panel" endIcon={closeIcon()} />
+              <CloseButton isDisabled endIcon={closeIcon()} />
+              <CloseButton isPending endIcon={closeIcon()} />
             </div>
           </div>
 
           <div class="space-y-3">
             <h3 class="text-xs font-semibold uppercase opacity-70">Custom Icon</h3>
             <div class="flex flex-wrap items-center gap-3">
-              <CloseButton aria-label="Close with custom icon">
-                <svg viewBox="0 0 16 16" fill="none" aria-hidden="true" role="presentation">
-                  <path
-                    d="M4 8h8M8 4v8"
-                    stroke="currentColor"
-                    stroke-width="1.6"
-                    stroke-linecap="round"
-                  />
-                </svg>
-              </CloseButton>
+              <CloseButton
+                aria-label="Close with custom icon"
+                endIcon={<Icon name="icon-[lucide--plus]" width={16} height={16} />}
+              />
             </div>
           </div>
 
@@ -1907,7 +1905,7 @@ export default function App() {
             <div class="max-w-md rounded-xl border border-base-300 bg-base-100 p-4">
               <div class="flex items-center justify-between gap-3">
                 <h4 class="text-sm font-medium">Modal Header</h4>
-                <CloseButton />
+                <CloseButton endIcon={closeIcon()} />
               </div>
             </div>
           </div>
@@ -1967,7 +1965,7 @@ export default function App() {
                 setRemovableTags((prev) => prev.filter((tag) => !keys.has(tag)))
               }
             >
-              <TagGroup.List
+                  <TagGroup.List
                 items={removableTags()}
                 renderEmptyState={() => (
                   <span class="text-xs opacity-70" data-slot="description">
@@ -1976,7 +1974,7 @@ export default function App() {
                 )}
               >
                 {(item) => (
-                  <Tag id={String(item)} textValue={String(item)}>
+                  <Tag id={String(item)} textValue={String(item)} endIcon={closeIcon()}>
                     {String(item)}
                   </Tag>
                 )}
@@ -1994,14 +1992,7 @@ export default function App() {
                       Alpha
                       {state.allowsRemoving && (
                         <Tag.RemoveButton>
-                          <svg viewBox="0 0 16 16" fill="none" aria-hidden="true" role="presentation">
-                            <path
-                              d="M4 8h8M8 4v8"
-                              stroke="currentColor"
-                              stroke-width="1.6"
-                              stroke-linecap="round"
-                            />
-                          </svg>
+                          <Icon name="icon-[lucide--plus]" width={16} height={16} />
                         </Tag.RemoveButton>
                       )}
                     </>
@@ -2308,19 +2299,19 @@ export default function App() {
 
           <div class="space-y-3">
             <h3 class="text-xs font-semibold uppercase opacity-70">
-              With Slots
+              With Icon Props
             </h3>
             <div class="grid gap-3 md:grid-cols-2">
               <Input
-                label="Start Content"
+                label="Start Icon"
                 placeholder="Search..."
-                startContent={<span aria-hidden="true">S</span>}
+                startIcon={<Icon name="icon-[lucide--search]" width={16} height={16} />}
                 fullWidth
               />
               <Input
-                label="End Content"
+                label="End Icon"
                 placeholder="Amount"
-                endContent={<span aria-hidden="true">USD</span>}
+                endIcon={<Icon name="icon-[lucide--badge-dollar-sign]" width={16} height={16} />}
                 fullWidth
               />
             </div>
@@ -2853,7 +2844,7 @@ export default function App() {
                     <Drawer.Backdrop>
                       <Drawer.Content placement={placement}>
                         <Drawer.Dialog>
-                          <Drawer.CloseTrigger />
+                          <Drawer.CloseTrigger endIcon={closeIcon()} />
                           {placement === "bottom" && <Drawer.Handle />}
                           <Drawer.Header>
                             <Drawer.Heading>
@@ -2900,7 +2891,7 @@ export default function App() {
                       <Drawer.Content>
                         <Drawer.Dialog>
                           <Drawer.Handle />
-                          <Drawer.CloseTrigger />
+                          <Drawer.CloseTrigger endIcon={closeIcon()} />
                           <Drawer.Header>
                             <Drawer.Heading>
                               Backdrop: {variant}
@@ -3198,12 +3189,12 @@ export default function App() {
             <div class="flex items-end justify-center py-8">
               <FloatingDock
                 items={[
-                  { title: "Microphone", icon: <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" x2="12" y1="19" y2="22"/></svg>, onClick: () => alert("Mic toggled") },
-                  { title: "Camera", icon: <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.5 4h-5L7 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3l-2.5-3Z"/><circle cx="12" cy="13" r="3"/></svg>, onClick: () => alert("Camera toggled") },
-                  { title: "Screen Share", icon: <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="14" x="2" y="3" rx="2"/><line x1="8" x2="16" y1="21" y2="21"/><line x1="12" x2="12" y1="17" y2="21"/></svg>, onClick: () => alert("Screen share") },
-                  { title: "Chat", icon: <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7.9 20A9 9 0 1 0 4 16.1L2 22Z"/></svg>, onClick: () => alert("Chat opened") },
-                  { title: "Settings", icon: <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/><circle cx="12" cy="12" r="3"/></svg>, onClick: () => alert("Settings") },
-                  { title: "Leave", icon: <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>, onClick: () => alert("Leave call") },
+                  { title: "Microphone", icon: <Icon name="icon-[lucide--mic]" width={20} height={20} />, onClick: () => alert("Mic toggled") },
+                  { title: "Camera", icon: <Icon name="icon-[lucide--camera]" width={20} height={20} />, onClick: () => alert("Camera toggled") },
+                  { title: "Screen Share", icon: <Icon name="icon-[lucide--monitor]" width={20} height={20} />, onClick: () => alert("Screen share") },
+                  { title: "Chat", icon: <Icon name="icon-[lucide--message-circle]" width={20} height={20} />, onClick: () => alert("Chat opened") },
+                  { title: "Settings", icon: <Icon name="icon-[lucide--settings]" width={20} height={20} />, onClick: () => alert("Settings") },
+                  { title: "Leave", icon: <Icon name="icon-[lucide--x]" width={20} height={20} />, onClick: () => alert("Leave call") },
                 ]}
               />
             </div>
@@ -3214,10 +3205,10 @@ export default function App() {
             <div class="flex items-end justify-center py-8">
               <FloatingDock
                 items={[
-                  { title: "Bold", icon: <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M6 12h9a4 4 0 0 1 0 8H7a1 1 0 0 1-1-1V5a1 1 0 0 1 1-1h7a4 4 0 0 1 0 8"/></svg>, onClick: () => {} },
-                  { title: "Italic", icon: <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" x2="10" y1="4" y2="4"/><line x1="14" x2="5" y1="20" y2="20"/><line x1="15" x2="9" y1="4" y2="20"/></svg>, onClick: () => {} },
-                  { title: "Underline", icon: <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 4v6a6 6 0 0 0 12 0V4"/><line x1="4" x2="20" y1="20" y2="20"/></svg>, onClick: () => {} },
-                  { title: "Link", icon: <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>, onClick: () => {} },
+                  { title: "Bold", icon: <Icon name="icon-[lucide--bold]" width={16} height={16} />, onClick: () => {} },
+                  { title: "Italic", icon: <Icon name="icon-[lucide--italic]" width={16} height={16} />, onClick: () => {} },
+                  { title: "Underline", icon: <Icon name="icon-[lucide--underline]" width={16} height={16} />, onClick: () => {} },
+                  { title: "Link", icon: <Icon name="icon-[lucide--link]" width={16} height={16} />, onClick: () => {} },
                 ]}
                 magnify={false}
                 baseSize={36}
@@ -3237,9 +3228,9 @@ export default function App() {
             <div class="flex items-end justify-center py-8">
               <FloatingDock
                 items={[
-                  { title: "Mic", icon: <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" x2="12" y1="19" y2="22"/></svg>, onClick: () => {} },
-                  { title: "Cam", icon: <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.5 4h-5L7 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3l-2.5-3Z"/><circle cx="12" cy="13" r="3"/></svg>, onClick: () => {} },
-                  { title: "End", icon: <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>, onClick: () => {} },
+                  { title: "Mic", icon: <Icon name="icon-[lucide--mic]" width={18} height={18} />, onClick: () => {} },
+                  { title: "Cam", icon: <Icon name="icon-[lucide--camera]" width={18} height={18} />, onClick: () => {} },
+                  { title: "End", icon: <Icon name="icon-[lucide--x]" width={18} height={18} />, onClick: () => {} },
                 ]}
                 mobileMode="dock"
                 baseSize={36}
@@ -3261,7 +3252,7 @@ export default function App() {
             <div class="rounded-lg border border-base-300 bg-base-100">
               <EmptyState>
                 <EmptyState.Icon>
-                  <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/></svg>
+                  <Icon name="icon-[lucide--file-text]" width={48} height={48} />
                 </EmptyState.Icon>
                 <EmptyState.Title>No documents</EmptyState.Title>
                 <EmptyState.Description>
@@ -3279,7 +3270,7 @@ export default function App() {
             <div class="rounded-lg border border-base-300 bg-base-100">
               <EmptyState>
                 <EmptyState.Icon>
-                  <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+                  <Icon name="icon-[lucide--search]" width={48} height={48} />
                 </EmptyState.Icon>
                 <EmptyState.Title>No results found</EmptyState.Title>
                 <EmptyState.Description>

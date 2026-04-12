@@ -1,5 +1,6 @@
 @import "tailwindcss";
 @import "../../src/index.css";
+@source "./";
 @source "../../src";
 @plugin "@iconify/tailwind4";
 

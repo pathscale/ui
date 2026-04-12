@@ -92,8 +92,8 @@ type InputFieldProps = Omit<JSX.InputHTMLAttributes<HTMLInputElement>, "size" | 
   disabled?: boolean;
   isInvalid?: boolean;
   fullWidth?: boolean;
-  startContent?: JSX.Element;
-  endContent?: JSX.Element;
+  startIcon?: JSX.Element;
+  endIcon?: JSX.Element;
   dataTheme?: string;
   className?: string;
 };
@@ -108,8 +108,8 @@ const InputField: Component<InputFieldProps> = (props) => {
     "disabled",
     "isInvalid",
     "fullWidth",
-    "startContent",
-    "endContent",
+    "startIcon",
+    "endIcon",
     "dataTheme",
     "id",
     "aria-invalid",
@@ -142,9 +142,9 @@ const InputField: Component<InputFieldProps> = (props) => {
       data-disabled={isDisabled() ? "true" : "false"}
       data-invalid={isInvalid() ? "true" : "false"}
     >
-      <Show when={local.startContent}>
-        <span class="input-slot input-slot--start" data-slot="input-start-content">
-          {local.startContent}
+      <Show when={local.startIcon}>
+        <span class="input__icon input__icon--start" data-slot="input-start-icon">
+          {local.startIcon}
         </span>
       </Show>
       <input
@@ -156,9 +156,9 @@ const InputField: Component<InputFieldProps> = (props) => {
         aria-invalid={ariaInvalid()}
         data-slot="input-field"
       />
-      <Show when={local.endContent}>
-        <span class="input-slot input-slot--end" data-slot="input-end-content">
-          {local.endContent}
+      <Show when={local.endIcon}>
+        <span class="input__icon input__icon--end" data-slot="input-end-icon">
+          {local.endIcon}
         </span>
       </Show>
     </div>

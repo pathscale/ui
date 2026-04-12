@@ -136,6 +136,8 @@ export type ComboBoxRootProps<T = ComboBoxItem> = Omit<
 > &
   IComponentBaseProps & {
     children?: JSX.Element;
+    startIcon?: JSX.Element;
+    endIcon?: JSX.Element;
     items?: readonly T[];
     selectedKey?: ComboBoxKey | null;
     defaultSelectedKey?: ComboBoxKey | null;
@@ -183,7 +185,10 @@ export type ComboBoxTriggerProps = Omit<
   JSX.ButtonHTMLAttributes<HTMLButtonElement>,
   "type" | "disabled"
 > &
-  IComponentBaseProps;
+  IComponentBaseProps & {
+    startIcon?: JSX.Element;
+    endIcon?: JSX.Element;
+  };
 
 export type ComboBoxPopoverProps = Omit<
   JSX.HTMLAttributes<HTMLDivElement>,
@@ -209,11 +214,14 @@ export type ComboBoxListProps = Omit<
   IComponentBaseProps & {
     children?: JSX.Element | ((item: ComboBoxListRenderItem) => JSX.Element);
     renderEmptyState?: () => JSX.Element;
+    endIcon?: JSX.Element;
   };
 
 const ComboBoxRoot: ParentComponent<ComboBoxRootProps> = (props) => {
   const [local, others] = splitProps(props, [
     "children",
+    "startIcon",
+    "endIcon",
     "class",
     "className",
     "dataTheme",
@@ -526,8 +534,13 @@ const ComboBoxRoot: ParentComponent<ComboBoxRootProps> = (props) => {
         {local.children ?? (
           <>
             <ComboBoxInputGroup>
+              <Show when={local.startIcon}>
+                <span class="combo-box__icon combo-box__icon--start" data-slot="combobox-start-icon">
+                  {local.startIcon}
+                </span>
+              </Show>
               <ComboBoxInput placeholder={local.placeholder} required={isRequired()} />
-              <ComboBoxTrigger />
+              <ComboBoxTrigger endIcon={local.endIcon} />
             </ComboBoxInputGroup>
             <ComboBoxPopover>
               <ComboBoxList />
@@ -710,6 +723,8 @@ const ComboBoxTrigger: Component<ComboBoxTriggerProps> = (props) => {
     "className",
     "dataTheme",
     "style",
+    "startIcon",
+    "endIcon",
     "onClick",
   ]);
 
@@ -736,24 +751,20 @@ const ComboBoxTrigger: Component<ComboBoxTriggerProps> = (props) => {
       aria-label="Toggle options"
       onClick={handleClick}
     >
-      {local.children ?? (
-        <svg
-          aria-hidden="true"
-          class="combo-box__trigger-icon"
-          data-slot="combobox-trigger-default-icon"
-          fill="none"
-          role="presentation"
-          viewBox="0 0 24 24"
+      {local.startIcon ? (
+        <span class="combo-box__icon combo-box__icon--start" data-slot="combobox-trigger-start-icon">
+          {local.startIcon}
+        </span>
+      ) : null}
+      {local.children}
+      {local.endIcon ? (
+        <span
+          class="combo-box__icon combo-box__icon--end combo-box__trigger-icon"
+          data-slot="combobox-trigger-end-icon"
         >
-          <path
-            d="M6 9l6 6 6-6"
-            stroke="currentColor"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            stroke-width="2"
-          />
-        </svg>
-      )}
+          {local.endIcon}
+        </span>
+      ) : null}
     </button>
   );
 };
@@ -785,6 +796,7 @@ const ComboBoxList: Component<ComboBoxListProps> = (props) => {
     "dataTheme",
     "style",
     "renderEmptyState",
+    "endIcon",
   ]);
 
   const items = () => context?.filteredItems() ?? [];
@@ -848,11 +860,13 @@ const ComboBoxList: Component<ComboBoxListProps> = (props) => {
                 <span class="combo-box__option-label">
                   {typeof local.children === "function" ? local.children(state) : item.textValue}
                 </span>
-                <span class="combo-box__option-indicator" aria-hidden="true">
-                  <svg fill="none" role="presentation" stroke="currentColor" stroke-width="2" viewBox="0 0 17 18">
-                    <polyline points="1 9 7 14 15 4" />
-                  </svg>
-                </span>
+                {local.endIcon ? (
+                  <span class="combo-box__option-indicator" aria-hidden="true">
+                    <span class="combo-box__icon combo-box__icon--end" data-slot="combobox-option-end-icon">
+                      {local.endIcon}
+                    </span>
+                  </span>
+                ) : null}
               </div>
             );
           }}
