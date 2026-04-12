@@ -1,7 +1,9 @@
 import "./FieldError.css";
-import { splitProps, type Component, type JSX } from "solid-js";
+import { createMemo, splitProps, type Accessor, type Component, type JSX } from "solid-js";
 import { twMerge } from "tailwind-merge";
 
+import type { FormController } from "../form/hooks";
+import { useFieldError } from "../form/hooks";
 import type { IComponentBaseProps } from "../types";
 
 export type FieldErrorRenderProps = {
@@ -12,9 +14,14 @@ export type FieldErrorRootProps = Omit<JSX.HTMLAttributes<HTMLDivElement>, "chil
   IComponentBaseProps & {
     children?: JSX.Element | ((props: FieldErrorRenderProps) => JSX.Element);
     isVisible?: boolean;
+    name?: string;
+    form?: FormController<Record<string, unknown>> | Accessor<FormController<Record<string, unknown>> | undefined>;
+    showWhenTouched?: boolean;
   };
 
 const FieldErrorRoot: Component<FieldErrorRootProps> = (props) => {
+  let rootRef: HTMLDivElement | undefined;
+
   const [local, others] = splitProps(props, [
     "children",
     "class",
@@ -23,20 +30,49 @@ const FieldErrorRoot: Component<FieldErrorRootProps> = (props) => {
     "style",
     "slot",
     "isVisible",
+    "name",
+    "form",
+    "showWhenTouched",
   ]);
 
-  const isVisible = () => local.isVisible ?? local.children != null;
+  const hookError = useFieldError(
+    () => local.name,
+    {
+      form: local.form,
+      element: () => rootRef,
+      showWhenTouched: local.showWhenTouched,
+    },
+  );
+
+  const hookMessage = createMemo(() => hookError());
+
+  const isVisible = () => {
+    if (typeof local.isVisible === "boolean") {
+      return local.isVisible;
+    }
+
+    if (hookMessage()) {
+      return true;
+    }
+
+    return local.children != null;
+  };
 
   const content = () => {
     if (typeof local.children === "function") {
       return local.children({ isVisible: isVisible() });
     }
 
-    return local.children;
+    if (local.children != null) {
+      return local.children;
+    }
+
+    return hookMessage();
   };
 
   return (
     <div
+      ref={rootRef}
       {...others}
       class={twMerge("field-error", local.class, local.className)}
       data-slot="field-error"

@@ -1,4 +1,5 @@
 import { For, createSignal } from "solid-js";
+import { z } from "zod";
 import {
   Alert,
   Avatar,
@@ -14,6 +15,7 @@ import {
   FieldError,
   Fieldset,
   Form,
+  useForm,
   DateField,
   ListBox,
   Loading,
@@ -175,6 +177,19 @@ const COMBO_BOX_LONG_ITEMS = Array.from({ length: 40 }, (_, index) => ({
   label: `City ${index + 1}`,
 }));
 
+const FORM_VALIDATION_SCHEMA = z.object({
+  demoName: z.string().min(1, "Name is required."),
+  demoEmail: z
+    .string()
+    .min(1, "Email is required.")
+    .email("Provide a valid email."),
+  demoRole: z.string().min(1, "Role is required."),
+});
+
+const FORM_CONTROLLED_SCHEMA = z.object({
+  controlledEmail: z.string().email("Provide a valid controlled email."),
+});
+
 export default function App() {
   const [selectedFramework, setSelectedFramework] = createSignal("solid");
   const [checkedTerms, setCheckedTerms] = createSignal(false);
@@ -223,8 +238,6 @@ export default function App() {
   const [emailError, setEmailError] = createSignal<string>("Email is required.");
   const [usernameError, setUsernameError] = createSignal<string>("Username is required.");
   const [formSummary, setFormSummary] = createSignal("No submission yet.");
-  const [formNameError, setFormNameError] = createSignal("");
-  const [formEmailError, setFormEmailError] = createSignal("");
   const [selectedComboAnimal, setSelectedComboAnimal] = createSignal<string | null>("cat");
   const [comboInputValue, setComboInputValue] = createSignal("");
   const [comboIsOpen, setComboIsOpen] = createSignal(false);
@@ -235,9 +248,30 @@ export default function App() {
     "Building HeroUI parity components in Solid.",
   );
   const [controlledSearchValue, setControlledSearchValue] = createSignal("analytics");
+  const [controlledFormEmail, setControlledFormEmail] = createSignal("team@pathscale.com");
   const [controlledNumberValue, setControlledNumberValue] = createSignal<number | undefined>(3);
   const [controlledDateValue, setControlledDateValue] = createSignal("2026-04-11");
   const [controlledTimeValue, setControlledTimeValue] = createSignal("13:30");
+  const validatedForm = useForm({
+    schema: FORM_VALIDATION_SCHEMA,
+    initialValues: {
+      demoName: "",
+      demoEmail: "",
+      demoRole: "",
+    },
+    onSubmit: (values) => {
+      setFormSummary(`Validated submit: ${values.demoName} • ${values.demoEmail} • ${values.demoRole}`);
+    },
+  });
+  const controlledForm = useForm({
+    schema: FORM_CONTROLLED_SCHEMA,
+    initialValues: {
+      controlledEmail: controlledFormEmail(),
+    },
+    onSubmit: (values) => {
+      setFormSummary(`Controlled submit: ${values.controlledEmail}`);
+    },
+  });
 
   return (
     <main class="min-h-screen bg-base-100 text-base-content p-8">
@@ -1066,77 +1100,98 @@ export default function App() {
           <div class="grid gap-4 lg:grid-cols-2">
             <Form
               class="space-y-3 rounded-xl border border-base-300 bg-base-100 p-4"
-              onSubmit={(event) => {
-                event.preventDefault();
-
-                const data = new FormData(event.currentTarget);
-                const name = (data.get("demo-name")?.toString() ?? "").trim();
-                const email = (data.get("demo-email")?.toString() ?? "").trim();
-
-                let valid = true;
-
-                if (!name) {
-                  setFormNameError("Name is required.");
-                  valid = false;
-                } else {
-                  setFormNameError("");
-                }
-
-                if (!email || !email.includes("@")) {
-                  setFormEmailError("Provide a valid email.");
-                  valid = false;
-                } else {
-                  setFormEmailError("");
-                }
-
-                if (!valid) {
-                  setFormSummary("Submission blocked by validation errors.");
-                  return;
-                }
-
-                setFormSummary(`Submitted: ${name} • ${email}`);
-              }}
+              use:validatedForm
             >
               <div class="space-y-1">
-                <Label htmlFor="form-demo-name" isInvalid={Boolean(formNameError())}>
+                <Label htmlFor="form-demo-name">
                   Name
                 </Label>
                 <Input
                   id="form-demo-name"
-                  name="demo-name"
+                  name="demoName"
                   placeholder="Pathscale user"
-                  isInvalid={Boolean(formNameError())}
                   fullWidth
                 />
-                <FieldError isVisible={Boolean(formNameError())}>{formNameError()}</FieldError>
+                <FieldError name="demoName" />
               </div>
 
               <div class="space-y-1">
-                <Label htmlFor="form-demo-email" isInvalid={Boolean(formEmailError())}>
+                <Label htmlFor="form-demo-email">
                   Email
                 </Label>
                 <Input
                   id="form-demo-email"
-                  name="demo-email"
+                  name="demoEmail"
                   type="email"
                   placeholder="name@email.com"
-                  isInvalid={Boolean(formEmailError())}
                   fullWidth
                 />
                 <Description>We only use this for account notifications.</Description>
-                <FieldError isVisible={Boolean(formEmailError())}>{formEmailError()}</FieldError>
+                <FieldError name="demoEmail" />
+              </div>
+
+              <div class="space-y-1">
+                <Label htmlFor="form-demo-role">
+                  Role
+                </Label>
+                <Input
+                  id="form-demo-role"
+                  name="demoRole"
+                  placeholder="Engineer"
+                  fullWidth
+                />
+                <FieldError name="demoRole" />
               </div>
 
               <Button type="submit">Submit</Button>
             </Form>
 
-            <Form class="space-y-3 rounded-xl border border-base-300 bg-base-100 p-4">
-              <Label htmlFor="form-basic-notes">Basic Native Form</Label>
-              <TextArea id="form-basic-notes" name="notes" rows={4} placeholder="Write details..." />
+            <Form
+              class="space-y-3 rounded-xl border border-base-300 bg-base-100 p-4"
+              use:controlledForm
+            >
+              <Label htmlFor="form-controlled-email">Controlled Field</Label>
+              <Input
+                id="form-controlled-email"
+                name="controlledEmail"
+                value={controlledFormEmail()}
+                onInput={(event) => {
+                  const nextValue = event.currentTarget.value;
+                  setControlledFormEmail(nextValue);
+                  controlledForm.setFieldValue("controlledEmail", nextValue);
+                }}
+                placeholder="team@pathscale.com"
+                fullWidth
+              />
+              <Description>
+                This input is controlled by local state while validation comes from the form hook.
+              </Description>
+              <FieldError name="controlledEmail" />
+
+              <div class="flex flex-wrap gap-2">
+                <Button
+                  type="button"
+                  size="sm"
+                  variant="outline"
+                  onClick={() => {
+                    const nextValue = "hello@pathscale.com";
+                    setControlledFormEmail(nextValue);
+                    controlledForm.setFieldValue("controlledEmail", nextValue);
+                  }}
+                >
+                  Autofill
+                </Button>
+                <Button type="submit" size="sm">
+                  Submit Controlled
+                </Button>
+              </div>
+            </Form>
+
+            <Form class="space-y-3 rounded-xl border border-base-300 bg-base-100 p-4 lg:col-span-2">
+              <Label htmlFor="form-basic-notes">Uncontrolled Native Form</Label>
+              <TextArea id="form-basic-notes" name="notes" rows={3} placeholder="Write details..." />
               <Description>This example keeps native browser behavior unchanged.</Description>
-              <Button type="submit" variant="outline">
-                Native submit
-              </Button>
+              <Button type="submit" variant="outline">Native submit</Button>
             </Form>
           </div>
 

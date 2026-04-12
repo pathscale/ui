@@ -187,11 +187,26 @@ export type {
   FieldGroupProps,
   FieldsetActionsProps,
 } from "./components/fieldset";
-export { default as Form, FormRoot } from "./components/form";
+export {
+  default as Form,
+  FormRoot,
+  useForm,
+  useField,
+  useFieldError,
+  useFieldMeta,
+} from "./components/form";
 export { useDesktop } from "./components/utils";
 export type {
   FormProps,
   FormRootProps,
+  FormController,
+  FormDirective,
+  FormPathQuery,
+  UseFormOptions,
+  FieldName,
+  UseFieldOptions,
+  UseFieldMetaResult,
+  UseFieldResult,
 } from "./components/form";
 export { default as Grid } from "./components/grid";
 export { default as Hero } from "./components/hero";
