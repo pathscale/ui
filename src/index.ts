@@ -231,6 +231,41 @@ export type {
 } from "./components/immersive-landing";
 export { default as Indicator } from "./components/indicator";
 export { default as Input } from "./components/input";
+export {
+  default as InputGroup,
+  InputGroupRoot,
+  InputGroupInput,
+  InputGroupTextArea,
+  InputGroupPrefix,
+  InputGroupSuffix,
+} from "./components/input-group";
+export type {
+  InputGroupProps,
+  InputGroupRootProps,
+  InputGroupInputProps,
+  InputGroupTextAreaProps,
+  InputGroupPrefixProps,
+  InputGroupSuffixProps,
+  InputGroupVariant,
+} from "./components/input-group";
+export {
+  default as InputOTP,
+  InputOTPRoot,
+  InputOTPGroup,
+  InputOTPSlot,
+  InputOTPSeparator,
+  REGEXP_ONLY_DIGITS,
+  REGEXP_ONLY_CHARS,
+  REGEXP_ONLY_DIGITS_AND_CHARS,
+} from "./components/input-otp";
+export type {
+  InputOTPProps,
+  InputOTPRootProps,
+  InputOTPGroupProps,
+  InputOTPSlotProps,
+  InputOTPSeparatorProps,
+  InputOTPVariant,
+} from "./components/input-otp";
 export { default as Join } from "./components/join";
 export { default as Kbd } from "./components/kbd";
 export { default as Label, LabelRoot } from "./components/label";

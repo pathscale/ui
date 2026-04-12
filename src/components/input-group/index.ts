@@ -1,0 +1,16 @@
+export {
+  default,
+  InputGroup,
+  InputGroupRoot,
+  InputGroupInput,
+  InputGroupTextArea,
+  InputGroupPrefix,
+  InputGroupSuffix,
+  type InputGroupProps,
+  type InputGroupRootProps,
+  type InputGroupInputProps,
+  type InputGroupTextAreaProps,
+  type InputGroupPrefixProps,
+  type InputGroupSuffixProps,
+  type InputGroupVariant,
+} from "./InputGroup";

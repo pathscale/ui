@@ -1,0 +1,17 @@
+export {
+  default,
+  InputOTP,
+  InputOTPRoot,
+  InputOTPGroup,
+  InputOTPSlot,
+  InputOTPSeparator,
+  REGEXP_ONLY_DIGITS,
+  REGEXP_ONLY_CHARS,
+  REGEXP_ONLY_DIGITS_AND_CHARS,
+  type InputOTPProps,
+  type InputOTPRootProps,
+  type InputOTPGroupProps,
+  type InputOTPSlotProps,
+  type InputOTPSeparatorProps,
+  type InputOTPVariant,
+} from "./InputOTP";

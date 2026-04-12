@@ -1,0 +1,170 @@
+@layer components {
+  .input-otp {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .input-otp[data-disabled="true"] {
+    cursor: not-allowed;
+    opacity: 0.5;
+  }
+
+  .input-otp__input {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    white-space: nowrap;
+    border: 0;
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  .input-otp__group {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .input-otp__slot {
+    position: relative;
+    display: flex;
+    width: 2.375rem;
+    height: 2.5rem;
+    flex: 1;
+    align-items: center;
+    justify-content: center;
+    border-radius: var(--radius-field, 0.75rem);
+    border: var(--border-width-field, 1px) solid var(--color-field-border, var(--color-base-300));
+    background-color: var(--color-field, var(--color-base-100));
+    color: var(--color-field-foreground, var(--color-base-content));
+    font-size: 0.875rem;
+    font-weight: 600;
+    line-height: 1.25rem;
+    box-shadow:
+      0 1px 0 color-mix(in oklab, var(--color-base-content) 8%, transparent),
+      0 1px 0 color-mix(in oklab, var(--color-base-100) 60%, transparent) inset;
+    outline: none;
+    transition:
+      background-color 150ms var(--ease-smooth),
+      border-color 150ms var(--ease-smooth),
+      box-shadow 150ms var(--ease-out);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .input-otp__slot {
+      transition: none;
+    }
+  }
+
+  @media (hover: hover) {
+    .input-otp__slot:hover:not([data-disabled="true"]) {
+      background-color: var(--color-field-hover, var(--color-base-200));
+      border-color: var(--color-field-border-hover, color-mix(in oklab, var(--color-base-content) 22%, transparent));
+    }
+  }
+
+  .input-otp__slot[data-active="true"] {
+    z-index: 1;
+    border-color: var(--color-field-border-focus, var(--color-accent));
+    background-color: var(--color-field-focus, var(--color-base-100));
+    box-shadow:
+      0 0 0 3px color-mix(in oklab, var(--color-accent) 22%, transparent),
+      0 1px 0 color-mix(in oklab, var(--color-accent) 24%, transparent);
+  }
+
+  .input-otp__slot[data-filled="true"] {
+    background-color: var(--color-field-focus, var(--color-base-100));
+  }
+
+  .input-otp__slot[data-disabled="true"] {
+    cursor: not-allowed;
+    border-color: var(--color-base-300);
+    background-color: var(--color-base-200);
+    color: color-mix(in oklab, var(--color-base-content) 45%, transparent);
+    box-shadow: none;
+  }
+
+  .input-otp__slot[data-invalid="true"] {
+    border-color: var(--color-field-border-invalid, var(--color-danger));
+    background-color: var(--color-field-focus, var(--color-base-100));
+    box-shadow:
+      0 0 0 3px color-mix(in oklab, var(--color-danger) 20%, transparent),
+      0 1px 0 color-mix(in oklab, var(--color-danger) 20%, transparent);
+  }
+
+  .input-otp__slot-value {
+    font-size: 1.125rem;
+    line-height: 1.5rem;
+    letter-spacing: -0.27px;
+    transform-origin: bottom center;
+    animation: input-otp-slot-value-in 250ms var(--ease-smooth) both;
+  }
+
+  .input-otp__caret {
+    position: absolute;
+    width: 2px;
+    height: 1rem;
+    border-radius: 4px;
+    background-color: var(--color-field-placeholder, color-mix(in oklab, var(--color-base-content) 45%, transparent));
+    animation: input-otp-caret-blink 1.1s step-end infinite;
+  }
+
+  .input-otp__separator {
+    width: 6px;
+    height: 2px;
+    flex-shrink: 0;
+    border-radius: 4px;
+    background-color: var(--color-separator, var(--color-base-300));
+  }
+
+  .input-otp--secondary .input-otp__slot {
+    box-shadow: none;
+    background-color: var(--input-otp-slot-bg, var(--color-base-200));
+  }
+
+  @media (hover: hover) {
+    .input-otp--secondary .input-otp__slot:hover:not([data-disabled="true"]) {
+      background-color: var(--input-otp-slot-bg-hover, var(--color-base-300));
+    }
+  }
+
+  .input-otp--secondary .input-otp__slot[data-active="true"],
+  .input-otp--secondary .input-otp__slot[data-filled="true"] {
+    background-color: var(--input-otp-slot-bg-focus, var(--color-base-200));
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .input-otp__slot-value,
+    .input-otp__caret {
+      animation: none;
+    }
+  }
+
+  @keyframes input-otp-slot-value-in {
+    0% {
+      opacity: 0;
+      transform: translateY(8px) scale(0.8);
+    }
+    100% {
+      opacity: 1;
+      transform: translateY(0) scale(1);
+    }
+  }
+
+  @keyframes input-otp-caret-blink {
+    0%,
+    50% {
+      opacity: 1;
+    }
+    50.01%,
+    100% {
+      opacity: 0;
+    }
+  }
+}

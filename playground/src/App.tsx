@@ -37,6 +37,8 @@ import {
   Description,
   Header,
   Input,
+  InputGroup,
+  InputOTP,
   Label,
   Pagination,
   Radio,
@@ -54,6 +56,7 @@ import {
   Toggle,
   Tooltip,
   ThemeColorPicker,
+  REGEXP_ONLY_DIGITS,
 } from "@pathscale/ui";
 import { TableExamples } from "./examples/TableExamples";
 import { TableHooksExample } from "./examples/TableHooksExample";
@@ -221,6 +224,8 @@ export default function App() {
   const [selectedComboAnimal, setSelectedComboAnimal] = createSignal<string | null>("cat");
   const [comboInputValue, setComboInputValue] = createSignal("");
   const [comboIsOpen, setComboIsOpen] = createSignal(false);
+  const [otpValue, setOtpValue] = createSignal("");
+  const [otpCompletedCode, setOtpCompletedCode] = createSignal("");
   const [controlledTextFieldValue, setControlledTextFieldValue] = createSignal("Pathscale");
   const [controlledTextAreaValue, setControlledTextAreaValue] = createSignal(
     "Building HeroUI parity components in Solid.",
@@ -680,6 +685,119 @@ export default function App() {
               />
               <Description>Character count: {controlledTextAreaValue().length}</Description>
             </TextField>
+          </div>
+        </section>
+
+        <section class="space-y-4 rounded-xl border border-base-300 bg-base-200 p-4">
+          <div>
+            <h2 class="text-sm font-semibold">InputGroup</h2>
+            <p class="text-xs opacity-70">
+              Prefix/suffix composition for input and textarea controls with primary and secondary variants.
+            </p>
+          </div>
+
+          <div class="grid gap-4 lg:grid-cols-2">
+            <div class="space-y-2 rounded-xl border border-base-300 bg-base-100 p-3">
+              <Label htmlFor="input-group-website">Website</Label>
+              <InputGroup fullWidth>
+                <InputGroup.Prefix>
+                  <svg aria-hidden="true" fill="none" viewBox="0 0 24 24" class="size-4">
+                    <circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="2" />
+                    <path d="M3 12h18M12 3c3 3.5 3 14.5 0 18M12 3c-3 3.5-3 14.5 0 18" stroke="currentColor" stroke-width="2" />
+                  </svg>
+                </InputGroup.Prefix>
+                <InputGroup.Input id="input-group-website" value="pathscale" />
+                <InputGroup.Suffix>.io</InputGroup.Suffix>
+              </InputGroup>
+            </div>
+
+            <div class="space-y-2 rounded-xl border border-base-300 bg-base-100 p-3">
+              <Label htmlFor="input-group-notes">Notes</Label>
+              <InputGroup variant="secondary" fullWidth>
+                <InputGroup.Prefix>#</InputGroup.Prefix>
+                <InputGroup.TextArea
+                  id="input-group-notes"
+                  rows={3}
+                  placeholder="Document rollout details..."
+                />
+                <InputGroup.Suffix>
+                  <Button size="sm" variant="ghost">
+                    Save
+                  </Button>
+                </InputGroup.Suffix>
+              </InputGroup>
+            </div>
+          </div>
+        </section>
+
+        <section class="space-y-4 rounded-xl border border-base-300 bg-base-200 p-4">
+          <div>
+            <h2 class="text-sm font-semibold">InputOTP</h2>
+            <p class="text-xs opacity-70">
+              Segmented one-time-password input with keyboard navigation, paste support, and completion callback.
+            </p>
+          </div>
+
+          <div class="grid gap-4 lg:grid-cols-2">
+            <div class="space-y-2 rounded-xl border border-base-300 bg-base-100 p-3">
+              <Label>Verification Code</Label>
+              <InputOTP
+                value={otpValue()}
+                onChange={(next) => {
+                  setOtpValue(next);
+                  if (next.length < 6) setOtpCompletedCode("");
+                }}
+                onComplete={setOtpCompletedCode}
+                maxLength={6}
+                pattern={REGEXP_ONLY_DIGITS}
+                name="otp-demo"
+              >
+                <InputOTP.Group>
+                  <InputOTP.Slot index={0} />
+                  <InputOTP.Slot index={1} />
+                  <InputOTP.Slot index={2} />
+                </InputOTP.Group>
+                <InputOTP.Separator />
+                <InputOTP.Group>
+                  <InputOTP.Slot index={3} />
+                  <InputOTP.Slot index={4} />
+                  <InputOTP.Slot index={5} />
+                </InputOTP.Group>
+              </InputOTP>
+              <Description>
+                Value: {otpValue() || "Empty"} • Complete: {otpCompletedCode() || "No"}
+              </Description>
+            </div>
+
+            <div class="space-y-2 rounded-xl border border-base-300 bg-base-100 p-3">
+              <Label isDisabled>Disabled 4-digit PIN</Label>
+              <InputOTP isDisabled maxLength={4} value="1284">
+                <InputOTP.Group>
+                  <InputOTP.Slot index={0} />
+                  <InputOTP.Slot index={1} />
+                  <InputOTP.Slot index={2} />
+                  <InputOTP.Slot index={3} />
+                </InputOTP.Group>
+              </InputOTP>
+            </div>
+
+            <div class="space-y-2 rounded-xl border border-base-300 bg-base-100 p-3 lg:col-span-2">
+              <Label>Paste Behavior (Secondary Variant)</Label>
+              <InputOTP variant="secondary" maxLength={6} pattern={REGEXP_ONLY_DIGITS} defaultValue="12">
+                <InputOTP.Group>
+                  <InputOTP.Slot index={0} />
+                  <InputOTP.Slot index={1} />
+                  <InputOTP.Slot index={2} />
+                </InputOTP.Group>
+                <InputOTP.Separator />
+                <InputOTP.Group>
+                  <InputOTP.Slot index={3} />
+                  <InputOTP.Slot index={4} />
+                  <InputOTP.Slot index={5} />
+                </InputOTP.Group>
+              </InputOTP>
+              <Description>Click a slot and paste digits to fill remaining segments.</Description>
+            </div>
           </div>
         </section>
 

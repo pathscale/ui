@@ -27,6 +27,9 @@ export type TextFieldRenderProps = {
 export type TextFieldContextValue = {
   variant: Accessor<TextFieldVariant>;
   fullWidth: Accessor<boolean>;
+  isInvalid: Accessor<boolean>;
+  isDisabled: Accessor<boolean>;
+  isRequired: Accessor<boolean>;
 };
 
 export const TextFieldContext = createContext<TextFieldContextValue>();
@@ -76,7 +79,7 @@ const TextFieldRoot: Component<TextFieldRootProps> = (props) => {
   };
 
   return (
-    <TextFieldContext.Provider value={{ variant, fullWidth }}>
+    <TextFieldContext.Provider value={{ variant, fullWidth, isInvalid, isDisabled, isRequired }}>
       <div
         {...others}
         class={twMerge(
