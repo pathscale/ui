@@ -126,7 +126,7 @@ export { default as Form, useFormValidation } from "./components/form";
 export { useDesktop } from "./components/utils";
 export type {
   FormProps,
-  LabelProps,
+  LabelProps as FormLabelProps,
   ValidatedFormProps,
 } from "./components/form";
 export { default as Grid } from "./components/grid";
@@ -168,6 +168,8 @@ export { default as Indicator } from "./components/indicator";
 export { default as Input } from "./components/input";
 export { default as Join } from "./components/join";
 export { default as Kbd } from "./components/kbd";
+export { default as Label, LabelRoot } from "./components/label";
+export type { LabelProps, LabelRootProps } from "./components/label";
 export { default as Link } from "./components/link";
 export {
   default as ListBox,

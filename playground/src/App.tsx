@@ -29,6 +29,7 @@ import {
   Dropdown,
   Header,
   Input,
+  Label,
   Pagination,
   Radio,
   RadioGroup,
@@ -448,6 +449,45 @@ export default function App() {
               </span>
             </Header>
             <p class="text-sm opacity-80">Supports stacked title and metadata content.</p>
+          </div>
+        </section>
+
+        <section class="space-y-4 rounded-xl border border-base-300 bg-base-200 p-4">
+          <div>
+            <h2 class="text-sm font-semibold">Label</h2>
+            <p class="text-xs opacity-70">
+              Semantic form label with required, disabled, and invalid states.
+            </p>
+          </div>
+
+          <div class="space-y-2 rounded-xl border border-base-300 bg-base-100 p-3">
+            <Label>Basic Label</Label>
+            <p class="text-sm opacity-80">Default text styling for field captions.</p>
+          </div>
+
+          <div class="space-y-2 rounded-xl border border-base-300 bg-base-100 p-3">
+            <Label htmlFor="label-email-demo">Email Address</Label>
+            <input
+              id="label-email-demo"
+              type="email"
+              placeholder="you@example.com"
+              class="h-10 w-full rounded-xl border border-base-300 bg-base-100 px-3 text-sm text-base-content outline-none focus:border-accent"
+            />
+          </div>
+
+          <div class="grid gap-3 md:grid-cols-3">
+            <div class="space-y-1 rounded-xl border border-base-300 bg-base-100 p-3">
+              <Label isRequired>Required</Label>
+              <p class="text-xs opacity-70">Shows required indicator.</p>
+            </div>
+            <div class="space-y-1 rounded-xl border border-base-300 bg-base-100 p-3">
+              <Label isInvalid>Invalid</Label>
+              <p class="text-xs opacity-70">Uses danger text styling.</p>
+            </div>
+            <div class="space-y-1 rounded-xl border border-base-300 bg-base-100 p-3">
+              <Label isDisabled>Disabled</Label>
+              <p class="text-xs opacity-70">Disabled visual treatment.</p>
+            </div>
           </div>
         </section>
 

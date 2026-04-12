@@ -1,0 +1,30 @@
+@layer components {
+  .label {
+    font-size: 0.875rem;
+    line-height: 1.25rem;
+    font-weight: 500;
+    color: var(--color-foreground);
+  }
+
+  .label--required::after,
+  [data-required="true"]:not([role="group"]):not([role="radiogroup"]):not([role="checkboxgroup"])
+    > .label::after,
+  [data-required="true"]:not([data-slot="radio"]):not([data-slot="checkbox"]) > .label::after {
+    margin-inline-start: 0.125rem;
+    color: var(--color-danger);
+    content: "*";
+  }
+
+  .label--disabled,
+  [data-disabled="true"] .label {
+    opacity: var(--disabled-opacity, 0.5);
+    cursor: var(--cursor-disabled, not-allowed);
+    pointer-events: none;
+  }
+
+  .label--invalid,
+  [data-invalid="true"] .label,
+  [aria-invalid="true"] .label {
+    color: var(--color-danger);
+  }
+}
