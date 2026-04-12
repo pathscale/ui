@@ -7,7 +7,7 @@ import {
 } from "solid-js";
 import { twMerge } from "tailwind-merge";
 import { clsx } from "clsx";
-import { useDesktop } from "../utils";
+import { useDesktop } from "../../hooks/layout";
 
 import type { IComponentBaseProps } from "../types";
 

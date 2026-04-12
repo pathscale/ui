@@ -1,7 +1,8 @@
-import { createSignal, onCleanup, onMount, type JSX } from "solid-js";
+import type { JSX } from "solid-js";
 import { Dynamic } from "solid-js/web";
 import { breakpoints } from "./types";
 import type { ResponsiveProp } from "./types";
+export { useDesktop } from "../hooks/layout";
 
 function isJSXElement(node: unknown): node is JSX.Element {
   return typeof node === "object" && node !== null;
@@ -57,24 +58,4 @@ export function mapResponsiveProp<T extends string | boolean>(
     const className = classMap[String(value)];
     return bp === "base" ? [className] : [`${bp}:${className}`];
   });
-}
-
-export function useDesktop(breakpoint = 1024) {
-  const [isDesktop, setIsDesktop] = createSignal(false);
-
-  const checkIfDesktop = () => {
-    const width = window.innerWidth;
-    setIsDesktop(width >= breakpoint);
-  };
-
-  onMount(() => {
-    checkIfDesktop();
-    window.addEventListener("resize", checkIfDesktop);
-  });
-
-  onCleanup(() => {
-    window.removeEventListener("resize", checkIfDesktop);
-  });
-
-  return isDesktop;
 }

@@ -198,7 +198,7 @@ export {
   useFieldError,
   useFieldMeta,
 } from "./hooks/form";
-export { useDesktop } from "./components/utils";
+export { useDesktop } from "./hooks/layout";
 export type {
   FormProps,
   FormRootProps,
@@ -460,6 +460,20 @@ export type {
   TableSortDirection,
   TableSortDescriptor,
   TableColumnRenderProps,
+} from "./components/table";
+export type { EnhancedTableProps } from "./components/table/EnhancedTable";
+export {
+  useTableModel,
+  useTableSorting,
+  useTablePagination,
+  useTableFiltering,
+  useTableSelection,
+  useTableExpansion,
+  toSortDescriptor,
+  toSortingState,
+  useAnchoredOverlayPosition,
+} from "./hooks/table";
+export type {
   UseTableModelOptions,
   UseTableSortingOptions,
   UseTableSortingResult,
@@ -475,19 +489,7 @@ export type {
   UseTableExpansionOptions,
   UseTableExpansionResult,
   UseAnchoredOverlayPositionOptions,
-} from "./components/table";
-export type { EnhancedTableProps } from "./components/table/EnhancedTable";
-export {
-  useTableModel,
-  useTableSorting,
-  useTablePagination,
-  useTableFiltering,
-  useTableSelection,
-  useTableExpansion,
-  toSortDescriptor,
-  toSortingState,
-  useAnchoredOverlayPosition,
-} from "./components/table";
+} from "./hooks/table";
 export { default as Tag } from "./components/tag";
 export type {
   TagProps,
