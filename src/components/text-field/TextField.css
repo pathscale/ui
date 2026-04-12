@@ -1,0 +1,33 @@
+@layer components {
+  .text-field {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+  }
+
+  .text-field[data-invalid="true"] [data-slot="description"],
+  .text-field[aria-invalid="true"] [data-slot="description"] {
+    display: none;
+  }
+
+  .text-field [data-slot="description"] {
+    padding-inline: 0.25rem;
+  }
+
+  .text-field--full-width {
+    width: 100%;
+  }
+
+  .text-field--full-width [data-slot="input"],
+  .text-field--full-width [data-slot="textarea"],
+  .text-field--full-width [data-slot="input-group"],
+  .text-field--full-width [data-slot="date-input-group"] {
+    width: 100%;
+  }
+
+  .text-field--primary {
+  }
+
+  .text-field--secondary {
+  }
+}

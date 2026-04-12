@@ -106,6 +106,29 @@ export { default as Countdown } from "./components/countdown";
 export { default as Diff } from "./components/diff";
 export { default as Description, DescriptionRoot } from "./components/description";
 export type { DescriptionProps, DescriptionRootProps } from "./components/description";
+export {
+  default as DateField,
+  DateFieldRoot,
+  DateFieldGroup,
+  DateFieldInput,
+  DateFieldInputContainer,
+  DateFieldSegment,
+  DateFieldPrefix,
+  DateFieldSuffix,
+} from "./components/date-field";
+export type {
+  DateFieldProps,
+  DateFieldRootProps,
+  DateFieldGroupProps,
+  DateFieldInputProps,
+  DateFieldInputContainerProps,
+  DateFieldSegmentProps,
+  DateFieldPrefixProps,
+  DateFieldSuffixProps,
+  DateFieldVariant,
+  DateFieldRenderProps,
+  DateFieldSegmentValue,
+} from "./components/date-field";
 export { default as Divider } from "./components/divider";
 export { default as Dock } from "./components/dock";
 export { default as Drawer, DrawerRoot, DrawerTrigger, DrawerBackdrop, DrawerContent, DrawerDialog, DrawerHeader, DrawerHeading, DrawerBody, DrawerFooter, DrawerHandle, DrawerCloseTrigger, DrawerClose } from "./components/drawer";
@@ -127,7 +150,20 @@ export type { GlassPanelProps, GlassPanelBlur } from "./components/glass-panel";
 export { default as Footer } from "./components/footer";
 export type { FooterProps, FooterTitleProps } from "./components/footer";
 export { FormActions, type FormActionsProps } from "./components/form-actions";
-export { Fieldset, type FieldsetProps } from "./components/fieldset";
+export {
+  default as Fieldset,
+  FieldsetRoot,
+  FieldsetLegend,
+  FieldGroup,
+  FieldsetActions,
+} from "./components/fieldset";
+export type {
+  FieldsetProps,
+  FieldsetRootProps,
+  FieldsetLegendProps,
+  FieldGroupProps,
+  FieldsetActionsProps,
+} from "./components/fieldset";
 export { default as Form, useFormValidation } from "./components/form";
 export { useDesktop } from "./components/utils";
 export type {
@@ -254,6 +290,24 @@ export { default as Navbar } from "./components/navbar";
 export type { NavbarProps } from "./components/navbar";
 export type { NavbarStackProps } from "./components/navbar/NavbarStack";
 export type { NavbarRowProps } from "./components/navbar/NavbarRow";
+export {
+  default as NumberField,
+  NumberFieldRoot,
+  NumberFieldGroup,
+  NumberFieldInput,
+  NumberFieldIncrementButton,
+  NumberFieldDecrementButton,
+} from "./components/number-field";
+export type {
+  NumberFieldProps,
+  NumberFieldRootProps,
+  NumberFieldGroupProps,
+  NumberFieldInputProps,
+  NumberFieldIncrementButtonProps,
+  NumberFieldDecrementButtonProps,
+  NumberFieldVariant,
+  NumberFieldRenderProps,
+} from "./components/number-field";
 export { default as NoiseBackground } from "./components/noise-background";
 export type { NoiseBackgroundProps } from "./components/noise-background";
 export { default as Pagination } from "./components/pagination";
@@ -277,6 +331,24 @@ export type {
   RatingProps,
 } from "./components/rating";
 export { default as Select } from "./components/select";
+export {
+  default as SearchField,
+  SearchFieldRoot,
+  SearchFieldGroup,
+  SearchFieldInput,
+  SearchFieldSearchIcon,
+  SearchFieldClearButton,
+} from "./components/search-field";
+export type {
+  SearchFieldProps,
+  SearchFieldRootProps,
+  SearchFieldGroupProps,
+  SearchFieldInputProps,
+  SearchFieldSearchIconProps,
+  SearchFieldClearButtonProps,
+  SearchFieldVariant,
+  SearchFieldRenderProps,
+} from "./components/search-field";
 export { default as Separator } from "./components/separator";
 export type { SeparatorProps, SeparatorOrientation, SeparatorVariant } from "./components/separator";
 export { ShowcaseSection } from "./components/showcase-section";
@@ -373,7 +445,40 @@ export type {
 } from "./components/tabs";
 export { default as Text, TextRoot } from "./components/text";
 export type { TextProps, TextRootProps, TextSize, TextVariant } from "./components/text";
+export { default as TextField, TextFieldRoot, TextFieldContext } from "./components/text-field";
+export type {
+  TextFieldProps,
+  TextFieldRootProps,
+  TextFieldVariant,
+  TextFieldRenderProps,
+  TextFieldContextValue,
+} from "./components/text-field";
+export { default as TextArea, TextAreaRoot } from "./components/text-area";
+export type { TextAreaProps, TextAreaRootProps, TextAreaVariant } from "./components/text-area";
 export { default as Textarea } from "./components/textarea";
+export {
+  default as TimeField,
+  TimeFieldRoot,
+  TimeFieldGroup,
+  TimeFieldInput,
+  TimeFieldInputContainer,
+  TimeFieldSegment,
+  TimeFieldPrefix,
+  TimeFieldSuffix,
+} from "./components/time-field";
+export type {
+  TimeFieldProps,
+  TimeFieldRootProps,
+  TimeFieldGroupProps,
+  TimeFieldInputProps,
+  TimeFieldInputContainerProps,
+  TimeFieldSegmentProps,
+  TimeFieldPrefixProps,
+  TimeFieldSuffixProps,
+  TimeFieldVariant,
+  TimeFieldRenderProps,
+  TimeFieldSegmentValue,
+} from "./components/time-field";
 export {
   SizePicker,
   createSizeStore,

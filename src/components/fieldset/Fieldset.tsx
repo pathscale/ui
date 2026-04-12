@@ -1,35 +1,25 @@
-import { type JSX, splitProps, Show, createUniqueId } from "solid-js";
+import "./Fieldset.css";
+import { splitProps, type Component, type JSX, type ParentComponent } from "solid-js";
 import { twMerge } from "tailwind-merge";
 
-import type { IComponentBaseProps, ComponentSize } from "../types";
+import type { IComponentBaseProps } from "../types";
 
-export type FieldsetGap = ComponentSize | "none";
+export type FieldsetRootProps = JSX.FieldsetHTMLAttributes<HTMLFieldSetElement> & IComponentBaseProps;
 
-export type FieldsetProps = IComponentBaseProps &
-  JSX.HTMLAttributes<HTMLFieldSetElement> & {
-    legend?: JSX.Element | string;
-    description?: string;
-    disabled?: boolean;
-    gap?: FieldsetGap;
+export type FieldsetLegendProps = JSX.HTMLAttributes<HTMLLegendElement> & IComponentBaseProps;
+
+export type FieldGroupProps = Omit<JSX.HTMLAttributes<HTMLDivElement>, "children"> &
+  IComponentBaseProps & {
+    children?: JSX.Element;
   };
 
-const GAP_MAP: Record<FieldsetGap, string> = {
-  none: "gap-0",
-  xs: "gap-1",
-  sm: "gap-2",
-  md: "gap-4",
-  lg: "gap-6",
-  xl: "gap-8",
-};
+export type FieldsetActionsProps = Omit<JSX.HTMLAttributes<HTMLDivElement>, "children"> &
+  IComponentBaseProps & {
+    children?: JSX.Element;
+  };
 
-const Fieldset = (props: FieldsetProps): JSX.Element => {
-  const descriptionId = createUniqueId();
-
+const FieldsetRoot: ParentComponent<FieldsetRootProps> = (props) => {
   const [local, others] = splitProps(props, [
-    "legend",
-    "description",
-    "disabled",
-    "gap",
     "children",
     "class",
     "className",
@@ -37,31 +27,92 @@ const Fieldset = (props: FieldsetProps): JSX.Element => {
     "style",
   ]);
 
-  const gap = () => local.gap ?? "md";
-
-  const classes = () =>
-    twMerge("flex flex-col", GAP_MAP[gap()], local.class, local.className);
-
   return (
     <fieldset
       {...others}
-      class={classes()}
+      class={twMerge("fieldset", local.class, local.className)}
+      data-slot="fieldset"
       data-theme={local.dataTheme}
       style={local.style}
-      disabled={local.disabled}
-      aria-describedby={local.description ? descriptionId : undefined}
     >
-      <Show when={local.legend}>
-        <legend class="text-lg font-semibold">{local.legend}</legend>
-      </Show>
-      <Show when={local.description}>
-        <p id={descriptionId} class="text-sm text-base-content/60 mt-1">
-          {local.description}
-        </p>
-      </Show>
       {local.children}
     </fieldset>
   );
 };
 
+const FieldsetLegend: ParentComponent<FieldsetLegendProps> = (props) => {
+  const [local, others] = splitProps(props, [
+    "children",
+    "class",
+    "className",
+    "dataTheme",
+    "style",
+  ]);
+
+  return (
+    <legend
+      {...others}
+      class={twMerge("fieldset__legend", local.class, local.className)}
+      data-slot="fieldset-legend"
+      data-theme={local.dataTheme}
+      style={local.style}
+    >
+      {local.children}
+    </legend>
+  );
+};
+
+const FieldGroup: ParentComponent<FieldGroupProps> = (props) => {
+  const [local, others] = splitProps(props, [
+    "children",
+    "class",
+    "className",
+    "dataTheme",
+    "style",
+  ]);
+
+  return (
+    <div
+      {...others}
+      class={twMerge("fieldset__group", local.class, local.className)}
+      data-slot="fieldset-field-group"
+      data-theme={local.dataTheme}
+      style={local.style}
+    >
+      {local.children}
+    </div>
+  );
+};
+
+const FieldsetActions: ParentComponent<FieldsetActionsProps> = (props) => {
+  const [local, others] = splitProps(props, [
+    "children",
+    "class",
+    "className",
+    "dataTheme",
+    "style",
+  ]);
+
+  return (
+    <div
+      {...others}
+      class={twMerge("fieldset__actions", local.class, local.className)}
+      data-slot="fieldset-actions"
+      data-theme={local.dataTheme}
+      style={local.style}
+    >
+      {local.children}
+    </div>
+  );
+};
+
+const Fieldset = Object.assign(FieldsetRoot, {
+  Root: FieldsetRoot,
+  Legend: FieldsetLegend,
+  Group: FieldGroup,
+  Actions: FieldsetActions,
+});
+
 export default Fieldset;
+export { Fieldset, FieldsetRoot, FieldsetLegend, FieldGroup, FieldsetActions };
+export type { FieldsetRootProps as FieldsetProps };

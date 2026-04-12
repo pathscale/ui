@@ -1,0 +1,95 @@
+@layer components {
+  .textarea {
+    width: fit-content;
+    min-height: 2.375rem;
+    border-radius: var(--radius-field, 0.75rem);
+    border: var(--border-width-field, 1px) solid
+      var(--color-field-border, color-mix(in oklab, var(--color-base-content) 16%, transparent));
+    background-color: var(--color-field, var(--color-base-100));
+    padding-block: 0.5rem;
+    padding-inline: 0.75rem;
+    font-size: 0.875rem;
+    line-height: 1.25rem;
+    color: var(--color-field-foreground, var(--color-base-content));
+    box-shadow:
+      0 1px 0 color-mix(in oklab, var(--color-base-content) 8%, transparent),
+      0 1px 0 color-mix(in oklab, var(--color-base-100) 60%, transparent) inset;
+    outline: none;
+    resize: vertical;
+    transition:
+      background-color 150ms var(--ease-smooth),
+      border-color 150ms var(--ease-smooth),
+      box-shadow 150ms var(--ease-out);
+  }
+
+  .textarea::placeholder {
+    color: var(--color-field-placeholder, color-mix(in oklab, var(--color-base-content) 45%, transparent));
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .textarea {
+      transition: none;
+    }
+  }
+
+  @media (hover: hover) {
+    .textarea:hover:not(:focus):not(:focus-visible):not([data-disabled="true"]) {
+      background-color: var(--color-field-hover, var(--color-base-200));
+      border-color: var(--color-field-border-hover, color-mix(in oklab, var(--color-base-content) 22%, transparent));
+    }
+  }
+
+  .textarea:focus,
+  .textarea[data-focused="true"] {
+    border-color: var(--color-field-border-focus, var(--color-accent));
+    background-color: var(--color-field-focus, var(--color-base-100));
+    box-shadow:
+      0 0 0 3px color-mix(in oklab, var(--color-accent) 22%, transparent),
+      0 1px 0 color-mix(in oklab, var(--color-accent) 24%, transparent);
+  }
+
+  .textarea[data-invalid="true"] {
+    border-color: var(--color-field-border-invalid, var(--color-danger));
+    background-color: var(--color-field-focus, var(--color-base-100));
+    box-shadow:
+      0 0 0 3px color-mix(in oklab, var(--color-danger) 20%, transparent),
+      0 1px 0 color-mix(in oklab, var(--color-danger) 20%, transparent);
+  }
+
+  .textarea[data-disabled="true"],
+  .textarea[aria-disabled="true"] {
+    cursor: not-allowed;
+    border-color: color-mix(in oklab, var(--color-base-content) 12%, transparent);
+    background-color: var(--color-base-200);
+    color: color-mix(in oklab, var(--color-base-content) 45%, transparent);
+    box-shadow: none;
+    opacity: var(--disabled-opacity, 0.6);
+  }
+
+  .textarea--primary {
+  }
+
+  .textarea--secondary {
+    box-shadow: none;
+    background-color: var(--textarea-bg, var(--color-default, var(--color-base-200)));
+  }
+
+  @media (hover: hover) {
+    .textarea--secondary:hover:not(:focus):not(:focus-visible):not([data-disabled="true"]) {
+      background-color: var(--textarea-bg-hover, var(--color-default-hover, var(--color-base-300)));
+    }
+  }
+
+  .textarea--secondary:focus,
+  .textarea--secondary[data-focused="true"] {
+    background-color: var(--textarea-bg-focus, var(--color-default, var(--color-base-200)));
+  }
+
+  .textarea--secondary[data-invalid="true"] {
+    background-color: var(--textarea-bg-focus, var(--color-default, var(--color-base-200)));
+  }
+
+  .textarea--full-width {
+    width: 100%;
+  }
+}

@@ -1,0 +1,30 @@
+@layer components {
+  .fieldset {
+    display: flex;
+    flex: 1 1 0;
+    min-width: 0;
+    flex-direction: column;
+    gap: 1.5rem;
+  }
+
+  .fieldset__legend {
+    font-size: 1rem;
+    line-height: 1.5rem;
+    font-weight: 500;
+    color: var(--color-foreground, var(--color-base-content));
+  }
+
+  .fieldset__group {
+    display: flex;
+    width: 100%;
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .fieldset__actions {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding-top: 0.25rem;
+  }
+}

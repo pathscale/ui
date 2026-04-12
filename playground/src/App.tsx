@@ -12,10 +12,14 @@ import {
   EmptyState,
   ErrorMessage,
   FieldError,
+  Fieldset,
+  DateField,
   ListBox,
   Loading,
   Menu,
+  NumberField,
   Progress,
+  SearchField,
   Skeleton,
   Surface,
   Checkbox,
@@ -43,6 +47,9 @@ import {
   TagGroup,
   Tabs,
   Text,
+  TextArea,
+  TextField,
+  TimeField,
   Toggle,
   Tooltip,
   ThemeColorPicker,
@@ -196,6 +203,14 @@ export default function App() {
   const [lastMenuAction, setLastMenuAction] = createSignal<string | null>(null);
   const [emailError, setEmailError] = createSignal<string>("Email is required.");
   const [usernameError, setUsernameError] = createSignal<string>("Username is required.");
+  const [controlledTextFieldValue, setControlledTextFieldValue] = createSignal("Pathscale");
+  const [controlledTextAreaValue, setControlledTextAreaValue] = createSignal(
+    "Building HeroUI parity components in Solid.",
+  );
+  const [controlledSearchValue, setControlledSearchValue] = createSignal("analytics");
+  const [controlledNumberValue, setControlledNumberValue] = createSignal<number | undefined>(3);
+  const [controlledDateValue, setControlledDateValue] = createSignal("2026-04-11");
+  const [controlledTimeValue, setControlledTimeValue] = createSignal("13:30");
 
   return (
     <main class="min-h-screen bg-base-100 text-base-content p-8">
@@ -607,6 +622,209 @@ export default function App() {
               <FieldError isVisible>Password must include at least one special character.</FieldError>
             </div>
           </div>
+        </section>
+
+        <section class="space-y-4 rounded-xl border border-base-300 bg-base-200 p-4">
+          <div>
+            <h2 class="text-sm font-semibold">TextField &amp; TextArea</h2>
+            <p class="text-xs opacity-70">
+              TextField wrapper with Label/Description/Error composition and TextArea variants.
+            </p>
+          </div>
+
+          <div class="grid gap-4 lg:grid-cols-2">
+            <TextField class="rounded-xl border border-base-300 bg-base-100 p-3" fullWidth>
+              <Label htmlFor="text-field-demo-input">Project Name</Label>
+              <input
+                id="text-field-demo-input"
+                data-slot="input"
+                value={controlledTextFieldValue()}
+                onInput={(event) => setControlledTextFieldValue(event.currentTarget.value)}
+                class="h-10 w-full rounded-xl border border-base-300 bg-base-100 px-3 text-sm text-base-content outline-none focus:border-accent"
+                placeholder="Type a project name"
+              />
+              <Description>Current value: {controlledTextFieldValue()}</Description>
+            </TextField>
+
+            <TextField
+              class="rounded-xl border border-base-300 bg-base-100 p-3"
+              variant="secondary"
+              fullWidth
+            >
+              <Label htmlFor="text-field-demo-area">Notes</Label>
+              <TextArea
+                id="text-field-demo-area"
+                rows={4}
+                fullWidth
+                placeholder="Write implementation details..."
+                value={controlledTextAreaValue()}
+                onInput={(event) => setControlledTextAreaValue(event.currentTarget.value)}
+              />
+              <Description>Character count: {controlledTextAreaValue().length}</Description>
+            </TextField>
+          </div>
+        </section>
+
+        <section class="space-y-4 rounded-xl border border-base-300 bg-base-200 p-4">
+          <div>
+            <h2 class="text-sm font-semibold">SearchField</h2>
+            <p class="text-xs opacity-70">
+              Compound field with search icon, clear trigger, and controlled value support.
+            </p>
+          </div>
+
+          <div class="grid gap-4 lg:grid-cols-2">
+            <SearchField
+              value={controlledSearchValue()}
+              onChange={setControlledSearchValue}
+              fullWidth
+              class="rounded-xl border border-base-300 bg-base-100 p-3"
+            >
+              <Label htmlFor="search-field-controlled">Search repositories</Label>
+              <SearchField.Group>
+                <SearchField.SearchIcon />
+                <SearchField.Input id="search-field-controlled" placeholder="Search..." />
+                <SearchField.ClearButton />
+              </SearchField.Group>
+              <Description>Query: {controlledSearchValue() || "Empty"}</Description>
+            </SearchField>
+
+            <SearchField
+              defaultValue="billing"
+              variant="secondary"
+              class="rounded-xl border border-base-300 bg-base-100 p-3"
+            >
+              <Label htmlFor="search-field-secondary">Secondary variant</Label>
+              <SearchField.Group>
+                <SearchField.SearchIcon />
+                <SearchField.Input id="search-field-secondary" placeholder="Try 'analytics'" />
+                <SearchField.ClearButton />
+              </SearchField.Group>
+            </SearchField>
+          </div>
+        </section>
+
+        <section class="space-y-4 rounded-xl border border-base-300 bg-base-200 p-4">
+          <div>
+            <h2 class="text-sm font-semibold">NumberField</h2>
+            <p class="text-xs opacity-70">
+              Numeric input with increment/decrement actions and min/max/step constraints.
+            </p>
+          </div>
+
+          <div class="grid gap-4 lg:grid-cols-2">
+            <NumberField
+              value={controlledNumberValue()}
+              onChange={setControlledNumberValue}
+              min={0}
+              max={10}
+              step={0.5}
+              fullWidth
+              class="rounded-xl border border-base-300 bg-base-100 p-3"
+            >
+              <Label htmlFor="number-field-controlled">Seats</Label>
+              <NumberField.Group>
+                <NumberField.DecrementButton />
+                <NumberField.Input id="number-field-controlled" />
+                <NumberField.IncrementButton />
+              </NumberField.Group>
+              <Description>Selected: {controlledNumberValue() ?? "Empty"}</Description>
+            </NumberField>
+
+            <NumberField
+              defaultValue={5}
+              min={1}
+              max={20}
+              step={1}
+              variant="secondary"
+              class="rounded-xl border border-base-300 bg-base-100 p-3"
+            >
+              <Label htmlFor="number-field-secondary">Retries</Label>
+              <NumberField.Group>
+                <NumberField.DecrementButton />
+                <NumberField.Input id="number-field-secondary" />
+                <NumberField.IncrementButton />
+              </NumberField.Group>
+            </NumberField>
+          </div>
+        </section>
+
+        <section class="space-y-4 rounded-xl border border-base-300 bg-base-200 p-4">
+          <div>
+            <h2 class="text-sm font-semibold">DateField &amp; TimeField</h2>
+            <p class="text-xs opacity-70">
+              Compound date/time fields with grouped input structure and prefix/suffix slots.
+            </p>
+          </div>
+
+          <div class="grid gap-4 lg:grid-cols-2">
+            <DateField
+              value={controlledDateValue()}
+              onChange={setControlledDateValue}
+              fullWidth
+              class="rounded-xl border border-base-300 bg-base-100 p-3"
+            >
+              <Label htmlFor="date-field-controlled">Start Date</Label>
+              <DateField.Group>
+                <DateField.Prefix>
+                  <span class="text-xs opacity-70">Date</span>
+                </DateField.Prefix>
+                <DateField.Input id="date-field-controlled" />
+              </DateField.Group>
+              <Description>Value: {controlledDateValue() || "Empty"}</Description>
+            </DateField>
+
+            <TimeField
+              value={controlledTimeValue()}
+              onChange={setControlledTimeValue}
+              variant="secondary"
+              fullWidth
+              class="rounded-xl border border-base-300 bg-base-100 p-3"
+            >
+              <Label htmlFor="time-field-controlled">Start Time</Label>
+              <TimeField.Group>
+                <TimeField.Input id="time-field-controlled" />
+                <TimeField.Suffix>
+                  <span class="text-xs opacity-70">24h</span>
+                </TimeField.Suffix>
+              </TimeField.Group>
+              <Description>Value: {controlledTimeValue() || "Empty"}</Description>
+            </TimeField>
+          </div>
+        </section>
+
+        <section class="space-y-4 rounded-xl border border-base-300 bg-base-200 p-4">
+          <div>
+            <h2 class="text-sm font-semibold">Fieldset</h2>
+            <p class="text-xs opacity-70">
+              Group related fields with semantic legend, field group, and actions areas.
+            </p>
+          </div>
+
+          <Fieldset class="rounded-xl border border-base-300 bg-base-100 p-4">
+            <Fieldset.Legend>Profile Settings</Fieldset.Legend>
+            <Fieldset.Group>
+              <TextField fullWidth>
+                <Label htmlFor="fieldset-name">Display Name</Label>
+                <input
+                  id="fieldset-name"
+                  data-slot="input"
+                  class="h-10 w-full rounded-xl border border-base-300 bg-base-100 px-3 text-sm text-base-content outline-none focus:border-accent"
+                  placeholder="Pathscale Team"
+                />
+              </TextField>
+              <TextField fullWidth>
+                <Label htmlFor="fieldset-bio">Bio</Label>
+                <TextArea id="fieldset-bio" rows={3} fullWidth placeholder="Tell us about your team..." />
+              </TextField>
+            </Fieldset.Group>
+            <Fieldset.Actions>
+              <Button size="sm" variant="outline">
+                Cancel
+              </Button>
+              <Button size="sm">Save</Button>
+            </Fieldset.Actions>
+          </Fieldset>
         </section>
 
         <section class="space-y-3 rounded-xl border border-base-300 bg-base-200 p-4">

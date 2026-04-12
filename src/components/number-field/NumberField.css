@@ -1,0 +1,198 @@
+@layer components {
+  .number-field {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+  }
+
+  .number-field[data-invalid="true"] [data-slot="description"],
+  .number-field[aria-invalid="true"] [data-slot="description"] {
+    display: none;
+  }
+
+  .number-field [data-slot="label"] {
+    width: fit-content;
+  }
+
+  .number-field [data-slot="description"] {
+    padding-inline: 0.25rem;
+  }
+
+  .number-field__group {
+    display: grid;
+    grid-template-columns: 2.5rem 1fr 2.5rem;
+    align-items: center;
+    height: 2.25rem;
+    overflow: hidden;
+    border-radius: var(--radius-field, 0.75rem);
+    border: var(--border-width-field, 1px) solid
+      var(--color-field-border, color-mix(in oklab, var(--color-base-content) 16%, transparent));
+    background-color: var(--color-field, var(--color-base-100));
+    color: var(--color-field-foreground, var(--color-base-content));
+    box-shadow:
+      0 1px 0 color-mix(in oklab, var(--color-base-content) 8%, transparent),
+      0 1px 0 color-mix(in oklab, var(--color-base-100) 60%, transparent) inset;
+    outline: none;
+    transition:
+      background-color 150ms var(--ease-smooth),
+      border-color 150ms var(--ease-smooth),
+      box-shadow 150ms var(--ease-out);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .number-field__group {
+      transition: none;
+    }
+  }
+
+  @media (hover: hover) {
+    .number-field__group:hover:not(:focus-within):not([data-disabled="true"]) {
+      background-color: var(--color-field-hover, var(--color-base-200));
+      border-color: var(--color-field-border-hover, color-mix(in oklab, var(--color-base-content) 22%, transparent));
+    }
+  }
+
+  .number-field__group:focus-within,
+  .number-field__group[data-focus-within="true"] {
+    border-color: var(--color-field-border-focus, var(--color-accent));
+    background-color: var(--color-field-focus, var(--color-base-100));
+    box-shadow:
+      0 0 0 3px color-mix(in oklab, var(--color-accent) 22%, transparent),
+      0 1px 0 color-mix(in oklab, var(--color-accent) 24%, transparent);
+  }
+
+  .number-field__group[data-invalid="true"] {
+    border-color: var(--color-field-border-invalid, var(--color-danger));
+    background-color: var(--color-field-focus, var(--color-base-100));
+    box-shadow:
+      0 0 0 3px color-mix(in oklab, var(--color-danger) 20%, transparent),
+      0 1px 0 color-mix(in oklab, var(--color-danger) 20%, transparent);
+  }
+
+  .number-field__group[data-disabled="true"],
+  .number-field__group[aria-disabled="true"] {
+    cursor: not-allowed;
+    background-color: var(--color-base-200);
+    color: color-mix(in oklab, var(--color-base-content) 45%, transparent);
+    opacity: var(--disabled-opacity, 0.6);
+    box-shadow: none;
+  }
+
+  .number-field__input {
+    min-width: 0;
+    border: 0;
+    border-radius: 0;
+    background: transparent;
+    padding-block: 0.5rem;
+    padding-inline: 0.75rem;
+    font-size: 0.875rem;
+    line-height: 1.25rem;
+    color: inherit;
+    outline: none;
+    box-shadow: none;
+    text-align: center;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .number-field__input::placeholder {
+    color: var(--color-field-placeholder, color-mix(in oklab, var(--color-base-content) 45%, transparent));
+  }
+
+  .number-field__input:focus,
+  .number-field__input:focus-visible {
+    outline: none;
+  }
+
+  .number-field__increment-button,
+  .number-field__decrement-button {
+    display: flex;
+    width: 2.5rem;
+    height: 100%;
+    align-items: center;
+    justify-content: center;
+    border: 0;
+    background: transparent;
+    color: inherit;
+    cursor: var(--cursor-interactive, pointer);
+    outline: none;
+    transition:
+      background-color 150ms var(--ease-smooth),
+      border-color 150ms var(--ease-smooth),
+      transform 150ms var(--ease-out);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .number-field__increment-button,
+    .number-field__decrement-button {
+      transition: none;
+    }
+  }
+
+  .number-field__increment-button {
+    border-inline-start: var(--border-width-field, 1px) solid
+      color-mix(in oklab, var(--color-field-placeholder, var(--color-base-content)) 25%, transparent);
+  }
+
+  .number-field__decrement-button {
+    border-inline-end: var(--border-width-field, 1px) solid
+      color-mix(in oklab, var(--color-field-placeholder, var(--color-base-content)) 25%, transparent);
+  }
+
+  @media (hover: hover) {
+    .number-field__increment-button:hover:not(:disabled),
+    .number-field__decrement-button:hover:not(:disabled) {
+      background-color: color-mix(in oklab, var(--color-base-content) 7%, transparent);
+    }
+  }
+
+  .number-field__increment-button:active:not(:disabled),
+  .number-field__increment-button[data-pressed="true"],
+  .number-field__decrement-button:active:not(:disabled),
+  .number-field__decrement-button[data-pressed="true"] {
+    background-color: color-mix(in oklab, var(--color-base-content) 10%, transparent);
+    transform: scale(0.97);
+  }
+
+  .number-field__increment-button:disabled,
+  .number-field__decrement-button:disabled,
+  .number-field__increment-button[data-disabled="true"],
+  .number-field__decrement-button[data-disabled="true"] {
+    cursor: not-allowed;
+    opacity: 0.6;
+  }
+
+  .number-field__increment-button [data-slot="number-field-increment-button-icon"],
+  .number-field__decrement-button [data-slot="number-field-decrement-button-icon"] {
+    width: 1rem;
+    height: 1rem;
+  }
+
+  .number-field--secondary .number-field__group {
+    box-shadow: none;
+    background-color: var(--number-field-group-bg, var(--color-default, var(--color-base-200)));
+  }
+
+  @media (hover: hover) {
+    .number-field--secondary .number-field__group:hover:not(:focus-within):not([data-disabled="true"]) {
+      background-color: var(--number-field-group-bg-hover, var(--color-default-hover, var(--color-base-300)));
+    }
+  }
+
+  .number-field--secondary .number-field__group:focus-within,
+  .number-field--secondary .number-field__group[data-focus-within="true"] {
+    background-color: var(--number-field-group-bg-focus, var(--color-default, var(--color-base-200)));
+  }
+
+  .number-field--secondary .number-field__group[data-invalid="true"] {
+    border-color: var(--color-field-border-invalid, var(--color-danger));
+    background-color: var(--number-field-group-bg-focus, var(--color-default, var(--color-base-200)));
+  }
+
+  .number-field--full-width {
+    width: 100%;
+  }
+
+  .number-field__group--full-width {
+    width: 100%;
+  }
+}

@@ -1,76 +1,27 @@
-import "./textarea.css";
-import { splitProps, type JSX } from "solid-js";
+import { splitProps, type Component } from "solid-js";
 import { twMerge } from "tailwind-merge";
-import { clsx } from "clsx";
 
-import type {
-  ComponentColor,
-  ComponentSize,
-  IComponentBaseProps,
-} from "../types";
+import {
+  TextArea,
+  TextAreaRoot,
+  type TextAreaProps as BaseTextAreaProps,
+  type TextAreaRootProps as BaseTextAreaRootProps,
+  type TextAreaVariant as BaseTextAreaVariant,
+} from "../text-area";
 
-type TextareaBaseProps = {
-  color?: ComponentColor;
-  size?: ComponentSize;
-  dataTheme?: string;
-  class?: string;
-  className?: string;
-  style?: JSX.CSSProperties;
-  resize?: "none" | "x" | "y" | "both";
+export type TextareaVariant = BaseTextAreaVariant;
+export type TextareaRootProps = BaseTextAreaRootProps;
+export type TextareaProps = BaseTextAreaProps;
+
+const TextareaRoot: Component<TextareaRootProps> = (props) => {
+  const [local, others] = splitProps(props, ["class", "className"]);
+
+  return <TextAreaRoot {...others} class={twMerge(local.class, local.className)} />;
 };
 
-export type TextareaProps = TextareaBaseProps &
-  IComponentBaseProps &
-  Omit<
-    JSX.TextareaHTMLAttributes<HTMLTextAreaElement>,
-    keyof TextareaBaseProps
-  >;
-
-const Textarea = (props: TextareaProps): JSX.Element => {
-  const [local, others] = splitProps(props, [
-    "color",
-    "size",
-    "dataTheme",
-    "class",
-    "className",
-    "style",
-    "resize",
-  ]);
-
-  const classes = () =>
-    twMerge(
-      "textarea",
-      local.class,
-      local.className,
-      clsx({
-        "textarea-xl": local.size === "xl",
-        "textarea-lg": local.size === "lg",
-        "textarea-md": local.size === "md",
-        "textarea-sm": local.size === "sm",
-        "textarea-xs": local.size === "xs",
-        "textarea-primary": local.color === "primary",
-        "textarea-secondary": local.color === "secondary",
-        "textarea-accent": local.color === "accent",
-        "textarea-ghost": local.color === "ghost",
-        "textarea-info": local.color === "info",
-        "textarea-success": local.color === "success",
-        "textarea-warning": local.color === "warning",
-        "textarea-error": local.color === "error",
-        "resize-y": local.resize === "y",
-        "resize-x": local.resize === "x",
-        "resize-none": local.resize === "none",
-        "resize-both": local.resize === "both",
-      }),
-    );
-
-  return (
-    <textarea
-      {...others}
-      data-theme={local.dataTheme}
-      class={classes()}
-      style={local.style}
-    />
-  );
-};
+const Textarea = Object.assign(TextareaRoot, {
+  Root: TextareaRoot,
+});
 
 export default Textarea;
+export { Textarea, TextArea, TextAreaRoot };
