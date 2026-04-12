@@ -131,6 +131,8 @@ export type {
 } from "./components/form";
 export { default as Grid } from "./components/grid";
 export { default as Hero } from "./components/hero";
+export { default as Header, HeaderRoot } from "./components/header";
+export type { HeaderProps, HeaderRootProps } from "./components/header";
 export type {
   HeroContentProps,
   HeroOverlayProps,

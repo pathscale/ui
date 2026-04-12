@@ -27,6 +27,7 @@ import {
   Drawer,
   FloatingDock,
   Dropdown,
+  Header,
   Input,
   Pagination,
   Radio,
@@ -411,6 +412,42 @@ export default function App() {
                 <Text variant="danger">0 critical errors</Text>.
               </p>
             </div>
+          </div>
+        </section>
+
+        <section class="space-y-4 rounded-xl border border-base-300 bg-base-200 p-4">
+          <div>
+            <h2 class="text-sm font-semibold">Header</h2>
+            <p class="text-xs opacity-70">
+              Lightweight section header primitive with muted label styling.
+            </p>
+          </div>
+
+          <div class="space-y-2 rounded-xl border border-base-300 bg-base-100 p-3">
+            <Header>General</Header>
+            <p class="text-sm">Basic header for a grouped content block.</p>
+          </div>
+
+          <div class="space-y-2 rounded-xl border border-base-300 bg-base-100 p-3">
+            <Header class="flex items-center justify-between">
+              <span>Team Members</span>
+              <Button size="sm" variant="ghost">
+                Invite
+              </Button>
+            </Header>
+            <p class="text-sm opacity-80">
+              Header content can include actions while keeping default spacing and typography.
+            </p>
+          </div>
+
+          <div class="space-y-2 rounded-xl border border-base-300 bg-base-100 p-3">
+            <Header class="space-y-0.5">
+              <span class="block">Billing</span>
+              <span class="block text-[11px] opacity-75">
+                Last updated 2 minutes ago
+              </span>
+            </Header>
+            <p class="text-sm opacity-80">Supports stacked title and metadata content.</p>
           </div>
         </section>
 
