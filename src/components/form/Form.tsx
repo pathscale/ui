@@ -1,24 +1,34 @@
-import FormBase from "./FormBase";
-import FormLabel from "./Label";
-import ValidatedForm, { useFormValidation } from "./ValidatedForm";
-import FormField from "./FormField";
-import PasswordField from "./PasswordField";
-import NumberField from "./NumberField";
-import FormDropdown from "./FormDropdown";
+import "./Form.css";
+import { splitProps, type Component, type JSX } from "solid-js";
+import { twMerge } from "tailwind-merge";
 
-export type { FormProps } from "./FormBase";
-export type { ValidatedFormProps } from "./ValidatedForm";
-export type { FormFieldProps } from "./FormField";
-export type { PasswordFieldProps } from "./PasswordField";
-export type { NumberFieldProps } from "./NumberField";
-export type { FormDropdownProps, DropdownOption } from "./FormDropdown";
+import type { IComponentBaseProps } from "../types";
 
-export { useFormValidation };
-export default Object.assign(FormBase, {
-  Label: FormLabel,
-  Validated: ValidatedForm,
-  Field: FormField,
-  Password: PasswordField,
-  Number: NumberField,
-  Dropdown: FormDropdown,
+export type FormRootProps = JSX.FormHTMLAttributes<HTMLFormElement> & IComponentBaseProps;
+
+const FormRoot: Component<FormRootProps> = (props) => {
+  const [local, others] = splitProps(props, [
+    "class",
+    "className",
+    "dataTheme",
+    "style",
+  ]);
+
+  return (
+    <form
+      {...others}
+      class={twMerge("form", local.class, local.className)}
+      data-slot="form"
+      data-theme={local.dataTheme}
+      style={local.style}
+    />
+  );
+};
+
+const Form = Object.assign(FormRoot, {
+  Root: FormRoot,
 });
+
+export default Form;
+export { Form, FormRoot };
+export type { FormRootProps as FormProps };

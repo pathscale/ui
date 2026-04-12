@@ -13,6 +13,7 @@ import {
   ErrorMessage,
   FieldError,
   Fieldset,
+  Form,
   DateField,
   ListBox,
   Loading,
@@ -221,6 +222,9 @@ export default function App() {
   const [lastMenuAction, setLastMenuAction] = createSignal<string | null>(null);
   const [emailError, setEmailError] = createSignal<string>("Email is required.");
   const [usernameError, setUsernameError] = createSignal<string>("Username is required.");
+  const [formSummary, setFormSummary] = createSignal("No submission yet.");
+  const [formNameError, setFormNameError] = createSignal("");
+  const [formEmailError, setFormEmailError] = createSignal("");
   const [selectedComboAnimal, setSelectedComboAnimal] = createSignal<string | null>("cat");
   const [comboInputValue, setComboInputValue] = createSignal("");
   const [comboIsOpen, setComboIsOpen] = createSignal(false);
@@ -1049,6 +1053,94 @@ export default function App() {
               <Button size="sm">Save</Button>
             </Fieldset.Actions>
           </Fieldset>
+        </section>
+
+        <section class="space-y-4 rounded-xl border border-base-300 bg-base-200 p-4">
+          <div>
+            <h2 class="text-sm font-semibold">Form</h2>
+            <p class="text-xs opacity-70">
+              HeroUI-style semantic form wrapper with native submit behavior and field-level validation composition.
+            </p>
+          </div>
+
+          <div class="grid gap-4 lg:grid-cols-2">
+            <Form
+              class="space-y-3 rounded-xl border border-base-300 bg-base-100 p-4"
+              onSubmit={(event) => {
+                event.preventDefault();
+
+                const data = new FormData(event.currentTarget);
+                const name = (data.get("demo-name")?.toString() ?? "").trim();
+                const email = (data.get("demo-email")?.toString() ?? "").trim();
+
+                let valid = true;
+
+                if (!name) {
+                  setFormNameError("Name is required.");
+                  valid = false;
+                } else {
+                  setFormNameError("");
+                }
+
+                if (!email || !email.includes("@")) {
+                  setFormEmailError("Provide a valid email.");
+                  valid = false;
+                } else {
+                  setFormEmailError("");
+                }
+
+                if (!valid) {
+                  setFormSummary("Submission blocked by validation errors.");
+                  return;
+                }
+
+                setFormSummary(`Submitted: ${name} • ${email}`);
+              }}
+            >
+              <div class="space-y-1">
+                <Label htmlFor="form-demo-name" isInvalid={Boolean(formNameError())}>
+                  Name
+                </Label>
+                <Input
+                  id="form-demo-name"
+                  name="demo-name"
+                  placeholder="Pathscale user"
+                  isInvalid={Boolean(formNameError())}
+                  fullWidth
+                />
+                <FieldError isVisible={Boolean(formNameError())}>{formNameError()}</FieldError>
+              </div>
+
+              <div class="space-y-1">
+                <Label htmlFor="form-demo-email" isInvalid={Boolean(formEmailError())}>
+                  Email
+                </Label>
+                <Input
+                  id="form-demo-email"
+                  name="demo-email"
+                  type="email"
+                  placeholder="name@email.com"
+                  isInvalid={Boolean(formEmailError())}
+                  fullWidth
+                />
+                <Description>We only use this for account notifications.</Description>
+                <FieldError isVisible={Boolean(formEmailError())}>{formEmailError()}</FieldError>
+              </div>
+
+              <Button type="submit">Submit</Button>
+            </Form>
+
+            <Form class="space-y-3 rounded-xl border border-base-300 bg-base-100 p-4">
+              <Label htmlFor="form-basic-notes">Basic Native Form</Label>
+              <TextArea id="form-basic-notes" name="notes" rows={4} placeholder="Write details..." />
+              <Description>This example keeps native browser behavior unchanged.</Description>
+              <Button type="submit" variant="outline">
+                Native submit
+              </Button>
+            </Form>
+          </div>
+
+          <p class="text-xs opacity-70">{formSummary()}</p>
         </section>
 
         <section class="space-y-3 rounded-xl border border-base-300 bg-base-200 p-4">

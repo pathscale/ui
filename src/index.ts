@@ -187,12 +187,11 @@ export type {
   FieldGroupProps,
   FieldsetActionsProps,
 } from "./components/fieldset";
-export { default as Form, useFormValidation } from "./components/form";
+export { default as Form, FormRoot } from "./components/form";
 export { useDesktop } from "./components/utils";
 export type {
   FormProps,
-  LabelProps as FormLabelProps,
-  ValidatedFormProps,
+  FormRootProps,
 } from "./components/form";
 export { default as Grid } from "./components/grid";
 export { default as Hero } from "./components/hero";
