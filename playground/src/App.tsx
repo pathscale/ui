@@ -29,6 +29,7 @@ import {
   ColorSwatch,
   ColorSwatchPicker,
   ColorPicker,
+  ComboBox,
   CloseButton,
   Drawer,
   FloatingDock,
@@ -156,6 +157,20 @@ const LISTBOX_LONG_ITEMS = Array.from({ length: 20 }, (_, index) => ({
   label: `List item ${index + 1}`,
 }));
 
+const COMBO_BOX_ANIMALS = [
+  { id: "aardvark", label: "Aardvark" },
+  { id: "cat", label: "Cat" },
+  { id: "dog", label: "Dog" },
+  { id: "kangaroo", label: "Kangaroo" },
+  { id: "panda", label: "Panda" },
+  { id: "snake", label: "Snake", disabled: true },
+] as const;
+
+const COMBO_BOX_LONG_ITEMS = Array.from({ length: 40 }, (_, index) => ({
+  id: `city-${index + 1}`,
+  label: `City ${index + 1}`,
+}));
+
 export default function App() {
   const [selectedFramework, setSelectedFramework] = createSignal("solid");
   const [checkedTerms, setCheckedTerms] = createSignal(false);
@@ -203,6 +218,9 @@ export default function App() {
   const [lastMenuAction, setLastMenuAction] = createSignal<string | null>(null);
   const [emailError, setEmailError] = createSignal<string>("Email is required.");
   const [usernameError, setUsernameError] = createSignal<string>("Username is required.");
+  const [selectedComboAnimal, setSelectedComboAnimal] = createSignal<string | null>("cat");
+  const [comboInputValue, setComboInputValue] = createSignal("");
+  const [comboIsOpen, setComboIsOpen] = createSignal(false);
   const [controlledTextFieldValue, setControlledTextFieldValue] = createSignal("Pathscale");
   const [controlledTextAreaValue, setControlledTextAreaValue] = createSignal(
     "Building HeroUI parity components in Solid.",
@@ -701,6 +719,94 @@ export default function App() {
                 <SearchField.ClearButton />
               </SearchField.Group>
             </SearchField>
+          </div>
+        </section>
+
+        <section class="space-y-4 rounded-xl border border-base-300 bg-base-200 p-4">
+          <div>
+            <h2 class="text-sm font-semibold">ComboBox</h2>
+            <p class="text-xs opacity-70">
+              Searchable selection with input, popover list, keyboard navigation, and manual trigger mode.
+            </p>
+          </div>
+
+          <div class="grid gap-4 lg:grid-cols-2">
+            <ComboBox
+              items={COMBO_BOX_ANIMALS}
+              selectedKey={selectedComboAnimal()}
+              onSelectionChange={setSelectedComboAnimal}
+              fullWidth
+              class="rounded-xl border border-base-300 bg-base-100 p-3"
+            >
+              <Label htmlFor="combo-box-controlled">Favorite Animal</Label>
+              <ComboBox.InputGroup>
+                <ComboBox.Input id="combo-box-controlled" placeholder="Search animals..." />
+                <ComboBox.Trigger />
+              </ComboBox.InputGroup>
+              <ComboBox.Popover>
+                <ComboBox.List />
+              </ComboBox.Popover>
+              <Description>
+                Selected:{" "}
+                {COMBO_BOX_ANIMALS.find((item) => item.id === selectedComboAnimal())?.label ?? "None"}
+              </Description>
+            </ComboBox>
+
+            <ComboBox
+              items={COMBO_BOX_ANIMALS}
+              inputValue={comboInputValue()}
+              onInputChange={setComboInputValue}
+              variant="secondary"
+              allowsCustomValue
+              fullWidth
+              class="rounded-xl border border-base-300 bg-base-100 p-3"
+            >
+              <Label htmlFor="combo-box-filtering">Controlled Input Value</Label>
+              <ComboBox.InputGroup>
+                <ComboBox.Input id="combo-box-filtering" placeholder="Type to filter..." />
+                <ComboBox.Trigger />
+              </ComboBox.InputGroup>
+              <ComboBox.Popover>
+                <ComboBox.List />
+              </ComboBox.Popover>
+              <Description>Input value: {comboInputValue() || "Empty"}</Description>
+            </ComboBox>
+
+            <ComboBox
+              items={COMBO_BOX_ANIMALS}
+              defaultSelectedKey="dog"
+              isDisabled
+              fullWidth
+              class="rounded-xl border border-base-300 bg-base-100 p-3"
+            >
+              <Label htmlFor="combo-box-disabled">Disabled</Label>
+              <ComboBox.InputGroup>
+                <ComboBox.Input id="combo-box-disabled" placeholder="Disabled combobox" />
+                <ComboBox.Trigger />
+              </ComboBox.InputGroup>
+              <ComboBox.Popover>
+                <ComboBox.List />
+              </ComboBox.Popover>
+            </ComboBox>
+
+            <ComboBox
+              items={COMBO_BOX_LONG_ITEMS}
+              isOpen={comboIsOpen()}
+              onOpenChange={setComboIsOpen}
+              menuTrigger="manual"
+              fullWidth
+              class="rounded-xl border border-base-300 bg-base-100 p-3"
+            >
+              <Label htmlFor="combo-box-long-list">Long List (Manual Trigger)</Label>
+              <ComboBox.InputGroup>
+                <ComboBox.Input id="combo-box-long-list" placeholder="Open and browse..." />
+                <ComboBox.Trigger />
+              </ComboBox.InputGroup>
+              <ComboBox.Popover>
+                <ComboBox.List />
+              </ComboBox.Popover>
+              <Description>Popover open: {comboIsOpen() ? "true" : "false"}</Description>
+            </ComboBox>
           </div>
         </section>
 

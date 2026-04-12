@@ -42,6 +42,29 @@ export { default as Chip } from "./components/chip";
 export type { ChipProps, ChipRootProps, ChipLabelProps, ChipVariant, ChipColor, ChipSize } from "./components/chip";
 export { default as CloseButton } from "./components/close-button";
 export type { CloseButtonProps, CloseButtonVariant } from "./components/close-button";
+export {
+  default as ComboBox,
+  ComboBoxRoot,
+  ComboBoxInputGroup,
+  ComboBoxInput,
+  ComboBoxTrigger,
+  ComboBoxPopover,
+  ComboBoxList,
+} from "./components/combo-box";
+export type {
+  ComboBoxProps,
+  ComboBoxRootProps,
+  ComboBoxInputGroupProps,
+  ComboBoxInputProps,
+  ComboBoxTriggerProps,
+  ComboBoxPopoverProps,
+  ComboBoxListProps,
+  ComboBoxListRenderItem,
+  ComboBoxVariant,
+  ComboBoxMenuTrigger,
+  ComboBoxItem,
+  ComboBoxKey,
+} from "./components/combo-box";
 export { default as ColorArea } from "./components/color-area";
 export type { ColorAreaProps, ColorAreaValue } from "./components/color-area";
 export { default as ColorField } from "./components/color-field";
