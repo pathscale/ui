@@ -3,6 +3,7 @@ import { splitProps, type Component, type JSX, type ParentComponent } from "soli
 import { twMerge } from "tailwind-merge";
 
 import type { IComponentBaseProps } from "../types";
+import { CLASSES } from "./Fieldset.classes";
 
 export type FieldsetRootProps = JSX.FieldsetHTMLAttributes<HTMLFieldSetElement> & IComponentBaseProps;
 
@@ -30,7 +31,7 @@ const FieldsetRoot: ParentComponent<FieldsetRootProps> = (props) => {
   return (
     <fieldset
       {...others}
-      class={twMerge("fieldset", local.class, local.className)}
+      class={twMerge(CLASSES.Root.base, local.class, local.className)}
       data-slot="fieldset"
       data-theme={local.dataTheme}
       style={local.style}
@@ -52,7 +53,7 @@ const FieldsetLegend: ParentComponent<FieldsetLegendProps> = (props) => {
   return (
     <legend
       {...others}
-      class={twMerge("fieldset__legend", local.class, local.className)}
+      class={twMerge(CLASSES.Legend.base, local.class, local.className)}
       data-slot="fieldset-legend"
       data-theme={local.dataTheme}
       style={local.style}
@@ -74,7 +75,7 @@ const FieldGroup: ParentComponent<FieldGroupProps> = (props) => {
   return (
     <div
       {...others}
-      class={twMerge("fieldset__group", local.class, local.className)}
+      class={twMerge(CLASSES.Group.base, local.class, local.className)}
       data-slot="fieldset-field-group"
       data-theme={local.dataTheme}
       style={local.style}
@@ -96,7 +97,7 @@ const FieldsetActions: ParentComponent<FieldsetActionsProps> = (props) => {
   return (
     <div
       {...others}
-      class={twMerge("fieldset__actions", local.class, local.className)}
+      class={twMerge(CLASSES.Actions.base, local.class, local.className)}
       data-slot="fieldset-actions"
       data-theme={local.dataTheme}
       style={local.style}

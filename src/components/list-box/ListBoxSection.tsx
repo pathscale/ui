@@ -2,6 +2,7 @@ import { Show, splitProps, type Component, type JSX } from "solid-js";
 import { twMerge } from "tailwind-merge";
 
 import type { IComponentBaseProps } from "../types";
+import { CLASSES } from "./ListBox.classes";
 
 export type ListBoxSectionRootProps = Omit<JSX.HTMLAttributes<HTMLDivElement>, "children"> &
   IComponentBaseProps & {
@@ -26,11 +27,11 @@ const ListBoxSectionRoot: Component<ListBoxSectionRootProps> = (props) => {
       role={local.role ?? "group"}
       data-slot="listbox-section"
       data-theme={local.dataTheme}
-      class={twMerge("list-box-section", local.class, local.className)}
+      class={twMerge(CLASSES.Section.base, local.class, local.className)}
       style={local.style}
     >
       <Show when={local.title}>
-        <span class="list-box-section__title" data-slot="heading">
+        <span class={CLASSES.Section.title} data-slot="heading">
           {local.title}
         </span>
       </Show>

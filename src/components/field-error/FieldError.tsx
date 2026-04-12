@@ -5,6 +5,7 @@ import { twMerge } from "tailwind-merge";
 import type { FormController } from "../../hooks/form";
 import { useFieldError } from "../../hooks/form";
 import type { IComponentBaseProps } from "../types";
+import { CLASSES } from "./FieldError.classes";
 
 export type FieldErrorRenderProps = {
   isVisible: boolean;
@@ -74,7 +75,7 @@ const FieldErrorRoot: Component<FieldErrorRootProps> = (props) => {
     <div
       ref={rootRef}
       {...others}
-      class={twMerge("field-error", local.class, local.className)}
+      class={twMerge(CLASSES.base, local.class, local.className)}
       data-slot="field-error"
       data-visible={isVisible() ? "true" : "false"}
       slot={local.slot ?? "errorMessage"}

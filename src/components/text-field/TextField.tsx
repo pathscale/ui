@@ -10,13 +10,9 @@ import {
 import { twMerge } from "tailwind-merge";
 
 import type { IComponentBaseProps } from "../types";
+import { CLASSES } from "./TextField.classes";
 
 export type TextFieldVariant = "primary" | "secondary";
-
-const VARIANT_CLASS_MAP: Record<TextFieldVariant, string> = {
-  primary: "text-field--primary",
-  secondary: "text-field--secondary",
-};
 
 export type TextFieldRenderProps = {
   isInvalid: boolean;
@@ -83,9 +79,9 @@ const TextFieldRoot: Component<TextFieldRootProps> = (props) => {
       <div
         {...others}
         class={twMerge(
-          "text-field",
-          VARIANT_CLASS_MAP[variant()],
-          fullWidth() && "text-field--full-width",
+          CLASSES.base,
+          CLASSES.variant[variant()],
+          fullWidth() && CLASSES.flag.fullWidth,
           local.class,
           local.className,
         )}

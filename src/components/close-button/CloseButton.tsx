@@ -3,12 +3,9 @@ import { splitProps, type Component, type JSX } from "solid-js";
 import { twMerge } from "tailwind-merge";
 
 import type { IComponentBaseProps } from "../types";
+import { CLASSES } from "./CloseButton.classes";
 
 export type CloseButtonVariant = "default";
-
-const VARIANT_CLASS_MAP: Record<CloseButtonVariant, string> = {
-  default: "close-button--default",
-};
 
 export type CloseButtonProps = Omit<JSX.ButtonHTMLAttributes<HTMLButtonElement>, "disabled"> &
   IComponentBaseProps & {
@@ -45,8 +42,8 @@ const CloseButton: Component<CloseButtonProps> = (props) => {
       type={local.type ?? "button"}
       aria-label={local["aria-label"] ?? "Close"}
       class={twMerge(
-        "close-button",
-        VARIANT_CLASS_MAP[variant()],
+        CLASSES.base,
+        CLASSES.variant[variant()],
         local.class,
         local.className,
       )}
@@ -58,13 +55,19 @@ const CloseButton: Component<CloseButtonProps> = (props) => {
       aria-disabled={disabled() ? "true" : "false"}
     >
       {local.startIcon ? (
-        <span class="close-button__icon close-button__icon--start" data-slot="close-button-start-icon">
+        <span
+          class={twMerge(CLASSES.slot.icon, CLASSES.slot.iconStart)}
+          data-slot="close-button-start-icon"
+        >
           {local.startIcon}
         </span>
       ) : null}
       {local.children}
       {local.endIcon ? (
-        <span class="close-button__icon close-button__icon--end" data-slot="close-button-end-icon">
+        <span
+          class={twMerge(CLASSES.slot.icon, CLASSES.slot.iconEnd)}
+          data-slot="close-button-end-icon"
+        >
           {local.endIcon}
         </span>
       ) : null}

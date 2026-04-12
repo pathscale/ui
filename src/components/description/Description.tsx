@@ -3,6 +3,7 @@ import { splitProps, type Component, type JSX } from "solid-js";
 import { twMerge } from "tailwind-merge";
 
 import type { IComponentBaseProps } from "../types";
+import { CLASSES } from "./Description.classes";
 
 export type DescriptionRootProps = JSX.HTMLAttributes<HTMLSpanElement> & IComponentBaseProps;
 
@@ -19,7 +20,7 @@ const DescriptionRoot: Component<DescriptionRootProps> = (props) => {
   return (
     <span
       {...others}
-      class={twMerge("description", local.class, local.className)}
+      class={twMerge(CLASSES.base, local.class, local.className)}
       data-slot="description"
       slot={local.slot ?? "description"}
       data-theme={local.dataTheme}

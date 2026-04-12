@@ -4,14 +4,10 @@ import { twMerge } from "tailwind-merge";
 
 import type { ButtonSize, ButtonVariant } from "../button";
 import type { IComponentBaseProps } from "../types";
+import { CLASSES } from "./ButtonGroup.classes";
 import { ButtonGroupContext } from "./context";
 
 export type ButtonGroupOrientation = "horizontal" | "vertical";
-
-const ORIENTATION_CLASS_MAP: Record<ButtonGroupOrientation, string> = {
-  horizontal: "button-group--horizontal",
-  vertical: "button-group--vertical",
-};
 
 export type ButtonGroupRootProps = Omit<JSX.HTMLAttributes<HTMLDivElement>, "children"> &
   IComponentBaseProps & {
@@ -55,9 +51,9 @@ const ButtonGroupRoot: ParentComponent<ButtonGroupRootProps> = (props) => {
       <div
         {...others}
         class={twMerge(
-          "button-group",
-          ORIENTATION_CLASS_MAP[orientation()],
-          local.fullWidth && "button-group--full-width",
+          CLASSES.Root.base,
+          CLASSES.Root.orientation[orientation()],
+          local.fullWidth && CLASSES.Root.flag.fullWidth,
           local.class,
           local.className,
         )}
@@ -81,7 +77,7 @@ const ButtonGroupSeparator: Component<ButtonGroupSeparatorProps> = (props) => {
     <span
       {...others}
       aria-hidden="true"
-      class={twMerge("button-group__separator", local.class, local.className)}
+      class={twMerge(CLASSES.Separator.base, local.class, local.className)}
       data-slot="button-group-separator"
       data-theme={local.dataTheme}
       style={local.style}

@@ -10,6 +10,7 @@ import {
 import { twMerge } from "tailwind-merge";
 
 import type { IComponentBaseProps } from "../types";
+import { CLASSES } from "./ListBox.classes";
 import {
   ListBoxContext,
   type ListBoxFocusTarget,
@@ -17,11 +18,6 @@ import {
   type ListBoxSelectionMode,
   type ListBoxVariant,
 } from "./context";
-
-const LIST_BOX_VARIANT_CLASS_MAP: Record<ListBoxVariant, string> = {
-  default: "list-box--default",
-  danger: "list-box--danger",
-};
 
 const normalizeKeys = (keys?: Iterable<string | number>): Set<string> => {
   if (!keys) return new Set();
@@ -311,8 +307,8 @@ const ListBoxRoot: Component<ListBoxRootProps> = (props) => {
         data-selection-mode={selectionMode()}
         data-disabled={isDisabled() ? "true" : "false"}
         class={twMerge(
-          "list-box",
-          LIST_BOX_VARIANT_CLASS_MAP[variant()],
+          CLASSES.Root.base,
+          CLASSES.Root.variant[variant()],
           local.class,
           local.className,
         )}

@@ -3,6 +3,7 @@ import { splitProps, type Component, type JSX } from "solid-js";
 import { twMerge } from "tailwind-merge";
 
 import type { IComponentBaseProps } from "../types";
+import { CLASSES } from "./Header.classes";
 
 export type HeaderRootProps = JSX.HTMLAttributes<HTMLDivElement> & IComponentBaseProps;
 
@@ -18,7 +19,7 @@ const HeaderRoot: Component<HeaderRootProps> = (props) => {
   return (
     <div
       {...others}
-      class={twMerge("header", local.class, local.className)}
+      class={twMerge(CLASSES.base, local.class, local.className)}
       data-slot="header"
       data-theme={local.dataTheme}
       style={local.style}

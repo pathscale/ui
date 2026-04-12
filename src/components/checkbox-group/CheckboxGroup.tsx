@@ -4,14 +4,10 @@ import { twMerge } from "tailwind-merge";
 
 import type { CheckboxVariant } from "../checkbox";
 import type { IComponentBaseProps } from "../types";
+import { CLASSES } from "./CheckboxGroup.classes";
 import { CheckboxGroupContext, type CheckboxGroupContextValue } from "./context";
 
 export type CheckboxGroupVariant = CheckboxVariant;
-
-const VARIANT_CLASS_MAP: Record<CheckboxGroupVariant, string> = {
-  primary: "checkbox-group--primary",
-  secondary: "checkbox-group--secondary",
-};
 
 export type CheckboxGroupProps = Omit<JSX.HTMLAttributes<HTMLDivElement>, "children" | "onChange"> &
   IComponentBaseProps & {
@@ -91,10 +87,10 @@ const CheckboxGroup: Component<CheckboxGroupProps> = (props) => {
         data-disabled={isDisabled() ? "true" : "false"}
         data-invalid={isInvalid() ? "true" : "false"}
         class={twMerge(
-          "checkbox-group",
-          VARIANT_CLASS_MAP[variant()],
-          isDisabled() && "checkbox-group--disabled",
-          isInvalid() && "checkbox-group--invalid",
+          CLASSES.base,
+          CLASSES.variant[variant()],
+          isDisabled() && CLASSES.flag.disabled,
+          isInvalid() && CLASSES.flag.invalid,
           local.class,
           local.className,
         )}
