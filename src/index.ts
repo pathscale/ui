@@ -104,6 +104,8 @@ export type {
 export { default as CopyButton } from "./components/copy-button";
 export { default as Countdown } from "./components/countdown";
 export { default as Diff } from "./components/diff";
+export { default as Description, DescriptionRoot } from "./components/description";
+export type { DescriptionProps, DescriptionRootProps } from "./components/description";
 export { default as Divider } from "./components/divider";
 export { default as Dock } from "./components/dock";
 export { default as Drawer, DrawerRoot, DrawerTrigger, DrawerBackdrop, DrawerContent, DrawerDialog, DrawerHeader, DrawerHeading, DrawerBody, DrawerFooter, DrawerHandle, DrawerCloseTrigger, DrawerClose } from "./components/drawer";

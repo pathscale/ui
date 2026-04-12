@@ -27,6 +27,7 @@ import {
   Drawer,
   FloatingDock,
   Dropdown,
+  Description,
   Header,
   Input,
   Label,
@@ -488,6 +489,42 @@ export default function App() {
               <Label isDisabled>Disabled</Label>
               <p class="text-xs opacity-70">Disabled visual treatment.</p>
             </div>
+          </div>
+        </section>
+
+        <section class="space-y-4 rounded-xl border border-base-300 bg-base-200 p-4">
+          <div>
+            <h2 class="text-sm font-semibold">Description</h2>
+            <p class="text-xs opacity-70">
+              Supporting helper text primitive for form and UI context.
+            </p>
+          </div>
+
+          <div class="space-y-2 rounded-xl border border-base-300 bg-base-100 p-3">
+            <Description>
+              Standalone description text for secondary context and guidance.
+            </Description>
+          </div>
+
+          <div class="space-y-2 rounded-xl border border-base-300 bg-base-100 p-3">
+            <Label htmlFor="description-email-demo">Email Address</Label>
+            <input
+              id="description-email-demo"
+              aria-describedby="description-email-helper"
+              type="email"
+              placeholder="you@example.com"
+              class="h-10 w-full rounded-xl border border-base-300 bg-base-100 px-3 text-sm text-base-content outline-none focus:border-accent"
+            />
+            <Description id="description-email-helper">
+              We&apos;ll only use this to send account updates.
+            </Description>
+          </div>
+
+          <div class="space-y-2 rounded-xl border border-base-300 bg-base-100 p-3">
+            <Label>Project Name</Label>
+            <Description>
+              Use a clear, human-readable name. You can rename it later.
+            </Description>
           </div>
         </section>
 

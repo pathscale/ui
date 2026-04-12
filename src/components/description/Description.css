@@ -1,0 +1,10 @@
+@layer components {
+  .description {
+    font-size: 0.75rem;
+    line-height: 1rem;
+    text-wrap: wrap;
+    overflow-wrap: break-word;
+    word-break: break-word;
+    color: var(--color-muted, color-mix(in oklab, var(--color-base-content) 55%, transparent));
+  }
+}
