@@ -361,6 +361,8 @@ export type {
   TabSeparatorProps,
   TabPanelProps,
 } from "./components/tabs";
+export { default as Text, TextRoot } from "./components/text";
+export type { TextProps, TextRootProps, TextSize, TextVariant } from "./components/text";
 export { default as Textarea } from "./components/textarea";
 export {
   SizePicker,

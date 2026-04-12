@@ -1,0 +1,66 @@
+@layer components {
+  .text {
+    --text-color-default: var(--color-foreground);
+    --text-color-muted: var(
+      --color-muted,
+      color-mix(in oklab, var(--color-base-content) 55%, transparent)
+    );
+    --text-color-success: var(--color-success);
+    --text-color-warning: var(--color-warning);
+    --text-color-danger: var(--color-danger);
+    --text-color: var(--text-color-default);
+    --text-font-size: 1rem;
+    --text-line-height: 1.5rem;
+
+    color: var(--text-color);
+    font-size: var(--text-font-size);
+    line-height: var(--text-line-height);
+    transition-property: color;
+    transition-duration: 200ms;
+  }
+
+  .text[data-size="xs"] {
+    --text-font-size: 0.75rem;
+    --text-line-height: 1rem;
+  }
+
+  .text[data-size="sm"] {
+    --text-font-size: 0.875rem;
+    --text-line-height: 1.25rem;
+  }
+
+  .text[data-size="base"] {
+    --text-font-size: 1rem;
+    --text-line-height: 1.5rem;
+  }
+
+  .text[data-size="lg"] {
+    --text-font-size: 1.125rem;
+    --text-line-height: 1.75rem;
+  }
+
+  .text[data-size="xl"] {
+    --text-font-size: 1.25rem;
+    --text-line-height: 1.75rem;
+  }
+
+  .text[data-variant="default"] {
+    --text-color: var(--text-color-default);
+  }
+
+  .text[data-variant="muted"] {
+    --text-color: var(--text-color-muted);
+  }
+
+  .text[data-variant="success"] {
+    --text-color: var(--text-color-success);
+  }
+
+  .text[data-variant="warning"] {
+    --text-color: var(--text-color-warning);
+  }
+
+  .text[data-variant="danger"] {
+    --text-color: var(--text-color-danger);
+  }
+}

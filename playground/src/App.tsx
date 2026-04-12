@@ -37,6 +37,7 @@ import {
   Tag,
   TagGroup,
   Tabs,
+  Text,
   Toggle,
   Tooltip,
   ThemeColorPicker,
@@ -68,6 +69,8 @@ const CHIP_COLORS = ["default", "primary", "accent", "success", "warning", "dang
 const CARD_VARIANTS = ["default", "flat", "bordered", "shadow"] as const;
 const SURFACE_VARIANTS = ["default", "secondary", "tertiary", "transparent"] as const;
 const SEPARATOR_VARIANTS = ["default", "secondary", "tertiary"] as const;
+const TEXT_SIZES = ["xs", "sm", "base", "lg", "xl"] as const;
+const TEXT_VARIANTS = ["default", "muted", "success", "warning", "danger"] as const;
 
 const TAB_ITEMS = [
   { key: "overview", label: "Overview", content: "Overview content" },
@@ -354,6 +357,59 @@ export default function App() {
                   </div>
                 )}
               </For>
+            </div>
+          </div>
+        </section>
+
+        <section class="space-y-4 rounded-xl border border-base-300 bg-base-200 p-4">
+          <div>
+            <h2 class="text-sm font-semibold">Text</h2>
+            <p class="text-xs opacity-70">
+              HeroUI text primitive with size and tone variants.
+            </p>
+          </div>
+
+          <div class="space-y-2 rounded-xl border border-base-300 bg-base-100 p-3">
+            <Text class="block">Default body copy for general content.</Text>
+            <Text class="block" variant="muted">
+              Muted supporting copy for secondary information.
+            </Text>
+          </div>
+
+          <div class="space-y-3">
+            <p class="text-xs font-semibold uppercase opacity-70">Sizes</p>
+            <div class="space-y-1 rounded-xl border border-base-300 bg-base-100 p-3">
+              <For each={TEXT_SIZES}>
+                {(size) => (
+                  <Text size={size} class="block">
+                    Size {size}: Typography scale example
+                  </Text>
+                )}
+              </For>
+            </div>
+          </div>
+
+          <div class="space-y-3">
+            <p class="text-xs font-semibold uppercase opacity-70">Variants</p>
+            <div class="flex flex-wrap items-center gap-3 rounded-xl border border-base-300 bg-base-100 p-3">
+              <For each={TEXT_VARIANTS}>
+                {(variant) => (
+                  <Text variant={variant} size="sm">
+                    {variant}
+                  </Text>
+                )}
+              </For>
+            </div>
+          </div>
+
+          <div class="space-y-3">
+            <p class="text-xs font-semibold uppercase opacity-70">Inline Usage</p>
+            <div class="rounded-xl border border-base-300 bg-base-100 p-3">
+              <p class="text-sm">
+                Status: <Text variant="success">ready</Text> with{" "}
+                <Text variant="warning">1 pending warning</Text> and{" "}
+                <Text variant="danger">0 critical errors</Text>.
+              </p>
             </div>
           </div>
         </section>
