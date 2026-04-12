@@ -3,6 +3,7 @@ import { splitProps, type Component, type JSX, type ParentComponent } from "soli
 import { twMerge } from "tailwind-merge";
 
 import type { IComponentBaseProps } from "../types";
+import { CLASSES } from "./Card.classes";
 
 export type CardVariant = "default" | "flat" | "bordered" | "shadow";
 
@@ -20,13 +21,6 @@ export type CardRootProps = CardContextlessProps<HTMLDivElement> & {
 export type CardHeaderProps = CardContextlessProps<HTMLDivElement>;
 export type CardBodyProps = CardContextlessProps<HTMLDivElement>;
 export type CardFooterProps = CardContextlessProps<HTMLDivElement>;
-
-const CARD_VARIANT_CLASS: Record<CardVariant, string> = {
-  default: "card--default",
-  flat: "card--flat",
-  bordered: "card--bordered",
-  shadow: "card--shadow",
-};
 
 const invokeEventHandler = (handler: unknown, event: Event) => {
   if (typeof handler === "function") {
@@ -72,10 +66,10 @@ const CardRoot: ParentComponent<CardRootProps> = (props) => {
     <div
       {...others}
       class={twMerge(
-        "card",
-        CARD_VARIANT_CLASS[variant()],
-        local.isHoverable && "card--hoverable",
-        local.isPressable && "card--pressable",
+        CLASSES.Root.base,
+        CLASSES.Root.variant[variant()],
+        local.isHoverable && CLASSES.Root.flag.isHoverable,
+        local.isPressable && CLASSES.Root.flag.isPressable,
         local.class,
         local.className,
       )}
@@ -106,7 +100,7 @@ const CardHeader: Component<CardHeaderProps> = (props) => {
   return (
     <div
       {...others}
-      class={twMerge("card__header", local.class, local.className)}
+      class={twMerge(CLASSES.Header.base, local.class, local.className)}
       data-slot="card-header"
       data-theme={local.dataTheme}
       style={local.style}
@@ -128,7 +122,7 @@ const CardBody: Component<CardBodyProps> = (props) => {
   return (
     <div
       {...others}
-      class={twMerge("card__body", local.class, local.className)}
+      class={twMerge(CLASSES.Body.base, local.class, local.className)}
       data-slot="card-body"
       data-theme={local.dataTheme}
       style={local.style}
@@ -150,7 +144,7 @@ const CardFooter: Component<CardFooterProps> = (props) => {
   return (
     <div
       {...others}
-      class={twMerge("card__footer", local.class, local.className)}
+      class={twMerge(CLASSES.Footer.base, local.class, local.className)}
       data-slot="card-footer"
       data-theme={local.dataTheme}
       style={local.style}

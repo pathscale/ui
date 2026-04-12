@@ -3,14 +3,7 @@ import { splitProps, type Component, type JSX } from "solid-js";
 import { twMerge } from "tailwind-merge";
 
 import type { IComponentBaseProps } from "../types";
-
-type LabelState = "required" | "disabled" | "invalid";
-
-const LABEL_STATE_CLASS_MAP: Record<LabelState, string> = {
-  required: "label--required",
-  disabled: "label--disabled",
-  invalid: "label--invalid",
-};
+import { CLASSES } from "./Label.classes";
 
 export type LabelRootProps = Omit<JSX.LabelHTMLAttributes<HTMLLabelElement>, "for"> &
   IComponentBaseProps & {
@@ -40,10 +33,10 @@ const LabelRoot: Component<LabelRootProps> = (props) => {
       {...others}
       for={local.for ?? local.htmlFor}
       class={twMerge(
-        "label",
-        local.isRequired && LABEL_STATE_CLASS_MAP.required,
-        local.isDisabled && LABEL_STATE_CLASS_MAP.disabled,
-        local.isInvalid && LABEL_STATE_CLASS_MAP.invalid,
+        CLASSES.base,
+        local.isRequired && CLASSES.flag.required,
+        local.isDisabled && CLASSES.flag.disabled,
+        local.isInvalid && CLASSES.flag.invalid,
         local.class,
         local.className,
       )}

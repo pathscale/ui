@@ -13,6 +13,7 @@ import { twMerge } from "tailwind-merge";
 
 import type { IComponentBaseProps } from "../types";
 import type { TagSize, TagVariant } from "../tag";
+import { CLASSES } from "./TagGroup.classes";
 import { TagGroupContext, type TagSelectionMode } from "./context";
 
 const normalizeKeys = (keys?: Iterable<string | number>): Set<string> => {
@@ -142,7 +143,7 @@ const TagGroupRoot: ParentComponent<TagGroupRootProps> = (props) => {
         data-selection-mode={selectionMode()}
         data-disabled={isDisabled() ? "true" : "false"}
         aria-disabled={isDisabled() ? "true" : undefined}
-        class={twMerge("tag-group", local.class, local.className)}
+        class={twMerge(CLASSES.Root.base, local.class, local.className)}
         style={local.style}
       >
         {local.children}
@@ -188,7 +189,7 @@ const TagGroupList: Component<TagGroupListProps> = (props) => {
       aria-multiselectable={group?.selectionMode() === "multiple" ? "true" : undefined}
       data-slot="tag-group-list"
       data-theme={local.dataTheme}
-      class={twMerge("tag-group__list", local.class, local.className)}
+      class={twMerge(CLASSES.List.base, local.class, local.className)}
       style={local.style}
     >
       {renderChildren()}

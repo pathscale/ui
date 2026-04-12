@@ -14,13 +14,9 @@ import { twMerge } from "tailwind-merge";
 
 import CloseButton, { type CloseButtonProps } from "../close-button";
 import type { IComponentBaseProps } from "../types";
+import { CLASSES } from "./SearchField.classes";
 
 export type SearchFieldVariant = "primary" | "secondary";
-
-const VARIANT_CLASS_MAP: Record<SearchFieldVariant, string> = {
-  primary: "search-field--primary",
-  secondary: "search-field--secondary",
-};
 
 type SearchFieldContextValue = {
   value: Accessor<string>;
@@ -156,9 +152,9 @@ const SearchFieldRoot: ParentComponent<SearchFieldRootProps> = (props) => {
       <div
         {...others}
         class={twMerge(
-          "search-field",
-          VARIANT_CLASS_MAP[variant()],
-          fullWidth() && "search-field--full-width",
+          CLASSES.Root.base,
+          CLASSES.Root.variant[variant()],
+          fullWidth() && CLASSES.Root.flag.fullWidth,
           local.class,
           local.className,
         )}
@@ -206,8 +202,8 @@ const SearchFieldGroup: ParentComponent<SearchFieldGroupProps> = (props) => {
     <div
       {...others}
       class={twMerge(
-        "search-field__group",
-        context?.fullWidth() && "search-field__group--full-width",
+        CLASSES.Group.base,
+        context?.fullWidth() && CLASSES.Group.flag.fullWidth,
         local.class,
         local.className,
       )}
@@ -249,7 +245,7 @@ const SearchFieldInput: Component<SearchFieldInputProps> = (props) => {
     <input
       {...others}
       type="search"
-      class={twMerge("search-field__input", local.class, local.className)}
+      class={twMerge(CLASSES.Input.base, local.class, local.className)}
       data-slot="search-field-input"
       data-theme={local.dataTheme}
       style={local.style}
@@ -272,7 +268,7 @@ const SearchFieldSearchIcon: Component<SearchFieldSearchIconProps> = (props) => 
   return (
     <span
       {...others}
-      class={twMerge("search-field__search-icon", local.class, local.className)}
+      class={twMerge(CLASSES.SearchIcon.base, local.class, local.className)}
       data-slot="search-field-search-icon"
       data-theme={local.dataTheme}
       style={local.style}
@@ -298,7 +294,7 @@ const SearchFieldClearButton: Component<SearchFieldClearButtonProps> = (props) =
   return (
     <CloseButton
       {...others}
-      class={twMerge("search-field__clear-button", local.class, local.className)}
+      class={twMerge(CLASSES.ClearButton.base, local.class, local.className)}
       data-slot="search-field-clear-button"
       data-theme={local.dataTheme}
       style={local.style}

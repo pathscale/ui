@@ -4,13 +4,9 @@ import { twMerge } from "tailwind-merge";
 
 import { useTextFieldContext, type TextFieldVariant } from "../text-field";
 import type { IComponentBaseProps } from "../types";
+import { CLASSES } from "./InputGroup.classes";
 
 export type InputGroupVariant = TextFieldVariant;
-
-const VARIANT_CLASS_MAP: Record<InputGroupVariant, string> = {
-  primary: "input-group--primary",
-  secondary: "input-group--secondary",
-};
 
 type InputGroupContextValue = {
   variant: Accessor<InputGroupVariant>;
@@ -123,9 +119,9 @@ const InputGroupRoot: ParentComponent<InputGroupRootProps> = (props) => {
           }
         }}
         class={twMerge(
-          "input-group",
-          VARIANT_CLASS_MAP[variant()],
-          fullWidth() && "input-group--full-width",
+          CLASSES.Root.base,
+          CLASSES.Root.variant[variant()],
+          fullWidth() && CLASSES.Root.flag.fullWidth,
           local.class,
           local.className,
         )}
@@ -163,7 +159,7 @@ const InputGroupInput: Component<InputGroupInputProps> = (props) => {
   return (
     <input
       {...others}
-      class={twMerge("input-group__input", local.class, local.className)}
+      class={twMerge(CLASSES.Input.base, local.class, local.className)}
       data-slot="input-group-input"
       data-theme={local.dataTheme}
       style={local.style}
@@ -193,7 +189,7 @@ const InputGroupTextArea: Component<InputGroupTextAreaProps> = (props) => {
   return (
     <textarea
       {...others}
-      class={twMerge("input-group__input", local.class, local.className)}
+      class={twMerge(CLASSES.Input.base, local.class, local.className)}
       data-slot="input-group-textarea"
       data-theme={local.dataTheme}
       style={local.style}
@@ -210,7 +206,7 @@ const InputGroupPrefix: ParentComponent<InputGroupPrefixProps> = (props) => {
   return (
     <div
       {...others}
-      class={twMerge("input-group__prefix", local.class, local.className)}
+      class={twMerge(CLASSES.Prefix.base, local.class, local.className)}
       data-slot="input-group-prefix"
       data-theme={local.dataTheme}
       style={local.style}
@@ -226,7 +222,7 @@ const InputGroupSuffix: ParentComponent<InputGroupSuffixProps> = (props) => {
   return (
     <div
       {...others}
-      class={twMerge("input-group__suffix", local.class, local.className)}
+      class={twMerge(CLASSES.Suffix.base, local.class, local.className)}
       data-slot="input-group-suffix"
       data-theme={local.dataTheme}
       style={local.style}

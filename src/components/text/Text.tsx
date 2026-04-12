@@ -3,6 +3,7 @@ import { splitProps, type Component, type JSX } from "solid-js";
 import { twMerge } from "tailwind-merge";
 
 import type { IComponentBaseProps } from "../types";
+import { CLASSES } from "./Text.classes";
 
 export type TextSize = "xs" | "sm" | "base" | "lg" | "xl";
 export type TextVariant = "default" | "muted" | "success" | "warning" | "danger";
@@ -31,7 +32,7 @@ const TextRoot: Component<TextRootProps> = (props) => {
   return (
     <span
       {...others}
-      class={twMerge("text", local.class, local.className)}
+      class={twMerge(CLASSES.base, local.class, local.className)}
       data-slot="text"
       data-size={size()}
       data-variant={variant()}

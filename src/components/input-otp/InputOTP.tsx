@@ -17,13 +17,9 @@ import {
 import { twMerge } from "tailwind-merge";
 
 import type { IComponentBaseProps } from "../types";
+import { CLASSES } from "./InputOTP.classes";
 
 export type InputOTPVariant = "primary" | "secondary";
-
-const VARIANT_CLASS_MAP: Record<InputOTPVariant, string> = {
-  primary: "input-otp--primary",
-  secondary: "input-otp--secondary",
-};
 
 export const REGEXP_ONLY_DIGITS = "^\\d+$";
 export const REGEXP_ONLY_CHARS = "^[a-zA-Z]+$";
@@ -334,8 +330,8 @@ const InputOTPRoot: ParentComponent<InputOTPRootProps> = (props) => {
           }
         }}
         class={twMerge(
-          "input-otp",
-          VARIANT_CLASS_MAP[variant()],
+          CLASSES.Root.base,
+          CLASSES.Root.variant[variant()],
           local.class,
           local.className,
         )}
@@ -349,7 +345,7 @@ const InputOTPRoot: ParentComponent<InputOTPRootProps> = (props) => {
       >
         <input
           ref={inputRef}
-          class={twMerge("input-otp__input", local.inputClassName)}
+          class={twMerge(CLASSES.Input.base, local.inputClassName)}
           data-slot="input-otp-input"
           type="text"
           inputMode={local.inputMode}
@@ -388,7 +384,7 @@ const InputOTPGroup: ParentComponent<InputOTPGroupProps> = (props) => {
   return (
     <div
       {...others}
-      class={twMerge("input-otp__group", local.class, local.className)}
+      class={twMerge(CLASSES.Group.base, local.class, local.className)}
       data-slot="input-otp-group"
       data-theme={local.dataTheme}
       style={local.style}
@@ -428,7 +424,7 @@ const InputOTPSlot: Component<InputOTPSlotProps> = (props) => {
   return (
     <div
       {...others}
-      class={twMerge("input-otp__slot", local.class, local.className)}
+      class={twMerge(CLASSES.Slot.base, local.class, local.className)}
       data-slot="input-otp-slot"
       data-active={isActive() ? "true" : undefined}
       data-filled={char().length > 0 ? "true" : undefined}
@@ -439,12 +435,12 @@ const InputOTPSlot: Component<InputOTPSlotProps> = (props) => {
       onMouseDown={handleMouseDown}
     >
       <Show when={char().length > 0}>
-        <div class="input-otp__slot-value" data-slot="input-otp-slot-value">
+        <div class={CLASSES.Slot.value} data-slot="input-otp-slot-value">
           {char()}
         </div>
       </Show>
       <Show when={isActive() && char().length === 0}>
-        <div class="input-otp__caret" data-slot="input-otp-caret" />
+        <div class={CLASSES.Slot.caret} data-slot="input-otp-caret" />
       </Show>
     </div>
   );
@@ -456,7 +452,7 @@ const InputOTPSeparator: ParentComponent<InputOTPSeparatorProps> = (props) => {
   return (
     <div
       {...others}
-      class={twMerge("input-otp__separator", local.class, local.className)}
+      class={twMerge(CLASSES.Separator.base, local.class, local.className)}
       data-slot="input-otp-separator"
       data-theme={local.dataTheme}
       style={local.style}

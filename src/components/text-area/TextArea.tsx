@@ -4,13 +4,9 @@ import { twMerge } from "tailwind-merge";
 
 import { useTextFieldContext, type TextFieldVariant } from "../text-field";
 import type { IComponentBaseProps } from "../types";
+import { CLASSES } from "./TextArea.classes";
 
 export type TextAreaVariant = TextFieldVariant;
-
-const VARIANT_CLASS_MAP: Record<TextAreaVariant, string> = {
-  primary: "textarea--primary",
-  secondary: "textarea--secondary",
-};
 
 export type TextAreaRootProps = Omit<JSX.TextareaHTMLAttributes<HTMLTextAreaElement>, "children"> &
   IComponentBaseProps & {
@@ -44,9 +40,9 @@ const TextAreaRoot: Component<TextAreaRootProps> = (props) => {
     <textarea
       {...others}
       class={twMerge(
-        "textarea",
-        VARIANT_CLASS_MAP[variant()],
-        fullWidth() && "textarea--full-width",
+        CLASSES.base,
+        CLASSES.variant[variant()],
+        fullWidth() && CLASSES.flag.fullWidth,
         local.class,
         local.className,
       )}

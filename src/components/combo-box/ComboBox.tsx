@@ -19,6 +19,7 @@ import {
 import { twMerge } from "tailwind-merge";
 
 import type { IComponentBaseProps } from "../types";
+import { CLASSES } from "./ComboBox.classes";
 
 export type ComboBoxVariant = "primary" | "secondary";
 export type ComboBoxMenuTrigger = "focus" | "input" | "manual";
@@ -68,11 +69,6 @@ type ComboBoxContextValue = {
 };
 
 const ComboBoxContext = createContext<ComboBoxContextValue>();
-
-const VARIANT_CLASS_MAP: Record<ComboBoxVariant, string> = {
-  primary: "combo-box--primary",
-  secondary: "combo-box--secondary",
-};
 
 const invokeEventHandler = <T extends Event>(handler: unknown, event: T) => {
   if (typeof handler === "function") {
@@ -511,9 +507,9 @@ const ComboBoxRoot: ParentComponent<ComboBoxRootProps> = (props) => {
           }
         }}
         class={twMerge(
-          "combo-box",
-          VARIANT_CLASS_MAP[variant()],
-          fullWidth() && "combo-box--full-width",
+          CLASSES.Root.base,
+          CLASSES.Root.variant[variant()],
+          fullWidth() && CLASSES.Root.flag.fullWidth,
           local.class,
           local.className,
         )}
@@ -535,7 +531,10 @@ const ComboBoxRoot: ParentComponent<ComboBoxRootProps> = (props) => {
           <>
             <ComboBoxInputGroup>
               <Show when={local.startIcon}>
-                <span class="combo-box__icon combo-box__icon--start" data-slot="combobox-start-icon">
+                <span
+                  class={twMerge(CLASSES.Icon.base, CLASSES.Icon.start)}
+                  data-slot="combobox-start-icon"
+                >
                   {local.startIcon}
                 </span>
               </Show>
@@ -560,8 +559,8 @@ const ComboBoxInputGroup: ParentComponent<ComboBoxInputGroupProps> = (props) => 
     <div
       {...others}
       class={twMerge(
-        "combo-box__input-group",
-        context?.fullWidth() && "combo-box__input-group--full-width",
+        CLASSES.InputGroup.base,
+        context?.fullWidth() && CLASSES.InputGroup.flag.fullWidth,
         local.class,
         local.className,
       )}
@@ -700,7 +699,7 @@ const ComboBoxInput: Component<ComboBoxInputProps> = (props) => {
       aria-activedescendant={activeOptionId()}
       aria-disabled={context?.isDisabled() ? "true" : undefined}
       aria-invalid={context?.isInvalid() ? "true" : undefined}
-      class={twMerge("combo-box__input", local.class, local.className)}
+      class={twMerge(CLASSES.Input.base, local.class, local.className)}
       data-slot="combobox-input"
       data-theme={local.dataTheme}
       style={local.style}
@@ -738,7 +737,7 @@ const ComboBoxTrigger: Component<ComboBoxTriggerProps> = (props) => {
     <button
       {...others}
       type="button"
-      class={twMerge("combo-box__trigger", local.class, local.className)}
+      class={twMerge(CLASSES.Trigger.base, local.class, local.className)}
       data-slot="combobox-trigger"
       data-open={context?.isOpen() ? "true" : "false"}
       data-theme={local.dataTheme}
@@ -752,14 +751,17 @@ const ComboBoxTrigger: Component<ComboBoxTriggerProps> = (props) => {
       onClick={handleClick}
     >
       {local.startIcon ? (
-        <span class="combo-box__icon combo-box__icon--start" data-slot="combobox-trigger-start-icon">
+        <span
+          class={twMerge(CLASSES.Icon.base, CLASSES.Icon.start)}
+          data-slot="combobox-trigger-start-icon"
+        >
           {local.startIcon}
         </span>
       ) : null}
       {local.children}
       {local.endIcon ? (
         <span
-          class="combo-box__icon combo-box__icon--end combo-box__trigger-icon"
+          class={twMerge(CLASSES.Icon.base, CLASSES.Icon.end, CLASSES.Trigger.icon)}
           data-slot="combobox-trigger-end-icon"
         >
           {local.endIcon}
@@ -776,7 +778,7 @@ const ComboBoxPopover: ParentComponent<ComboBoxPopoverProps> = (props) => {
   return (
     <div
       {...others}
-      class={twMerge("combo-box__popover", local.class, local.className)}
+      class={twMerge(CLASSES.Popover.base, local.class, local.className)}
       data-slot="combobox-popover"
       data-open={context?.isOpen() ? "true" : "false"}
       data-theme={local.dataTheme}
@@ -806,7 +808,7 @@ const ComboBoxList: Component<ComboBoxListProps> = (props) => {
       {...others}
       id={context?.listBoxId}
       role="listbox"
-      class={twMerge("combo-box__list", local.class, local.className)}
+      class={twMerge(CLASSES.List.base, local.class, local.className)}
       data-slot="combobox-list"
       data-theme={local.dataTheme}
       style={local.style}
@@ -815,7 +817,7 @@ const ComboBoxList: Component<ComboBoxListProps> = (props) => {
         when={items().length > 0}
         fallback={
           local.renderEmptyState?.() ?? (
-            <div class="combo-box__empty" data-slot="combobox-empty-state">
+            <div class={CLASSES.List.empty} data-slot="combobox-empty-state">
               No matching options
             </div>
           )
@@ -846,7 +848,7 @@ const ComboBoxList: Component<ComboBoxListProps> = (props) => {
                 data-selected={selected() ? "true" : "false"}
                 data-active={active() ? "true" : "false"}
                 data-disabled={item.disabled ? "true" : "false"}
-                class="combo-box__option"
+                class={CLASSES.Option.base}
                 onMouseDown={(event) => event.preventDefault()}
                 onMouseEnter={() => {
                   if (item.disabled) return;
@@ -857,12 +859,15 @@ const ComboBoxList: Component<ComboBoxListProps> = (props) => {
                   context?.selectKey(item.key);
                 }}
               >
-                <span class="combo-box__option-label">
+                <span class={CLASSES.Option.label}>
                   {typeof local.children === "function" ? local.children(state) : item.textValue}
                 </span>
                 {local.endIcon ? (
-                  <span class="combo-box__option-indicator" aria-hidden="true">
-                    <span class="combo-box__icon combo-box__icon--end" data-slot="combobox-option-end-icon">
+                  <span class={CLASSES.Option.indicator} aria-hidden="true">
+                    <span
+                      class={twMerge(CLASSES.Icon.base, CLASSES.Icon.end)}
+                      data-slot="combobox-option-end-icon"
+                    >
                       {local.endIcon}
                     </span>
                   </span>

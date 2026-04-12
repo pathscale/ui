@@ -13,13 +13,9 @@ import {
 import { twMerge } from "tailwind-merge";
 
 import type { IComponentBaseProps } from "../types";
+import { CLASSES } from "./NumberField.classes";
 
 export type NumberFieldVariant = "primary" | "secondary";
-
-const VARIANT_CLASS_MAP: Record<NumberFieldVariant, string> = {
-  primary: "number-field--primary",
-  secondary: "number-field--secondary",
-};
 
 type NumberFieldContextValue = {
   valueText: Accessor<string>;
@@ -229,9 +225,9 @@ const NumberFieldRoot: ParentComponent<NumberFieldRootProps> = (props) => {
       <div
         {...others}
         class={twMerge(
-          "number-field",
-          VARIANT_CLASS_MAP[variant()],
-          fullWidth() && "number-field--full-width",
+          CLASSES.Root.base,
+          CLASSES.Root.variant[variant()],
+          fullWidth() && CLASSES.Root.flag.fullWidth,
           local.class,
           local.className,
         )}
@@ -273,8 +269,8 @@ const NumberFieldGroup: ParentComponent<NumberFieldGroupProps> = (props) => {
     <div
       {...others}
       class={twMerge(
-        "number-field__group",
-        context?.fullWidth() && "number-field__group--full-width",
+        CLASSES.Group.base,
+        context?.fullWidth() && CLASSES.Group.flag.fullWidth,
         local.class,
         local.className,
       )}
@@ -317,7 +313,7 @@ const NumberFieldInput: Component<NumberFieldInputProps> = (props) => {
       {...others}
       type="text"
       inputmode="decimal"
-      class={twMerge("number-field__input", local.class, local.className)}
+      class={twMerge(CLASSES.Input.base, local.class, local.className)}
       data-slot="number-field-input"
       data-theme={local.dataTheme}
       style={local.style}
@@ -349,7 +345,7 @@ const NumberFieldIncrementButton: Component<NumberFieldIncrementButtonProps> = (
     <button
       {...others}
       type="button"
-      class={twMerge("number-field__increment-button", local.class, local.className)}
+      class={twMerge(CLASSES.IncrementButton.base, local.class, local.className)}
       data-slot="number-field-increment-button"
       data-theme={local.dataTheme}
       style={local.style}
@@ -390,7 +386,7 @@ const NumberFieldDecrementButton: Component<NumberFieldDecrementButtonProps> = (
     <button
       {...others}
       type="button"
-      class={twMerge("number-field__decrement-button", local.class, local.className)}
+      class={twMerge(CLASSES.DecrementButton.base, local.class, local.className)}
       data-slot="number-field-decrement-button"
       data-theme={local.dataTheme}
       style={local.style}

@@ -14,6 +14,7 @@ import { twMerge } from "tailwind-merge";
 
 import type { IComponentBaseProps } from "../types";
 import { MenuContext, type MenuItemVariant, type MenuSelectionMode } from "./context";
+import { CLASSES } from "./Menu.classes";
 
 type MenuItemRenderProps = {
   isSelected: boolean;
@@ -28,11 +29,6 @@ type MenuItemContextValue = {
 };
 
 const MenuItemStateContext = createContext<MenuItemContextValue>();
-
-const MENU_ITEM_VARIANT_CLASS_MAP: Record<MenuItemVariant, string> = {
-  default: "menu-item--default",
-  danger: "menu-item--danger",
-};
 
 const invokeEventHandler = (handler: unknown, event: Event) => {
   if (typeof handler === "function") {
@@ -255,8 +251,8 @@ const MenuItemRoot: ParentComponent<MenuItemRootProps> = (props) => {
         data-selection-mode={selectionMode()}
         data-key={key()}
         class={twMerge(
-          "menu-item",
-          MENU_ITEM_VARIANT_CLASS_MAP[variant()],
+          CLASSES.Item.base,
+          CLASSES.Item.variant[variant()],
           local.class,
           local.className,
         )}
@@ -304,7 +300,7 @@ const MenuItemIndicator: Component<MenuItemIndicatorProps> = (props) => {
       data-theme={local.dataTheme}
       data-type={type()}
       data-visible={renderState().isSelected ? "true" : undefined}
-      class={twMerge("menu-item__indicator", local.class, local.className)}
+      class={twMerge(CLASSES.ItemIndicator.base, local.class, local.className)}
       style={local.style}
     >
       {typeof local.children === "function" ? (
@@ -358,7 +354,7 @@ const MenuItemSubmenuIndicator: Component<MenuItemSubmenuIndicatorProps> = (prop
       aria-hidden="true"
       data-slot="submenu-indicator"
       data-theme={local.dataTheme}
-      class={twMerge("menu-item__indicator menu-item__indicator--submenu", local.class, local.className)}
+      class={twMerge(CLASSES.ItemIndicator.base, CLASSES.ItemIndicator.submenu, local.class, local.className)}
       style={local.style}
     >
       {local.children ?? (

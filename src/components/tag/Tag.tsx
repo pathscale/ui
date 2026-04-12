@@ -16,6 +16,7 @@ import { twMerge } from "tailwind-merge";
 import CloseButton, { type CloseButtonProps } from "../close-button";
 import type { IComponentBaseProps } from "../types";
 import { TagGroupContext } from "../tag-group/context";
+import { CLASSES } from "./Tag.classes";
 
 const invokeEventHandler = (handler: unknown, event: Event) => {
   if (typeof handler === "function") {
@@ -50,17 +51,6 @@ type TagRenderProps = {
   isSelected: boolean;
   isDisabled: boolean;
   allowsRemoving: boolean;
-};
-
-const TAG_SIZE_CLASS_MAP: Record<TagSize, string> = {
-  sm: "tag--sm",
-  md: "tag--md",
-  lg: "tag--lg",
-};
-
-const TAG_VARIANT_CLASS_MAP: Record<TagVariant, string> = {
-  default: "tag--default",
-  surface: "tag--surface",
 };
 
 type TagContextValue = {
@@ -180,9 +170,9 @@ const TagRoot: ParentComponent<TagRootProps> = (props) => {
       <div
         {...others}
         class={twMerge(
-          "tag",
-          TAG_SIZE_CLASS_MAP[size()],
-          TAG_VARIANT_CLASS_MAP[variant()],
+          CLASSES.Root.base,
+          CLASSES.Root.size[size()],
+          CLASSES.Root.variant[variant()],
           local.class,
           local.className,
         )}
@@ -206,7 +196,10 @@ const TagRoot: ParentComponent<TagRootProps> = (props) => {
           fallback={
             <>
               <Show when={local.startIcon}>
-                <span class="tag__icon tag__icon--start" data-slot="tag-start-icon">
+                <span
+                  class={twMerge(CLASSES.slot.icon, CLASSES.slot.iconStart)}
+                  data-slot="tag-start-icon"
+                >
                   {local.startIcon}
                 </span>
               </Show>
@@ -215,7 +208,10 @@ const TagRoot: ParentComponent<TagRootProps> = (props) => {
                 <TagRemoveButton>{local.endIcon}</TagRemoveButton>
               </Show>
               <Show when={!allowsRemoving() && local.endIcon}>
-                <span class="tag__icon tag__icon--end" data-slot="tag-end-icon">
+                <span
+                  class={twMerge(CLASSES.slot.icon, CLASSES.slot.iconEnd)}
+                  data-slot="tag-end-icon"
+                >
                   {local.endIcon}
                 </span>
               </Show>
@@ -260,7 +256,7 @@ const TagRemoveButton: Component<TagRemoveButtonProps> = (props) => {
     <CloseButton
       {...others}
       aria-label={local["aria-label"] ?? "Remove tag"}
-      class={twMerge("tag__remove-button", local.class, local.className)}
+      class={twMerge(CLASSES.slot.removeButton, local.class, local.className)}
       data-slot="tag-remove-button"
       data-theme={local.dataTheme}
       style={local.style}

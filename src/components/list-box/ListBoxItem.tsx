@@ -14,16 +14,12 @@ import { twMerge } from "tailwind-merge";
 
 import type { IComponentBaseProps } from "../types";
 import { ListBoxContext, type ListBoxVariant } from "./context";
+import { CLASSES } from "./ListBox.classes";
 
 type ListBoxItemRenderProps = {
   isSelected: boolean;
   isFocused: boolean;
   isDisabled: boolean;
-};
-
-const LIST_BOX_ITEM_VARIANT_CLASS_MAP: Record<ListBoxVariant, string> = {
-  default: "list-box-item--default",
-  danger: "list-box-item--danger",
 };
 
 const invokeEventHandler = (handler: unknown, event: Event) => {
@@ -221,8 +217,8 @@ const ListBoxItemRoot: ParentComponent<ListBoxItemRootProps> = (props) => {
         data-focus={isFocused() ? "true" : "false"}
         data-key={key()}
         class={twMerge(
-          "list-box-item",
-          LIST_BOX_ITEM_VARIANT_CLASS_MAP[variant()],
+          CLASSES.Item.base,
+          CLASSES.Item.variant[variant()],
           local.class,
           local.className,
         )}
@@ -264,7 +260,7 @@ const ListBoxItemIndicator: Component<ListBoxItemIndicatorProps> = (props) => {
       data-slot="listbox-item-indicator"
       data-theme={local.dataTheme}
       data-visible={renderState().isSelected ? "true" : undefined}
-      class={twMerge("list-box-item__indicator", local.class, local.className)}
+      class={twMerge(CLASSES.ItemIndicator.base, local.class, local.className)}
       style={local.style}
     >
       {typeof local.children === "function" ? (

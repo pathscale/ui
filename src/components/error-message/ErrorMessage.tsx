@@ -3,6 +3,7 @@ import { splitProps, type Component, type JSX } from "solid-js";
 import { twMerge } from "tailwind-merge";
 
 import type { IComponentBaseProps } from "../types";
+import { CLASSES } from "./ErrorMessage.classes";
 
 export type ErrorMessageRootProps = JSX.HTMLAttributes<HTMLSpanElement> & IComponentBaseProps;
 
@@ -19,7 +20,7 @@ const ErrorMessageRoot: Component<ErrorMessageRootProps> = (props) => {
   return (
     <span
       {...others}
-      class={twMerge("error-message", local.class, local.className)}
+      class={twMerge(CLASSES.base, local.class, local.className)}
       data-slot="error-message"
       slot={local.slot ?? "errorMessage"}
       data-theme={local.dataTheme}

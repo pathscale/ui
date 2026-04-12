@@ -10,6 +10,7 @@ import {
 import { twMerge } from "tailwind-merge";
 
 import type { IComponentBaseProps } from "../types";
+import { CLASSES } from "./Menu.classes";
 import {
   MenuContext,
   type MenuFocusTarget,
@@ -301,7 +302,7 @@ const MenuRoot: Component<MenuRootProps> = (props) => {
         data-theme={local.dataTheme}
         data-selection-mode={selectionMode()}
         data-disabled={isDisabled() ? "true" : "false"}
-        class={twMerge("menu", local.class, local.className)}
+        class={twMerge(CLASSES.Root.base, local.class, local.className)}
         style={local.style}
         onKeyDown={handleKeyDown}
       >

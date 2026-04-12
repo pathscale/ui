@@ -3,20 +3,10 @@ import { splitProps, type Component, type JSX } from "solid-js";
 import { twMerge } from "tailwind-merge";
 
 import type { IComponentBaseProps } from "../types";
+import { CLASSES } from "./Separator.classes";
 
 export type SeparatorOrientation = "horizontal" | "vertical";
 export type SeparatorVariant = "default" | "secondary" | "tertiary";
-
-const ORIENTATION_CLASS: Record<SeparatorOrientation, string> = {
-  horizontal: "separator--horizontal",
-  vertical: "separator--vertical",
-};
-
-const VARIANT_CLASS: Record<SeparatorVariant, string> = {
-  default: "separator--default",
-  secondary: "separator--secondary",
-  tertiary: "separator--tertiary",
-};
 
 export type SeparatorProps = Omit<JSX.HTMLAttributes<HTMLDivElement>, "children"> &
   IComponentBaseProps & {
@@ -47,9 +37,9 @@ const Separator: Component<SeparatorProps> = (props) => {
       data-orientation={orientation()}
       data-variant={variant()}
       class={twMerge(
-        "separator",
-        ORIENTATION_CLASS[orientation()],
-        VARIANT_CLASS[variant()],
+        CLASSES.base,
+        CLASSES.orientation[orientation()],
+        CLASSES.variant[variant()],
         local.class,
         local.className,
       )}
