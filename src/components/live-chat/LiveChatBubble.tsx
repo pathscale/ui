@@ -1,9 +1,10 @@
+import "./LiveChat.css";
 import { type Component, type JSX, createSignal, Show, splitProps } from "solid-js";
 import { twMerge } from "tailwind-merge";
-import { clsx } from "clsx";
 import type { IComponentBaseProps } from "../types";
 import LiveChatPanel from "./LiveChatPanel";
 import type { LiveChatPanelProps } from "./LiveChatPanel";
+import { CLASSES } from "./LiveChat.classes";
 
 export interface LiveChatBubbleProps extends IComponentBaseProps {
   /**
@@ -95,14 +96,17 @@ const LiveChatBubble: Component<LiveChatBubbleProps> = (props) => {
 
   const positionClasses = () => {
     const pos = local.position ?? "bottom-right";
-    return pos === "bottom-left" ? "left-4" : "right-4";
+    return pos === "bottom-left"
+      ? CLASSES.bubble.position.left
+      : CLASSES.bubble.position.right;
   };
 
   const buttonClasses = () =>
     twMerge(
-      `fixed bottom-5 z-50 w-12 h-12 sm:w-14 sm:h-14 bg-primary text-primary-content rounded-full shadow-lg hover:shadow-xl active:scale-95 transition-all duration-200 flex items-center justify-center group`,
+      CLASSES.bubble.base,
       positionClasses(),
-      clsx(local.class, local.className)
+      local.class,
+      local.className,
     );
 
   return (
@@ -120,7 +124,7 @@ const LiveChatBubble: Component<LiveChatBubbleProps> = (props) => {
             fallback={
               <svg
                 xmlns="http://www.w3.org/2000/svg"
-                class="w-5 h-5 sm:w-6 sm:h-6"
+                class={CLASSES.bubble.icon}
                 fill="none"
                 viewBox="0 0 24 24"
                 stroke="currentColor"
@@ -136,7 +140,7 @@ const LiveChatBubble: Component<LiveChatBubbleProps> = (props) => {
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"
-              class="w-5 h-5 sm:w-6 sm:h-6"
+              class={CLASSES.bubble.icon}
               fill="none"
               viewBox="0 0 24 24"
               stroke="currentColor"
@@ -153,13 +157,13 @@ const LiveChatBubble: Component<LiveChatBubbleProps> = (props) => {
 
         {/* Unread badge */}
         <Show when={unreadCount() > 0 && !isOpen()}>
-          <span class="absolute -top-1 -right-1 w-5 h-5 bg-error text-error-content text-xs font-bold rounded-full flex items-center justify-center animate-pulse">
+          <span class={CLASSES.bubble.badge}>
             {unreadCount() > 9 ? "9+" : unreadCount()}
           </span>
         </Show>
 
         {/* Ping animation */}
-        <span class="pointer-events-none absolute inset-0 rounded-full bg-primary animate-ping opacity-20 group-hover:opacity-0 transition-opacity" />
+        <span class={CLASSES.bubble.ping} />
       </button>
 
       <Show when={isOpen()}>

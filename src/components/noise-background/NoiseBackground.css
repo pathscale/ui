@@ -1,0 +1,66 @@
+@layer components {
+  .noise-background {
+    position: relative;
+    overflow: hidden;
+    background: var(--color-base-200);
+    backdrop-filter: blur(4px);
+    box-shadow:
+      0 1px 0 0 var(--color-base-300) inset,
+      0 1px 0 0 var(--color-base-100);
+  }
+
+  .noise-background--backdrop-blur::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    backdrop-filter: blur(16px);
+    pointer-events: none;
+  }
+
+  .noise-background__layer {
+    position: absolute;
+    inset: 0;
+  }
+
+  .noise-background__layer--0 {
+    opacity: 0.4;
+  }
+
+  .noise-background__layer--1 {
+    opacity: 0.3;
+  }
+
+  .noise-background__layer--2 {
+    opacity: 0.25;
+  }
+
+  .noise-background__strip {
+    position: absolute;
+    top: 0;
+    inset-inline: 0;
+    height: 0.25rem;
+    opacity: 0.8;
+    filter: blur(4px);
+  }
+
+  .noise-background__noise-wrap {
+    pointer-events: none;
+    position: absolute;
+    inset: 0;
+    overflow: hidden;
+  }
+
+  .noise-background__noise-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    mix-blend-mode: overlay;
+  }
+
+  .noise-background__content {
+    position: relative;
+    z-index: 10;
+  }
+}

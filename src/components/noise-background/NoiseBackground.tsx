@@ -1,7 +1,9 @@
+import "./NoiseBackground.css";
 import { type JSX, onCleanup, onMount, splitProps } from "solid-js";
 import { twMerge } from "tailwind-merge";
 
 import type { IComponentBaseProps } from "../types";
+import { CLASSES } from "./NoiseBackground.classes";
 
 /* ------------------------------------------------------------------ */
 /*  Props                                                             */
@@ -203,13 +205,13 @@ const NoiseBackground = (rawProps: NoiseBackgroundProps): JSX.Element => {
 
   const containerClasses = () =>
     twMerge(
-      "group relative overflow-hidden bg-base-200 backdrop-blur-sm",
-      "shadow-[0px_1px_0px_0px_var(--color-base-300)_inset,0px_1px_0px_0px_var(--color-base-100)]",
+      CLASSES.base,
+      (local.backdropBlur ?? false) && CLASSES.flag.backdropBlur,
       local.containerClass,
     );
 
   const contentClasses = () =>
-    twMerge("relative z-10", local.class, local.className);
+    twMerge(CLASSES.slot.content, local.class, local.className);
 
   return (
     <div
@@ -220,22 +222,18 @@ const NoiseBackground = (rawProps: NoiseBackgroundProps): JSX.Element => {
         "border-radius": borderRadius(),
         ...(typeof local.style === "object" ? local.style : {}),
       }}
-      classList={{
-        "after:absolute after:inset-0 after:h-full after:w-full after:backdrop-blur-lg after:content-['']":
-          local.backdropBlur ?? false,
-      }}
       data-theme={local.dataTheme}
       {...others}
     >
       {/* Moving gradient layers */}
-      <div ref={layer0} class="absolute inset-0 opacity-40" />
-      <div ref={layer1} class="absolute inset-0 opacity-30" />
-      <div ref={layer2} class="absolute inset-0 opacity-25" />
+      <div ref={layer0} class={CLASSES.slot.layer0} />
+      <div ref={layer1} class={CLASSES.slot.layer1} />
+      <div ref={layer2} class={CLASSES.slot.layer2} />
 
       {/* Top gradient strip */}
       <div
         ref={stripEl}
-        class="absolute inset-x-0 top-0 h-1 opacity-80 blur-sm"
+        class={CLASSES.slot.strip}
         style={{
           background: `linear-gradient(to right, ${colors().join(", ")})`,
           "border-radius": `${borderRadius()} ${borderRadius()} 0 0`,
@@ -244,11 +242,11 @@ const NoiseBackground = (rawProps: NoiseBackgroundProps): JSX.Element => {
 
       {/* Static noise pattern (opt-in) */}
       {(local.showNoise ?? false) && (
-        <div class="pointer-events-none absolute inset-0 overflow-hidden">
+        <div class={CLASSES.slot.noiseWrap}>
           <img
             src={local.noiseSrc ?? "/noise.webp"}
             alt=""
-            class="h-full w-full object-cover mix-blend-overlay"
+            class={CLASSES.slot.noiseImage}
             style={{
               opacity: `var(--noise-opacity, 0.2)`,
             }}

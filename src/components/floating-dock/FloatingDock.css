@@ -64,6 +64,14 @@
     opacity: 0.6;
   }
 
+  .floating-dock__button-reset {
+    appearance: none;
+    border: 0;
+    background: transparent;
+    padding: 0;
+    cursor: pointer;
+  }
+
   /* -------------------------------------------------------------------------------------------------
    * Icon container
    * -----------------------------------------------------------------------------------------------*/
@@ -151,6 +159,12 @@
   .floating-dock__mobile-item {
     opacity: 0;
     animation: floating-dock-fade-in 200ms ease forwards;
+  }
+
+  .floating-dock__menu-icon {
+    width: 1.25rem;
+    height: 1.25rem;
+    color: color-mix(in oklab, var(--color-base-content) 60%, transparent);
   }
 
   /* -------------------------------------------------------------------------------------------------

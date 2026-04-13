@@ -19,15 +19,22 @@ import {
   Form,
   useForm,
   useFieldProps,
+  ChatBubble,
   DateField,
   DatePicker,
   DateRangePicker,
   type DateRangeValue,
+  GlassPanel,
+  GlowCard,
   ListBox,
   Loading,
+  LiveChatBubble,
+  LanguageSwitcher,
+  createI18n,
   Menu,
   Modal,
   Navbar,
+  NoiseBackground,
   NumberField,
   Progress,
   SearchField,
@@ -212,6 +219,23 @@ const searchIcon = () => <Icon name="icon-[lucide--search]" width={16} height={1
 const closeIcon = () => <Icon name="icon-[lucide--x]" width={16} height={16} />;
 const chevronDownIcon = () => <Icon name="icon-[lucide--chevron-down]" width={20} height={20} />;
 const checkIcon = () => <Icon name="icon-[lucide--check]" width={20} height={20} />;
+const LANGUAGE_SWITCHER_DEMO_TRANSLATIONS = {
+  en: {
+    greeting: "Hello from Pathscale UI",
+    helper:
+      "Use the language switcher to test locale state and menu interactions.",
+  },
+  es: {
+    greeting: "Hola desde Pathscale UI",
+    helper:
+      "Usa el selector de idioma para probar el estado de locale y el menu.",
+  },
+  pt: {
+    greeting: "Ola do Pathscale UI",
+    helper:
+      "Use o seletor de idioma para testar o estado de locale e o menu.",
+  },
+} as const;
 
 export default function App() {
   const [selectedFramework, setSelectedFramework] = createSignal("solid");
@@ -288,7 +312,22 @@ export default function App() {
     start: new Date(2026, 3, 16),
     end: new Date(2026, 3, 22),
   });
+  const [glassPanelOpen, setGlassPanelOpen] = createSignal(true);
   const [controlledTimeValue, setControlledTimeValue] = createSignal("13:30");
+  const languageSwitcherI18n = createI18n({
+    languages: [
+      { code: "en", name: "English" },
+      { code: "es", name: "Espanol" },
+      { code: "pt", name: "Portugues" },
+    ],
+    storageKey: "pathscale_ui_playground_locale",
+    defaultLanguage: "en",
+    initialTranslations: LANGUAGE_SWITCHER_DEMO_TRANSLATIONS.en,
+    loadTranslations: async (locale) =>
+      LANGUAGE_SWITCHER_DEMO_TRANSLATIONS[
+        locale as keyof typeof LANGUAGE_SWITCHER_DEMO_TRANSLATIONS
+      ] ?? LANGUAGE_SWITCHER_DEMO_TRANSLATIONS.en,
+  });
   const validatedForm = useForm({
     schema: FORM_VALIDATION_SCHEMA,
     initialValues: {
@@ -3627,6 +3666,212 @@ export default function App() {
                 baseSize={36}
               />
             </div>
+          </div>
+        </section>
+
+        <section class="space-y-4 rounded-xl border border-base-300 bg-base-200 p-4">
+          <div>
+            <h2 class="text-sm font-semibold">Language Switcher</h2>
+            <p class="text-xs opacity-70">
+              Locale selector with loading state and reactive translation text.
+            </p>
+          </div>
+
+          <div class="grid gap-4 md:grid-cols-2">
+            <div class="space-y-3 rounded-lg border border-base-300 bg-base-100 p-4">
+              <h3 class="text-xs font-semibold uppercase opacity-70">Basic</h3>
+              <div class="flex items-center gap-3">
+                <LanguageSwitcher i18n={languageSwitcherI18n} />
+                <span class="text-xs opacity-70">
+                  Current locale: {languageSwitcherI18n.locale}
+                </span>
+              </div>
+            </div>
+            <div class="space-y-2 rounded-lg border border-base-300 bg-base-100 p-4">
+              <p class="text-sm font-medium">{languageSwitcherI18n.t("greeting")}</p>
+              <p class="text-xs opacity-70">{languageSwitcherI18n.t("helper")}</p>
+            </div>
+          </div>
+        </section>
+
+        <section class="space-y-4 rounded-xl border border-base-300 bg-base-200 p-4">
+          <div>
+            <h2 class="text-sm font-semibold">Chat Bubble</h2>
+            <p class="text-xs opacity-70">
+              Compound chat message primitive with start/end alignment and semantic slots.
+            </p>
+          </div>
+
+          <div class="space-y-3 rounded-lg border border-base-300 bg-base-100 p-4">
+            <ChatBubble>
+              <ChatBubble.Avatar fallback="A" />
+              <ChatBubble.Header>Assistant</ChatBubble.Header>
+              <ChatBubble.Message>
+                Deployment completed successfully. Monitoring is active.
+              </ChatBubble.Message>
+              <ChatBubble.Footer>
+                <ChatBubble.Time datetime="2026-04-13T09:35:00">09:35</ChatBubble.Time>
+              </ChatBubble.Footer>
+            </ChatBubble>
+
+            <ChatBubble end>
+              <ChatBubble.Avatar fallback="U" />
+              <ChatBubble.Header>You</ChatBubble.Header>
+              <ChatBubble.Message color="primary">
+                Great, please notify me if latency goes above 200ms.
+              </ChatBubble.Message>
+              <ChatBubble.Footer>
+                <ChatBubble.Time datetime="2026-04-13T09:36:00">09:36</ChatBubble.Time>
+              </ChatBubble.Footer>
+            </ChatBubble>
+          </div>
+        </section>
+
+        <section class="space-y-4 rounded-xl border border-base-300 bg-base-200 p-4">
+          <div>
+            <h2 class="text-sm font-semibold">Glass Panel</h2>
+            <p class="text-xs opacity-70">
+              Frosted panel with optional collapse behavior, accent edges, and blur levels.
+            </p>
+          </div>
+
+          <div class="grid gap-4 md:grid-cols-2">
+            <div class="space-y-3">
+              <div class="flex items-center gap-2">
+                <Button
+                  size="sm"
+                  variant="secondary"
+                  onClick={() => setGlassPanelOpen((current) => !current)}
+                >
+                  Toggle Controlled Panel
+                </Button>
+                <span class="text-xs opacity-70">
+                  State: {glassPanelOpen() ? "open" : "closed"}
+                </span>
+              </div>
+              <GlassPanel
+                title="Service Health"
+                icon={<Icon name="icon-[lucide--shield-check]" width={16} height={16} />}
+                collapsible
+                open={glassPanelOpen()}
+                onToggle={setGlassPanelOpen}
+                blur="lg"
+                accent="success"
+              >
+                <p class="text-sm">
+                  API uptime is stable and all background jobs are running normally.
+                </p>
+              </GlassPanel>
+            </div>
+
+            <GlassPanel
+              blur="2xl"
+              glow
+              accent="info"
+              title="Release Notes"
+              collapsible
+              defaultOpen
+            >
+              <ul class="list-disc space-y-1 pl-4 text-sm">
+                <li>Calendar and picker behaviors are now unified.</li>
+                <li>Layout primitives migrated to `.classes.ts` convention.</li>
+                <li>Icon placement now uses `startIcon` and `endIcon` slots.</li>
+              </ul>
+            </GlassPanel>
+          </div>
+        </section>
+
+        <section class="space-y-4 rounded-xl border border-base-300 bg-base-200 p-4">
+          <div>
+            <h2 class="text-sm font-semibold">Glow Card</h2>
+            <p class="text-xs opacity-70">
+              Pointer-reactive glow effect for feature cards and highlighted content.
+            </p>
+          </div>
+
+          <div class="grid gap-4 md:grid-cols-2">
+            <GlowCard class="rounded-xl border border-base-300 bg-base-100 p-4">
+              <h3 class="text-sm font-semibold">Realtime Insights</h3>
+              <p class="mt-2 text-sm opacity-80">
+                Move your pointer over this card to inspect the radial highlight behavior.
+              </p>
+            </GlowCard>
+            <GlowCard class="rounded-xl border border-base-300 bg-base-100 p-4">
+              <h3 class="text-sm font-semibold">Smart Alerts</h3>
+              <p class="mt-2 text-sm opacity-80">
+                Use the glow treatment on interactive dashboards or attention surfaces.
+              </p>
+            </GlowCard>
+          </div>
+        </section>
+
+        <section class="space-y-4 rounded-xl border border-base-300 bg-base-200 p-4">
+          <div>
+            <h2 class="text-sm font-semibold">Noise Background</h2>
+            <p class="text-xs opacity-70">
+              Animated layered gradients with optional texture overlay and configurable intensity.
+            </p>
+          </div>
+
+          <div class="grid gap-4 md:grid-cols-2">
+            <NoiseBackground
+              containerClass="min-h-44 rounded-xl border border-base-300"
+              class="flex h-full flex-col justify-between p-4"
+              gradientColors={["rgb(14, 165, 233)", "rgb(168, 85, 247)", "rgb(244, 114, 182)"]}
+              backdropBlur
+            >
+              <div>
+                <p class="text-sm font-semibold">Animated Background</p>
+                <p class="text-xs opacity-80">
+                  Motion-enabled gradient surface for callouts and promo blocks.
+                </p>
+              </div>
+              <Button size="sm" variant="secondary">
+                Explore Metrics
+              </Button>
+            </NoiseBackground>
+
+            <NoiseBackground
+              containerClass="min-h-44 rounded-xl border border-base-300"
+              class="flex h-full flex-col justify-between p-4"
+              animating={false}
+              showNoise
+              noiseIntensity={0.14}
+            >
+              <div>
+                <p class="text-sm font-semibold">Static Texture</p>
+                <p class="text-xs opacity-80">
+                  Use static mode for quieter backgrounds while keeping visual depth.
+                </p>
+              </div>
+              <Badge color="accent">No animation</Badge>
+            </NoiseBackground>
+          </div>
+        </section>
+
+        <section class="space-y-4 rounded-xl border border-base-300 bg-base-200 p-4">
+          <div>
+            <h2 class="text-sm font-semibold">Live Chat</h2>
+            <p class="text-xs opacity-70">
+              Floating trigger and full-screen chat panel. Click the bubble in the demo area.
+            </p>
+          </div>
+
+          <div class="relative min-h-40 rounded-lg border border-base-300 bg-base-100 p-4">
+            <p class="max-w-md text-sm opacity-80">
+              The bubble is rendered as an overlay trigger and opens the chat panel with mock
+              conversation data.
+            </p>
+            <LiveChatBubble
+              class="absolute bottom-4 left-4 right-auto"
+              position="bottom-right"
+              unreadCount={3}
+              panelProps={{
+                title: "Support",
+                mockMode: true,
+                placeholder: "Ask a question...",
+              }}
+            />
           </div>
         </section>
 

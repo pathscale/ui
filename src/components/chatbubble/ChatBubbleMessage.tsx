@@ -1,7 +1,7 @@
-import type { JSX } from "solid-js";
+import { splitProps, type JSX } from "solid-js";
 import { twMerge } from "tailwind-merge";
-import { clsx } from "clsx";
 import type { IComponentBaseProps } from "../types";
+import { CLASSES } from "./ChatBubble.classes";
 
 export type ChatBubbleMessageProps = JSX.HTMLAttributes<HTMLDivElement> &
   IComponentBaseProps & {
@@ -17,22 +17,22 @@ export type ChatBubbleMessageProps = JSX.HTMLAttributes<HTMLDivElement> &
   };
 
 const ChatBubbleMessage = (props: ChatBubbleMessageProps): JSX.Element => {
-  const bubbleClass = clsx({
-    "chat-bubble": true,
-    "chat-bubble-neutral": props.color === "neutral",
-    "chat-bubble-primary": props.color === "primary",
-    "chat-bubble-secondary": props.color === "secondary",
-    "chat-bubble-accent": props.color === "accent",
-    "chat-bubble-info": props.color === "info",
-    "chat-bubble-success": props.color === "success",
-    "chat-bubble-warning": props.color === "warning",
-    "chat-bubble-error": props.color === "error",
-  });
+  const [local, others] = splitProps(props, ["color", "class", "className"]);
+
+  const colorClass = () => {
+    if (!local.color) return undefined;
+    return CLASSES.color[local.color];
+  };
 
   return (
     <div
-      {...props}
-      class={twMerge(bubbleClass, props.class)}
+      {...others}
+      class={twMerge(
+        CLASSES.slot.message,
+        colorClass(),
+        local.class,
+        local.className,
+      )}
     />
   );
 };

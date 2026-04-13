@@ -1,3 +1,4 @@
+import "./LiveChat.css";
 import {
   type Component,
   type JSX,
@@ -9,12 +10,11 @@ import {
   splitProps,
 } from "solid-js";
 import { twMerge } from "tailwind-merge";
-import { clsx } from "clsx";
 import Button from "../button";
-import Flex from "../flex";
 import Input from "../input";
 import type { IComponentBaseProps } from "../types";
 import type { ChatMessage, SendMessagePayload, SendMessageResponse } from "./types";
+import { CLASSES } from "./LiveChat.classes";
 
 export interface LiveChatPanelProps extends IComponentBaseProps {
   /**
@@ -310,36 +310,16 @@ const LiveChatPanel: Component<LiveChatPanelProps> = (props) => {
     }
   };
 
-  const classes = () =>
-    twMerge(
-      `fixed inset-0
-      sm:inset-auto
-      sm:bottom-20 sm:right-4
-      md:bottom-24 md:right-6
-      z-51
-      w-full h-full
-      sm:w-96 md:w-[400px]
-      sm:h-[70vh]
-      md:h-[75vh]
-      lg:h-[80vh]
-      sm:max-h-[800px]
-      sm:min-h-[420px]
-      bg-base-100
-      sm:rounded-2xl
-      shadow-2xl
-      flex flex-col
-      overflow-hidden`,
-      clsx(local.class, local.className)
-    );
+  const classes = () => twMerge(CLASSES.panel.base, local.class, local.className);
 
   return (
     <div {...others} class={classes()} style={local.style}>
       {/* Header */}
-      <div class="flex-shrink-0 bg-primary text-primary-content px-4 py-4 flex items-center justify-between">
-        <Flex align="center" gap="sm">
+      <div class={CLASSES.panel.header}>
+        <div class={CLASSES.panel.headerTitleWrap}>
           <svg
             xmlns="http://www.w3.org/2000/svg"
-            class="w-5 h-5"
+            class={CLASSES.panel.headerIcon}
             fill="none"
             viewBox="0 0 24 24"
             stroke="currentColor"
@@ -351,16 +331,16 @@ const LiveChatPanel: Component<LiveChatPanelProps> = (props) => {
               d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"
             />
           </svg>
-          <h3 class="font-semibold text-lg">{local.title ?? "Chat with us"}</h3>
-        </Flex>
+          <h3 class={CLASSES.panel.headerTitle}>{local.title ?? "Chat with us"}</h3>
+        </div>
         <button
           onClick={local.onClose}
-          class="hover:bg-primary/90 rounded-lg p-1 transition-colors"
+          class={CLASSES.panel.closeButton}
           aria-label={local.closeLabel ?? "Close chat"}
         >
           <svg
             xmlns="http://www.w3.org/2000/svg"
-            class="w-5 h-5"
+            class={CLASSES.panel.closeIcon}
             fill="none"
             viewBox="0 0 24 24"
             stroke="currentColor"
@@ -380,54 +360,65 @@ const LiveChatPanel: Component<LiveChatPanelProps> = (props) => {
         ref={(element) => {
           scrollContainer = element;
         }}
-        class="flex-1 overflow-y-auto px-4 py-4 space-y-4"
+        class={CLASSES.panel.messages}
       >
         <For each={internalMessages()}>
           {(message) => {
             const isUser = message.sender === "user";
             return (
-              <Flex direction={isUser ? "row-reverse" : "row"} gap="sm" class="w-full">
+              <div
+                class={twMerge(
+                  CLASSES.panel.row,
+                  isUser ? CLASSES.panel.rowUser : CLASSES.panel.rowAgent,
+                )}
+              >
                 <div
-                  class={`flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center text-xs font-semibold ${
-                    isUser
-                      ? "bg-primary text-primary-content"
-                      : "bg-base-300 text-base-content"
-                  }`}
+                  class={twMerge(
+                    CLASSES.panel.avatar,
+                    isUser ? CLASSES.panel.avatarUser : CLASSES.panel.avatarAgent,
+                  )}
                 >
                   {isUser ? "U" : "A"}
                 </div>
 
-                <Flex direction="col" align={isUser ? "end" : "start"} class="max-w-[75%]">
+                <div
+                  class={twMerge(
+                    CLASSES.panel.messageColumn,
+                    isUser
+                      ? CLASSES.panel.messageColumnUser
+                      : CLASSES.panel.messageColumnAgent,
+                  )}
+                >
                   <div
-                    class={`px-3 py-2 rounded-2xl ${
+                    class={twMerge(
+                      CLASSES.panel.messageBubble,
                       isUser
-                        ? "bg-primary text-primary-content rounded-tr-sm"
-                        : "bg-base-200 text-base-content rounded-tl-sm"
-                    }`}
+                        ? CLASSES.panel.messageBubbleUser
+                        : CLASSES.panel.messageBubbleAgent,
+                    )}
                   >
-                    <p class="text-sm leading-relaxed whitespace-pre-wrap break-words">
+                    <p class={CLASSES.panel.messageText}>
                       {message.content}
                     </p>
                   </div>
-                  <span class="text-xs text-base-content/50 mt-1 px-1">
+                  <span class={CLASSES.panel.timestamp}>
                     {formatTime(message.timestamp)}
                   </span>
-                </Flex>
-              </Flex>
+                </div>
+              </div>
             );
           }}
         </For>
 
         <Show when={internalMessages().length === 0}>
-          <Flex justify="center" align="center" class="h-full text-base-content/50 text-sm">
+          <div class={CLASSES.panel.empty}>
             {local.emptyMessage ?? "No messages yet. Start a conversation!"}
-          </Flex>
+          </div>
         </Show>
       </div>
 
       {/* Input area */}
-      <div class="flex-shrink-0 border-t border-base-300 bg-base-100 p-3">
-        <Flex gap="sm">
+      <div class={CLASSES.panel.inputArea}>
           <Input
             type="text"
             value={inputValue()}
@@ -435,24 +426,23 @@ const LiveChatPanel: Component<LiveChatPanelProps> = (props) => {
             onKeyPress={handleKeyPress}
             placeholder={local.placeholder ?? "Message support..."}
             disabled={isSending()}
-            class="flex-1"
+            class={CLASSES.panel.input}
           />
           <Button
             onClick={handleSend}
             isDisabled={!inputValue().trim() || isSending()}
-            class="px-4 py-2"
+            class={CLASSES.panel.sendButton}
             variant="primary"
           >
             <Show
               when={!isSending()}
               fallback={
-                <span class="w-4 h-4 border-2 border-primary-content/30 border-t-primary-content rounded-full animate-spin inline-block" />
+                <span class={CLASSES.panel.spinner} />
               }
             >
               {local.sendLabel ?? "Send"}
             </Show>
           </Button>
-        </Flex>
       </div>
     </div>
   );

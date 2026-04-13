@@ -3,6 +3,7 @@ import { twMerge } from "tailwind-merge";
 import Avatar from "../avatar";
 import type { AvatarRootProps } from "../avatar";
 import type { IComponentBaseProps } from "../types";
+import { CLASSES } from "./ChatBubble.classes";
 
 export type ChatBubbleAvatarProps = {
   src?: string;
@@ -17,7 +18,7 @@ const ChatBubbleAvatar = (props: ChatBubbleAvatarProps): JSX.Element => {
       size={props.size ?? "sm"}
       color={props.color}
       variant={props.variant}
-      class={twMerge("chat-image", props.class)}
+      class={twMerge(CLASSES.slot.avatar, props.class, props.className)}
       dataTheme={props.dataTheme}
       style={props.style}
     >

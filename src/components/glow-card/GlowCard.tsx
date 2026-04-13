@@ -4,6 +4,7 @@ import { clsx } from "clsx";
 
 import type { IComponentBaseProps } from "../types";
 import "./GlowCard.css";
+import { CLASSES } from "./GlowCard.classes";
 
 export type GlowCardProps = IComponentBaseProps &
   JSX.HTMLAttributes<HTMLDivElement>;
@@ -35,7 +36,9 @@ export default function GlowCard(props: GlowCardProps): JSX.Element {
     <div
       {...others}
       data-theme={local.dataTheme}
-      class={twMerge(clsx("glow-card isolate", local.class, local.className))}
+      class={twMerge(
+        clsx(CLASSES.base, CLASSES.isolate, local.class, local.className),
+      )}
       style={local.style}
       onMouseMove={handleMouseMove}
       onMouseLeave={(e) => {

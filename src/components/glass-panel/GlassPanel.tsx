@@ -1,8 +1,9 @@
+import "./GlassPanel.css";
 import { type JSX, splitProps, createSignal, createUniqueId, Show } from "solid-js";
 import { twMerge } from "tailwind-merge";
-import { clsx } from "clsx";
 
 import type { IComponentBaseProps, ComponentSize, ComponentColor } from "../types";
+import { CLASSES } from "./GlassPanel.classes";
 
 export type GlassPanelBlur = "none" | "sm" | "md" | "lg" | "xl" | "2xl";
 
@@ -22,35 +23,6 @@ export type GlassPanelProps = IComponentBaseProps &
     paddingX?: string;
     paddingY?: string;
   };
-
-const BLUR_MAP: Record<GlassPanelBlur, string> = {
-  none: "",
-  sm: "backdrop-blur-sm",
-  md: "backdrop-blur-md",
-  lg: "backdrop-blur-lg",
-  xl: "backdrop-blur-xl",
-  "2xl": "backdrop-blur-2xl",
-};
-
-const SIZE_PADDING: Record<ComponentSize, string> = {
-  xs: "p-2",
-  sm: "p-3",
-  md: "p-4",
-  lg: "p-5",
-  xl: "p-6",
-};
-
-const ACCENT_BORDER: Record<string, string> = {
-  primary: "border-l-primary",
-  secondary: "border-l-secondary",
-  accent: "border-l-accent",
-  info: "border-l-info",
-  success: "border-l-success",
-  warning: "border-l-warning",
-  error: "border-l-error",
-  neutral: "border-l-neutral",
-  ghost: "border-l-transparent",
-};
 
 const GlassPanel = (props: GlassPanelProps): JSX.Element => {
   const [local, others] = splitProps(props, [
@@ -81,6 +53,7 @@ const GlassPanel = (props: GlassPanelProps): JSX.Element => {
   const isControlled = () => local.open !== undefined;
   const [internalOpen, setInternalOpen] = createSignal(local.defaultOpen ?? true);
   const isOpen = () => (isControlled() ? local.open! : internalOpen());
+  const accentKey = () => (local.accent ?? "ghost") as ComponentColor;
 
   const handleToggle = () => {
     const next = !isOpen();
@@ -92,34 +65,21 @@ const GlassPanel = (props: GlassPanelProps): JSX.Element => {
 
   const containerClasses = () =>
     twMerge(
-      "glass-panel",
-      "rounded-xl",
-      "transition-all duration-200 ease-in-out",
-      clsx({
-        "bg-transparent": local.transparent,
-        [BLUR_MAP[blur()]]: !local.transparent && blur() !== "none",
-        "border-l-2": !!local.accent,
-        [ACCENT_BORDER[local.accent ?? ""]]: !!local.accent,
-      }),
+      CLASSES.base,
+      !local.transparent && CLASSES.blur[blur()],
+      local.transparent && CLASSES.flag.transparent,
+      local.glow && CLASSES.flag.glow,
+      local.accent && CLASSES.accent[accentKey()],
       local.class,
       local.className,
     );
 
-  const glassStyle = (): JSX.CSSProperties => {
-    const base: JSX.CSSProperties = { ...((local.style as JSX.CSSProperties) || {}) };
-    if (!local.transparent) {
-      base.background = "color-mix(in srgb, var(--color-base-300) 45%, transparent)";
-      base.border = "1px solid color-mix(in srgb, var(--color-base-content) 12%, transparent)";
-    }
-    if (local.glow) {
-      base["box-shadow"] = "inset 0 1px 0 color-mix(in srgb, var(--color-base-content) 5%, transparent)";
-    }
-    return base;
-  };
-
   const contentClasses = () =>
     twMerge(
-      (local.paddingX || local.paddingY) ? "" : SIZE_PADDING[size()],
+      CLASSES.slot.content,
+      local.collapsible && CLASSES.flag.contentCollapsible,
+      local.collapsible && !isOpen() && CLASSES.flag.contentCollapsed,
+      (!local.collapsible || isOpen()) && !(local.paddingX || local.paddingY) && CLASSES.size[size()],
       local.paddingX,
       local.paddingY,
     );
@@ -129,24 +89,24 @@ const GlassPanel = (props: GlassPanelProps): JSX.Element => {
       {...others}
       class={containerClasses()}
       data-theme={local.dataTheme}
-      style={glassStyle()}
+      style={local.style}
     >
       <Show when={local.collapsible && local.title}>
         <button
           type="button"
-          class="flex w-full items-center justify-between gap-2 px-4 py-3 text-sm font-medium cursor-pointer select-none transition-colors duration-150 text-base-content/50 hover:text-base-content/80 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
+          class={CLASSES.slot.headerButton}
           onClick={handleToggle}
           aria-expanded={isOpen()}
           aria-controls={contentId}
         >
-          <span class="flex items-center gap-2">
+          <span class={CLASSES.slot.headerLabel}>
             <Show when={local.icon}>{local.icon}</Show>
             {local.title}
           </span>
           <svg
             class={twMerge(
-              "h-4 w-4 transition-transform duration-200",
-              clsx({ "rotate-180": isOpen() }),
+              CLASSES.slot.chevron,
+              isOpen() && CLASSES.flag.chevronOpen,
             )}
             fill="none"
             viewBox="0 0 24 24"
@@ -160,13 +120,13 @@ const GlassPanel = (props: GlassPanelProps): JSX.Element => {
 
       <div
         id={contentId}
-        class={`grid transition-[grid-template-rows,opacity] duration-200 ease-in-out ${local.collapsible ? "overflow-hidden" : ""} ${(local.collapsible && !isOpen()) ? "" : contentClasses()}`}
+        class={contentClasses()}
         style={{
           "grid-template-rows": (!local.collapsible || isOpen()) ? "1fr" : "0fr",
           opacity: (!local.collapsible || isOpen()) ? "1" : "0",
         }}
       >
-        <div class={local.collapsible ? "overflow-hidden" : ""}>
+        <div class={twMerge(CLASSES.slot.contentInner, local.collapsible && CLASSES.flag.contentInnerHidden)}>
           {local.children}
         </div>
       </div>

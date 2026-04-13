@@ -1,15 +1,18 @@
-import type { JSX } from "solid-js";
+import { splitProps, type JSX } from "solid-js";
 import { twMerge } from "tailwind-merge";
 import type { IComponentBaseProps } from "../types";
+import { CLASSES } from "./ChatBubble.classes";
 
 export type ChatBubbleTimeProps = JSX.HTMLAttributes<HTMLTimeElement> &
   IComponentBaseProps;
 
 const ChatBubbleTime = (props: ChatBubbleTimeProps): JSX.Element => {
+  const [local, others] = splitProps(props, ["class", "className"]);
+
   return (
     <time
-      {...props}
-      class={twMerge("text-xs opacity-50", props.class)}
+      {...others}
+      class={twMerge(CLASSES.slot.time, local.class, local.className)}
     />
   );
 };

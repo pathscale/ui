@@ -1,10 +1,11 @@
+import "./LanguageSwitcher.css";
 import { type Component, For, Show, splitProps } from "solid-js";
 import { twMerge } from "tailwind-merge";
-import { clsx } from "clsx";
 import Dropdown from "../dropdown";
 import Icon from "../icon";
 import type { IComponentBaseProps } from "../types";
-import type { I18nStore, Language } from "./createI18n";
+import type { I18nStore } from "./createI18n";
+import { CLASSES } from "./LanguageSwitcher.classes";
 
 export interface LanguageSwitcherProps extends IComponentBaseProps {
   /**
@@ -54,7 +55,7 @@ const LanguageSwitcher: Component<LanguageSwitcherProps> = (props) => {
     local.onLanguageChange?.(lang);
   };
 
-  const classes = () => twMerge(clsx(local.class, local.className));
+  const classes = () => twMerge(CLASSES.base, local.class, local.className);
 
   return (
     <Dropdown.Root
@@ -65,7 +66,7 @@ const LanguageSwitcher: Component<LanguageSwitcherProps> = (props) => {
       aria-label={local["aria-label"] ?? "Language selector"}
     >
       <Dropdown.Trigger
-        class="btn btn-sm"
+        class={CLASSES.trigger}
         aria-label={`${local.currentLanguageLabel ?? "Current language"}: ${currentLanguageName()}`}
       >
         <Show
@@ -73,25 +74,25 @@ const LanguageSwitcher: Component<LanguageSwitcherProps> = (props) => {
           fallback={
             <Icon
               name="icon-[mdi--loading]"
-              class="animate-spin"
+              class={CLASSES.loadingIcon}
               width={16}
               height={16}
               aria-label={local.loadingLabel ?? "Loading language"}
             />
           }
         >
-          <span class="text-xs font-bold uppercase" aria-hidden="true">
+          <span class={CLASSES.locale} aria-hidden="true">
             {local.i18n.locale.toUpperCase()}
           </span>
         </Show>
       </Dropdown.Trigger>
 
-      <Dropdown.Menu class="min-w-32" aria-label={local.optionsLabel ?? "Language options"}>
+      <Dropdown.Menu class={CLASSES.menu} aria-label={local.optionsLabel ?? "Language options"}>
         <For each={local.i18n.languages}>
           {(lang) => (
             <Dropdown.Item
               onClick={() => handleSelect(lang.code)}
-              class={isSelected(lang.code) ? "bg-base-200" : ""}
+              class={twMerge(CLASSES.item, isSelected(lang.code) && CLASSES.itemSelected)}
               aria-current={isSelected(lang.code) ? "true" : undefined}
             >
               {lang.name}

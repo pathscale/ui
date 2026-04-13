@@ -13,6 +13,7 @@ import { Portal } from "solid-js/web";
 import { twMerge } from "tailwind-merge";
 
 import type { IComponentBaseProps } from "../types";
+import { CLASSES } from "./FloatingDock.classes";
 
 /* ------------------------------------------------------------------ */
 /*  Types                                                             */
@@ -189,13 +190,13 @@ const DockItem: Component<{
       ref={wrapRef}
       onMouseEnter={handleMouseEnter}
       onMouseLeave={() => setHovered(false)}
-      class={twMerge("floating-dock__item", cfg.itemClass)}
+      class={twMerge(CLASSES.item, cfg.itemClass)}
       style={{ width: `${cfg.baseSize}px`, height: `${cfg.baseSize}px` }}
     >
       <Show when={hovered()}>
         <Portal>
           <div
-            class={twMerge("floating-dock__tooltip", cfg.tooltipClass)}
+            class={twMerge(CLASSES.tooltip, cfg.tooltipClass)}
             style={{
               top: tooltipStyle().top,
               left: tooltipStyle().left,
@@ -206,7 +207,7 @@ const DockItem: Component<{
           </div>
         </Portal>
       </Show>
-      <div ref={iconRef} class="floating-dock__icon">
+      <div ref={iconRef} class={CLASSES.icon}>
         {props.item.icon}
       </div>
     </div>
@@ -221,7 +222,12 @@ const DockItem: Component<{
         </Show>
       }
     >
-      <button type="button" onClick={handleClick} aria-label={props.item.title} class="appearance-none bg-transparent border-0 p-0 cursor-pointer">
+      <button
+        type="button"
+        onClick={handleClick}
+        aria-label={props.item.title}
+        class={CLASSES.buttonReset}
+      >
         {inner}
       </button>
     </Show>
@@ -375,8 +381,8 @@ const FloatingDockDesktop: Component<{
       onMouseMove={(e) => { setMousePos(isH() ? e.clientX : e.clientY); startLoop(); }}
       onMouseLeave={() => { setMousePos(Infinity); startLoop(); }}
       class={twMerge(
-        "floating-dock__bar",
-        isH() ? "floating-dock__bar--horizontal" : "floating-dock__bar--vertical",
+        CLASSES.bar,
+        isH() ? CLASSES.barOrientation.horizontal : CLASSES.barOrientation.vertical,
         props.class,
       )}
       style={{
@@ -386,7 +392,7 @@ const FloatingDockDesktop: Component<{
       }}
     >
       <Show when={props.showContainer}>
-        <div ref={bgRef} class="floating-dock__bg" />
+        <div ref={bgRef} class={CLASSES.bg} />
       </Show>
       <For each={props.items}>
         {(item, idx) => {
@@ -417,13 +423,6 @@ const FloatingDockDesktop: Component<{
 /*  Mobile dock                                                       */
 /* ------------------------------------------------------------------ */
 
-const MOBILE_POPUP_CLASS: Record<FloatingDockDirection, string> = {
-  top: "floating-dock__mobile-popup--top",
-  bottom: "floating-dock__mobile-popup--bottom",
-  left: "floating-dock__mobile-popup--left",
-  right: "floating-dock__mobile-popup--right",
-};
-
 const FloatingDockMobile: Component<{
   items: FloatingDockItem[];
   class?: string;
@@ -439,13 +438,18 @@ const FloatingDockMobile: Component<{
   };
 
   return (
-    <div class={twMerge("floating-dock__mobile", props.class)}>
+    <div class={twMerge(CLASSES.mobile, props.class)}>
       <Show when={open()}>
-        <div class={twMerge("floating-dock__mobile-popup", MOBILE_POPUP_CLASS[props.popupDirection])}>
+        <div
+          class={twMerge(
+            CLASSES.mobilePopup,
+            CLASSES.mobilePopupDirection[props.popupDirection],
+          )}
+        >
           <For each={props.items}>
             {(item, idx) => (
               <div
-                class="floating-dock__mobile-item"
+                class={CLASSES.mobileItem}
                 style={{
                   "animation-delay": `${(props.items.length - 1 - idx()) * 0.05}s`,
                 }}
@@ -456,18 +460,33 @@ const FloatingDockMobile: Component<{
                     <Show
                       when={item.href}
                       fallback={
-                        <div class="floating-dock__item" style={{ width: `${props.cfg.baseSize}px`, height: `${props.cfg.baseSize}px` }} title={item.title}>
+                        <div
+                          class={CLASSES.item}
+                          style={{ width: `${props.cfg.baseSize}px`, height: `${props.cfg.baseSize}px` }}
+                          title={item.title}
+                        >
                           {item.icon}
                         </div>
                       }
                     >
-                      <a href={item.href} class="floating-dock__item" style={{ width: `${props.cfg.baseSize}px`, height: `${props.cfg.baseSize}px` }} title={item.title}>
+                      <a
+                        href={item.href}
+                        class={CLASSES.item}
+                        style={{ width: `${props.cfg.baseSize}px`, height: `${props.cfg.baseSize}px` }}
+                        title={item.title}
+                      >
                         {item.icon}
                       </a>
                     </Show>
                   }
                 >
-                  <button type="button" onClick={(e) => handleItemClick(item, e)} class="floating-dock__mobile-toggle" style={{ width: `${props.cfg.baseSize}px`, height: `${props.cfg.baseSize}px` }} title={item.title}>
+                  <button
+                    type="button"
+                    onClick={(e) => handleItemClick(item, e)}
+                    class={CLASSES.mobileToggle}
+                    style={{ width: `${props.cfg.baseSize}px`, height: `${props.cfg.baseSize}px` }}
+                    title={item.title}
+                  >
                     {item.icon}
                   </button>
                 </Show>
@@ -479,11 +498,20 @@ const FloatingDockMobile: Component<{
       <button
         type="button"
         onClick={() => setOpen(!open())}
-        class="floating-dock__mobile-toggle"
+        class={CLASSES.mobileToggle}
         style={{ width: `${props.cfg.baseSize}px`, height: `${props.cfg.baseSize}px` }}
       >
         {props.toggleIcon ?? (
-          <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style={{ color: "color-mix(in oklab, var(--color-base-content) 60%, transparent)" }}>
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            class={CLASSES.menuIcon}
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
             <path d="M4 6h16" /><path d="M4 12h16" /><path d="M4 18h16" />
           </svg>
         )}
@@ -527,7 +555,7 @@ const FloatingDock = (rawProps: FloatingDockProps): JSX.Element => {
   });
 
   return (
-    <div class="floating-dock" data-theme={local.dataTheme} style={local.style} {...others}>
+    <div class={CLASSES.base} data-theme={local.dataTheme} style={local.style} {...others}>
       <Show when={local.showDesktop !== false}>
         <FloatingDockDesktop
           items={local.items}
@@ -542,7 +570,7 @@ const FloatingDock = (rawProps: FloatingDockProps): JSX.Element => {
           fallback={
             <FloatingDockDesktop
               items={local.items}
-              class={twMerge("floating-dock__bar--mobile-dock", local.mobileClass)}
+              class={twMerge(CLASSES.barMobileDock, local.mobileClass)}
               cfg={cfg()}
               showContainer={local.showContainer !== false}
             />

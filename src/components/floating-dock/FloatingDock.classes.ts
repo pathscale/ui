@@ -1,0 +1,25 @@
+export const CLASSES = {
+  base: "floating-dock",
+  bar: "floating-dock__bar",
+  barOrientation: {
+    horizontal: "floating-dock__bar--horizontal",
+    vertical: "floating-dock__bar--vertical",
+  },
+  barMobileDock: "floating-dock__bar--mobile-dock",
+  bg: "floating-dock__bg",
+  item: "floating-dock__item",
+  icon: "floating-dock__icon",
+  tooltip: "floating-dock__tooltip",
+  mobile: "floating-dock__mobile",
+  mobileToggle: "floating-dock__mobile-toggle",
+  mobilePopup: "floating-dock__mobile-popup",
+  mobilePopupDirection: {
+    top: "floating-dock__mobile-popup--top",
+    bottom: "floating-dock__mobile-popup--bottom",
+    left: "floating-dock__mobile-popup--left",
+    right: "floating-dock__mobile-popup--right",
+  },
+  mobileItem: "floating-dock__mobile-item",
+  buttonReset: "floating-dock__button-reset",
+  menuIcon: "floating-dock__menu-icon",
+} as const;

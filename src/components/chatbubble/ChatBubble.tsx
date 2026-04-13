@@ -1,4 +1,4 @@
-import "./chat.css";
+import "./ChatBubble.css";
 import { createMemo, type JSX, splitProps } from "solid-js";
 import { twMerge } from "tailwind-merge";
 
@@ -8,7 +8,7 @@ import ChatBubbleTime from "./ChatBubbleTime";
 import ChatBubbleAvatar from "./ChatBubbleAvatar";
 import ChatBubbleMessage from "./ChatBubbleMessage";
 import ChatBubbleFooter from "./ChatBubbleFooter";
-import clsx from "clsx";
+import { CLASSES } from "./ChatBubble.classes";
 
 export type ChatBubbleProps = IComponentBaseProps &
   JSX.HTMLAttributes<HTMLDivElement> & {
@@ -26,11 +26,8 @@ const ChatBubble = (props: ChatBubbleProps): JSX.Element => {
 
   const classes = createMemo(() =>
     twMerge(
-      "chat",
-      clsx({
-        "chat-end": local.end,
-        "chat-start": !local.end,
-      }),
+      CLASSES.base,
+      local.end ? CLASSES.align.end : CLASSES.align.start,
       local.class,
       local.className,
     ),

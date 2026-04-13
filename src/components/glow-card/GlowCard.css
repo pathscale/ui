@@ -5,6 +5,10 @@
   border-radius: inherit;
 }
 
+.glow-card--isolate {
+  isolation: isolate;
+}
+
 .glow-card::before,
 .glow-card::after {
   content: "";
