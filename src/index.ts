@@ -420,7 +420,9 @@ export type {
   SendMessagePayload,
   SendMessageResponse,
 } from "./components/live-chat";
-export { default as Loading } from "./components/loading";
+export { default as Spinner } from "./components/spinner";
+export { Spinner as Loading } from "./components/spinner";
+export type { SpinnerProps, SpinnerSize, SpinnerColor, SpinnerVariant } from "./components/spinner";
 export {
   LanguageSwitcher,
   createI18n,

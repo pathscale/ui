@@ -1,4 +1,4 @@
-import "./Loading.css";
+import "./Spinner.css";
 import { splitProps, createUniqueId, type Component, type JSX } from "solid-js";
 import { twMerge } from "tailwind-merge";
 import type { IComponentBaseProps } from "../types";
@@ -10,7 +10,7 @@ export type SpinnerSize = "xs" | "sm" | "md" | "lg" | "xl";
 export type SpinnerColor = "current" | "accent" | "success" | "warning" | "danger";
 export type SpinnerVariant = "spinner" | "dots" | "ring" | "ball" | "bars" | "infinity";
 
-export type LoadingProps = Omit<JSX.HTMLAttributes<HTMLSpanElement>, "children"> &
+export type SpinnerProps = Omit<JSX.HTMLAttributes<HTMLSpanElement>, "children"> &
   IComponentBaseProps & {
     size?: SpinnerSize;
     color?: SpinnerColor;
@@ -86,9 +86,9 @@ const SpinnerSVG: Component = () => {
 };
 
 /* -------------------------------------------------------------------------------------------------
- * Loading Component
+ * Spinner Component
  * -----------------------------------------------------------------------------------------------*/
-const Loading: Component<LoadingProps> = (props) => {
+const Spinner: Component<SpinnerProps> = (props) => {
   const [local, others] = splitProps(props, [
     "size",
     "color",
@@ -128,4 +128,4 @@ const Loading: Component<LoadingProps> = (props) => {
   );
 };
 
-export default Loading;
+export default Spinner;

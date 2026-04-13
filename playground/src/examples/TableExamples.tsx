@@ -2,7 +2,7 @@ import { For, Show, createMemo, createSignal, type JSX } from "solid-js";
 import {
   Button,
   Icon,
-  Loading,
+  Spinner,
   Pagination,
   Table,
   type TableSortDescriptor,
@@ -419,7 +419,7 @@ const LoadingStateExample = () => {
                 <Table.Row>
                   <Table.Cell colSpan={3}>
                     <div class="flex items-center justify-center gap-2 py-2">
-                      <Loading variant="spinner" size="md" color="accent" />
+                      <Spinner variant="spinner" size="md" color="accent" />
                       <span class="text-sm opacity-70">Loading rows...</span>
                     </div>
                   </Table.Cell>

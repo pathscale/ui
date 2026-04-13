@@ -27,7 +27,7 @@ import {
   GlassPanel,
   GlowCard,
   ListBox,
-  Loading,
+  Spinner,
   LiveChatBubble,
   LanguageSwitcher,
   createI18n,
@@ -2017,7 +2017,7 @@ export default function App() {
                 Disabled
               </Button>
               <Button variant="primary" isPending>
-                Loading
+                Spinner
               </Button>
               <Button variant="ghost" isIconOnly aria-label="Icon only">
                 +
@@ -3563,7 +3563,7 @@ export default function App() {
 
         <section class="space-y-4 rounded-xl border border-base-300 bg-base-200 p-4">
           <div>
-            <h2 class="text-sm font-semibold">Loading / Spinner</h2>
+            <h2 class="text-sm font-semibold">Spinner</h2>
             <p class="text-xs opacity-70">
               HeroUI-style SVG spinner with sizes, colors, and legacy CSS variants.
             </p>
@@ -3573,7 +3573,7 @@ export default function App() {
             <h3 class="text-xs font-semibold uppercase opacity-70">Sizes</h3>
             <div class="flex items-center gap-4">
               <For each={["xs", "sm", "md", "lg", "xl"] as const}>
-                {(size) => <Loading size={size} color="accent" />}
+                {(size) => <Spinner size={size} color="accent" />}
               </For>
             </div>
           </div>
@@ -3582,7 +3582,7 @@ export default function App() {
             <h3 class="text-xs font-semibold uppercase opacity-70">Colors</h3>
             <div class="flex items-center gap-4">
               <For each={["current", "accent", "success", "warning", "danger"] as const}>
-                {(color) => <Loading size="lg" color={color} />}
+                {(color) => <Spinner size="lg" color={color} />}
               </For>
             </div>
           </div>
@@ -3593,7 +3593,7 @@ export default function App() {
               <For each={["spinner", "dots", "ring", "ball", "bars", "infinity"] as const}>
                 {(variant) => (
                   <div class="flex flex-col items-center gap-2">
-                    <Loading size="lg" variant={variant} color="accent" />
+                    <Spinner size="lg" variant={variant} color="accent" />
                     <span class="text-xs opacity-70">{variant}</span>
                   </div>
                 )}
