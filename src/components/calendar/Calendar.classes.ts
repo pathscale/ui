@@ -45,6 +45,10 @@ export const CLASSES = {
     base: "calendar__cell",
     flag: {
       selected: "calendar__cell--selected",
+      rangeStart: "calendar__cell--range-start",
+      rangeEnd: "calendar__cell--range-end",
+      inRange: "calendar__cell--in-range",
+      inPreviewRange: "calendar__cell--in-preview-range",
       today: "calendar__cell--today",
       outsideMonth: "calendar__cell--outside-month",
       disabled: "calendar__cell--disabled",

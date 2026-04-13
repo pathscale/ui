@@ -20,6 +20,9 @@ import {
   useForm,
   useFieldProps,
   DateField,
+  DatePicker,
+  DateRangePicker,
+  type DateRangeValue,
   ListBox,
   Loading,
   Menu,
@@ -265,6 +268,11 @@ export default function App() {
   const [controlledNumberValue, setControlledNumberValue] = createSignal<number | undefined>(3);
   const [controlledDateValue, setControlledDateValue] = createSignal("2026-04-11");
   const [controlledCalendarDate, setControlledCalendarDate] = createSignal("2026-04-15");
+  const [controlledPickerDate, setControlledPickerDate] = createSignal("2026-04-16");
+  const [controlledRangeValue, setControlledRangeValue] = createSignal<DateRangeValue>({
+    start: "2026-04-16",
+    end: "2026-04-22",
+  });
   const [controlledTimeValue, setControlledTimeValue] = createSignal("13:30");
   const validatedForm = useForm({
     schema: FORM_VALIDATION_SCHEMA,
@@ -1113,6 +1121,52 @@ export default function App() {
               <Description>
                 Use previous/next controls or keyboard keys: arrows, Home/End, and PageUp/PageDown.
               </Description>
+            </div>
+          </div>
+        </section>
+
+        <section class="space-y-4 rounded-xl border border-base-300 bg-base-200 p-4">
+          <div>
+            <h2 class="text-sm font-semibold">DatePicker &amp; DateRangePicker</h2>
+            <p class="text-xs opacity-70">
+              Popover calendar pickers with controlled/uncontrolled state, disabled dates, and range selection flow.
+            </p>
+          </div>
+
+          <div class="grid gap-4 lg:grid-cols-2">
+            <div class="space-y-2 rounded-xl border border-base-300 bg-base-100 p-3">
+              <h3 class="text-xs font-semibold uppercase tracking-wide opacity-70">DatePicker Basic</h3>
+              <DatePicker defaultValue="2026-04-10" />
+            </div>
+
+            <div class="space-y-2 rounded-xl border border-base-300 bg-base-100 p-3">
+              <h3 class="text-xs font-semibold uppercase tracking-wide opacity-70">DatePicker Controlled</h3>
+              <DatePicker value={controlledPickerDate()} onChange={setControlledPickerDate} />
+              <Description>Selected: {controlledPickerDate()}</Description>
+            </div>
+
+            <div class="space-y-2 rounded-xl border border-base-300 bg-base-100 p-3">
+              <h3 class="text-xs font-semibold uppercase tracking-wide opacity-70">DateRangePicker</h3>
+              <DateRangePicker value={controlledRangeValue()} onChange={setControlledRangeValue} />
+              <Description>
+                Range: {controlledRangeValue()?.start ?? "start"} - {controlledRangeValue()?.end ?? "end"}
+              </Description>
+            </div>
+
+            <div class="space-y-2 rounded-xl border border-base-300 bg-base-100 p-3">
+              <h3 class="text-xs font-semibold uppercase tracking-wide opacity-70">Disabled Dates</h3>
+              <DatePicker
+                minValue="2026-04-05"
+                maxValue="2026-04-28"
+                isDateUnavailable={(date) => date.getDay() === 0 || date.getDay() === 6}
+              />
+              <DateRangePicker
+                defaultValue={{ start: "2026-04-08", end: "2026-04-12" }}
+                minValue="2026-04-05"
+                maxValue="2026-04-28"
+                isDateUnavailable={(date) => date.getDay() === 0 || date.getDay() === 6}
+              />
+              <Description>Weekends are unavailable.</Description>
             </div>
           </div>
         </section>

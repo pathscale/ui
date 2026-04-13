@@ -168,6 +168,40 @@
     color: inherit;
   }
 
+  .calendar__cell--in-range,
+  .calendar__cell--in-preview-range {
+    background-color: color-mix(in oklab, var(--color-accent) 18%, transparent);
+    border-radius: 0;
+  }
+
+  .calendar__cell--range-start,
+  .calendar__cell--range-end {
+    background-color: var(--color-accent);
+    color: var(--color-accent-foreground);
+    border-radius: 9999px;
+  }
+
+  .calendar__cell--range-start .calendar__day,
+  .calendar__cell--range-end .calendar__day {
+    color: inherit;
+  }
+
+  .calendar__cell--range-start.calendar__cell--in-range,
+  .calendar__cell--range-start.calendar__cell--in-preview-range {
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 0;
+  }
+
+  .calendar__cell--range-end.calendar__cell--in-range,
+  .calendar__cell--range-end.calendar__cell--in-preview-range {
+    border-top-left-radius: 0;
+    border-bottom-left-radius: 0;
+  }
+
+  .calendar__cell--range-start.calendar__cell--range-end {
+    border-radius: 9999px;
+  }
+
   .calendar__cell:active:not(:disabled),
   .calendar__cell[data-pressed="true"]:not(:disabled) {
     transform: scale(0.95);

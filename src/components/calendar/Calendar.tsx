@@ -103,11 +103,20 @@ const toWeeks = <T,>(items: T[]) => {
 };
 
 export type CalendarWeekdayFormat = "narrow" | "short" | "long";
+export type CalendarSelectionMode = "single" | "range";
+export type CalendarDaySelectHandler = (value: string, date: Date) => void;
+export type CalendarDayHoverHandler = (value: string | undefined, date?: Date) => void;
 
 type CalendarBaseProps = {
+  selectionMode?: CalendarSelectionMode;
   value?: string;
   defaultValue?: string;
   onChange?: (value: string) => void;
+  rangeStart?: string;
+  rangeEnd?: string;
+  rangePreview?: string;
+  onDaySelect?: CalendarDaySelectHandler;
+  onDayHover?: CalendarDayHoverHandler;
   minValue?: string;
   maxValue?: string;
   isDateUnavailable?: (date: Date) => boolean;
@@ -132,9 +141,15 @@ const Calendar = (props: CalendarProps): JSX.Element => {
     "dataTheme",
     "style",
     "ref",
+    "selectionMode",
     "value",
     "defaultValue",
     "onChange",
+    "rangeStart",
+    "rangeEnd",
+    "rangePreview",
+    "onDaySelect",
+    "onDayHover",
     "minValue",
     "maxValue",
     "isDateUnavailable",
@@ -145,9 +160,15 @@ const Calendar = (props: CalendarProps): JSX.Element => {
     "disabled",
   ]);
 
+  const selectionMode = createMemo<CalendarSelectionMode>(
+    () => local.selectionMode ?? "single",
+  );
+
   const defaultReferenceDate = parseISODate(local.defaultValue) ?? today();
   const controlledReferenceDate = parseISODate(local.value);
-  const initialFocusedDate = controlledReferenceDate ?? defaultReferenceDate;
+  const rangeReferenceDate = parseISODate(local.rangeEnd) ?? parseISODate(local.rangeStart);
+  const initialFocusedDate =
+    controlledReferenceDate ?? rangeReferenceDate ?? defaultReferenceDate;
 
   const [internalValue, setInternalValue] = createSignal(local.defaultValue ?? "");
   const [visibleMonth, setVisibleMonth] = createSignal(startOfMonth(initialFocusedDate));
@@ -158,6 +179,9 @@ const Calendar = (props: CalendarProps): JSX.Element => {
   );
 
   const selectedDate = createMemo(() => parseISODate(selectedValue()));
+  const rangeStartDate = createMemo(() => parseISODate(local.rangeStart));
+  const rangeEndDate = createMemo(() => parseISODate(local.rangeEnd));
+  const rangePreviewDate = createMemo(() => parseISODate(local.rangePreview));
   const todayDate = createMemo(() => today());
   const minDate = createMemo(() => parseISODate(local.minValue));
   const maxDate = createMemo(() => parseISODate(local.maxValue));
@@ -169,6 +193,35 @@ const Calendar = (props: CalendarProps): JSX.Element => {
   const isCalendarDisabled = createMemo(
     () => Boolean(local.isDisabled) || Boolean(local.disabled),
   );
+  const normalizedRange = createMemo(() => {
+    const start = rangeStartDate();
+    const end = rangeEndDate();
+
+    if (!start && !end) return { start: null as Date | null, end: null as Date | null };
+    if (start && !end) return { start, end: null as Date | null };
+    if (!start && end) return { start: end, end };
+
+    if ((start as Date) && (end as Date) && compareDay(start as Date, end as Date) > 0) {
+      return { start: end as Date, end: start as Date };
+    }
+
+    return { start: start as Date, end: end as Date };
+  });
+  const normalizedPreviewRange = createMemo(() => {
+    const start = normalizedRange().start;
+    const end = normalizedRange().end;
+    const preview = rangePreviewDate();
+
+    if (!start || end || !preview) {
+      return { start: null as Date | null, end: null as Date | null };
+    }
+
+    if (compareDay(preview, start) < 0) {
+      return { start: preview, end: start };
+    }
+
+    return { start, end: preview };
+  });
 
   const monthFormatter = createMemo(
     () => new Intl.DateTimeFormat(locale(), { month: "long", year: "numeric" }),
@@ -237,7 +290,13 @@ const Calendar = (props: CalendarProps): JSX.Element => {
   const selectDate = (date: Date) => {
     if (isDateDisabled(date)) return;
 
-    setValue(toISODate(date));
+    const nextValue = toISODate(date);
+    if (typeof local.onDaySelect === "function") {
+      local.onDaySelect(nextValue, date);
+    } else {
+      setValue(nextValue);
+    }
+
     setFocusedDate(date);
     setVisibleMonthFromDate(date);
   };
@@ -375,17 +434,21 @@ const Calendar = (props: CalendarProps): JSX.Element => {
   };
 
   createEffect(() => {
-    if (local.value === undefined) return;
+    const nextFocusedDate =
+      selectionMode() === "range"
+        ? normalizedRange().end ?? normalizedRange().start
+        : local.value !== undefined
+          ? parseISODate(local.value)
+          : null;
 
-    const nextControlledDate = parseISODate(local.value);
-    if (!nextControlledDate) return;
+    if (!nextFocusedDate) return;
 
-    if (!isSameDay(nextControlledDate, focusedDate())) {
-      setFocusedDate(nextControlledDate);
+    if (!isSameDay(nextFocusedDate, focusedDate())) {
+      setFocusedDate(nextFocusedDate);
     }
 
-    if (!isSameMonth(nextControlledDate, visibleMonth())) {
-      setVisibleMonth(clampVisibleMonth(startOfMonth(nextControlledDate)));
+    if (!isSameMonth(nextFocusedDate, visibleMonth())) {
+      setVisibleMonth(clampVisibleMonth(startOfMonth(nextFocusedDate)));
     }
   });
 
@@ -408,6 +471,7 @@ const Calendar = (props: CalendarProps): JSX.Element => {
         local.className,
       )}
       data-slot="calendar"
+      data-selection-mode={selectionMode()}
       data-disabled={isCalendarDisabled() ? "true" : "false"}
       data-theme={local.dataTheme}
       style={local.style}
@@ -499,7 +563,12 @@ const Calendar = (props: CalendarProps): JSX.Element => {
           </div>
         </div>
 
-        <div class={CLASSES.GridBody.base} data-slot="calendar-grid-body" role="rowgroup">
+        <div
+          class={CLASSES.GridBody.base}
+          data-slot="calendar-grid-body"
+          role="rowgroup"
+          onMouseLeave={() => local.onDayHover?.(undefined)}
+        >
           <For each={calendarWeeks()}>
             {(week) => (
               <div class={CLASSES.GridRow.base} data-slot="calendar-grid-row" role="row">
@@ -508,11 +577,42 @@ const Calendar = (props: CalendarProps): JSX.Element => {
                     const isoDate = toISODate(date);
                     const isOutsideMonth = !isSameMonth(date, visibleMonth());
                     const selectedDateValue = selectedDate();
-                    const isSelected = selectedDateValue !== null && isSameDay(date, selectedDateValue);
+                    const rangeStart = normalizedRange().start;
+                    const rangeEnd = normalizedRange().end;
+                    const previewRange = normalizedPreviewRange();
+                    const isRangeStart =
+                      selectionMode() === "range" &&
+                      rangeStart !== null &&
+                      isSameDay(date, rangeStart);
+                    const isRangeEnd =
+                      selectionMode() === "range" &&
+                      rangeEnd !== null &&
+                      isSameDay(date, rangeEnd);
+                    const isInCommittedRange =
+                      selectionMode() === "range" &&
+                      rangeStart !== null &&
+                      rangeEnd !== null &&
+                      compareDay(date, rangeStart) >= 0 &&
+                      compareDay(date, rangeEnd) <= 0;
+                    const isInPreviewRange =
+                      selectionMode() === "range" &&
+                      previewRange.start !== null &&
+                      previewRange.end !== null &&
+                      compareDay(date, previewRange.start) >= 0 &&
+                      compareDay(date, previewRange.end) <= 0;
+                    const isInRange = isInCommittedRange || isInPreviewRange;
+                    const isSelected =
+                      selectionMode() === "single" &&
+                      selectedDateValue !== null &&
+                      isSameDay(date, selectedDateValue);
                     const isToday = isSameDay(date, todayDate());
                     const isUnavailable = isDateUnavailable(date);
                     const isDisabledDate = isDateDisabled(date);
                     const isFocused = isSameDay(date, focusedDate());
+                    const isAriaSelected =
+                      selectionMode() === "range"
+                        ? isRangeStart || isRangeEnd || isInRange
+                        : isSelected;
 
                     return (
                       <div class={CLASSES.DayWrapper.base} data-slot="calendar-day-wrapper" role="presentation">
@@ -531,6 +631,12 @@ const Calendar = (props: CalendarProps): JSX.Element => {
                             class={twMerge(
                               CLASSES.Cell.base,
                               isSelected && CLASSES.Cell.flag.selected,
+                              isRangeStart && CLASSES.Cell.flag.rangeStart,
+                              isRangeEnd && CLASSES.Cell.flag.rangeEnd,
+                              isInCommittedRange && CLASSES.Cell.flag.inRange,
+                              isInPreviewRange &&
+                                !isInCommittedRange &&
+                                CLASSES.Cell.flag.inPreviewRange,
                               isToday && CLASSES.Cell.flag.today,
                               isOutsideMonth && CLASSES.Cell.flag.outsideMonth,
                               isDisabledDate && CLASSES.Cell.flag.disabled,
@@ -540,18 +646,26 @@ const Calendar = (props: CalendarProps): JSX.Element => {
                             data-slot="calendar-cell"
                             data-date={isoDate}
                             data-selected={isSelected ? "true" : "false"}
+                            data-range-start={isRangeStart ? "true" : "false"}
+                            data-range-end={isRangeEnd ? "true" : "false"}
+                            data-in-range={isInCommittedRange ? "true" : "false"}
+                            data-in-preview-range={isInPreviewRange ? "true" : "false"}
                             data-today={isToday ? "true" : "false"}
                             data-outside-month={isOutsideMonth ? "true" : "false"}
                             data-disabled={isDisabledDate ? "true" : "false"}
                             data-unavailable={isUnavailable ? "true" : "false"}
                             role="gridcell"
                             aria-label={dayLabelFormatter().format(date)}
-                            aria-selected={isSelected ? "true" : "false"}
+                            aria-selected={isAriaSelected ? "true" : "false"}
                             aria-disabled={isDisabledDate ? "true" : "false"}
                             disabled={isDisabledDate}
                             tabIndex={isFocused ? 0 : -1}
                             onClick={() => selectDate(date)}
                             onFocus={() => setFocusedDate(date)}
+                            onMouseEnter={() => {
+                              if (isDisabledDate) return;
+                              local.onDayHover?.(isoDate, date);
+                            }}
                             onKeyDown={handleCellKeyDown}
                           >
                             <span class={CLASSES.Day.base} data-slot="calendar-day">

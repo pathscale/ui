@@ -44,6 +44,9 @@ export {
   default as Calendar,
   type CalendarProps,
   type CalendarWeekdayFormat,
+  type CalendarSelectionMode,
+  type CalendarDaySelectHandler,
+  type CalendarDayHoverHandler,
 } from "./components/calendar";
 export { default as Card } from "./components/card";
 export type {
@@ -174,6 +177,12 @@ export type {
   DateFieldRenderProps,
   DateFieldSegmentValue,
 } from "./components/date-field";
+export { default as DatePicker, type DatePickerProps } from "./components/date-picker";
+export {
+  default as DateRangePicker,
+  type DateRangePickerProps,
+  type DateRangeValue,
+} from "./components/date-range-picker";
 export { default as Divider } from "./components/divider";
 export { default as Dock } from "./components/dock";
 export { default as Drawer, DrawerRoot, DrawerTrigger, DrawerBackdrop, DrawerContent, DrawerDialog, DrawerHeader, DrawerHeading, DrawerBody, DrawerFooter, DrawerHandle, DrawerCloseTrigger, DrawerClose } from "./components/drawer";
