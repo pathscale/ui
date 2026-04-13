@@ -1,6 +1,5 @@
 {
   "lockfileVersion": 1,
-  "configVersion": 0,
   "workspaces": {
     "": {
       "name": "my-project",
@@ -9,6 +8,7 @@
         "@pathscale/ui": "^1.1.11",
         "@tanstack/solid-virtual": "^3.13.23",
         "rsbuild-plugin-iconify": "^1.0.3",
+        "valibot": "^1.0.0",
       },
       "devDependencies": {
         "@biomejs/biome": "1.9.4",
@@ -41,7 +41,6 @@
         "svgo": "^3.3.2",
         "tailwind-merge": "^3.3.0",
         "typescript": "^5.8.3",
-        "valibot": "^1.0.0",
       },
       "peerDependencies": {
         "@felte/solid": "^1.2.0",

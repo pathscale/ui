@@ -15,6 +15,7 @@ import {
 } from "solid-js";
 import { twMerge } from "tailwind-merge";
 import type { IComponentBaseProps } from "../types";
+import { CLASSES } from "./Select.classes";
 
 type SelectKey = string | number;
 export type SelectValueType = SelectKey | SelectKey[] | null;
@@ -56,11 +57,6 @@ type SelectContextValue = {
 };
 
 const SelectContext = createContext<SelectContextValue>();
-
-const SELECT_VARIANT_CLASS_MAP: Record<SelectVariant, string> = {
-  primary: "ui-select--primary",
-  secondary: "ui-select--secondary",
-};
 
 const invokeEventHandler = (handler: unknown, event: Event) => {
   if (typeof handler === "function") {
@@ -389,9 +385,9 @@ const SelectRoot: Component<SelectRootProps> = (props) => {
         {...others}
         ref={setRootRef}
         class={twMerge(
-          "ui-select",
-          SELECT_VARIANT_CLASS_MAP[variant()],
-          fullWidth() && "ui-select--full-width",
+          CLASSES.base,
+          CLASSES.variant[variant()],
+          fullWidth() && CLASSES.flag.fullWidth,
           local.class,
           local.className,
         )}
@@ -433,18 +429,18 @@ const SelectTrigger: Component<SelectTriggerProps> = (props) => {
     return (
       <button
         {...others}
-        class={twMerge("ui-select__trigger", local.class, local.className)}
+        class={twMerge(CLASSES.slot.trigger, local.class, local.className)}
         data-theme={local.dataTheme}
         type={local.type ?? "button"}
       >
         {local.startIcon ? (
-          <span class="ui-select__icon ui-select__icon--start" data-slot="ui-select-trigger-start-icon">
+          <span class={twMerge(CLASSES.slot.icon, CLASSES.slot.iconStart)} data-slot="ui-select-trigger-start-icon">
             {local.startIcon}
           </span>
         ) : null}
         {local.children}
         {local.endIcon ? (
-          <span class="ui-select__icon ui-select__icon--end" data-slot="ui-select-trigger-end-icon">
+          <span class={twMerge(CLASSES.slot.icon, CLASSES.slot.iconEnd)} data-slot="ui-select-trigger-end-icon">
             {local.endIcon}
           </span>
         ) : null}
@@ -515,8 +511,8 @@ const SelectTrigger: Component<SelectTriggerProps> = (props) => {
       id={ctx.triggerId}
       type={local.type ?? "button"}
       class={twMerge(
-        "ui-select__trigger",
-        ctx.fullWidth() && "ui-select__trigger--full-width",
+        CLASSES.slot.trigger,
+        ctx.fullWidth() && CLASSES.slot.triggerFullWidth,
         local.class,
         local.className,
       )}
@@ -532,13 +528,13 @@ const SelectTrigger: Component<SelectTriggerProps> = (props) => {
       onKeyDown={handleKeyDown}
     >
       {local.startIcon ? (
-        <span class="ui-select__icon ui-select__icon--start" data-slot="ui-select-trigger-start-icon">
+        <span class={twMerge(CLASSES.slot.icon, CLASSES.slot.iconStart)} data-slot="ui-select-trigger-start-icon">
           {local.startIcon}
         </span>
       ) : null}
       {local.children}
       {local.endIcon ? (
-        <span class="ui-select__icon ui-select__icon--end" data-slot="ui-select-trigger-end-icon">
+        <span class={twMerge(CLASSES.slot.icon, CLASSES.slot.iconEnd)} data-slot="ui-select-trigger-end-icon">
           {local.endIcon}
         </span>
       ) : null}
@@ -565,7 +561,7 @@ const SelectValue: Component<SelectValueProps> = (props) => {
   return (
     <span
       {...others}
-      class={twMerge("ui-select__value", local.class, local.className)}
+      class={twMerge(CLASSES.slot.value, local.class, local.className)}
       data-theme={local.dataTheme}
       data-slot="ui-select-value"
       data-placeholder={isPlaceholder() ? "true" : "false"}
@@ -595,20 +591,20 @@ const SelectIndicator: Component<SelectIndicatorProps> = (props) => {
   return (
     <span
       {...others}
-      class={twMerge("ui-select__indicator", local.class, local.className)}
+      class={twMerge(CLASSES.slot.indicator, local.class, local.className)}
       data-theme={local.dataTheme}
       data-slot="ui-select-indicator"
       data-open={ctx?.open() ? "true" : "false"}
       aria-hidden="true"
     >
       {local.startIcon ? (
-        <span class="ui-select__icon ui-select__icon--start" data-slot="ui-select-indicator-start-icon">
+        <span class={twMerge(CLASSES.slot.icon, CLASSES.slot.iconStart)} data-slot="ui-select-indicator-start-icon">
           {local.startIcon}
         </span>
       ) : null}
       {local.children}
       {local.endIcon ? (
-        <span class="ui-select__icon ui-select__icon--end" data-slot="ui-select-indicator-end-icon">
+        <span class={twMerge(CLASSES.slot.icon, CLASSES.slot.iconEnd)} data-slot="ui-select-indicator-end-icon">
           {local.endIcon}
         </span>
       ) : null}
@@ -631,7 +627,7 @@ const SelectPopover: Component<SelectPopoverProps> = (props) => {
   return (
     <div
       {...others}
-      class={twMerge("ui-select__popover", local.class, local.className)}
+      class={twMerge(CLASSES.slot.popover, local.class, local.className)}
       data-theme={local.dataTheme}
       data-slot="ui-select-popover"
       data-open={ctx?.open() ? "true" : "false"}
@@ -657,7 +653,7 @@ const SelectListbox: Component<SelectListboxProps> = (props) => {
     <div
       {...others}
       id={ctx?.listboxId}
-      class={twMerge("ui-select__listbox", local.class, local.className)}
+      class={twMerge(CLASSES.slot.listbox, local.class, local.className)}
       data-theme={local.dataTheme}
       data-slot="ui-select-listbox"
       role="listbox"
@@ -702,19 +698,19 @@ const SelectOption: Component<SelectOptionProps> = (props) => {
     return (
       <button
         {...others}
-        class={twMerge("ui-select__option", local.class, local.className)}
+        class={twMerge(CLASSES.slot.option, local.class, local.className)}
         data-theme={local.dataTheme}
         type={local.type ?? "button"}
       >
         {local.startIcon ? (
-          <span class="ui-select__icon ui-select__icon--start" data-slot="ui-select-option-start-icon">
+          <span class={twMerge(CLASSES.slot.icon, CLASSES.slot.iconStart)} data-slot="ui-select-option-start-icon">
             {local.startIcon}
           </span>
         ) : null}
         {local.children}
         {local.endIcon ? (
-          <span class="ui-select__option-indicator" data-slot="ui-select-option-indicator" aria-hidden="true">
-            <span class="ui-select__icon ui-select__icon--end" data-slot="ui-select-option-end-icon">
+          <span class={CLASSES.slot.optionIndicator} data-slot="ui-select-option-indicator" aria-hidden="true">
+            <span class={twMerge(CLASSES.slot.icon, CLASSES.slot.iconEnd)} data-slot="ui-select-option-end-icon">
               {local.endIcon}
             </span>
           </span>
@@ -825,7 +821,7 @@ const SelectOption: Component<SelectOptionProps> = (props) => {
       {...others}
       ref={setRef}
       type={local.type ?? "button"}
-      class={twMerge("ui-select__option", local.class, local.className)}
+      class={twMerge(CLASSES.slot.option, local.class, local.className)}
       data-theme={local.dataTheme}
       data-slot="ui-select-option"
       data-selected={isSelected() ? "true" : "false"}
@@ -842,16 +838,16 @@ const SelectOption: Component<SelectOptionProps> = (props) => {
       onKeyDown={handleKeyDown}
     >
       {local.startIcon ? (
-        <span class="ui-select__icon ui-select__icon--start" data-slot="ui-select-option-start-icon">
+        <span class={twMerge(CLASSES.slot.icon, CLASSES.slot.iconStart)} data-slot="ui-select-option-start-icon">
           {local.startIcon}
         </span>
       ) : null}
-      <span class="ui-select__option-label" data-slot="ui-select-option-label">
+      <span class={CLASSES.slot.optionLabel} data-slot="ui-select-option-label">
         {local.children}
       </span>
       {local.endIcon ? (
-        <span class="ui-select__option-indicator" data-slot="ui-select-option-indicator" aria-hidden="true">
-          <span class="ui-select__icon ui-select__icon--end" data-slot="ui-select-option-end-icon">
+        <span class={CLASSES.slot.optionIndicator} data-slot="ui-select-option-indicator" aria-hidden="true">
+          <span class={twMerge(CLASSES.slot.icon, CLASSES.slot.iconEnd)} data-slot="ui-select-option-end-icon">
             {local.endIcon}
           </span>
         </span>
