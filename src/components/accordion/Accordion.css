@@ -1,0 +1,158 @@
+@layer components {
+  .accordion {
+    width: 100%;
+    contain: layout style;
+  }
+
+  .accordion__item {
+    position: relative;
+    border: 0;
+  }
+
+  .accordion__item::after {
+    content: "";
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    height: 1px;
+    width: 100%;
+    border-radius: 9999px;
+    background-color: var(--color-base-300);
+  }
+
+  .accordion__item:last-child::after {
+    content: none;
+  }
+
+  .accordion__item--hide-separator::after {
+    display: none;
+  }
+
+  .accordion__item--disabled {
+    opacity: 0.65;
+  }
+
+  .accordion__trigger {
+    cursor: pointer;
+    display: flex;
+    width: 100%;
+    align-items: center;
+    justify-content: space-between;
+    border: 0;
+    background-color: transparent;
+    padding: 1rem;
+    text-align: left;
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: inherit;
+    user-select: none;
+    transition:
+      opacity 150ms ease,
+      background-color 150ms ease,
+      box-shadow 150ms ease;
+  }
+
+  .accordion__trigger:focus-visible,
+  .accordion__trigger[data-focus-visible="true"] {
+    outline: 2px solid var(--color-base-content);
+    outline-offset: 2px;
+  }
+
+  .accordion__item--disabled .accordion__trigger,
+  .accordion__trigger:disabled,
+  .accordion__trigger[aria-disabled="true"] {
+    cursor: not-allowed;
+    opacity: 0.55;
+  }
+
+  @media (hover: hover) {
+    .accordion__trigger:hover:not([aria-expanded="true"]):not(:disabled):not(
+        [aria-disabled="true"]
+      ),
+    .accordion__trigger[data-hovered="true"]:not(
+        [aria-expanded="true"]
+      ):not(:disabled):not([aria-disabled="true"]) {
+      background-color: color-mix(
+        in oklab,
+        var(--color-base-content),
+        transparent 96%
+      );
+    }
+  }
+
+  .accordion__indicator {
+    margin-inline-start: auto;
+    height: 1rem;
+    width: 1rem;
+    flex-shrink: 0;
+    opacity: 0.65;
+    transition: transform 250ms ease;
+  }
+
+  .accordion__indicator--expanded {
+    transform: rotate(-180deg);
+  }
+
+  .accordion__content {
+    display: grid;
+    grid-template-rows: 0fr;
+    opacity: 0;
+    overflow: hidden;
+    transition:
+      grid-template-rows 200ms ease,
+      opacity 200ms ease;
+  }
+
+  .accordion__content--expanded {
+    grid-template-rows: 1fr;
+    opacity: 1;
+  }
+
+  .accordion__body {
+    min-height: 0;
+    overflow: hidden;
+    font-size: 0.875rem;
+  }
+
+  .accordion__body-inner {
+    padding-inline: 1rem;
+    padding-top: 0;
+    padding-bottom: 1rem;
+    color: color-mix(in oklab, var(--color-base-content), transparent 25%);
+  }
+
+  .accordion--surface {
+    border-radius: 1.5rem;
+    background-color: var(--color-base-100);
+  }
+
+  .accordion--surface .accordion__item::after {
+    left: 3%;
+    width: 94%;
+    background-color: color-mix(
+      in oklab,
+      var(--color-base-content),
+      transparent 90%
+    );
+  }
+
+  .accordion--surface .accordion__item:first-child .accordion__trigger {
+    border-top-left-radius: 1.5rem;
+    border-top-right-radius: 1.5rem;
+  }
+
+  .accordion--surface
+    .accordion__item:last-child:not(.accordion__item--expanded)
+    .accordion__trigger {
+    border-bottom-left-radius: 1.5rem;
+    border-bottom-right-radius: 1.5rem;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .accordion__trigger,
+    .accordion__indicator,
+    .accordion__content {
+      transition: none;
+    }
+  }
+}

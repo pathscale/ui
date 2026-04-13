@@ -1,6 +1,7 @@
 import { For, createSignal } from "solid-js";
 import { z } from "zod";
 import {
+  Accordion,
   Alert,
   Avatar,
   Badge,
@@ -244,6 +245,9 @@ export default function App() {
   const [selectedMenuMode, setSelectedMenuMode] = createSignal<Set<string>>(new Set(["preview"]));
   const [selectedMenuFilters, setSelectedMenuFilters] = createSignal<Set<string>>(new Set(["all"]));
   const [lastMenuAction, setLastMenuAction] = createSignal<string | null>(null);
+  const [controlledAccordionValue, setControlledAccordionValue] = createSignal<string[]>([
+    "security",
+  ]);
   const [emailError, setEmailError] = createSignal<string>("Email is required.");
   const [usernameError, setUsernameError] = createSignal<string>("Username is required.");
   const [formSummary, setFormSummary] = createSignal("No submission yet.");
@@ -3497,6 +3501,118 @@ export default function App() {
                 Hue: {themeHue() === null ? "neutral" : `${Math.round(themeHue() ?? 0)}deg`}
               </p>
               <p>Saturation: {Math.round(themeSaturation())}%</p>
+            </div>
+          </div>
+        </section>
+
+        <section class="space-y-4 rounded-xl border border-base-300 bg-base-200 p-4">
+          <div>
+            <h2 class="text-sm font-semibold">Accordion</h2>
+            <p class="text-xs opacity-70">
+              HeroUI-style compound accordion with single/multiple and controlled/uncontrolled modes.
+            </p>
+          </div>
+
+          <div class="grid gap-6 md:grid-cols-2">
+            <div class="space-y-3">
+              <h3 class="text-xs font-semibold uppercase opacity-70">Basic</h3>
+              <Accordion defaultValue="getting-started">
+                <Accordion.Item value="getting-started">
+                  <Accordion.Trigger>Getting started</Accordion.Trigger>
+                  <Accordion.Content>
+                    Install the package, import components from <code>@pathscale/ui</code>, and apply your theme.
+                  </Accordion.Content>
+                </Accordion.Item>
+                <Accordion.Item value="customization">
+                  <Accordion.Trigger>Customization</Accordion.Trigger>
+                  <Accordion.Content>
+                    Use component props plus CSS variables to align visuals with your product style.
+                  </Accordion.Content>
+                </Accordion.Item>
+              </Accordion>
+            </div>
+
+            <div class="space-y-3">
+              <h3 class="text-xs font-semibold uppercase opacity-70">Multiple items open</h3>
+              <Accordion selectionMode="multiple" defaultValue={["shipping", "returns"]}>
+                <Accordion.Item value="shipping">
+                  <Accordion.Trigger>Shipping policy</Accordion.Trigger>
+                  <Accordion.Content>
+                    Standard shipping takes 3-5 business days. Expedited shipping takes 1-2 business days.
+                  </Accordion.Content>
+                </Accordion.Item>
+                <Accordion.Item value="returns">
+                  <Accordion.Trigger>Return policy</Accordion.Trigger>
+                  <Accordion.Content>
+                    Returns are accepted within 30 days for unused items in original condition.
+                  </Accordion.Content>
+                </Accordion.Item>
+                <Accordion.Item value="support">
+                  <Accordion.Trigger>Support channels</Accordion.Trigger>
+                  <Accordion.Content>
+                    Reach us via email, live chat, or the support portal for account-specific issues.
+                  </Accordion.Content>
+                </Accordion.Item>
+              </Accordion>
+            </div>
+
+            <div class="space-y-3">
+              <h3 class="text-xs font-semibold uppercase opacity-70">Single-open mode</h3>
+              <Accordion selectionMode="single" defaultValue="billing">
+                <Accordion.Item value="billing">
+                  <Accordion.Trigger>Billing</Accordion.Trigger>
+                  <Accordion.Content>
+                    Monthly invoices are generated automatically and can be downloaded from settings.
+                  </Accordion.Content>
+                </Accordion.Item>
+                <Accordion.Item value="security">
+                  <Accordion.Trigger>Security</Accordion.Trigger>
+                  <Accordion.Content>
+                    Enable multi-factor authentication and rotate API keys regularly for safer access.
+                  </Accordion.Content>
+                </Accordion.Item>
+                <Accordion.Item value="integrations">
+                  <Accordion.Trigger>Integrations</Accordion.Trigger>
+                  <Accordion.Content>
+                    Connect with analytics, observability, and communication providers from the integrations page.
+                  </Accordion.Content>
+                </Accordion.Item>
+              </Accordion>
+            </div>
+
+            <div class="space-y-3">
+              <h3 class="text-xs font-semibold uppercase opacity-70">Controlled</h3>
+              <div class="flex flex-wrap gap-2">
+                <Button size="sm" variant="secondary" onClick={() => setControlledAccordionValue(["billing"])}>
+                  Open Billing
+                </Button>
+                <Button size="sm" variant="secondary" onClick={() => setControlledAccordionValue(["security"])}>
+                  Open Security
+                </Button>
+                <Button size="sm" variant="secondary" onClick={() => setControlledAccordionValue([])}>
+                  Collapse All
+                </Button>
+              </div>
+              <Accordion
+                selectionMode="single"
+                value={controlledAccordionValue()}
+                onValueChange={setControlledAccordionValue}
+                variant="surface"
+              >
+                <Accordion.Item value="billing">
+                  <Accordion.Trigger>Billing</Accordion.Trigger>
+                  <Accordion.Content>
+                    This panel is controlled via external state from the buttons above.
+                  </Accordion.Content>
+                </Accordion.Item>
+                <Accordion.Item value="security">
+                  <Accordion.Trigger>Security</Accordion.Trigger>
+                  <Accordion.Content>
+                    Controlled selection allows synchronized UI with tabs, routes, or URL parameters.
+                  </Accordion.Content>
+                </Accordion.Item>
+              </Accordion>
+              <p class="text-xs opacity-70">Open item: {controlledAccordionValue()[0] ?? "none"}</p>
             </div>
           </div>
         </section>

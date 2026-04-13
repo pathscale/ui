@@ -1,4 +1,22 @@
-export { default as Accordion } from "./components/accordion";
+export {
+  default as Accordion,
+  AccordionRoot,
+  AccordionItem,
+  AccordionTrigger,
+  AccordionContent,
+  AccordionIndicator,
+} from "./components/accordion";
+export type {
+  AccordionProps,
+  AccordionRootProps,
+  AccordionItemProps,
+  AccordionTriggerProps,
+  AccordionContentProps,
+  AccordionIndicatorProps,
+  AccordionSelectionMode,
+  AccordionVariant,
+  AccordionValue,
+} from "./components/accordion";
 export { default as Alert, AlertRoot, AlertIndicator, AlertContent, AlertTitle, AlertDescription } from "./components/alert";
 export type { AlertStatus, AlertRootProps, AlertIndicatorProps, AlertContentProps, AlertTitleProps, AlertDescriptionProps } from "./components/alert";
 export { default as Artboard, type ArtboardProps } from "./components/artboard";
