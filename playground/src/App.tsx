@@ -66,6 +66,8 @@ import {
   TextArea,
   TextField,
   TimeField,
+  Toast,
+  toast,
   Toggle,
   Tooltip,
   ThemeColorPicker,
@@ -3127,6 +3129,88 @@ export default function App() {
 
         <section class="space-y-4 rounded-xl border border-base-300 bg-base-200 p-4">
           <div>
+            <h2 class="text-sm font-semibold">Toast</h2>
+            <p class="text-xs opacity-70">
+              HeroUI-style toast provider with variants, actions, stacking, and auto-dismiss behavior.
+            </p>
+          </div>
+
+          <div class="flex flex-wrap gap-3">
+            <Button
+              size="sm"
+              variant="secondary"
+              onClick={() =>
+                toast("Profile updated", {
+                  description: "Your profile changes were saved successfully.",
+                })
+              }
+            >
+              Basic Toast
+            </Button>
+
+            <Button
+              size="sm"
+              variant="primary"
+              onClick={() =>
+                toast.success("Deployment complete", {
+                  description: "Build #428 was deployed to production.",
+                })
+              }
+            >
+              Success
+            </Button>
+
+            <Button
+              size="sm"
+              variant="danger"
+              onClick={() =>
+                toast.error("Request failed", {
+                  description: "The API request failed. Please retry.",
+                })
+              }
+            >
+              Error
+            </Button>
+
+            <Button
+              size="sm"
+              variant="outline"
+              onClick={() =>
+                toast("Session expiring", {
+                  description: "Renew now to stay signed in.",
+                  variant: "warning",
+                  timeout: 0,
+                  actionProps: {
+                    children: "Renew",
+                    onClick: () =>
+                      toast.success("Session renewed", {
+                        description: "Your session is active again.",
+                      }),
+                  },
+                })
+              }
+            >
+              Action + Persistent
+            </Button>
+
+            <Button
+              size="sm"
+              variant="ghost"
+              onClick={() => {
+                for (let index = 0; index < 4; index += 1) {
+                  toast.info(`Queued toast ${index + 1}`, {
+                    description: "Stacking behavior with max visible toasts.",
+                  });
+                }
+              }}
+            >
+              Stacked Toasters
+            </Button>
+          </div>
+        </section>
+
+        <section class="space-y-4 rounded-xl border border-base-300 bg-base-200 p-4">
+          <div>
             <h2 class="text-sm font-semibold">Drawer</h2>
             <p class="text-xs opacity-70">
               HeroUI-style compound drawer with placements and backdrop variants.
@@ -3922,6 +4006,7 @@ export default function App() {
         <StreamingComposableExample />
 
       </div>
+      <Toast.Provider placement="top-end" />
     </main>
   );
 }
