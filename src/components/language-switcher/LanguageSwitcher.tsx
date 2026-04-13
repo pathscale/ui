@@ -60,13 +60,13 @@ const LanguageSwitcher: Component<LanguageSwitcherProps> = (props) => {
   return (
     <Dropdown.Root
       {...others}
-      class={classes()}
+      {...{ class: classes() }}
       style={local.style}
       role={undefined}
       aria-label={local["aria-label"] ?? "Language selector"}
     >
       <Dropdown.Trigger
-        class={CLASSES.trigger}
+        {...{ class: CLASSES.trigger }}
         aria-label={`${local.currentLanguageLabel ?? "Current language"}: ${currentLanguageName()}`}
       >
         <Show
@@ -74,25 +74,25 @@ const LanguageSwitcher: Component<LanguageSwitcherProps> = (props) => {
           fallback={
             <Icon
               name="icon-[mdi--loading]"
-              class={CLASSES.loadingIcon}
+              {...{ class: CLASSES.loadingIcon }}
               width={16}
               height={16}
               aria-label={local.loadingLabel ?? "Loading language"}
             />
           }
         >
-          <span class={CLASSES.locale} aria-hidden="true">
+          <span {...{ class: CLASSES.locale }} aria-hidden="true">
             {local.i18n.locale.toUpperCase()}
           </span>
         </Show>
       </Dropdown.Trigger>
 
-      <Dropdown.Menu class={CLASSES.menu} aria-label={local.optionsLabel ?? "Language options"}>
+      <Dropdown.Menu {...{ class: CLASSES.menu }} aria-label={local.optionsLabel ?? "Language options"}>
         <For each={local.i18n.languages}>
           {(lang) => (
             <Dropdown.Item
               onClick={() => handleSelect(lang.code)}
-              class={twMerge(CLASSES.item, isSelected(lang.code) && CLASSES.itemSelected)}
+              {...{ class: twMerge(CLASSES.item, isSelected(lang.code) && CLASSES.itemSelected) }}
               aria-current={isSelected(lang.code) ? "true" : undefined}
             >
               {lang.name}

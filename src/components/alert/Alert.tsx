@@ -151,7 +151,7 @@ const AlertRoot: ParentComponent<AlertRootProps> = (props) => {
       <div
         {...others}
         role="alert"
-        class={twMerge(CLASSES.base, CLASSES.status[status()], local.class, local.className)}
+        {...{ class: twMerge(CLASSES.base, CLASSES.status[status()], local.class, local.className) }}
         data-slot="alert-root"
         data-status={status()}
         data-theme={local.dataTheme}
@@ -185,7 +185,7 @@ const AlertIndicator: Component<AlertIndicatorProps> = (props) => {
   return (
     <div
       {...others}
-      class={twMerge(CLASSES.slot.indicator, local.class, local.className)}
+      {...{ class: twMerge(CLASSES.slot.indicator, local.class, local.className) }}
       data-slot="alert-indicator"
       data-theme={local.dataTheme}
       style={local.style}
@@ -212,7 +212,7 @@ const AlertContent: ParentComponent<AlertContentProps> = (props) => {
   return (
     <div
       {...others}
-      class={twMerge(CLASSES.slot.content, local.class, local.className)}
+      {...{ class: twMerge(CLASSES.slot.content, local.class, local.className) }}
       data-slot="alert-content"
       data-theme={local.dataTheme}
       style={local.style}
@@ -237,7 +237,7 @@ const AlertTitle: ParentComponent<AlertTitleProps> = (props) => {
   return (
     <p
       {...others}
-      class={twMerge(CLASSES.slot.title, local.class, local.className)}
+      {...{ class: twMerge(CLASSES.slot.title, local.class, local.className) }}
       data-slot="alert-title"
       data-theme={local.dataTheme}
       style={local.style}
@@ -262,7 +262,7 @@ const AlertDescription: ParentComponent<AlertDescriptionProps> = (props) => {
   return (
     <span
       {...others}
-      class={twMerge(CLASSES.slot.description, local.class, local.className)}
+      {...{ class: twMerge(CLASSES.slot.description, local.class, local.className) }}
       data-slot="alert-description"
       data-theme={local.dataTheme}
       style={local.style}

@@ -34,7 +34,7 @@ const Icon = (props: IconProps): JSX.Element => {
   return (
     <span
       {...others}
-      class={classes()}
+      {...{ class: classes() }}
       style={{
         width: `${width}px`,
         height: `${height}px`,

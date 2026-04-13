@@ -89,13 +89,13 @@ const AvatarRoot: ParentComponent<AvatarRootProps> = (props) => {
     <AvatarContext.Provider value={ctx}>
       <span
         {...others}
-        class={twMerge(
+        {...{ class: twMerge(
           CLASSES.base,
           CLASSES.size[size()],
           CLASSES.variant[variant()],
           local.class,
           local.className,
-        )}
+        ) }}
         data-slot="avatar-root"
         data-theme={local.dataTheme}
         style={local.style}
@@ -138,7 +138,7 @@ const AvatarImage: Component<AvatarImageProps> = (props) => {
       {...others}
       src={local.src}
       alt={local.alt}
-      class={twMerge(CLASSES.slot.image, local.class, local.className)}
+      {...{ class: twMerge(CLASSES.slot.image, local.class, local.className) }}
       data-slot="avatar-image"
       style={local.style}
       onLoad={handleLoad}
@@ -174,12 +174,12 @@ const AvatarFallback: ParentComponent<AvatarFallbackProps> = (props) => {
     <Show when={showFallback() && !ctx.imageLoaded()}>
       <span
         {...others}
-        class={twMerge(
+        {...{ class: twMerge(
           CLASSES.slot.fallback,
           CLASSES.color[ctx.color()],
           local.class,
           local.className,
-        )}
+        ) }}
         data-slot="avatar-fallback"
         data-theme={local.dataTheme}
         style={local.style}

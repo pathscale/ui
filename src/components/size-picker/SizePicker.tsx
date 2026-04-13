@@ -39,7 +39,7 @@ const SizePicker: Component<SizePickerProps> = (props) => {
 
   return (
     <div
-      class={classes()}
+      {...{ class: classes() }}
       style={local.style}
       role="radiogroup"
       aria-label={local["aria-label"] ?? "Change text size"}

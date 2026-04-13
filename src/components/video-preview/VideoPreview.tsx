@@ -62,7 +62,7 @@ export const VideoPreview: Component<VideoPreviewProps> = (props) => {
             playsinline
             muted={muted()}
             data-theme={local.dataTheme}
-            class={twMerge(mirror() && CLASSES.mirror, local.class, local.className)}
+            {...{ class: twMerge(mirror() && CLASSES.mirror, local.class, local.className) }}
             style={local.style}
           />
         );

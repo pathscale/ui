@@ -148,7 +148,7 @@ const ThemeColorPicker: Component<ThemeColorPickerProps> = (props) => {
 
   return (
     <Show when={featureAvailable()}>
-      <div ref={containerRef} class={classes()} onKeyDown={handleKeyDown} style={local.style} {...others}>
+      <div ref={containerRef} {...{ class: classes() }} onKeyDown={handleKeyDown} style={local.style} {...others}>
         <Button
           type="button"
           size="sm"
@@ -162,25 +162,25 @@ const ThemeColorPicker: Component<ThemeColorPickerProps> = (props) => {
               name="icon-[mdi--palette]"
               width={16}
               height={16}
-              class={store.themeColor() !== null ? CLASSES.iconActive : undefined}
+              {...{ class: store.themeColor() !== null ? CLASSES.iconActive : undefined }}
             />
           )}
         </Button>
 
         <Show when={isOpen()}>
-          <div class={CLASSES.popover}>
+          <div {...{ class: CLASSES.popover }}>
             <ColorPickerContext.Provider value={contextValue()}>
-              <div class={CLASSES.row}>
-                <div class={CLASSES.wheelWrap}>
-                  <ColorWheelFlower class={CLASSES.wheelCustom} />
+              <div {...{ class: CLASSES.row }}>
+                <div {...{ class: CLASSES.wheelWrap }}>
+                  <ColorWheelFlower {...{ class: CLASSES.wheelCustom }} />
                 </div>
 
-                <div class={CLASSES.grayscaleList}>
+                <div {...{ class: CLASSES.grayscaleList }}>
                   <For each={GRAYSCALE_SWATCHES}>
                     {(g) => (
                       <button
                         type="button"
-                        class={CLASSES.swatchButton}
+                        {...{ class: CLASSES.swatchButton }}
                         style={{ "background-color": `${g.hex}` }}
                         aria-label={g.label}
                         onClick={() => handleGrayscale(g)}

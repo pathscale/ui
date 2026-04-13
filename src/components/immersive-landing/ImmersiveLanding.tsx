@@ -93,7 +93,7 @@ const ImmersiveLanding: Component<ImmersiveLandingProps> = (props) => {
   return (
     <ImmersiveLandingContext.Provider value={contextValue}>
       {/* Fixed viewport */}
-      <div class={classes()} style={local.style} {...others}>
+      <div {...{ class: classes() }} style={local.style} {...others}>
         {/* Layered container for fade transitions */}
         <div {...{ class: CLASSES.landing.viewport }}>
           <div {...{ class: CLASSES.landing.pageLayer }}>{renderChildren()}</div>

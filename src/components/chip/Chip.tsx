@@ -71,13 +71,13 @@ const ChipRoot = (props: ChipRootProps): JSX.Element => {
   return (
     <span
       {...others}
-      class={classes()}
+      {...{ class: classes() }}
       data-slot="chip"
       data-disabled={local.isDisabled ? "true" : "false"}
       data-removable={local.onRemove ? "true" : "false"}
     >
       <Show when={local.startIcon}>
-        <span class={twMerge(CLASSES.slot.icon, CLASSES.slot.iconStart)} data-slot="chip-start-icon">
+        <span {...{ class: twMerge(CLASSES.slot.icon, CLASSES.slot.iconStart) }} data-slot="chip-start-icon">
           {local.startIcon}
         </span>
       </Show>
@@ -85,21 +85,21 @@ const ChipRoot = (props: ChipRootProps): JSX.Element => {
       <Show when={local.onRemove && local.endIcon}>
         <button
           type="button"
-          class={CLASSES.slot.remove}
+          {...{ class: CLASSES.slot.remove }}
           data-slot="chip-remove"
           aria-label={local.removeButtonLabel ?? "Remove"}
           onClick={handleRemove}
           disabled={Boolean(local.isDisabled)}
         >
           <Show when={local.endIcon}>
-            <span class={CLASSES.slot.removeIcon} data-slot="chip-remove-icon">
+            <span {...{ class: CLASSES.slot.removeIcon }} data-slot="chip-remove-icon">
               {local.endIcon}
             </span>
           </Show>
         </button>
       </Show>
       <Show when={!local.onRemove && local.endIcon}>
-        <span class={twMerge(CLASSES.slot.icon, CLASSES.slot.iconEnd)} data-slot="chip-end-icon">
+        <span {...{ class: twMerge(CLASSES.slot.icon, CLASSES.slot.iconEnd) }} data-slot="chip-end-icon">
           {local.endIcon}
         </span>
       </Show>
@@ -115,7 +115,7 @@ const ChipLabel = (props: ChipLabelProps): JSX.Element => {
   const [local, others] = splitProps(props, ["children", "class"]);
 
   return (
-    <span class={twMerge(CLASSES.slot.label, local.class)} data-slot="chip-label" {...others}>
+    <span {...{ class: twMerge(CLASSES.slot.label, local.class) }} data-slot="chip-label" {...others}>
       {local.children}
     </span>
   );

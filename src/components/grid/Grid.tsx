@@ -117,7 +117,7 @@ const Grid = (props: GridProps) => {
   return (
     <Dynamic
       component={local.as}
-      class={twMerge(classes)}
+      {...{ class: twMerge(classes) }}
       {...rest}
     >
       {resolvedChildren()}

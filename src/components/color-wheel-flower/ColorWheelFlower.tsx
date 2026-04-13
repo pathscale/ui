@@ -570,22 +570,22 @@ const ColorWheelFlower = (props: ColorWheelFlowerProps): JSX.Element => {
   return (
     <div
       ref={containerRef}
-      class={twMerge(
+      {...{ class: twMerge(
         CLASSES.base,
         clsx({ [CLASSES.flag.disabled]: context.disabled() }),
         local.class,
         local.className,
-      )}
+      ) }}
       onMouseMove={handlePointerMove}
       onMouseLeave={handlePointerLeave}
       data-slot="color-wheel-flower"
       data-disabled={context.disabled() ? "true" : "false"}
     >
-      <div class={CLASSES.rings}>
-        <div class={twMerge(CLASSES.ringShell.base, CLASSES.ringShell.outer)}>
+      <div {...{ class: CLASSES.rings }}>
+        <div {...{ class: twMerge(CLASSES.ringShell.base, CLASSES.ringShell.outer) }}>
           <div
             ref={outerRingRef}
-            class={twMerge(CLASSES.ring.base, CLASSES.ring.outer)}
+            {...{ class: twMerge(CLASSES.ring.base, CLASSES.ring.outer) }}
             style={{
               background: outerRingBackground(),
               "box-shadow": outerRingGlow(),
@@ -596,13 +596,13 @@ const ColorWheelFlower = (props: ColorWheelFlowerProps): JSX.Element => {
           />
         </div>
 
-        <div class={twMerge(CLASSES.ringShell.base, CLASSES.ringShell.inner)}>
-          <div class={twMerge(CLASSES.ring.base, CLASSES.ring.inner)} />
+        <div {...{ class: twMerge(CLASSES.ringShell.base, CLASSES.ringShell.inner) }}>
+          <div {...{ class: twMerge(CLASSES.ring.base, CLASSES.ring.inner) }} />
         </div>
       </div>
 
       <ColorSwatchPicker
-        class={CLASSES.picker}
+        {...{ class: CLASSES.picker }}
         value={pickerValue()}
         onChange={handlePickerChange}
         isDisabled={context.disabled()}
@@ -753,21 +753,21 @@ const ColorWheelFlower = (props: ColorWheelFlowerProps): JSX.Element => {
 
             return (
               <div
-                class={CLASSES.dot.base}
+                {...{ class: CLASSES.dot.base }}
                 style={{
                   left: `calc(50% + ${item.offsetX}px)`,
                   top: `calc(50% + ${item.offsetY}px)`,
                 }}
               >
-                <div class={CLASSES.dot.frame}>
+                <div {...{ class: CLASSES.dot.frame }}>
                   <div
                     ref={(el) => {
                       motionRef = el;
                     }}
-                    class={CLASSES.dot.motion}
+                    {...{ class: CLASSES.dot.motion }}
                   >
                     <span
-                      class={CLASSES.halo}
+                      {...{ class: CLASSES.halo }}
                       style={{
                         opacity: glowOpacity(),
                         "box-shadow": `0 0 8px ${toRgba(item.rgb, 0.3)}, 0 0 3px rgba(255,255,255,0.35)`,
@@ -780,10 +780,10 @@ const ColorWheelFlower = (props: ColorWheelFlowerProps): JSX.Element => {
                     <ColorSwatch
                       color={item.hex}
                       size="lg"
-                      class={twMerge(
+                      {...{ class: twMerge(
                         CLASSES.swatch.base,
                         item.isCenter && CLASSES.swatch.center,
-                      )}
+                      ) }}
                       colorName={item.isCenter ? "Reset to neutral" : `Theme color ${item.hex}`}
                       isDisabled={context.disabled()}
                       onMouseEnter={() => {
@@ -829,11 +829,11 @@ const ColorWheelFlower = (props: ColorWheelFlowerProps): JSX.Element => {
                     />
 
                     <span
-                      class={clsx(
+                      {...{ class: clsx(
                         CLASSES.highlight.base,
                         isHovered() && CLASSES.highlight.hovered,
                         isPulsing() && CLASSES.highlight.pulsing,
-                      )}
+                      ) }}
                     />
                   </div>
                 </div>

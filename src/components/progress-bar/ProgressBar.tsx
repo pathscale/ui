@@ -75,7 +75,7 @@ const ProgressBar = (props: ProgressBarProps): JSX.Element => {
     <div
       {...others}
       role="progressbar"
-      class={classes()}
+      {...{ class: classes() }}
       data-theme={local.dataTheme}
       style={local.style}
       aria-valuenow={isIndeterminate() ? undefined : local.value}
@@ -86,11 +86,11 @@ const ProgressBar = (props: ProgressBarProps): JSX.Element => {
       aria-disabled={local.isDisabled ? "true" : undefined}
       data-disabled={local.isDisabled ? "true" : undefined}
     >
-      {local.label && <span class={CLASSES.label}>{local.label}</span>}
-      {shouldShowValue() && <span class={CLASSES.output}>{valueText()}</span>}
-      <div class={CLASSES.track}>
+      {local.label && <span {...{ class: CLASSES.label }}>{local.label}</span>}
+      {shouldShowValue() && <span {...{ class: CLASSES.output }}>{valueText()}</span>}
+      <div {...{ class: CLASSES.track }}>
         <div
-          class={CLASSES.indicator}
+          {...{ class: CLASSES.indicator }}
           style={isIndeterminate() ? undefined : { width: `${percentage()}%` }}
         />
       </div>

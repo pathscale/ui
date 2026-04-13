@@ -243,12 +243,12 @@ const AccordionRoot: ParentComponent<AccordionRootProps> = (props) => {
             local.ref(node);
           }
         }}
-        class={twMerge(
+        {...{ class: twMerge(
           CLASSES.Root.base,
           CLASSES.Root.variant[variant()],
           local.class,
           local.className,
-        )}
+        ) }}
         data-slot="accordion"
         data-selection-mode={selectionMode()}
         data-hide-separator={hideSeparator() ? "true" : undefined}
@@ -307,14 +307,14 @@ const AccordionItem: ParentComponent<AccordionItemProps> = (props) => {
     <AccordionItemContext.Provider value={itemContextValue}>
       <div
         {...others}
-        class={twMerge(
+        {...{ class: twMerge(
           CLASSES.Item.base,
           isExpanded() && CLASSES.Item.flag.expanded,
           isDisabled() && CLASSES.Item.flag.disabled,
           accordion?.hideSeparator() && CLASSES.Item.flag.hideSeparator,
           local.class,
           local.className,
-        )}
+        ) }}
         data-slot="accordion-item"
         data-expanded={isExpanded() ? "true" : "false"}
         data-disabled={isDisabled() ? "true" : "false"}
@@ -370,7 +370,7 @@ const AccordionTrigger: Component<AccordionTriggerProps> = (props) => {
       {...others}
       id={item?.triggerId()}
       type={local.type ?? "button"}
-      class={twMerge(CLASSES.Trigger.base, local.class, local.className)}
+      {...{ class: twMerge(CLASSES.Trigger.base, local.class, local.className) }}
       data-slot="accordion-trigger"
       data-expanded={item?.isExpanded() ? "true" : "false"}
       data-theme={local.dataTheme}
@@ -413,12 +413,12 @@ const AccordionContent: ParentComponent<AccordionContentProps> = (props) => {
       {...others}
       id={item?.contentId()}
       role="region"
-      class={twMerge(
+      {...{ class: twMerge(
         CLASSES.Content.base,
         expanded() && CLASSES.Content.flag.expanded,
         local.class,
         local.className,
-      )}
+      ) }}
       data-slot="accordion-content"
       data-expanded={expanded() ? "true" : "false"}
       data-theme={local.dataTheme}
@@ -426,8 +426,8 @@ const AccordionContent: ParentComponent<AccordionContentProps> = (props) => {
       aria-hidden={expanded() ? "false" : "true"}
       aria-labelledby={item?.triggerId()}
     >
-      <div class={CLASSES.Body.base} data-slot="accordion-body">
-        <div class={CLASSES.BodyInner.base} data-slot="accordion-body-inner">
+      <div {...{ class: CLASSES.Body.base }} data-slot="accordion-body">
+        <div {...{ class: CLASSES.BodyInner.base }} data-slot="accordion-body-inner">
           {local.children}
         </div>
       </div>
@@ -451,12 +451,12 @@ const AccordionIndicator: Component<AccordionIndicatorProps> = (props) => {
     <span
       {...others}
       aria-hidden="true"
-      class={twMerge(
+      {...{ class: twMerge(
         CLASSES.Indicator.base,
         expanded() && CLASSES.Indicator.flag.expanded,
         local.class,
         local.className,
-      )}
+      ) }}
       data-slot="accordion-indicator"
       data-expanded={expanded() ? "true" : "false"}
       data-theme={local.dataTheme}

@@ -96,13 +96,13 @@ const Checkbox: Component<CheckboxProps> = (props) => {
 
   return (
     <label
-      class={twMerge(
+      {...{ class: twMerge(
         CLASSES.base,
         CLASSES.variant[variant()],
         isDisabled() && CLASSES.flag.disabled,
         local.class,
         local.className,
-      )}
+      ) }}
       data-theme={local.dataTheme}
       data-slot="checkbox"
       data-selected={isSelected() ? "true" : "false"}
@@ -118,7 +118,7 @@ const Checkbox: Component<CheckboxProps> = (props) => {
           inputRef = el;
         }}
         type="checkbox"
-        class={CLASSES.slot.input}
+        {...{ class: CLASSES.slot.input }}
         data-slot="checkbox-input"
         value={local.value}
         name={name()}
@@ -129,8 +129,8 @@ const Checkbox: Component<CheckboxProps> = (props) => {
         onChange={handleChange}
       />
 
-      <span class={CLASSES.slot.control} data-slot="checkbox-control" aria-hidden="true">
-        <span class={CLASSES.slot.indicator} data-slot="checkbox-indicator">
+      <span {...{ class: CLASSES.slot.control }} data-slot="checkbox-control" aria-hidden="true">
+        <span {...{ class: CLASSES.slot.indicator }} data-slot="checkbox-indicator">
           <Show
             when={isIndeterminate()}
             fallback={
@@ -166,12 +166,12 @@ const Checkbox: Component<CheckboxProps> = (props) => {
       </span>
 
       <Show when={hasContent()}>
-        <span class={CLASSES.slot.content} data-slot="checkbox-content">
+        <span {...{ class: CLASSES.slot.content }} data-slot="checkbox-content">
           <Show when={local.children}>
             <span data-slot="label">{local.children}</span>
           </Show>
           <Show when={local.description}>
-            <span class={CLASSES.slot.description} data-slot="description">
+            <span {...{ class: CLASSES.slot.description }} data-slot="description">
               {local.description}
             </span>
           </Show>

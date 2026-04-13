@@ -30,7 +30,7 @@ const NavbarSection = (props: NavbarSectionProps): JSX.Element => {
     <div
       {...others}
       data-theme={local.dataTheme}
-      class={classes()}
+      {...{ class: classes() }}
       style={local.style}
     >
       {local.children}

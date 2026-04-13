@@ -107,7 +107,7 @@ const TooltipRoot: ParentComponent<TooltipRootProps> = (props) => {
   return (
     <TooltipContext.Provider value={ctx}>
       <span
-        class={twMerge(CLASSES.base, local.class, local.className)}
+        {...{ class: twMerge(CLASSES.base, local.class, local.className) }}
         data-slot="tooltip-root"
         data-theme={local.dataTheme}
         style={local.style}
@@ -169,7 +169,7 @@ const TooltipTrigger: Component<TooltipTriggerProps> = (props) => {
     <div
       {...others}
       ref={(el) => ctx.setTriggerRef(el)}
-      class={twMerge(CLASSES.slot.trigger, local.class, local.className)}
+      {...{ class: twMerge(CLASSES.slot.trigger, local.class, local.className) }}
       data-slot="tooltip-trigger"
       data-theme={local.dataTheme}
       style={local.style}
@@ -201,7 +201,7 @@ const TooltipContent: Component<TooltipContentProps> = (props) => {
     <div
       {...others}
       role="tooltip"
-      class={twMerge(CLASSES.slot.content, local.class, local.className)}
+      {...{ class: twMerge(CLASSES.slot.content, local.class, local.className) }}
       data-slot="tooltip-content"
       data-placement={ctx.placement()}
       data-open={ctx.isOpen() ? "true" : "false"}
@@ -243,7 +243,7 @@ const TooltipArrow: Component<TooltipArrowProps> = (props) => {
   return (
     <span
       {...others}
-      class={twMerge(CLASSES.slot.arrow, local.class, local.className)}
+      {...{ class: twMerge(CLASSES.slot.arrow, local.class, local.className) }}
       data-slot="tooltip-arrow"
       data-placement={ctx.placement()}
       data-theme={local.dataTheme}

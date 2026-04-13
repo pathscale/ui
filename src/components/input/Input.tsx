@@ -66,12 +66,12 @@ const InputRoot: Component<InputRootProps> = (props) => {
     >
       <div
         {...others}
-        class={twMerge(
+        {...{ class: twMerge(
           CLASSES.base,
           fullWidth() && CLASSES.flag.fullWidthRoot,
           local.class,
           local.className,
-        )}
+        ) }}
         data-theme={local.dataTheme}
         data-slot="input-root"
       >
@@ -131,7 +131,7 @@ const InputField: Component<InputFieldProps> = (props) => {
 
   return (
     <div
-      class={controlClasses()}
+      {...{ class: controlClasses() }}
       data-theme={local.dataTheme}
       data-slot="input-control"
       data-disabled={isDisabled() ? "true" : "false"}
@@ -139,7 +139,7 @@ const InputField: Component<InputFieldProps> = (props) => {
     >
       <Show when={local.startIcon}>
         <span
-          class={twMerge(CLASSES.slot.icon, CLASSES.slot.iconStart)}
+          {...{ class: twMerge(CLASSES.slot.icon, CLASSES.slot.iconStart) }}
           data-slot="input-start-icon"
         >
           {local.startIcon}
@@ -148,7 +148,7 @@ const InputField: Component<InputFieldProps> = (props) => {
       <input
         {...others}
         id={inputId()}
-        class={CLASSES.slot.field}
+        {...{ class: CLASSES.slot.field }}
         disabled={isDisabled()}
         aria-disabled={isDisabled() ? "true" : "false"}
         aria-invalid={ariaInvalid()}
@@ -156,7 +156,7 @@ const InputField: Component<InputFieldProps> = (props) => {
       />
       <Show when={local.endIcon}>
         <span
-          class={twMerge(CLASSES.slot.icon, CLASSES.slot.iconEnd)}
+          {...{ class: twMerge(CLASSES.slot.icon, CLASSES.slot.iconEnd) }}
           data-slot="input-end-icon"
         >
           {local.endIcon}
@@ -178,7 +178,7 @@ const InputLabel: Component<InputLabelProps> = (props) => {
     <label
       {...others}
       for={local.for ?? ctx?.fieldId()}
-      class={twMerge(CLASSES.slot.label, local.class, local.className)}
+      {...{ class: twMerge(CLASSES.slot.label, local.class, local.className) }}
       data-slot="input-label"
     >
       {local.children}
@@ -201,12 +201,12 @@ const InputHelper: Component<InputHelperProps> = (props) => {
     <p
       {...others}
       id={local.id ?? ctx?.helperId()}
-      class={twMerge(
+      {...{ class: twMerge(
         CLASSES.slot.helper,
         invalid() && CLASSES.flag.helperInvalid,
         local.class,
         local.className,
-      )}
+      ) }}
       data-slot="input-helper"
     >
       {local.children}
@@ -267,7 +267,7 @@ const InputBase: Component<InputProps> = (props) => {
           isDisabled={isDisabled()}
           isInvalid={isInvalid()}
           aria-describedby={hasHelper() ? helperId() : undefined}
-          class={local.class}
+          {...{ class: local.class }}
           className={local.className}
           dataTheme={local.dataTheme}
         />

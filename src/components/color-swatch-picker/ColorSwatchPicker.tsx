@@ -148,7 +148,7 @@ const ColorSwatchPicker: Component<ColorSwatchPickerProps> = (props) => {
       <div
         {...others}
         ref={rootRef}
-        class={twMerge(CLASSES.base, local.class, local.className)}
+        {...{ class: twMerge(CLASSES.base, local.class, local.className) }}
         data-theme={local.dataTheme}
         data-slot="color-swatch-picker"
         data-disabled={isDisabled() ? "true" : "false"}

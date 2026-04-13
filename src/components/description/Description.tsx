@@ -20,7 +20,7 @@ const DescriptionRoot: Component<DescriptionRootProps> = (props) => {
   return (
     <span
       {...others}
-      class={twMerge(CLASSES.base, local.class, local.className)}
+      {...{ class: twMerge(CLASSES.base, local.class, local.className) }}
       data-slot="description"
       slot={local.slot ?? "description"}
       data-theme={local.dataTheme}

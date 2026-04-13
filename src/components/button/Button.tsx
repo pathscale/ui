@@ -58,23 +58,23 @@ const Button = (props: ButtonProps): JSX.Element => {
     <button
       {...others}
       type={local.type ?? "button"}
-      class={classes()}
+      {...{ class: classes() }}
       data-slot="button"
       data-pending={local.isPending ? "true" : "false"}
       disabled={disabled()}
       aria-disabled={disabled() ? "true" : "false"}
     >
       <Show when={local.isPending}>
-        <span class={CLASSES.slot.spinner} data-slot="spinner" aria-hidden="true" />
+        <span {...{ class: CLASSES.slot.spinner }} data-slot="spinner" aria-hidden="true" />
       </Show>
       <Show when={local.startIcon}>
-        <span class={twMerge(CLASSES.slot.icon, CLASSES.slot.iconStart)} data-slot="button-start-icon">
+        <span {...{ class: twMerge(CLASSES.slot.icon, CLASSES.slot.iconStart) }} data-slot="button-start-icon">
           {local.startIcon}
         </span>
       </Show>
       {local.children}
       <Show when={local.endIcon}>
-        <span class={twMerge(CLASSES.slot.icon, CLASSES.slot.iconEnd)} data-slot="button-end-icon">
+        <span {...{ class: twMerge(CLASSES.slot.icon, CLASSES.slot.iconEnd) }} data-slot="button-end-icon">
           {local.endIcon}
         </span>
       </Show>

@@ -390,7 +390,7 @@ const useToastItemContext = () => {
 
 const InfoIcon = () => (
   <svg
-    class={CLASSES.Indicator.icon}
+    {...{ class: CLASSES.Indicator.icon }}
     viewBox="0 0 24 24"
     fill="none"
     stroke="currentColor"
@@ -407,7 +407,7 @@ const InfoIcon = () => (
 
 const SuccessIcon = () => (
   <svg
-    class={CLASSES.Indicator.icon}
+    {...{ class: CLASSES.Indicator.icon }}
     viewBox="0 0 24 24"
     fill="none"
     stroke="currentColor"
@@ -423,7 +423,7 @@ const SuccessIcon = () => (
 
 const WarningIcon = () => (
   <svg
-    class={CLASSES.Indicator.icon}
+    {...{ class: CLASSES.Indicator.icon }}
     viewBox="0 0 24 24"
     fill="none"
     stroke="currentColor"
@@ -440,7 +440,7 @@ const WarningIcon = () => (
 
 const DangerIcon = () => (
   <svg
-    class={CLASSES.Indicator.icon}
+    {...{ class: CLASSES.Indicator.icon }}
     viewBox="0 0 24 24"
     fill="none"
     stroke="currentColor"
@@ -457,7 +457,7 @@ const DangerIcon = () => (
 
 const CloseIcon = () => (
   <svg
-    class={CLASSES.Close.icon}
+    {...{ class: CLASSES.Close.icon }}
     viewBox="0 0 24 24"
     fill="none"
     stroke="currentColor"
@@ -475,7 +475,7 @@ const DefaultIndicator: Component<{ variant: ResolvedToastVariant; isLoading: bo
   props,
 ) => {
   if (props.isLoading) {
-    return <span class={CLASSES.Spinner.base} aria-hidden="true" />;
+    return <span {...{ class: CLASSES.Spinner.base }} aria-hidden="true" />;
   }
 
   switch (props.variant) {
@@ -544,7 +544,7 @@ const ToastContent: ParentComponent<ToastContentProps> = (props) => {
   return (
     <div
       {...others}
-      class={twMerge(CLASSES.Content.base, local.class, local.className)}
+      {...{ class: twMerge(CLASSES.Content.base, local.class, local.className) }}
       data-slot="toast-content"
       data-theme={local.dataTheme}
       style={local.style}
@@ -570,7 +570,7 @@ const ToastIndicator: Component<ToastIndicatorProps> = (props) => {
   return (
     <div
       {...others}
-      class={twMerge(CLASSES.Indicator.base, local.class, local.className)}
+      {...{ class: twMerge(CLASSES.Indicator.base, local.class, local.className) }}
       data-slot="toast-indicator"
       data-theme={local.dataTheme}
       style={local.style}
@@ -591,7 +591,7 @@ const ToastTitle: ParentComponent<ToastTitleProps> = (props) => {
   return (
     <p
       {...others}
-      class={twMerge(CLASSES.Title.base, local.class, local.className)}
+      {...{ class: twMerge(CLASSES.Title.base, local.class, local.className) }}
       data-slot="toast-title"
       data-theme={local.dataTheme}
       style={local.style}
@@ -607,7 +607,7 @@ const ToastDescription: ParentComponent<ToastDescriptionProps> = (props) => {
   return (
     <p
       {...others}
-      class={twMerge(CLASSES.Description.base, local.class, local.className)}
+      {...{ class: twMerge(CLASSES.Description.base, local.class, local.className) }}
       data-slot="toast-description"
       data-theme={local.dataTheme}
       style={local.style}
@@ -625,7 +625,7 @@ const ToastActionButton: Component<ToastActionButtonProps> = (props) => {
       {...others}
       variant="outline"
       size="sm"
-      class={twMerge(CLASSES.Action.base, local.class, local.className)}
+      {...{ class: twMerge(CLASSES.Action.base, local.class, local.className) }}
       data-slot="toast-action"
     >
       {props.children}
@@ -653,7 +653,7 @@ const ToastCloseButton: Component<ToastCloseButtonProps> = (props) => {
   return (
     <CloseButton
       {...others}
-      class={twMerge(CLASSES.Close.base, local.class, local.className)}
+      {...{ class: twMerge(CLASSES.Close.base, local.class, local.className) }}
       aria-label={local["aria-label"] ?? "Dismiss notification"}
       startIcon={<CloseIcon />}
       data-slot="toast-close"
@@ -702,7 +702,7 @@ const ToastRoot: ParentComponent<ToastRootProps> = (props) => {
     <ToastItemContext.Provider value={contextValue}>
       <div
         {...others}
-        class={twMerge(
+        {...{ class: twMerge(
           CLASSES.Item.base,
           CLASSES.Item.variant[variant()],
           isFrontmost() && CLASSES.Item.state.frontmost,
@@ -711,7 +711,7 @@ const ToastRoot: ParentComponent<ToastRootProps> = (props) => {
           local.isExiting && CLASSES.Item.state.exiting,
           local.class,
           local.className,
-        )}
+        ) }}
         role={role()}
         aria-live={ariaLive()}
         data-slot="toast"
@@ -868,12 +868,12 @@ const ToastProvider: ParentComponent<ToastProviderProps> = (props) => {
     <div
       {...others}
       ref={local.ref}
-      class={twMerge(
+      {...{ class: twMerge(
         CLASSES.Provider.base,
         CLASSES.Provider.placement[placement()],
         local.class,
         local.className,
-      )}
+      ) }}
       data-slot="toast-region"
       data-placement={placement()}
       data-theme={local.dataTheme}
@@ -881,7 +881,7 @@ const ToastProvider: ParentComponent<ToastProviderProps> = (props) => {
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
     >
-      <div class={CLASSES.Provider.stack} data-slot="toast-stack">
+      <div {...{ class: CLASSES.Provider.stack }} data-slot="toast-stack">
         {local.children}
 
         <For each={toasts()}>
@@ -908,11 +908,11 @@ const ToastProvider: ParentComponent<ToastProviderProps> = (props) => {
             return (
               <div
                 ref={(node) => setItemRef(queuedToast.key, node)}
-                class={twMerge(
+                {...{ class: twMerge(
                   CLASSES.Provider.item.base,
                   CLASSES.Provider.item.placement[placement()],
                   hidden() && CLASSES.Provider.item.state.hidden,
-                )}
+                ) }}
                 data-slot="toast-region-item"
                 data-index={index()}
                 data-hidden={hidden() ? "true" : "false"}

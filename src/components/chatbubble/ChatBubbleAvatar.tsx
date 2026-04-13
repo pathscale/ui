@@ -18,7 +18,7 @@ const ChatBubbleAvatar = (props: ChatBubbleAvatarProps): JSX.Element => {
       size={props.size ?? "sm"}
       color={props.color}
       variant={props.variant}
-      class={twMerge(CLASSES.slot.avatar, props.class, props.className)}
+      {...{ class: twMerge(CLASSES.slot.avatar, props.class, props.className) }}
       dataTheme={props.dataTheme}
       style={props.style}
     >

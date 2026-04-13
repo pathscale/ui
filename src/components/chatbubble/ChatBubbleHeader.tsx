@@ -12,7 +12,7 @@ const ChatBubbleHeader = (props: ChatBubbleHeaderProps): JSX.Element => {
   return (
     <div
       {...others}
-      class={twMerge(CLASSES.slot.header, local.class, local.className)}
+      {...{ class: twMerge(CLASSES.slot.header, local.class, local.className) }}
     />
   );
 };

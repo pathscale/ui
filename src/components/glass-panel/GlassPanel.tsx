@@ -87,27 +87,27 @@ const GlassPanel = (props: GlassPanelProps): JSX.Element => {
   return (
     <div
       {...others}
-      class={containerClasses()}
+      {...{ class: containerClasses() }}
       data-theme={local.dataTheme}
       style={local.style}
     >
       <Show when={local.collapsible && local.title}>
         <button
           type="button"
-          class={CLASSES.slot.headerButton}
+          {...{ class: CLASSES.slot.headerButton }}
           onClick={handleToggle}
           aria-expanded={isOpen()}
           aria-controls={contentId}
         >
-          <span class={CLASSES.slot.headerLabel}>
+          <span {...{ class: CLASSES.slot.headerLabel }}>
             <Show when={local.icon}>{local.icon}</Show>
             {local.title}
           </span>
           <svg
-            class={twMerge(
+            {...{ class: twMerge(
               CLASSES.slot.chevron,
               isOpen() && CLASSES.flag.chevronOpen,
-            )}
+            ) }}
             fill="none"
             viewBox="0 0 24 24"
             stroke="currentColor"
@@ -120,13 +120,13 @@ const GlassPanel = (props: GlassPanelProps): JSX.Element => {
 
       <div
         id={contentId}
-        class={contentClasses()}
+        {...{ class: contentClasses() }}
         style={{
           "grid-template-rows": (!local.collapsible || isOpen()) ? "1fr" : "0fr",
           opacity: (!local.collapsible || isOpen()) ? "1" : "0",
         }}
       >
-        <div class={twMerge(CLASSES.slot.contentInner, local.collapsible && CLASSES.flag.contentInnerHidden)}>
+        <div {...{ class: twMerge(CLASSES.slot.contentInner, local.collapsible && CLASSES.flag.contentInnerHidden) }}>
           {local.children}
         </div>
       </div>

@@ -20,7 +20,7 @@ const ErrorMessageRoot: Component<ErrorMessageRootProps> = (props) => {
   return (
     <span
       {...others}
-      class={twMerge(CLASSES.base, local.class, local.className)}
+      {...{ class: twMerge(CLASSES.base, local.class, local.className) }}
       data-slot="error-message"
       slot={local.slot ?? "errorMessage"}
       data-theme={local.dataTheme}

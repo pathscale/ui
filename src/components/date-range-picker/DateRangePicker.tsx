@@ -125,13 +125,13 @@ const DateRangePicker = (props: DateRangePickerProps): JSX.Element => {
           local.ref(node);
         }
       }}
-      class={twMerge(
+      {...{ class: twMerge(
         CLASSES.Root.base,
         openState.isOpen() && CLASSES.Root.flag.open,
         isDisabled() && CLASSES.Root.flag.disabled,
         local.class,
         local.className,
-      )}
+      ) }}
       data-slot="date-range-picker"
       data-open={openState.isOpen() ? "true" : "false"}
       data-disabled={isDisabled() ? "true" : "false"}
@@ -158,7 +158,7 @@ const DateRangePicker = (props: DateRangePickerProps): JSX.Element => {
 
       <button
         type="button"
-        class={CLASSES.Trigger.base}
+        {...{ class: CLASSES.Trigger.base }}
         data-slot="date-range-picker-trigger"
         aria-haspopup="dialog"
         aria-expanded={openState.isOpen() ? "true" : "false"}
@@ -175,32 +175,32 @@ const DateRangePicker = (props: DateRangePickerProps): JSX.Element => {
         }}
       >
         <span
-          class={twMerge(
+          {...{ class: twMerge(
             CLASSES.TriggerSegment.base,
             !startValue() && CLASSES.TriggerSegment.flag.placeholder,
-          )}
+          ) }}
           data-slot="date-range-picker-start"
         >
           {startDisplay()}
         </span>
 
-        <span class={CLASSES.RangeSeparator.base} data-slot="date-range-picker-range-separator" aria-hidden="true">
+        <span {...{ class: CLASSES.RangeSeparator.base }} data-slot="date-range-picker-range-separator" aria-hidden="true">
           -
         </span>
 
         <span
-          class={twMerge(
+          {...{ class: twMerge(
             CLASSES.TriggerSegment.base,
             !endValue() && CLASSES.TriggerSegment.flag.placeholder,
-          )}
+          ) }}
           data-slot="date-range-picker-end"
         >
           {endDisplay()}
         </span>
 
-        <span class={CLASSES.TriggerIndicator.base} data-slot="date-range-picker-trigger-indicator" aria-hidden="true">
+        <span {...{ class: CLASSES.TriggerIndicator.base }} data-slot="date-range-picker-trigger-indicator" aria-hidden="true">
           <svg
-            class={CLASSES.TriggerIcon.base}
+            {...{ class: CLASSES.TriggerIcon.base }}
             data-slot="date-range-picker-trigger-icon"
             viewBox="0 0 24 24"
             fill="none"
@@ -221,13 +221,13 @@ const DateRangePicker = (props: DateRangePickerProps): JSX.Element => {
       <Show when={openState.isOpen()}>
         <div
           id={popoverId}
-          class={CLASSES.Popover.base}
+          {...{ class: CLASSES.Popover.base }}
           data-slot="date-range-picker-popover"
           role="dialog"
           aria-modal="false"
         >
           <Calendar
-            class={CLASSES.Calendar.base}
+            {...{ class: CLASSES.Calendar.base }}
             data-slot="date-range-picker-calendar"
             selectionMode="range"
             value={focusDate() ?? undefined}

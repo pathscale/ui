@@ -65,14 +65,14 @@ const CardRoot: ParentComponent<CardRootProps> = (props) => {
   return (
     <div
       {...others}
-      class={twMerge(
+      {...{ class: twMerge(
         CLASSES.Root.base,
         CLASSES.Root.variant[variant()],
         local.isHoverable && CLASSES.Root.flag.isHoverable,
         local.isPressable && CLASSES.Root.flag.isPressable,
         local.class,
         local.className,
-      )}
+      ) }}
       data-slot="card"
       data-variant={variant()}
       data-hoverable={local.isHoverable ? "true" : "false"}
@@ -100,7 +100,7 @@ const CardHeader: Component<CardHeaderProps> = (props) => {
   return (
     <div
       {...others}
-      class={twMerge(CLASSES.Header.base, local.class, local.className)}
+      {...{ class: twMerge(CLASSES.Header.base, local.class, local.className) }}
       data-slot="card-header"
       data-theme={local.dataTheme}
       style={local.style}
@@ -122,7 +122,7 @@ const CardBody: Component<CardBodyProps> = (props) => {
   return (
     <div
       {...others}
-      class={twMerge(CLASSES.Body.base, local.class, local.className)}
+      {...{ class: twMerge(CLASSES.Body.base, local.class, local.className) }}
       data-slot="card-body"
       data-theme={local.dataTheme}
       style={local.style}
@@ -144,7 +144,7 @@ const CardFooter: Component<CardFooterProps> = (props) => {
   return (
     <div
       {...others}
-      class={twMerge(CLASSES.Footer.base, local.class, local.className)}
+      {...{ class: twMerge(CLASSES.Footer.base, local.class, local.className) }}
       data-slot="card-footer"
       data-theme={local.dataTheme}
       style={local.style}

@@ -186,13 +186,13 @@ const ColorSlider: Component<ColorSliderProps> = (props) => {
     <div
       {...others}
       ref={sliderRef}
-      class={twMerge(
+      {...{ class: twMerge(
         CLASSES.base,
         sliderType() === "alpha" && CLASSES.flag.alpha,
         isDragging() && CLASSES.flag.dragging,
         local.class,
         local.className,
-      )}
+      ) }}
       data-theme={local.dataTheme}
       data-slot="color-slider"
       data-type={sliderType()}
@@ -212,9 +212,9 @@ const ColorSlider: Component<ColorSliderProps> = (props) => {
       onLostPointerCapture={handleLostPointerCapture}
       onKeyDown={handleKeyDown}
     >
-      <div class={CLASSES.slot.track} data-slot="color-slider-track" />
+      <div {...{ class: CLASSES.slot.track }} data-slot="color-slider-track" />
       <div
-        class={CLASSES.slot.thumb}
+        {...{ class: CLASSES.slot.thumb }}
         data-slot="color-slider-thumb"
         data-dragging={isDragging() ? "true" : "false"}
         style={{

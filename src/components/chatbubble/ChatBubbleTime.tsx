@@ -12,7 +12,7 @@ const ChatBubbleTime = (props: ChatBubbleTimeProps): JSX.Element => {
   return (
     <time
       {...others}
-      class={twMerge(CLASSES.slot.time, local.class, local.className)}
+      {...{ class: twMerge(CLASSES.slot.time, local.class, local.className) }}
     />
   );
 };

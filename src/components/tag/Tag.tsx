@@ -169,13 +169,13 @@ const TagRoot: ParentComponent<TagRootProps> = (props) => {
     >
       <div
         {...others}
-        class={twMerge(
+        {...{ class: twMerge(
           CLASSES.Root.base,
           CLASSES.Root.size[size()],
           CLASSES.Root.variant[variant()],
           local.class,
           local.className,
-        )}
+        ) }}
         data-slot="tag"
         data-theme={local.dataTheme}
         data-size={size()}
@@ -197,7 +197,7 @@ const TagRoot: ParentComponent<TagRootProps> = (props) => {
             <>
               <Show when={local.startIcon}>
                 <span
-                  class={twMerge(CLASSES.slot.icon, CLASSES.slot.iconStart)}
+                  {...{ class: twMerge(CLASSES.slot.icon, CLASSES.slot.iconStart) }}
                   data-slot="tag-start-icon"
                 >
                   {local.startIcon}
@@ -209,7 +209,7 @@ const TagRoot: ParentComponent<TagRootProps> = (props) => {
               </Show>
               <Show when={!allowsRemoving() && local.endIcon}>
                 <span
-                  class={twMerge(CLASSES.slot.icon, CLASSES.slot.iconEnd)}
+                  {...{ class: twMerge(CLASSES.slot.icon, CLASSES.slot.iconEnd) }}
                   data-slot="tag-end-icon"
                 >
                   {local.endIcon}
@@ -256,7 +256,7 @@ const TagRemoveButton: Component<TagRemoveButtonProps> = (props) => {
     <CloseButton
       {...others}
       aria-label={local["aria-label"] ?? "Remove tag"}
-      class={twMerge(CLASSES.slot.removeButton, local.class, local.className)}
+      {...{ class: twMerge(CLASSES.slot.removeButton, local.class, local.className) }}
       data-slot="tag-remove-button"
       data-theme={local.dataTheme}
       style={local.style}

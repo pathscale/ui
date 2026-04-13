@@ -128,7 +128,7 @@ const Flex = (props: FlexProps): JSX.Element => {
   return (
     <Dynamic
       component={tag()}
-      class={classes()}
+      {...{ class: classes() }}
       {...rest}
     >
       {resolvedChildren()}

@@ -102,13 +102,13 @@ const DatePicker = (props: DatePickerProps): JSX.Element => {
           local.ref(node);
         }
       }}
-      class={twMerge(
+      {...{ class: twMerge(
         CLASSES.Root.base,
         openState.isOpen() && CLASSES.Root.flag.open,
         isDisabled() && CLASSES.Root.flag.disabled,
         local.class,
         local.className,
-      )}
+      ) }}
       data-slot="date-picker"
       data-open={openState.isOpen() ? "true" : "false"}
       data-disabled={isDisabled() ? "true" : "false"}
@@ -127,7 +127,7 @@ const DatePicker = (props: DatePickerProps): JSX.Element => {
 
       <button
         type="button"
-        class={CLASSES.Trigger.base}
+        {...{ class: CLASSES.Trigger.base }}
         data-slot="date-picker-trigger"
         aria-haspopup="dialog"
         aria-expanded={openState.isOpen() ? "true" : "false"}
@@ -144,18 +144,18 @@ const DatePicker = (props: DatePickerProps): JSX.Element => {
         }}
       >
         <span
-          class={twMerge(
+          {...{ class: twMerge(
             CLASSES.TriggerValue.base,
             !selection.selectedDate() && CLASSES.TriggerValue.flag.placeholder,
-          )}
+          ) }}
           data-slot="date-picker-trigger-value"
         >
           {displayValue()}
         </span>
 
-        <span class={CLASSES.TriggerIndicator.base} data-slot="date-picker-trigger-indicator" aria-hidden="true">
+        <span {...{ class: CLASSES.TriggerIndicator.base }} data-slot="date-picker-trigger-indicator" aria-hidden="true">
           <svg
-            class={CLASSES.TriggerIcon.base}
+            {...{ class: CLASSES.TriggerIcon.base }}
             data-slot="date-picker-trigger-icon"
             viewBox="0 0 24 24"
             fill="none"
@@ -176,13 +176,13 @@ const DatePicker = (props: DatePickerProps): JSX.Element => {
       <Show when={openState.isOpen()}>
         <div
           id={popoverId}
-          class={CLASSES.Popover.base}
+          {...{ class: CLASSES.Popover.base }}
           data-slot="date-picker-popover"
           role="dialog"
           aria-modal="false"
         >
           <Calendar
-            class={CLASSES.Calendar.base}
+            {...{ class: CLASSES.Calendar.base }}
             data-slot="date-picker-calendar"
             value={selection.selectedDate() ?? undefined}
             onChange={handleDateChange}

@@ -54,7 +54,7 @@ const LinkRoot: Component<LinkRootProps> = (props) => {
       target={isExternal() ? "_blank" : local.target}
       rel={isExternal() ? ensureExternalRel(local.rel) : local.rel}
       tabIndex={isDisabled() ? -1 : local.tabIndex}
-      class={twMerge(
+      {...{ class: twMerge(
         CLASSES.base,
         CLASSES.variant[variant()],
         CLASSES.underline[underline()],
@@ -62,7 +62,7 @@ const LinkRoot: Component<LinkRootProps> = (props) => {
         isDisabled() && CLASSES.flag.disabled,
         local.class,
         local.className,
-      )}
+      ) }}
       data-slot="link"
       data-theme={local.dataTheme}
       data-external={isExternal() ? "true" : "false"}
@@ -89,7 +89,7 @@ const LinkIcon: Component<LinkIconProps> = (props) => {
   return (
     <span
       {...others}
-      class={twMerge(CLASSES.slot.icon, local.class, local.className)}
+      {...{ class: twMerge(CLASSES.slot.icon, local.class, local.className) }}
       data-slot="link-icon"
       data-default-icon={hasCustomIcon() ? "false" : "true"}
       data-theme={local.dataTheme}
@@ -97,7 +97,7 @@ const LinkIcon: Component<LinkIconProps> = (props) => {
     >
       {local.children ?? (
         <svg
-          class={CLASSES.slot.iconDefault}
+          {...{ class: CLASSES.slot.iconDefault }}
           data-slot="link-default-icon"
           viewBox="0 0 12 12"
           fill="none"

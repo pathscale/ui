@@ -80,7 +80,7 @@ const ProgressCircle = (props: ProgressCircleProps): JSX.Element => {
     <span
       {...others}
       role="progressbar"
-      class={classes()}
+      {...{ class: classes() }}
       data-theme={local.dataTheme}
       style={local.style}
       aria-valuenow={isIndeterminate() ? undefined : local.value}
@@ -92,19 +92,19 @@ const ProgressCircle = (props: ProgressCircleProps): JSX.Element => {
       data-disabled={local.isDisabled ? "true" : undefined}
     >
       <svg
-        class={CLASSES.svg}
+        {...{ class: CLASSES.svg }}
         fill="none"
         viewBox={`0 0 ${CENTER * 2} ${CENTER * 2}`}
       >
         <circle
-          class={CLASSES.trackCircle}
+          {...{ class: CLASSES.trackCircle }}
           cx={CENTER}
           cy={CENTER}
           r={RADIUS}
           stroke-width={STROKE_WIDTH}
         />
         <circle
-          class={CLASSES.indicator}
+          {...{ class: CLASSES.indicator }}
           cx={CENTER}
           cy={CENTER}
           r={RADIUS}

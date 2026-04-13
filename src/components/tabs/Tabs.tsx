@@ -130,7 +130,7 @@ const TabsRoot = (props: TabsRootProps): JSX.Element => {
     <TabsContext.Provider value={context()}>
       <div
         {...others}
-        class={classes()}
+        {...{ class: classes() }}
         data-slot="tabs"
         data-orientation={local.orientation ?? "horizontal"}
       >
@@ -147,7 +147,7 @@ const TabListContainer = (props: TabListContainerProps): JSX.Element => {
   return (
     <div
       {...others}
-      class={twMerge(CLASSES.slot.listContainer, local.class)}
+      {...{ class: twMerge(CLASSES.slot.listContainer, local.class) }}
       data-slot="tabs-list-container"
     >
       {local.children}
@@ -264,13 +264,13 @@ const TabList = (props: TabListProps): JSX.Element => {
       ref={setListRef}
       role="tablist"
       aria-orientation={ctx.orientation}
-      class={twMerge(CLASSES.slot.list, local.class)}
+      {...{ class: twMerge(CLASSES.slot.list, local.class) }}
       data-slot="tabs-list"
       data-orientation={ctx.orientation}
     >
       {local.children}
       <span
-        class={CLASSES.slot.indicator}
+        {...{ class: CLASSES.slot.indicator }}
         data-slot="tabs-indicator"
         data-ready={indicatorReady() ? "true" : "false"}
         data-visible={indicatorVisible() ? "true" : "false"}
@@ -300,7 +300,7 @@ const Tab = (props: TabProps): JSX.Element => {
 
   if (!ctx) {
     return (
-      <button {...others} class={twMerge(CLASSES.slot.tab, local.class)}>
+      <button {...others} {...{ class: twMerge(CLASSES.slot.tab, local.class) }}>
         {local.children}
       </button>
     );
@@ -378,7 +378,7 @@ const Tab = (props: TabProps): JSX.Element => {
       ref={tabRef}
       id={ctx.getTabId(local.id)}
       role="tab"
-      class={classes()}
+      {...{ class: classes() }}
       data-slot="tabs-tab"
       data-selected={isSelected() ? "true" : "false"}
       data-disabled={isDisabled() ? "true" : "false"}
@@ -421,7 +421,7 @@ const TabPanel = (props: TabPanelProps): JSX.Element => {
       id={ctx.getPanelId(local.id)}
       role="tabpanel"
       aria-labelledby={ctx.getTabId(local.id)}
-      class={twMerge(CLASSES.slot.panel, local.class)}
+      {...{ class: twMerge(CLASSES.slot.panel, local.class) }}
       data-slot="tabs-panel"
       data-orientation={ctx.orientation}
       hidden={!isSelected()}
@@ -439,7 +439,7 @@ const TabSeparator = (props: TabSeparatorProps): JSX.Element => {
     <span
       {...others}
       aria-hidden="true"
-      class={twMerge(CLASSES.slot.separator, local.class)}
+      {...{ class: twMerge(CLASSES.slot.separator, local.class) }}
       data-slot="tabs-separator"
     />
   );

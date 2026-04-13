@@ -45,7 +45,7 @@ const NavbarRow = (props: NavbarRowProps): JSX.Element => {
 
   return (
     <div
-      class={classes()}
+      {...{ class: classes() }}
       style={local.style}
       data-theme={local.dataTheme}
       {...others}

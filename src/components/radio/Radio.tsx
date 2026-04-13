@@ -67,7 +67,7 @@ const Radio: Component<RadioProps> = (props) => {
 
   return (
     <label
-      class={twMerge(CLASSES.base, isDisabled() && CLASSES.flag.disabled, local.class, local.className)}
+      {...{ class: twMerge(CLASSES.base, isDisabled() && CLASSES.flag.disabled, local.class, local.className) }}
       data-theme={local.dataTheme}
       data-slot="radio"
       data-selected={isSelected() ? "true" : "false"}
@@ -82,25 +82,25 @@ const Radio: Component<RadioProps> = (props) => {
         name={name()}
         checked={isGrouped() ? isSelected() : local.checked}
         disabled={isDisabled()}
-        class={CLASSES.slot.input}
+        {...{ class: CLASSES.slot.input }}
         data-slot="radio-input"
         aria-invalid={ariaInvalid()}
         onChange={handleChange}
       />
 
-      <span class={CLASSES.slot.control} data-slot="radio-control" aria-hidden="true">
-        <span class={CLASSES.slot.indicator} data-slot="radio-indicator">
+      <span {...{ class: CLASSES.slot.control }} data-slot="radio-control" aria-hidden="true">
+        <span {...{ class: CLASSES.slot.indicator }} data-slot="radio-indicator">
           {local.indicator}
         </span>
       </span>
 
       <Show when={hasContent()}>
-        <span class={CLASSES.slot.content} data-slot="radio-content">
+        <span {...{ class: CLASSES.slot.content }} data-slot="radio-content">
           <Show when={local.children}>
             <span data-slot="label">{local.children}</span>
           </Show>
           <Show when={local.description}>
-            <span class={CLASSES.slot.description} data-slot="description">
+            <span {...{ class: CLASSES.slot.description }} data-slot="description">
               {local.description}
             </span>
           </Show>

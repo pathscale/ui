@@ -46,7 +46,7 @@ const Join = (props: JoinProps): JSX.Element => {
   return (
     <div
       {...others}
-      class={classes()}
+      {...{ class: classes() }}
       data-theme={local.dataTheme}
       style={local.style}
     >

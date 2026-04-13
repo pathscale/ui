@@ -34,7 +34,7 @@ const Skeleton: Component<SkeletonProps> = (props) => {
   return (
     <div
       {...others}
-      class={twMerge(CLASSES.base, CLASSES.animation[animation()], local.class, local.className)}
+      {...{ class: twMerge(CLASSES.base, CLASSES.animation[animation()], local.class, local.className) }}
       data-slot="skeleton"
       data-theme={local.dataTheme}
       style={local.style}

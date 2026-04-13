@@ -244,7 +244,7 @@ export const CookieConsent: Component<CookieConsentProps> = (props) => {
             <Flex
               direction="col"
               gap="md"
-              class={CLASSES.cookie.row}
+              {...{ class: CLASSES.cookie.row }}
             >
               <p
                 id="cookie-consent-message"
@@ -255,12 +255,12 @@ export const CookieConsent: Component<CookieConsentProps> = (props) => {
 
               <Flex
                 gap="sm"
-                class={CLASSES.cookie.actions}
+                {...{ class: CLASSES.cookie.actions }}
               >
                 <Button
                   variant="primary"
                   size="sm"
-                  class={CLASSES.cookie.actionButton}
+                  {...{ class: CLASSES.cookie.actionButton }}
                   onClick={handleAcceptAll}
                 >
                   {texts().acceptAll}
@@ -268,7 +268,7 @@ export const CookieConsent: Component<CookieConsentProps> = (props) => {
                 <Button
                   variant="ghost"
                   size="sm"
-                  class={CLASSES.cookie.actionButton}
+                  {...{ class: CLASSES.cookie.actionButton }}
                   onClick={handleDecline}
                 >
                   {texts().decline}
@@ -298,7 +298,7 @@ export const CookieConsent: Component<CookieConsentProps> = (props) => {
             {...{ class: CLASSES.cookie.modalCard }}
             onClick={(e) => e.stopPropagation()}
           >
-            <Flex justify="between" align="center" class={CLASSES.cookie.modalHeader}>
+            <Flex justify="between" align="center" {...{ class: CLASSES.cookie.modalHeader }}>
               <h2 id="cookie-manage-title" {...{ class: CLASSES.cookie.modalTitle }}>
                 {texts().manageTitle}
               </h2>
@@ -313,7 +313,7 @@ export const CookieConsent: Component<CookieConsentProps> = (props) => {
               </Button>
             </Flex>
 
-            <Flex direction="col" gap="md" class={CLASSES.cookie.preferences}>
+            <Flex direction="col" gap="md" {...{ class: CLASSES.cookie.preferences }}>
               <label {...{ class: `${CLASSES.cookie.preferenceRow} ${CLASSES.cookie.preferenceRowLocked}` }}>
                 <span {...{ class: CLASSES.cookie.preferenceLabel }}>
                   {texts().essential}
@@ -349,14 +349,14 @@ export const CookieConsent: Component<CookieConsentProps> = (props) => {
               </label>
             </Flex>
 
-            <Flex gap="sm" justify="end" class={CLASSES.cookie.modalFooter}>
+            <Flex gap="sm" justify="end" {...{ class: CLASSES.cookie.modalFooter }}>
               <Button variant="ghost" size="sm" onClick={handleManageClose}>
                 {texts().cancel}
               </Button>
               <Button
                 variant="primary"
                 size="sm"
-                class={CLASSES.cookie.saveButton}
+                {...{ class: CLASSES.cookie.saveButton }}
                 onClick={handleManageSave}
               >
                 {texts().save}

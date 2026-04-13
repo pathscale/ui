@@ -35,7 +35,7 @@ const Navbar = (props: NavbarProps): JSX.Element => {
       aria-label="Navbar"
       {...others}
       data-theme={local.dataTheme}
-      class={classes()}
+      {...{ class: classes() }}
       style={local.style}
     >
       {local.children}

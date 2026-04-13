@@ -27,11 +27,11 @@ const MenuSectionRoot: Component<MenuSectionRootProps> = (props) => {
       role={local.role ?? "group"}
       data-slot="menu-section"
       data-theme={local.dataTheme}
-      class={twMerge(CLASSES.Section.base, local.class, local.className)}
+      {...{ class: twMerge(CLASSES.Section.base, local.class, local.className) }}
       style={local.style}
     >
       <Show when={local.title}>
-        <span class={CLASSES.Section.title} data-slot="heading">
+        <span {...{ class: CLASSES.Section.title }} data-slot="heading">
           {local.title}
         </span>
       </Show>

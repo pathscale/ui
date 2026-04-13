@@ -224,13 +224,13 @@ const NumberFieldRoot: ParentComponent<NumberFieldRootProps> = (props) => {
     <NumberFieldContext.Provider value={contextValue}>
       <div
         {...others}
-        class={twMerge(
+        {...{ class: twMerge(
           CLASSES.Root.base,
           CLASSES.Root.variant[variant()],
           fullWidth() && CLASSES.Root.flag.fullWidth,
           local.class,
           local.className,
-        )}
+        ) }}
         data-slot="number-field"
         data-invalid={isInvalid() ? "true" : undefined}
         data-disabled={isDisabled() ? "true" : undefined}
@@ -268,12 +268,12 @@ const NumberFieldGroup: ParentComponent<NumberFieldGroupProps> = (props) => {
   return (
     <div
       {...others}
-      class={twMerge(
+      {...{ class: twMerge(
         CLASSES.Group.base,
         context?.fullWidth() && CLASSES.Group.flag.fullWidth,
         local.class,
         local.className,
-      )}
+      ) }}
       data-slot="number-field-group"
       data-invalid={context?.isInvalid() ? "true" : undefined}
       data-disabled={context?.isDisabled() ? "true" : undefined}
@@ -313,7 +313,7 @@ const NumberFieldInput: Component<NumberFieldInputProps> = (props) => {
       {...others}
       type="text"
       inputmode="decimal"
-      class={twMerge(CLASSES.Input.base, local.class, local.className)}
+      {...{ class: twMerge(CLASSES.Input.base, local.class, local.className) }}
       data-slot="number-field-input"
       data-theme={local.dataTheme}
       style={local.style}
@@ -345,7 +345,7 @@ const NumberFieldIncrementButton: Component<NumberFieldIncrementButtonProps> = (
     <button
       {...others}
       type="button"
-      class={twMerge(CLASSES.IncrementButton.base, local.class, local.className)}
+      {...{ class: twMerge(CLASSES.IncrementButton.base, local.class, local.className) }}
       data-slot="number-field-increment-button"
       data-theme={local.dataTheme}
       style={local.style}
@@ -386,7 +386,7 @@ const NumberFieldDecrementButton: Component<NumberFieldDecrementButtonProps> = (
     <button
       {...others}
       type="button"
-      class={twMerge(CLASSES.DecrementButton.base, local.class, local.className)}
+      {...{ class: twMerge(CLASSES.DecrementButton.base, local.class, local.className) }}
       data-slot="number-field-decrement-button"
       data-theme={local.dataTheme}
       style={local.style}

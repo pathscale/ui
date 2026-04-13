@@ -19,7 +19,7 @@ const BadgeAnchor = (props: BadgeAnchorProps) => {
   return (
     <span
       {...others}
-      class={twMerge(CLASSES.slot.anchor, local.class)}
+      {...{ class: twMerge(CLASSES.slot.anchor, local.class) }}
       data-slot="badge-anchor"
     >
       {local.children}
@@ -81,7 +81,7 @@ const BadgeRoot = (props: BadgeRootProps) => {
   };
 
   return (
-    <span {...others} class={classes()} data-slot="badge">
+    <span {...others} {...{ class: classes() }} data-slot="badge">
       {badgeChildren()}
     </span>
   );
@@ -99,7 +99,7 @@ const BadgeLabel = (props: BadgeLabelProps) => {
 
   return (
     <span
-      class={twMerge(CLASSES.slot.label, local.class)}
+      {...{ class: twMerge(CLASSES.slot.label, local.class) }}
       data-slot="badge-label"
       {...others}
     >

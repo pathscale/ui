@@ -37,7 +37,7 @@ const ChatBubble = (props: ChatBubbleProps): JSX.Element => {
     <div
       {...others}
       data-theme={local.dataTheme}
-      class={classes()}
+      {...{ class: classes() }}
       style={local.style}
     >
       {others.children}

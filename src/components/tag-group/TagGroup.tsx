@@ -143,7 +143,7 @@ const TagGroupRoot: ParentComponent<TagGroupRootProps> = (props) => {
         data-selection-mode={selectionMode()}
         data-disabled={isDisabled() ? "true" : "false"}
         aria-disabled={isDisabled() ? "true" : undefined}
-        class={twMerge(CLASSES.Root.base, local.class, local.className)}
+        {...{ class: twMerge(CLASSES.Root.base, local.class, local.className) }}
         style={local.style}
       >
         {local.children}
@@ -189,7 +189,7 @@ const TagGroupList: Component<TagGroupListProps> = (props) => {
       aria-multiselectable={group?.selectionMode() === "multiple" ? "true" : undefined}
       data-slot="tag-group-list"
       data-theme={local.dataTheme}
-      class={twMerge(CLASSES.List.base, local.class, local.className)}
+      {...{ class: twMerge(CLASSES.List.base, local.class, local.className) }}
       style={local.style}
     >
       {renderChildren()}

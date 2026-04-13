@@ -48,7 +48,7 @@ const EmptyStateRoot: ParentComponent<EmptyStateRootProps> = (props) => {
     <div
       {...others}
       role="status"
-      class={twMerge(CLASSES.base, local.class, local.className)}
+      {...{ class: twMerge(CLASSES.base, local.class, local.className) }}
       data-slot="empty-state"
       data-theme={local.dataTheme}
       style={local.style}
@@ -73,7 +73,7 @@ const EmptyStateIcon: Component<EmptyStateIconProps> = (props) => {
   return (
     <div
       {...others}
-      class={twMerge(CLASSES.slot.icon, local.class, local.className)}
+      {...{ class: twMerge(CLASSES.slot.icon, local.class, local.className) }}
       data-slot="empty-state-icon"
       data-theme={local.dataTheme}
       style={local.style}
@@ -99,7 +99,7 @@ const EmptyStateTitle: ParentComponent<EmptyStateTitleProps> = (props) => {
   return (
     <h3
       {...others}
-      class={twMerge(CLASSES.slot.title, local.class, local.className)}
+      {...{ class: twMerge(CLASSES.slot.title, local.class, local.className) }}
       data-slot="empty-state-title"
       data-theme={local.dataTheme}
       style={local.style}
@@ -124,7 +124,7 @@ const EmptyStateDescription: ParentComponent<EmptyStateDescriptionProps> = (prop
   return (
     <p
       {...others}
-      class={twMerge(CLASSES.slot.description, local.class, local.className)}
+      {...{ class: twMerge(CLASSES.slot.description, local.class, local.className) }}
       data-slot="empty-state-description"
       data-theme={local.dataTheme}
       style={local.style}
@@ -149,7 +149,7 @@ const EmptyStateActions: ParentComponent<EmptyStateActionsProps> = (props) => {
   return (
     <div
       {...others}
-      class={twMerge(CLASSES.slot.actions, local.class, local.className)}
+      {...{ class: twMerge(CLASSES.slot.actions, local.class, local.className) }}
       data-slot="empty-state-actions"
       data-theme={local.dataTheme}
       style={local.style}

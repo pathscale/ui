@@ -19,7 +19,7 @@ const HeaderRoot: Component<HeaderRootProps> = (props) => {
   return (
     <div
       {...others}
-      class={twMerge(CLASSES.base, local.class, local.className)}
+      {...{ class: twMerge(CLASSES.base, local.class, local.className) }}
       data-slot="header"
       data-theme={local.dataTheme}
       style={local.style}

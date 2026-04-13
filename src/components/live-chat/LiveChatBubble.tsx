@@ -114,7 +114,7 @@ const LiveChatBubble: Component<LiveChatBubbleProps> = (props) => {
       <button
         {...others}
         onClick={toggleChat}
-        class={buttonClasses()}
+        {...{ class: buttonClasses() }}
         style={local.style}
         aria-label={local["aria-label"] ?? "Open chat"}
       >
@@ -124,7 +124,7 @@ const LiveChatBubble: Component<LiveChatBubbleProps> = (props) => {
             fallback={
               <svg
                 xmlns="http://www.w3.org/2000/svg"
-                class={CLASSES.bubble.icon}
+                {...{ class: CLASSES.bubble.icon }}
                 fill="none"
                 viewBox="0 0 24 24"
                 stroke="currentColor"
@@ -140,7 +140,7 @@ const LiveChatBubble: Component<LiveChatBubbleProps> = (props) => {
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"
-              class={CLASSES.bubble.icon}
+              {...{ class: CLASSES.bubble.icon }}
               fill="none"
               viewBox="0 0 24 24"
               stroke="currentColor"
@@ -157,13 +157,13 @@ const LiveChatBubble: Component<LiveChatBubbleProps> = (props) => {
 
         {/* Unread badge */}
         <Show when={unreadCount() > 0 && !isOpen()}>
-          <span class={CLASSES.bubble.badge}>
+          <span {...{ class: CLASSES.bubble.badge }}>
             {unreadCount() > 9 ? "9+" : unreadCount()}
           </span>
         </Show>
 
         {/* Ping animation */}
-        <span class={CLASSES.bubble.ping} />
+        <span {...{ class: CLASSES.bubble.ping }} />
       </button>
 
       <Show when={isOpen()}>

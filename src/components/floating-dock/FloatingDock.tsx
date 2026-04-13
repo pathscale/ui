@@ -190,13 +190,13 @@ const DockItem: Component<{
       ref={wrapRef}
       onMouseEnter={handleMouseEnter}
       onMouseLeave={() => setHovered(false)}
-      class={twMerge(CLASSES.item, cfg.itemClass)}
+      {...{ class: twMerge(CLASSES.item, cfg.itemClass) }}
       style={{ width: `${cfg.baseSize}px`, height: `${cfg.baseSize}px` }}
     >
       <Show when={hovered()}>
         <Portal>
           <div
-            class={twMerge(CLASSES.tooltip, cfg.tooltipClass)}
+            {...{ class: twMerge(CLASSES.tooltip, cfg.tooltipClass) }}
             style={{
               top: tooltipStyle().top,
               left: tooltipStyle().left,
@@ -207,7 +207,7 @@ const DockItem: Component<{
           </div>
         </Portal>
       </Show>
-      <div ref={iconRef} class={CLASSES.icon}>
+      <div ref={iconRef} {...{ class: CLASSES.icon }}>
         {props.item.icon}
       </div>
     </div>
@@ -226,7 +226,7 @@ const DockItem: Component<{
         type="button"
         onClick={handleClick}
         aria-label={props.item.title}
-        class={CLASSES.buttonReset}
+        {...{ class: CLASSES.buttonReset }}
       >
         {inner}
       </button>
@@ -380,11 +380,11 @@ const FloatingDockDesktop: Component<{
       onMouseEnter={captureAnchors}
       onMouseMove={(e) => { setMousePos(isH() ? e.clientX : e.clientY); startLoop(); }}
       onMouseLeave={() => { setMousePos(Infinity); startLoop(); }}
-      class={twMerge(
+      {...{ class: twMerge(
         CLASSES.bar,
         isH() ? CLASSES.barOrientation.horizontal : CLASSES.barOrientation.vertical,
         props.class,
-      )}
+      ) }}
       style={{
         gap: `${cfg.gap}px`,
         padding: props.showContainer ? (isH() ? "0.5rem 1rem" : "1rem 0.5rem") : undefined,
@@ -392,7 +392,7 @@ const FloatingDockDesktop: Component<{
       }}
     >
       <Show when={props.showContainer}>
-        <div ref={bgRef} class={CLASSES.bg} />
+        <div ref={bgRef} {...{ class: CLASSES.bg }} />
       </Show>
       <For each={props.items}>
         {(item, idx) => {
@@ -438,18 +438,18 @@ const FloatingDockMobile: Component<{
   };
 
   return (
-    <div class={twMerge(CLASSES.mobile, props.class)}>
+    <div {...{ class: twMerge(CLASSES.mobile, props.class) }}>
       <Show when={open()}>
         <div
-          class={twMerge(
+          {...{ class: twMerge(
             CLASSES.mobilePopup,
             CLASSES.mobilePopupDirection[props.popupDirection],
-          )}
+          ) }}
         >
           <For each={props.items}>
             {(item, idx) => (
               <div
-                class={CLASSES.mobileItem}
+                {...{ class: CLASSES.mobileItem }}
                 style={{
                   "animation-delay": `${(props.items.length - 1 - idx()) * 0.05}s`,
                 }}
@@ -461,7 +461,7 @@ const FloatingDockMobile: Component<{
                       when={item.href}
                       fallback={
                         <div
-                          class={CLASSES.item}
+                          {...{ class: CLASSES.item }}
                           style={{ width: `${props.cfg.baseSize}px`, height: `${props.cfg.baseSize}px` }}
                           title={item.title}
                         >
@@ -471,7 +471,7 @@ const FloatingDockMobile: Component<{
                     >
                       <a
                         href={item.href}
-                        class={CLASSES.item}
+                        {...{ class: CLASSES.item }}
                         style={{ width: `${props.cfg.baseSize}px`, height: `${props.cfg.baseSize}px` }}
                         title={item.title}
                       >
@@ -483,7 +483,7 @@ const FloatingDockMobile: Component<{
                   <button
                     type="button"
                     onClick={(e) => handleItemClick(item, e)}
-                    class={CLASSES.mobileToggle}
+                    {...{ class: CLASSES.mobileToggle }}
                     style={{ width: `${props.cfg.baseSize}px`, height: `${props.cfg.baseSize}px` }}
                     title={item.title}
                   >
@@ -498,13 +498,13 @@ const FloatingDockMobile: Component<{
       <button
         type="button"
         onClick={() => setOpen(!open())}
-        class={CLASSES.mobileToggle}
+        {...{ class: CLASSES.mobileToggle }}
         style={{ width: `${props.cfg.baseSize}px`, height: `${props.cfg.baseSize}px` }}
       >
         {props.toggleIcon ?? (
           <svg
             xmlns="http://www.w3.org/2000/svg"
-            class={CLASSES.menuIcon}
+            {...{ class: CLASSES.menuIcon }}
             viewBox="0 0 24 24"
             fill="none"
             stroke="currentColor"
@@ -555,11 +555,11 @@ const FloatingDock = (rawProps: FloatingDockProps): JSX.Element => {
   });
 
   return (
-    <div class={CLASSES.base} data-theme={local.dataTheme} style={local.style} {...others}>
+    <div {...{ class: CLASSES.base }} data-theme={local.dataTheme} style={local.style} {...others}>
       <Show when={local.showDesktop !== false}>
         <FloatingDockDesktop
           items={local.items}
-          class={twMerge(local.class, local.className, local.desktopClass)}
+          {...{ class: twMerge(local.class, local.className, local.desktopClass) }}
           cfg={cfg()}
           showContainer={local.showContainer !== false}
         />
@@ -570,7 +570,7 @@ const FloatingDock = (rawProps: FloatingDockProps): JSX.Element => {
           fallback={
             <FloatingDockDesktop
               items={local.items}
-              class={twMerge(CLASSES.barMobileDock, local.mobileClass)}
+              {...{ class: twMerge(CLASSES.barMobileDock, local.mobileClass) }}
               cfg={cfg()}
               showContainer={local.showContainer !== false}
             />
@@ -578,7 +578,7 @@ const FloatingDock = (rawProps: FloatingDockProps): JSX.Element => {
         >
           <FloatingDockMobile
             items={local.items}
-            class={local.mobileClass}
+            {...{ class: local.mobileClass }}
             toggleIcon={local.mobileToggleIcon}
             popupDirection={local.mobilePopupDirection ?? "top"}
             cfg={cfg()}

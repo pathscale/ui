@@ -313,13 +313,13 @@ const LiveChatPanel: Component<LiveChatPanelProps> = (props) => {
   const classes = () => twMerge(CLASSES.panel.base, local.class, local.className);
 
   return (
-    <div {...others} class={classes()} style={local.style}>
+    <div {...others} {...{ class: classes() }} style={local.style}>
       {/* Header */}
-      <div class={CLASSES.panel.header}>
-        <div class={CLASSES.panel.headerTitleWrap}>
+      <div {...{ class: CLASSES.panel.header }}>
+        <div {...{ class: CLASSES.panel.headerTitleWrap }}>
           <svg
             xmlns="http://www.w3.org/2000/svg"
-            class={CLASSES.panel.headerIcon}
+            {...{ class: CLASSES.panel.headerIcon }}
             fill="none"
             viewBox="0 0 24 24"
             stroke="currentColor"
@@ -331,16 +331,16 @@ const LiveChatPanel: Component<LiveChatPanelProps> = (props) => {
               d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"
             />
           </svg>
-          <h3 class={CLASSES.panel.headerTitle}>{local.title ?? "Chat with us"}</h3>
+          <h3 {...{ class: CLASSES.panel.headerTitle }}>{local.title ?? "Chat with us"}</h3>
         </div>
         <button
           onClick={local.onClose}
-          class={CLASSES.panel.closeButton}
+          {...{ class: CLASSES.panel.closeButton }}
           aria-label={local.closeLabel ?? "Close chat"}
         >
           <svg
             xmlns="http://www.w3.org/2000/svg"
-            class={CLASSES.panel.closeIcon}
+            {...{ class: CLASSES.panel.closeIcon }}
             fill="none"
             viewBox="0 0 24 24"
             stroke="currentColor"
@@ -360,48 +360,48 @@ const LiveChatPanel: Component<LiveChatPanelProps> = (props) => {
         ref={(element) => {
           scrollContainer = element;
         }}
-        class={CLASSES.panel.messages}
+        {...{ class: CLASSES.panel.messages }}
       >
         <For each={internalMessages()}>
           {(message) => {
             const isUser = message.sender === "user";
             return (
               <div
-                class={twMerge(
+                {...{ class: twMerge(
                   CLASSES.panel.row,
                   isUser ? CLASSES.panel.rowUser : CLASSES.panel.rowAgent,
-                )}
+                ) }}
               >
                 <div
-                  class={twMerge(
+                  {...{ class: twMerge(
                     CLASSES.panel.avatar,
                     isUser ? CLASSES.panel.avatarUser : CLASSES.panel.avatarAgent,
-                  )}
+                  ) }}
                 >
                   {isUser ? "U" : "A"}
                 </div>
 
                 <div
-                  class={twMerge(
+                  {...{ class: twMerge(
                     CLASSES.panel.messageColumn,
                     isUser
                       ? CLASSES.panel.messageColumnUser
                       : CLASSES.panel.messageColumnAgent,
-                  )}
+                  ) }}
                 >
                   <div
-                    class={twMerge(
+                    {...{ class: twMerge(
                       CLASSES.panel.messageBubble,
                       isUser
                         ? CLASSES.panel.messageBubbleUser
                         : CLASSES.panel.messageBubbleAgent,
-                    )}
+                    ) }}
                   >
-                    <p class={CLASSES.panel.messageText}>
+                    <p {...{ class: CLASSES.panel.messageText }}>
                       {message.content}
                     </p>
                   </div>
-                  <span class={CLASSES.panel.timestamp}>
+                  <span {...{ class: CLASSES.panel.timestamp }}>
                     {formatTime(message.timestamp)}
                   </span>
                 </div>
@@ -411,14 +411,14 @@ const LiveChatPanel: Component<LiveChatPanelProps> = (props) => {
         </For>
 
         <Show when={internalMessages().length === 0}>
-          <div class={CLASSES.panel.empty}>
+          <div {...{ class: CLASSES.panel.empty }}>
             {local.emptyMessage ?? "No messages yet. Start a conversation!"}
           </div>
         </Show>
       </div>
 
       {/* Input area */}
-      <div class={CLASSES.panel.inputArea}>
+      <div {...{ class: CLASSES.panel.inputArea }}>
           <Input
             type="text"
             value={inputValue()}
@@ -426,18 +426,18 @@ const LiveChatPanel: Component<LiveChatPanelProps> = (props) => {
             onKeyPress={handleKeyPress}
             placeholder={local.placeholder ?? "Message support..."}
             disabled={isSending()}
-            class={CLASSES.panel.input}
+            {...{ class: CLASSES.panel.input }}
           />
           <Button
             onClick={handleSend}
             isDisabled={!inputValue().trim() || isSending()}
-            class={CLASSES.panel.sendButton}
+            {...{ class: CLASSES.panel.sendButton }}
             variant="primary"
           >
             <Show
               when={!isSending()}
               fallback={
-                <span class={CLASSES.panel.spinner} />
+                <span {...{ class: CLASSES.panel.spinner }} />
               }
             >
               {local.sendLabel ?? "Send"}

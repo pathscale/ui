@@ -75,7 +75,7 @@ const FieldErrorRoot: Component<FieldErrorRootProps> = (props) => {
     <div
       ref={rootRef}
       {...others}
-      class={twMerge(CLASSES.base, local.class, local.className)}
+      {...{ class: twMerge(CLASSES.base, local.class, local.className) }}
       data-slot="field-error"
       data-visible={isVisible() ? "true" : "false"}
       slot={local.slot ?? "errorMessage"}

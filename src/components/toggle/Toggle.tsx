@@ -67,14 +67,14 @@ const Toggle: Component<ToggleProps> = (props) => {
 
   return (
     <label
-      class={twMerge(
+      {...{ class: twMerge(
         CLASSES.base,
         CLASSES.size[size()],
         CLASSES.color[color()],
         isDisabled() && CLASSES.flag.disabled,
         local.class,
         local.className,
-      )}
+      ) }}
       data-theme={local.dataTheme}
       data-slot="toggle"
       data-selected={isSelected() ? "true" : "false"}
@@ -85,17 +85,17 @@ const Toggle: Component<ToggleProps> = (props) => {
         {...others}
         type="checkbox"
         role="switch"
-        class={CLASSES.slot.input}
+        {...{ class: CLASSES.slot.input }}
         data-slot="toggle-input"
         checked={isSelected()}
         disabled={isDisabled()}
         onChange={handleChange}
       />
 
-      <span class={CLASSES.slot.control} data-slot="toggle-control" aria-hidden="true">
-        <span class={CLASSES.slot.thumb} data-slot="toggle-thumb">
+      <span {...{ class: CLASSES.slot.control }} data-slot="toggle-control" aria-hidden="true">
+        <span {...{ class: CLASSES.slot.thumb }} data-slot="toggle-thumb">
           <Show when={local.icon}>
-            <span class={CLASSES.slot.icon} data-slot="toggle-icon">
+            <span {...{ class: CLASSES.slot.icon }} data-slot="toggle-icon">
               {local.icon}
             </span>
           </Show>
@@ -103,12 +103,12 @@ const Toggle: Component<ToggleProps> = (props) => {
       </span>
 
       <Show when={hasContent()}>
-        <span class={CLASSES.slot.content} data-slot="toggle-content">
+        <span {...{ class: CLASSES.slot.content }} data-slot="toggle-content">
           <Show when={local.children}>
             <span data-slot="label">{local.children}</span>
           </Show>
           <Show when={local.description}>
-            <span class={CLASSES.slot.description} data-slot="description">
+            <span {...{ class: CLASSES.slot.description }} data-slot="description">
               {local.description}
             </span>
           </Show>

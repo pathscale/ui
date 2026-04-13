@@ -182,7 +182,7 @@ const ColorArea: Component<ColorAreaProps> = (props) => {
     <div
       {...others}
       ref={areaRef}
-      class={twMerge(CLASSES.base, local.class, local.className)}
+      {...{ class: twMerge(CLASSES.base, local.class, local.className) }}
       data-theme={local.dataTheme}
       data-slot="color-area"
       data-disabled={isDisabled() ? "true" : "false"}
@@ -202,7 +202,7 @@ const ColorArea: Component<ColorAreaProps> = (props) => {
       onKeyDown={handleKeyDown}
     >
       <div
-        class={CLASSES.slot.thumb}
+        {...{ class: CLASSES.slot.thumb }}
         data-slot="color-area-thumb"
         data-dragging={isDragging() ? "true" : "false"}
         data-disabled={isDisabled() ? "true" : "false"}

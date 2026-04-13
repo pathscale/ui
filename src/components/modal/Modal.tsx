@@ -390,12 +390,12 @@ const ModalRoot: ParentComponent<ModalRootProps> = (props) => {
             local.ref(node);
           }
         }}
-        class={twMerge(
+        {...{ class: twMerge(
           CLASSES.Root.base,
           isVisibleState(animState()) && CLASSES.Root.flag.open,
           local.class,
           local.className,
-        )}
+        ) }}
         data-slot="modal-root"
         data-open={isVisibleState(animState()) ? "true" : "false"}
         data-theme={local.dataTheme}
@@ -431,7 +431,7 @@ const ModalTrigger: Component<ModalTriggerProps> = (props) => {
     <button
       {...others}
       type={local.type ?? "button"}
-      class={twMerge(CLASSES.Trigger.base, local.class, local.className)}
+      {...{ class: twMerge(CLASSES.Trigger.base, local.class, local.className) }}
       data-slot="modal-trigger"
       data-theme={local.dataTheme}
       style={local.style}
@@ -480,14 +480,14 @@ const ModalBackdrop: ParentComponent<ModalBackdropProps> = (props) => {
   return (
     <div
       {...others}
-      class={twMerge(
+      {...{ class: twMerge(
         CLASSES.Backdrop.base,
         CLASSES.Backdrop.variant[variant()],
         isEntering() && CLASSES.Backdrop.state.entering,
         isExiting() && CLASSES.Backdrop.state.exiting,
         local.class,
         local.className,
-      )}
+      ) }}
       data-slot="modal-backdrop"
       data-entering={isEntering() ? "true" : undefined}
       data-exiting={isExiting() ? "true" : undefined}
@@ -543,14 +543,14 @@ const ModalContent: ParentComponent<ModalContentProps> = (props) => {
           dataTheme={local.dataTheme}
         >
           <div
-            class={twMerge(
+            {...{ class: twMerge(
               CLASSES.Container.base,
               CLASSES.Container.placement[placement()],
               CLASSES.Container.scroll[scrollBehavior()],
               containerSizeClass(),
               isEntering() && CLASSES.Container.state.entering,
               isExiting() && CLASSES.Container.state.exiting,
-            )}
+            ) }}
             data-slot="modal-container"
             data-placement={placement()}
             data-entering={isEntering() ? "true" : undefined}
@@ -569,7 +569,7 @@ const ModalContent: ParentComponent<ModalContentProps> = (props) => {
               aria-labelledby={local["aria-labelledby"] ?? context.labelledBy()}
               aria-describedby={local["aria-describedby"] ?? context.describedBy()}
               tabIndex={local.tabIndex ?? -1}
-              class={twMerge(
+              {...{ class: twMerge(
                 CLASSES.Content.base,
                 CLASSES.Content.scroll[scrollBehavior()],
                 CLASSES.Content.size[size()],
@@ -577,7 +577,7 @@ const ModalContent: ParentComponent<ModalContentProps> = (props) => {
                 isExiting() && CLASSES.Content.state.exiting,
                 local.class,
                 local.className,
-              )}
+              ) }}
               data-slot="modal-content"
               data-placement={placement()}
               data-size={size()}
@@ -608,7 +608,7 @@ const ModalHeader: ParentComponent<ModalHeaderProps> = (props) => {
   return (
     <div
       {...others}
-      class={twMerge(CLASSES.Header.base, local.class, local.className)}
+      {...{ class: twMerge(CLASSES.Header.base, local.class, local.className) }}
       data-slot="modal-header"
       data-theme={local.dataTheme}
       style={local.style}
@@ -647,7 +647,7 @@ const ModalHeading: ParentComponent<ModalHeadingProps> = (props) => {
     <h2
       {...others}
       id={headingId()}
-      class={twMerge(CLASSES.Heading.base, local.class, local.className)}
+      {...{ class: twMerge(CLASSES.Heading.base, local.class, local.className) }}
       data-slot="modal-heading"
       data-theme={local.dataTheme}
       style={local.style}
@@ -669,7 +669,7 @@ const ModalIcon: ParentComponent<ModalIconProps> = (props) => {
   return (
     <div
       {...others}
-      class={twMerge(CLASSES.Icon.base, local.class, local.className)}
+      {...{ class: twMerge(CLASSES.Icon.base, local.class, local.className) }}
       data-slot="modal-icon"
       data-theme={local.dataTheme}
       style={local.style}
@@ -708,12 +708,12 @@ const ModalBody: ParentComponent<ModalBodyProps> = (props) => {
     <div
       {...others}
       id={bodyId()}
-      class={twMerge(
+      {...{ class: twMerge(
         CLASSES.Body.base,
         CLASSES.Body.scroll[context.scrollBehavior()],
         local.class,
         local.className,
-      )}
+      ) }}
       data-slot="modal-body"
       data-scroll={context.scrollBehavior()}
       data-theme={local.dataTheme}
@@ -736,7 +736,7 @@ const ModalFooter: ParentComponent<ModalFooterProps> = (props) => {
   return (
     <div
       {...others}
-      class={twMerge(CLASSES.Footer.base, local.class, local.className)}
+      {...{ class: twMerge(CLASSES.Footer.base, local.class, local.className) }}
       data-slot="modal-footer"
       data-theme={local.dataTheme}
       style={local.style}
@@ -772,7 +772,7 @@ const ModalCloseTrigger: Component<ModalCloseTriggerProps> = (props) => {
       {...others}
       type={local.type ?? "button"}
       aria-label={local["aria-label"] ?? "Close modal"}
-      class={twMerge(CLASSES.CloseTrigger.base, local.class, local.className)}
+      {...{ class: twMerge(CLASSES.CloseTrigger.base, local.class, local.className) }}
       data-slot="modal-close-trigger"
       data-theme={local.dataTheme}
       style={local.style}
@@ -780,7 +780,7 @@ const ModalCloseTrigger: Component<ModalCloseTriggerProps> = (props) => {
     >
       {local.children ?? (
         <svg
-          class={CLASSES.CloseTrigger.icon}
+          {...{ class: CLASSES.CloseTrigger.icon }}
           data-slot="modal-close-trigger-icon"
           viewBox="0 0 24 24"
           fill="none"

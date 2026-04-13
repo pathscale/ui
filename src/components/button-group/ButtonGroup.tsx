@@ -50,13 +50,13 @@ const ButtonGroupRoot: ParentComponent<ButtonGroupRootProps> = (props) => {
     >
       <div
         {...others}
-        class={twMerge(
+        {...{ class: twMerge(
           CLASSES.Root.base,
           CLASSES.Root.orientation[orientation()],
           local.fullWidth && CLASSES.Root.flag.fullWidth,
           local.class,
           local.className,
-        )}
+        ) }}
         data-slot="button-group"
         data-orientation={orientation()}
         data-theme={local.dataTheme}
@@ -77,7 +77,7 @@ const ButtonGroupSeparator: Component<ButtonGroupSeparatorProps> = (props) => {
     <span
       {...others}
       aria-hidden="true"
-      class={twMerge(CLASSES.Separator.base, local.class, local.className)}
+      {...{ class: twMerge(CLASSES.Separator.base, local.class, local.className) }}
       data-slot="button-group-separator"
       data-theme={local.dataTheme}
       style={local.style}

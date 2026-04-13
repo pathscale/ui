@@ -63,7 +63,7 @@ const AvatarGroup = <E extends ElementType = "div">(
         component={Tag}
         {...others}
         aria-label={ariaLabel}
-        class={classes()}
+        {...{ class: classes() }}
       />
     );
   }
@@ -73,7 +73,7 @@ const AvatarGroup = <E extends ElementType = "div">(
       component={Tag}
       {...others}
       aria-label={ariaLabel}
-      class={classes()}
+      {...{ class: classes() }}
     >
       {local.children}
     </Dynamic>

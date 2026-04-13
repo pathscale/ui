@@ -216,7 +216,7 @@ const NoiseBackground = (rawProps: NoiseBackgroundProps): JSX.Element => {
   return (
     <div
       ref={containerRef}
-      class={containerClasses()}
+      {...{ class: containerClasses() }}
       style={{
         "--noise-opacity": noiseIntensity(),
         "border-radius": borderRadius(),
@@ -226,14 +226,14 @@ const NoiseBackground = (rawProps: NoiseBackgroundProps): JSX.Element => {
       {...others}
     >
       {/* Moving gradient layers */}
-      <div ref={layer0} class={CLASSES.slot.layer0} />
-      <div ref={layer1} class={CLASSES.slot.layer1} />
-      <div ref={layer2} class={CLASSES.slot.layer2} />
+      <div ref={layer0} {...{ class: CLASSES.slot.layer0 }} />
+      <div ref={layer1} {...{ class: CLASSES.slot.layer1 }} />
+      <div ref={layer2} {...{ class: CLASSES.slot.layer2 }} />
 
       {/* Top gradient strip */}
       <div
         ref={stripEl}
-        class={CLASSES.slot.strip}
+        {...{ class: CLASSES.slot.strip }}
         style={{
           background: `linear-gradient(to right, ${colors().join(", ")})`,
           "border-radius": `${borderRadius()} ${borderRadius()} 0 0`,
@@ -242,11 +242,11 @@ const NoiseBackground = (rawProps: NoiseBackgroundProps): JSX.Element => {
 
       {/* Static noise pattern (opt-in) */}
       {(local.showNoise ?? false) && (
-        <div class={CLASSES.slot.noiseWrap}>
+        <div {...{ class: CLASSES.slot.noiseWrap }}>
           <img
             src={local.noiseSrc ?? "/noise.webp"}
             alt=""
-            class={CLASSES.slot.noiseImage}
+            {...{ class: CLASSES.slot.noiseImage }}
             style={{
               opacity: `var(--noise-opacity, 0.2)`,
             }}
@@ -255,7 +255,7 @@ const NoiseBackground = (rawProps: NoiseBackgroundProps): JSX.Element => {
       )}
 
       {/* Content */}
-      <div class={contentClasses()}>{local.children}</div>
+      <div {...{ class: contentClasses() }}>{local.children}</div>
     </div>
   );
 };

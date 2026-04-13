@@ -122,32 +122,32 @@ export const FirefoxPWABanner: Component<FirefoxPWABannerProps> = (props) => {
         aria-labelledby="pwa-unsupported-title"
         {...{ class: CLASSES.firefoxBanner.dialog }}
       >
-        <Card variant="shadow" class={CLASSES.firefoxBanner.card}>
+        <Card variant="shadow" {...{ class: CLASSES.firefoxBanner.card }}>
           <Button
             size="sm"
             variant="ghost"
             isIconOnly
-            class={CLASSES.firefoxBanner.closeButton}
+            {...{ class: CLASSES.firefoxBanner.closeButton }}
             onClick={handleDismiss}
             aria-label={texts().closeLabel}
           >
             <Icon name="icon-[mdi--close]" width={16} height={16} />
           </Button>
 
-          <Card.Body class={CLASSES.firefoxBanner.body}>
-            <Flex align="start" gap="md" class={CLASSES.firefoxBanner.media}>
+          <Card.Body {...{ class: CLASSES.firefoxBanner.body }}>
+            <Flex align="start" gap="md" {...{ class: CLASSES.firefoxBanner.media }}>
               <div {...{ class: CLASSES.firefoxBanner.iconWrap }}>
                 <Show when={browser() === "firefox"}>
                   <Icon
                     name="icon-[mdi--firefox]"
                     width={40}
                     height={40}
-                    class={CLASSES.firefoxBanner.browserIcon}
+                    {...{ class: CLASSES.firefoxBanner.browserIcon }}
                   />
                 </Show>
               </div>
 
-              <Flex direction="col" gap="sm" class={CLASSES.firefoxBanner.textWrap}>
+              <Flex direction="col" gap="sm" {...{ class: CLASSES.firefoxBanner.textWrap }}>
                 <h3 id="pwa-unsupported-title" {...{ class: CLASSES.firefoxBanner.title }}>
                   {texts().title}
                 </h3>
@@ -157,11 +157,11 @@ export const FirefoxPWABanner: Component<FirefoxPWABannerProps> = (props) => {
               </Flex>
             </Flex>
           </Card.Body>
-          <Card.Footer class={CLASSES.firefoxBanner.footer}>
-            <Button variant="primary" class={CLASSES.firefoxBanner.action} onClick={handleAction}>
+          <Card.Footer {...{ class: CLASSES.firefoxBanner.footer }}>
+            <Button variant="primary" {...{ class: CLASSES.firefoxBanner.action }} onClick={handleAction}>
               {texts().installButton}
             </Button>
-            <Button variant="ghost" class={CLASSES.firefoxBanner.action} onClick={handleDismiss}>
+            <Button variant="ghost" {...{ class: CLASSES.firefoxBanner.action }} onClick={handleDismiss}>
               {texts().dismissButton}
             </Button>
           </Card.Footer>

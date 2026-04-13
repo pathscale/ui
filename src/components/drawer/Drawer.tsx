@@ -166,7 +166,7 @@ const DrawerTrigger: Component<DrawerTriggerProps> = (props) => {
     <button
       {...others}
       type="button"
-      class={twMerge(CLASSES.slot.trigger, local.class, local.className)}
+      {...{ class: twMerge(CLASSES.slot.trigger, local.class, local.className) }}
       data-slot="drawer-trigger"
       data-theme={local.dataTheme}
       style={local.style}
@@ -266,12 +266,12 @@ const DrawerBackdrop: ParentComponent<DrawerBackdropProps> = (props) => {
         <DrawerContext.Provider value={updatedCtx}>
           <div
             {...others}
-            class={twMerge(
+            {...{ class: twMerge(
               CLASSES.slot.backdrop,
               BACKDROP_VARIANT_MAP[variant()],
               local.class,
               local.className,
-            )}
+            ) }}
             data-slot="drawer-backdrop"
             data-entering={animState() === "entering" ? "true" : undefined}
             data-exiting={animState() === "exiting" ? "true" : undefined}
@@ -324,12 +324,12 @@ const DrawerContent: ParentComponent<DrawerContentProps> = (props) => {
     <DrawerContext.Provider value={updatedCtx}>
       <div
         {...others}
-        class={twMerge(
+        {...{ class: twMerge(
           CLASSES.slot.content,
           PLACEMENT_CLASS_MAP[placement()],
           local.class,
           local.className,
-        )}
+        ) }}
         data-slot="drawer-content"
         data-placement={placement()}
         data-entering={parentCtx.animState() === "entering" ? "true" : undefined}
@@ -362,7 +362,7 @@ const DrawerDialog: ParentComponent<DrawerDialogProps> = (props) => {
       {...others}
       role="dialog"
       aria-modal="true"
-      class={twMerge(CLASSES.slot.dialog, local.class, local.className)}
+      {...{ class: twMerge(CLASSES.slot.dialog, local.class, local.className) }}
       data-slot="drawer-dialog"
       data-placement={ctx.placement()}
       data-theme={local.dataTheme}
@@ -388,7 +388,7 @@ const DrawerHeader: ParentComponent<DrawerHeaderProps> = (props) => {
   return (
     <div
       {...others}
-      class={twMerge(CLASSES.slot.header, local.class, local.className)}
+      {...{ class: twMerge(CLASSES.slot.header, local.class, local.className) }}
       data-slot="drawer-header"
       data-theme={local.dataTheme}
       style={local.style}
@@ -413,7 +413,7 @@ const DrawerHeading: ParentComponent<DrawerHeadingProps> = (props) => {
   return (
     <h2
       {...others}
-      class={twMerge(CLASSES.slot.heading, local.class, local.className)}
+      {...{ class: twMerge(CLASSES.slot.heading, local.class, local.className) }}
       data-slot="drawer-heading"
       data-theme={local.dataTheme}
       style={local.style}
@@ -438,7 +438,7 @@ const DrawerBody: ParentComponent<DrawerBodyProps> = (props) => {
   return (
     <div
       {...others}
-      class={twMerge(CLASSES.slot.body, local.class, local.className)}
+      {...{ class: twMerge(CLASSES.slot.body, local.class, local.className) }}
       data-slot="drawer-body"
       data-theme={local.dataTheme}
       style={Object.assign({}, local.style, { "touch-action": "pan-y" })}
@@ -463,7 +463,7 @@ const DrawerFooter: ParentComponent<DrawerFooterProps> = (props) => {
   return (
     <div
       {...others}
-      class={twMerge(CLASSES.slot.footer, local.class, local.className)}
+      {...{ class: twMerge(CLASSES.slot.footer, local.class, local.className) }}
       data-slot="drawer-footer"
       data-theme={local.dataTheme}
       style={local.style}
@@ -488,7 +488,7 @@ const DrawerHandle: Component<DrawerHandleProps> = (props) => {
     <div
       {...others}
       aria-hidden="true"
-      class={twMerge(CLASSES.slot.handle, local.class, local.className)}
+      {...{ class: twMerge(CLASSES.slot.handle, local.class, local.className) }}
       data-slot="drawer-handle"
       data-theme={local.dataTheme}
       style={local.style}
@@ -524,7 +524,7 @@ const DrawerCloseTrigger: Component<DrawerCloseTriggerProps> = (props) => {
     <button
       {...others}
       type="button"
-      class={twMerge(CLASSES.slot.closeTrigger, local.class, local.className)}
+      {...{ class: twMerge(CLASSES.slot.closeTrigger, local.class, local.className) }}
       data-slot="drawer-close-trigger"
       data-theme={local.dataTheme}
       style={local.style}
@@ -533,7 +533,7 @@ const DrawerCloseTrigger: Component<DrawerCloseTriggerProps> = (props) => {
     >
       {local.startIcon ? (
         <span
-          class={twMerge(CLASSES.slot.closeIcon, CLASSES.closeIconStart)}
+          {...{ class: twMerge(CLASSES.slot.closeIcon, CLASSES.closeIconStart) }}
           data-slot="drawer-close-trigger-start-icon"
         >
           {local.startIcon}
@@ -542,7 +542,7 @@ const DrawerCloseTrigger: Component<DrawerCloseTriggerProps> = (props) => {
       {local.children}
       {local.endIcon ? (
         <span
-          class={twMerge(CLASSES.slot.closeIcon, CLASSES.closeIconEnd)}
+          {...{ class: twMerge(CLASSES.slot.closeIcon, CLASSES.closeIconEnd) }}
           data-slot="drawer-close-trigger-end-icon"
         >
           {local.endIcon}

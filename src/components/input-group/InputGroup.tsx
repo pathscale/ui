@@ -118,13 +118,13 @@ const InputGroupRoot: ParentComponent<InputGroupRootProps> = (props) => {
             local.ref(node);
           }
         }}
-        class={twMerge(
+        {...{ class: twMerge(
           CLASSES.Root.base,
           CLASSES.Root.variant[variant()],
           fullWidth() && CLASSES.Root.flag.fullWidth,
           local.class,
           local.className,
-        )}
+        ) }}
         data-slot="input-group"
         data-disabled={isDisabled() ? "true" : undefined}
         data-invalid={isInvalid() ? "true" : undefined}
@@ -159,7 +159,7 @@ const InputGroupInput: Component<InputGroupInputProps> = (props) => {
   return (
     <input
       {...others}
-      class={twMerge(CLASSES.Input.base, local.class, local.className)}
+      {...{ class: twMerge(CLASSES.Input.base, local.class, local.className) }}
       data-slot="input-group-input"
       data-theme={local.dataTheme}
       style={local.style}
@@ -189,7 +189,7 @@ const InputGroupTextArea: Component<InputGroupTextAreaProps> = (props) => {
   return (
     <textarea
       {...others}
-      class={twMerge(CLASSES.Input.base, local.class, local.className)}
+      {...{ class: twMerge(CLASSES.Input.base, local.class, local.className) }}
       data-slot="input-group-textarea"
       data-theme={local.dataTheme}
       style={local.style}
@@ -206,7 +206,7 @@ const InputGroupPrefix: ParentComponent<InputGroupPrefixProps> = (props) => {
   return (
     <div
       {...others}
-      class={twMerge(CLASSES.Prefix.base, local.class, local.className)}
+      {...{ class: twMerge(CLASSES.Prefix.base, local.class, local.className) }}
       data-slot="input-group-prefix"
       data-theme={local.dataTheme}
       style={local.style}
@@ -222,7 +222,7 @@ const InputGroupSuffix: ParentComponent<InputGroupSuffixProps> = (props) => {
   return (
     <div
       {...others}
-      class={twMerge(CLASSES.Suffix.base, local.class, local.className)}
+      {...{ class: twMerge(CLASSES.Suffix.base, local.class, local.className) }}
       data-slot="input-group-suffix"
       data-theme={local.dataTheme}
       style={local.style}

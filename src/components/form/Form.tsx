@@ -18,7 +18,7 @@ const FormRoot: Component<FormRootProps> = (props) => {
   return (
     <form
       {...others}
-      class={twMerge(CLASSES.base, local.class, local.className)}
+      {...{ class: twMerge(CLASSES.base, local.class, local.className) }}
       data-slot="form"
       data-theme={local.dataTheme}
       style={local.style}

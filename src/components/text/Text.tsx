@@ -32,7 +32,7 @@ const TextRoot: Component<TextRootProps> = (props) => {
   return (
     <span
       {...others}
-      class={twMerge(CLASSES.base, local.class, local.className)}
+      {...{ class: twMerge(CLASSES.base, local.class, local.className) }}
       data-slot="text"
       data-size={size()}
       data-variant={variant()}

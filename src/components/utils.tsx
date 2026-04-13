@@ -27,7 +27,7 @@ export function wrapWithElementIfInvalid({
     return (
       <Dynamic
         component={wrapper}
-        class={className}
+        {...{ class: className }}
       >
         {node}
       </Dynamic>
@@ -37,7 +37,7 @@ export function wrapWithElementIfInvalid({
   return (
     <Dynamic
       component={wrapper}
-      class={className}
+      {...{ class: className }}
     >
       {node}
     </Dynamic>

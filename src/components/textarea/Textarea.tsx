@@ -17,7 +17,7 @@ export type TextareaProps = BaseTextAreaProps;
 const TextareaRoot: Component<TextareaRootProps> = (props) => {
   const [local, others] = splitProps(props, ["class", "className"]);
 
-  return <TextAreaRoot {...others} class={twMerge(CLASSES.base, local.class, local.className)} />;
+  return <TextAreaRoot {...others} {...{ class: twMerge(CLASSES.base, local.class, local.className) }} />;
 };
 
 const Textarea = Object.assign(TextareaRoot, {

@@ -18,7 +18,7 @@ export const FooterTitle: ParentComponent<FooterTitleProps> = (props) => {
     <h6
       {...others}
       data-theme={local.dataTheme}
-      class={classes()}
+      {...{ class: classes() }}
     >
       {local.children}
     </h6>

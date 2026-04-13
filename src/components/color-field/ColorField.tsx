@@ -162,13 +162,13 @@ const ColorField: Component<ColorFieldProps> = (props) => {
 
   return (
     <div
-      class={twMerge(
+      {...{ class: twMerge(
         CLASSES.base,
         local.fullWidth && CLASSES.flag.fullWidth,
         isDisabled() && CLASSES.flag.disabled,
         local.class,
         local.className,
-      )}
+      ) }}
       data-theme={local.dataTheme}
       data-slot="color-field"
       data-disabled={isDisabled() ? "true" : "false"}
@@ -176,11 +176,11 @@ const ColorField: Component<ColorFieldProps> = (props) => {
       aria-disabled={isDisabled() ? "true" : "false"}
     >
       <div
-        class={twMerge(
+        {...{ class: twMerge(
           CLASSES.slot.group,
           isInvalid() && CLASSES.flag.groupInvalid,
           local.fullWidth && CLASSES.flag.groupFullWidth,
-        )}
+        ) }}
         data-slot="color-field-group"
         data-disabled={isDisabled() ? "true" : "false"}
         data-invalid={isInvalid() ? "true" : "false"}
@@ -190,7 +190,7 @@ const ColorField: Component<ColorFieldProps> = (props) => {
           type="text"
           value={inputValue()}
           disabled={isDisabled()}
-          class={CLASSES.slot.input}
+          {...{ class: CLASSES.slot.input }}
           data-slot="color-field-input"
           spellcheck={false}
           autocapitalize="off"

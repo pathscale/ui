@@ -105,7 +105,7 @@ const RadioGroup: Component<RadioGroupProps> = (props) => {
         data-variant={variant()}
         data-disabled={isDisabled() ? "true" : "false"}
         data-invalid={isInvalid() ? "true" : "false"}
-        class={twMerge(
+        {...{ class: twMerge(
           CLASSES.base,
           CLASSES.orientation[orientation()],
           CLASSES.variant[variant()],
@@ -113,26 +113,26 @@ const RadioGroup: Component<RadioGroupProps> = (props) => {
           isInvalid() && CLASSES.flag.invalid,
           local.class,
           local.className,
-        )}
+        ) }}
       >
         <Show when={local.label}>
-          <span id={labelId} class={CLASSES.slot.label} data-slot="label">
+          <span id={labelId} {...{ class: CLASSES.slot.label }} data-slot="label">
             {local.label}
           </span>
         </Show>
 
         <Show when={local.description}>
-          <span id={descriptionId} class={CLASSES.slot.description} data-slot="description">
+          <span id={descriptionId} {...{ class: CLASSES.slot.description }} data-slot="description">
             {local.description}
           </span>
         </Show>
 
-        <div class={CLASSES.slot.items} data-slot="radio-group-items">
+        <div {...{ class: CLASSES.slot.items }} data-slot="radio-group-items">
           {local.children}
         </div>
 
         <Show when={local.errorMessage}>
-          <span id={errorId} class={CLASSES.slot.error} data-slot="error-message">
+          <span id={errorId} {...{ class: CLASSES.slot.error }} data-slot="error-message">
             {local.errorMessage}
           </span>
         </Show>

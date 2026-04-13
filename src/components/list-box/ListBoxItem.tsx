@@ -216,12 +216,12 @@ const ListBoxItemRoot: ParentComponent<ListBoxItemRootProps> = (props) => {
         data-selected={isSelected() ? "true" : "false"}
         data-focus={isFocused() ? "true" : "false"}
         data-key={key()}
-        class={twMerge(
+        {...{ class: twMerge(
           CLASSES.Item.base,
           CLASSES.Item.variant[variant()],
           local.class,
           local.className,
-        )}
+        ) }}
         style={local.style}
         onClick={handleClick}
         onKeyDown={handleKeyDown}
@@ -260,7 +260,7 @@ const ListBoxItemIndicator: Component<ListBoxItemIndicatorProps> = (props) => {
       data-slot="listbox-item-indicator"
       data-theme={local.dataTheme}
       data-visible={renderState().isSelected ? "true" : undefined}
-      class={twMerge(CLASSES.ItemIndicator.base, local.class, local.className)}
+      {...{ class: twMerge(CLASSES.ItemIndicator.base, local.class, local.className) }}
       style={local.style}
     >
       {typeof local.children === "function" ? (

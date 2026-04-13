@@ -114,20 +114,20 @@ export const PWAInstallPrompt: Component<PWAInstallPromptProps> = (props) => {
         aria-labelledby="pwa-install-title"
         {...{ class: CLASSES.pwaPrompt.dialog }}
       >
-        <Card variant="shadow" class={CLASSES.pwaPrompt.card}>
+        <Card variant="shadow" {...{ class: CLASSES.pwaPrompt.card }}>
           <Button
             size="sm"
             variant="ghost"
             isIconOnly
-            class={CLASSES.pwaPrompt.closeButton}
+            {...{ class: CLASSES.pwaPrompt.closeButton }}
             onClick={handleDismiss}
             aria-label={texts().closeLabel}
           >
             X
           </Button>
 
-          <Card.Body class={CLASSES.pwaPrompt.body}>
-            <Flex align="start" gap="md" class={CLASSES.pwaPrompt.media}>
+          <Card.Body {...{ class: CLASSES.pwaPrompt.body }}>
+            <Flex align="start" gap="md" {...{ class: CLASSES.pwaPrompt.media }}>
               <div {...{ class: CLASSES.pwaPrompt.appIconWrap }}>
                 <img
                   src={appIcon()}
@@ -136,7 +136,7 @@ export const PWAInstallPrompt: Component<PWAInstallPromptProps> = (props) => {
                 />
               </div>
 
-              <Flex direction="col" gap="sm" class={CLASSES.pwaPrompt.textWrap}>
+              <Flex direction="col" gap="sm" {...{ class: CLASSES.pwaPrompt.textWrap }}>
                 <h3 id="pwa-install-title" {...{ class: CLASSES.pwaPrompt.title }}>
                   {texts().title}
                 </h3>
@@ -146,11 +146,11 @@ export const PWAInstallPrompt: Component<PWAInstallPromptProps> = (props) => {
               </Flex>
             </Flex>
           </Card.Body>
-          <Card.Footer class={CLASSES.pwaPrompt.footer}>
-            <Button variant="primary" class={CLASSES.pwaPrompt.action} onClick={handleInstall}>
+          <Card.Footer {...{ class: CLASSES.pwaPrompt.footer }}>
+            <Button variant="primary" {...{ class: CLASSES.pwaPrompt.action }} onClick={handleInstall}>
               {texts().installButton}
             </Button>
-            <Button variant="ghost" class={CLASSES.pwaPrompt.action} onClick={handleDismiss}>
+            <Button variant="ghost" {...{ class: CLASSES.pwaPrompt.action }} onClick={handleDismiss}>
               {texts().notNowButton}
             </Button>
           </Card.Footer>

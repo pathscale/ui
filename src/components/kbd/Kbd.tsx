@@ -111,12 +111,12 @@ const KbdRoot: Component<KbdRootProps> = (props) => {
   return (
     <kbd
       {...others}
-      class={twMerge(
+      {...{ class: twMerge(
         CLASSES.base,
         CLASSES.variant[variant()],
         local.class,
         local.className,
-      )}
+      ) }}
       data-slot="kbd"
       data-variant={variant()}
       data-theme={local.dataTheme}
@@ -140,7 +140,7 @@ const KbdAbbr: Component<KbdAbbrProps> = (props) => {
   return (
     <abbr
       {...others}
-      class={twMerge(CLASSES.slot.abbr, local.class, local.className)}
+      {...{ class: twMerge(CLASSES.slot.abbr, local.class, local.className) }}
       title={local.title ?? kbdKeysLabelMap[local.keyValue]}
       data-slot="kbd-abbr"
       data-key={local.keyValue}
@@ -164,7 +164,7 @@ const KbdContent: Component<KbdContentProps> = (props) => {
   return (
     <span
       {...others}
-      class={twMerge(CLASSES.slot.content, local.class, local.className)}
+      {...{ class: twMerge(CLASSES.slot.content, local.class, local.className) }}
       data-slot="kbd-content"
       data-theme={local.dataTheme}
       style={local.style}

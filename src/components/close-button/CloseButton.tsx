@@ -41,12 +41,12 @@ const CloseButton: Component<CloseButtonProps> = (props) => {
       {...others}
       type={local.type ?? "button"}
       aria-label={local["aria-label"] ?? "Close"}
-      class={twMerge(
+      {...{ class: twMerge(
         CLASSES.base,
         CLASSES.variant[variant()],
         local.class,
         local.className,
-      )}
+      ) }}
       data-slot="close-button"
       data-pending={local.isPending ? "true" : "false"}
       data-theme={local.dataTheme}
@@ -56,7 +56,7 @@ const CloseButton: Component<CloseButtonProps> = (props) => {
     >
       {local.startIcon ? (
         <span
-          class={twMerge(CLASSES.slot.icon, CLASSES.slot.iconStart)}
+          {...{ class: twMerge(CLASSES.slot.icon, CLASSES.slot.iconStart) }}
           data-slot="close-button-start-icon"
         >
           {local.startIcon}
@@ -65,7 +65,7 @@ const CloseButton: Component<CloseButtonProps> = (props) => {
       {local.children}
       {local.endIcon ? (
         <span
-          class={twMerge(CLASSES.slot.icon, CLASSES.slot.iconEnd)}
+          {...{ class: twMerge(CLASSES.slot.icon, CLASSES.slot.iconEnd) }}
           data-slot="close-button-end-icon"
         >
           {local.endIcon}

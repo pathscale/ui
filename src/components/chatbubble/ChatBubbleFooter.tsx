@@ -12,7 +12,7 @@ const ChatBubbleFooter = (props: ChatBubbleFooterProps): JSX.Element => {
   return (
     <div
       {...others}
-      class={twMerge(CLASSES.slot.footer, local.class, local.className)}
+      {...{ class: twMerge(CLASSES.slot.footer, local.class, local.className) }}
     />
   );
 };

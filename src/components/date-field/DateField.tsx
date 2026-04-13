@@ -158,13 +158,13 @@ const DateFieldRoot: ParentComponent<DateFieldRootProps> = (props) => {
     <DateFieldContext.Provider value={contextValue}>
       <div
         {...others}
-        class={twMerge(
+        {...{ class: twMerge(
           CLASSES.Root.base,
           CLASSES.Root.variant[variant()],
           fullWidth() && CLASSES.Root.flag.fullWidth,
           local.class,
           local.className,
-        )}
+        ) }}
         data-slot="date-field"
         data-invalid={isInvalid() ? "true" : undefined}
         data-disabled={isDisabled() ? "true" : undefined}
@@ -202,13 +202,13 @@ const DateFieldGroup: ParentComponent<DateFieldGroupProps> = (props) => {
   return (
     <div
       {...others}
-      class={twMerge(
+      {...{ class: twMerge(
         CLASSES.Group.base,
         CLASSES.Group.variant[context?.variant() ?? "primary"],
         context?.fullWidth() && CLASSES.Group.flag.fullWidth,
         local.class,
         local.className,
-      )}
+      ) }}
       data-slot="date-input-group"
       data-invalid={context?.isInvalid() ? "true" : undefined}
       data-disabled={context?.isDisabled() ? "true" : undefined}
@@ -247,7 +247,7 @@ const DateFieldInput: Component<DateFieldInputProps> = (props) => {
     <input
       {...others}
       type="date"
-      class={twMerge(CLASSES.Input.base, local.class, local.className)}
+      {...{ class: twMerge(CLASSES.Input.base, local.class, local.className) }}
       data-slot="date-input-group-input"
       data-theme={local.dataTheme}
       style={local.style}
@@ -269,7 +269,7 @@ const DateFieldInputContainer: ParentComponent<DateFieldInputContainerProps> = (
   return (
     <div
       {...others}
-      class={twMerge(CLASSES.InputContainer.base, local.class, local.className)}
+      {...{ class: twMerge(CLASSES.InputContainer.base, local.class, local.className) }}
       data-slot="date-input-group-input-container"
       data-theme={local.dataTheme}
       style={local.style}
@@ -292,7 +292,7 @@ const DateFieldSegment: ParentComponent<DateFieldSegmentProps> = (props) => {
   return (
     <span
       {...others}
-      class={twMerge(CLASSES.Segment.base, local.class, local.className)}
+      {...{ class: twMerge(CLASSES.Segment.base, local.class, local.className) }}
       data-slot="date-input-group-segment"
       data-type={local.segment?.type}
       data-placeholder={local.segment?.isPlaceholder ? "true" : undefined}
@@ -313,7 +313,7 @@ const DateFieldPrefix: ParentComponent<DateFieldPrefixProps> = (props) => {
   return (
     <div
       {...others}
-      class={twMerge(CLASSES.Prefix.base, local.class, local.className)}
+      {...{ class: twMerge(CLASSES.Prefix.base, local.class, local.className) }}
       data-slot="date-input-group-prefix"
       data-theme={local.dataTheme}
       style={local.style}
@@ -329,7 +329,7 @@ const DateFieldSuffix: ParentComponent<DateFieldSuffixProps> = (props) => {
   return (
     <div
       {...others}
-      class={twMerge(CLASSES.Suffix.base, local.class, local.className)}
+      {...{ class: twMerge(CLASSES.Suffix.base, local.class, local.className) }}
       data-slot="date-input-group-suffix"
       data-theme={local.dataTheme}
       style={local.style}

@@ -36,7 +36,7 @@ const Footer: ParentComponent<FooterProps> = (props) => {
     <footer
       {...others}
       data-theme={local.dataTheme}
-      class={classes()}
+      {...{ class: classes() }}
     >
       {local.children}
     </footer>

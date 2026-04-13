@@ -32,7 +32,7 @@ export function Surface(props: SurfaceProps) {
   return (
     <div
       {...others}
-      class={twMerge(CLASSES.base, CLASSES.variant[variant()], local.class, local.className)}
+      {...{ class: twMerge(CLASSES.base, CLASSES.variant[variant()], local.class, local.className) }}
       data-slot="surface"
       data-theme={local.dataTheme}
       style={local.style}

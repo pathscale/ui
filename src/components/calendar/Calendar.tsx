@@ -275,12 +275,12 @@ const Calendar = (props: CalendarProps): JSX.Element => {
           local.ref(node);
         }
       }}
-      class={twMerge(
+      {...{ class: twMerge(
         CLASSES.Root.base,
         isCalendarDisabled() && CLASSES.Root.flag.disabled,
         local.class,
         local.className,
-      )}
+      ) }}
       data-slot="calendar"
       data-selection-mode={selectionMode()}
       data-disabled={isCalendarDisabled() ? "true" : "false"}
@@ -288,11 +288,11 @@ const Calendar = (props: CalendarProps): JSX.Element => {
       style={local.style}
       aria-disabled={isCalendarDisabled() ? "true" : undefined}
     >
-      <div class={CLASSES.Header.base} data-slot="calendar-header">
-        <div class={CLASSES.Nav.base} data-slot="calendar-nav">
+      <div {...{ class: CLASSES.Header.base }} data-slot="calendar-header">
+        <div {...{ class: CLASSES.Nav.base }} data-slot="calendar-nav">
           <button
             type="button"
-            class={CLASSES.NavButton.base}
+            {...{ class: CLASSES.NavButton.base }}
             data-slot="calendar-nav-button"
             aria-label="Previous month"
             onClick={() => navigateMonth(-1)}
@@ -304,7 +304,7 @@ const Calendar = (props: CalendarProps): JSX.Element => {
             }
           >
             <svg
-              class={CLASSES.NavButtonIcon.base}
+              {...{ class: CLASSES.NavButtonIcon.base }}
               data-slot="calendar-nav-button-icon"
               viewBox="0 0 24 24"
               aria-hidden="true"
@@ -321,17 +321,17 @@ const Calendar = (props: CalendarProps): JSX.Element => {
 
         <div
           id={headingId}
-          class={CLASSES.Heading.base}
+          {...{ class: CLASSES.Heading.base }}
           data-slot="calendar-heading"
           aria-live="polite"
         >
           {calendarState.monthFormatter().format(navigation.visibleMonth())}
         </div>
 
-        <div class={CLASSES.Nav.base} data-slot="calendar-nav">
+        <div {...{ class: CLASSES.Nav.base }} data-slot="calendar-nav">
           <button
             type="button"
-            class={CLASSES.NavButton.base}
+            {...{ class: CLASSES.NavButton.base }}
             data-slot="calendar-nav-button"
             aria-label="Next month"
             onClick={() => navigateMonth(1)}
@@ -341,7 +341,7 @@ const Calendar = (props: CalendarProps): JSX.Element => {
             }
           >
             <svg
-              class={CLASSES.NavButtonIcon.base}
+              {...{ class: CLASSES.NavButtonIcon.base }}
               data-slot="calendar-nav-button-icon"
               viewBox="0 0 24 24"
               aria-hidden="true"
@@ -358,18 +358,18 @@ const Calendar = (props: CalendarProps): JSX.Element => {
       </div>
 
       <div
-        class={CLASSES.Grid.base}
+        {...{ class: CLASSES.Grid.base }}
         data-slot="calendar-grid"
         role="grid"
         aria-labelledby={headingId}
         aria-readonly={isCalendarDisabled() ? "true" : undefined}
       >
-        <div class={CLASSES.GridHeader.base} data-slot="calendar-grid-header" role="rowgroup">
-          <div class={CLASSES.GridRow.base} data-slot="calendar-grid-row" role="row">
+        <div {...{ class: CLASSES.GridHeader.base }} data-slot="calendar-grid-header" role="rowgroup">
+          <div {...{ class: CLASSES.GridRow.base }} data-slot="calendar-grid-row" role="row">
             <For each={calendarState.weekdayLabels()}>
               {(label) => (
                 <span
-                  class={CLASSES.HeaderCell.base}
+                  {...{ class: CLASSES.HeaderCell.base }}
                   data-slot="calendar-header-cell"
                   role="columnheader"
                 >
@@ -381,26 +381,26 @@ const Calendar = (props: CalendarProps): JSX.Element => {
         </div>
 
         <div
-          class={CLASSES.GridBody.base}
+          {...{ class: CLASSES.GridBody.base }}
           data-slot="calendar-grid-body"
           role="rowgroup"
           onMouseLeave={() => local.onDayHover?.(undefined)}
         >
           <For each={calendarState.calendarWeeks()}>
             {(week) => (
-              <div class={CLASSES.GridRow.base} data-slot="calendar-grid-row" role="row">
+              <div {...{ class: CLASSES.GridRow.base }} data-slot="calendar-grid-row" role="row">
                 <For each={week}>
                   {(date) => {
                     const cellState = calendarState.getCellState(date);
                     const isoDate = toISODate(date);
 
                     return (
-                      <div class={CLASSES.DayWrapper.base} data-slot="calendar-day-wrapper" role="presentation">
+                      <div {...{ class: CLASSES.DayWrapper.base }} data-slot="calendar-day-wrapper" role="presentation">
                         <Show
                           when={showOutsideDays() || !cellState.isOutsideMonth}
                           fallback={
                             <span
-                              class={CLASSES.DayPlaceholder.base}
+                              {...{ class: CLASSES.DayPlaceholder.base }}
                               data-slot="calendar-day-placeholder"
                               aria-hidden="true"
                             />
@@ -408,7 +408,7 @@ const Calendar = (props: CalendarProps): JSX.Element => {
                         >
                           <button
                             type="button"
-                            class={twMerge(
+                            {...{ class: twMerge(
                               CLASSES.Cell.base,
                               cellState.isSelected && CLASSES.Cell.flag.selected,
                               cellState.isRangeStart && CLASSES.Cell.flag.rangeStart,
@@ -422,7 +422,7 @@ const Calendar = (props: CalendarProps): JSX.Element => {
                               cellState.isDisabled && CLASSES.Cell.flag.disabled,
                               cellState.isUnavailable && CLASSES.Cell.flag.unavailable,
                               cellState.isFocused && CLASSES.Cell.flag.focused,
-                            )}
+                            ) }}
                             data-slot="calendar-cell"
                             data-date={isoDate}
                             data-selected={cellState.isSelected ? "true" : "false"}
@@ -450,7 +450,7 @@ const Calendar = (props: CalendarProps): JSX.Element => {
                             }}
                             onKeyDown={handleCellKeyDown}
                           >
-                            <span class={CLASSES.Day.base} data-slot="calendar-day">
+                            <span {...{ class: CLASSES.Day.base }} data-slot="calendar-day">
                               {date.getDate()}
                             </span>
                           </button>

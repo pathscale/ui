@@ -302,7 +302,7 @@ const MenuRoot: Component<MenuRootProps> = (props) => {
         data-theme={local.dataTheme}
         data-selection-mode={selectionMode()}
         data-disabled={isDisabled() ? "true" : "false"}
-        class={twMerge(CLASSES.Root.base, local.class, local.className)}
+        {...{ class: twMerge(CLASSES.Root.base, local.class, local.className) }}
         style={local.style}
         onKeyDown={handleKeyDown}
       >

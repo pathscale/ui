@@ -250,12 +250,12 @@ const MenuItemRoot: ParentComponent<MenuItemRootProps> = (props) => {
         data-has-submenu={local.hasSubmenu ? "true" : undefined}
         data-selection-mode={selectionMode()}
         data-key={key()}
-        class={twMerge(
+        {...{ class: twMerge(
           CLASSES.Item.base,
           CLASSES.Item.variant[variant()],
           local.class,
           local.className,
-        )}
+        ) }}
         style={local.style}
         onClick={handleClick}
         onKeyDown={handleKeyDown}
@@ -300,7 +300,7 @@ const MenuItemIndicator: Component<MenuItemIndicatorProps> = (props) => {
       data-theme={local.dataTheme}
       data-type={type()}
       data-visible={renderState().isSelected ? "true" : undefined}
-      class={twMerge(CLASSES.ItemIndicator.base, local.class, local.className)}
+      {...{ class: twMerge(CLASSES.ItemIndicator.base, local.class, local.className) }}
       style={local.style}
     >
       {typeof local.children === "function" ? (
@@ -354,7 +354,7 @@ const MenuItemSubmenuIndicator: Component<MenuItemSubmenuIndicatorProps> = (prop
       aria-hidden="true"
       data-slot="submenu-indicator"
       data-theme={local.dataTheme}
-      class={twMerge(CLASSES.ItemIndicator.base, CLASSES.ItemIndicator.submenu, local.class, local.className)}
+      {...{ class: twMerge(CLASSES.ItemIndicator.base, CLASSES.ItemIndicator.submenu, local.class, local.className) }}
       style={local.style}
     >
       {local.children ?? (

@@ -157,41 +157,41 @@ const Slider: Component<SliderProps> = (props) => {
 
   return (
     <div
-      class={twMerge(
+      {...{ class: twMerge(
         CLASSES.base,
         CLASSES.size[size()],
         local.class,
         local.className,
-      )}
+      ) }}
       data-theme={local.dataTheme}
       data-slot="slider"
       data-disabled={isDisabled() ? "true" : "false"}
       style={local.style}
     >
       <Show when={local.label}>
-        <span id={labelId} class={CLASSES.label} data-slot="label">
+        <span id={labelId} {...{ class: CLASSES.label }} data-slot="label">
           {local.label}
         </span>
-        <span class={CLASSES.output} data-slot="slider-output" aria-live="polite">
+        <span {...{ class: CLASSES.output }} data-slot="slider-output" aria-live="polite">
           {formattedValue()}
         </span>
       </Show>
 
       <div
         ref={trackRef}
-        class={CLASSES.track}
+        {...{ class: CLASSES.track }}
         data-slot="slider-track"
         onPointerDown={handlePointerDown}
         onPointerMove={handlePointerMove}
         onPointerUp={handlePointerUp}
       >
         <div
-          class={CLASSES.fill}
+          {...{ class: CLASSES.fill }}
           data-slot="slider-fill"
           style={{ width: fillWidth() }}
         />
         <div
-          class={CLASSES.thumb}
+          {...{ class: CLASSES.thumb }}
           data-slot="slider-thumb"
           data-dragging={dragging() ? "true" : "false"}
           data-disabled={isDisabled() ? "true" : "false"}
