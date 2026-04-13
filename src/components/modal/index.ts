@@ -1,10 +1,29 @@
-export { default } from "./Modal";
-export type {
-  ModalProps as TModalProps,
-  DialogProps as TDialogProps,
+export {
+  default,
+  ModalRoot,
+  ModalTrigger,
+  ModalBackdrop,
+  ModalContent,
+  ModalHeader,
+  ModalHeading,
+  ModalIcon,
+  ModalBody,
+  ModalFooter,
+  ModalCloseTrigger,
+  type ModalProps,
+  type DialogProps,
+  type ModalPlacement,
+  type ModalSize,
+  type ModalBackdropVariant,
+  type ModalScrollBehavior,
+  type ModalRootProps,
+  type ModalTriggerProps,
+  type ModalBackdropProps,
+  type ModalContentProps,
+  type ModalHeaderProps,
+  type ModalHeadingProps,
+  type ModalIconProps,
+  type ModalBodyProps,
+  type ModalFooterProps,
+  type ModalCloseTriggerProps,
 } from "./Modal";
-
-export type { ModalHeaderProps as TModalHeaderProps } from "./ModalHeader";
-export type { ModalBodyProps as TModalBodyProps } from "./ModalBody";
-export type { ModalActionsProps as TModalActionsProps } from "./ModalActions";
-export type { ModalLegacyProps as TModalLegacyProps } from "./ModalLegacy";

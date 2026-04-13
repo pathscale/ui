@@ -420,7 +420,37 @@ export type {
   MenuSectionProps,
   MenuSectionRootProps,
 } from "./components/menu";
-export { default as Modal } from "./components/modal";
+export {
+  default as Modal,
+  ModalRoot,
+  ModalTrigger,
+  ModalBackdrop,
+  ModalContent,
+  ModalHeader,
+  ModalHeading,
+  ModalIcon,
+  ModalBody,
+  ModalFooter,
+  ModalCloseTrigger,
+} from "./components/modal";
+export type {
+  ModalProps,
+  DialogProps,
+  ModalPlacement,
+  ModalSize,
+  ModalBackdropVariant,
+  ModalScrollBehavior,
+  ModalRootProps,
+  ModalTriggerProps,
+  ModalBackdropProps,
+  ModalContentProps,
+  ModalHeaderProps,
+  ModalHeadingProps,
+  ModalIconProps,
+  ModalBodyProps,
+  ModalFooterProps,
+  ModalCloseTriggerProps,
+} from "./components/modal";
 export { default as Navbar } from "./components/navbar";
 export type { NavbarProps } from "./components/navbar";
 export type { NavbarStackProps } from "./components/navbar/NavbarStack";

@@ -26,6 +26,7 @@ import {
   ListBox,
   Loading,
   Menu,
+  Modal,
   NumberField,
   Progress,
   SearchField,
@@ -262,6 +263,8 @@ export default function App() {
   const [comboIsOpen, setComboIsOpen] = createSignal(false);
   const [otpValue, setOtpValue] = createSignal("");
   const [otpCompletedCode, setOtpCompletedCode] = createSignal("");
+  const [modalOpen, setModalOpen] = createSignal(false);
+  const [nonDismissableModalOpen, setNonDismissableModalOpen] = createSignal(false);
   const [controlledTextFieldValue, setControlledTextFieldValue] = createSignal("Pathscale");
   const [controlledTextAreaValue, setControlledTextAreaValue] = createSignal(
     "Building HeroUI parity components in Solid.",
@@ -2120,6 +2123,93 @@ export default function App() {
                 <h4 class="text-sm font-medium">Modal Header</h4>
                 <CloseButton endIcon={closeIcon()} />
               </div>
+            </div>
+          </div>
+        </section>
+
+        <section class="space-y-4 rounded-xl border border-base-300 bg-base-200 p-4">
+          <div>
+            <h2 class="text-sm font-semibold">Modal</h2>
+            <p class="text-xs opacity-70">
+              HeroUI-style modal with compound slots, focus lock, and dismiss behavior.
+            </p>
+          </div>
+
+          <div class="grid gap-4 lg:grid-cols-2">
+            <div class="space-y-2 rounded-xl border border-base-300 bg-base-100 p-3">
+              <h3 class="text-xs font-semibold uppercase tracking-wide opacity-70">Basic</h3>
+              <Modal>
+                <Modal.Trigger class="rounded-lg border border-base-300 px-3 py-2 text-sm">
+                  Open basic modal
+                </Modal.Trigger>
+                <Modal.Content>
+                  <Modal.Header>
+                    <Modal.Heading>Basic modal</Modal.Heading>
+                    <Modal.CloseTrigger />
+                  </Modal.Header>
+                  <Modal.Body>
+                    This modal closes on backdrop click and Escape by default.
+                  </Modal.Body>
+                  <Modal.Footer>
+                    <Button size="sm" variant="ghost">
+                      Cancel
+                    </Button>
+                    <Button size="sm">Save</Button>
+                  </Modal.Footer>
+                </Modal.Content>
+              </Modal>
+            </div>
+
+            <div class="space-y-2 rounded-xl border border-base-300 bg-base-100 p-3">
+              <h3 class="text-xs font-semibold uppercase tracking-wide opacity-70">Controlled</h3>
+              <Button size="sm" onClick={() => setModalOpen(true)}>
+                Open controlled modal
+              </Button>
+              <Modal isOpen={modalOpen()} onOpenChange={setModalOpen}>
+                <Modal.Content>
+                  <Modal.Header>
+                    <Modal.Heading>Controlled modal</Modal.Heading>
+                    <Modal.CloseTrigger />
+                  </Modal.Header>
+                  <Modal.Body>
+                    Open state is controlled with an external signal.
+                  </Modal.Body>
+                  <Modal.Footer>
+                    <Button size="sm" variant="ghost" onClick={() => setModalOpen(false)}>
+                      Close
+                    </Button>
+                    <Button size="sm" onClick={() => setModalOpen(false)}>
+                      Confirm
+                    </Button>
+                  </Modal.Footer>
+                </Modal.Content>
+              </Modal>
+            </div>
+
+            <div class="space-y-2 rounded-xl border border-base-300 bg-base-100 p-3 lg:col-span-2">
+              <h3 class="text-xs font-semibold uppercase tracking-wide opacity-70">Non-dismissable</h3>
+              <Button size="sm" onClick={() => setNonDismissableModalOpen(true)}>
+                Open non-dismissable modal
+              </Button>
+              <Modal
+                isOpen={nonDismissableModalOpen()}
+                onOpenChange={setNonDismissableModalOpen}
+                isDismissable={false}
+              >
+                <Modal.Content>
+                  <Modal.Header>
+                    <Modal.Heading>Non-dismissable modal</Modal.Heading>
+                  </Modal.Header>
+                  <Modal.Body>
+                    Backdrop click and Escape are disabled. Use explicit actions to close.
+                  </Modal.Body>
+                  <Modal.Footer>
+                    <Button size="sm" onClick={() => setNonDismissableModalOpen(false)}>
+                      Acknowledge
+                    </Button>
+                  </Modal.Footer>
+                </Modal.Content>
+              </Modal>
             </div>
           </div>
         </section>

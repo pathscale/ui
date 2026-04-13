@@ -9,7 +9,7 @@ import type { IComponentBaseProps } from "../types";
 
 export type ConfirmDialogProps = ParentProps<
   IComponentBaseProps &
-    Omit<JSX.HTMLAttributes<HTMLDialogElement>, "children"> & {
+    Omit<JSX.HTMLAttributes<HTMLDivElement>, "children"> & {
       open: boolean;
       onClose: () => void;
       onConfirm: () => void;
@@ -46,37 +46,43 @@ export default function ConfirmDialog(props: ConfirmDialogProps): JSX.Element {
 
   return (
     <Modal
-      open={local.open}
-      onClose={local.onClose}
-      responsive
-      role="alertdialog"
-      aria-labelledby={titleId}
-      aria-describedby={hasBody() ? messageId : undefined}
+      isOpen={local.open}
+      onOpenChange={(isOpen) => {
+        if (!isOpen) local.onClose();
+      }}
       dataTheme={local.dataTheme}
-      class={twMerge(local.class, local.className)}
       {...others}
     >
-      <Modal.Header id={titleId}>{local.title}</Modal.Header>
-      <Modal.Body>
-        <div id={messageId}>{local.children ?? local.message}</div>
-      </Modal.Body>
-      <Modal.Actions class="flex justify-end gap-2">
-        <Button
-          variant="ghost"
-          onClick={local.onClose}
-          isDisabled={local.loading}
-        >
-          {local.cancelText ?? "Cancel"}
-        </Button>
-        <Button
-          variant={local.confirmVariant ?? "danger"}
-          onClick={local.onConfirm}
-          isPending={local.loading}
-          isDisabled={local.loading}
-        >
-          {local.confirmText ?? "Confirm"}
-        </Button>
-      </Modal.Actions>
+      <Modal.Content
+        role="alertdialog"
+        aria-labelledby={titleId}
+        aria-describedby={hasBody() ? messageId : undefined}
+        class={twMerge(local.class, local.className)}
+      >
+        <Modal.Header>
+          <Modal.Heading id={titleId}>{local.title}</Modal.Heading>
+        </Modal.Header>
+        <Modal.Body>
+          <div id={messageId}>{local.children ?? local.message}</div>
+        </Modal.Body>
+        <Modal.Footer class="flex justify-end gap-2">
+          <Button
+            variant="ghost"
+            onClick={local.onClose}
+            isDisabled={local.loading}
+          >
+            {local.cancelText ?? "Cancel"}
+          </Button>
+          <Button
+            variant={local.confirmVariant ?? "danger"}
+            onClick={local.onConfirm}
+            isPending={local.loading}
+            isDisabled={local.loading}
+          >
+            {local.confirmText ?? "Confirm"}
+          </Button>
+        </Modal.Footer>
+      </Modal.Content>
     </Modal>
   );
 }
