@@ -2,6 +2,7 @@ import "./ColorSlider.css";
 import { createEffect, createMemo, createSignal, splitProps, type Component, type JSX } from "solid-js";
 import { twMerge } from "tailwind-merge";
 import type { IComponentBaseProps } from "../types";
+import { CLASSES } from "./ColorSlider.classes";
 
 export type ColorSliderType = "hue" | "alpha";
 
@@ -186,9 +187,9 @@ const ColorSlider: Component<ColorSliderProps> = (props) => {
       {...others}
       ref={sliderRef}
       class={twMerge(
-        "color-slider",
-        sliderType() === "alpha" && "color-slider--alpha",
-        isDragging() && "color-slider--dragging",
+        CLASSES.base,
+        sliderType() === "alpha" && CLASSES.flag.alpha,
+        isDragging() && CLASSES.flag.dragging,
         local.class,
         local.className,
       )}
@@ -211,9 +212,9 @@ const ColorSlider: Component<ColorSliderProps> = (props) => {
       onLostPointerCapture={handleLostPointerCapture}
       onKeyDown={handleKeyDown}
     >
-      <div class="color-slider__track" data-slot="color-slider-track" />
+      <div class={CLASSES.slot.track} data-slot="color-slider-track" />
       <div
-        class="color-slider__thumb"
+        class={CLASSES.slot.thumb}
         data-slot="color-slider-thumb"
         data-dragging={isDragging() ? "true" : "false"}
         style={{

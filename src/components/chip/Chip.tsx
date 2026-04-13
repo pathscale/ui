@@ -3,31 +3,11 @@ import { Show, splitProps, type JSX } from "solid-js";
 import { twMerge } from "tailwind-merge";
 
 import "./Chip.css";
+import { CLASSES } from "./Chip.classes";
 
 type ChipVariant = "solid" | "flat" | "bordered";
 type ChipColor = "default" | "primary" | "accent" | "success" | "warning" | "danger";
 type ChipSize = "sm" | "md" | "lg";
-
-const CHIP_VARIANT_CLASS: Record<ChipVariant, string> = {
-  solid: "chip--solid",
-  flat: "chip--flat",
-  bordered: "chip--bordered",
-};
-
-const CHIP_COLOR_CLASS: Record<ChipColor, string> = {
-  default: "chip--default",
-  primary: "chip--primary",
-  accent: "chip--accent",
-  success: "chip--success",
-  warning: "chip--warning",
-  danger: "chip--danger",
-};
-
-const CHIP_SIZE_CLASS: Record<ChipSize, string> = {
-  sm: "chip--sm",
-  md: "chip--md",
-  lg: "chip--lg",
-};
 
 interface ChipRootProps extends Omit<JSX.HTMLAttributes<HTMLSpanElement>, "color" | "onRemove"> {
   class?: string;
@@ -65,10 +45,10 @@ const ChipRoot = (props: ChipRootProps): JSX.Element => {
 
     return twMerge(
       clsx(
-        "chip",
-        CHIP_VARIANT_CLASS[variant],
-        CHIP_COLOR_CLASS[color],
-        CHIP_SIZE_CLASS[size],
+        CLASSES.base,
+        CLASSES.variant[variant],
+        CLASSES.color[color],
+        CLASSES.size[size],
         local.class,
         local.className,
       ),
@@ -97,7 +77,7 @@ const ChipRoot = (props: ChipRootProps): JSX.Element => {
       data-removable={local.onRemove ? "true" : "false"}
     >
       <Show when={local.startIcon}>
-        <span class="chip__icon chip__icon--start" data-slot="chip-start-icon">
+        <span class={twMerge(CLASSES.slot.icon, CLASSES.slot.iconStart)} data-slot="chip-start-icon">
           {local.startIcon}
         </span>
       </Show>
@@ -105,21 +85,21 @@ const ChipRoot = (props: ChipRootProps): JSX.Element => {
       <Show when={local.onRemove && local.endIcon}>
         <button
           type="button"
-          class="chip__remove"
+          class={CLASSES.slot.remove}
           data-slot="chip-remove"
           aria-label={local.removeButtonLabel ?? "Remove"}
           onClick={handleRemove}
           disabled={Boolean(local.isDisabled)}
         >
           <Show when={local.endIcon}>
-            <span class="chip__remove-icon" data-slot="chip-remove-icon">
+            <span class={CLASSES.slot.removeIcon} data-slot="chip-remove-icon">
               {local.endIcon}
             </span>
           </Show>
         </button>
       </Show>
       <Show when={!local.onRemove && local.endIcon}>
-        <span class="chip__icon chip__icon--end" data-slot="chip-end-icon">
+        <span class={twMerge(CLASSES.slot.icon, CLASSES.slot.iconEnd)} data-slot="chip-end-icon">
           {local.endIcon}
         </span>
       </Show>
@@ -135,7 +115,7 @@ const ChipLabel = (props: ChipLabelProps): JSX.Element => {
   const [local, others] = splitProps(props, ["children", "class"]);
 
   return (
-    <span class={twMerge("chip__label", local.class)} data-slot="chip-label" {...others}>
+    <span class={twMerge(CLASSES.slot.label, local.class)} data-slot="chip-label" {...others}>
       {local.children}
     </span>
   );

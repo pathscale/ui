@@ -2,6 +2,7 @@ import { type Accessor, type Component, Show, createEffect, onCleanup, splitProp
 import { twMerge } from "tailwind-merge";
 
 import type { IComponentBaseProps } from "../types";
+import { CLASSES } from "./VideoPreview.classes";
 
 type VideoPreviewBaseProps = {
   /**
@@ -61,7 +62,7 @@ export const VideoPreview: Component<VideoPreviewProps> = (props) => {
             playsinline
             muted={muted()}
             data-theme={local.dataTheme}
-            class={twMerge(mirror() && "-scale-x-100", local.class, local.className)}
+            class={twMerge(mirror() && CLASSES.mirror, local.class, local.className)}
             style={local.style}
           />
         );

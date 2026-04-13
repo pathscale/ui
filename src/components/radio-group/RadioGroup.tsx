@@ -3,19 +3,10 @@ import { Show, createSignal, createUniqueId, splitProps, type Component, type JS
 import { twMerge } from "tailwind-merge";
 import { RadioGroupContext, type RadioGroupContextValue } from "./context";
 import type { IComponentBaseProps } from "../types";
+import { CLASSES } from "./RadioGroup.classes";
 
 export type RadioGroupOrientation = "vertical" | "horizontal";
 export type RadioGroupVariant = "primary" | "secondary";
-
-const ORIENTATION_CLASS_MAP: Record<RadioGroupOrientation, string> = {
-  vertical: "radio-group--vertical",
-  horizontal: "radio-group--horizontal",
-};
-
-const VARIANT_CLASS_MAP: Record<RadioGroupVariant, string> = {
-  primary: "radio-group--primary",
-  secondary: "radio-group--secondary",
-};
 
 export type RadioGroupProps = Omit<JSX.HTMLAttributes<HTMLDivElement>, "children" | "onChange"> &
   IComponentBaseProps & {
@@ -115,33 +106,33 @@ const RadioGroup: Component<RadioGroupProps> = (props) => {
         data-disabled={isDisabled() ? "true" : "false"}
         data-invalid={isInvalid() ? "true" : "false"}
         class={twMerge(
-          "radio-group",
-          ORIENTATION_CLASS_MAP[orientation()],
-          VARIANT_CLASS_MAP[variant()],
-          isDisabled() && "radio-group--disabled",
-          isInvalid() && "radio-group--invalid",
+          CLASSES.base,
+          CLASSES.orientation[orientation()],
+          CLASSES.variant[variant()],
+          isDisabled() && CLASSES.flag.disabled,
+          isInvalid() && CLASSES.flag.invalid,
           local.class,
           local.className,
         )}
       >
         <Show when={local.label}>
-          <span id={labelId} class="radio-group__label" data-slot="label">
+          <span id={labelId} class={CLASSES.slot.label} data-slot="label">
             {local.label}
           </span>
         </Show>
 
         <Show when={local.description}>
-          <span id={descriptionId} class="radio-group__description" data-slot="description">
+          <span id={descriptionId} class={CLASSES.slot.description} data-slot="description">
             {local.description}
           </span>
         </Show>
 
-        <div class="radio-group__items" data-slot="radio-group-items">
+        <div class={CLASSES.slot.items} data-slot="radio-group-items">
           {local.children}
         </div>
 
         <Show when={local.errorMessage}>
-          <span id={errorId} class="radio-group__error" data-slot="error-message">
+          <span id={errorId} class={CLASSES.slot.error} data-slot="error-message">
             {local.errorMessage}
           </span>
         </Show>

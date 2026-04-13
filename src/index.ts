@@ -33,7 +33,6 @@ export type {
   AlertTitleProps,
   AlertDescriptionProps,
 } from "./components/alert";
-export { default as Artboard, type ArtboardProps } from "./components/artboard";
 export {
   default as Avatar,
   AvatarRoot,
@@ -422,7 +421,12 @@ export type {
 } from "./components/live-chat";
 export { default as Spinner } from "./components/spinner";
 export { Spinner as Loading } from "./components/spinner";
-export type { SpinnerProps, SpinnerSize, SpinnerColor, SpinnerVariant } from "./components/spinner";
+export type {
+  SpinnerProps,
+  SpinnerSize,
+  SpinnerColor,
+  SpinnerVariant,
+} from "./components/spinner";
 export {
   LanguageSwitcher,
   createI18n,
@@ -565,14 +569,6 @@ export type {
 } from "./components/separator";
 export { default as Slider } from "./components/slider";
 export type { SliderProps, SliderSize } from "./components/slider";
-export {
-  Sidenav,
-  SidenavMenu,
-  SidenavItem,
-  SidenavGroup,
-  SidenavLink,
-  SidenavButton,
-} from "./components/sidenav";
 export { default as Skeleton } from "./components/skeleton";
 export { default as Surface } from "./components/surface";
 export type {

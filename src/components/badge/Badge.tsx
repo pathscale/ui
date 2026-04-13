@@ -3,6 +3,7 @@ import { type JSX, splitProps } from "solid-js";
 import { twMerge } from "tailwind-merge";
 
 import "./Badge.css";
+import { CLASSES } from "./Badge.classes";
 
 /* -------------------------------------------------------------------------------------------------
  * Badge Anchor
@@ -18,7 +19,7 @@ const BadgeAnchor = (props: BadgeAnchorProps) => {
   return (
     <span
       {...others}
-      class={twMerge("badge-anchor", local.class)}
+      class={twMerge(CLASSES.slot.anchor, local.class)}
       data-slot="badge-anchor"
     >
       {local.children}
@@ -33,33 +34,6 @@ type BadgeColor = "default" | "accent" | "success" | "warning" | "danger";
 type BadgeVariant = "primary" | "secondary" | "soft";
 type BadgeSize = "sm" | "md" | "lg";
 type BadgePlacement = "top-right" | "top-left" | "bottom-right" | "bottom-left";
-
-const BADGE_SIZE_CLASS: Record<BadgeSize, string> = {
-  sm: "badge--sm",
-  md: "badge--md",
-  lg: "badge--lg",
-};
-
-const BADGE_COLOR_CLASS: Record<BadgeColor, string> = {
-  default: "badge--default",
-  accent: "badge--accent",
-  success: "badge--success",
-  warning: "badge--warning",
-  danger: "badge--danger",
-};
-
-const BADGE_VARIANT_CLASS: Record<BadgeVariant, string> = {
-  primary: "badge--primary",
-  secondary: "badge--secondary",
-  soft: "badge--soft",
-};
-
-const BADGE_PLACEMENT_CLASS: Record<BadgePlacement, string> = {
-  "top-right": "badge--top-right",
-  "top-left": "badge--top-left",
-  "bottom-right": "badge--bottom-right",
-  "bottom-left": "badge--bottom-left",
-};
 
 interface BadgeRootProps extends Omit<JSX.HTMLAttributes<HTMLSpanElement>, "color"> {
   class?: string;
@@ -88,11 +62,11 @@ const BadgeRoot = (props: BadgeRootProps) => {
 
     return twMerge(
       clsx(
-        "badge",
-        BADGE_SIZE_CLASS[size],
-        BADGE_COLOR_CLASS[color],
-        BADGE_VARIANT_CLASS[variant],
-        BADGE_PLACEMENT_CLASS[placement],
+        CLASSES.base,
+        CLASSES.size[size],
+        CLASSES.color[color],
+        CLASSES.variant[variant],
+        CLASSES.placement[placement],
         local.class,
       ),
     );
@@ -125,7 +99,7 @@ const BadgeLabel = (props: BadgeLabelProps) => {
 
   return (
     <span
-      class={twMerge("badge__label", local.class)}
+      class={twMerge(CLASSES.slot.label, local.class)}
       data-slot="badge-label"
       {...others}
     >

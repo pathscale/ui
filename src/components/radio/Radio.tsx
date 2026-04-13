@@ -3,6 +3,7 @@ import { Show, splitProps, useContext, type Component, type JSX } from "solid-js
 import { twMerge } from "tailwind-merge";
 import { RadioGroupContext } from "../radio-group/context";
 import type { IComponentBaseProps } from "../types";
+import { CLASSES } from "./Radio.classes";
 
 const invokeEventHandler = (handler: unknown, event: Event) => {
   if (typeof handler === "function") {
@@ -66,7 +67,7 @@ const Radio: Component<RadioProps> = (props) => {
 
   return (
     <label
-      class={twMerge("radio", isDisabled() && "radio--disabled", local.class, local.className)}
+      class={twMerge(CLASSES.base, isDisabled() && CLASSES.flag.disabled, local.class, local.className)}
       data-theme={local.dataTheme}
       data-slot="radio"
       data-selected={isSelected() ? "true" : "false"}
@@ -81,25 +82,25 @@ const Radio: Component<RadioProps> = (props) => {
         name={name()}
         checked={isGrouped() ? isSelected() : local.checked}
         disabled={isDisabled()}
-        class="radio__input"
+        class={CLASSES.slot.input}
         data-slot="radio-input"
         aria-invalid={ariaInvalid()}
         onChange={handleChange}
       />
 
-      <span class="radio__control" data-slot="radio-control" aria-hidden="true">
-        <span class="radio__indicator" data-slot="radio-indicator">
+      <span class={CLASSES.slot.control} data-slot="radio-control" aria-hidden="true">
+        <span class={CLASSES.slot.indicator} data-slot="radio-indicator">
           {local.indicator}
         </span>
       </span>
 
       <Show when={hasContent()}>
-        <span class="radio__content" data-slot="radio-content">
+        <span class={CLASSES.slot.content} data-slot="radio-content">
           <Show when={local.children}>
             <span data-slot="label">{local.children}</span>
           </Show>
           <Show when={local.description}>
-            <span class="radio__description" data-slot="description">
+            <span class={CLASSES.slot.description} data-slot="description">
               {local.description}
             </span>
           </Show>

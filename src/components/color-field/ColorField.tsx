@@ -3,6 +3,7 @@ import { createEffect, createSignal, splitProps, type Component, type JSX } from
 import { twMerge } from "tailwind-merge";
 import { formatColor, parseColor, type ColorFormat } from "../color-wheel-flower/ColorUtils";
 import type { IComponentBaseProps } from "../types";
+import { CLASSES } from "./ColorField.classes";
 
 const FALLBACK_COLOR = "#FFFFFF";
 
@@ -162,9 +163,9 @@ const ColorField: Component<ColorFieldProps> = (props) => {
   return (
     <div
       class={twMerge(
-        "color-field",
-        local.fullWidth && "color-field--full-width",
-        isDisabled() && "color-field--disabled",
+        CLASSES.base,
+        local.fullWidth && CLASSES.flag.fullWidth,
+        isDisabled() && CLASSES.flag.disabled,
         local.class,
         local.className,
       )}
@@ -176,9 +177,9 @@ const ColorField: Component<ColorFieldProps> = (props) => {
     >
       <div
         class={twMerge(
-          "color-field__group",
-          isInvalid() && "color-field__group--invalid",
-          local.fullWidth && "color-field__group--full-width",
+          CLASSES.slot.group,
+          isInvalid() && CLASSES.flag.groupInvalid,
+          local.fullWidth && CLASSES.flag.groupFullWidth,
         )}
         data-slot="color-field-group"
         data-disabled={isDisabled() ? "true" : "false"}
@@ -189,7 +190,7 @@ const ColorField: Component<ColorFieldProps> = (props) => {
           type="text"
           value={inputValue()}
           disabled={isDisabled()}
-          class="color-field__input"
+          class={CLASSES.slot.input}
           data-slot="color-field-input"
           spellcheck={false}
           autocapitalize="off"

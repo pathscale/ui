@@ -2,6 +2,7 @@ import "./Pagination.css";
 import { For, splitProps, type JSX } from "solid-js";
 import { twMerge } from "tailwind-merge";
 import type { IComponentBaseProps } from "../types";
+import { CLASSES } from "./Pagination.classes";
 
 type PaginationToken = number | "ellipsis-left" | "ellipsis-right";
 
@@ -63,19 +64,19 @@ const Pagination = (props: PaginationProps): JSX.Element => {
       {...others}
       aria-label="pagination"
       role="navigation"
-      class={twMerge("pagination", local.class, local.className)}
+      class={twMerge(CLASSES.base, local.class, local.className)}
       data-theme={local.dataTheme}
       data-slot="pagination"
     >
-      <div class="pagination__summary" data-slot="pagination-summary">
+      <div class={CLASSES.slot.summary} data-slot="pagination-summary">
         Page {currentPage()} of {safeTotal()}
       </div>
 
-      <ul class="pagination__content" data-slot="pagination-content">
-        <li class="pagination__item" data-slot="pagination-item">
+      <ul class={CLASSES.slot.content} data-slot="pagination-content">
+        <li class={CLASSES.slot.item} data-slot="pagination-item">
           <button
             type="button"
-            class="pagination__link pagination__link--nav"
+            class={twMerge(CLASSES.slot.link, CLASSES.slot.linkNav)}
             data-slot="pagination-previous"
             onClick={() => handleChange(currentPage() - 1)}
             disabled={disabled() || currentPage() <= 1}
@@ -88,11 +89,11 @@ const Pagination = (props: PaginationProps): JSX.Element => {
 
         <For each={tokens()}>
           {(token) => (
-            <li class="pagination__item" data-slot="pagination-item">
+            <li class={CLASSES.slot.item} data-slot="pagination-item">
               {typeof token === "number" ? (
                 <button
                   type="button"
-                  class="pagination__link"
+                  class={CLASSES.slot.link}
                   data-slot="pagination-link"
                   data-active={token === currentPage() ? "true" : undefined}
                   aria-current={token === currentPage() ? "page" : undefined}
@@ -103,7 +104,11 @@ const Pagination = (props: PaginationProps): JSX.Element => {
                   {token}
                 </button>
               ) : (
-                <span class="pagination__ellipsis" data-slot="pagination-ellipsis" aria-hidden="true">
+                <span
+                  class={CLASSES.slot.ellipsis}
+                  data-slot="pagination-ellipsis"
+                  aria-hidden="true"
+                >
                   …
                 </span>
               )}
@@ -111,10 +116,10 @@ const Pagination = (props: PaginationProps): JSX.Element => {
           )}
         </For>
 
-        <li class="pagination__item" data-slot="pagination-item">
+        <li class={CLASSES.slot.item} data-slot="pagination-item">
           <button
             type="button"
-            class="pagination__link pagination__link--nav"
+            class={twMerge(CLASSES.slot.link, CLASSES.slot.linkNav)}
             data-slot="pagination-next"
             onClick={() => handleChange(currentPage() + 1)}
             disabled={disabled() || currentPage() >= safeTotal()}

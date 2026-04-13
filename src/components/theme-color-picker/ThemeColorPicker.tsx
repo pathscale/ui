@@ -1,6 +1,5 @@
 import { type Component, type JSX, Show, For, createSignal, createMemo, createEffect, onCleanup, splitProps } from "solid-js";
 import { twMerge } from "tailwind-merge";
-import { clsx } from "clsx";
 import type { ColorValue, ColorPickerContextType, ColorFormat } from "../color-wheel-flower";
 import { ColorPickerContext, ColorWheelFlower } from "../color-wheel-flower";
 import { createColorFromHsl, parseColor } from "../color-wheel-flower/ColorUtils";
@@ -8,6 +7,7 @@ import Button from "../button";
 import Icon from "../icon";
 import type { IComponentBaseProps } from "../types";
 import { createHueShiftStore, type HueShiftStore } from "./hueShift";
+import { CLASSES } from "./ThemeColorPicker.classes";
 
 export interface ThemeColorPickerProps extends IComponentBaseProps {
   /**
@@ -144,11 +144,7 @@ const ThemeColorPicker: Component<ThemeColorPickerProps> = (props) => {
     onFormatChange: () => {},
   });
 
-  const classes = () =>
-    twMerge(
-      "relative",
-      clsx(local.class, local.className)
-    );
+  const classes = () => twMerge(CLASSES.base, local.class, local.className);
 
   return (
     <Show when={featureAvailable()}>
@@ -166,25 +162,25 @@ const ThemeColorPicker: Component<ThemeColorPickerProps> = (props) => {
               name="icon-[mdi--palette]"
               width={16}
               height={16}
-              class={store.themeColor() !== null ? "text-primary" : undefined}
+              class={store.themeColor() !== null ? CLASSES.iconActive : undefined}
             />
           )}
         </Button>
 
         <Show when={isOpen()}>
-          <div class="absolute right-0 z-50 mt-2 rounded-lg bg-base-200/80 p-4 shadow-xl backdrop-blur-sm">
+          <div class={CLASSES.popover}>
             <ColorPickerContext.Provider value={contextValue()}>
-              <div class="flex items-center gap-3">
-                <div class="flex justify-center">
-                  <ColorWheelFlower class="color-wheel-custom" />
+              <div class={CLASSES.row}>
+                <div class={CLASSES.wheelWrap}>
+                  <ColorWheelFlower class={CLASSES.wheelCustom} />
                 </div>
 
-                <div class="flex flex-col gap-1.5">
+                <div class={CLASSES.grayscaleList}>
                   <For each={GRAYSCALE_SWATCHES}>
                     {(g) => (
                       <button
                         type="button"
-                        class="h-6 w-6 rounded-full border border-white/20 transition-transform hover:scale-110"
+                        class={CLASSES.swatchButton}
                         style={{ "background-color": `${g.hex}` }}
                         aria-label={g.label}
                         onClick={() => handleGrayscale(g)}

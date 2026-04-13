@@ -3,6 +3,7 @@ import { splitProps, useContext, type Component, type JSX } from "solid-js";
 import { twMerge } from "tailwind-merge";
 import { ColorSwatchPickerContext } from "../color-swatch-picker/ColorSwatchPicker";
 import type { IComponentBaseProps } from "../types";
+import { CLASSES } from "./ColorSwatch.classes";
 
 const invokeEventHandler = (handler: unknown, event: Event) => {
   if (typeof handler === "function") {
@@ -29,19 +30,6 @@ export type ColorSwatchProps = Omit<JSX.ButtonHTMLAttributes<HTMLButtonElement>,
     onSelect?: (color: string) => void;
     onChange?: (color: string) => void;
   };
-
-const shapeClassMap: Record<ColorSwatchShape, string> = {
-  circle: "color-swatch--circle",
-  square: "color-swatch--square",
-};
-
-const sizeClassMap: Record<ColorSwatchSize, string> = {
-  xs: "color-swatch--xs",
-  sm: "color-swatch--sm",
-  md: "color-swatch--md",
-  lg: "color-swatch--lg",
-  xl: "color-swatch--xl",
-};
 
 const ColorSwatch: Component<ColorSwatchProps> = (props) => {
   const picker = useContext(ColorSwatchPickerContext);
@@ -142,9 +130,9 @@ const ColorSwatch: Component<ColorSwatchProps> = (props) => {
       {...others}
       type="button"
       class={twMerge(
-        "color-swatch",
-        shapeClassMap[shape()],
-        sizeClassMap[size()],
+        CLASSES.base,
+        CLASSES.shape[shape()],
+        CLASSES.size[size()],
         local.class,
         local.className,
       )}

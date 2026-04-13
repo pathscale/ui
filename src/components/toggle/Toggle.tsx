@@ -2,6 +2,7 @@ import "./Toggle.css";
 import { Show, createSignal, splitProps, type Component, type JSX } from "solid-js";
 import { twMerge } from "tailwind-merge";
 import type { IComponentBaseProps } from "../types";
+import { CLASSES } from "./Toggle.classes";
 
 const invokeEventHandler = (handler: unknown, event: Event) => {
   if (typeof handler === "function") {
@@ -16,20 +17,6 @@ const invokeEventHandler = (handler: unknown, event: Event) => {
 
 export type ToggleColor = "default" | "accent" | "success" | "warning" | "danger";
 export type ToggleSize = "sm" | "md" | "lg";
-
-const TOGGLE_COLOR_CLASS: Record<ToggleColor, string> = {
-  default: "toggle--default",
-  accent: "toggle--accent",
-  success: "toggle--success",
-  warning: "toggle--warning",
-  danger: "toggle--danger",
-};
-
-const TOGGLE_SIZE_CLASS: Record<ToggleSize, string> = {
-  sm: "toggle--sm",
-  md: "toggle--md",
-  lg: "toggle--lg",
-};
 
 export type ToggleProps = Omit<JSX.InputHTMLAttributes<HTMLInputElement>, "type" | "children" | "color"> &
   IComponentBaseProps & {
@@ -81,10 +68,10 @@ const Toggle: Component<ToggleProps> = (props) => {
   return (
     <label
       class={twMerge(
-        "toggle",
-        TOGGLE_SIZE_CLASS[size()],
-        TOGGLE_COLOR_CLASS[color()],
-        isDisabled() && "toggle--disabled",
+        CLASSES.base,
+        CLASSES.size[size()],
+        CLASSES.color[color()],
+        isDisabled() && CLASSES.flag.disabled,
         local.class,
         local.className,
       )}
@@ -98,17 +85,17 @@ const Toggle: Component<ToggleProps> = (props) => {
         {...others}
         type="checkbox"
         role="switch"
-        class="toggle__input"
+        class={CLASSES.slot.input}
         data-slot="toggle-input"
         checked={isSelected()}
         disabled={isDisabled()}
         onChange={handleChange}
       />
 
-      <span class="toggle__control" data-slot="toggle-control" aria-hidden="true">
-        <span class="toggle__thumb" data-slot="toggle-thumb">
+      <span class={CLASSES.slot.control} data-slot="toggle-control" aria-hidden="true">
+        <span class={CLASSES.slot.thumb} data-slot="toggle-thumb">
           <Show when={local.icon}>
-            <span class="toggle__icon" data-slot="toggle-icon">
+            <span class={CLASSES.slot.icon} data-slot="toggle-icon">
               {local.icon}
             </span>
           </Show>
@@ -116,12 +103,12 @@ const Toggle: Component<ToggleProps> = (props) => {
       </span>
 
       <Show when={hasContent()}>
-        <span class="toggle__content" data-slot="toggle-content">
+        <span class={CLASSES.slot.content} data-slot="toggle-content">
           <Show when={local.children}>
             <span data-slot="label">{local.children}</span>
           </Show>
           <Show when={local.description}>
-            <span class="toggle__description" data-slot="description">
+            <span class={CLASSES.slot.description} data-slot="description">
               {local.description}
             </span>
           </Show>

@@ -10,6 +10,7 @@ import {
 } from "solid-js";
 import { twMerge } from "tailwind-merge";
 import type { IComponentBaseProps } from "../types";
+import { CLASSES } from "./Alert.classes";
 
 /* -------------------------------------------------------------------------------------------------
  * Alert Context
@@ -131,14 +132,6 @@ const STATUS_ICON_MAP: Record<AlertStatus, Component> = {
 /* -------------------------------------------------------------------------------------------------
  * Alert Root
  * -----------------------------------------------------------------------------------------------*/
-const STATUS_CLASS_MAP: Record<AlertStatus, string> = {
-  default: "alert--default",
-  accent: "alert--accent",
-  success: "alert--success",
-  warning: "alert--warning",
-  danger: "alert--danger",
-};
-
 const AlertRoot: ParentComponent<AlertRootProps> = (props) => {
   const [local, others] = splitProps(props, [
     "children",
@@ -158,7 +151,7 @@ const AlertRoot: ParentComponent<AlertRootProps> = (props) => {
       <div
         {...others}
         role="alert"
-        class={twMerge("alert", STATUS_CLASS_MAP[status()], local.class, local.className)}
+        class={twMerge(CLASSES.base, CLASSES.status[status()], local.class, local.className)}
         data-slot="alert-root"
         data-status={status()}
         data-theme={local.dataTheme}
@@ -192,7 +185,7 @@ const AlertIndicator: Component<AlertIndicatorProps> = (props) => {
   return (
     <div
       {...others}
-      class={twMerge("alert__indicator", local.class, local.className)}
+      class={twMerge(CLASSES.slot.indicator, local.class, local.className)}
       data-slot="alert-indicator"
       data-theme={local.dataTheme}
       style={local.style}
@@ -219,7 +212,7 @@ const AlertContent: ParentComponent<AlertContentProps> = (props) => {
   return (
     <div
       {...others}
-      class={twMerge("alert__content", local.class, local.className)}
+      class={twMerge(CLASSES.slot.content, local.class, local.className)}
       data-slot="alert-content"
       data-theme={local.dataTheme}
       style={local.style}
@@ -244,7 +237,7 @@ const AlertTitle: ParentComponent<AlertTitleProps> = (props) => {
   return (
     <p
       {...others}
-      class={twMerge("alert__title", local.class, local.className)}
+      class={twMerge(CLASSES.slot.title, local.class, local.className)}
       data-slot="alert-title"
       data-theme={local.dataTheme}
       style={local.style}
@@ -269,7 +262,7 @@ const AlertDescription: ParentComponent<AlertDescriptionProps> = (props) => {
   return (
     <span
       {...others}
-      class={twMerge("alert__description", local.class, local.className)}
+      class={twMerge(CLASSES.slot.description, local.class, local.className)}
       data-slot="alert-description"
       data-theme={local.dataTheme}
       style={local.style}

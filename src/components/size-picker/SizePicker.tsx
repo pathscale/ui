@@ -4,6 +4,7 @@ import { clsx } from "clsx";
 import Button from "../button";
 import type { IComponentBaseProps } from "../types";
 import { createSizeStore, type SizeStore, type SizePreset } from "./sizeStore";
+import { CLASSES } from "./SizePicker.classes";
 
 const PRESETS: SizePreset[] = ["M", "L", "XL"];
 
@@ -34,7 +35,7 @@ const SizePicker: Component<SizePickerProps> = (props) => {
   };
 
   const classes = () =>
-    twMerge("inline-flex gap-1", clsx(local.class, local.className));
+    twMerge(CLASSES.base, clsx(local.class, local.className));
 
   return (
     <div

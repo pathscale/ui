@@ -10,6 +10,7 @@ import {
   type JSX,
 } from "solid-js";
 import { twMerge } from "tailwind-merge";
+import { CLASSES } from "./Input.classes";
 type InputSize = "sm" | "md" | "lg";
 
 type InputContextValue = {
@@ -66,8 +67,8 @@ const InputRoot: Component<InputRootProps> = (props) => {
       <div
         {...others}
         class={twMerge(
-          "input-root",
-          fullWidth() && "input-root--full-width",
+          CLASSES.base,
+          fullWidth() && CLASSES.flag.fullWidthRoot,
           local.class,
           local.className,
         )}
@@ -78,12 +79,6 @@ const InputRoot: Component<InputRootProps> = (props) => {
       </div>
     </InputContext.Provider>
   );
-};
-
-const SIZE_CLASS_MAP: Record<InputSize, string> = {
-  sm: "input-control--sm",
-  md: "input-control--md",
-  lg: "input-control--lg",
 };
 
 type InputFieldProps = Omit<JSX.InputHTMLAttributes<HTMLInputElement>, "size" | "children" | "disabled"> & {
@@ -125,11 +120,11 @@ const InputField: Component<InputFieldProps> = (props) => {
 
   const controlClasses = () =>
     twMerge(
-      "input-control",
-      SIZE_CLASS_MAP[size()],
-      fullWidth() && "input-control--full-width",
-      isDisabled() && "input-control--disabled",
-      isInvalid() && "input-control--invalid",
+      CLASSES.slot.control,
+      CLASSES.size[size()],
+      fullWidth() && CLASSES.flag.fullWidthControl,
+      isDisabled() && CLASSES.flag.disabled,
+      isInvalid() && CLASSES.flag.invalid,
       local.class,
       local.className,
     );
@@ -143,21 +138,27 @@ const InputField: Component<InputFieldProps> = (props) => {
       data-invalid={isInvalid() ? "true" : "false"}
     >
       <Show when={local.startIcon}>
-        <span class="input__icon input__icon--start" data-slot="input-start-icon">
+        <span
+          class={twMerge(CLASSES.slot.icon, CLASSES.slot.iconStart)}
+          data-slot="input-start-icon"
+        >
           {local.startIcon}
         </span>
       </Show>
       <input
         {...others}
         id={inputId()}
-        class="input-field"
+        class={CLASSES.slot.field}
         disabled={isDisabled()}
         aria-disabled={isDisabled() ? "true" : "false"}
         aria-invalid={ariaInvalid()}
         data-slot="input-field"
       />
       <Show when={local.endIcon}>
-        <span class="input__icon input__icon--end" data-slot="input-end-icon">
+        <span
+          class={twMerge(CLASSES.slot.icon, CLASSES.slot.iconEnd)}
+          data-slot="input-end-icon"
+        >
           {local.endIcon}
         </span>
       </Show>
@@ -177,7 +178,7 @@ const InputLabel: Component<InputLabelProps> = (props) => {
     <label
       {...others}
       for={local.for ?? ctx?.fieldId()}
-      class={twMerge("input-label", local.class, local.className)}
+      class={twMerge(CLASSES.slot.label, local.class, local.className)}
       data-slot="input-label"
     >
       {local.children}
@@ -200,7 +201,12 @@ const InputHelper: Component<InputHelperProps> = (props) => {
     <p
       {...others}
       id={local.id ?? ctx?.helperId()}
-      class={twMerge("input-helper", invalid() && "input-helper--invalid", local.class, local.className)}
+      class={twMerge(
+        CLASSES.slot.helper,
+        invalid() && CLASSES.flag.helperInvalid,
+        local.class,
+        local.className,
+      )}
       data-slot="input-helper"
     >
       {local.children}

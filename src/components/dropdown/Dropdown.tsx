@@ -12,6 +12,7 @@ import {
   type JSX,
 } from "solid-js";
 import { twMerge } from "tailwind-merge";
+import { CLASSES } from "./Dropdown.classes";
 
 type DropdownAlign = "start" | "end";
 type DropdownFocusRequest = "first" | "last" | null;
@@ -243,7 +244,7 @@ const DropdownRoot = (props: DropdownRootProps): JSX.Element => {
       <div
         {...others}
         ref={setRootRef}
-        class={twMerge("dropdown", local.class, local.className)}
+        class={twMerge(CLASSES.base, local.class, local.className)}
         data-theme={local.dataTheme}
         data-slot="dropdown"
         data-open={open() ? "true" : "false"}
@@ -270,7 +271,7 @@ const DropdownTrigger = (props: DropdownTriggerProps): JSX.Element => {
 
   if (!ctx) {
     return (
-      <button {...others} class={twMerge("dropdown__trigger", local.class)} type={local.type ?? "button"}>
+      <button {...others} class={twMerge(CLASSES.slot.trigger, local.class)} type={local.type ?? "button"}>
         {local.children}
       </button>
     );
@@ -341,7 +342,7 @@ const DropdownTrigger = (props: DropdownTriggerProps): JSX.Element => {
       ref={setRef}
       id={ctx.triggerId}
       type={local.type ?? "button"}
-      class={twMerge("dropdown__trigger", local.class)}
+      class={twMerge(CLASSES.slot.trigger, local.class)}
       data-slot="dropdown-trigger"
       aria-haspopup="menu"
       aria-expanded={ctx.open()}
@@ -374,8 +375,8 @@ const DropdownMenu = (props: DropdownMenuProps): JSX.Element => {
 
   if (!ctx) {
     return (
-      <div {...others} class={twMerge("dropdown__popover", local.class)}>
-        <div class="dropdown__menu">{local.children}</div>
+      <div {...others} class={twMerge(CLASSES.slot.popover, local.class)}>
+        <div class={CLASSES.slot.menu}>{local.children}</div>
       </div>
     );
   }
@@ -427,7 +428,7 @@ const DropdownMenu = (props: DropdownMenuProps): JSX.Element => {
     <div
       {...others}
       id={ctx.menuId}
-      class={twMerge("dropdown__popover", local.class)}
+      class={twMerge(CLASSES.slot.popover, local.class)}
       role={local.role ?? "menu"}
       data-slot="dropdown-popover"
       data-open={ctx.open() ? "true" : "false"}
@@ -436,7 +437,7 @@ const DropdownMenu = (props: DropdownMenuProps): JSX.Element => {
       style={menuStyle()}
       onKeyDown={handleKeyDown}
     >
-      <div class="dropdown__menu" data-slot="dropdown-menu">
+      <div class={CLASSES.slot.menu} data-slot="dropdown-menu">
         {local.children}
       </div>
     </div>
@@ -521,7 +522,7 @@ const DropdownItem = (props: DropdownItemProps): JSX.Element => {
       ref={setRef}
       type={local.type ?? "button"}
       role={local.role ?? "menuitem"}
-      class={twMerge("dropdown__item", local.class)}
+      class={twMerge(CLASSES.slot.item, local.class)}
       data-slot="menu-item"
       data-disabled={isDisabled() ? "true" : "false"}
       data-focused={ctx?.focusedKey() === itemKey ? "true" : "false"}
@@ -542,7 +543,7 @@ type DropdownGroupProps = JSX.HTMLAttributes<HTMLDivElement>;
 const DropdownGroup = (props: DropdownGroupProps): JSX.Element => {
   const [local, others] = splitProps(props, ["class", "children"]);
   return (
-    <div {...others} role="group" class={twMerge("dropdown__group", local.class)} data-slot="dropdown-group">
+    <div {...others} role="group" class={twMerge(CLASSES.slot.group, local.class)} data-slot="dropdown-group">
       {local.children}
     </div>
   );
@@ -556,7 +557,7 @@ const DropdownSeparator = (props: DropdownSeparatorProps): JSX.Element => {
     <div
       {...others}
       role="separator"
-      class={twMerge("dropdown__separator", local.class)}
+      class={twMerge(CLASSES.slot.separator, local.class)}
       data-slot="separator"
       aria-orientation="horizontal"
     />

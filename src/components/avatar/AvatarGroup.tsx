@@ -3,6 +3,7 @@ import { Dynamic } from "solid-js/web";
 import { twMerge } from "tailwind-merge";
 
 import type { IComponentBaseProps } from "../types";
+import { CLASSES } from "./Avatar.classes";
 
 type ElementType = keyof JSX.IntrinsicElements;
 
@@ -51,7 +52,7 @@ const AvatarGroup = <E extends ElementType = "div">(
 
   const Tag = local.as || "div";
   const classes = () =>
-    twMerge("avatar-group -space-x-6", local.class, local.className);
+    twMerge(CLASSES.group.base, CLASSES.group.overlap, local.class, local.className);
 
   // Build an aria-label like "Group of N avatar photos"
   const ariaLabel = `Group of ${local.children.length} avatar photos`;

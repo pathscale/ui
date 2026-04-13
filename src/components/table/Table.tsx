@@ -2,6 +2,7 @@ import "./Table.css";
 import { type Accessor, type Component, type JSX, splitProps, createContext, useContext } from "solid-js";
 import { twMerge } from "tailwind-merge";
 import type { IComponentBaseProps } from "../types";
+import { CLASSES } from "./Table.classes";
 
 /* -------------------------------------------------------------------------------------------------
  * Table Context
@@ -21,11 +22,6 @@ type TableColumnRenderProps = {
 type TableColumnChildren =
   | JSX.Element
   | ((props: TableColumnRenderProps) => JSX.Element);
-
-const TABLE_VARIANT_CLASS_MAP: Record<TableVariant, string> = {
-  primary: "table-root--primary",
-  secondary: "table-root--secondary",
-};
 
 type TableContextValue = {
   variant: Accessor<TableVariant>;
@@ -94,8 +90,8 @@ const TableRoot: Component<TableRootProps> = (props) => {
     <TableContext.Provider value={{ variant }}>
       <div
         class={twMerge(
-          "table-root",
-          TABLE_VARIANT_CLASS_MAP[variant()],
+          CLASSES.root.base,
+          CLASSES.root.variant[variant()],
           local.class,
           local.className,
         )}
@@ -126,7 +122,7 @@ const TableScrollContainer: Component<TableScrollContainerProps> = (props) => {
 
   return (
     <div
-      class={twMerge("table__scroll-container", local.class, local.className)}
+      class={twMerge(CLASSES.scroll, local.class, local.className)}
       data-theme={local.dataTheme}
       data-slot="table-scroll-container"
       {...rest}
@@ -163,7 +159,7 @@ const TableContent: Component<TableContentProps> = (props) => {
       }}
     >
       <table
-        class={twMerge("table__content", local.class, local.className)}
+        class={twMerge(CLASSES.content, local.class, local.className)}
         data-theme={local.dataTheme}
         data-slot="table-content"
         data-sort-column={local.sortDescriptor?.column}
@@ -192,7 +188,7 @@ const TableHeader: Component<TableHeaderProps> = (props) => {
 
   return (
     <thead
-      class={twMerge("table__header", local.class, local.className)}
+      class={twMerge(CLASSES.header, local.class, local.className)}
       data-theme={local.dataTheme}
       data-slot="table-header"
       {...rest}
@@ -268,7 +264,7 @@ const TableColumn: Component<TableColumnProps> = (props) => {
 
   return (
     <th
-      class={twMerge("table__column", local.class, local.className)}
+      class={twMerge(CLASSES.column, local.class, local.className)}
       data-theme={local.dataTheme}
       data-slot="table-column"
       data-column-id={local.id}
@@ -301,7 +297,7 @@ const TableBody: Component<TableBodyProps> = (props) => {
 
   return (
     <tbody
-      class={twMerge("table__body", local.class, local.className)}
+      class={twMerge(CLASSES.body, local.class, local.className)}
       data-theme={local.dataTheme}
       data-slot="table-body"
       {...rest}
@@ -327,7 +323,7 @@ const TableRow: Component<TableRowProps> = (props) => {
 
   return (
     <tr
-      class={twMerge("table__row", local.class, local.className)}
+      class={twMerge(CLASSES.row, local.class, local.className)}
       data-theme={local.dataTheme}
       data-slot="table-row"
       {...rest}
@@ -353,7 +349,7 @@ const TableCell: Component<TableCellProps> = (props) => {
 
   return (
     <td
-      class={twMerge("table__cell", local.class, local.className)}
+      class={twMerge(CLASSES.cell, local.class, local.className)}
       data-theme={local.dataTheme}
       data-slot="table-cell"
       {...rest}
@@ -388,14 +384,14 @@ const TableExpandedRow: Component<TableExpandedRowProps> = (props) => {
 
   return (
     <TableRow
-      class={twMerge("table__expanded-row", local.class, local.className)}
+      class={twMerge(CLASSES.expandedRow, local.class, local.className)}
       data-theme={local.dataTheme}
       data-slot="table-expanded-row"
       {...rest}
     >
       <TableCell
         colSpan={local.colSpan}
-        class={twMerge("table__expanded-cell", local.cellClass, local.cellClassName)}
+        class={twMerge(CLASSES.expandedCell, local.cellClass, local.cellClassName)}
         dataTheme={local.cellDataTheme ?? local.dataTheme}
       >
         {local.children}
@@ -420,7 +416,7 @@ const TableFooter: Component<TableFooterProps> = (props) => {
 
   return (
     <div
-      class={twMerge("table__footer", local.class, local.className)}
+      class={twMerge(CLASSES.footer, local.class, local.className)}
       data-theme={local.dataTheme}
       data-slot="table-footer"
       {...rest}
@@ -461,17 +457,17 @@ const TablePageSize: Component<TablePageSizeProps> = (props) => {
 
   return (
     <label
-      class={twMerge("table__page-size", local.class, local.className)}
+      class={twMerge(CLASSES.pageSize, local.class, local.className)}
       data-theme={local.dataTheme}
       data-slot="table-page-size"
     >
-      <span class="table__page-size-label" data-slot="table-page-size-label">
+      <span class={CLASSES.pageSizeLabel} data-slot="table-page-size-label">
         {local.label ?? "Rows"}
       </span>
       <select
         {...rest}
         class={twMerge(
-          "table__page-size-select",
+          CLASSES.pageSizeSelect,
           local.selectClass,
           local.selectClassName,
         )}
@@ -502,7 +498,7 @@ const TableResizableContainer: Component<TableResizableContainerProps> = (props)
 
   return (
     <div
-      class={twMerge("table__resizable-container", local.class, local.className)}
+      class={twMerge(CLASSES.resizableContainer, local.class, local.className)}
       data-theme={local.dataTheme}
       data-slot="table-resizable-container"
       {...rest}
@@ -532,7 +528,7 @@ const TableColumnResizer: Component<TableColumnResizerProps> = (props) => {
     <div
       role={local.role ?? "separator"}
       aria-orientation={local["aria-orientation"] ?? "vertical"}
-      class={twMerge("table__column-resizer", local.class, local.className)}
+      class={twMerge(CLASSES.columnResizer, local.class, local.className)}
       data-theme={local.dataTheme}
       data-slot="table-column-resizer"
       {...rest}
@@ -558,7 +554,7 @@ const TableLoadMore: Component<TableLoadMoreProps> = (props) => {
 
   return (
     <tr
-      class={twMerge("table__load-more", local.class, local.className)}
+      class={twMerge(CLASSES.loadMore, local.class, local.className)}
       data-theme={local.dataTheme}
       data-slot="table-load-more"
       {...rest}
@@ -584,7 +580,7 @@ const TableLoadMoreContent: Component<TableLoadMoreContentProps> = (props) => {
 
   return (
     <div
-      class={twMerge("table__load-more-content", local.class, local.className)}
+      class={twMerge(CLASSES.loadMoreContent, local.class, local.className)}
       data-theme={local.dataTheme}
       data-slot="table-load-more-content"
       {...rest}

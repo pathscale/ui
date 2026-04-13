@@ -3,6 +3,7 @@ import { Show, createEffect, createSignal, splitProps, useContext, type Componen
 import { twMerge } from "tailwind-merge";
 import { CheckboxGroupContext } from "../checkbox-group/context";
 import type { IComponentBaseProps } from "../types";
+import { CLASSES } from "./Checkbox.classes";
 
 const invokeEventHandler = (handler: unknown, event: Event) => {
   if (typeof handler === "function") {
@@ -16,11 +17,6 @@ const invokeEventHandler = (handler: unknown, event: Event) => {
 };
 
 export type CheckboxVariant = "primary" | "secondary";
-
-const VARIANT_CLASS_MAP: Record<CheckboxVariant, string> = {
-  primary: "checkbox--primary",
-  secondary: "checkbox--secondary",
-};
 
 export type CheckboxProps = Omit<JSX.InputHTMLAttributes<HTMLInputElement>, "type" | "children"> &
   IComponentBaseProps & {
@@ -101,9 +97,9 @@ const Checkbox: Component<CheckboxProps> = (props) => {
   return (
     <label
       class={twMerge(
-        "checkbox",
-        VARIANT_CLASS_MAP[variant()],
-        isDisabled() && "checkbox--disabled",
+        CLASSES.base,
+        CLASSES.variant[variant()],
+        isDisabled() && CLASSES.flag.disabled,
         local.class,
         local.className,
       )}
@@ -122,7 +118,7 @@ const Checkbox: Component<CheckboxProps> = (props) => {
           inputRef = el;
         }}
         type="checkbox"
-        class="checkbox__input"
+        class={CLASSES.slot.input}
         data-slot="checkbox-input"
         value={local.value}
         name={name()}
@@ -133,8 +129,8 @@ const Checkbox: Component<CheckboxProps> = (props) => {
         onChange={handleChange}
       />
 
-      <span class="checkbox__control" data-slot="checkbox-control" aria-hidden="true">
-        <span class="checkbox__indicator" data-slot="checkbox-indicator">
+      <span class={CLASSES.slot.control} data-slot="checkbox-control" aria-hidden="true">
+        <span class={CLASSES.slot.indicator} data-slot="checkbox-indicator">
           <Show
             when={isIndeterminate()}
             fallback={
@@ -170,12 +166,12 @@ const Checkbox: Component<CheckboxProps> = (props) => {
       </span>
 
       <Show when={hasContent()}>
-        <span class="checkbox__content" data-slot="checkbox-content">
+        <span class={CLASSES.slot.content} data-slot="checkbox-content">
           <Show when={local.children}>
             <span data-slot="label">{local.children}</span>
           </Show>
           <Show when={local.description}>
-            <span class="checkbox__description" data-slot="description">
+            <span class={CLASSES.slot.description} data-slot="description">
               {local.description}
             </span>
           </Show>

@@ -16,6 +16,7 @@ import ColorField, { type ColorFieldProps } from "../color-field";
 import ColorSlider, { type ColorSliderProps, type ColorSliderType } from "../color-slider";
 import { formatColor, parseColor, rgbToHex } from "../color-wheel-flower/ColorUtils";
 import type { IComponentBaseProps } from "../types";
+import { CLASSES } from "./ColorPicker.classes";
 
 const DEFAULT_COLOR = "#3B82F6";
 
@@ -171,7 +172,7 @@ const ColorPickerArea: Component<ColorPickerAreaProps> = (props) => {
     return (
       <ColorArea
         {...others}
-        class={twMerge("color-picker__area", local.class, local.className)}
+        class={twMerge(CLASSES.slot.area, local.class, local.className)}
         dataTheme={local.dataTheme}
         onChange={local.onChange}
       />
@@ -188,7 +189,7 @@ const ColorPickerArea: Component<ColorPickerAreaProps> = (props) => {
       {...others}
       value={ctx.value().hsv}
       isDisabled={ctx.isDisabled()}
-      class={twMerge("color-picker__area", local.class, local.className)}
+      class={twMerge(CLASSES.slot.area, local.class, local.className)}
       dataTheme={local.dataTheme}
       onChange={handleChange}
     />
@@ -217,7 +218,7 @@ const ColorPickerSlider: Component<ColorPickerSliderProps> = (props) => {
       <ColorSlider
         {...others}
         type={sliderType()}
-        class={twMerge("color-picker__slider", local.class, local.className)}
+        class={twMerge(CLASSES.slot.slider, local.class, local.className)}
         dataTheme={local.dataTheme}
         style={local.style}
         onChange={local.onChange}
@@ -253,7 +254,7 @@ const ColorPickerSlider: Component<ColorPickerSliderProps> = (props) => {
       type={sliderType()}
       value={value()}
       isDisabled={ctx.isDisabled()}
-      class={twMerge("color-picker__slider", local.class, local.className)}
+      class={twMerge(CLASSES.slot.slider, local.class, local.className)}
       dataTheme={local.dataTheme}
       style={sliderStyle()}
       onChange={handleChange}
@@ -280,7 +281,7 @@ const ColorPickerField: Component<ColorPickerFieldProps> = (props) => {
     return (
       <ColorField
         {...others}
-        class={twMerge("color-picker__field", local.class, local.className)}
+        class={twMerge(CLASSES.slot.field, local.class, local.className)}
         dataTheme={local.dataTheme}
         format={local.format}
         fullWidth={local.fullWidth ?? true}
@@ -299,7 +300,7 @@ const ColorPickerField: Component<ColorPickerFieldProps> = (props) => {
       {...others}
       value={ctx.value().hex}
       isDisabled={ctx.isDisabled()}
-      class={twMerge("color-picker__field", local.class, local.className)}
+      class={twMerge(CLASSES.slot.field, local.class, local.className)}
       dataTheme={local.dataTheme}
       format={local.format}
       fullWidth={local.fullWidth ?? true}
@@ -408,7 +409,7 @@ const ColorPickerRoot: Component<ColorPickerProps> = (props) => {
     <ColorPickerContext.Provider value={context()}>
       <div
         {...others}
-        class={twMerge("color-picker", local.class, local.className)}
+        class={twMerge(CLASSES.base, local.class, local.className)}
         data-theme={local.dataTheme}
         data-slot="color-picker"
         data-disabled={local.isDisabled ? "true" : "false"}

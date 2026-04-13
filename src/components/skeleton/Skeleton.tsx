@@ -2,6 +2,7 @@ import "./Skeleton.css";
 import { splitProps, type Component, type JSX } from "solid-js";
 import { twMerge } from "tailwind-merge";
 import type { IComponentBaseProps } from "../types";
+import { CLASSES } from "./Skeleton.classes";
 
 /* -------------------------------------------------------------------------------------------------
  * Types
@@ -16,12 +17,6 @@ export type SkeletonProps = Omit<JSX.HTMLAttributes<HTMLDivElement>, "children">
 /* -------------------------------------------------------------------------------------------------
  * Animation class map
  * -----------------------------------------------------------------------------------------------*/
-const ANIMATION_CLASS_MAP: Record<SkeletonAnimation, string> = {
-  shimmer: "skeleton--shimmer",
-  pulse: "skeleton--pulse",
-  none: "skeleton--none",
-};
-
 /* -------------------------------------------------------------------------------------------------
  * Skeleton
  * -----------------------------------------------------------------------------------------------*/
@@ -39,7 +34,7 @@ const Skeleton: Component<SkeletonProps> = (props) => {
   return (
     <div
       {...others}
-      class={twMerge("skeleton", ANIMATION_CLASS_MAP[animation()], local.class, local.className)}
+      class={twMerge(CLASSES.base, CLASSES.animation[animation()], local.class, local.className)}
       data-slot="skeleton"
       data-theme={local.dataTheme}
       style={local.style}

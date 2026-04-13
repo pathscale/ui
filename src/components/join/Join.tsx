@@ -7,6 +7,7 @@ import {
 import { clsx } from "clsx";
 import { twMerge } from "tailwind-merge";
 import type { IComponentBaseProps } from "../types";
+import { CLASSES } from "./Join.classes";
 
 export type JoinProps = IComponentBaseProps &
   JSX.HTMLAttributes<HTMLDivElement> & {
@@ -31,11 +32,11 @@ const Join = (props: JoinProps): JSX.Element => {
 
   const classes = createMemo(() =>
     twMerge(
-      "join",
+      CLASSES.base,
       clsx({
-        "join-vertical": !local.responsive && local.vertical,
-        "join-horizontal": !local.responsive && local.horizontal,
-        "join-vertical lg:join-horizontal": local.responsive,
+        [CLASSES.flag.vertical]: !local.responsive && local.vertical,
+        [CLASSES.flag.horizontal]: !local.responsive && local.horizontal,
+        [CLASSES.flag.responsive]: local.responsive,
       }),
       local.class,
       local.className,

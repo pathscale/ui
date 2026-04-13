@@ -2,6 +2,7 @@ import "./EmptyState.css";
 import { splitProps, type Component, type JSX, type ParentComponent } from "solid-js";
 import { twMerge } from "tailwind-merge";
 import type { IComponentBaseProps } from "../types";
+import { CLASSES } from "./EmptyState.classes";
 
 /* -------------------------------------------------------------------------------------------------
  * Types
@@ -47,7 +48,7 @@ const EmptyStateRoot: ParentComponent<EmptyStateRootProps> = (props) => {
     <div
       {...others}
       role="status"
-      class={twMerge("empty-state", local.class, local.className)}
+      class={twMerge(CLASSES.base, local.class, local.className)}
       data-slot="empty-state"
       data-theme={local.dataTheme}
       style={local.style}
@@ -72,7 +73,7 @@ const EmptyStateIcon: Component<EmptyStateIconProps> = (props) => {
   return (
     <div
       {...others}
-      class={twMerge("empty-state__icon", local.class, local.className)}
+      class={twMerge(CLASSES.slot.icon, local.class, local.className)}
       data-slot="empty-state-icon"
       data-theme={local.dataTheme}
       style={local.style}
@@ -98,7 +99,7 @@ const EmptyStateTitle: ParentComponent<EmptyStateTitleProps> = (props) => {
   return (
     <h3
       {...others}
-      class={twMerge("empty-state__title", local.class, local.className)}
+      class={twMerge(CLASSES.slot.title, local.class, local.className)}
       data-slot="empty-state-title"
       data-theme={local.dataTheme}
       style={local.style}
@@ -123,7 +124,7 @@ const EmptyStateDescription: ParentComponent<EmptyStateDescriptionProps> = (prop
   return (
     <p
       {...others}
-      class={twMerge("empty-state__description", local.class, local.className)}
+      class={twMerge(CLASSES.slot.description, local.class, local.className)}
       data-slot="empty-state-description"
       data-theme={local.dataTheme}
       style={local.style}
@@ -148,7 +149,7 @@ const EmptyStateActions: ParentComponent<EmptyStateActionsProps> = (props) => {
   return (
     <div
       {...others}
-      class={twMerge("empty-state__actions", local.class, local.className)}
+      class={twMerge(CLASSES.slot.actions, local.class, local.className)}
       data-slot="empty-state-actions"
       data-theme={local.dataTheme}
       style={local.style}

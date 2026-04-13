@@ -2,6 +2,7 @@ import "./ColorArea.css";
 import { createSignal, splitProps, type Component, type JSX } from "solid-js";
 import { twMerge } from "tailwind-merge";
 import type { IComponentBaseProps } from "../types";
+import { CLASSES } from "./ColorArea.classes";
 
 export type ColorAreaValue = {
   h: number;
@@ -181,7 +182,7 @@ const ColorArea: Component<ColorAreaProps> = (props) => {
     <div
       {...others}
       ref={areaRef}
-      class={twMerge("color-area", local.class, local.className)}
+      class={twMerge(CLASSES.base, local.class, local.className)}
       data-theme={local.dataTheme}
       data-slot="color-area"
       data-disabled={isDisabled() ? "true" : "false"}
@@ -201,7 +202,7 @@ const ColorArea: Component<ColorAreaProps> = (props) => {
       onKeyDown={handleKeyDown}
     >
       <div
-        class="color-area__thumb"
+        class={CLASSES.slot.thumb}
         data-slot="color-area-thumb"
         data-dragging={isDragging() ? "true" : "false"}
         data-disabled={isDisabled() ? "true" : "false"}

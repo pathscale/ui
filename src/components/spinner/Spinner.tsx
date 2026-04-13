@@ -2,6 +2,7 @@ import "./Spinner.css";
 import { splitProps, createUniqueId, type Component, type JSX } from "solid-js";
 import { twMerge } from "tailwind-merge";
 import type { IComponentBaseProps } from "../types";
+import { CLASSES } from "./Spinner.classes";
 
 /* -------------------------------------------------------------------------------------------------
  * Types
@@ -17,34 +18,6 @@ export type SpinnerProps = Omit<JSX.HTMLAttributes<HTMLSpanElement>, "children">
     variant?: SpinnerVariant;
     label?: string;
   };
-
-/* -------------------------------------------------------------------------------------------------
- * Class maps
- * -----------------------------------------------------------------------------------------------*/
-const SIZE_CLASS_MAP: Record<SpinnerSize, string> = {
-  xs: "spinner--xs",
-  sm: "spinner--sm",
-  md: "",
-  lg: "spinner--lg",
-  xl: "spinner--xl",
-};
-
-const COLOR_CLASS_MAP: Record<SpinnerColor, string> = {
-  current: "spinner--current",
-  accent: "spinner--accent",
-  success: "spinner--success",
-  warning: "spinner--warning",
-  danger: "spinner--danger",
-};
-
-const VARIANT_CLASS_MAP: Record<SpinnerVariant, string> = {
-  spinner: "spinner--spinner",
-  dots: "spinner--dots",
-  ring: "spinner--ring",
-  ball: "spinner--ball",
-  bars: "spinner--bars",
-  infinity: "spinner--infinity",
-};
 
 /* -------------------------------------------------------------------------------------------------
  * SVG Spinner (HeroUI-style gradient arc)
@@ -112,10 +85,10 @@ const Spinner: Component<SpinnerProps> = (props) => {
       aria-busy="true"
       aria-live="polite"
       class={twMerge(
-        "spinner",
-        SIZE_CLASS_MAP[size()],
-        COLOR_CLASS_MAP[color()],
-        VARIANT_CLASS_MAP[variant()],
+        CLASSES.base,
+        CLASSES.size[size()],
+        CLASSES.color[color()],
+        CLASSES.variant[variant()],
         local.class,
         local.className,
       )}

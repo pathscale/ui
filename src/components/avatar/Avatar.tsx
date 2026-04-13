@@ -12,6 +12,7 @@ import {
 } from "solid-js";
 import { twMerge } from "tailwind-merge";
 import type { IComponentBaseProps } from "../types";
+import { CLASSES } from "./Avatar.classes";
 
 /* -------------------------------------------------------------------------------------------------
  * Avatar Context
@@ -59,17 +60,6 @@ export type AvatarFallbackProps = Omit<JSX.HTMLAttributes<HTMLSpanElement>, "chi
 /* -------------------------------------------------------------------------------------------------
  * Avatar Root
  * -----------------------------------------------------------------------------------------------*/
-const SIZE_CLASS_MAP: Record<AvatarSize, string> = {
-  sm: "avatar--sm",
-  md: "",
-  lg: "avatar--lg",
-};
-
-const VARIANT_CLASS_MAP: Record<AvatarVariant, string> = {
-  default: "",
-  soft: "avatar--soft",
-};
-
 const AvatarRoot: ParentComponent<AvatarRootProps> = (props) => {
   const [local, others] = splitProps(props, [
     "children",
@@ -100,9 +90,9 @@ const AvatarRoot: ParentComponent<AvatarRootProps> = (props) => {
       <span
         {...others}
         class={twMerge(
-          "avatar",
-          SIZE_CLASS_MAP[size()],
-          VARIANT_CLASS_MAP[variant()],
+          CLASSES.base,
+          CLASSES.size[size()],
+          CLASSES.variant[variant()],
           local.class,
           local.className,
         )}
@@ -148,7 +138,7 @@ const AvatarImage: Component<AvatarImageProps> = (props) => {
       {...others}
       src={local.src}
       alt={local.alt}
-      class={twMerge("avatar__image", local.class, local.className)}
+      class={twMerge(CLASSES.slot.image, local.class, local.className)}
       data-slot="avatar-image"
       style={local.style}
       onLoad={handleLoad}
@@ -160,14 +150,6 @@ const AvatarImage: Component<AvatarImageProps> = (props) => {
 /* -------------------------------------------------------------------------------------------------
  * Avatar Fallback
  * -----------------------------------------------------------------------------------------------*/
-const COLOR_CLASS_MAP: Record<AvatarColor, string> = {
-  default: "avatar__fallback--default",
-  accent: "avatar__fallback--accent",
-  success: "avatar__fallback--success",
-  warning: "avatar__fallback--warning",
-  danger: "avatar__fallback--danger",
-};
-
 const AvatarFallback: ParentComponent<AvatarFallbackProps> = (props) => {
   const [local, others] = splitProps(props, [
     "children",
@@ -193,8 +175,8 @@ const AvatarFallback: ParentComponent<AvatarFallbackProps> = (props) => {
       <span
         {...others}
         class={twMerge(
-          "avatar__fallback",
-          COLOR_CLASS_MAP[ctx.color()],
+          CLASSES.slot.fallback,
+          CLASSES.color[ctx.color()],
           local.class,
           local.className,
         )}

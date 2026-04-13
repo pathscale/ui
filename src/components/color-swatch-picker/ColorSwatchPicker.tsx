@@ -10,6 +10,7 @@ import {
 } from "solid-js";
 import { twMerge } from "tailwind-merge";
 import type { IComponentBaseProps } from "../types";
+import { CLASSES } from "./ColorSwatchPicker.classes";
 
 const invokeEventHandler = (handler: unknown, event: Event) => {
   if (typeof handler === "function") {
@@ -147,7 +148,7 @@ const ColorSwatchPicker: Component<ColorSwatchPickerProps> = (props) => {
       <div
         {...others}
         ref={rootRef}
-        class={twMerge("color-swatch-picker", local.class, local.className)}
+        class={twMerge(CLASSES.base, local.class, local.className)}
         data-theme={local.dataTheme}
         data-slot="color-swatch-picker"
         data-disabled={isDisabled() ? "true" : "false"}
