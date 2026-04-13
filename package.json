@@ -1,6 +1,6 @@
 {
   "name": "@pathscale/ui",
-  "version": "1.1.37",
+  "version": "1.1.38",
   "author": "pathscale",
   "repository": {
     "type": "git",
@@ -30,6 +30,14 @@
     "./components/*": {
       "types": "./dist/components/*/index.d.ts",
       "import": "./dist/components/*/index.js"
+    },
+    "./primitives/*": {
+      "types": "./dist/primitives/*/index.d.ts",
+      "import": "./dist/primitives/*/index.js"
+    },
+    "./hooks/*": {
+      "types": "./dist/hooks/*/index.d.ts",
+      "import": "./dist/hooks/*/index.js"
     },
     "./stores": {
       "types": "./dist/stores/index.d.ts",
