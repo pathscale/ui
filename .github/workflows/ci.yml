@@ -12,6 +12,12 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - name: Checkout rebuild-plugin-ui-css-purge
+        uses: actions/checkout@v4
+        with:
+          repository: pathscale/rebuild-plugin-ui-css-purge
+          path: ../rebuild-plugin-ui-css-purge
+
       - name: Setup Bun
         uses: oven-sh/setup-bun@v1
         with:
