@@ -1,8 +1,9 @@
-import clsx from "clsx";
+import "./Icon.css";
 import { createMemo, type JSX, splitProps } from "solid-js";
 import { twMerge } from "tailwind-merge";
 import type { IComponentBaseProps } from "../types";
 import type { ComponentColor } from "../types";
+import { CLASSES } from "./Icon.classes";
 
 export type IconProps = IComponentBaseProps & {
   width?: number;
@@ -26,17 +27,19 @@ const Icon = (props: IconProps): JSX.Element => {
   const height = local.height ?? 24;
   const name = local.name;
 
-  const sizeClass = createMemo(() => `${name} w-${width / 4} h-${height / 4}`);
-
-  const classes = createMemo(() => {
-    return twMerge(clsx(sizeClass(), local.className ?? local.class));
-  });
+  const classes = createMemo(() =>
+    twMerge(CLASSES.base, name, local.class, local.className),
+  );
 
   return (
     <span
       {...others}
       class={classes()}
-      style={local.style}
+      style={{
+        width: `${width}px`,
+        height: `${height}px`,
+        ...(typeof local.style === "object" ? local.style : {}),
+      }}
       data-theme={local.dataTheme}
     />
   );
