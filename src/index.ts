@@ -40,7 +40,11 @@ export type {
   ButtonGroupSeparatorProps,
   ButtonGroupOrientation,
 } from "./components/button-group";
-export { default as Calendar, type CalendarProps } from "./components/calendar";
+export {
+  default as Calendar,
+  type CalendarProps,
+  type CalendarWeekdayFormat,
+} from "./components/calendar";
 export { default as Card } from "./components/card";
 export type {
   CardVariant,

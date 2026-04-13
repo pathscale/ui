@@ -8,6 +8,7 @@ import {
   Breadcrumbs,
   Button,
   ButtonGroup,
+  Calendar,
   Card,
   Chip,
   CheckboxGroup,
@@ -263,6 +264,7 @@ export default function App() {
   const [controlledSearchValue, setControlledSearchValue] = createSignal("analytics");
   const [controlledNumberValue, setControlledNumberValue] = createSignal<number | undefined>(3);
   const [controlledDateValue, setControlledDateValue] = createSignal("2026-04-11");
+  const [controlledCalendarDate, setControlledCalendarDate] = createSignal("2026-04-15");
   const [controlledTimeValue, setControlledTimeValue] = createSignal("13:30");
   const validatedForm = useForm({
     schema: FORM_VALIDATION_SCHEMA,
@@ -1071,6 +1073,47 @@ export default function App() {
               </TimeField.Group>
               <Description>Value: {controlledTimeValue() || "Empty"}</Description>
             </TimeField>
+          </div>
+        </section>
+
+        <section class="space-y-4 rounded-xl border border-base-300 bg-base-200 p-4">
+          <div>
+            <h2 class="text-sm font-semibold">Calendar</h2>
+            <p class="text-xs opacity-70">
+              HeroUI-style month calendar with controlled/uncontrolled value, keyboard navigation, and disabled-date support.
+            </p>
+          </div>
+
+          <div class="grid gap-4 lg:grid-cols-2">
+            <div class="space-y-2 rounded-xl border border-base-300 bg-base-100 p-3">
+              <h3 class="text-xs font-semibold uppercase tracking-wide opacity-70">Basic</h3>
+              <Calendar />
+            </div>
+
+            <div class="space-y-2 rounded-xl border border-base-300 bg-base-100 p-3">
+              <h3 class="text-xs font-semibold uppercase tracking-wide opacity-70">Controlled</h3>
+              <Calendar value={controlledCalendarDate()} onChange={setControlledCalendarDate} />
+              <Description>Selected: {controlledCalendarDate()}</Description>
+            </div>
+
+            <div class="space-y-2 rounded-xl border border-base-300 bg-base-100 p-3">
+              <h3 class="text-xs font-semibold uppercase tracking-wide opacity-70">Disabled Dates</h3>
+              <Calendar
+                defaultValue="2026-04-14"
+                minValue="2026-04-05"
+                maxValue="2026-04-28"
+                isDateUnavailable={(date) => date.getDay() === 0 || date.getDay() === 6}
+              />
+              <Description>Weekends are unavailable.</Description>
+            </div>
+
+            <div class="space-y-2 rounded-xl border border-base-300 bg-base-100 p-3">
+              <h3 class="text-xs font-semibold uppercase tracking-wide opacity-70">Navigation</h3>
+              <Calendar defaultValue="2026-11-12" />
+              <Description>
+                Use previous/next controls or keyboard keys: arrows, Home/End, and PageUp/PageDown.
+              </Description>
+            </div>
           </div>
         </section>
 

@@ -1,1 +1,1 @@
-export { default, type CalendarProps } from "./Calendar";
+export { default, type CalendarProps, type CalendarWeekdayFormat } from "./Calendar";

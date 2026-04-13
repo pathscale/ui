@@ -1,0 +1,224 @@
+@layer components {
+  .calendar {
+    width: 15.75rem;
+    max-width: 100%;
+    contain: layout style;
+  }
+
+  .calendar--disabled {
+    opacity: var(--disabled-opacity, 0.72);
+  }
+
+  .calendar__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.5rem;
+    padding-inline: 0.125rem;
+    padding-bottom: 1rem;
+  }
+
+  .calendar__heading {
+    flex: 1;
+    text-align: center;
+    font-size: 0.875rem;
+    font-weight: 500;
+    line-height: 1.25rem;
+  }
+
+  .calendar__nav {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .calendar__nav-button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 1.5rem;
+    height: 1.5rem;
+    border: 0;
+    border-radius: 9999px;
+    background: transparent;
+    color: var(--color-accent);
+    cursor: var(--cursor-interactive, pointer);
+    transition:
+      transform 250ms var(--ease-out, ease),
+      background-color 100ms var(--ease-out, ease),
+      box-shadow 100ms var(--ease-out, ease),
+      opacity 150ms var(--ease-out, ease);
+  }
+
+  @media (hover: hover) {
+    .calendar__nav-button:hover:not(:disabled),
+    .calendar__nav-button[data-hovered="true"]:not(:disabled) {
+      background-color: var(--color-default, var(--color-base-200));
+      color: var(--color-accent);
+    }
+  }
+
+  .calendar__nav-button:active:not(:disabled),
+  .calendar__nav-button[data-pressed="true"]:not(:disabled) {
+    transform: scale(0.95);
+  }
+
+  .calendar__nav-button:focus-visible,
+  .calendar__nav-button[data-focus-visible="true"] {
+    outline: 2px solid var(--color-accent);
+    outline-offset: 2px;
+  }
+
+  .calendar__nav-button:disabled,
+  .calendar__nav-button[data-disabled="true"] {
+    cursor: not-allowed;
+    opacity: 0.45;
+  }
+
+  .calendar__nav-button-icon {
+    width: 1rem;
+    height: 1rem;
+    flex-shrink: 0;
+    pointer-events: none;
+  }
+
+  .calendar__grid {
+    display: grid;
+    grid-template-columns: repeat(7, minmax(0, 1fr));
+    width: 100%;
+  }
+
+  .calendar__grid-header,
+  .calendar__grid-body,
+  .calendar__grid-row {
+    display: contents;
+  }
+
+  .calendar__header-cell {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding-bottom: 0.5rem;
+    text-align: center;
+    font-size: 0.75rem;
+    font-weight: 500;
+    color: var(--color-muted, color-mix(in oklab, var(--color-base-content) 45%, transparent));
+  }
+
+  .calendar__day-wrapper {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 2rem;
+  }
+
+  .calendar__day-placeholder {
+    display: block;
+    width: 2rem;
+    height: 2rem;
+  }
+
+  .calendar__cell {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 2rem;
+    height: 2rem;
+    margin: 0 auto;
+    border: 0;
+    border-radius: 9999px;
+    background: transparent;
+    color: var(--color-base-content);
+    cursor: var(--cursor-interactive, pointer);
+    user-select: none;
+    outline: none;
+    transition:
+      transform 250ms var(--ease-out, ease),
+      background-color 120ms var(--ease-out, ease),
+      box-shadow 120ms var(--ease-out, ease),
+      color 120ms var(--ease-out, ease),
+      opacity 120ms var(--ease-out, ease);
+  }
+
+  .calendar__day {
+    font-size: 0.875rem;
+    font-weight: 500;
+    line-height: 1;
+    pointer-events: none;
+  }
+
+  .calendar__cell:focus-visible,
+  .calendar__cell--focused,
+  .calendar__cell[data-focus-visible="true"] {
+    outline: 2px solid var(--color-accent);
+    outline-offset: 2px;
+  }
+
+  .calendar__cell--today {
+    color: var(--color-accent);
+  }
+
+  .calendar__cell--selected {
+    background-color: var(--color-accent);
+    color: var(--color-accent-foreground);
+  }
+
+  .calendar__cell--selected .calendar__day {
+    color: inherit;
+  }
+
+  .calendar__cell:active:not(:disabled),
+  .calendar__cell[data-pressed="true"]:not(:disabled) {
+    transform: scale(0.95);
+  }
+
+  .calendar__cell:active:not(:disabled):not(.calendar__cell--selected),
+  .calendar__cell[data-pressed="true"]:not(:disabled):not(.calendar__cell--selected) {
+    background-color: var(--color-default, var(--color-base-200));
+  }
+
+  .calendar__cell:active.calendar__cell--selected:not(:disabled),
+  .calendar__cell[data-pressed="true"].calendar__cell--selected:not(:disabled) {
+    background-color: var(--color-accent-hover, color-mix(in oklab, var(--color-accent) 88%, black));
+  }
+
+  @media (hover: hover) {
+    .calendar__cell:hover:not(:disabled):not(.calendar__cell--selected),
+    .calendar__cell[data-hovered="true"]:not(:disabled):not(.calendar__cell--selected) {
+      background-color: var(--color-default, var(--color-base-200));
+    }
+  }
+
+  .calendar__cell--outside-month {
+    color: var(--color-muted, color-mix(in oklab, var(--color-base-content) 45%, transparent));
+    opacity: 0.5;
+  }
+
+  .calendar__cell--selected.calendar__cell--outside-month {
+    background-color: var(--color-default, var(--color-base-200));
+    color: var(--color-base-content);
+  }
+
+  .calendar__cell--unavailable {
+    cursor: not-allowed;
+    opacity: var(--disabled-opacity, 0.6);
+  }
+
+  .calendar__cell--disabled {
+    cursor: not-allowed;
+    opacity: var(--disabled-opacity, 0.6);
+    text-decoration: line-through;
+  }
+
+  .calendar__cell--disabled.calendar__cell--outside-month {
+    text-decoration: none;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .calendar__nav-button,
+    .calendar__cell {
+      transition: none;
+    }
+  }
+}
