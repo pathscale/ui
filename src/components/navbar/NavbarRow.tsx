@@ -29,15 +29,15 @@ const NavbarRow = (props: NavbarRowProps): JSX.Element => {
 
   const resolvedChildren = resolveChildren(() => local.children);
 
-  const colorKey = (): keyof typeof CLASSES.Row.color =>
+  const colorKey = (): keyof typeof CLASSES.row.color =>
     !local.color || local.color === "ghost" ? "ghost" : local.color;
 
   const classes = createMemo(() =>
     twMerge(
-      ...CLASSES.Row.base,
-      local.bordered === true && CLASSES.Row.flag.bordered,
-      local.padded !== false && CLASSES.Row.flag.padded,
-      CLASSES.Row.color[colorKey()],
+      CLASSES.row.base,
+      local.bordered === true && CLASSES.row.flag.bordered,
+      local.padded !== false && CLASSES.row.flag.padded,
+      CLASSES.row.color[colorKey()],
       local.class,
       local.className,
     ),

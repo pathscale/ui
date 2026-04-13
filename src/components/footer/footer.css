@@ -1,51 +1,51 @@
 @layer components {
-  .footer-title {
-      margin-bottom: calc(0.25rem * 2);
-      text-transform: uppercase;
-      opacity: 60%;
-      font-weight: 600;
-    }
+  .footer__title {
+    margin-bottom: calc(0.25rem * 2);
+    text-transform: uppercase;
+    opacity: 60%;
+    font-weight: 600;
+  }
 
   .footer {
-      display: grid;
-      width: 100%;
-      grid-auto-flow: row;
-      place-items: start;
-      column-gap: calc(0.25rem * 4);
-      row-gap: calc(0.25rem * 10);
-      font-size: 0.875rem;
-      line-height: 1.25rem;
-    }
+    display: grid;
+    width: 100%;
+    grid-auto-flow: row;
+    place-items: start;
+    column-gap: calc(0.25rem * 4);
+    row-gap: calc(0.25rem * 10);
+    font-size: 0.875rem;
+    line-height: 1.25rem;
+  }
 
   .footer > * {
-      display: grid;
-      place-items: start;
-      gap: calc(0.25rem * 2);
-    }
+    display: grid;
+    place-items: start;
+    gap: calc(0.25rem * 2);
+  }
 
-  .footer.footer-center {
-      grid-auto-flow: column dense;
-      place-items: center;
-      text-align: center;
-    }
+  .footer--center {
+    grid-auto-flow: column dense;
+    place-items: center;
+    text-align: center;
+  }
 
-  .footer.footer-center > * {
-      place-items: center;
-    }
+  .footer--center > * {
+    place-items: center;
+  }
 
-  .footer-horizontal {
-      grid-auto-flow: column;
-    }
+  .footer--horizontal {
+    grid-auto-flow: column;
+  }
 
-  .footer-horizontal.footer-center {
-      grid-auto-flow: row dense;
-    }
+  .footer--horizontal.footer--center {
+    grid-auto-flow: row dense;
+  }
 
-  .footer-vertical {
-      grid-auto-flow: row;
-    }
+  .footer--vertical {
+    grid-auto-flow: row;
+  }
 
-  .footer-vertical.footer-center {
-      grid-auto-flow: column dense;
-    }
+  .footer--vertical.footer--center {
+    grid-auto-flow: column dense;
+  }
 }

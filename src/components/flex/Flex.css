@@ -1,0 +1,5 @@
+@layer components {
+  .flex-layout {
+    display: flex;
+  }
+}

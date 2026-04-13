@@ -1,49 +1,38 @@
-// CSS class contract for the Navbar family.
-//
-// Compound shape: this single CLASSES const covers Navbar root + the four sub-components
-// (Section, Stack, Row) that live in sibling files. Each sub-component file imports CLASSES
-// and reads its own slot. This is the pattern for any compound component split across files.
-//
-// Slots used by this family:
-//   - `base`     : always rendered (string or string[])
-//   - `variant`  : enum prop value → class (used by Section's `section` prop)
-//   - `flag`     : boolean prop name → class (used by Stack and Row)
-//   - `color`    : enum prop value → class (used by Row's `color` prop, mapped from ComponentColor)
-
 export const CLASSES = {
-  Navbar: {
+  navbar: {
     base: "navbar",
   },
-  Section: {
+  section: {
+    base: "navbar__section",
     variant: {
-      start: "navbar-start",
-      center: "navbar-center",
-      end: "navbar-end",
+      start: "navbar__section--start",
+      center: "navbar__section--center",
+      end: "navbar__section--end",
     },
   },
-  Stack: {
-    base: "navbar-stack",
+  stack: {
+    base: "navbar__stack",
     flag: {
-      sticky: "sticky top-0 z-30",
-      container: "max-w-screen-xl mx-auto px-4",
+      sticky: "navbar__stack--sticky",
+      container: "navbar__stack--container",
     },
   },
-  Row: {
-    base: ["flex", "items-center"],
+  row: {
+    base: "navbar__row",
     flag: {
-      bordered: "border-b border-gray-200",
-      padded: "px-4 py-2",
+      bordered: "navbar__row--bordered",
+      padded: "navbar__row--padded",
     },
     color: {
-      ghost: "bg-base-100",
-      neutral: "bg-neutral text-neutral-content",
-      primary: "bg-primary text-primary-content",
-      secondary: "bg-secondary text-secondary-content",
-      accent: "bg-accent text-accent-content",
-      info: "bg-info text-info-content",
-      success: "bg-success text-success-content",
-      warning: "bg-warning text-warning-content",
-      error: "bg-error text-error-content",
+      ghost: "navbar__row--ghost",
+      neutral: "navbar__row--neutral",
+      primary: "navbar__row--primary",
+      secondary: "navbar__row--secondary",
+      accent: "navbar__row--accent",
+      info: "navbar__row--info",
+      success: "navbar__row--success",
+      warning: "navbar__row--warning",
+      error: "navbar__row--error",
     },
   },
 } as const;

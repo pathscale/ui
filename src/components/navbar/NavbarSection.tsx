@@ -20,7 +20,8 @@ const NavbarSection = (props: NavbarSectionProps): JSX.Element => {
 
   const classes = () =>
     twMerge(
-      CLASSES.Section.variant[local.section],
+      CLASSES.section.base,
+      CLASSES.section.variant[local.section],
       local.class,
       local.className,
     );

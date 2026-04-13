@@ -1,4 +1,4 @@
-import "./navbar.css";
+import "./Navbar.css";
 import { type JSX, splitProps } from "solid-js";
 import { Dynamic } from "solid-js/web";
 import { twMerge } from "tailwind-merge";
@@ -26,7 +26,7 @@ const Navbar = (props: NavbarProps): JSX.Element => {
   ]);
 
   const Tag = (local.as || "div") as keyof JSX.IntrinsicElements;
-  const classes = () => twMerge(CLASSES.Navbar.base, local.class, local.className);
+  const classes = () => twMerge(CLASSES.navbar.base, local.class, local.className);
 
   return (
     <Dynamic

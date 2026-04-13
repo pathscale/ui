@@ -1,3 +1,4 @@
+import "./Grid.css";
 import {
   splitProps,
   type JSX,
@@ -10,6 +11,7 @@ import type { IComponentBaseProps } from "../types";
 import clsx from "clsx";
 import type { ResponsiveProp } from "../types";
 import { mapResponsiveProp } from "../utils";
+import { CLASSES } from "./Grid.classes";
 
 type GridFlow = "row" | "col" | "row-dense" | "col-dense";
 type GridSize =
@@ -83,63 +85,6 @@ export type GridProps = IComponentBaseProps &
  * xl:auto-rows-min xl:auto-rows-max xl:auto-rows-fr
  */
 
-const colsMap = {
-  "1": "grid-cols-1",
-  "2": "grid-cols-2",
-  "3": "grid-cols-3",
-  "4": "grid-cols-4",
-  "5": "grid-cols-5",
-  "6": "grid-cols-6",
-  "7": "grid-cols-7",
-  "8": "grid-cols-8",
-  "9": "grid-cols-9",
-  "10": "grid-cols-10",
-  "11": "grid-cols-11",
-  "12": "grid-cols-12",
-} as const;
-
-const rowsMap = {
-  "1": "grid-rows-1",
-  "2": "grid-rows-2",
-  "3": "grid-rows-3",
-  "4": "grid-rows-4",
-  "5": "grid-rows-5",
-  "6": "grid-rows-6",
-  "7": "grid-rows-7",
-  "8": "grid-rows-8",
-  "9": "grid-rows-9",
-  "10": "grid-rows-10",
-  "11": "grid-rows-11",
-  "12": "grid-rows-12",
-} as const;
-
-const flowMap = {
-  row: "grid-flow-row",
-  col: "grid-flow-col",
-  "row-dense": "grid-flow-row-dense",
-  "col-dense": "grid-flow-col-dense",
-} as const;
-
-const gapMap = {
-  none: "gap-0",
-  sm: "gap-2",
-  md: "gap-4",
-  lg: "gap-6",
-  xl: "gap-8",
-} as const;
-
-const autoColsMap = {
-  min: "auto-cols-min",
-  max: "auto-cols-max",
-  fr: "auto-cols-fr",
-} as const;
-
-const autoRowsMap = {
-  min: "auto-rows-min",
-  max: "auto-rows-max",
-  fr: "auto-rows-fr",
-} as const;
-
 const Grid = (props: GridProps) => {
   const merged = mergeProps({ as: "div" }, props);
   const [local, rest] = splitProps(merged, [
@@ -158,13 +103,13 @@ const Grid = (props: GridProps) => {
   const resolvedChildren = resolveChildren(() => local.children);
 
   const classes = clsx(
-    "grid",
-    mapResponsiveProp(local.cols, colsMap),
-    mapResponsiveProp(local.rows, rowsMap),
-    mapResponsiveProp(local.flow, flowMap),
-    mapResponsiveProp(local.gap, gapMap),
-    mapResponsiveProp(local.autoCols, autoColsMap),
-    mapResponsiveProp(local.autoRows, autoRowsMap),
+    CLASSES.base,
+    mapResponsiveProp(local.cols, CLASSES.cols),
+    mapResponsiveProp(local.rows, CLASSES.rows),
+    mapResponsiveProp(local.flow, CLASSES.flow),
+    mapResponsiveProp(local.gap, CLASSES.gap),
+    mapResponsiveProp(local.autoCols, CLASSES.autoCols),
+    mapResponsiveProp(local.autoRows, CLASSES.autoRows),
     local.class,
     local.className,
   );

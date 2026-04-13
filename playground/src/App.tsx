@@ -27,6 +27,7 @@ import {
   Loading,
   Menu,
   Modal,
+  Navbar,
   NumberField,
   Progress,
   SearchField,
@@ -42,7 +43,10 @@ import {
   ComboBox,
   CloseButton,
   Drawer,
+  Footer,
+  Flex,
   FloatingDock,
+  Grid,
   Dropdown,
   Description,
   Header,
@@ -3997,6 +4001,80 @@ export default function App() {
               </Accordion>
               <p class="text-xs opacity-70">Open item: {controlledAccordionValue()[0] ?? "none"}</p>
             </div>
+          </div>
+        </section>
+
+        <section class="space-y-4 rounded-xl border border-base-300 bg-base-200 p-4">
+          <div>
+            <h2 class="text-sm font-semibold">Layout Primitives</h2>
+            <p class="text-xs opacity-70">
+              Flex, Grid, Navbar, and Footer examples using the refactored component styling system.
+            </p>
+          </div>
+
+          <div class="space-y-3">
+            <h3 class="text-xs font-semibold uppercase opacity-70">Flex</h3>
+            <Flex direction={{ base: "col", md: "row" }} gap="md" justify="between" align="center">
+              <div class="rounded-lg border border-base-300 bg-base-100 px-3 py-2 text-sm">Item A</div>
+              <div class="rounded-lg border border-base-300 bg-base-100 px-3 py-2 text-sm">Item B</div>
+              <div class="rounded-lg border border-base-300 bg-base-100 px-3 py-2 text-sm">Item C</div>
+            </Flex>
+          </div>
+
+          <div class="space-y-3">
+            <h3 class="text-xs font-semibold uppercase opacity-70">Grid</h3>
+            <Grid cols={{ base: "1", sm: "2", lg: "4" }} gap="md">
+              <For each={["One", "Two", "Three", "Four"]}>
+                {(item) => (
+                  <div class="rounded-lg border border-base-300 bg-base-100 px-3 py-4 text-center text-sm">
+                    {item}
+                  </div>
+                )}
+              </For>
+            </Grid>
+          </div>
+
+          <div class="space-y-3">
+            <h3 class="text-xs font-semibold uppercase opacity-70">Navbar</h3>
+            <Navbar.Stack class="rounded-lg border border-base-300 overflow-hidden">
+              <Navbar.Row color="ghost" bordered>
+                <Navbar>
+                  <Navbar.Start>
+                    <Text class="font-semibold">Pathscale UI</Text>
+                  </Navbar.Start>
+                  <Navbar.Center>
+                    <Kbd>Ctrl + K</Kbd>
+                  </Navbar.Center>
+                  <Navbar.End>
+                    <ButtonGroup size="sm">
+                      <Button variant="ghost">Docs</Button>
+                      <Button variant="primary">Sign in</Button>
+                    </ButtonGroup>
+                  </Navbar.End>
+                </Navbar>
+              </Navbar.Row>
+            </Navbar.Stack>
+          </div>
+
+          <div class="space-y-3">
+            <h3 class="text-xs font-semibold uppercase opacity-70">Footer</h3>
+            <Footer horizontal class="rounded-lg border border-base-300 bg-base-100 p-4">
+              <div>
+                <Footer.Title>Product</Footer.Title>
+                <a href="#" class="text-sm text-base-content/80 underline-offset-4 hover:underline">Features</a>
+                <a href="#" class="text-sm text-base-content/80 underline-offset-4 hover:underline">Pricing</a>
+              </div>
+              <div>
+                <Footer.Title>Company</Footer.Title>
+                <a href="#" class="text-sm text-base-content/80 underline-offset-4 hover:underline">About</a>
+                <a href="#" class="text-sm text-base-content/80 underline-offset-4 hover:underline">Contact</a>
+              </div>
+              <div>
+                <Footer.Title>Legal</Footer.Title>
+                <a href="#" class="text-sm text-base-content/80 underline-offset-4 hover:underline">Terms</a>
+                <a href="#" class="text-sm text-base-content/80 underline-offset-4 hover:underline">Privacy</a>
+              </div>
+            </Footer>
           </div>
         </section>
 

@@ -1,6 +1,7 @@
 import type { IComponentBaseProps } from "../types";
 import { type ParentComponent, splitProps } from "solid-js";
 import { twMerge } from "tailwind-merge";
+import { CLASSES } from "./Footer.classes";
 
 export type FooterTitleProps = IComponentBaseProps;
 
@@ -12,7 +13,7 @@ export const FooterTitle: ParentComponent<FooterTitleProps> = (props) => {
     "dataTheme",
   ]);
 
-  const classes = () => twMerge("footer-title", local.class, local.className);
+  const classes = () => twMerge(CLASSES.title, local.class, local.className);
   return (
     <h6
       {...others}

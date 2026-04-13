@@ -31,9 +31,9 @@ const NavbarStack = (props: NavbarStackProps): JSX.Element => {
 
   const classes = createMemo(() =>
     twMerge(
-      CLASSES.Stack.base,
-      local.sticky && CLASSES.Stack.flag.sticky,
-      local.container && CLASSES.Stack.flag.container,
+      CLASSES.stack.base,
+      local.sticky && CLASSES.stack.flag.sticky,
+      local.container && CLASSES.stack.flag.container,
       local.class,
       local.className,
     ),

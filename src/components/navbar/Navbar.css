@@ -1,0 +1,110 @@
+@layer components {
+  .navbar {
+    position: relative;
+    display: flex;
+    width: 100%;
+    min-height: 4rem;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem;
+  }
+
+  .navbar__section {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .navbar__section--start {
+    width: 50%;
+    justify-content: flex-start;
+  }
+
+  .navbar__section--center {
+    flex-shrink: 0;
+    justify-content: center;
+  }
+
+  .navbar__section--end {
+    width: 50%;
+    justify-content: flex-end;
+  }
+
+  .navbar__stack {
+    display: flex;
+    width: 100%;
+    flex-direction: column;
+  }
+
+  .navbar__stack--sticky {
+    position: sticky;
+    top: 0;
+    z-index: 30;
+  }
+
+  .navbar__stack--container {
+    width: 100%;
+    max-width: 80rem;
+    margin-inline: auto;
+    padding-inline: 1rem;
+  }
+
+  .navbar__row {
+    display: flex;
+    width: 100%;
+    align-items: center;
+  }
+
+  .navbar__row--bordered {
+    border-bottom: 1px solid color-mix(in oklab, var(--color-base-content) 16%, transparent);
+  }
+
+  .navbar__row--padded {
+    padding: 0.5rem 1rem;
+  }
+
+  .navbar__row--ghost {
+    background-color: var(--color-base-100);
+    color: var(--color-base-content);
+  }
+
+  .navbar__row--neutral {
+    background-color: var(--color-neutral);
+    color: var(--color-neutral-content);
+  }
+
+  .navbar__row--primary {
+    background-color: var(--color-primary);
+    color: var(--color-primary-content);
+  }
+
+  .navbar__row--secondary {
+    background-color: var(--color-secondary);
+    color: var(--color-secondary-content);
+  }
+
+  .navbar__row--accent {
+    background-color: var(--color-accent);
+    color: var(--color-accent-content);
+  }
+
+  .navbar__row--info {
+    background-color: var(--color-info);
+    color: var(--color-info-content);
+  }
+
+  .navbar__row--success {
+    background-color: var(--color-success);
+    color: var(--color-success-foreground);
+  }
+
+  .navbar__row--warning {
+    background-color: var(--color-warning);
+    color: var(--color-warning-foreground);
+  }
+
+  .navbar__row--error {
+    background-color: var(--color-error);
+    color: var(--color-error-foreground);
+  }
+}

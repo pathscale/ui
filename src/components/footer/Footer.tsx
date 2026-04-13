@@ -1,9 +1,9 @@
 import "./footer.css";
 import { type ParentComponent, splitProps } from "solid-js";
 import { twMerge } from "tailwind-merge";
-import clsx from "clsx";
 import type { IComponentBaseProps } from "../types";
 import { FooterTitle } from "./FooterTitle";
+import { CLASSES } from "./Footer.classes";
 
 export type FooterProps = IComponentBaseProps & {
   center?: boolean;
@@ -24,14 +24,12 @@ const Footer: ParentComponent<FooterProps> = (props) => {
 
   const classes = () =>
     twMerge(
-      "footer",
+      CLASSES.base,
+      local.center && CLASSES.flag.center,
+      local.horizontal && CLASSES.flag.horizontal,
+      local.vertical && CLASSES.flag.vertical,
       local.class,
       local.className,
-      clsx({
-        "footer-center": local.center,
-        "footer-horizontal": local.horizontal,
-        "footer-vertical": local.vertical,
-      }),
     );
 
   return (
