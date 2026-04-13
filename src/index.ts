@@ -48,7 +48,6 @@ export type {
   AvatarImageProps,
   AvatarFallbackProps,
 } from "./components/avatar";
-export { default as Background } from "./components/background";
 export { default as Badge } from "./components/badge";
 export {
   Breadcrumbs,
@@ -59,12 +58,7 @@ export type {
   BreadcrumbsRootProps,
   BreadcrumbsItemProps,
 } from "./components/breadcrumbs";
-export {
-  default as BrowserMockup,
-  type BrowserMockupProps,
-} from "./components/browsermockup";
-export { default as BottomSheet } from "./components/bottom-sheet/BottomSheet";
-export type { BottomSheetProps } from "./components/bottom-sheet/BottomSheet";
+
 export { default as Button } from "./components/button";
 export {
   default as ButtonGroup,
@@ -94,8 +88,7 @@ export type {
   CardBodyProps,
   CardFooterProps,
 } from "./components/card";
-export { default as Carousel } from "./components/carousel";
-export type { CarouselItemProps, CarouselProps } from "./components/carousel";
+
 export { default as ChatBubble } from "./components/chatbubble";
 export { default as Checkbox } from "./components/checkbox";
 export { default as CheckboxGroup } from "./components/checkbox-group";
@@ -167,59 +160,9 @@ export type {
   ColorPickerSliderProps,
   ColorPickerFieldProps,
 } from "./components/color-picker";
-export { default as LegacyColorPicker } from "./components/colorpicker";
-export {
-  AlphaSlider,
-  ColorInput,
-  ColorPickerContext,
-  ColorPickerFlowerSelector,
-  ColorPickerGradientSelector,
-  ColorPickerWheelSelector,
-  ColorPreview,
-  ColorSwatches,
-  ColorWheel,
-  ColorWheelFlower,
-  HueSlider,
-  LightnessSlider,
-  SaturationBrightness,
-  useColorPickerContext,
-} from "./components/colorpicker";
-export type {
-  AlphaSliderProps,
-  ColorFormat,
-  ColorInputProps,
-  ColorPickerContextType,
-  ColorPickerMode as LegacyColorPickerMode,
-  ColorPickerProps as LegacyColorPickerProps,
-  ColorPreviewProps,
-  ColorSwatchesProps,
-  ColorValue,
-  ColorWheelFlowerProps,
-  ColorWheelProps,
-  HueSliderProps,
-  LightnessSliderProps,
-  SaturationBrightnessProps,
-} from "./components/colorpicker";
-export { CodeMockup, CodeMockupLine } from "./components/codemockup";
-export {
-  Collapse,
-  CollapseContent,
-  CollapseDetails,
-  CollapseTitle,
-  Summary,
-} from "./components/collapse";
-export {
-  ConfirmDialog,
-  type ConfirmDialogProps,
-} from "./components/confirm-dialog";
-export { default as ConnectionStatus } from "./components/connectionstatus";
-export type {
-  ConnectionState,
-  ConnectionStatusProps,
-} from "./components/connectionstatus";
-export { default as CopyButton } from "./components/copy-button";
-export { default as Countdown } from "./components/countdown";
-export { default as Diff } from "./components/diff";
+export { ColorWheelFlower } from "./components/color-wheel-flower";
+export type { ColorWheelFlowerProps } from "./components/color-wheel-flower";
+
 export {
   default as Description,
   DescriptionRoot,
@@ -260,8 +203,6 @@ export {
   type DateRangePickerProps,
   type DateRangeValue,
 } from "./components/date-range-picker";
-export { default as Divider } from "./components/divider";
-export { default as Dock } from "./components/dock";
 export {
   default as Drawer,
   DrawerRoot,
@@ -293,11 +234,6 @@ export type {
   DrawerCloseTriggerProps,
 } from "./components/drawer";
 export { default as Dropdown } from "./components/dropdown";
-export {
-  DropdownSelect,
-  type DropdownSelectProps,
-  type DropdownSelectOption,
-} from "./components/dropdown-select";
 export { EmptyState, type EmptyStateProps } from "./components/empty-state";
 export {
   default as ErrorMessage,
@@ -316,7 +252,6 @@ export type {
   FieldErrorRootProps,
   FieldErrorRenderProps,
 } from "./components/field-error";
-export { default as FileInput } from "./components/fileinput";
 export { default as FloatingDock } from "./components/floating-dock";
 export type {
   FloatingDockProps,
@@ -329,7 +264,6 @@ export { GlowCard, type GlowCardProps } from "./components/glow-card";
 export type { GlassPanelProps, GlassPanelBlur } from "./components/glass-panel";
 export { default as Footer } from "./components/footer";
 export type { FooterProps, FooterTitleProps } from "./components/footer";
-export { FormActions, type FormActionsProps } from "./components/form-actions";
 export {
   default as Fieldset,
   FieldsetRoot,
@@ -366,14 +300,8 @@ export type {
   UseFieldPropsResult,
 } from "./hooks/form";
 export { default as Grid } from "./components/grid";
-export { default as Hero } from "./components/hero";
 export { default as Header, HeaderRoot } from "./components/header";
 export type { HeaderProps, HeaderRootProps } from "./components/header";
-export type {
-  HeroContentProps,
-  HeroOverlayProps,
-  HeroProps,
-} from "./components/hero";
 export { default as Icon } from "./components/icon";
 export {
   default as ImmersiveLanding,
@@ -400,7 +328,6 @@ export type {
   FirefoxPWABannerProps,
   FirefoxPWABannerTexts,
 } from "./components/immersive-landing";
-export { default as Indicator } from "./components/indicator";
 export { default as Input } from "./components/input";
 export {
   default as InputGroup,
@@ -509,7 +436,6 @@ export type {
   I18nProviderProps,
   Language,
 } from "./components/language-switcher";
-export { default as Mask } from "./components/mask";
 export {
   default as Menu,
   MenuRoot,
@@ -591,10 +517,6 @@ export type { NoiseBackgroundProps } from "./components/noise-background";
 export { default as Pagination } from "./components/pagination";
 export type { PaginationProps } from "./components/pagination";
 export {
-  default as PhoneMockup,
-  type PhoneMockupProps,
-} from "./components/phonemockup";
-export {
   default as Progress,
   ProgressRoot,
   ProgressOutput,
@@ -609,7 +531,6 @@ export type {
   ProgressTrackProps,
   ProgressFillProps,
 } from "./components/progress";
-export { PropsTable } from "./components/props-table";
 export { default as RadialProgress } from "./components/radialprogress";
 export { default as Radio } from "./components/radio";
 export {
@@ -618,14 +539,7 @@ export {
   type RadioGroupOrientation,
   type RadioGroupVariant,
 } from "./components/radio-group";
-export { default as Range } from "./components/range";
-export { SliderField, type SliderFieldProps } from "./components/range-slider";
-export { Rating } from "./components/rating";
-export type {
-  RatingHiddenProps,
-  RatingItemProps,
-  RatingProps,
-} from "./components/rating";
+
 export { default as Select } from "./components/select";
 export {
   default as SearchField,
@@ -651,8 +565,8 @@ export type {
   SeparatorOrientation,
   SeparatorVariant,
 } from "./components/separator";
-export { ShowcaseSection } from "./components/showcase-section";
-export { default as ShowcaseBlock } from "./components/showcase/ShowcaseBlock";
+export { default as Slider } from "./components/slider";
+export type { SliderProps, SliderSize } from "./components/slider";
 export {
   Sidenav,
   SidenavMenu,
@@ -662,32 +576,20 @@ export {
   SidenavButton,
 } from "./components/sidenav";
 export { default as Skeleton } from "./components/skeleton";
-export { SkipLink, type SkipLinkProps } from "./components/skip-link";
 export { default as Surface } from "./components/surface";
 export type {
   SurfaceVariant,
   SurfaceVariants,
   SurfaceProps,
 } from "./components/surface";
-export { default as Stack } from "./components/stack";
-export { default as StatCard } from "./components/stat-card";
-export { default as Stats } from "./components/stats";
-export { Status } from "./components/status";
-export type { StatusProps } from "./components/status";
-export { default as Steps } from "./components/steps";
-export {
-  SvgBackground,
-  type SvgBackgroundProps,
-} from "./components/svgbackground";
-export { default as Swap } from "./components/swap";
-export { default as Table, EnhancedTable } from "./components/table";
+
+export { default as Table } from "./components/table";
 export type {
   TableProps,
   TableSortDirection,
   TableSortDescriptor,
   TableColumnRenderProps,
 } from "./components/table";
-export type { EnhancedTableProps } from "./components/table/EnhancedTable";
 export {
   useTableModel,
   useTableSorting,
@@ -735,14 +637,7 @@ export type {
   TagGroupListProps,
   TagSelectionMode,
 } from "./components/tag-group";
-export { StreamingTable } from "./components/streaming-table";
-export type { StreamingTableProps } from "./components/streaming-table";
-export type {
-  StreamingColumnDef,
-  StreamingConfig,
-} from "./components/streaming-table";
-export { createStreamingTableStore } from "./components/streaming-table";
-export type { StreamingTableStore } from "./components/streaming-table";
+
 export { default as Tabs } from "./components/tabs";
 export type {
   TabsRootProps,
@@ -823,13 +718,6 @@ export type {
   HueShiftStore,
 } from "./components/theme-color-picker";
 export {
-  Timeline,
-  TimelineEnd,
-  TimelineItem,
-  TimelineMiddle,
-  TimelineStart,
-} from "./components/timeline";
-export {
   default as Toast,
   ToastRoot,
   ToastProvider,
@@ -870,7 +758,6 @@ export type {
   ToastFunction,
 } from "./components/toast";
 export { default as Toggle } from "./components/toggle";
-export { SwitchField, type SwitchFieldProps } from "./components/switch-field";
 export {
   default as Tooltip,
   TooltipRoot,
@@ -889,10 +776,6 @@ export {
   VideoPreview,
   type VideoPreviewProps,
 } from "./components/video-preview";
-export {
-  default as WindowMockup,
-  type WindowMockupProps,
-} from "./components/windowmockup";
 
 // Motion
 export * from "./motion";
@@ -916,5 +799,3 @@ export type {
   UseStreamingSubscriptionOptions,
   UseStreamingSubscriptionResult,
 } from "./primitives/streaming";
-
-export { default } from "./components/connectionstatus";

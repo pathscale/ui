@@ -1,9 +1,9 @@
 import { type Component, type JSX, Show, For, createSignal, createMemo, createEffect, onCleanup, splitProps } from "solid-js";
 import { twMerge } from "tailwind-merge";
 import { clsx } from "clsx";
-import type { ColorValue, ColorPickerContextType, ColorFormat } from "../colorpicker";
-import { ColorPickerContext, ColorWheelFlower } from "../colorpicker";
-import { createColorFromHsl, parseColor } from "../colorpicker/ColorUtils";
+import type { ColorValue, ColorPickerContextType, ColorFormat } from "../color-wheel-flower";
+import { ColorPickerContext, ColorWheelFlower } from "../color-wheel-flower";
+import { createColorFromHsl, parseColor } from "../color-wheel-flower/ColorUtils";
 import Button from "../button";
 import Icon from "../icon";
 import type { IComponentBaseProps } from "../types";

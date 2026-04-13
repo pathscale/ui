@@ -14,7 +14,7 @@ import { twMerge } from "tailwind-merge";
 import ColorArea, { type ColorAreaProps, type ColorAreaValue } from "../color-area";
 import ColorField, { type ColorFieldProps } from "../color-field";
 import ColorSlider, { type ColorSliderProps, type ColorSliderType } from "../color-slider";
-import { formatColor, parseColor, rgbToHex } from "../colorpicker/ColorUtils";
+import { formatColor, parseColor, rgbToHex } from "../color-wheel-flower/ColorUtils";
 import type { IComponentBaseProps } from "../types";
 
 const DEFAULT_COLOR = "#3B82F6";

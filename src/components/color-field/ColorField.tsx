@@ -1,7 +1,7 @@
 import "./ColorField.css";
 import { createEffect, createSignal, splitProps, type Component, type JSX } from "solid-js";
 import { twMerge } from "tailwind-merge";
-import { formatColor, parseColor, type ColorFormat } from "../colorpicker/ColorUtils";
+import { formatColor, parseColor, type ColorFormat } from "../color-wheel-flower/ColorUtils";
 import type { IComponentBaseProps } from "../types";
 
 const FALLBACK_COLOR = "#FFFFFF";

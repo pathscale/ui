@@ -39,8 +39,6 @@ export type {
   TableColumnRenderProps,
 } from "./Table";
 
-export { default as EnhancedTable } from "./EnhancedTable";
-export type { EnhancedTableProps } from "./EnhancedTable";
 export {
   useTableModel,
   useTableSorting,

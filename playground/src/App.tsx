@@ -58,7 +58,7 @@ import {
   RadioGroup,
   Select,
   Separator,
-  SliderField,
+  Slider,
   Tag,
   TagGroup,
   Tabs,
@@ -2925,7 +2925,7 @@ export default function App() {
               <h3 class="text-xs font-semibold uppercase opacity-70">
                 Default
               </h3>
-              <SliderField
+              <Slider
                 label="Volume"
                 value={sliderVal()}
                 onChange={setSliderVal}
@@ -2936,7 +2936,7 @@ export default function App() {
               <h3 class="text-xs font-semibold uppercase opacity-70">
                 Custom Format
               </h3>
-              <SliderField
+              <Slider
                 label="Price"
                 value={sliderVal()}
                 onChange={setSliderVal}
@@ -2951,7 +2951,7 @@ export default function App() {
           <div class="grid gap-6 md:grid-cols-3">
             <div class="space-y-3">
               <h3 class="text-xs font-semibold uppercase opacity-70">Small</h3>
-              <SliderField
+              <Slider
                 label="Brightness"
                 value={sliderSm()}
                 onChange={setSliderSm}
@@ -2961,7 +2961,7 @@ export default function App() {
 
             <div class="space-y-3">
               <h3 class="text-xs font-semibold uppercase opacity-70">Medium</h3>
-              <SliderField
+              <Slider
                 label="Contrast"
                 value={sliderVal()}
                 onChange={setSliderVal}
@@ -2971,7 +2971,7 @@ export default function App() {
 
             <div class="space-y-3">
               <h3 class="text-xs font-semibold uppercase opacity-70">Large</h3>
-              <SliderField
+              <Slider
                 label="Saturation"
                 value={sliderLg()}
                 onChange={setSliderLg}
@@ -2982,7 +2982,7 @@ export default function App() {
 
           <div class="space-y-3">
             <h3 class="text-xs font-semibold uppercase opacity-70">Disabled</h3>
-            <SliderField
+            <Slider
               label="Locked"
               value={60}
               onChange={() => {}}
