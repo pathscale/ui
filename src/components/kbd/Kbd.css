@@ -1,0 +1,60 @@
+@layer components {
+  .kbd {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.125rem;
+    min-width: 1.5rem;
+    height: 1.5rem;
+    padding-inline: 0.5rem;
+    border-radius: 0.5rem;
+    text-align: center;
+    vertical-align: middle;
+    white-space: nowrap;
+    font-family: var(
+      --font-sans,
+      ui-sans-serif,
+      system-ui,
+      -apple-system,
+      "Segoe UI",
+      sans-serif
+    );
+    font-size: 0.875rem;
+    font-weight: 500;
+    line-height: 1;
+    word-spacing: -0.25rem;
+  }
+
+  .kbd--default {
+    background-color: var(--color-default, var(--color-base-200));
+    color: var(
+      --color-muted,
+      color-mix(in oklab, var(--color-base-content) 72%, transparent)
+    );
+    border: 1px solid
+      color-mix(in oklab, var(--color-base-content) 16%, transparent);
+  }
+
+  .kbd--light {
+    background-color: transparent;
+    color: var(
+      --color-muted,
+      color-mix(in oklab, var(--color-base-content) 72%, transparent)
+    );
+    border: 1px solid transparent;
+  }
+
+  .kbd__abbr {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none;
+    font-style: normal;
+  }
+
+  .kbd__content {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+  }
+}

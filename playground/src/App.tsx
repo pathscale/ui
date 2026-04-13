@@ -49,6 +49,7 @@ import {
   Input,
   InputGroup,
   InputOTP,
+  Kbd,
   Label,
   Pagination,
   Radio,
@@ -1172,6 +1173,57 @@ export default function App() {
                 isDateUnavailable={(date) => date.getDay() === 0 || date.getDay() === 6}
               />
               <Description>Weekends are unavailable.</Description>
+            </div>
+          </div>
+        </section>
+
+        <section class="space-y-4 rounded-xl border border-base-300 bg-base-200 p-4">
+          <div>
+            <h2 class="text-sm font-semibold">Kbd</h2>
+            <p class="text-xs opacity-70">
+              Keyboard hints with HeroUI-style root, abbreviation, and content slots.
+            </p>
+          </div>
+
+          <div class="grid gap-4 lg:grid-cols-2">
+            <div class="space-y-2 rounded-xl border border-base-300 bg-base-100 p-3">
+              <h3 class="text-xs font-semibold uppercase tracking-wide opacity-70">Single Key</h3>
+              <Kbd>
+                <Kbd.Abbr keyValue="command" />
+              </Kbd>
+            </div>
+
+            <div class="space-y-2 rounded-xl border border-base-300 bg-base-100 p-3">
+              <h3 class="text-xs font-semibold uppercase tracking-wide opacity-70">Multiple Keys</h3>
+              <Kbd>
+                <Kbd.Abbr keyValue="command" />
+                <Kbd.Abbr keyValue="shift" />
+                <Kbd.Content>K</Kbd.Content>
+              </Kbd>
+            </div>
+
+            <div class="space-y-2 rounded-xl border border-base-300 bg-base-100 p-3">
+              <h3 class="text-xs font-semibold uppercase tracking-wide opacity-70">Light Variant</h3>
+              <Kbd variant="light">
+                <Kbd.Abbr keyValue="ctrl" />
+                <Kbd.Content>P</Kbd.Content>
+              </Kbd>
+            </div>
+
+            <div class="space-y-2 rounded-xl border border-base-300 bg-base-100 p-3">
+              <h3 class="text-xs font-semibold uppercase tracking-wide opacity-70">Inline Usage</h3>
+              <p class="text-sm">
+                Press{" "}
+                <Kbd>
+                  <Kbd.Content>Esc</Kbd.Content>
+                </Kbd>{" "}
+                to close the dialog, or use{" "}
+                <Kbd>
+                  <Kbd.Abbr keyValue="command" />
+                  <Kbd.Content>K</Kbd.Content>
+                </Kbd>{" "}
+                to open quick search.
+              </p>
             </div>
           </div>
         </section>

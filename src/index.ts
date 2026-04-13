@@ -318,7 +318,22 @@ export type {
   InputOTPVariant,
 } from "./components/input-otp";
 export { default as Join } from "./components/join";
-export { default as Kbd } from "./components/kbd";
+export {
+  default as Kbd,
+  KbdRoot,
+  KbdAbbr,
+  KbdContent,
+  kbdKeysMap,
+  kbdKeysLabelMap,
+} from "./components/kbd";
+export type {
+  KbdProps,
+  KbdRootProps,
+  KbdAbbrProps,
+  KbdContentProps,
+  KbdVariant,
+  KbdKey,
+} from "./components/kbd";
 export { default as Label, LabelRoot } from "./components/label";
 export type { LabelProps, LabelRootProps } from "./components/label";
 export { default as Link } from "./components/link";
