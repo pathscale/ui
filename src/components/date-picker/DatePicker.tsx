@@ -1,56 +1,21 @@
 import "./DatePicker.css";
-import {
-  Show,
-  createEffect,
-  createMemo,
-  createSignal,
-  createUniqueId,
-  onCleanup,
-  onMount,
-  splitProps,
-  type JSX,
-} from "solid-js";
+import { Show, createMemo, createUniqueId, splitProps, type JSX } from "solid-js";
 import { twMerge } from "tailwind-merge";
 
+import {
+  formatDate,
+  toISODate,
+  useDateSelection,
+  usePickerOpenState,
+} from "../../hooks/date";
 import Calendar, { type CalendarWeekdayFormat } from "../calendar";
 import type { IComponentBaseProps } from "../types";
 import { CLASSES } from "./DatePicker.classes";
 
-const ISO_DATE_PATTERN = /^(\d{4})-(\d{2})-(\d{2})$/;
-
-const createDate = (year: number, monthIndex: number, day: number) =>
-  new Date(year, monthIndex, day, 12, 0, 0, 0);
-
-const parseISODate = (value: string | undefined): Date | null => {
-  if (!value) return null;
-
-  const match = ISO_DATE_PATTERN.exec(value);
-  if (!match) return null;
-
-  const year = Number(match[1]);
-  const month = Number(match[2]);
-  const day = Number(match[3]);
-
-  if (!Number.isFinite(year) || !Number.isFinite(month) || !Number.isFinite(day)) {
-    return null;
-  }
-
-  const parsed = createDate(year, month - 1, day);
-  if (
-    parsed.getFullYear() !== year ||
-    parsed.getMonth() !== month - 1 ||
-    parsed.getDate() !== day
-  ) {
-    return null;
-  }
-
-  return parsed;
-};
-
 type DatePickerBaseProps = {
-  value?: string;
-  defaultValue?: string;
-  onChange?: (value: string) => void;
+  value?: Date;
+  defaultValue?: Date;
+  onChange?: (value: Date) => void;
   isOpen?: boolean;
   defaultOpen?: boolean;
   onOpenChange?: (isOpen: boolean) => void;
@@ -58,8 +23,8 @@ type DatePickerBaseProps = {
   placeholder?: string;
   locale?: string;
   weekdayFormat?: CalendarWeekdayFormat;
-  minValue?: string;
-  maxValue?: string;
+  minValue?: Date;
+  maxValue?: Date;
   isDateUnavailable?: (date: Date) => boolean;
   isDisabled?: boolean;
   disabled?: boolean;
@@ -96,116 +61,68 @@ const DatePicker = (props: DatePickerProps): JSX.Element => {
     "disabled",
   ]);
 
-  const [internalValue, setInternalValue] = createSignal(local.defaultValue ?? "");
-  const [internalOpen, setInternalOpen] = createSignal(Boolean(local.defaultOpen));
-
-  const isOpenControlled = createMemo(() => local.isOpen !== undefined);
-  const isValueControlled = createMemo(() => local.value !== undefined);
-  const value = createMemo(() =>
-    isValueControlled() ? local.value ?? "" : internalValue(),
-  );
-  const isOpen = createMemo(() =>
-    isOpenControlled() ? Boolean(local.isOpen) : internalOpen(),
-  );
   const isDisabled = createMemo(() => Boolean(local.isDisabled) || Boolean(local.disabled));
-  const formatter = createMemo(
-    () =>
-      new Intl.DateTimeFormat(local.locale ?? "en-US", {
-        day: "numeric",
-        month: "short",
-        year: "numeric",
-      }),
-  );
+
+  const selection = useDateSelection({
+    value: () => local.value,
+    defaultValue: () => local.defaultValue,
+    onChange: () => local.onChange,
+  });
+
+  const openState = usePickerOpenState({
+    isOpen: () => local.isOpen,
+    defaultOpen: () => local.defaultOpen,
+    onOpenChange: () => local.onOpenChange,
+    isDisabled,
+  });
+
+  const locale = createMemo(() => local.locale ?? "en-US");
+
   const displayValue = createMemo(() => {
-    const parsed = parseISODate(value());
-    if (!parsed) return local.placeholder ?? "Select date";
+    const selectedDate = selection.selectedDate();
+    if (!selectedDate) return local.placeholder ?? "Select date";
 
-    return formatter().format(parsed);
-  });
-
-  const setOpen = (nextOpen: boolean) => {
-    if (nextOpen && isDisabled()) return;
-
-    const previous = isOpen();
-    if (!isOpenControlled()) {
-      setInternalOpen(nextOpen);
-    }
-
-    if (previous !== nextOpen) {
-      local.onOpenChange?.(nextOpen);
-    }
-  };
-
-  const handleValueChange = (nextValue: string) => {
-    if (!isValueControlled()) {
-      setInternalValue(nextValue);
-    }
-
-    local.onChange?.(nextValue);
-    setOpen(false);
-  };
-
-  let rootRef: HTMLDivElement | undefined;
-
-  onMount(() => {
-    const handlePointerDown = (event: PointerEvent) => {
-      if (!isOpen()) return;
-      if (!rootRef) return;
-      if (rootRef.contains(event.target as Node)) return;
-      setOpen(false);
-    };
-
-    const handleGlobalKeyDown = (event: KeyboardEvent) => {
-      if (!isOpen()) return;
-      if (event.key !== "Escape") return;
-      event.preventDefault();
-      setOpen(false);
-    };
-
-    document.addEventListener("pointerdown", handlePointerDown);
-    document.addEventListener("keydown", handleGlobalKeyDown);
-
-    onCleanup(() => {
-      document.removeEventListener("pointerdown", handlePointerDown);
-      document.removeEventListener("keydown", handleGlobalKeyDown);
-    });
-  });
-
-  createEffect(() => {
-    if (!isDisabled()) return;
-    if (isOpen()) {
-      setOpen(false);
-    }
+    return formatDate(selectedDate, locale());
   });
 
   const uniqueId = createUniqueId();
   const popoverId = `date-picker-popover-${uniqueId}`;
 
+  const handleDateChange = (date: Date) => {
+    selection.setSelectedDate(date);
+    openState.setOpen(false);
+  };
+
   return (
     <div
       {...others}
       ref={(node) => {
-        rootRef = node;
+        openState.setRootRef(node);
         if (typeof local.ref === "function") {
           local.ref(node);
         }
       }}
       class={twMerge(
         CLASSES.Root.base,
-        isOpen() && CLASSES.Root.flag.open,
+        openState.isOpen() && CLASSES.Root.flag.open,
         isDisabled() && CLASSES.Root.flag.disabled,
         local.class,
         local.className,
       )}
       data-slot="date-picker"
-      data-open={isOpen() ? "true" : "false"}
+      data-open={openState.isOpen() ? "true" : "false"}
       data-disabled={isDisabled() ? "true" : "false"}
       data-theme={local.dataTheme}
       style={local.style}
       aria-disabled={isDisabled() ? "true" : undefined}
     >
       <Show when={local.name}>
-        <input type="hidden" name={local.name} value={value()} disabled={isDisabled()} />
+        <input
+          type="hidden"
+          name={local.name}
+          value={toISODate(selection.selectedDate())}
+          disabled={isDisabled()}
+        />
       </Show>
 
       <button
@@ -213,23 +130,23 @@ const DatePicker = (props: DatePickerProps): JSX.Element => {
         class={CLASSES.Trigger.base}
         data-slot="date-picker-trigger"
         aria-haspopup="dialog"
-        aria-expanded={isOpen() ? "true" : "false"}
-        aria-controls={isOpen() ? popoverId : undefined}
+        aria-expanded={openState.isOpen() ? "true" : "false"}
+        aria-controls={openState.isOpen() ? popoverId : undefined}
         aria-disabled={isDisabled() ? "true" : "false"}
         data-disabled={isDisabled() ? "true" : "false"}
         disabled={isDisabled()}
-        onClick={() => setOpen(!isOpen())}
+        onClick={() => openState.toggleOpen()}
         onKeyDown={(event) => {
           if (event.key === "ArrowDown" || event.key === "Enter" || event.key === " ") {
             event.preventDefault();
-            setOpen(true);
+            openState.setOpen(true);
           }
         }}
       >
         <span
           class={twMerge(
             CLASSES.TriggerValue.base,
-            !parseISODate(value()) && CLASSES.TriggerValue.flag.placeholder,
+            !selection.selectedDate() && CLASSES.TriggerValue.flag.placeholder,
           )}
           data-slot="date-picker-trigger-value"
         >
@@ -256,7 +173,7 @@ const DatePicker = (props: DatePickerProps): JSX.Element => {
         </span>
       </button>
 
-      <Show when={isOpen()}>
+      <Show when={openState.isOpen()}>
         <div
           id={popoverId}
           class={CLASSES.Popover.base}
@@ -267,9 +184,9 @@ const DatePicker = (props: DatePickerProps): JSX.Element => {
           <Calendar
             class={CLASSES.Calendar.base}
             data-slot="date-picker-calendar"
-            value={value()}
-            onChange={handleValueChange}
-            locale={local.locale}
+            value={selection.selectedDate() ?? undefined}
+            onChange={handleDateChange}
+            locale={locale()}
             weekdayFormat={local.weekdayFormat}
             minValue={local.minValue}
             maxValue={local.maxValue}

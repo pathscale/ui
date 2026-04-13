@@ -267,11 +267,15 @@ export default function App() {
   const [controlledSearchValue, setControlledSearchValue] = createSignal("analytics");
   const [controlledNumberValue, setControlledNumberValue] = createSignal<number | undefined>(3);
   const [controlledDateValue, setControlledDateValue] = createSignal("2026-04-11");
-  const [controlledCalendarDate, setControlledCalendarDate] = createSignal("2026-04-15");
-  const [controlledPickerDate, setControlledPickerDate] = createSignal("2026-04-16");
+  const [controlledCalendarDate, setControlledCalendarDate] = createSignal(
+    new Date(2026, 3, 15),
+  );
+  const [controlledPickerDate, setControlledPickerDate] = createSignal(
+    new Date(2026, 3, 16),
+  );
   const [controlledRangeValue, setControlledRangeValue] = createSignal<DateRangeValue>({
-    start: "2026-04-16",
-    end: "2026-04-22",
+    start: new Date(2026, 3, 16),
+    end: new Date(2026, 3, 22),
   });
   const [controlledTimeValue, setControlledTimeValue] = createSignal("13:30");
   const validatedForm = useForm({
@@ -1101,15 +1105,15 @@ export default function App() {
             <div class="space-y-2 rounded-xl border border-base-300 bg-base-100 p-3">
               <h3 class="text-xs font-semibold uppercase tracking-wide opacity-70">Controlled</h3>
               <Calendar value={controlledCalendarDate()} onChange={setControlledCalendarDate} />
-              <Description>Selected: {controlledCalendarDate()}</Description>
+              <Description>Selected: {controlledCalendarDate().toLocaleDateString()}</Description>
             </div>
 
             <div class="space-y-2 rounded-xl border border-base-300 bg-base-100 p-3">
               <h3 class="text-xs font-semibold uppercase tracking-wide opacity-70">Disabled Dates</h3>
               <Calendar
-                defaultValue="2026-04-14"
-                minValue="2026-04-05"
-                maxValue="2026-04-28"
+                defaultValue={new Date(2026, 3, 14)}
+                minValue={new Date(2026, 3, 5)}
+                maxValue={new Date(2026, 3, 28)}
                 isDateUnavailable={(date) => date.getDay() === 0 || date.getDay() === 6}
               />
               <Description>Weekends are unavailable.</Description>
@@ -1117,7 +1121,7 @@ export default function App() {
 
             <div class="space-y-2 rounded-xl border border-base-300 bg-base-100 p-3">
               <h3 class="text-xs font-semibold uppercase tracking-wide opacity-70">Navigation</h3>
-              <Calendar defaultValue="2026-11-12" />
+              <Calendar defaultValue={new Date(2026, 10, 12)} />
               <Description>
                 Use previous/next controls or keyboard keys: arrows, Home/End, and PageUp/PageDown.
               </Description>
@@ -1136,34 +1140,35 @@ export default function App() {
           <div class="grid gap-4 lg:grid-cols-2">
             <div class="space-y-2 rounded-xl border border-base-300 bg-base-100 p-3">
               <h3 class="text-xs font-semibold uppercase tracking-wide opacity-70">DatePicker Basic</h3>
-              <DatePicker defaultValue="2026-04-10" />
+              <DatePicker defaultValue={new Date(2026, 3, 10)} />
             </div>
 
             <div class="space-y-2 rounded-xl border border-base-300 bg-base-100 p-3">
               <h3 class="text-xs font-semibold uppercase tracking-wide opacity-70">DatePicker Controlled</h3>
               <DatePicker value={controlledPickerDate()} onChange={setControlledPickerDate} />
-              <Description>Selected: {controlledPickerDate()}</Description>
+              <Description>Selected: {controlledPickerDate().toLocaleDateString()}</Description>
             </div>
 
             <div class="space-y-2 rounded-xl border border-base-300 bg-base-100 p-3">
               <h3 class="text-xs font-semibold uppercase tracking-wide opacity-70">DateRangePicker</h3>
               <DateRangePicker value={controlledRangeValue()} onChange={setControlledRangeValue} />
               <Description>
-                Range: {controlledRangeValue()?.start ?? "start"} - {controlledRangeValue()?.end ?? "end"}
+                Range: {controlledRangeValue()?.start?.toLocaleDateString() ?? "start"} -{" "}
+                {controlledRangeValue()?.end?.toLocaleDateString() ?? "end"}
               </Description>
             </div>
 
             <div class="space-y-2 rounded-xl border border-base-300 bg-base-100 p-3">
               <h3 class="text-xs font-semibold uppercase tracking-wide opacity-70">Disabled Dates</h3>
               <DatePicker
-                minValue="2026-04-05"
-                maxValue="2026-04-28"
+                minValue={new Date(2026, 3, 5)}
+                maxValue={new Date(2026, 3, 28)}
                 isDateUnavailable={(date) => date.getDay() === 0 || date.getDay() === 6}
               />
               <DateRangePicker
-                defaultValue={{ start: "2026-04-08", end: "2026-04-12" }}
-                minValue="2026-04-05"
-                maxValue="2026-04-28"
+                defaultValue={{ start: new Date(2026, 3, 8), end: new Date(2026, 3, 12) }}
+                minValue={new Date(2026, 3, 5)}
+                maxValue={new Date(2026, 3, 28)}
                 isDateUnavailable={(date) => date.getDay() === 0 || date.getDay() === 6}
               />
               <Description>Weekends are unavailable.</Description>
