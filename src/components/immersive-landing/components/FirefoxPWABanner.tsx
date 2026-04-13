@@ -120,7 +120,7 @@ export const FirefoxPWABanner: Component<FirefoxPWABannerProps> = (props) => {
     <Show when={showBanner()}>
       <div
         aria-labelledby="pwa-unsupported-title"
-        class={CLASSES.firefoxBanner.dialog}
+        {...{ class: CLASSES.firefoxBanner.dialog }}
       >
         <Card variant="shadow" class={CLASSES.firefoxBanner.card}>
           <Button
@@ -136,7 +136,7 @@ export const FirefoxPWABanner: Component<FirefoxPWABannerProps> = (props) => {
 
           <Card.Body class={CLASSES.firefoxBanner.body}>
             <Flex align="start" gap="md" class={CLASSES.firefoxBanner.media}>
-              <div class={CLASSES.firefoxBanner.iconWrap}>
+              <div {...{ class: CLASSES.firefoxBanner.iconWrap }}>
                 <Show when={browser() === "firefox"}>
                   <Icon
                     name="icon-[mdi--firefox]"
@@ -148,10 +148,10 @@ export const FirefoxPWABanner: Component<FirefoxPWABannerProps> = (props) => {
               </div>
 
               <Flex direction="col" gap="sm" class={CLASSES.firefoxBanner.textWrap}>
-                <h3 id="pwa-unsupported-title" class={CLASSES.firefoxBanner.title}>
+                <h3 id="pwa-unsupported-title" {...{ class: CLASSES.firefoxBanner.title }}>
                   {texts().title}
                 </h3>
-                <p class={CLASSES.firefoxBanner.description}>
+                <p {...{ class: CLASSES.firefoxBanner.description }}>
                   {texts().description}
                 </p>
               </Flex>

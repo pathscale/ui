@@ -32,17 +32,19 @@ const ImmersiveLandingArrows = (props: ImmersiveLandingArrowsProps): JSX.Element
         <button
           type="button"
           onClick={handlePrev}
-          class={twMerge(
-            CLASSES.arrows.button,
-            CLASSES.arrows.prev,
-            local.class,
-            local.className,
-          )}
+          {...{
+            class: twMerge(
+              CLASSES.arrows.button,
+              CLASSES.arrows.prev,
+              local.class,
+              local.className,
+            ),
+          }}
           aria-label="Previous page"
           {...others}
         >
           <svg
-            class={CLASSES.arrows.icon}
+            {...{ class: CLASSES.arrows.icon }}
             fill="none"
             viewBox="0 0 24 24"
             stroke="currentColor"
@@ -58,17 +60,19 @@ const ImmersiveLandingArrows = (props: ImmersiveLandingArrowsProps): JSX.Element
         <button
           type="button"
           onClick={handleNext}
-          class={twMerge(
-            CLASSES.arrows.button,
-            CLASSES.arrows.next,
-            local.class,
-            local.className,
-          )}
+          {...{
+            class: twMerge(
+              CLASSES.arrows.button,
+              CLASSES.arrows.next,
+              local.class,
+              local.className,
+            ),
+          }}
           aria-label="Next page"
           {...others}
         >
           <svg
-            class={CLASSES.arrows.icon}
+            {...{ class: CLASSES.arrows.icon }}
             fill="none"
             viewBox="0 0 24 24"
             stroke="currentColor"

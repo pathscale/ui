@@ -112,7 +112,7 @@ export const PWAInstallPrompt: Component<PWAInstallPromptProps> = (props) => {
         role="dialog"
         aria-modal="false"
         aria-labelledby="pwa-install-title"
-        class={CLASSES.pwaPrompt.dialog}
+        {...{ class: CLASSES.pwaPrompt.dialog }}
       >
         <Card variant="shadow" class={CLASSES.pwaPrompt.card}>
           <Button
@@ -128,15 +128,19 @@ export const PWAInstallPrompt: Component<PWAInstallPromptProps> = (props) => {
 
           <Card.Body class={CLASSES.pwaPrompt.body}>
             <Flex align="start" gap="md" class={CLASSES.pwaPrompt.media}>
-              <div class={CLASSES.pwaPrompt.appIconWrap}>
-                <img src={appIcon()} alt={appName()} class={CLASSES.pwaPrompt.appIcon} />
+              <div {...{ class: CLASSES.pwaPrompt.appIconWrap }}>
+                <img
+                  src={appIcon()}
+                  alt={appName()}
+                  {...{ class: CLASSES.pwaPrompt.appIcon }}
+                />
               </div>
 
               <Flex direction="col" gap="sm" class={CLASSES.pwaPrompt.textWrap}>
-                <h3 id="pwa-install-title" class={CLASSES.pwaPrompt.title}>
+                <h3 id="pwa-install-title" {...{ class: CLASSES.pwaPrompt.title }}>
                   {texts().title}
                 </h3>
-                <p class={CLASSES.pwaPrompt.description}>
+                <p {...{ class: CLASSES.pwaPrompt.description }}>
                   {texts().description}
                 </p>
               </Flex>

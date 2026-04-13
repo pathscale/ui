@@ -95,17 +95,17 @@ const ImmersiveLanding: Component<ImmersiveLandingProps> = (props) => {
       {/* Fixed viewport */}
       <div class={classes()} style={local.style} {...others}>
         {/* Layered container for fade transitions */}
-        <div class={CLASSES.landing.viewport}>
-          <div class={CLASSES.landing.pageLayer}>{renderChildren()}</div>
+        <div {...{ class: CLASSES.landing.viewport }}>
+          <div {...{ class: CLASSES.landing.pageLayer }}>{renderChildren()}</div>
         </div>
       </div>
 
       <Show when={local.overlay || local.appVersion}>
-        <div class={CLASSES.landing.overlay}>
+        <div {...{ class: CLASSES.landing.overlay }}>
           {renderOverlay()}
           <Show when={local.appVersion}>
-            <div class={CLASSES.landing.versionWrap} aria-hidden="true">
-              <span class={CLASSES.landing.versionLabel}>
+            <div {...{ class: CLASSES.landing.versionWrap }} aria-hidden="true">
+              <span {...{ class: CLASSES.landing.versionLabel }}>
                 v{local.appVersion}
               </span>
             </div>

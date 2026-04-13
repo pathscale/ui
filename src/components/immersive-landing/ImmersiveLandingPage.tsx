@@ -25,7 +25,7 @@ const ImmersiveLandingPage = (props: ImmersiveLandingPageProps): JSX.Element => 
       id={local.id}
       role="region"
       aria-label={`${local.id} section`}
-      class={classes()}
+      {...{ class: classes() }}
       style={{
         "transition-duration": `${fadeDurationMs}ms`,
         "transition-delay": isActive() ? `${fadeDurationMs}ms` : "0ms",
@@ -34,7 +34,7 @@ const ImmersiveLandingPage = (props: ImmersiveLandingPageProps): JSX.Element => 
       aria-hidden={!isActive()}
       {...others}
     >
-      <div class={CLASSES.page.content}>{local.children}</div>
+      <div {...{ class: CLASSES.page.content }}>{local.children}</div>
     </section>
   );
 };

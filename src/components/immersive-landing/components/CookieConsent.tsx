@@ -236,9 +236,11 @@ export const CookieConsent: Component<CookieConsentProps> = (props) => {
           role="dialog"
           aria-modal="false"
           aria-labelledby="cookie-consent-message"
-          class={`${CLASSES.cookie.banner}${isClosing() ? ` ${CLASSES.cookie.bannerClosing}` : ""}`}
+          {...{
+            class: `${CLASSES.cookie.banner}${isClosing() ? ` ${CLASSES.cookie.bannerClosing}` : ""}`,
+          }}
         >
-          <div class={CLASSES.cookie.container}>
+          <div {...{ class: CLASSES.cookie.container }}>
             <Flex
               direction="col"
               gap="md"
@@ -246,7 +248,7 @@ export const CookieConsent: Component<CookieConsentProps> = (props) => {
             >
               <p
                 id="cookie-consent-message"
-                class={CLASSES.cookie.message}
+                {...{ class: CLASSES.cookie.message }}
               >
                 {texts().message}
               </p>
@@ -273,7 +275,7 @@ export const CookieConsent: Component<CookieConsentProps> = (props) => {
                 </Button>
                 <button
                   type="button"
-                  class={CLASSES.cookie.manageButton}
+                  {...{ class: CLASSES.cookie.manageButton }}
                   onClick={handleManageOpen}
                 >
                   {texts().manage}
@@ -289,15 +291,15 @@ export const CookieConsent: Component<CookieConsentProps> = (props) => {
           role="dialog"
           aria-modal="true"
           aria-labelledby="cookie-manage-title"
-          class={CLASSES.cookie.modalBackdrop}
+          {...{ class: CLASSES.cookie.modalBackdrop }}
           onClick={handleManageClose}
         >
           <div
-            class={CLASSES.cookie.modalCard}
+            {...{ class: CLASSES.cookie.modalCard }}
             onClick={(e) => e.stopPropagation()}
           >
             <Flex justify="between" align="center" class={CLASSES.cookie.modalHeader}>
-              <h2 id="cookie-manage-title" class={CLASSES.cookie.modalTitle}>
+              <h2 id="cookie-manage-title" {...{ class: CLASSES.cookie.modalTitle }}>
                 {texts().manageTitle}
               </h2>
               <Button
@@ -312,37 +314,37 @@ export const CookieConsent: Component<CookieConsentProps> = (props) => {
             </Flex>
 
             <Flex direction="col" gap="md" class={CLASSES.cookie.preferences}>
-              <label class={`${CLASSES.cookie.preferenceRow} ${CLASSES.cookie.preferenceRowLocked}`}>
-                <span class={CLASSES.cookie.preferenceLabel}>
+              <label {...{ class: `${CLASSES.cookie.preferenceRow} ${CLASSES.cookie.preferenceRowLocked}` }}>
+                <span {...{ class: CLASSES.cookie.preferenceLabel }}>
                   {texts().essential}
                 </span>
                 <input
                   type="checkbox"
                   checked
                   disabled
-                  class={CLASSES.cookie.toggle}
+                  {...{ class: CLASSES.cookie.toggle }}
                 />
               </label>
 
               {/* Analytics */}
-              <label class={CLASSES.cookie.preferenceRow}>
-                <span class={CLASSES.cookie.preferenceLabel}>{texts().analytics}</span>
+              <label {...{ class: CLASSES.cookie.preferenceRow }}>
+                <span {...{ class: CLASSES.cookie.preferenceLabel }}>{texts().analytics}</span>
                 <input
                   type="checkbox"
                   checked={analyticsEnabled()}
                   onChange={(e) => setAnalyticsEnabled(e.currentTarget.checked)}
-                  class={CLASSES.cookie.toggle}
+                  {...{ class: CLASSES.cookie.toggle }}
                 />
               </label>
 
               {/* Marketing */}
-              <label class={CLASSES.cookie.preferenceRow}>
-                <span class={CLASSES.cookie.preferenceLabel}>{texts().marketing}</span>
+              <label {...{ class: CLASSES.cookie.preferenceRow }}>
+                <span {...{ class: CLASSES.cookie.preferenceLabel }}>{texts().marketing}</span>
                 <input
                   type="checkbox"
                   checked={marketingEnabled()}
                   onChange={(e) => setMarketingEnabled(e.currentTarget.checked)}
-                  class={CLASSES.cookie.toggle}
+                  {...{ class: CLASSES.cookie.toggle }}
                 />
               </label>
             </Flex>
