@@ -516,22 +516,18 @@ export { default as NoiseBackground } from "./components/noise-background";
 export type { NoiseBackgroundProps } from "./components/noise-background";
 export { default as Pagination } from "./components/pagination";
 export type { PaginationProps } from "./components/pagination";
-export {
-  default as Progress,
-  ProgressRoot,
-  ProgressOutput,
-  ProgressTrack,
-  ProgressFill,
-} from "./components/progress";
+export { default as ProgressBar } from "./components/progress-bar";
 export type {
-  ProgressSize,
-  ProgressColor,
-  ProgressRootProps,
-  ProgressOutputProps,
-  ProgressTrackProps,
-  ProgressFillProps,
-} from "./components/progress";
-export { default as RadialProgress } from "./components/radialprogress";
+  ProgressBarProps,
+  ProgressBarSize,
+  ProgressBarColor,
+} from "./components/progress-bar";
+export { default as ProgressCircle } from "./components/progress-circle";
+export type {
+  ProgressCircleProps,
+  ProgressCircleSize,
+  ProgressCircleColor,
+} from "./components/progress-circle";
 export { default as Radio } from "./components/radio";
 export {
   RadioGroup,

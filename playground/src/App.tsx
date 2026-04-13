@@ -36,7 +36,8 @@ import {
   Navbar,
   NoiseBackground,
   NumberField,
-  Progress,
+  ProgressBar,
+  ProgressCircle,
   SearchField,
   Skeleton,
   Surface,
@@ -3468,61 +3469,55 @@ export default function App() {
           <div>
             <h2 class="text-sm font-semibold">Progress</h2>
             <p class="text-xs opacity-70">
-              HeroUI-style compound progress bar with sizes, colors, and indeterminate.
+              HeroUI-style progress bar and circle with sizes, colors, and indeterminate.
             </p>
           </div>
 
           <div class="space-y-3">
-            <h3 class="text-xs font-semibold uppercase opacity-70">Default</h3>
-            <Progress value={60} label="Loading" size="md" color="accent">
-              <Progress.Output />
-              <Progress.Track>
-                <Progress.Fill />
-              </Progress.Track>
-            </Progress>
+            <h3 class="text-xs font-semibold uppercase opacity-70">Progress Bar</h3>
+            <ProgressBar
+              value={60}
+              label="Loading"
+              size="md"
+              color="accent"
+              showValue
+            />
           </div>
 
           <div class="space-y-3">
-            <h3 class="text-xs font-semibold uppercase opacity-70">Sizes</h3>
+            <h3 class="text-xs font-semibold uppercase opacity-70">Bar Sizes</h3>
             <div class="grid gap-4">
               <For each={["sm", "md", "lg"] as const}>
                 {(size) => (
-                  <Progress value={45} label={size} size={size} color="accent">
-                    <Progress.Output />
-                    <Progress.Track>
-                      <Progress.Fill />
-                    </Progress.Track>
-                  </Progress>
+                  <ProgressBar value={45} label={size} size={size} color="accent" showValue />
                 )}
               </For>
             </div>
           </div>
 
           <div class="space-y-3">
-            <h3 class="text-xs font-semibold uppercase opacity-70">Colors</h3>
+            <h3 class="text-xs font-semibold uppercase opacity-70">Bar Colors</h3>
             <div class="grid gap-4">
               <For each={["default", "accent", "success", "warning", "danger"] as const}>
                 {(color) => (
-                  <Progress value={70} label={color} color={color}>
-                    <Progress.Output />
-                    <Progress.Track>
-                      <Progress.Fill />
-                    </Progress.Track>
-                  </Progress>
+                  <ProgressBar value={70} label={color} color={color} showValue />
                 )}
               </For>
             </div>
           </div>
 
           <div class="space-y-3">
-            <h3 class="text-xs font-semibold uppercase opacity-70">
-              Indeterminate
-            </h3>
-            <Progress isIndeterminate label="Processing" color="accent">
-              <Progress.Track>
-                <Progress.Fill />
-              </Progress.Track>
-            </Progress>
+            <h3 class="text-xs font-semibold uppercase opacity-70">Bar Indeterminate</h3>
+            <ProgressBar isIndeterminate label="Processing" color="accent" />
+          </div>
+
+          <div class="space-y-3">
+            <h3 class="text-xs font-semibold uppercase opacity-70">Progress Circle</h3>
+            <div class="flex flex-wrap items-center gap-4">
+              <ProgressCircle value={72} size="lg" color="accent" />
+              <ProgressCircle value={45} size="md" color="success" />
+              <ProgressCircle isIndeterminate size="sm" color="warning" />
+            </div>
           </div>
         </section>
 

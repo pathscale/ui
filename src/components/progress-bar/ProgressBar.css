@@ -1,0 +1,104 @@
+@layer components {
+  .progress-bar {
+    display: grid;
+    width: 100%;
+    gap: 0.25rem;
+    grid-template-areas:
+      "label output"
+      "track track";
+    grid-template-columns: 1fr auto;
+
+    --progress-bar-fill: var(--color-accent);
+  }
+
+  .progress-bar__label {
+    grid-area: label;
+    width: fit-content;
+    font-size: 0.875rem;
+    font-weight: 500;
+  }
+
+  .progress-bar__output {
+    grid-area: output;
+    font-size: 0.875rem;
+    font-weight: 500;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .progress-bar__track {
+    grid-area: track;
+    position: relative;
+    overflow: hidden;
+    border-radius: 9999px;
+    background: var(--color-base-200);
+    height: 0.5rem;
+  }
+
+  .progress-bar__indicator {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100%;
+    border-radius: 9999px;
+    background-color: var(--progress-bar-fill);
+    transition: width 300ms var(--ease-out);
+  }
+
+  .progress-bar--indeterminate .progress-bar__indicator {
+    width: 40%;
+    animation: progress-bar-indeterminate 1.5s cubic-bezier(0.65, 0, 0.35, 1) infinite;
+  }
+
+  .progress-bar--disabled,
+  .progress-bar[aria-disabled="true"],
+  .progress-bar[data-disabled="true"] {
+    opacity: 0.6;
+  }
+
+  .progress-bar--sm .progress-bar__track {
+    height: 0.25rem;
+  }
+
+  .progress-bar--lg .progress-bar__track {
+    height: 0.75rem;
+  }
+
+  .progress-bar--default {
+    --progress-bar-fill: var(--color-base-content);
+  }
+
+  .progress-bar--accent {
+    --progress-bar-fill: var(--color-accent);
+  }
+
+  .progress-bar--success {
+    --progress-bar-fill: var(--color-success);
+  }
+
+  .progress-bar--warning {
+    --progress-bar-fill: var(--color-warning);
+  }
+
+  .progress-bar--danger {
+    --progress-bar-fill: var(--color-danger);
+  }
+
+  @keyframes progress-bar-indeterminate {
+    0% {
+      transform: translateX(-100%);
+    }
+    100% {
+      transform: translateX(350%);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .progress-bar__indicator {
+      transition: none;
+    }
+
+    .progress-bar--indeterminate .progress-bar__indicator {
+      animation: none;
+    }
+  }
+}

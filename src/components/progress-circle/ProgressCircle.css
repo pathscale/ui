@@ -1,0 +1,82 @@
+@layer components {
+  .progress-circle {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    --progress-circle-stroke: var(--color-accent);
+    --progress-circle-track-stroke: var(--color-base-200);
+  }
+
+  .progress-circle__track {
+    width: 1.75rem;
+    height: 1.75rem;
+  }
+
+  .progress-circle__track-circle {
+    stroke: var(--progress-circle-track-stroke);
+  }
+
+  .progress-circle__indicator {
+    stroke: var(--progress-circle-stroke);
+    transition: stroke-dashoffset 300ms var(--ease-out);
+  }
+
+  .progress-circle--indeterminate .progress-circle__track {
+    animation: progress-circle-spin 1s linear infinite;
+  }
+
+  .progress-circle--disabled,
+  .progress-circle[aria-disabled="true"],
+  .progress-circle[data-disabled="true"] {
+    opacity: 0.6;
+  }
+
+  .progress-circle--sm .progress-circle__track {
+    width: 1.25rem;
+    height: 1.25rem;
+  }
+
+  .progress-circle--lg .progress-circle__track {
+    width: 2.25rem;
+    height: 2.25rem;
+  }
+
+  .progress-circle--default {
+    --progress-circle-stroke: var(--color-base-content);
+  }
+
+  .progress-circle--accent {
+    --progress-circle-stroke: var(--color-accent);
+  }
+
+  .progress-circle--success {
+    --progress-circle-stroke: var(--color-success);
+  }
+
+  .progress-circle--warning {
+    --progress-circle-stroke: var(--color-warning);
+  }
+
+  .progress-circle--danger {
+    --progress-circle-stroke: var(--color-danger);
+  }
+
+  @keyframes progress-circle-spin {
+    from {
+      transform: rotate(0deg);
+    }
+    to {
+      transform: rotate(360deg);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .progress-circle__indicator {
+      transition: none;
+    }
+
+    .progress-circle--indeterminate .progress-circle__track {
+      animation: none;
+    }
+  }
+}
