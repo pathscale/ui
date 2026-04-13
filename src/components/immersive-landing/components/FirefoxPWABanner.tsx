@@ -4,6 +4,7 @@ import Button from "../../button";
 import Card from "../../card";
 import Flex from "../../flex";
 import Icon from "../../icon";
+import { CLASSES } from "../ImmersiveLanding.classes";
 
 const defaultTexts = {
   title: "Install App on Firefox",
@@ -119,48 +120,48 @@ export const FirefoxPWABanner: Component<FirefoxPWABannerProps> = (props) => {
     <Show when={showBanner()}>
       <div
         aria-labelledby="pwa-unsupported-title"
-        class="fixed bottom-4 left-4 right-4 md:left-auto md:right-4 md:max-w-sm z-51 animate-slide-up"
+        class={CLASSES.firefoxBanner.dialog}
       >
-        <Card variant="shadow" class="relative border border-base-300">
+        <Card variant="shadow" class={CLASSES.firefoxBanner.card}>
           <Button
             size="sm"
             variant="ghost"
             isIconOnly
-            class="absolute top-2 right-2"
+            class={CLASSES.firefoxBanner.closeButton}
             onClick={handleDismiss}
             aria-label={texts().closeLabel}
           >
             <Icon name="icon-[mdi--close]" width={16} height={16} />
           </Button>
 
-          <Card.Body>
-            <Flex align="start" gap="md">
-              <div class="w-14 h-14 shrink-0 rounded-xl bg-base-200 p-2 flex items-center justify-center">
+          <Card.Body class={CLASSES.firefoxBanner.body}>
+            <Flex align="start" gap="md" class={CLASSES.firefoxBanner.media}>
+              <div class={CLASSES.firefoxBanner.iconWrap}>
                 <Show when={browser() === "firefox"}>
                   <Icon
                     name="icon-[mdi--firefox]"
                     width={40}
                     height={40}
-                    class="text-orange-500"
+                    class={CLASSES.firefoxBanner.browserIcon}
                   />
                 </Show>
               </div>
 
-              <Flex direction="col" gap="sm" class="flex-1 min-w-0 pr-6">
-                <h3 id="pwa-unsupported-title" class="text-base font-medium leading-6">
+              <Flex direction="col" gap="sm" class={CLASSES.firefoxBanner.textWrap}>
+                <h3 id="pwa-unsupported-title" class={CLASSES.firefoxBanner.title}>
                   {texts().title}
                 </h3>
-                <p class="text-sm text-base-content/70">
+                <p class={CLASSES.firefoxBanner.description}>
                   {texts().description}
                 </p>
               </Flex>
             </Flex>
           </Card.Body>
-          <Card.Footer class="mt-1">
-            <Button variant="primary" class="flex-1" onClick={handleAction}>
+          <Card.Footer class={CLASSES.firefoxBanner.footer}>
+            <Button variant="primary" class={CLASSES.firefoxBanner.action} onClick={handleAction}>
               {texts().installButton}
             </Button>
-            <Button variant="ghost" class="flex-1" onClick={handleDismiss}>
+            <Button variant="ghost" class={CLASSES.firefoxBanner.action} onClick={handleDismiss}>
               {texts().dismissButton}
             </Button>
           </Card.Footer>

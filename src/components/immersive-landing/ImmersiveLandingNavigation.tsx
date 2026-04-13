@@ -1,6 +1,7 @@
 import { For, splitProps, type JSX } from "solid-js";
 import { twMerge } from "tailwind-merge";
 import type { ImmersiveLandingNavigationProps } from "./types";
+import { CLASSES } from "./ImmersiveLanding.classes";
 
 const ImmersiveLandingNavigation = (props: ImmersiveLandingNavigationProps): JSX.Element => {
   const [local, others] = splitProps(props, [
@@ -17,21 +18,20 @@ const ImmersiveLandingNavigation = (props: ImmersiveLandingNavigationProps): JSX
   ]);
 
   const mobileArrowClasses = (disabled: boolean) =>
-    `md:hidden flex items-center justify-center min-w-[44px] min-h-[44px] rounded-full transition-colors cursor-pointer ${
-      disabled
-        ? "text-base-content/20 cursor-not-allowed"
-        : "text-base-content/70 hover:bg-base-content/10 active:bg-base-content/20"
-    }`;
+    twMerge(
+      CLASSES.navigation.mobileArrow,
+      disabled && CLASSES.navigation.mobileArrowDisabled,
+    );
 
   return (
     <nav
-      class={twMerge("fixed left-1/2 -translate-x-1/2 z-50 w-auto px-2", local.class, local.className)}
+      class={twMerge(CLASSES.navigation.base, local.class, local.className)}
       aria-label="Page navigation"
       style={{ bottom: "calc(0.75rem + env(safe-area-inset-bottom))", ...local.style }}
       {...others}
     >
-      <div class="bg-base-100/90 backdrop-blur border border-base-content/10 rounded-full px-2 sm:px-3 py-1.5 sm:py-2 shadow-lg">
-        <div class="flex items-center justify-center gap-2 md:gap-3">
+      <div class={CLASSES.navigation.shell}>
+        <div class={CLASSES.navigation.row}>
           {/* Left arrow - Mobile only */}
           <button
             type="button"
@@ -40,24 +40,23 @@ const ImmersiveLandingNavigation = (props: ImmersiveLandingNavigationProps): JSX
             class={mobileArrowClasses(local.isFirstPage)}
             aria-label="Previous page"
           >
-            <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <svg class={CLASSES.navigation.icon} fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
               <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7" />
             </svg>
           </button>
 
           {/* Page position dots - Desktop only */}
           {local.pages && local.pages.length > 0 && (
-            <div class="hidden md:flex items-center gap-1.5 px-2">
+            <div class={CLASSES.navigation.dots}>
               <For each={local.pages}>
                 {(pageId, index) => (
                   <button
                     type="button"
                     onClick={() => local.onPageDotClick(pageId)}
-                    class={`w-2 h-2 rounded-full transition-all cursor-pointer ${
-                      index() === local.currentPageIndex
-                        ? "bg-primary scale-125"
-                        : "bg-base-content/30 hover:bg-base-content/50"
-                    }`}
+                    class={twMerge(
+                      CLASSES.navigation.dot,
+                      index() === local.currentPageIndex && CLASSES.navigation.dotActive,
+                    )}
                     aria-label={`Go to page ${index() + 1} of ${local.pages.length}`}
                     aria-current={index() === local.currentPageIndex ? "step" : undefined}
                   />
@@ -68,7 +67,7 @@ const ImmersiveLandingNavigation = (props: ImmersiveLandingNavigationProps): JSX
 
           {/* Page counter */}
           {local.pages && local.pages.length > 0 && (
-            <span class="text-sm text-base-content/60 tabular-nums font-medium min-w-[3ch] text-center">
+            <span class={CLASSES.navigation.counter}>
               {(local.currentPageIndex ?? 0) + 1}/{local.pages.length}
             </span>
           )}
@@ -81,7 +80,7 @@ const ImmersiveLandingNavigation = (props: ImmersiveLandingNavigationProps): JSX
             class={mobileArrowClasses(local.isLastPage)}
             aria-label="Next page"
           >
-            <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <svg class={CLASSES.navigation.icon} fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
               <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" />
             </svg>
           </button>

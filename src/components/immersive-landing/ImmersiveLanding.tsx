@@ -1,9 +1,11 @@
+import "./ImmersiveLanding.css";
 import { Show, splitProps, type Component } from "solid-js";
 import { twMerge } from "tailwind-merge";
 import type {
   ImmersiveLandingProps,
   ImmersiveLandingContextValue,
 } from "./types";
+import { CLASSES } from "./ImmersiveLanding.classes";
 import { useImmersiveLanding } from "./useImmersiveLanding";
 import { ImmersiveLandingContext } from "./ImmersiveLandingContext";
 import ImmersiveLandingPage from "./ImmersiveLandingPage";
@@ -70,7 +72,7 @@ const ImmersiveLanding: Component<ImmersiveLandingProps> = (props) => {
 
   const classes = () =>
     twMerge(
-      "fixed inset-0 h-screen w-screen overflow-hidden bg-transparent relative isolate",
+      CLASSES.landing.base,
       local.class,
       local.className,
     );
@@ -93,17 +95,17 @@ const ImmersiveLanding: Component<ImmersiveLandingProps> = (props) => {
       {/* Fixed viewport */}
       <div class={classes()} style={local.style} {...others}>
         {/* Layered container for fade transitions */}
-        <div class="relative h-full w-full">
-          <div class="relative z-10 h-full w-full">{renderChildren()}</div>
+        <div class={CLASSES.landing.viewport}>
+          <div class={CLASSES.landing.pageLayer}>{renderChildren()}</div>
         </div>
       </div>
 
       <Show when={local.overlay || local.appVersion}>
-        <div class="pointer-events-none fixed inset-0 z-30">
+        <div class={CLASSES.landing.overlay}>
           {renderOverlay()}
           <Show when={local.appVersion}>
-            <div class="absolute bottom-20 right-6" aria-hidden="true">
-              <span class="font-mono text-base-content/20 text-[clamp(0.75rem,2vw,1.25rem)] tracking-[0.4em]">
+            <div class={CLASSES.landing.versionWrap} aria-hidden="true">
+              <span class={CLASSES.landing.versionLabel}>
                 v{local.appVersion}
               </span>
             </div>

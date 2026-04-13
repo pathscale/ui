@@ -9,6 +9,7 @@ import { PWAInstallPromptProps } from "../types";
 import Button from "../../button";
 import Card from "../../card";
 import Flex from "../../flex";
+import { CLASSES } from "../ImmersiveLanding.classes";
 const DISMISS_DURATION = 7 * 24 * 60 * 60 * 1000; // 7 days in milliseconds
 
 const defaultTexts = {
@@ -111,41 +112,41 @@ export const PWAInstallPrompt: Component<PWAInstallPromptProps> = (props) => {
         role="dialog"
         aria-modal="false"
         aria-labelledby="pwa-install-title"
-        class="fixed bottom-4 left-4 right-4 md:left-auto md:right-4 md:max-w-sm z-51 animate-slide-up"
+        class={CLASSES.pwaPrompt.dialog}
       >
-        <Card variant="shadow" class="relative border border-base-300">
+        <Card variant="shadow" class={CLASSES.pwaPrompt.card}>
           <Button
             size="sm"
             variant="ghost"
             isIconOnly
-            class="absolute top-2 right-2"
+            class={CLASSES.pwaPrompt.closeButton}
             onClick={handleDismiss}
             aria-label={texts().closeLabel}
           >
             X
           </Button>
 
-          <Card.Body>
-            <Flex align="start" gap="md">
-              <div class="w-14 h-14 flex-shrink-0 rounded-xl bg-base-200 p-2">
-                <img src={appIcon()} alt={appName()} class="w-full h-full" />
+          <Card.Body class={CLASSES.pwaPrompt.body}>
+            <Flex align="start" gap="md" class={CLASSES.pwaPrompt.media}>
+              <div class={CLASSES.pwaPrompt.appIconWrap}>
+                <img src={appIcon()} alt={appName()} class={CLASSES.pwaPrompt.appIcon} />
               </div>
 
-              <Flex direction="col" gap="sm" class="flex-1 min-w-0 pr-6">
-                <h3 id="pwa-install-title" class="text-base font-medium leading-6">
+              <Flex direction="col" gap="sm" class={CLASSES.pwaPrompt.textWrap}>
+                <h3 id="pwa-install-title" class={CLASSES.pwaPrompt.title}>
                   {texts().title}
                 </h3>
-                <p class="text-sm text-base-content/70">
+                <p class={CLASSES.pwaPrompt.description}>
                   {texts().description}
                 </p>
               </Flex>
             </Flex>
           </Card.Body>
-          <Card.Footer class="mt-1">
-            <Button variant="primary" class="flex-1" onClick={handleInstall}>
+          <Card.Footer class={CLASSES.pwaPrompt.footer}>
+            <Button variant="primary" class={CLASSES.pwaPrompt.action} onClick={handleInstall}>
               {texts().installButton}
             </Button>
-            <Button variant="ghost" class="flex-1" onClick={handleDismiss}>
+            <Button variant="ghost" class={CLASSES.pwaPrompt.action} onClick={handleDismiss}>
               {texts().notNowButton}
             </Button>
           </Card.Footer>

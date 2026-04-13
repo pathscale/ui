@@ -1,6 +1,7 @@
 import { Show, splitProps, type JSX } from "solid-js";
 import { twMerge } from "tailwind-merge";
 import type { ImmersiveLandingArrowsProps } from "./types";
+import { CLASSES } from "./ImmersiveLanding.classes";
 
 const ImmersiveLandingArrows = (props: ImmersiveLandingArrowsProps): JSX.Element => {
   const [local, others] = splitProps(props, [
@@ -13,21 +14,16 @@ const ImmersiveLandingArrows = (props: ImmersiveLandingArrowsProps): JSX.Element
   ]);
 
   const handleNext = () => {
-    console.log("ImmersiveLandingArrows: handleNext called, onNext is:", typeof local.onNext);
     if (local.onNext) {
       local.onNext();
     }
   };
 
   const handlePrev = () => {
-    console.log("ImmersiveLandingArrows: handlePrev called, onPrev is:", typeof local.onPrev);
     if (local.onPrev) {
       local.onPrev();
     }
   };
-
-  const buttonClasses =
-    "fixed top-1/2 -translate-y-1/2 z-40 hidden md:flex items-center justify-center min-w-[48px] min-h-[48px] rounded-full bg-base-content/10 hover:bg-base-content/20 transition-colors cursor-pointer";
 
   return (
     <>
@@ -36,12 +32,17 @@ const ImmersiveLandingArrows = (props: ImmersiveLandingArrowsProps): JSX.Element
         <button
           type="button"
           onClick={handlePrev}
-          class={twMerge(buttonClasses, "left-4", local.class, local.className)}
+          class={twMerge(
+            CLASSES.arrows.button,
+            CLASSES.arrows.prev,
+            local.class,
+            local.className,
+          )}
           aria-label="Previous page"
           {...others}
         >
           <svg
-            class="w-6 h-6 text-base-content/70"
+            class={CLASSES.arrows.icon}
             fill="none"
             viewBox="0 0 24 24"
             stroke="currentColor"
@@ -57,12 +58,17 @@ const ImmersiveLandingArrows = (props: ImmersiveLandingArrowsProps): JSX.Element
         <button
           type="button"
           onClick={handleNext}
-          class={twMerge(buttonClasses, "right-4", local.class, local.className)}
+          class={twMerge(
+            CLASSES.arrows.button,
+            CLASSES.arrows.next,
+            local.class,
+            local.className,
+          )}
           aria-label="Next page"
           {...others}
         >
           <svg
-            class="w-6 h-6 text-base-content/70"
+            class={CLASSES.arrows.icon}
             fill="none"
             viewBox="0 0 24 24"
             stroke="currentColor"

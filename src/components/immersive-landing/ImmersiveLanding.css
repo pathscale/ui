@@ -1,0 +1,562 @@
+@layer components {
+  .immersive-landing {
+    position: fixed;
+    inset: 0;
+    width: 100vw;
+    height: 100vh;
+    overflow: hidden;
+    isolation: isolate;
+    background: transparent;
+  }
+
+  .immersive-landing__viewport {
+    position: relative;
+    width: 100%;
+    height: 100%;
+  }
+
+  .immersive-landing__page-layer {
+    position: relative;
+    z-index: 10;
+    width: 100%;
+    height: 100%;
+  }
+
+  .immersive-landing__overlay {
+    pointer-events: none;
+    position: fixed;
+    inset: 0;
+    z-index: 30;
+  }
+
+  .immersive-landing__version-wrap {
+    position: absolute;
+    right: 1.5rem;
+    bottom: 5rem;
+  }
+
+  .immersive-landing__version-label {
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas,
+      "Liberation Mono", "Courier New", monospace;
+    color: color-mix(in oklab, var(--color-base-content) 20%, transparent);
+    font-size: clamp(0.75rem, 2vw, 1.25rem);
+    letter-spacing: 0.4em;
+  }
+
+  .immersive-landing-page {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    background: transparent;
+    transition-property: opacity;
+    transition-timing-function: ease-in-out;
+  }
+
+  .immersive-landing-page--active {
+    opacity: 1;
+    pointer-events: auto;
+  }
+
+  .immersive-landing-page--inactive {
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  .immersive-landing-page__content {
+    position: relative;
+    z-index: 10;
+    height: 100%;
+    overflow: hidden;
+  }
+
+  .immersive-landing-arrows__button {
+    position: fixed;
+    top: 50%;
+    z-index: 40;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    min-width: 48px;
+    min-height: 48px;
+    border-radius: 9999px;
+    border: 0;
+    background: color-mix(in oklab, var(--color-base-content) 10%, transparent);
+    cursor: pointer;
+    transform: translateY(-50%);
+    transition: background-color 160ms ease;
+  }
+
+  .immersive-landing-arrows__button:hover {
+    background: color-mix(in oklab, var(--color-base-content) 20%, transparent);
+  }
+
+  .immersive-landing-arrows__button--prev {
+    left: 1rem;
+  }
+
+  .immersive-landing-arrows__button--next {
+    right: 1rem;
+  }
+
+  .immersive-landing-arrows__icon {
+    width: 1.5rem;
+    height: 1.5rem;
+    color: color-mix(in oklab, var(--color-base-content) 70%, transparent);
+  }
+
+  .immersive-landing-navigation {
+    position: fixed;
+    left: 50%;
+    z-index: 50;
+    width: auto;
+    padding-inline: 0.5rem;
+    transform: translateX(-50%);
+  }
+
+  .immersive-landing-navigation__shell {
+    border-radius: 9999px;
+    border: 1px solid color-mix(in oklab, var(--color-base-content) 10%, transparent);
+    background: color-mix(in oklab, var(--color-base-100) 90%, transparent);
+    padding: 0.375rem 0.5rem;
+    backdrop-filter: blur(8px);
+    box-shadow: 0 12px 28px color-mix(in oklab, var(--color-base-content) 18%, transparent);
+  }
+
+  .immersive-landing-navigation__row {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+  }
+
+  .immersive-landing-navigation__mobile-arrow {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 44px;
+    min-height: 44px;
+    border-radius: 9999px;
+    border: 0;
+    color: color-mix(in oklab, var(--color-base-content) 70%, transparent);
+    background: transparent;
+    cursor: pointer;
+    transition: background-color 150ms ease, color 150ms ease;
+  }
+
+  .immersive-landing-navigation__mobile-arrow:hover {
+    background: color-mix(in oklab, var(--color-base-content) 10%, transparent);
+  }
+
+  .immersive-landing-navigation__mobile-arrow:active {
+    background: color-mix(in oklab, var(--color-base-content) 20%, transparent);
+  }
+
+  .immersive-landing-navigation__mobile-arrow--disabled {
+    color: color-mix(in oklab, var(--color-base-content) 20%, transparent);
+    cursor: not-allowed;
+  }
+
+  .immersive-landing-navigation__mobile-arrow--disabled:hover,
+  .immersive-landing-navigation__mobile-arrow--disabled:active {
+    background: transparent;
+  }
+
+  .immersive-landing-navigation__icon {
+    width: 1.25rem;
+    height: 1.25rem;
+  }
+
+  .immersive-landing-navigation__dots {
+    display: none;
+    align-items: center;
+    gap: 0.375rem;
+    padding-inline: 0.5rem;
+  }
+
+  .immersive-landing-navigation__dot {
+    width: 0.5rem;
+    height: 0.5rem;
+    border-radius: 9999px;
+    border: 0;
+    background: color-mix(in oklab, var(--color-base-content) 30%, transparent);
+    cursor: pointer;
+    transition: transform 150ms ease, background-color 150ms ease;
+  }
+
+  .immersive-landing-navigation__dot:hover {
+    background: color-mix(in oklab, var(--color-base-content) 50%, transparent);
+  }
+
+  .immersive-landing-navigation__dot--active {
+    background: var(--color-primary);
+    transform: scale(1.25);
+  }
+
+  .immersive-landing-navigation__counter {
+    min-width: 3ch;
+    text-align: center;
+    font-size: 0.875rem;
+    font-variant-numeric: tabular-nums;
+    font-weight: 500;
+    color: color-mix(in oklab, var(--color-base-content) 60%, transparent);
+  }
+
+  .immersive-landing-pwa,
+  .immersive-landing-firefox {
+    position: fixed;
+    right: 1rem;
+    bottom: 1rem;
+    left: 1rem;
+    z-index: 51;
+    animation: immersive-landing-slide-up 220ms ease;
+  }
+
+  .immersive-landing-pwa__card,
+  .immersive-landing-firefox__card {
+    position: relative;
+    border: 1px solid var(--color-base-300);
+  }
+
+  .immersive-landing-pwa__close,
+  .immersive-landing-firefox__close {
+    position: absolute;
+    top: 0.5rem;
+    right: 0.5rem;
+  }
+
+  .immersive-landing-pwa__body,
+  .immersive-landing-firefox__body {
+    display: block;
+  }
+
+  .immersive-landing-pwa__media,
+  .immersive-landing-firefox__media {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.75rem;
+  }
+
+  .immersive-landing-pwa__app-icon-wrap,
+  .immersive-landing-firefox__icon-wrap {
+    display: flex;
+    width: 3.5rem;
+    height: 3.5rem;
+    align-items: center;
+    justify-content: center;
+    border-radius: 0.75rem;
+    background: var(--color-base-200);
+    flex-shrink: 0;
+    padding: 0.5rem;
+  }
+
+  .immersive-landing-pwa__app-icon {
+    width: 100%;
+    height: 100%;
+  }
+
+  .immersive-landing-firefox__browser-icon {
+    color: #f97316;
+  }
+
+  .immersive-landing-pwa__text-wrap,
+  .immersive-landing-firefox__text-wrap {
+    display: flex;
+    min-width: 0;
+    flex: 1;
+    flex-direction: column;
+    gap: 0.5rem;
+    padding-right: 1.5rem;
+  }
+
+  .immersive-landing-pwa__title,
+  .immersive-landing-firefox__title {
+    font-size: 1rem;
+    line-height: 1.5rem;
+    font-weight: 500;
+  }
+
+  .immersive-landing-pwa__description,
+  .immersive-landing-firefox__description {
+    font-size: 0.875rem;
+    color: color-mix(in oklab, var(--color-base-content) 70%, transparent);
+  }
+
+  .immersive-landing-pwa__footer,
+  .immersive-landing-firefox__footer {
+    margin-top: 0.25rem;
+  }
+
+  .immersive-landing-pwa__action,
+  .immersive-landing-firefox__action {
+    flex: 1;
+  }
+
+  .immersive-landing-cookie {
+    position: fixed;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    z-index: 52;
+    border-top: 1px solid color-mix(in oklab, var(--color-base-content) 10%, transparent);
+    background: color-mix(in oklab, var(--color-base-300) 95%, transparent);
+    backdrop-filter: blur(8px);
+    transition: transform 300ms ease, opacity 300ms ease;
+    animation: immersive-landing-slide-up 220ms ease;
+  }
+
+  .immersive-landing-cookie--closing {
+    transform: translateY(100%);
+    opacity: 0;
+    animation: none;
+  }
+
+  .immersive-landing-cookie__container {
+    max-width: 80rem;
+    margin-inline: auto;
+    padding: 1rem;
+  }
+
+  .immersive-landing-cookie__row {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+
+  .immersive-landing-cookie__message {
+    font-size: 0.875rem;
+    color: var(--color-base-content);
+    flex: 1;
+  }
+
+  .immersive-landing-cookie__actions {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    flex-shrink: 0;
+  }
+
+  .immersive-landing-cookie__action-button {
+    width: 100%;
+  }
+
+  .immersive-landing-cookie__manage-button {
+    border: 0;
+    background: transparent;
+    color: color-mix(in oklab, var(--color-base-content) 70%, transparent);
+    font-size: 0.875rem;
+    text-decoration: underline;
+    cursor: pointer;
+    transition: color 150ms ease;
+  }
+
+  .immersive-landing-cookie__manage-button:hover {
+    color: var(--color-base-content);
+    text-decoration: none;
+  }
+
+  .immersive-landing-cookie__modal-backdrop {
+    position: fixed;
+    inset: 0;
+    z-index: 50;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgb(0 0 0 / 50%);
+    backdrop-filter: blur(4px);
+    padding: 1rem;
+    animation: immersive-landing-fade-in 200ms ease;
+  }
+
+  .immersive-landing-cookie__modal-card {
+    width: 100%;
+    max-width: 28rem;
+    border-radius: 0.5rem;
+    background: var(--color-base-100);
+    box-shadow: 0 20px 50px color-mix(in oklab, var(--color-base-content) 25%, transparent);
+    padding: 1.5rem;
+    animation: immersive-landing-scale-in 200ms ease;
+  }
+
+  .immersive-landing-cookie__modal-header {
+    margin-bottom: 1rem;
+  }
+
+  .immersive-landing-cookie__modal-title {
+    font-size: 1.125rem;
+    font-weight: 600;
+  }
+
+  .immersive-landing-cookie__preferences {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .immersive-landing-cookie__preference-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-radius: 0.5rem;
+    padding: 0.75rem;
+    cursor: pointer;
+    transition: background-color 150ms ease;
+  }
+
+  .immersive-landing-cookie__preference-row:hover {
+    background: color-mix(in oklab, var(--color-base-200) 50%, transparent);
+  }
+
+  .immersive-landing-cookie__preference-row--locked {
+    cursor: not-allowed;
+    background: color-mix(in oklab, var(--color-base-200) 50%, transparent);
+  }
+
+  .immersive-landing-cookie__preference-row--locked:hover {
+    background: color-mix(in oklab, var(--color-base-200) 50%, transparent);
+  }
+
+  .immersive-landing-cookie__preference-label {
+    font-size: 0.875rem;
+    font-weight: 500;
+  }
+
+  .immersive-landing-cookie__preference-row--locked .immersive-landing-cookie__preference-label {
+    color: color-mix(in oklab, var(--color-base-content) 70%, transparent);
+  }
+
+  .immersive-landing-cookie__toggle {
+    width: 2.25rem;
+    height: 1.25rem;
+    border-radius: 9999px;
+    border: 1px solid color-mix(in oklab, var(--color-base-content) 24%, transparent);
+    appearance: none;
+    position: relative;
+    background: var(--color-base-200);
+    transition: background-color 150ms ease, border-color 150ms ease;
+  }
+
+  .immersive-landing-cookie__toggle::after {
+    content: "";
+    position: absolute;
+    top: 1px;
+    left: 1px;
+    width: 0.95rem;
+    height: 0.95rem;
+    border-radius: 9999px;
+    background: white;
+    box-shadow: 0 1px 2px rgb(0 0 0 / 25%);
+    transition: transform 150ms ease;
+  }
+
+  .immersive-landing-cookie__toggle:checked {
+    background: var(--color-primary);
+    border-color: var(--color-primary);
+  }
+
+  .immersive-landing-cookie__toggle:checked::after {
+    transform: translateX(1rem);
+  }
+
+  .immersive-landing-cookie__toggle:disabled {
+    opacity: 0.7;
+    cursor: not-allowed;
+  }
+
+  .immersive-landing-cookie__modal-footer {
+    display: flex;
+    justify-content: flex-end;
+    gap: 0.5rem;
+  }
+
+  .immersive-landing-cookie__save-button {
+    transition: transform 150ms ease;
+  }
+
+  .immersive-landing-cookie__save-button:hover {
+    transform: scale(1.02);
+  }
+
+  .immersive-landing-cookie__save-button:active {
+    transform: scale(0.98);
+  }
+
+  @media (min-width: 768px) {
+    .immersive-landing-arrows__button {
+      display: inline-flex;
+    }
+
+    .immersive-landing-navigation__shell {
+      padding: 0.5rem 0.75rem;
+    }
+
+    .immersive-landing-navigation__row {
+      gap: 0.75rem;
+    }
+
+    .immersive-landing-navigation__mobile-arrow {
+      display: none;
+    }
+
+    .immersive-landing-navigation__dots {
+      display: flex;
+    }
+
+    .immersive-landing-cookie__row {
+      flex-direction: row;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .immersive-landing-cookie__actions {
+      flex-direction: row;
+      align-items: center;
+    }
+
+    .immersive-landing-cookie__action-button {
+      width: auto;
+    }
+  }
+
+  @media (min-width: 768px) {
+    .immersive-landing-pwa,
+    .immersive-landing-firefox {
+      left: auto;
+      max-width: 24rem;
+    }
+  }
+
+  @keyframes immersive-landing-slide-up {
+    from {
+      transform: translateY(100%);
+      opacity: 0;
+    }
+    to {
+      transform: translateY(0);
+      opacity: 1;
+    }
+  }
+
+  @keyframes immersive-landing-fade-in {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
+
+  @keyframes immersive-landing-scale-in {
+    from {
+      opacity: 0;
+      transform: scale(0.98);
+    }
+    to {
+      opacity: 1;
+      transform: scale(1);
+    }
+  }
+}
+

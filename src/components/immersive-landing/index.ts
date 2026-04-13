@@ -1,3 +1,5 @@
+import "./ImmersiveLanding.css";
+
 export { default } from "./ImmersiveLanding";
 export { useImmersiveLanding } from "./useImmersiveLanding";
 export { ImmersiveLandingContext, useImmersiveLandingContext } from "./ImmersiveLandingContext";

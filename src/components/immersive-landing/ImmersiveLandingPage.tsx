@@ -2,6 +2,7 @@ import { splitProps, useContext, createMemo, type JSX } from "solid-js";
 import { twMerge } from "tailwind-merge";
 import type { ImmersiveLandingPageProps } from "./types";
 import { ImmersiveLandingContext } from "./ImmersiveLandingContext";
+import { CLASSES } from "./ImmersiveLanding.classes";
 
 const ImmersiveLandingPage = (props: ImmersiveLandingPageProps): JSX.Element => {
   const [local, others] = splitProps(props, ["id", "children", "class", "className", "style"]);
@@ -13,8 +14,8 @@ const ImmersiveLandingPage = (props: ImmersiveLandingPageProps): JSX.Element => 
 
   const classes = () =>
     twMerge(
-      "absolute inset-0 h-full w-full overflow-hidden bg-transparent transition-opacity ease-in-out",
-      isActive() ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none",
+      CLASSES.page.base,
+      isActive() ? CLASSES.page.active : CLASSES.page.inactive,
       local.class,
       local.className,
     );
@@ -33,7 +34,7 @@ const ImmersiveLandingPage = (props: ImmersiveLandingPageProps): JSX.Element => 
       aria-hidden={!isActive()}
       {...others}
     >
-      <div class="relative z-10 h-full overflow-hidden">{local.children}</div>
+      <div class={CLASSES.page.content}>{local.children}</div>
     </section>
   );
 };

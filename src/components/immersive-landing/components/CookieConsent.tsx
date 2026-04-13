@@ -10,6 +10,7 @@ import {
 import { ConsentType, CookieConsentProps } from "../types";
 import Button from "../../button";
 import Flex from "../../flex";
+import { CLASSES } from "../ImmersiveLanding.classes";
 
 /**
  * CookieConsent Component
@@ -235,33 +236,29 @@ export const CookieConsent: Component<CookieConsentProps> = (props) => {
           role="dialog"
           aria-modal="false"
           aria-labelledby="cookie-consent-message"
-          class={`fixed bottom-0 left-0 right-0 z-52 bg-base-300/95 backdrop-blur border-t border-base-content/10 transition-all duration-300 ${
-            isClosing()
-              ? "translate-y-full opacity-0"
-              : "translate-y-0 opacity-100 animate-slide-up"
-          }`}
+          class={`${CLASSES.cookie.banner}${isClosing() ? ` ${CLASSES.cookie.bannerClosing}` : ""}`}
         >
-          <div class="container mx-auto px-4 py-4 max-w-7xl">
+          <div class={CLASSES.cookie.container}>
             <Flex
               direction="col"
               gap="md"
-              class="md:flex-row md:items-center md:justify-between"
+              class={CLASSES.cookie.row}
             >
               <p
                 id="cookie-consent-message"
-                class="text-sm text-base-content flex-1"
+                class={CLASSES.cookie.message}
               >
                 {texts().message}
               </p>
 
               <Flex
                 gap="sm"
-                class="flex-col sm:flex-row sm:items-center shrink-0"
+                class={CLASSES.cookie.actions}
               >
                 <Button
                   variant="primary"
                   size="sm"
-                  class="w-full sm:w-auto transition-transform duration-150 hover:scale-[1.02] active:scale-[0.98]"
+                  class={CLASSES.cookie.actionButton}
                   onClick={handleAcceptAll}
                 >
                   {texts().acceptAll}
@@ -269,14 +266,14 @@ export const CookieConsent: Component<CookieConsentProps> = (props) => {
                 <Button
                   variant="ghost"
                   size="sm"
-                  class="w-full sm:w-auto"
+                  class={CLASSES.cookie.actionButton}
                   onClick={handleDecline}
                 >
                   {texts().decline}
                 </Button>
                 <button
                   type="button"
-                  class="text-sm underline hover:no-underline text-base-content/70 hover:text-base-content transition-colors"
+                  class={CLASSES.cookie.manageButton}
                   onClick={handleManageOpen}
                 >
                   {texts().manage}
@@ -292,15 +289,15 @@ export const CookieConsent: Component<CookieConsentProps> = (props) => {
           role="dialog"
           aria-modal="true"
           aria-labelledby="cookie-manage-title"
-          class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm animate-fade-in"
+          class={CLASSES.cookie.modalBackdrop}
           onClick={handleManageClose}
         >
           <div
-            class="bg-base-100 rounded-lg shadow-xl w-full max-w-md p-6 animate-scale-in"
+            class={CLASSES.cookie.modalCard}
             onClick={(e) => e.stopPropagation()}
           >
-            <Flex justify="between" align="center" class="mb-4">
-              <h2 id="cookie-manage-title" class="text-lg font-semibold">
+            <Flex justify="between" align="center" class={CLASSES.cookie.modalHeader}>
+              <h2 id="cookie-manage-title" class={CLASSES.cookie.modalTitle}>
                 {texts().manageTitle}
               </h2>
               <Button
@@ -314,50 +311,50 @@ export const CookieConsent: Component<CookieConsentProps> = (props) => {
               </Button>
             </Flex>
 
-            <Flex direction="col" gap="md" class="mb-6">
-              <label class="flex items-center justify-between p-3 rounded bg-base-200/50 cursor-not-allowed">
-                <span class="text-sm font-medium text-base-content/70">
+            <Flex direction="col" gap="md" class={CLASSES.cookie.preferences}>
+              <label class={`${CLASSES.cookie.preferenceRow} ${CLASSES.cookie.preferenceRowLocked}`}>
+                <span class={CLASSES.cookie.preferenceLabel}>
                   {texts().essential}
                 </span>
                 <input
                   type="checkbox"
                   checked
                   disabled
-                  class="toggle toggle-sm toggle-primary"
+                  class={CLASSES.cookie.toggle}
                 />
               </label>
 
               {/* Analytics */}
-              <label class="flex items-center justify-between p-3 rounded hover:bg-base-200/50 cursor-pointer transition-colors">
-                <span class="text-sm font-medium">{texts().analytics}</span>
+              <label class={CLASSES.cookie.preferenceRow}>
+                <span class={CLASSES.cookie.preferenceLabel}>{texts().analytics}</span>
                 <input
                   type="checkbox"
                   checked={analyticsEnabled()}
                   onChange={(e) => setAnalyticsEnabled(e.currentTarget.checked)}
-                  class="toggle toggle-sm toggle-primary"
+                  class={CLASSES.cookie.toggle}
                 />
               </label>
 
               {/* Marketing */}
-              <label class="flex items-center justify-between p-3 rounded hover:bg-base-200/50 cursor-pointer transition-colors">
-                <span class="text-sm font-medium">{texts().marketing}</span>
+              <label class={CLASSES.cookie.preferenceRow}>
+                <span class={CLASSES.cookie.preferenceLabel}>{texts().marketing}</span>
                 <input
                   type="checkbox"
                   checked={marketingEnabled()}
                   onChange={(e) => setMarketingEnabled(e.currentTarget.checked)}
-                  class="toggle toggle-sm toggle-primary"
+                  class={CLASSES.cookie.toggle}
                 />
               </label>
             </Flex>
 
-            <Flex gap="sm" justify="end">
+            <Flex gap="sm" justify="end" class={CLASSES.cookie.modalFooter}>
               <Button variant="ghost" size="sm" onClick={handleManageClose}>
                 {texts().cancel}
               </Button>
               <Button
                 variant="primary"
                 size="sm"
-                class="transition-transform duration-150 hover:scale-[1.02] active:scale-[0.98]"
+                class={CLASSES.cookie.saveButton}
                 onClick={handleManageSave}
               >
                 {texts().save}
