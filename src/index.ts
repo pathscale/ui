@@ -336,7 +336,18 @@ export type {
 } from "./components/kbd";
 export { default as Label, LabelRoot } from "./components/label";
 export type { LabelProps, LabelRootProps } from "./components/label";
-export { default as Link } from "./components/link";
+export {
+  default as Link,
+  LinkRoot,
+  LinkIcon,
+} from "./components/link";
+export type {
+  LinkProps,
+  LinkRootProps,
+  LinkIconProps,
+  LinkVariant,
+  LinkUnderline,
+} from "./components/link";
 export {
   default as ListBox,
   ListBoxRoot,

@@ -1,0 +1,131 @@
+@layer components {
+  .link {
+    position: relative;
+    display: inline-flex;
+    width: fit-content;
+    height: fit-content;
+    align-items: center;
+    border-radius: 0.75rem;
+    font-size: 0.875rem;
+    font-weight: 500;
+    line-height: 1.25rem;
+    color: var(--color-link, var(--color-accent));
+    text-decoration-line: underline;
+    text-decoration-thickness: 1.5px;
+    text-decoration-color: var(
+      --color-separator-tertiary,
+      color-mix(in oklab, var(--color-base-content) 22%, transparent)
+    );
+    text-underline-offset: 0.25rem;
+    cursor: var(--cursor-interactive, pointer);
+    -webkit-tap-highlight-color: transparent;
+    transition:
+      color 100ms var(--ease-smooth, ease),
+      text-decoration-color 100ms var(--ease-out, ease),
+      background-color 150ms var(--ease-smooth, ease),
+      box-shadow 150ms var(--ease-out, ease),
+      opacity 100ms var(--ease-out, ease);
+  }
+
+  .link--default {
+    color: var(--color-link, var(--color-accent));
+  }
+
+  .link--underline-always {
+    text-decoration-line: underline;
+  }
+
+  .link--underline-hover {
+    text-decoration-line: none;
+  }
+
+  .link--underline-none {
+    text-decoration-line: none;
+  }
+
+  .link:visited {
+    color: var(
+      --color-link-visited,
+      color-mix(in oklab, var(--color-link, var(--color-accent)) 84%, black)
+    );
+  }
+
+  @media (hover: hover) {
+    .link:hover,
+    .link[data-hovered="true"] {
+      text-decoration-color: var(
+        --color-muted,
+        color-mix(in oklab, var(--color-base-content) 50%, transparent)
+      );
+    }
+
+    .link--underline-hover:hover,
+    .link--underline-hover[data-hovered="true"] {
+      text-decoration-line: underline;
+    }
+  }
+
+  .link:focus-visible,
+  .link[data-focus-visible="true"] {
+    outline: 2px solid var(--color-accent);
+    outline-offset: 2px;
+    text-decoration-color: currentColor;
+  }
+
+  .link--disabled,
+  .link[aria-disabled="true"] {
+    pointer-events: none;
+    cursor: not-allowed;
+    opacity: var(--disabled-opacity, 0.6);
+    text-decoration-line: none;
+  }
+
+  .link__icon {
+    pointer-events: none;
+    display: inline-flex;
+    width: 0.5rem;
+    height: 0.5rem;
+    flex-shrink: 0;
+    align-items: center;
+    justify-content: center;
+    color: currentColor;
+    opacity: 0.6;
+    transition: opacity 150ms var(--ease-out, ease);
+  }
+
+  .link__icon-default {
+    display: block;
+    width: 100%;
+    height: 100%;
+    transform: translateY(1px);
+  }
+
+  .link__icon[data-default-icon="true"] {
+    margin-left: 0.25rem;
+    padding-bottom: 0.125rem;
+  }
+
+  @media (hover: hover) {
+    .link:hover .link__icon,
+    .link[data-hovered="true"] .link__icon {
+      opacity: 1;
+    }
+  }
+
+  .link:focus-visible .link__icon,
+  .link[data-focus-visible="true"] .link__icon {
+    opacity: 1;
+  }
+
+  .link.button {
+    gap: 0;
+    text-decoration-line: none;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .link,
+    .link__icon {
+      transition: none;
+    }
+  }
+}

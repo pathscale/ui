@@ -51,6 +51,7 @@ import {
   InputOTP,
   Kbd,
   Label,
+  Link,
   Pagination,
   Radio,
   RadioGroup,
@@ -1223,6 +1224,60 @@ export default function App() {
                   <Kbd.Content>K</Kbd.Content>
                 </Kbd>{" "}
                 to open quick search.
+              </p>
+            </div>
+          </div>
+        </section>
+
+        <section class="space-y-4 rounded-xl border border-base-300 bg-base-200 p-4">
+          <div>
+            <h2 class="text-sm font-semibold">Link</h2>
+            <p class="text-xs opacity-70">
+              HeroUI-style semantic links with icon slot, external behavior, and underline modes.
+            </p>
+          </div>
+
+          <div class="grid gap-4 lg:grid-cols-2">
+            <div class="space-y-2 rounded-xl border border-base-300 bg-base-100 p-3">
+              <h3 class="text-xs font-semibold uppercase tracking-wide opacity-70">Basic</h3>
+              <Link href="#link-basic">
+                Documentation
+                <Link.Icon />
+              </Link>
+            </div>
+
+            <div class="space-y-2 rounded-xl border border-base-300 bg-base-100 p-3">
+              <h3 class="text-xs font-semibold uppercase tracking-wide opacity-70">External</h3>
+              <Link href="https://heroui.com" isExternal>
+                HeroUI
+                <Link.Icon />
+              </Link>
+            </div>
+
+            <div class="space-y-2 rounded-xl border border-base-300 bg-base-100 p-3">
+              <h3 class="text-xs font-semibold uppercase tracking-wide opacity-70">Underline Modes</h3>
+              <div class="flex flex-col gap-2">
+                <Link href="#link-underline-always" underline="always">
+                  Always underline
+                </Link>
+                <Link href="#link-underline-hover" underline="hover">
+                  Underline on hover
+                </Link>
+                <Link href="#link-underline-none" underline="none">
+                  No underline
+                </Link>
+              </div>
+            </div>
+
+            <div class="space-y-2 rounded-xl border border-base-300 bg-base-100 p-3">
+              <h3 class="text-xs font-semibold uppercase tracking-wide opacity-70">Inline Usage</h3>
+              <p class="text-sm">
+                Review the{" "}
+                <Link href="#release-notes">
+                  release notes
+                  <Link.Icon />
+                </Link>{" "}
+                before updating your workspace.
               </p>
             </div>
           </div>
