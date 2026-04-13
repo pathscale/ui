@@ -1,8 +1,7 @@
 import { createForm as createFelteForm } from "@felte/solid";
-import { validator } from "@felte/validator-zod";
+import { safeParse, type GenericSchema } from "valibot";
 import type { ObjectSetter, Paths } from "@felte/common";
 import type { Accessor } from "solid-js";
-import type { z } from "zod";
 
 type AnyValues = Record<string, unknown>;
 
@@ -16,7 +15,7 @@ export type FormDirective = (
 ) => void | (() => void);
 
 export type UseFormOptions<TValues extends AnyValues = AnyValues> = {
-  schema?: z.ZodType<TValues>;
+  schema?: GenericSchema;
   initialValues?: TValues;
   onSubmit?: (values: TValues) => void | Promise<void>;
 };
@@ -82,7 +81,18 @@ export const useForm = <TValues extends AnyValues = AnyValues>(
   };
 
   if (options.schema) {
-    (formConfig as any).extend = [validator({ schema: options.schema })];
+    (formConfig as any).validate = (values: TValues) => {
+      const result = safeParse(options.schema!, values);
+      if (result.success) return;
+      const errors: Record<string, string> = {};
+      for (const issue of result.issues) {
+        if (issue.path) {
+          const path = issue.path.map((p) => p.key).join(".");
+          if (!errors[path]) errors[path] = issue.message;
+        }
+      }
+      return errors;
+    };
   }
 
   const {
