@@ -83,6 +83,7 @@ import {
   TextArea,
   TextField,
   TimeField,
+  Toolbar,
   Toast,
   toast,
   Toggle,
@@ -5272,8 +5273,8 @@ export default function App() {
           <div>
             <h2 class="text-sm font-semibold">Layout Primitives</h2>
             <p class="text-xs opacity-70">
-              Flex, Grid, Navbar, and Footer examples using the refactored
-              component styling system.
+              Flex, Grid, Toolbar, Navbar, and Footer examples using the
+              refactored component styling system.
             </p>
           </div>
 
@@ -5308,6 +5309,43 @@ export default function App() {
                 )}
               </For>
             </Grid>
+          </div>
+
+          <div class="space-y-3">
+            <h3 class="text-xs font-semibold uppercase opacity-70">Toolbar</h3>
+            <div class="flex flex-wrap gap-6">
+              <Toolbar
+                aria-label="Text formatting toolbar"
+                class="rounded-lg border border-base-300 bg-base-100 p-2"
+              >
+                <Button size="sm" variant="secondary">
+                  Bold
+                </Button>
+                <Button size="sm" variant="secondary">
+                  Italic
+                </Button>
+                <Separator />
+                <Button size="sm" variant="ghost">
+                  Undo
+                </Button>
+                <Button size="sm" variant="ghost">
+                  Redo
+                </Button>
+              </Toolbar>
+
+              <Toolbar aria-label="Attached tools" orientation="vertical" isAttached>
+                <Button size="sm" variant="secondary" isIconOnly aria-label="Copy">
+                  <Icon name="icon-[lucide--copy]" width={16} height={16} />
+                </Button>
+                <Button size="sm" variant="secondary" isIconOnly aria-label="Scissors">
+                  <Icon name="icon-[lucide--scissors]" width={16} height={16} />
+                </Button>
+                <Separator />
+                <Button size="sm" variant="secondary" isIconOnly aria-label="Download">
+                  <Icon name="icon-[lucide--download]" width={16} height={16} />
+                </Button>
+              </Toolbar>
+            </div>
           </div>
 
           <div class="space-y-3">

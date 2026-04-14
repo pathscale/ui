@@ -739,6 +739,15 @@ export type {
   SizePreset,
 } from "./components/size-picker";
 export {
+  default as Toolbar,
+  ToolbarRoot,
+} from "./components/toolbar";
+export type {
+  ToolbarProps,
+  ToolbarRootProps,
+  ToolbarOrientation,
+} from "./components/toolbar";
+export {
   ThemeColorPicker,
   createHueShiftStore,
   getDefaultHueShiftStore,

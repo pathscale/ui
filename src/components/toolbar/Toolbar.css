@@ -1,0 +1,55 @@
+@layer components {
+  .toolbar {
+    display: grid;
+    width: fit-content;
+    grid-auto-flow: column;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .toolbar--horizontal {
+    grid-auto-flow: column;
+    align-items: center;
+  }
+
+  .toolbar--vertical {
+    grid-auto-flow: row;
+    align-items: flex-start;
+    justify-items: flex-start;
+  }
+
+  .toolbar--attached {
+    border-radius: 9999px;
+    background-color: var(--color-surface, var(--color-base-100));
+    padding: 0.25rem;
+    box-shadow: var(--shadow-overlay, 0 12px 28px color-mix(in oklab, black 12%, transparent));
+  }
+
+  .toolbar [data-slot="separator"][data-orientation="vertical"] {
+    height: 50%;
+    align-self: center;
+  }
+
+  .toolbar [data-slot="separator"][data-orientation="horizontal"] {
+    width: 50%;
+    justify-self: center;
+    align-self: center;
+  }
+
+  .toolbar--horizontal > [data-slot="separator"] {
+    width: 1px;
+    min-height: 1rem;
+    height: 50%;
+    align-self: center;
+    justify-self: center;
+  }
+
+  .toolbar--vertical > [data-slot="separator"] {
+    width: 50%;
+    min-height: 1px;
+    height: 1px;
+    align-self: center;
+    justify-self: center;
+  }
+}
+
