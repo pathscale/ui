@@ -23,6 +23,7 @@ import {
   DateField,
   DatePicker,
   DateRangePicker,
+  RangeCalendar,
   type DateRangeValue,
   GlassPanel,
   GlowCard,
@@ -1383,6 +1384,26 @@ export default function App() {
               <Description>
                 Use previous/next controls or keyboard keys: arrows, Home/End,
                 and PageUp/PageDown.
+              </Description>
+            </div>
+
+            <div class="space-y-2 rounded-xl border border-base-300 bg-base-100 p-3 lg:col-span-2">
+              <h3 class="text-xs font-semibold uppercase tracking-wide opacity-70">
+                RangeCalendar
+              </h3>
+              <RangeCalendar
+                value={controlledRangeValue()}
+                onChange={setControlledRangeValue}
+                minValue={new Date(2026, 3, 5)}
+                maxValue={new Date(2026, 3, 28)}
+                isDateUnavailable={(date) =>
+                  date.getDay() === 0 || date.getDay() === 6
+                }
+              />
+              <Description>
+                Range:{" "}
+                {controlledRangeValue()?.start?.toLocaleDateString() ?? "start"}{" "}
+                - {controlledRangeValue()?.end?.toLocaleDateString() ?? "end"}
               </Description>
             </div>
           </div>

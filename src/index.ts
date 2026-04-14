@@ -203,6 +203,11 @@ export {
   type DateRangeValue,
 } from "./components/date-range-picker";
 export {
+  default as RangeCalendar,
+  type RangeCalendarProps,
+  type RangeCalendarValue,
+} from "./components/range-calendar";
+export {
   default as Drawer,
   DrawerRoot,
   DrawerTrigger,

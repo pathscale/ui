@@ -1,0 +1,51 @@
+@layer components {
+  .range-calendar {
+    width: 15.75rem;
+    max-width: 100%;
+    container-type: inline-size;
+  }
+
+  .range-calendar--disabled {
+    opacity: var(--disabled-opacity, 0.72);
+  }
+
+  .range-calendar__calendar {
+    width: 100%;
+    max-width: 100%;
+  }
+
+  .range-calendar__calendar .calendar {
+    width: 100%;
+    max-width: 100%;
+  }
+
+  .range-calendar__calendar .calendar__heading {
+    text-align: center;
+  }
+
+  .range-calendar__calendar .calendar__cell--in-range,
+  .range-calendar__calendar .calendar__cell--in-preview-range {
+    border-radius: 0.5rem;
+  }
+
+  .range-calendar__calendar .calendar__cell--range-start.calendar__cell--in-range,
+  .range-calendar__calendar .calendar__cell--range-start.calendar__cell--in-preview-range {
+    border-top-left-radius: 9999px;
+    border-bottom-left-radius: 9999px;
+    border-top-right-radius: 0.5rem;
+    border-bottom-right-radius: 0.5rem;
+  }
+
+  .range-calendar__calendar .calendar__cell--range-end.calendar__cell--in-range,
+  .range-calendar__calendar .calendar__cell--range-end.calendar__cell--in-preview-range {
+    border-top-right-radius: 9999px;
+    border-bottom-right-radius: 9999px;
+    border-top-left-radius: 0.5rem;
+    border-bottom-left-radius: 0.5rem;
+  }
+
+  .range-calendar__calendar .calendar__cell--range-start.calendar__cell--range-end {
+    border-radius: 9999px;
+  }
+}
+
