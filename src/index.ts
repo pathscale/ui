@@ -591,6 +591,13 @@ export type {
   SearchFieldVariant,
   SearchFieldRenderProps,
 } from "./components/search-field";
+export { default as ScrollShadow } from "./components/scroll-shadow";
+export type {
+  ScrollShadowProps,
+  ScrollShadowVisibility,
+  ScrollShadowOrientation,
+  ScrollShadowVariant,
+} from "./components/scroll-shadow";
 export { default as Separator } from "./components/separator";
 export type {
   SeparatorProps,

@@ -39,6 +39,7 @@ import {
   ProgressBar,
   ProgressCircle,
   Popover,
+  ScrollShadow,
   SearchField,
   Skeleton,
   Surface,
@@ -191,6 +192,10 @@ const ALERT_STATUSES = [
   "warning",
   "danger",
 ] as const;
+const SCROLL_SHADOW_HORIZONTAL_ITEMS = Array.from(
+  { length: 10 },
+  (_, index) => `Scrollable card ${index + 1}`,
+);
 
 const DISCLOSURE_ITEMS = [
   { id: "first", title: "First section", content: "Details for the first disclosure." },
@@ -3729,6 +3734,51 @@ export default function App() {
                 </Disclosure>
               ))}
             </DisclosureGroup>
+          </div>
+        </section>
+
+        <section class="space-y-4 rounded-xl border border-base-300 bg-base-200 p-4">
+          <div>
+            <h2 class="text-sm font-semibold">ScrollShadow</h2>
+            <p class="text-xs opacity-70">
+              Scroll edge shadows for vertical and horizontal overflow content.
+            </p>
+          </div>
+
+          <div class="space-y-3">
+            <h3 class="text-xs font-semibold uppercase opacity-70">Vertical</h3>
+            <ScrollShadow class="max-h-48 rounded-lg border border-base-300 bg-base-100 p-4">
+              <div class="space-y-3 text-sm">
+                <For each={Array.from({ length: 12 }, (_, index) => index + 1)}>
+                  {(item) => (
+                    <p>
+                      Row {item}: Scroll to reveal top and bottom fade shadows.
+                    </p>
+                  )}
+                </For>
+              </div>
+            </ScrollShadow>
+          </div>
+
+          <div class="space-y-3">
+            <h3 class="text-xs font-semibold uppercase opacity-70">
+              Horizontal
+            </h3>
+            <ScrollShadow
+              class="max-w-full rounded-lg border border-base-300 bg-base-100 p-4"
+              orientation="horizontal"
+              hideScrollBar
+            >
+              <div class="flex min-w-max gap-3">
+                <For each={SCROLL_SHADOW_HORIZONTAL_ITEMS}>
+                  {(label) => (
+                    <div class="min-w-[180px] rounded-md border border-base-300 bg-base-200 px-4 py-3 text-xs font-medium">
+                      {label}
+                    </div>
+                  )}
+                </For>
+              </div>
+            </ScrollShadow>
           </div>
         </section>
 
