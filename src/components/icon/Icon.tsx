@@ -25,10 +25,9 @@ const Icon = (props: IconProps): JSX.Element => {
 
   const width = local.width ?? 24;
   const height = local.height ?? 24;
-  const name = local.name;
 
   const classes = createMemo(() =>
-    twMerge(CLASSES.base, name, local.class, local.className),
+    twMerge(CLASSES.base, local.name, local.class, local.className),
   );
 
   return (

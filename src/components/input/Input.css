@@ -132,6 +132,10 @@
     pointer-events: none;
   }
 
+  .input__icon > :is(button, [role="button"], a, [tabindex]):not([tabindex="-1"]) {
+    pointer-events: auto;
+  }
+
   .input__icon > * {
     width: 1rem;
     height: 1rem;

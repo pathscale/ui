@@ -244,6 +244,9 @@ const FORM_VALIDATION_SCHEMA = z.object({
     .string()
     .min(1, "Email is required.")
     .email("Provide a valid email."),
+  demoPassword: z
+    .string()
+    .min(8, "Password must be at least 8 characters."),
   demoQuery: z.string().min(2, "Search query must be at least 2 characters."),
   demoSeats: z.number().min(1, "Seats must be at least 1."),
   demoDate: z.string().min(1, "Launch date is required."),
@@ -346,6 +349,7 @@ export default function App() {
   const [controlledAccordionValue, setControlledAccordionValue] = createSignal<
     string[]
   >(["security"]);
+  const [showDemoPassword, setShowDemoPassword] = createSignal(false);
   const [disclosureKeys, setDisclosureKeys] = createSignal<Set<string>>(
     new Set(["first"]),
   );
@@ -416,13 +420,14 @@ export default function App() {
     initialValues: {
       demoName: "",
       demoEmail: "",
+      demoPassword: "",
       demoQuery: "",
       demoSeats: 5,
       demoDate: "",
     },
     onSubmit: (values) => {
       setFormSummary(
-        `Validated submit: ${values.demoName} • ${values.demoEmail} • query:${values.demoQuery} • seats:${values.demoSeats} • ${values.demoDate}`,
+        `Validated submit: ${values.demoName} • ${values.demoEmail} • password:${values.demoPassword.length} chars • query:${values.demoQuery} • seats:${values.demoSeats} • ${values.demoDate}`,
       );
     },
   });
@@ -437,6 +442,9 @@ export default function App() {
   });
   const demoNameField = useFieldProps("demoName", { form: validatedForm });
   const demoEmailField = useFieldProps("demoEmail", { form: validatedForm });
+  const demoPasswordField = useFieldProps("demoPassword", {
+    form: validatedForm,
+  });
   const demoQueryField = useFieldProps("demoQuery", { form: validatedForm });
   const demoSeatsField = useFieldProps("demoSeats", { form: validatedForm });
   const demoDateField = useFieldProps("demoDate", { form: validatedForm });
@@ -1690,6 +1698,48 @@ export default function App() {
                   We only use this for account notifications.
                 </Description>
                 <FieldError name="demoEmail" />
+              </div>
+
+              <div class="space-y-1">
+                <Label htmlFor="form-demo-password">Password</Label>
+                <Input
+                  id="form-demo-password"
+                  name={demoPasswordField.name()}
+                  value={String(demoPasswordField.value() ?? "")}
+                  onInput={demoPasswordField.onInput}
+                  onBlur={demoPasswordField.onBlur}
+                  type={showDemoPassword() ? "text" : "password"}
+                  placeholder="At least 8 characters"
+                  fullWidth
+                  endIcon={
+                    <button
+                      type="button"
+                      aria-label={
+                        showDemoPassword()
+                          ? "Hide password"
+                          : "Show password"
+                      }
+                      title={showDemoPassword() ? "Hide password" : "Show password"}
+                      class="inline-flex items-center justify-center text-base-content/75 hover:text-base-content"
+                      onMouseDown={(event) => event.preventDefault()}
+                      onClick={() => setShowDemoPassword((value) => !value)}
+                    >
+                      <Icon
+                        name={
+                          showDemoPassword()
+                            ? "icon-[lucide--eye-off]"
+                            : "icon-[lucide--eye]"
+                        }
+                        width={16}
+                        height={16}
+                      />
+                    </button>
+                  }
+                />
+                <Description>
+                  Playground test: click the eye icon to toggle visibility.
+                </Description>
+                <FieldError name="demoPassword" />
               </div>
 
               <div class="space-y-1">
