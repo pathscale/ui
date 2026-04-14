@@ -38,6 +38,7 @@ import {
   NumberField,
   ProgressBar,
   ProgressCircle,
+  Popover,
   SearchField,
   Skeleton,
   Surface,
@@ -108,12 +109,30 @@ const BADGE_PLACEMENTS = [
 ] as const;
 const CHIP_VARIANTS = ["solid", "flat", "bordered"] as const;
 const CHIP_SIZES = ["sm", "md", "lg"] as const;
-const CHIP_COLORS = ["default", "primary", "accent", "success", "warning", "danger"] as const;
+const CHIP_COLORS = [
+  "default",
+  "primary",
+  "accent",
+  "success",
+  "warning",
+  "danger",
+] as const;
 const CARD_VARIANTS = ["default", "flat", "bordered", "shadow"] as const;
-const SURFACE_VARIANTS = ["default", "secondary", "tertiary", "transparent"] as const;
+const SURFACE_VARIANTS = [
+  "default",
+  "secondary",
+  "tertiary",
+  "transparent",
+] as const;
 const SEPARATOR_VARIANTS = ["default", "secondary", "tertiary"] as const;
 const TEXT_SIZES = ["xs", "sm", "base", "lg", "xl"] as const;
-const TEXT_VARIANTS = ["default", "muted", "success", "warning", "danger"] as const;
+const TEXT_VARIANTS = [
+  "default",
+  "muted",
+  "success",
+  "warning",
+  "danger",
+] as const;
 
 const TAB_ITEMS = [
   { key: "overview", label: "Overview", content: "Overview content" },
@@ -161,6 +180,7 @@ const TOGGLE_COLORS = [
 ] as const;
 const TOGGLE_SIZES = ["sm", "md", "lg"] as const;
 const TOOLTIP_PLACEMENTS = ["top", "bottom", "left", "right"] as const;
+const POPOVER_PLACEMENTS = ["top", "bottom", "left", "right"] as const;
 const ALERT_STATUSES = [
   "default",
   "accent",
@@ -216,10 +236,16 @@ const FORM_CONTROLLED_SCHEMA = z.object({
   controlledEmail: z.string().email("Provide a valid controlled email."),
 });
 
-const searchIcon = () => <Icon name="icon-[lucide--search]" width={16} height={16} />;
+const searchIcon = () => (
+  <Icon name="icon-[lucide--search]" width={16} height={16} />
+);
 const closeIcon = () => <Icon name="icon-[lucide--x]" width={16} height={16} />;
-const chevronDownIcon = () => <Icon name="icon-[lucide--chevron-down]" width={20} height={20} />;
-const checkIcon = () => <Icon name="icon-[lucide--check]" width={20} height={20} />;
+const chevronDownIcon = () => (
+  <Icon name="icon-[lucide--chevron-down]" width={20} height={20} />
+);
+const checkIcon = () => (
+  <Icon name="icon-[lucide--check]" width={20} height={20} />
+);
 const LANGUAGE_SWITCHER_DEMO_TRANSLATIONS = {
   en: {
     greeting: "Hello from Pathscale UI",
@@ -233,16 +259,22 @@ const LANGUAGE_SWITCHER_DEMO_TRANSLATIONS = {
   },
   pt: {
     greeting: "Ola do Pathscale UI",
-    helper:
-      "Use o seletor de idioma para testar o estado de locale e o menu.",
+    helper: "Use o seletor de idioma para testar o estado de locale e o menu.",
   },
 } as const;
 
 export default function App() {
   const [selectedFramework, setSelectedFramework] = createSignal("solid");
   const [checkedTerms, setCheckedTerms] = createSignal(false);
-  const [selectedChannels, setSelectedChannels] = createSignal<string[]>(["email", "push"]);
-  const [colorAreaValue, setColorAreaValue] = createSignal({ h: 210, s: 75, v: 80 });
+  const [selectedChannels, setSelectedChannels] = createSignal<string[]>([
+    "email",
+    "push",
+  ]);
+  const [colorAreaValue, setColorAreaValue] = createSignal({
+    h: 210,
+    s: 75,
+    v: 80,
+  });
   const [colorFieldValue, setColorFieldValue] = createSignal("#3B82F6");
   const [colorPickerValue, setColorPickerValue] = createSignal("#3B82F6");
   const [themeHue, setThemeHue] = createSignal<number | null>(null);
@@ -250,7 +282,8 @@ export default function App() {
   const [colorSliderHue, setColorSliderHue] = createSignal(220);
   const [colorSliderAlpha, setColorSliderAlpha] = createSignal(0.75);
   const [selectedSwatch, setSelectedSwatch] = createSignal("#3B82F6");
-  const [selectedSwatchPicker, setSelectedSwatchPicker] = createSignal("#3B82F6");
+  const [selectedSwatchPicker, setSelectedSwatchPicker] =
+    createSignal("#3B82F6");
   const [toggleOn, setToggleOn] = createSignal(false);
   const [sliderVal, setSliderVal] = createSignal(30);
   const [sliderSm, setSliderSm] = createSignal(50);
@@ -258,14 +291,18 @@ export default function App() {
   const [basicPage, setBasicPage] = createSignal(1);
   const [largePage, setLargePage] = createSignal(8);
   const [controlledPage, setControlledPage] = createSignal(3);
-  const [controlledState, setControlledState] = createSignal<string | null>("california");
+  const [controlledState, setControlledState] = createSignal<string | null>(
+    "california",
+  );
   const [selectedRegions, setSelectedRegions] = createSignal<string[]>([
     "north-america",
     "europe",
   ]);
   const [showRemovableChip, setShowRemovableChip] = createSignal(true);
   const [cardPressCount, setCardPressCount] = createSignal(0);
-  const [selectedTag, setSelectedTag] = createSignal<Set<string>>(new Set(["news"]));
+  const [selectedTag, setSelectedTag] = createSignal<Set<string>>(
+    new Set(["news"]),
+  );
   const [selectedTopics, setSelectedTopics] = createSignal<Set<string>>(
     new Set(["design", "docs"]),
   );
@@ -275,44 +312,62 @@ export default function App() {
     "svelte",
     "vue",
   ]);
-  const [selectedListUser, setSelectedListUser] = createSignal<Set<string>>(new Set(["bob"]));
+  const [selectedListUser, setSelectedListUser] = createSignal<Set<string>>(
+    new Set(["bob"]),
+  );
   const [selectedListTopics, setSelectedListTopics] = createSignal<Set<string>>(
     new Set(["design", "api"]),
   );
   const [lastListAction, setLastListAction] = createSignal<string | null>(null);
-  const [selectedMenuMode, setSelectedMenuMode] = createSignal<Set<string>>(new Set(["preview"]));
-  const [selectedMenuFilters, setSelectedMenuFilters] = createSignal<Set<string>>(new Set(["all"]));
+  const [selectedMenuMode, setSelectedMenuMode] = createSignal<Set<string>>(
+    new Set(["preview"]),
+  );
+  const [selectedMenuFilters, setSelectedMenuFilters] = createSignal<
+    Set<string>
+  >(new Set(["all"]));
   const [lastMenuAction, setLastMenuAction] = createSignal<string | null>(null);
-  const [controlledAccordionValue, setControlledAccordionValue] = createSignal<string[]>([
-    "security",
-  ]);
-  const [emailError, setEmailError] = createSignal<string>("Email is required.");
-  const [usernameError, setUsernameError] = createSignal<string>("Username is required.");
+  const [controlledAccordionValue, setControlledAccordionValue] = createSignal<
+    string[]
+  >(["security"]);
+  const [emailError, setEmailError] =
+    createSignal<string>("Email is required.");
+  const [usernameError, setUsernameError] = createSignal<string>(
+    "Username is required.",
+  );
   const [formSummary, setFormSummary] = createSignal("No submission yet.");
-  const [selectedComboAnimal, setSelectedComboAnimal] = createSignal<string | null>("cat");
+  const [selectedComboAnimal, setSelectedComboAnimal] = createSignal<
+    string | null
+  >("cat");
   const [comboInputValue, setComboInputValue] = createSignal("");
   const [comboIsOpen, setComboIsOpen] = createSignal(false);
   const [otpValue, setOtpValue] = createSignal("");
   const [otpCompletedCode, setOtpCompletedCode] = createSignal("");
   const [modalOpen, setModalOpen] = createSignal(false);
-  const [nonDismissableModalOpen, setNonDismissableModalOpen] = createSignal(false);
-  const [controlledTextFieldValue, setControlledTextFieldValue] = createSignal("Pathscale");
+  const [nonDismissableModalOpen, setNonDismissableModalOpen] =
+    createSignal(false);
+  const [controlledTextFieldValue, setControlledTextFieldValue] =
+    createSignal("Pathscale");
   const [controlledTextAreaValue, setControlledTextAreaValue] = createSignal(
     "Building HeroUI parity components in Solid.",
   );
-  const [controlledSearchValue, setControlledSearchValue] = createSignal("analytics");
-  const [controlledNumberValue, setControlledNumberValue] = createSignal<number | undefined>(3);
-  const [controlledDateValue, setControlledDateValue] = createSignal("2026-04-11");
+  const [controlledSearchValue, setControlledSearchValue] =
+    createSignal("analytics");
+  const [controlledNumberValue, setControlledNumberValue] = createSignal<
+    number | undefined
+  >(3);
+  const [controlledDateValue, setControlledDateValue] =
+    createSignal("2026-04-11");
   const [controlledCalendarDate, setControlledCalendarDate] = createSignal(
     new Date(2026, 3, 15),
   );
   const [controlledPickerDate, setControlledPickerDate] = createSignal(
     new Date(2026, 3, 16),
   );
-  const [controlledRangeValue, setControlledRangeValue] = createSignal<DateRangeValue>({
-    start: new Date(2026, 3, 16),
-    end: new Date(2026, 3, 22),
-  });
+  const [controlledRangeValue, setControlledRangeValue] =
+    createSignal<DateRangeValue>({
+      start: new Date(2026, 3, 16),
+      end: new Date(2026, 3, 22),
+    });
   const [glassPanelOpen, setGlassPanelOpen] = createSignal(true);
   const [controlledTimeValue, setControlledTimeValue] = createSignal("13:30");
   const languageSwitcherI18n = createI18n({
@@ -358,36 +413,47 @@ export default function App() {
   const demoQueryField = useFieldProps("demoQuery", { form: validatedForm });
   const demoSeatsField = useFieldProps("demoSeats", { form: validatedForm });
   const demoDateField = useFieldProps("demoDate", { form: validatedForm });
-  const controlledEmailField = useFieldProps("controlledEmail", { form: controlledForm });
+  const controlledEmailField = useFieldProps("controlledEmail", {
+    form: controlledForm,
+  });
 
   return (
     <main class="min-h-screen bg-base-100 text-base-content p-8">
       <div class="mx-auto max-w-5xl space-y-8">
         <header class="space-y-2">
           <h1 class="text-2xl font-semibold">Component Playground</h1>
-          <p class="text-sm opacity-70">Focused migration test surfaces for HeroUI parity.</p>
+          <p class="text-sm opacity-70">
+            Focused migration test surfaces for HeroUI parity.
+          </p>
         </header>
 
         <section class="space-y-4 rounded-xl border border-base-300 bg-base-200 p-4">
           <div>
             <h2 class="text-sm font-semibold">Card</h2>
             <p class="text-xs opacity-70">
-              Compound API with static variants and optional hoverable/pressable interactions.
+              Compound API with static variants and optional hoverable/pressable
+              interactions.
             </p>
           </div>
 
           <div class="grid gap-4 md:grid-cols-2">
             <Card class="min-h-36">
-              <p class="text-sm">Basic card content with the default surface styling.</p>
+              <p class="text-sm">
+                Basic card content with the default surface styling.
+              </p>
             </Card>
 
             <Card variant="bordered" class="min-h-36">
               <Card.Header>
                 <h3 class="text-sm font-medium">Header / Body / Footer</h3>
-                <p class="text-xs opacity-70">Structured slots for consistent spacing.</p>
+                <p class="text-xs opacity-70">
+                  Structured slots for consistent spacing.
+                </p>
               </Card.Header>
               <Card.Body>
-                <p class="text-sm opacity-80">Use `Card.Body` for the main content block.</p>
+                <p class="text-sm opacity-80">
+                  Use `Card.Body` for the main content block.
+                </p>
               </Card.Body>
               <Card.Footer>
                 <Button size="sm" variant="outline">
@@ -405,10 +471,14 @@ export default function App() {
                 {(variant) => (
                   <Card variant={variant} class="min-h-28">
                     <Card.Header>
-                      <h4 class="text-xs font-semibold uppercase tracking-wide">{variant}</h4>
+                      <h4 class="text-xs font-semibold uppercase tracking-wide">
+                        {variant}
+                      </h4>
                     </Card.Header>
                     <Card.Body>
-                      <p class="text-xs opacity-75">Static map variant: `{variant}`.</p>
+                      <p class="text-xs opacity-75">
+                        Static map variant: `{variant}`.
+                      </p>
                     </Card.Body>
                   </Card>
                 )}
@@ -429,11 +499,14 @@ export default function App() {
               </Card.Header>
               <Card.Body>
                 <p class="text-sm opacity-80">
-                  Hover and click (or press Enter/Space while focused) to test behavior.
+                  Hover and click (or press Enter/Space while focused) to test
+                  behavior.
                 </p>
               </Card.Body>
               <Card.Footer>
-                <span class="text-xs opacity-70">Pressed {cardPressCount()} times</span>
+                <span class="text-xs opacity-70">
+                  Pressed {cardPressCount()} times
+                </span>
               </Card.Footer>
             </Card>
 
@@ -442,10 +515,14 @@ export default function App() {
                 <h3 class="text-sm font-medium">Nested Content</h3>
               </Card.Header>
               <Card.Body>
-                <p class="text-sm opacity-80">Cards can nest for grouped layouts.</p>
+                <p class="text-sm opacity-80">
+                  Cards can nest for grouped layouts.
+                </p>
                 <Card variant="bordered">
                   <Card.Body>
-                    <p class="text-xs opacity-75">Nested bordered card inside `Card.Body`.</p>
+                    <p class="text-xs opacity-75">
+                      Nested bordered card inside `Card.Body`.
+                    </p>
                   </Card.Body>
                 </Card>
               </Card.Body>
@@ -457,14 +534,16 @@ export default function App() {
           <div>
             <h2 class="text-sm font-semibold">Surface</h2>
             <p class="text-xs opacity-70">
-              HeroUI-parity surface primitive with default/secondary/tertiary/transparent variants.
+              HeroUI-parity surface primitive with
+              default/secondary/tertiary/transparent variants.
             </p>
           </div>
 
           <Surface class="rounded-2xl border border-base-300 p-4">
             <h3 class="text-sm font-semibold">Default Surface</h3>
             <p class="text-sm opacity-80">
-              Base container for grouping content with foreground/background contrast.
+              Base container for grouping content with foreground/background
+              contrast.
             </p>
           </Surface>
 
@@ -472,7 +551,9 @@ export default function App() {
             <For each={SURFACE_VARIANTS}>
               {(variant) => (
                 <div class="space-y-2">
-                  <p class="text-xs font-semibold uppercase opacity-70">{variant}</p>
+                  <p class="text-xs font-semibold uppercase opacity-70">
+                    {variant}
+                  </p>
                   <Surface
                     variant={variant}
                     class="flex min-h-32 flex-col gap-2 rounded-2xl border border-base-300 p-4"
@@ -501,7 +582,9 @@ export default function App() {
             <div class="space-y-2 rounded-xl border border-base-300 bg-base-100 p-3">
               <p class="text-sm">Profile Settings</p>
               <Separator />
-              <p class="text-sm opacity-80">Team preferences and notification controls.</p>
+              <p class="text-sm opacity-80">
+                Team preferences and notification controls.
+              </p>
             </div>
           </div>
 
@@ -573,7 +656,9 @@ export default function App() {
           </div>
 
           <div class="space-y-3">
-            <p class="text-xs font-semibold uppercase opacity-70">Inline Usage</p>
+            <p class="text-xs font-semibold uppercase opacity-70">
+              Inline Usage
+            </p>
             <div class="rounded-xl border border-base-300 bg-base-100 p-3">
               <p class="text-sm">
                 Status: <Text variant="success">ready</Text> with{" "}
@@ -605,7 +690,8 @@ export default function App() {
               </Button>
             </Header>
             <p class="text-sm opacity-80">
-              Header content can include actions while keeping default spacing and typography.
+              Header content can include actions while keeping default spacing
+              and typography.
             </p>
           </div>
 
@@ -616,7 +702,9 @@ export default function App() {
                 Last updated 2 minutes ago
               </span>
             </Header>
-            <p class="text-sm opacity-80">Supports stacked title and metadata content.</p>
+            <p class="text-sm opacity-80">
+              Supports stacked title and metadata content.
+            </p>
           </div>
         </section>
 
@@ -630,7 +718,9 @@ export default function App() {
 
           <div class="space-y-2 rounded-xl border border-base-300 bg-base-100 p-3">
             <Label>Basic Label</Label>
-            <p class="text-sm opacity-80">Default text styling for field captions.</p>
+            <p class="text-sm opacity-80">
+              Default text styling for field captions.
+            </p>
           </div>
 
           <div class="space-y-2 rounded-xl border border-base-300 bg-base-100 p-3">
@@ -699,12 +789,15 @@ export default function App() {
           <div>
             <h2 class="text-sm font-semibold">ErrorMessage &amp; FieldError</h2>
             <p class="text-xs opacity-70">
-              Error text primitives for standalone feedback and field-level validation messages.
+              Error text primitives for standalone feedback and field-level
+              validation messages.
             </p>
           </div>
 
           <div class="space-y-2 rounded-xl border border-base-300 bg-base-100 p-3">
-            <ErrorMessage>Something went wrong while saving your profile settings.</ErrorMessage>
+            <ErrorMessage>
+              Something went wrong while saving your profile settings.
+            </ErrorMessage>
           </div>
 
           <div class="space-y-2 rounded-xl border border-base-300 bg-base-100 p-3">
@@ -729,7 +822,10 @@ export default function App() {
                 setEmailError("");
               }}
             />
-            <FieldError id="field-error-email-demo-message" isVisible={Boolean(emailError())}>
+            <FieldError
+              id="field-error-email-demo-message"
+              isVisible={Boolean(emailError())}
+            >
               {emailError()}
             </FieldError>
           </div>
@@ -757,7 +853,10 @@ export default function App() {
                   setUsernameError("");
                 }}
               />
-              <FieldError id="field-error-username-demo-message" isVisible={Boolean(usernameError())}>
+              <FieldError
+                id="field-error-username-demo-message"
+                isVisible={Boolean(usernameError())}
+              >
                 {usernameError()}
               </FieldError>
             </div>
@@ -767,7 +866,9 @@ export default function App() {
               <FieldError isVisible={false}>
                 This message stays hidden until the visible state changes.
               </FieldError>
-              <FieldError isVisible>Password must include at least one special character.</FieldError>
+              <FieldError isVisible>
+                Password must include at least one special character.
+              </FieldError>
             </div>
           </div>
         </section>
@@ -776,22 +877,30 @@ export default function App() {
           <div>
             <h2 class="text-sm font-semibold">TextField &amp; TextArea</h2>
             <p class="text-xs opacity-70">
-              TextField wrapper with Label/Description/Error composition and TextArea variants.
+              TextField wrapper with Label/Description/Error composition and
+              TextArea variants.
             </p>
           </div>
 
           <div class="grid gap-4 lg:grid-cols-2">
-            <TextField class="rounded-xl border border-base-300 bg-base-100 p-3" fullWidth>
+            <TextField
+              class="rounded-xl border border-base-300 bg-base-100 p-3"
+              fullWidth
+            >
               <Label htmlFor="text-field-demo-input">Project Name</Label>
               <input
                 id="text-field-demo-input"
                 data-slot="input"
                 value={controlledTextFieldValue()}
-                onInput={(event) => setControlledTextFieldValue(event.currentTarget.value)}
+                onInput={(event) =>
+                  setControlledTextFieldValue(event.currentTarget.value)
+                }
                 class="h-10 w-full rounded-xl border border-base-300 bg-base-100 px-3 text-sm text-base-content outline-none focus:border-accent"
                 placeholder="Type a project name"
               />
-              <Description>Current value: {controlledTextFieldValue()}</Description>
+              <Description>
+                Current value: {controlledTextFieldValue()}
+              </Description>
             </TextField>
 
             <TextField
@@ -806,9 +915,13 @@ export default function App() {
                 fullWidth
                 placeholder="Write implementation details..."
                 value={controlledTextAreaValue()}
-                onInput={(event) => setControlledTextAreaValue(event.currentTarget.value)}
+                onInput={(event) =>
+                  setControlledTextAreaValue(event.currentTarget.value)
+                }
               />
-              <Description>Character count: {controlledTextAreaValue().length}</Description>
+              <Description>
+                Character count: {controlledTextAreaValue().length}
+              </Description>
             </TextField>
           </div>
         </section>
@@ -817,7 +930,8 @@ export default function App() {
           <div>
             <h2 class="text-sm font-semibold">InputGroup</h2>
             <p class="text-xs opacity-70">
-              Prefix/suffix composition for input and textarea controls with primary and secondary variants.
+              Prefix/suffix composition for input and textarea controls with
+              primary and secondary variants.
             </p>
           </div>
 
@@ -856,7 +970,8 @@ export default function App() {
           <div>
             <h2 class="text-sm font-semibold">InputOTP</h2>
             <p class="text-xs opacity-70">
-              Segmented one-time-password input with keyboard navigation, paste support, and completion callback.
+              Segmented one-time-password input with keyboard navigation, paste
+              support, and completion callback.
             </p>
           </div>
 
@@ -887,7 +1002,8 @@ export default function App() {
                 </InputOTP.Group>
               </InputOTP>
               <Description>
-                Value: {otpValue() || "Empty"} • Complete: {otpCompletedCode() || "No"}
+                Value: {otpValue() || "Empty"} • Complete:{" "}
+                {otpCompletedCode() || "No"}
               </Description>
             </div>
 
@@ -905,7 +1021,12 @@ export default function App() {
 
             <div class="space-y-2 rounded-xl border border-base-300 bg-base-100 p-3 lg:col-span-2">
               <Label>Paste Behavior (Secondary Variant)</Label>
-              <InputOTP variant="secondary" maxLength={6} pattern={REGEXP_ONLY_DIGITS} defaultValue="12">
+              <InputOTP
+                variant="secondary"
+                maxLength={6}
+                pattern={REGEXP_ONLY_DIGITS}
+                defaultValue="12"
+              >
                 <InputOTP.Group>
                   <InputOTP.Slot index={0} />
                   <InputOTP.Slot index={1} />
@@ -918,7 +1039,9 @@ export default function App() {
                   <InputOTP.Slot index={5} />
                 </InputOTP.Group>
               </InputOTP>
-              <Description>Click a slot and paste digits to fill remaining segments.</Description>
+              <Description>
+                Click a slot and paste digits to fill remaining segments.
+              </Description>
             </div>
           </div>
         </section>
@@ -927,7 +1050,8 @@ export default function App() {
           <div>
             <h2 class="text-sm font-semibold">SearchField</h2>
             <p class="text-xs opacity-70">
-              Compound field with search icon, clear trigger, and controlled value support.
+              Compound field with search icon, clear trigger, and controlled
+              value support.
             </p>
           </div>
 
@@ -938,13 +1062,20 @@ export default function App() {
               fullWidth
               class="rounded-xl border border-base-300 bg-base-100 p-3"
             >
-              <Label htmlFor="search-field-controlled">Search repositories</Label>
+              <Label htmlFor="search-field-controlled">
+                Search repositories
+              </Label>
               <SearchField.Group>
                 <SearchField.SearchIcon>{searchIcon()}</SearchField.SearchIcon>
-                <SearchField.Input id="search-field-controlled" placeholder="Search..." />
+                <SearchField.Input
+                  id="search-field-controlled"
+                  placeholder="Search..."
+                />
                 <SearchField.ClearButton endIcon={closeIcon()} />
               </SearchField.Group>
-              <Description>Query: {controlledSearchValue() || "Empty"}</Description>
+              <Description>
+                Query: {controlledSearchValue() || "Empty"}
+              </Description>
             </SearchField>
 
             <SearchField
@@ -955,7 +1086,10 @@ export default function App() {
               <Label htmlFor="search-field-secondary">Secondary variant</Label>
               <SearchField.Group>
                 <SearchField.SearchIcon>{searchIcon()}</SearchField.SearchIcon>
-                <SearchField.Input id="search-field-secondary" placeholder="Try 'analytics'" />
+                <SearchField.Input
+                  id="search-field-secondary"
+                  placeholder="Try 'analytics'"
+                />
                 <SearchField.ClearButton endIcon={closeIcon()} />
               </SearchField.Group>
             </SearchField>
@@ -966,7 +1100,8 @@ export default function App() {
           <div>
             <h2 class="text-sm font-semibold">ComboBox</h2>
             <p class="text-xs opacity-70">
-              Searchable selection with input, popover list, keyboard navigation, and manual trigger mode.
+              Searchable selection with input, popover list, keyboard
+              navigation, and manual trigger mode.
             </p>
           </div>
 
@@ -980,7 +1115,10 @@ export default function App() {
             >
               <Label htmlFor="combo-box-controlled">Favorite Animal</Label>
               <ComboBox.InputGroup>
-                <ComboBox.Input id="combo-box-controlled" placeholder="Search animals..." />
+                <ComboBox.Input
+                  id="combo-box-controlled"
+                  placeholder="Search animals..."
+                />
                 <ComboBox.Trigger endIcon={chevronDownIcon()} />
               </ComboBox.InputGroup>
               <ComboBox.Popover>
@@ -988,7 +1126,9 @@ export default function App() {
               </ComboBox.Popover>
               <Description>
                 Selected:{" "}
-                {COMBO_BOX_ANIMALS.find((item) => item.id === selectedComboAnimal())?.label ?? "None"}
+                {COMBO_BOX_ANIMALS.find(
+                  (item) => item.id === selectedComboAnimal(),
+                )?.label ?? "None"}
               </Description>
             </ComboBox>
 
@@ -1001,15 +1141,22 @@ export default function App() {
               fullWidth
               class="rounded-xl border border-base-300 bg-base-100 p-3"
             >
-              <Label htmlFor="combo-box-filtering">Controlled Input Value</Label>
+              <Label htmlFor="combo-box-filtering">
+                Controlled Input Value
+              </Label>
               <ComboBox.InputGroup>
-                <ComboBox.Input id="combo-box-filtering" placeholder="Type to filter..." />
+                <ComboBox.Input
+                  id="combo-box-filtering"
+                  placeholder="Type to filter..."
+                />
                 <ComboBox.Trigger endIcon={chevronDownIcon()} />
               </ComboBox.InputGroup>
               <ComboBox.Popover>
                 <ComboBox.List endIcon={checkIcon()} />
               </ComboBox.Popover>
-              <Description>Input value: {comboInputValue() || "Empty"}</Description>
+              <Description>
+                Input value: {comboInputValue() || "Empty"}
+              </Description>
             </ComboBox>
 
             <ComboBox
@@ -1021,7 +1168,10 @@ export default function App() {
             >
               <Label htmlFor="combo-box-disabled">Disabled</Label>
               <ComboBox.InputGroup>
-                <ComboBox.Input id="combo-box-disabled" placeholder="Disabled combobox" />
+                <ComboBox.Input
+                  id="combo-box-disabled"
+                  placeholder="Disabled combobox"
+                />
                 <ComboBox.Trigger endIcon={chevronDownIcon()} />
               </ComboBox.InputGroup>
               <ComboBox.Popover>
@@ -1037,15 +1187,22 @@ export default function App() {
               fullWidth
               class="rounded-xl border border-base-300 bg-base-100 p-3"
             >
-              <Label htmlFor="combo-box-long-list">Long List (Manual Trigger)</Label>
+              <Label htmlFor="combo-box-long-list">
+                Long List (Manual Trigger)
+              </Label>
               <ComboBox.InputGroup>
-                <ComboBox.Input id="combo-box-long-list" placeholder="Open and browse..." />
+                <ComboBox.Input
+                  id="combo-box-long-list"
+                  placeholder="Open and browse..."
+                />
                 <ComboBox.Trigger endIcon={chevronDownIcon()} />
               </ComboBox.InputGroup>
               <ComboBox.Popover>
                 <ComboBox.List endIcon={checkIcon()} />
               </ComboBox.Popover>
-              <Description>Popover open: {comboIsOpen() ? "true" : "false"}</Description>
+              <Description>
+                Popover open: {comboIsOpen() ? "true" : "false"}
+              </Description>
             </ComboBox>
           </div>
         </section>
@@ -1054,7 +1211,8 @@ export default function App() {
           <div>
             <h2 class="text-sm font-semibold">NumberField</h2>
             <p class="text-xs opacity-70">
-              Numeric input with increment/decrement actions and min/max/step constraints.
+              Numeric input with increment/decrement actions and min/max/step
+              constraints.
             </p>
           </div>
 
@@ -1074,7 +1232,9 @@ export default function App() {
                 <NumberField.Input id="number-field-controlled" />
                 <NumberField.IncrementButton />
               </NumberField.Group>
-              <Description>Selected: {controlledNumberValue() ?? "Empty"}</Description>
+              <Description>
+                Selected: {controlledNumberValue() ?? "Empty"}
+              </Description>
             </NumberField>
 
             <NumberField
@@ -1099,7 +1259,8 @@ export default function App() {
           <div>
             <h2 class="text-sm font-semibold">DateField &amp; TimeField</h2>
             <p class="text-xs opacity-70">
-              Compound date/time fields with grouped input structure and prefix/suffix slots.
+              Compound date/time fields with grouped input structure and
+              prefix/suffix slots.
             </p>
           </div>
 
@@ -1117,7 +1278,9 @@ export default function App() {
                 </DateField.Prefix>
                 <DateField.Input id="date-field-controlled" />
               </DateField.Group>
-              <Description>Value: {controlledDateValue() || "Empty"}</Description>
+              <Description>
+                Value: {controlledDateValue() || "Empty"}
+              </Description>
             </DateField>
 
             <TimeField
@@ -1134,7 +1297,9 @@ export default function App() {
                   <span class="text-xs opacity-70">24h</span>
                 </TimeField.Suffix>
               </TimeField.Group>
-              <Description>Value: {controlledTimeValue() || "Empty"}</Description>
+              <Description>
+                Value: {controlledTimeValue() || "Empty"}
+              </Description>
             </TimeField>
           </div>
         </section>
@@ -1143,38 +1308,55 @@ export default function App() {
           <div>
             <h2 class="text-sm font-semibold">Calendar</h2>
             <p class="text-xs opacity-70">
-              HeroUI-style month calendar with controlled/uncontrolled value, keyboard navigation, and disabled-date support.
+              HeroUI-style month calendar with controlled/uncontrolled value,
+              keyboard navigation, and disabled-date support.
             </p>
           </div>
 
           <div class="grid gap-4 lg:grid-cols-2">
             <div class="space-y-2 rounded-xl border border-base-300 bg-base-100 p-3">
-              <h3 class="text-xs font-semibold uppercase tracking-wide opacity-70">Basic</h3>
+              <h3 class="text-xs font-semibold uppercase tracking-wide opacity-70">
+                Basic
+              </h3>
               <Calendar />
             </div>
 
             <div class="space-y-2 rounded-xl border border-base-300 bg-base-100 p-3">
-              <h3 class="text-xs font-semibold uppercase tracking-wide opacity-70">Controlled</h3>
-              <Calendar value={controlledCalendarDate()} onChange={setControlledCalendarDate} />
-              <Description>Selected: {controlledCalendarDate().toLocaleDateString()}</Description>
+              <h3 class="text-xs font-semibold uppercase tracking-wide opacity-70">
+                Controlled
+              </h3>
+              <Calendar
+                value={controlledCalendarDate()}
+                onChange={setControlledCalendarDate}
+              />
+              <Description>
+                Selected: {controlledCalendarDate().toLocaleDateString()}
+              </Description>
             </div>
 
             <div class="space-y-2 rounded-xl border border-base-300 bg-base-100 p-3">
-              <h3 class="text-xs font-semibold uppercase tracking-wide opacity-70">Disabled Dates</h3>
+              <h3 class="text-xs font-semibold uppercase tracking-wide opacity-70">
+                Disabled Dates
+              </h3>
               <Calendar
                 defaultValue={new Date(2026, 3, 14)}
                 minValue={new Date(2026, 3, 5)}
                 maxValue={new Date(2026, 3, 28)}
-                isDateUnavailable={(date) => date.getDay() === 0 || date.getDay() === 6}
+                isDateUnavailable={(date) =>
+                  date.getDay() === 0 || date.getDay() === 6
+                }
               />
               <Description>Weekends are unavailable.</Description>
             </div>
 
             <div class="space-y-2 rounded-xl border border-base-300 bg-base-100 p-3">
-              <h3 class="text-xs font-semibold uppercase tracking-wide opacity-70">Navigation</h3>
+              <h3 class="text-xs font-semibold uppercase tracking-wide opacity-70">
+                Navigation
+              </h3>
               <Calendar defaultValue={new Date(2026, 10, 12)} />
               <Description>
-                Use previous/next controls or keyboard keys: arrows, Home/End, and PageUp/PageDown.
+                Use previous/next controls or keyboard keys: arrows, Home/End,
+                and PageUp/PageDown.
               </Description>
             </div>
           </div>
@@ -1182,45 +1364,72 @@ export default function App() {
 
         <section class="space-y-4 rounded-xl border border-base-300 bg-base-200 p-4">
           <div>
-            <h2 class="text-sm font-semibold">DatePicker &amp; DateRangePicker</h2>
+            <h2 class="text-sm font-semibold">
+              DatePicker &amp; DateRangePicker
+            </h2>
             <p class="text-xs opacity-70">
-              Popover calendar pickers with controlled/uncontrolled state, disabled dates, and range selection flow.
+              Popover calendar pickers with controlled/uncontrolled state,
+              disabled dates, and range selection flow.
             </p>
           </div>
 
           <div class="grid gap-4 lg:grid-cols-2">
             <div class="space-y-2 rounded-xl border border-base-300 bg-base-100 p-3">
-              <h3 class="text-xs font-semibold uppercase tracking-wide opacity-70">DatePicker Basic</h3>
+              <h3 class="text-xs font-semibold uppercase tracking-wide opacity-70">
+                DatePicker Basic
+              </h3>
               <DatePicker defaultValue={new Date(2026, 3, 10)} />
             </div>
 
             <div class="space-y-2 rounded-xl border border-base-300 bg-base-100 p-3">
-              <h3 class="text-xs font-semibold uppercase tracking-wide opacity-70">DatePicker Controlled</h3>
-              <DatePicker value={controlledPickerDate()} onChange={setControlledPickerDate} />
-              <Description>Selected: {controlledPickerDate().toLocaleDateString()}</Description>
-            </div>
-
-            <div class="space-y-2 rounded-xl border border-base-300 bg-base-100 p-3">
-              <h3 class="text-xs font-semibold uppercase tracking-wide opacity-70">DateRangePicker</h3>
-              <DateRangePicker value={controlledRangeValue()} onChange={setControlledRangeValue} />
+              <h3 class="text-xs font-semibold uppercase tracking-wide opacity-70">
+                DatePicker Controlled
+              </h3>
+              <DatePicker
+                value={controlledPickerDate()}
+                onChange={setControlledPickerDate}
+              />
               <Description>
-                Range: {controlledRangeValue()?.start?.toLocaleDateString() ?? "start"} -{" "}
-                {controlledRangeValue()?.end?.toLocaleDateString() ?? "end"}
+                Selected: {controlledPickerDate().toLocaleDateString()}
               </Description>
             </div>
 
             <div class="space-y-2 rounded-xl border border-base-300 bg-base-100 p-3">
-              <h3 class="text-xs font-semibold uppercase tracking-wide opacity-70">Disabled Dates</h3>
+              <h3 class="text-xs font-semibold uppercase tracking-wide opacity-70">
+                DateRangePicker
+              </h3>
+              <DateRangePicker
+                value={controlledRangeValue()}
+                onChange={setControlledRangeValue}
+              />
+              <Description>
+                Range:{" "}
+                {controlledRangeValue()?.start?.toLocaleDateString() ?? "start"}{" "}
+                - {controlledRangeValue()?.end?.toLocaleDateString() ?? "end"}
+              </Description>
+            </div>
+
+            <div class="space-y-2 rounded-xl border border-base-300 bg-base-100 p-3">
+              <h3 class="text-xs font-semibold uppercase tracking-wide opacity-70">
+                Disabled Dates
+              </h3>
               <DatePicker
                 minValue={new Date(2026, 3, 5)}
                 maxValue={new Date(2026, 3, 28)}
-                isDateUnavailable={(date) => date.getDay() === 0 || date.getDay() === 6}
+                isDateUnavailable={(date) =>
+                  date.getDay() === 0 || date.getDay() === 6
+                }
               />
               <DateRangePicker
-                defaultValue={{ start: new Date(2026, 3, 8), end: new Date(2026, 3, 12) }}
+                defaultValue={{
+                  start: new Date(2026, 3, 8),
+                  end: new Date(2026, 3, 12),
+                }}
                 minValue={new Date(2026, 3, 5)}
                 maxValue={new Date(2026, 3, 28)}
-                isDateUnavailable={(date) => date.getDay() === 0 || date.getDay() === 6}
+                isDateUnavailable={(date) =>
+                  date.getDay() === 0 || date.getDay() === 6
+                }
               />
               <Description>Weekends are unavailable.</Description>
             </div>
@@ -1231,20 +1440,25 @@ export default function App() {
           <div>
             <h2 class="text-sm font-semibold">Kbd</h2>
             <p class="text-xs opacity-70">
-              Keyboard hints with HeroUI-style root, abbreviation, and content slots.
+              Keyboard hints with HeroUI-style root, abbreviation, and content
+              slots.
             </p>
           </div>
 
           <div class="grid gap-4 lg:grid-cols-2">
             <div class="space-y-2 rounded-xl border border-base-300 bg-base-100 p-3">
-              <h3 class="text-xs font-semibold uppercase tracking-wide opacity-70">Single Key</h3>
+              <h3 class="text-xs font-semibold uppercase tracking-wide opacity-70">
+                Single Key
+              </h3>
               <Kbd>
                 <Kbd.Abbr keyValue="command" />
               </Kbd>
             </div>
 
             <div class="space-y-2 rounded-xl border border-base-300 bg-base-100 p-3">
-              <h3 class="text-xs font-semibold uppercase tracking-wide opacity-70">Multiple Keys</h3>
+              <h3 class="text-xs font-semibold uppercase tracking-wide opacity-70">
+                Multiple Keys
+              </h3>
               <Kbd>
                 <Kbd.Abbr keyValue="command" />
                 <Kbd.Abbr keyValue="shift" />
@@ -1253,7 +1467,9 @@ export default function App() {
             </div>
 
             <div class="space-y-2 rounded-xl border border-base-300 bg-base-100 p-3">
-              <h3 class="text-xs font-semibold uppercase tracking-wide opacity-70">Light Variant</h3>
+              <h3 class="text-xs font-semibold uppercase tracking-wide opacity-70">
+                Light Variant
+              </h3>
               <Kbd variant="light">
                 <Kbd.Abbr keyValue="ctrl" />
                 <Kbd.Content>P</Kbd.Content>
@@ -1261,7 +1477,9 @@ export default function App() {
             </div>
 
             <div class="space-y-2 rounded-xl border border-base-300 bg-base-100 p-3">
-              <h3 class="text-xs font-semibold uppercase tracking-wide opacity-70">Inline Usage</h3>
+              <h3 class="text-xs font-semibold uppercase tracking-wide opacity-70">
+                Inline Usage
+              </h3>
               <p class="text-sm">
                 Press{" "}
                 <Kbd>
@@ -1282,13 +1500,16 @@ export default function App() {
           <div>
             <h2 class="text-sm font-semibold">Link</h2>
             <p class="text-xs opacity-70">
-              HeroUI-style semantic links with icon slot, external behavior, and underline modes.
+              HeroUI-style semantic links with icon slot, external behavior, and
+              underline modes.
             </p>
           </div>
 
           <div class="grid gap-4 lg:grid-cols-2">
             <div class="space-y-2 rounded-xl border border-base-300 bg-base-100 p-3">
-              <h3 class="text-xs font-semibold uppercase tracking-wide opacity-70">Basic</h3>
+              <h3 class="text-xs font-semibold uppercase tracking-wide opacity-70">
+                Basic
+              </h3>
               <Link href="#link-basic">
                 Documentation
                 <Link.Icon />
@@ -1296,7 +1517,9 @@ export default function App() {
             </div>
 
             <div class="space-y-2 rounded-xl border border-base-300 bg-base-100 p-3">
-              <h3 class="text-xs font-semibold uppercase tracking-wide opacity-70">External</h3>
+              <h3 class="text-xs font-semibold uppercase tracking-wide opacity-70">
+                External
+              </h3>
               <Link href="https://heroui.com" isExternal>
                 HeroUI
                 <Link.Icon />
@@ -1304,7 +1527,9 @@ export default function App() {
             </div>
 
             <div class="space-y-2 rounded-xl border border-base-300 bg-base-100 p-3">
-              <h3 class="text-xs font-semibold uppercase tracking-wide opacity-70">Underline Modes</h3>
+              <h3 class="text-xs font-semibold uppercase tracking-wide opacity-70">
+                Underline Modes
+              </h3>
               <div class="flex flex-col gap-2">
                 <Link href="#link-underline-always" underline="always">
                   Always underline
@@ -1319,7 +1544,9 @@ export default function App() {
             </div>
 
             <div class="space-y-2 rounded-xl border border-base-300 bg-base-100 p-3">
-              <h3 class="text-xs font-semibold uppercase tracking-wide opacity-70">Inline Usage</h3>
+              <h3 class="text-xs font-semibold uppercase tracking-wide opacity-70">
+                Inline Usage
+              </h3>
               <p class="text-sm">
                 Review the{" "}
                 <Link href="#release-notes">
@@ -1336,7 +1563,8 @@ export default function App() {
           <div>
             <h2 class="text-sm font-semibold">Fieldset</h2>
             <p class="text-xs opacity-70">
-              Group related fields with semantic legend, field group, and actions areas.
+              Group related fields with semantic legend, field group, and
+              actions areas.
             </p>
           </div>
 
@@ -1354,7 +1582,12 @@ export default function App() {
               </TextField>
               <TextField fullWidth>
                 <Label htmlFor="fieldset-bio">Bio</Label>
-                <TextArea id="fieldset-bio" rows={3} fullWidth placeholder="Tell us about your team..." />
+                <TextArea
+                  id="fieldset-bio"
+                  rows={3}
+                  fullWidth
+                  placeholder="Tell us about your team..."
+                />
               </TextField>
             </Fieldset.Group>
             <Fieldset.Actions>
@@ -1370,7 +1603,8 @@ export default function App() {
           <div>
             <h2 class="text-sm font-semibold">Form</h2>
             <p class="text-xs opacity-70">
-              HeroUI-style semantic form wrapper with native submit behavior and field-level validation composition.
+              HeroUI-style semantic form wrapper with native submit behavior and
+              field-level validation composition.
             </p>
           </div>
 
@@ -1380,9 +1614,7 @@ export default function App() {
               use:validatedForm
             >
               <div class="space-y-1">
-                <Label htmlFor="form-demo-name">
-                  Name
-                </Label>
+                <Label htmlFor="form-demo-name">Name</Label>
                 <Input
                   id="form-demo-name"
                   name={demoNameField.name()}
@@ -1396,9 +1628,7 @@ export default function App() {
               </div>
 
               <div class="space-y-1">
-                <Label htmlFor="form-demo-email">
-                  Email
-                </Label>
+                <Label htmlFor="form-demo-email">Email</Label>
                 <Input
                   id="form-demo-email"
                   name={demoEmailField.name()}
@@ -1409,14 +1639,14 @@ export default function App() {
                   placeholder="name@email.com"
                   fullWidth
                 />
-                <Description>We only use this for account notifications.</Description>
+                <Description>
+                  We only use this for account notifications.
+                </Description>
                 <FieldError name="demoEmail" />
               </div>
 
               <div class="space-y-1">
-                <Label htmlFor="form-demo-query">
-                  Search Query
-                </Label>
+                <Label htmlFor="form-demo-query">Search Query</Label>
                 <SearchField
                   id="form-demo-query"
                   name={demoQueryField.name()}
@@ -1426,7 +1656,9 @@ export default function App() {
                   fullWidth
                 >
                   <SearchField.Group>
-                    <SearchField.SearchIcon>{searchIcon()}</SearchField.SearchIcon>
+                    <SearchField.SearchIcon>
+                      {searchIcon()}
+                    </SearchField.SearchIcon>
                     <SearchField.Input id="form-demo-query" />
                     <SearchField.ClearButton endIcon={closeIcon()} />
                   </SearchField.Group>
@@ -1491,7 +1723,8 @@ export default function App() {
                 fullWidth
               />
               <Description>
-                This input is controlled by local state while validation comes from the form hook.
+                This input is controlled by local state while validation comes
+                from the form hook.
               </Description>
               <FieldError name="controlledEmail" />
 
@@ -1514,9 +1747,18 @@ export default function App() {
 
             <Form class="space-y-3 rounded-xl border border-base-300 bg-base-100 p-4 lg:col-span-2">
               <Label htmlFor="form-basic-notes">Uncontrolled Native Form</Label>
-              <TextArea id="form-basic-notes" name="notes" rows={3} placeholder="Write details..." />
-              <Description>This example keeps native browser behavior unchanged.</Description>
-              <Button type="submit" variant="outline">Native submit</Button>
+              <TextArea
+                id="form-basic-notes"
+                name="notes"
+                rows={3}
+                placeholder="Write details..."
+              />
+              <Description>
+                This example keeps native browser behavior unchanged.
+              </Description>
+              <Button type="submit" variant="outline">
+                Native submit
+              </Button>
             </Form>
           </div>
 
@@ -1615,12 +1857,15 @@ export default function App() {
           <div>
             <h2 class="text-sm font-semibold">Chip</h2>
             <p class="text-xs opacity-70">
-              Solid, flat, bordered variants with size, color, icon, and removable behavior.
+              Solid, flat, bordered variants with size, color, icon, and
+              removable behavior.
             </p>
           </div>
 
           <div class="space-y-3">
-            <h3 class="text-xs font-semibold uppercase opacity-70">Variants + Colors</h3>
+            <h3 class="text-xs font-semibold uppercase opacity-70">
+              Variants + Colors
+            </h3>
             <For each={CHIP_VARIANTS}>
               {(variant) => (
                 <div class="flex flex-wrap items-center gap-3">
@@ -1650,19 +1895,25 @@ export default function App() {
           </div>
 
           <div class="space-y-3">
-            <h3 class="text-xs font-semibold uppercase opacity-70">Start/End Icon + Remove</h3>
+            <h3 class="text-xs font-semibold uppercase opacity-70">
+              Start/End Icon + Remove
+            </h3>
             <div class="flex flex-wrap items-center gap-3">
               <Chip
                 variant="flat"
                 color="primary"
-                startIcon={<Icon name="icon-[lucide--dot]" width={12} height={12} />}
+                startIcon={
+                  <Icon name="icon-[lucide--dot]" width={12} height={12} />
+                }
               >
                 Live stream
               </Chip>
               <Chip
                 variant="bordered"
                 color="success"
-                endIcon={<Icon name="icon-[lucide--check]" width={14} height={14} />}
+                endIcon={
+                  <Icon name="icon-[lucide--check]" width={14} height={14} />
+                }
               >
                 Connection
               </Chip>
@@ -1856,7 +2107,8 @@ export default function App() {
           <div>
             <h2 class="text-sm font-semibold">Select</h2>
             <p class="text-xs opacity-70">
-              HeroUI-style compound select with controlled, multiple, and disabled states.
+              HeroUI-style compound select with controlled, multiple, and
+              disabled states.
             </p>
           </div>
 
@@ -1870,16 +2122,32 @@ export default function App() {
                 </Select.Trigger>
                 <Select.Popover>
                   <Select.Listbox>
-                    <Select.Option value="florida" textValue="Florida" endIcon={checkIcon()}>
+                    <Select.Option
+                      value="florida"
+                      textValue="Florida"
+                      endIcon={checkIcon()}
+                    >
                       Florida
                     </Select.Option>
-                    <Select.Option value="california" textValue="California" endIcon={checkIcon()}>
+                    <Select.Option
+                      value="california"
+                      textValue="California"
+                      endIcon={checkIcon()}
+                    >
                       California
                     </Select.Option>
-                    <Select.Option value="texas" textValue="Texas" endIcon={checkIcon()}>
+                    <Select.Option
+                      value="texas"
+                      textValue="Texas"
+                      endIcon={checkIcon()}
+                    >
                       Texas
                     </Select.Option>
-                    <Select.Option value="washington" textValue="Washington" endIcon={checkIcon()}>
+                    <Select.Option
+                      value="washington"
+                      textValue="Washington"
+                      endIcon={checkIcon()}
+                    >
                       Washington
                     </Select.Option>
                   </Select.Listbox>
@@ -1888,10 +2156,14 @@ export default function App() {
             </div>
 
             <div class="space-y-3">
-              <h3 class="text-xs font-semibold uppercase opacity-70">Controlled</h3>
+              <h3 class="text-xs font-semibold uppercase opacity-70">
+                Controlled
+              </h3>
               <Select
                 value={controlledState()}
-                onChange={(value) => setControlledState(typeof value === "string" ? value : null)}
+                onChange={(value) =>
+                  setControlledState(typeof value === "string" ? value : null)
+                }
                 fullWidth
                 placeholder="Select a state"
               >
@@ -1901,30 +2173,48 @@ export default function App() {
                 </Select.Trigger>
                 <Select.Popover>
                   <Select.Listbox>
-                    <Select.Option value="california" textValue="California" endIcon={checkIcon()}>
+                    <Select.Option
+                      value="california"
+                      textValue="California"
+                      endIcon={checkIcon()}
+                    >
                       California
                     </Select.Option>
-                    <Select.Option value="nevada" textValue="Nevada" endIcon={checkIcon()}>
+                    <Select.Option
+                      value="nevada"
+                      textValue="Nevada"
+                      endIcon={checkIcon()}
+                    >
                       Nevada
                     </Select.Option>
-                    <Select.Option value="new-york" textValue="New York" endIcon={checkIcon()}>
+                    <Select.Option
+                      value="new-york"
+                      textValue="New York"
+                      endIcon={checkIcon()}
+                    >
                       New York
                     </Select.Option>
                   </Select.Listbox>
                 </Select.Popover>
               </Select>
-              <p class="text-xs opacity-70">Selected: {controlledState() ?? "none"}</p>
+              <p class="text-xs opacity-70">
+                Selected: {controlledState() ?? "none"}
+              </p>
             </div>
           </div>
 
           <div class="grid gap-6 md:grid-cols-2">
             <div class="space-y-3">
-              <h3 class="text-xs font-semibold uppercase opacity-70">Multiple</h3>
+              <h3 class="text-xs font-semibold uppercase opacity-70">
+                Multiple
+              </h3>
               <Select
                 selectionMode="multiple"
                 value={selectedRegions()}
                 onChange={(value) =>
-                  setSelectedRegions(Array.isArray(value) ? value : value ? [value] : [])
+                  setSelectedRegions(
+                    Array.isArray(value) ? value : value ? [value] : [],
+                  )
                 }
                 placeholder="Select regions"
                 fullWidth
@@ -1935,26 +2225,46 @@ export default function App() {
                 </Select.Trigger>
                 <Select.Popover>
                   <Select.Listbox>
-                    <Select.Option value="north-america" textValue="North America" endIcon={checkIcon()}>
+                    <Select.Option
+                      value="north-america"
+                      textValue="North America"
+                      endIcon={checkIcon()}
+                    >
                       North America
                     </Select.Option>
-                    <Select.Option value="europe" textValue="Europe" endIcon={checkIcon()}>
+                    <Select.Option
+                      value="europe"
+                      textValue="Europe"
+                      endIcon={checkIcon()}
+                    >
                       Europe
                     </Select.Option>
-                    <Select.Option value="asia" textValue="Asia" endIcon={checkIcon()}>
+                    <Select.Option
+                      value="asia"
+                      textValue="Asia"
+                      endIcon={checkIcon()}
+                    >
                       Asia
                     </Select.Option>
-                    <Select.Option value="latam" textValue="Latin America" endIcon={checkIcon()}>
+                    <Select.Option
+                      value="latam"
+                      textValue="Latin America"
+                      endIcon={checkIcon()}
+                    >
                       Latin America
                     </Select.Option>
                   </Select.Listbox>
                 </Select.Popover>
               </Select>
-              <p class="text-xs opacity-70">Selected: {selectedRegions().join(", ")}</p>
+              <p class="text-xs opacity-70">
+                Selected: {selectedRegions().join(", ")}
+              </p>
             </div>
 
             <div class="space-y-3">
-              <h3 class="text-xs font-semibold uppercase opacity-70">Disabled</h3>
+              <h3 class="text-xs font-semibold uppercase opacity-70">
+                Disabled
+              </h3>
               <Select
                 value="california"
                 isDisabled
@@ -1967,10 +2277,18 @@ export default function App() {
                 </Select.Trigger>
                 <Select.Popover>
                   <Select.Listbox>
-                    <Select.Option value="california" textValue="California" endIcon={checkIcon()}>
+                    <Select.Option
+                      value="california"
+                      textValue="California"
+                      endIcon={checkIcon()}
+                    >
                       California
                     </Select.Option>
-                    <Select.Option value="oregon" textValue="Oregon" endIcon={checkIcon()}>
+                    <Select.Option
+                      value="oregon"
+                      textValue="Oregon"
+                      endIcon={checkIcon()}
+                    >
                       Oregon
                     </Select.Option>
                   </Select.Listbox>
@@ -2033,7 +2351,8 @@ export default function App() {
           <div>
             <h2 class="text-sm font-semibold">Button Group</h2>
             <p class="text-xs opacity-70">
-              HeroUI-style grouped buttons with orientation, shared variants, and separators.
+              HeroUI-style grouped buttons with orientation, shared variants,
+              and separators.
             </p>
           </div>
 
@@ -2074,7 +2393,9 @@ export default function App() {
           </div>
 
           <div class="space-y-3">
-            <h3 class="text-xs font-semibold uppercase opacity-70">Variants + Disabled</h3>
+            <h3 class="text-xs font-semibold uppercase opacity-70">
+              Variants + Disabled
+            </h3>
             <div class="flex flex-wrap items-center gap-3">
               <ButtonGroup variant="outline">
                 <Button>Month</Button>
@@ -2099,7 +2420,9 @@ export default function App() {
           </div>
 
           <div class="space-y-3">
-            <h3 class="text-xs font-semibold uppercase opacity-70">Orientation + Full Width</h3>
+            <h3 class="text-xs font-semibold uppercase opacity-70">
+              Orientation + Full Width
+            </h3>
             <div class="grid gap-3 md:grid-cols-2">
               <div class="space-y-2">
                 <p class="text-xs opacity-70">Horizontal</p>
@@ -2118,7 +2441,12 @@ export default function App() {
 
               <div class="space-y-2">
                 <p class="text-xs opacity-70">Vertical</p>
-                <ButtonGroup orientation="vertical" class="w-48" variant="tertiary" fullWidth>
+                <ButtonGroup
+                  orientation="vertical"
+                  class="w-48"
+                  variant="tertiary"
+                  fullWidth
+                >
                   <Button>Account</Button>
                   <Button>
                     <ButtonGroup.Separator />
@@ -2138,12 +2466,15 @@ export default function App() {
           <div>
             <h2 class="text-sm font-semibold">Close Button</h2>
             <p class="text-xs opacity-70">
-              HeroUI-style close button with explicit icon props and interactive states.
+              HeroUI-style close button with explicit icon props and interactive
+              states.
             </p>
           </div>
 
           <div class="space-y-3">
-            <h3 class="text-xs font-semibold uppercase opacity-70">Default + Disabled</h3>
+            <h3 class="text-xs font-semibold uppercase opacity-70">
+              Default + Disabled
+            </h3>
             <div class="flex flex-wrap items-center gap-3">
               <CloseButton endIcon={closeIcon()} />
               <CloseButton aria-label="Dismiss panel" endIcon={closeIcon()} />
@@ -2153,17 +2484,23 @@ export default function App() {
           </div>
 
           <div class="space-y-3">
-            <h3 class="text-xs font-semibold uppercase opacity-70">Custom Icon</h3>
+            <h3 class="text-xs font-semibold uppercase opacity-70">
+              Custom Icon
+            </h3>
             <div class="flex flex-wrap items-center gap-3">
               <CloseButton
                 aria-label="Close with custom icon"
-                endIcon={<Icon name="icon-[lucide--plus]" width={16} height={16} />}
+                endIcon={
+                  <Icon name="icon-[lucide--plus]" width={16} height={16} />
+                }
               />
             </div>
           </div>
 
           <div class="space-y-3">
-            <h3 class="text-xs font-semibold uppercase opacity-70">Inside Header</h3>
+            <h3 class="text-xs font-semibold uppercase opacity-70">
+              Inside Header
+            </h3>
             <div class="max-w-md rounded-xl border border-base-300 bg-base-100 p-4">
               <div class="flex items-center justify-between gap-3">
                 <h4 class="text-sm font-medium">Modal Header</h4>
@@ -2177,13 +2514,16 @@ export default function App() {
           <div>
             <h2 class="text-sm font-semibold">Modal</h2>
             <p class="text-xs opacity-70">
-              HeroUI-style modal with compound slots, focus lock, and dismiss behavior.
+              HeroUI-style modal with compound slots, focus lock, and dismiss
+              behavior.
             </p>
           </div>
 
           <div class="grid gap-4 lg:grid-cols-2">
             <div class="space-y-2 rounded-xl border border-base-300 bg-base-100 p-3">
-              <h3 class="text-xs font-semibold uppercase tracking-wide opacity-70">Basic</h3>
+              <h3 class="text-xs font-semibold uppercase tracking-wide opacity-70">
+                Basic
+              </h3>
               <Modal>
                 <Modal.Trigger class="rounded-lg border border-base-300 px-3 py-2 text-sm">
                   Open basic modal
@@ -2207,7 +2547,9 @@ export default function App() {
             </div>
 
             <div class="space-y-2 rounded-xl border border-base-300 bg-base-100 p-3">
-              <h3 class="text-xs font-semibold uppercase tracking-wide opacity-70">Controlled</h3>
+              <h3 class="text-xs font-semibold uppercase tracking-wide opacity-70">
+                Controlled
+              </h3>
               <Button size="sm" onClick={() => setModalOpen(true)}>
                 Open controlled modal
               </Button>
@@ -2221,7 +2563,11 @@ export default function App() {
                     Open state is controlled with an external signal.
                   </Modal.Body>
                   <Modal.Footer>
-                    <Button size="sm" variant="ghost" onClick={() => setModalOpen(false)}>
+                    <Button
+                      size="sm"
+                      variant="ghost"
+                      onClick={() => setModalOpen(false)}
+                    >
                       Close
                     </Button>
                     <Button size="sm" onClick={() => setModalOpen(false)}>
@@ -2233,8 +2579,13 @@ export default function App() {
             </div>
 
             <div class="space-y-2 rounded-xl border border-base-300 bg-base-100 p-3 lg:col-span-2">
-              <h3 class="text-xs font-semibold uppercase tracking-wide opacity-70">Non-dismissable</h3>
-              <Button size="sm" onClick={() => setNonDismissableModalOpen(true)}>
+              <h3 class="text-xs font-semibold uppercase tracking-wide opacity-70">
+                Non-dismissable
+              </h3>
+              <Button
+                size="sm"
+                onClick={() => setNonDismissableModalOpen(true)}
+              >
                 Open non-dismissable modal
               </Button>
               <Modal
@@ -2247,10 +2598,14 @@ export default function App() {
                     <Modal.Heading>Non-dismissable modal</Modal.Heading>
                   </Modal.Header>
                   <Modal.Body>
-                    Backdrop click and Escape are disabled. Use explicit actions to close.
+                    Backdrop click and Escape are disabled. Use explicit actions
+                    to close.
                   </Modal.Body>
                   <Modal.Footer>
-                    <Button size="sm" onClick={() => setNonDismissableModalOpen(false)}>
+                    <Button
+                      size="sm"
+                      onClick={() => setNonDismissableModalOpen(false)}
+                    >
                       Acknowledge
                     </Button>
                   </Modal.Footer>
@@ -2264,13 +2619,16 @@ export default function App() {
           <div>
             <h2 class="text-sm font-semibold">Tag + TagGroup</h2>
             <p class="text-xs opacity-70">
-              HeroUI-style tags with group-driven variants, selection modes, and remove support.
+              HeroUI-style tags with group-driven variants, selection modes, and
+              remove support.
             </p>
           </div>
 
           <div class="grid gap-6 md:grid-cols-2">
             <div class="space-y-3">
-              <h3 class="text-xs font-semibold uppercase opacity-70">Single Selection</h3>
+              <h3 class="text-xs font-semibold uppercase opacity-70">
+                Single Selection
+              </h3>
               <TagGroup
                 selectionMode="single"
                 selectedKeys={selectedTag()}
@@ -2288,7 +2646,9 @@ export default function App() {
             </div>
 
             <div class="space-y-3">
-              <h3 class="text-xs font-semibold uppercase opacity-70">Multiple + Surface</h3>
+              <h3 class="text-xs font-semibold uppercase opacity-70">
+                Multiple + Surface
+              </h3>
               <TagGroup
                 selectionMode="multiple"
                 selectedKeys={selectedTopics()}
@@ -2307,14 +2667,16 @@ export default function App() {
           </div>
 
           <div class="space-y-3">
-            <h3 class="text-xs font-semibold uppercase opacity-70">Removable</h3>
+            <h3 class="text-xs font-semibold uppercase opacity-70">
+              Removable
+            </h3>
             <TagGroup
               selectionMode="multiple"
               onRemove={(keys) =>
                 setRemovableTags((prev) => prev.filter((tag) => !keys.has(tag)))
               }
             >
-                  <TagGroup.List
+              <TagGroup.List
                 items={removableTags()}
                 renderEmptyState={() => (
                   <span class="text-xs opacity-70" data-slot="description">
@@ -2323,7 +2685,11 @@ export default function App() {
                 )}
               >
                 {(item) => (
-                  <Tag id={String(item)} textValue={String(item)} endIcon={closeIcon()}>
+                  <Tag
+                    id={String(item)}
+                    textValue={String(item)}
+                    endIcon={closeIcon()}
+                  >
                     {String(item)}
                   </Tag>
                 )}
@@ -2332,7 +2698,9 @@ export default function App() {
           </div>
 
           <div class="space-y-3">
-            <h3 class="text-xs font-semibold uppercase opacity-70">Custom Remove Button</h3>
+            <h3 class="text-xs font-semibold uppercase opacity-70">
+              Custom Remove Button
+            </h3>
             <TagGroup selectionMode="single" onRemove={() => undefined}>
               <TagGroup.List>
                 <Tag id="alpha">
@@ -2341,7 +2709,11 @@ export default function App() {
                       Alpha
                       {state.allowsRemoving && (
                         <Tag.RemoveButton>
-                          <Icon name="icon-[lucide--plus]" width={16} height={16} />
+                          <Icon
+                            name="icon-[lucide--plus]"
+                            width={16}
+                            height={16}
+                          />
                         </Tag.RemoveButton>
                       )}
                     </>
@@ -2357,13 +2729,16 @@ export default function App() {
           <div>
             <h2 class="text-sm font-semibold">ListBox</h2>
             <p class="text-xs opacity-70">
-              HeroUI-style ListBox with item indicators, section grouping, and keyboard selection.
+              HeroUI-style ListBox with item indicators, section grouping, and
+              keyboard selection.
             </p>
           </div>
 
           <div class="grid gap-6 lg:grid-cols-2">
             <div class="space-y-3">
-              <h3 class="text-xs font-semibold uppercase opacity-70">Single Selection</h3>
+              <h3 class="text-xs font-semibold uppercase opacity-70">
+                Single Selection
+              </h3>
               <ListBox
                 selectionMode="single"
                 selectedKeys={selectedListUser()}
@@ -2375,7 +2750,10 @@ export default function App() {
                     <ListBox.Item id={user.id} textValue={user.name}>
                       <div class="flex flex-col">
                         <span data-slot="label">{user.name}</span>
-                        <span class="text-xs opacity-70" data-slot="description">
+                        <span
+                          class="text-xs opacity-70"
+                          data-slot="description"
+                        >
                           {user.email}
                         </span>
                       </div>
@@ -2390,11 +2768,15 @@ export default function App() {
             </div>
 
             <div class="space-y-3">
-              <h3 class="text-xs font-semibold uppercase opacity-70">Multiple Selection</h3>
+              <h3 class="text-xs font-semibold uppercase opacity-70">
+                Multiple Selection
+              </h3>
               <ListBox
                 selectionMode="multiple"
                 selectedKeys={selectedListTopics()}
-                onSelectionChange={(keys) => setSelectedListTopics(new Set(keys))}
+                onSelectionChange={(keys) =>
+                  setSelectedListTopics(new Set(keys))
+                }
                 items={LISTBOX_TOPICS}
                 class="max-w-xs rounded-3xl border border-base-300 bg-base-100 p-2"
               >
@@ -2409,21 +2791,28 @@ export default function App() {
                 }}
               </ListBox>
               <p class="text-xs opacity-70">
-                Selected: {Array.from(selectedListTopics()).join(", ") || "None"}
+                Selected:{" "}
+                {Array.from(selectedListTopics()).join(", ") || "None"}
               </p>
             </div>
           </div>
 
           <div class="grid gap-6 lg:grid-cols-2">
             <div class="space-y-3">
-              <h3 class="text-xs font-semibold uppercase opacity-70">Sections + Disabled Item</h3>
+              <h3 class="text-xs font-semibold uppercase opacity-70">
+                Sections + Disabled Item
+              </h3>
               <ListBox
                 selectionMode="none"
                 disabledKeys={["delete-file"]}
                 onAction={(key) => setLastListAction(key)}
                 class="max-w-xs rounded-3xl border border-base-300 bg-base-100 p-2"
               >
-                <ListBox.Section title={<span class="px-2 py-1 text-xs font-semibold">Actions</span>}>
+                <ListBox.Section
+                  title={
+                    <span class="px-2 py-1 text-xs font-semibold">Actions</span>
+                  }
+                >
                   <ListBox.Item id="new-file" textValue="New file">
                     <div class="flex flex-col">
                       <span data-slot="label">New file</span>
@@ -2442,8 +2831,18 @@ export default function App() {
                   </ListBox.Item>
                 </ListBox.Section>
                 <Separator />
-                <ListBox.Section title={<span class="px-2 py-1 text-xs font-semibold">Danger Zone</span>}>
-                  <ListBox.Item id="delete-file" textValue="Delete file" variant="danger">
+                <ListBox.Section
+                  title={
+                    <span class="px-2 py-1 text-xs font-semibold">
+                      Danger Zone
+                    </span>
+                  }
+                >
+                  <ListBox.Item
+                    id="delete-file"
+                    textValue="Delete file"
+                    variant="danger"
+                  >
                     <div class="flex flex-col">
                       <span data-slot="label">Delete file</span>
                       <span class="text-xs opacity-70" data-slot="description">
@@ -2453,11 +2852,15 @@ export default function App() {
                   </ListBox.Item>
                 </ListBox.Section>
               </ListBox>
-              <p class="text-xs opacity-70">Last action: {lastListAction() ?? "None"}</p>
+              <p class="text-xs opacity-70">
+                Last action: {lastListAction() ?? "None"}
+              </p>
             </div>
 
             <div class="space-y-3">
-              <h3 class="text-xs font-semibold uppercase opacity-70">Long List (Scrollable)</h3>
+              <h3 class="text-xs font-semibold uppercase opacity-70">
+                Long List (Scrollable)
+              </h3>
               <ListBox
                 selectionMode="multiple"
                 class="max-h-56 max-w-xs overflow-y-auto rounded-3xl border border-base-300 bg-base-100 p-2"
@@ -2481,13 +2884,16 @@ export default function App() {
           <div>
             <h2 class="text-sm font-semibold">Menu</h2>
             <p class="text-xs opacity-70">
-              HeroUI-style menu with item indicators, disabled states, sections, and actions.
+              HeroUI-style menu with item indicators, disabled states, sections,
+              and actions.
             </p>
           </div>
 
           <div class="grid gap-6 lg:grid-cols-2">
             <div class="space-y-3">
-              <h3 class="text-xs font-semibold uppercase opacity-70">Single Selection</h3>
+              <h3 class="text-xs font-semibold uppercase opacity-70">
+                Single Selection
+              </h3>
               <Menu
                 selectionMode="single"
                 selectedKeys={selectedMenuMode()}
@@ -2513,7 +2919,9 @@ export default function App() {
             </div>
 
             <div class="space-y-3">
-              <h3 class="text-xs font-semibold uppercase opacity-70">Disabled + Action</h3>
+              <h3 class="text-xs font-semibold uppercase opacity-70">
+                Disabled + Action
+              </h3>
               <Menu
                 selectionMode="none"
                 disabledKeys={["archive"]}
@@ -2530,19 +2938,27 @@ export default function App() {
                   <span data-slot="label">Delete</span>
                 </Menu.Item>
               </Menu>
-              <p class="text-xs opacity-70">Last action: {lastMenuAction() ?? "None"}</p>
+              <p class="text-xs opacity-70">
+                Last action: {lastMenuAction() ?? "None"}
+              </p>
             </div>
           </div>
 
           <div class="grid gap-6 lg:grid-cols-2">
             <div class="space-y-3">
-              <h3 class="text-xs font-semibold uppercase opacity-70">Sections</h3>
+              <h3 class="text-xs font-semibold uppercase opacity-70">
+                Sections
+              </h3>
               <Menu
                 selectionMode="none"
                 onAction={(key) => setLastMenuAction(key)}
                 class="max-w-xs rounded-3xl border border-base-300 bg-base-100 p-2"
               >
-                <Menu.Section title={<span class="px-2 py-1 text-xs font-semibold">File</span>}>
+                <Menu.Section
+                  title={
+                    <span class="px-2 py-1 text-xs font-semibold">File</span>
+                  }
+                >
                   <Menu.Item id="new" textValue="New">
                     <span data-slot="label">New</span>
                   </Menu.Item>
@@ -2551,7 +2967,13 @@ export default function App() {
                   </Menu.Item>
                 </Menu.Section>
                 <Separator />
-                <Menu.Section title={<span class="px-2 py-1 text-xs font-semibold">Advanced</span>}>
+                <Menu.Section
+                  title={
+                    <span class="px-2 py-1 text-xs font-semibold">
+                      Advanced
+                    </span>
+                  }
+                >
                   <Menu.Item id="history" textValue="History" hasSubmenu>
                     <span data-slot="label">History</span>
                     <Menu.Item.SubmenuIndicator />
@@ -2561,11 +2983,15 @@ export default function App() {
             </div>
 
             <div class="space-y-3">
-              <h3 class="text-xs font-semibold uppercase opacity-70">Multiple + Dot Indicator</h3>
+              <h3 class="text-xs font-semibold uppercase opacity-70">
+                Multiple + Dot Indicator
+              </h3>
               <Menu
                 selectionMode="multiple"
                 selectedKeys={selectedMenuFilters()}
-                onSelectionChange={(keys) => setSelectedMenuFilters(new Set(keys))}
+                onSelectionChange={(keys) =>
+                  setSelectedMenuFilters(new Set(keys))
+                }
                 class="max-w-xs rounded-3xl border border-base-300 bg-base-100 p-2"
               >
                 <Menu.Item id="all" textValue="All">
@@ -2582,7 +3008,8 @@ export default function App() {
                 </Menu.Item>
               </Menu>
               <p class="text-xs opacity-70">
-                Selected: {Array.from(selectedMenuFilters()).join(", ") || "None"}
+                Selected:{" "}
+                {Array.from(selectedMenuFilters()).join(", ") || "None"}
               </p>
             </div>
           </div>
@@ -2654,13 +3081,21 @@ export default function App() {
               <Input
                 label="Start Icon"
                 placeholder="Search..."
-                startIcon={<Icon name="icon-[lucide--search]" width={16} height={16} />}
+                startIcon={
+                  <Icon name="icon-[lucide--search]" width={16} height={16} />
+                }
                 fullWidth
               />
               <Input
                 label="End Icon"
                 placeholder="Amount"
-                endIcon={<Icon name="icon-[lucide--badge-dollar-sign]" width={16} height={16} />}
+                endIcon={
+                  <Icon
+                    name="icon-[lucide--badge-dollar-sign]"
+                    width={16}
+                    height={16}
+                  />
+                }
                 fullWidth
               />
             </div>
@@ -2671,7 +3106,8 @@ export default function App() {
           <div>
             <h2 class="text-sm font-semibold">Pagination</h2>
             <p class="text-xs opacity-70">
-              HeroUI-style pagination with previous/next, active state, and ellipsis.
+              HeroUI-style pagination with previous/next, active state, and
+              ellipsis.
             </p>
           </div>
 
@@ -2681,25 +3117,49 @@ export default function App() {
           </div>
 
           <div class="space-y-3">
-            <h3 class="text-xs font-semibold uppercase opacity-70">Large Set (Ellipsis)</h3>
+            <h3 class="text-xs font-semibold uppercase opacity-70">
+              Large Set (Ellipsis)
+            </h3>
             <Pagination page={largePage()} total={24} onChange={setLargePage} />
           </div>
 
           <div class="space-y-3">
-            <h3 class="text-xs font-semibold uppercase opacity-70">Controlled</h3>
+            <h3 class="text-xs font-semibold uppercase opacity-70">
+              Controlled
+            </h3>
             <div class="flex flex-wrap items-center gap-2">
-              <Button size="sm" variant="secondary" onClick={() => setControlledPage(1)}>
+              <Button
+                size="sm"
+                variant="secondary"
+                onClick={() => setControlledPage(1)}
+              >
                 First
               </Button>
-              <Button size="sm" variant="secondary" onClick={() => setControlledPage(10)}>
+              <Button
+                size="sm"
+                variant="secondary"
+                onClick={() => setControlledPage(10)}
+              >
                 Last
               </Button>
-              <Button size="sm" variant="secondary" onClick={() => setControlledPage((prev) => Math.min(10, prev + 1))}>
+              <Button
+                size="sm"
+                variant="secondary"
+                onClick={() =>
+                  setControlledPage((prev) => Math.min(10, prev + 1))
+                }
+              >
                 +1
               </Button>
             </div>
-            <Pagination page={controlledPage()} total={10} onChange={setControlledPage} />
-            <p class="text-xs opacity-70">Controlled page value: {controlledPage()}</p>
+            <Pagination
+              page={controlledPage()}
+              total={10}
+              onChange={setControlledPage}
+            />
+            <p class="text-xs opacity-70">
+              Controlled page value: {controlledPage()}
+            </p>
           </div>
         </section>
 
@@ -2906,7 +3366,8 @@ export default function App() {
           <div>
             <h2 class="text-sm font-semibold">Checkbox Group</h2>
             <p class="text-xs opacity-70">
-              HeroUI-style grouped checkboxes with shared variant and controlled values.
+              HeroUI-style grouped checkboxes with shared variant and controlled
+              values.
             </p>
           </div>
 
@@ -2921,8 +3382,13 @@ export default function App() {
             </div>
 
             <div class="space-y-3">
-              <h3 class="text-xs font-semibold uppercase opacity-70">Uncontrolled</h3>
-              <CheckboxGroup name="interests-uncontrolled" defaultValue={["docs", "qa"]}>
+              <h3 class="text-xs font-semibold uppercase opacity-70">
+                Uncontrolled
+              </h3>
+              <CheckboxGroup
+                name="interests-uncontrolled"
+                defaultValue={["docs", "qa"]}
+              >
                 <Checkbox value="docs">Documentation</Checkbox>
                 <Checkbox value="qa">Quality Assurance</Checkbox>
                 <Checkbox value="research">Research</Checkbox>
@@ -2932,7 +3398,9 @@ export default function App() {
 
           <div class="grid gap-6 md:grid-cols-2">
             <div class="space-y-3">
-              <h3 class="text-xs font-semibold uppercase opacity-70">Controlled</h3>
+              <h3 class="text-xs font-semibold uppercase opacity-70">
+                Controlled
+              </h3>
               <CheckboxGroup
                 name="channels"
                 value={selectedChannels()}
@@ -2943,12 +3411,20 @@ export default function App() {
                 <Checkbox value="sms">SMS</Checkbox>
                 <Checkbox value="push">Push</Checkbox>
               </CheckboxGroup>
-              <p class="text-xs opacity-70">Selected: {selectedChannels().join(", ") || "None"}</p>
+              <p class="text-xs opacity-70">
+                Selected: {selectedChannels().join(", ") || "None"}
+              </p>
             </div>
 
             <div class="space-y-3">
-              <h3 class="text-xs font-semibold uppercase opacity-70">Disabled</h3>
-              <CheckboxGroup name="disabled-flags" isDisabled defaultValue={["feature-1"]}>
+              <h3 class="text-xs font-semibold uppercase opacity-70">
+                Disabled
+              </h3>
+              <CheckboxGroup
+                name="disabled-flags"
+                isDisabled
+                defaultValue={["feature-1"]}
+              >
                 <Checkbox value="feature-1">Feature Flag 1</Checkbox>
                 <Checkbox value="feature-2">Feature Flag 2</Checkbox>
               </CheckboxGroup>
@@ -3026,12 +3502,7 @@ export default function App() {
 
           <div class="space-y-3">
             <h3 class="text-xs font-semibold uppercase opacity-70">Disabled</h3>
-            <Slider
-              label="Locked"
-              value={60}
-              onChange={() => {}}
-              disabled
-            />
+            <Slider label="Locked" value={60} onChange={() => {}} disabled />
           </div>
         </section>
 
@@ -3069,7 +3540,7 @@ export default function App() {
             <h3 class="text-xs font-semibold uppercase opacity-70">
               Without Arrow
             </h3>
-            <div class="flex flex-wrap items-center gap-6 py-4">
+            <div class="flex flex-wrap items-center gap-6 py-4 min-h-[10rem]">
               <Tooltip placement="top">
                 <Tooltip.Trigger>
                   <Button variant="outline">No arrow</Button>
@@ -3083,7 +3554,7 @@ export default function App() {
             <h3 class="text-xs font-semibold uppercase opacity-70">
               Controlled
             </h3>
-            <div class="flex flex-wrap items-center gap-6 py-4">
+            <div class="flex flex-wrap items-center gap-6 py-4 pt-10">
               <Tooltip placement="right" isOpen>
                 <Tooltip.Trigger>
                   <Button variant="primary">Always open</Button>
@@ -3093,6 +3564,84 @@ export default function App() {
                   Controlled tooltip (always visible)
                 </Tooltip.Content>
               </Tooltip>
+            </div>
+          </div>
+        </section>
+
+        <section class="space-y-4 rounded-xl border border-base-300 bg-base-200 p-4">
+          <div>
+            <h2 class="text-sm font-semibold">Popover</h2>
+            <p class="text-xs opacity-70">
+              Compound popover with trigger, content, arrow, and heading.
+            </p>
+          </div>
+
+          <div class="space-y-3">
+            <h3 class="text-xs font-semibold uppercase opacity-70">
+              Placements
+            </h3>
+            <div class="flex flex-wrap items-center justify-center gap-10 py-6">
+              <For each={POPOVER_PLACEMENTS}>
+                {(placement) => (
+                  <Popover placement={placement}>
+                    <Popover.Trigger>
+                      <Button variant="secondary">{placement}</Button>
+                    </Popover.Trigger>
+                    <Popover.Content>
+                      <Popover.Arrow />
+                      <Popover.Dialog>
+                        <Popover.Heading>{placement} popover</Popover.Heading>
+                        <div class="mt-2 text-xs opacity-80">
+                          Popover content aligns around the trigger.
+                        </div>
+                      </Popover.Dialog>
+                    </Popover.Content>
+                  </Popover>
+                )}
+              </For>
+            </div>
+          </div>
+
+          <div class="space-y-3">
+            <h3 class="text-xs font-semibold uppercase opacity-70">
+              Controlled
+            </h3>
+            <div class="flex flex-wrap items-center gap-6 py-10 min-h-[140px]">
+              <Popover isOpen placement="top">
+                <Popover.Trigger>
+                  <Button variant="outline">Always open</Button>
+                </Popover.Trigger>
+                <Popover.Content>
+                  <Popover.Arrow />
+                  <Popover.Dialog>
+                    <Popover.Heading>Controlled</Popover.Heading>
+                    <div class="mt-2 text-xs opacity-80">
+                      This popover is forced open.
+                    </div>
+                  </Popover.Dialog>
+                </Popover.Content>
+              </Popover>
+            </div>
+          </div>
+
+          <div class="space-y-3">
+            <h3 class="text-xs font-semibold uppercase opacity-70">
+              Without Arrow
+            </h3>
+            <div class="flex flex-wrap items-center gap-6 py-10 min-h-[140px]">
+              <Popover placement="bottom">
+                <Popover.Trigger>
+                  <Button variant="ghost">No arrow</Button>
+                </Popover.Trigger>
+                <Popover.Content>
+                  <Popover.Dialog>
+                    <Popover.Heading>Simple</Popover.Heading>
+                    <div class="mt-2 text-xs opacity-80">
+                      Popover without the arrow slot.
+                    </div>
+                  </Popover.Dialog>
+                </Popover.Content>
+              </Popover>
             </div>
           </div>
         </section>
@@ -3175,7 +3724,8 @@ export default function App() {
           <div>
             <h2 class="text-sm font-semibold">Toast</h2>
             <p class="text-xs opacity-70">
-              HeroUI-style toast provider with variants, actions, stacking, and auto-dismiss behavior.
+              HeroUI-style toast provider with variants, actions, stacking, and
+              auto-dismiss behavior.
             </p>
           </div>
 
@@ -3257,7 +3807,8 @@ export default function App() {
           <div>
             <h2 class="text-sm font-semibold">Drawer</h2>
             <p class="text-xs opacity-70">
-              HeroUI-style compound drawer with placements and backdrop variants.
+              HeroUI-style compound drawer with placements and backdrop
+              variants.
             </p>
           </div>
 
@@ -3279,11 +3830,15 @@ export default function App() {
                           {placement === "bottom" && <Drawer.Handle />}
                           <Drawer.Header>
                             <Drawer.Heading>
-                              {placement.charAt(0).toUpperCase() + placement.slice(1)} Drawer
+                              {placement.charAt(0).toUpperCase() +
+                                placement.slice(1)}{" "}
+                              Drawer
                             </Drawer.Heading>
                           </Drawer.Header>
                           <Drawer.Body>
-                            <p>This drawer slides in from the {placement} edge.</p>
+                            <p>
+                              This drawer slides in from the {placement} edge.
+                            </p>
                           </Drawer.Body>
                           <Drawer.Footer>
                             <Drawer.Close>
@@ -3324,12 +3879,12 @@ export default function App() {
                           <Drawer.Handle />
                           <Drawer.CloseTrigger endIcon={closeIcon()} />
                           <Drawer.Header>
-                            <Drawer.Heading>
-                              Backdrop: {variant}
-                            </Drawer.Heading>
+                            <Drawer.Heading>Backdrop: {variant}</Drawer.Heading>
                           </Drawer.Header>
                           <Drawer.Body>
-                            <p>This drawer uses the {variant} backdrop variant.</p>
+                            <p>
+                              This drawer uses the {variant} backdrop variant.
+                            </p>
                           </Drawer.Body>
                           <Drawer.Footer>
                             <Drawer.Close>
@@ -3352,7 +3907,8 @@ export default function App() {
           <div>
             <h2 class="text-sm font-semibold">Avatar</h2>
             <p class="text-xs opacity-70">
-              HeroUI-style compound avatar with image, fallback, sizes, and colors.
+              HeroUI-style compound avatar with image, fallback, sizes, and
+              colors.
             </p>
           </div>
 
@@ -3372,10 +3928,16 @@ export default function App() {
           <div class="space-y-3">
             <h3 class="text-xs font-semibold uppercase opacity-70">Colors</h3>
             <div class="flex items-center gap-4">
-              <For each={["default", "accent", "success", "warning", "danger"] as const}>
+              <For
+                each={
+                  ["default", "accent", "success", "warning", "danger"] as const
+                }
+              >
                 {(color) => (
                   <Avatar color={color}>
-                    <Avatar.Fallback>{color.charAt(0).toUpperCase()}</Avatar.Fallback>
+                    <Avatar.Fallback>
+                      {color.charAt(0).toUpperCase()}
+                    </Avatar.Fallback>
                   </Avatar>
                 )}
               </For>
@@ -3383,12 +3945,16 @@ export default function App() {
           </div>
 
           <div class="space-y-3">
-            <h3 class="text-xs font-semibold uppercase opacity-70">Soft Variant</h3>
+            <h3 class="text-xs font-semibold uppercase opacity-70">
+              Soft Variant
+            </h3>
             <div class="flex items-center gap-4">
               <For each={["accent", "success", "warning", "danger"] as const}>
                 {(color) => (
                   <Avatar color={color} variant="soft">
-                    <Avatar.Fallback>{color.charAt(0).toUpperCase()}</Avatar.Fallback>
+                    <Avatar.Fallback>
+                      {color.charAt(0).toUpperCase()}
+                    </Avatar.Fallback>
                   </Avatar>
                 )}
               </For>
@@ -3396,18 +3962,29 @@ export default function App() {
           </div>
 
           <div class="space-y-3">
-            <h3 class="text-xs font-semibold uppercase opacity-70">With Image</h3>
+            <h3 class="text-xs font-semibold uppercase opacity-70">
+              With Image
+            </h3>
             <div class="flex items-center gap-4">
               <Avatar>
-                <Avatar.Image src="https://i.pravatar.cc/150?u=a" alt="User A" />
+                <Avatar.Image
+                  src="https://i.pravatar.cc/150?u=a"
+                  alt="User A"
+                />
                 <Avatar.Fallback>A</Avatar.Fallback>
               </Avatar>
               <Avatar>
-                <Avatar.Image src="https://i.pravatar.cc/150?u=b" alt="User B" />
+                <Avatar.Image
+                  src="https://i.pravatar.cc/150?u=b"
+                  alt="User B"
+                />
                 <Avatar.Fallback>B</Avatar.Fallback>
               </Avatar>
               <Avatar>
-                <Avatar.Image src="https://invalid-url.test/x.jpg" alt="Broken" />
+                <Avatar.Image
+                  src="https://invalid-url.test/x.jpg"
+                  alt="Broken"
+                />
                 <Avatar.Fallback>?</Avatar.Fallback>
               </Avatar>
             </div>
@@ -3417,15 +3994,24 @@ export default function App() {
             <h3 class="text-xs font-semibold uppercase opacity-70">Group</h3>
             <div class="flex items-center -space-x-2">
               <Avatar class="ring-2 ring-base-100">
-                <Avatar.Image src="https://i.pravatar.cc/150?u=1" alt="User 1" />
+                <Avatar.Image
+                  src="https://i.pravatar.cc/150?u=1"
+                  alt="User 1"
+                />
                 <Avatar.Fallback>1</Avatar.Fallback>
               </Avatar>
               <Avatar class="ring-2 ring-base-100">
-                <Avatar.Image src="https://i.pravatar.cc/150?u=2" alt="User 2" />
+                <Avatar.Image
+                  src="https://i.pravatar.cc/150?u=2"
+                  alt="User 2"
+                />
                 <Avatar.Fallback>2</Avatar.Fallback>
               </Avatar>
               <Avatar class="ring-2 ring-base-100">
-                <Avatar.Image src="https://i.pravatar.cc/150?u=3" alt="User 3" />
+                <Avatar.Image
+                  src="https://i.pravatar.cc/150?u=3"
+                  alt="User 3"
+                />
                 <Avatar.Fallback>3</Avatar.Fallback>
               </Avatar>
               <Avatar class="ring-2 ring-base-100">
@@ -3469,12 +4055,15 @@ export default function App() {
           <div>
             <h2 class="text-sm font-semibold">Progress</h2>
             <p class="text-xs opacity-70">
-              HeroUI-style progress bar and circle with sizes, colors, and indeterminate.
+              HeroUI-style progress bar and circle with sizes, colors, and
+              indeterminate.
             </p>
           </div>
 
           <div class="space-y-3">
-            <h3 class="text-xs font-semibold uppercase opacity-70">Progress Bar</h3>
+            <h3 class="text-xs font-semibold uppercase opacity-70">
+              Progress Bar
+            </h3>
             <ProgressBar
               value={60}
               label="Loading"
@@ -3485,34 +4074,57 @@ export default function App() {
           </div>
 
           <div class="space-y-3">
-            <h3 class="text-xs font-semibold uppercase opacity-70">Bar Sizes</h3>
+            <h3 class="text-xs font-semibold uppercase opacity-70">
+              Bar Sizes
+            </h3>
             <div class="grid gap-4">
               <For each={["sm", "md", "lg"] as const}>
                 {(size) => (
-                  <ProgressBar value={45} label={size} size={size} color="accent" showValue />
+                  <ProgressBar
+                    value={45}
+                    label={size}
+                    size={size}
+                    color="accent"
+                    showValue
+                  />
                 )}
               </For>
             </div>
           </div>
 
           <div class="space-y-3">
-            <h3 class="text-xs font-semibold uppercase opacity-70">Bar Colors</h3>
+            <h3 class="text-xs font-semibold uppercase opacity-70">
+              Bar Colors
+            </h3>
             <div class="grid gap-4">
-              <For each={["default", "accent", "success", "warning", "danger"] as const}>
+              <For
+                each={
+                  ["default", "accent", "success", "warning", "danger"] as const
+                }
+              >
                 {(color) => (
-                  <ProgressBar value={70} label={color} color={color} showValue />
+                  <ProgressBar
+                    value={70}
+                    label={color}
+                    color={color}
+                    showValue
+                  />
                 )}
               </For>
             </div>
           </div>
 
           <div class="space-y-3">
-            <h3 class="text-xs font-semibold uppercase opacity-70">Bar Indeterminate</h3>
+            <h3 class="text-xs font-semibold uppercase opacity-70">
+              Bar Indeterminate
+            </h3>
             <ProgressBar isIndeterminate label="Processing" color="accent" />
           </div>
 
           <div class="space-y-3">
-            <h3 class="text-xs font-semibold uppercase opacity-70">Progress Circle</h3>
+            <h3 class="text-xs font-semibold uppercase opacity-70">
+              Progress Circle
+            </h3>
             <div class="flex flex-wrap items-center gap-4">
               <ProgressCircle value={72} size="lg" color="accent" />
               <ProgressCircle value={45} size="md" color="success" />
@@ -3530,7 +4142,9 @@ export default function App() {
           </div>
 
           <div class="space-y-3">
-            <h3 class="text-xs font-semibold uppercase opacity-70">Shimmer (default)</h3>
+            <h3 class="text-xs font-semibold uppercase opacity-70">
+              Shimmer (default)
+            </h3>
             <div class="flex items-center gap-4">
               <Skeleton class="h-12 w-12 rounded-full" />
               <div class="flex flex-col gap-2">
@@ -3552,7 +4166,9 @@ export default function App() {
           </div>
 
           <div class="space-y-3">
-            <h3 class="text-xs font-semibold uppercase opacity-70">Card Skeleton</h3>
+            <h3 class="text-xs font-semibold uppercase opacity-70">
+              Card Skeleton
+            </h3>
             <div class="w-64 space-y-3 rounded-xl border border-base-300 bg-base-100 p-4">
               <Skeleton class="h-32 w-full rounded-lg" />
               <Skeleton class="h-4 w-3/4 rounded" />
@@ -3565,7 +4181,8 @@ export default function App() {
           <div>
             <h2 class="text-sm font-semibold">Spinner</h2>
             <p class="text-xs opacity-70">
-              HeroUI-style SVG spinner with sizes, colors, and legacy CSS variants.
+              HeroUI-style SVG spinner with sizes, colors, and legacy CSS
+              variants.
             </p>
           </div>
 
@@ -3581,7 +4198,11 @@ export default function App() {
           <div class="space-y-3">
             <h3 class="text-xs font-semibold uppercase opacity-70">Colors</h3>
             <div class="flex items-center gap-4">
-              <For each={["current", "accent", "success", "warning", "danger"] as const}>
+              <For
+                each={
+                  ["current", "accent", "success", "warning", "danger"] as const
+                }
+              >
                 {(color) => <Spinner size="lg" color={color} />}
               </For>
             </div>
@@ -3590,7 +4211,18 @@ export default function App() {
           <div class="space-y-3">
             <h3 class="text-xs font-semibold uppercase opacity-70">Variants</h3>
             <div class="flex items-center gap-6">
-              <For each={["spinner", "dots", "ring", "ball", "bars", "infinity"] as const}>
+              <For
+                each={
+                  [
+                    "spinner",
+                    "dots",
+                    "ring",
+                    "ball",
+                    "bars",
+                    "infinity",
+                  ] as const
+                }
+              >
                 {(variant) => (
                   <div class="flex flex-col items-center gap-2">
                     <Spinner size="lg" variant={variant} color="accent" />
@@ -3605,35 +4237,124 @@ export default function App() {
           <div>
             <h2 class="text-sm font-semibold">Floating Dock</h2>
             <p class="text-xs opacity-70">
-              macOS-style dock with spring magnification, x-nudge, and expanding background.
+              macOS-style dock with spring magnification, x-nudge, and expanding
+              background.
             </p>
           </div>
 
           <div class="space-y-2">
-            <h3 class="text-xs font-semibold uppercase opacity-70">Functional Buttons</h3>
+            <h3 class="text-xs font-semibold uppercase opacity-70">
+              Functional Buttons
+            </h3>
             <div class="flex items-end justify-center py-8">
               <FloatingDock
                 items={[
-                  { title: "Microphone", icon: <Icon name="icon-[lucide--mic]" width={20} height={20} />, onClick: () => alert("Mic toggled") },
-                  { title: "Camera", icon: <Icon name="icon-[lucide--camera]" width={20} height={20} />, onClick: () => alert("Camera toggled") },
-                  { title: "Screen Share", icon: <Icon name="icon-[lucide--monitor]" width={20} height={20} />, onClick: () => alert("Screen share") },
-                  { title: "Chat", icon: <Icon name="icon-[lucide--message-circle]" width={20} height={20} />, onClick: () => alert("Chat opened") },
-                  { title: "Settings", icon: <Icon name="icon-[lucide--settings]" width={20} height={20} />, onClick: () => alert("Settings") },
-                  { title: "Leave", icon: <Icon name="icon-[lucide--x]" width={20} height={20} />, onClick: () => alert("Leave call") },
+                  {
+                    title: "Microphone",
+                    icon: (
+                      <Icon name="icon-[lucide--mic]" width={20} height={20} />
+                    ),
+                    onClick: () => alert("Mic toggled"),
+                  },
+                  {
+                    title: "Camera",
+                    icon: (
+                      <Icon
+                        name="icon-[lucide--camera]"
+                        width={20}
+                        height={20}
+                      />
+                    ),
+                    onClick: () => alert("Camera toggled"),
+                  },
+                  {
+                    title: "Screen Share",
+                    icon: (
+                      <Icon
+                        name="icon-[lucide--monitor]"
+                        width={20}
+                        height={20}
+                      />
+                    ),
+                    onClick: () => alert("Screen share"),
+                  },
+                  {
+                    title: "Chat",
+                    icon: (
+                      <Icon
+                        name="icon-[lucide--message-circle]"
+                        width={20}
+                        height={20}
+                      />
+                    ),
+                    onClick: () => alert("Chat opened"),
+                  },
+                  {
+                    title: "Settings",
+                    icon: (
+                      <Icon
+                        name="icon-[lucide--settings]"
+                        width={20}
+                        height={20}
+                      />
+                    ),
+                    onClick: () => alert("Settings"),
+                  },
+                  {
+                    title: "Leave",
+                    icon: (
+                      <Icon name="icon-[lucide--x]" width={20} height={20} />
+                    ),
+                    onClick: () => alert("Leave call"),
+                  },
                 ]}
               />
             </div>
           </div>
 
           <div class="space-y-2">
-            <h3 class="text-xs font-semibold uppercase opacity-70">No Magnification</h3>
+            <h3 class="text-xs font-semibold uppercase opacity-70">
+              No Magnification
+            </h3>
             <div class="flex items-end justify-center py-8">
               <FloatingDock
                 items={[
-                  { title: "Bold", icon: <Icon name="icon-[lucide--bold]" width={16} height={16} />, onClick: () => {} },
-                  { title: "Italic", icon: <Icon name="icon-[lucide--italic]" width={16} height={16} />, onClick: () => {} },
-                  { title: "Underline", icon: <Icon name="icon-[lucide--underline]" width={16} height={16} />, onClick: () => {} },
-                  { title: "Link", icon: <Icon name="icon-[lucide--link]" width={16} height={16} />, onClick: () => {} },
+                  {
+                    title: "Bold",
+                    icon: (
+                      <Icon name="icon-[lucide--bold]" width={16} height={16} />
+                    ),
+                    onClick: () => {},
+                  },
+                  {
+                    title: "Italic",
+                    icon: (
+                      <Icon
+                        name="icon-[lucide--italic]"
+                        width={16}
+                        height={16}
+                      />
+                    ),
+                    onClick: () => {},
+                  },
+                  {
+                    title: "Underline",
+                    icon: (
+                      <Icon
+                        name="icon-[lucide--underline]"
+                        width={16}
+                        height={16}
+                      />
+                    ),
+                    onClick: () => {},
+                  },
+                  {
+                    title: "Link",
+                    icon: (
+                      <Icon name="icon-[lucide--link]" width={16} height={16} />
+                    ),
+                    onClick: () => {},
+                  },
                 ]}
                 magnify={false}
                 baseSize={36}
@@ -3648,14 +4369,37 @@ export default function App() {
               Mobile: Dock Mode (resize to see)
             </h3>
             <p class="text-xs opacity-50">
-              mobileMode="dock" shows the full bar on mobile instead of a burger menu.
+              mobileMode="dock" shows the full bar on mobile instead of a burger
+              menu.
             </p>
             <div class="flex items-end justify-center py-8">
               <FloatingDock
                 items={[
-                  { title: "Mic", icon: <Icon name="icon-[lucide--mic]" width={18} height={18} />, onClick: () => {} },
-                  { title: "Cam", icon: <Icon name="icon-[lucide--camera]" width={18} height={18} />, onClick: () => {} },
-                  { title: "End", icon: <Icon name="icon-[lucide--x]" width={18} height={18} />, onClick: () => {} },
+                  {
+                    title: "Mic",
+                    icon: (
+                      <Icon name="icon-[lucide--mic]" width={18} height={18} />
+                    ),
+                    onClick: () => {},
+                  },
+                  {
+                    title: "Cam",
+                    icon: (
+                      <Icon
+                        name="icon-[lucide--camera]"
+                        width={18}
+                        height={18}
+                      />
+                    ),
+                    onClick: () => {},
+                  },
+                  {
+                    title: "End",
+                    icon: (
+                      <Icon name="icon-[lucide--x]" width={18} height={18} />
+                    ),
+                    onClick: () => {},
+                  },
                 ]}
                 mobileMode="dock"
                 baseSize={36}
@@ -3683,8 +4427,12 @@ export default function App() {
               </div>
             </div>
             <div class="space-y-2 rounded-lg border border-base-300 bg-base-100 p-4">
-              <p class="text-sm font-medium">{languageSwitcherI18n.t("greeting")}</p>
-              <p class="text-xs opacity-70">{languageSwitcherI18n.t("helper")}</p>
+              <p class="text-sm font-medium">
+                {languageSwitcherI18n.t("greeting")}
+              </p>
+              <p class="text-xs opacity-70">
+                {languageSwitcherI18n.t("helper")}
+              </p>
             </div>
           </div>
         </section>
@@ -3693,7 +4441,8 @@ export default function App() {
           <div>
             <h2 class="text-sm font-semibold">Chat Bubble</h2>
             <p class="text-xs opacity-70">
-              Compound chat message primitive with start/end alignment and semantic slots.
+              Compound chat message primitive with start/end alignment and
+              semantic slots.
             </p>
           </div>
 
@@ -3705,7 +4454,9 @@ export default function App() {
                 Deployment completed successfully. Monitoring is active.
               </ChatBubble.Message>
               <ChatBubble.Footer>
-                <ChatBubble.Time datetime="2026-04-13T09:35:00">09:35</ChatBubble.Time>
+                <ChatBubble.Time datetime="2026-04-13T09:35:00">
+                  09:35
+                </ChatBubble.Time>
               </ChatBubble.Footer>
             </ChatBubble>
 
@@ -3716,7 +4467,9 @@ export default function App() {
                 Great, please notify me if latency goes above 200ms.
               </ChatBubble.Message>
               <ChatBubble.Footer>
-                <ChatBubble.Time datetime="2026-04-13T09:36:00">09:36</ChatBubble.Time>
+                <ChatBubble.Time datetime="2026-04-13T09:36:00">
+                  09:36
+                </ChatBubble.Time>
               </ChatBubble.Footer>
             </ChatBubble>
           </div>
@@ -3726,7 +4479,8 @@ export default function App() {
           <div>
             <h2 class="text-sm font-semibold">Glass Panel</h2>
             <p class="text-xs opacity-70">
-              Frosted panel with optional collapse behavior, accent edges, and blur levels.
+              Frosted panel with optional collapse behavior, accent edges, and
+              blur levels.
             </p>
           </div>
 
@@ -3746,7 +4500,13 @@ export default function App() {
               </div>
               <GlassPanel
                 title="Service Health"
-                icon={<Icon name="icon-[lucide--shield-check]" width={16} height={16} />}
+                icon={
+                  <Icon
+                    name="icon-[lucide--shield-check]"
+                    width={16}
+                    height={16}
+                  />
+                }
                 collapsible
                 open={glassPanelOpen()}
                 onToggle={setGlassPanelOpen}
@@ -3754,7 +4514,8 @@ export default function App() {
                 accent="success"
               >
                 <p class="text-sm">
-                  API uptime is stable and all background jobs are running normally.
+                  API uptime is stable and all background jobs are running
+                  normally.
                 </p>
               </GlassPanel>
             </div>
@@ -3770,7 +4531,9 @@ export default function App() {
               <ul class="list-disc space-y-1 pl-4 text-sm">
                 <li>Calendar and picker behaviors are now unified.</li>
                 <li>Layout primitives migrated to `.classes.ts` convention.</li>
-                <li>Icon placement now uses `startIcon` and `endIcon` slots.</li>
+                <li>
+                  Icon placement now uses `startIcon` and `endIcon` slots.
+                </li>
               </ul>
             </GlassPanel>
           </div>
@@ -3780,7 +4543,8 @@ export default function App() {
           <div>
             <h2 class="text-sm font-semibold">Glow Card</h2>
             <p class="text-xs opacity-70">
-              Pointer-reactive glow effect for feature cards and highlighted content.
+              Pointer-reactive glow effect for feature cards and highlighted
+              content.
             </p>
           </div>
 
@@ -3788,13 +4552,15 @@ export default function App() {
             <GlowCard class="rounded-xl border border-base-300 bg-base-100 p-4">
               <h3 class="text-sm font-semibold">Realtime Insights</h3>
               <p class="mt-2 text-sm opacity-80">
-                Move your pointer over this card to inspect the radial highlight behavior.
+                Move your pointer over this card to inspect the radial highlight
+                behavior.
               </p>
             </GlowCard>
             <GlowCard class="rounded-xl border border-base-300 bg-base-100 p-4">
               <h3 class="text-sm font-semibold">Smart Alerts</h3>
               <p class="mt-2 text-sm opacity-80">
-                Use the glow treatment on interactive dashboards or attention surfaces.
+                Use the glow treatment on interactive dashboards or attention
+                surfaces.
               </p>
             </GlowCard>
           </div>
@@ -3804,7 +4570,8 @@ export default function App() {
           <div>
             <h2 class="text-sm font-semibold">Noise Background</h2>
             <p class="text-xs opacity-70">
-              Animated layered gradients with optional texture overlay and configurable intensity.
+              Animated layered gradients with optional texture overlay and
+              configurable intensity.
             </p>
           </div>
 
@@ -3812,7 +4579,11 @@ export default function App() {
             <NoiseBackground
               containerClass="min-h-44 rounded-xl border border-base-300"
               class="flex h-full flex-col justify-between p-4"
-              gradientColors={["rgb(14, 165, 233)", "rgb(168, 85, 247)", "rgb(244, 114, 182)"]}
+              gradientColors={[
+                "rgb(14, 165, 233)",
+                "rgb(168, 85, 247)",
+                "rgb(244, 114, 182)",
+              ]}
               backdropBlur
             >
               <div>
@@ -3836,7 +4607,8 @@ export default function App() {
               <div>
                 <p class="text-sm font-semibold">Static Texture</p>
                 <p class="text-xs opacity-80">
-                  Use static mode for quieter backgrounds while keeping visual depth.
+                  Use static mode for quieter backgrounds while keeping visual
+                  depth.
                 </p>
               </div>
               <Badge color="accent">No animation</Badge>
@@ -3848,14 +4620,15 @@ export default function App() {
           <div>
             <h2 class="text-sm font-semibold">Live Chat</h2>
             <p class="text-xs opacity-70">
-              Floating trigger and full-screen chat panel. Click the bubble in the demo area.
+              Floating trigger and full-screen chat panel. Click the bubble in
+              the demo area.
             </p>
           </div>
 
           <div class="relative min-h-40 rounded-lg border border-base-300 bg-base-100 p-4">
             <p class="max-w-md text-sm opacity-80">
-              The bubble is rendered as an overlay trigger and opens the chat panel with mock
-              conversation data.
+              The bubble is rendered as an overlay trigger and opens the chat
+              panel with mock conversation data.
             </p>
             <LiveChatBubble
               class="absolute bottom-4 left-4 right-auto"
@@ -3883,21 +4656,29 @@ export default function App() {
             <div class="rounded-lg border border-base-300 bg-base-100">
               <EmptyState>
                 <EmptyState.Icon>
-                  <Icon name="icon-[lucide--file-text]" width={48} height={48} />
+                  <Icon
+                    name="icon-[lucide--file-text]"
+                    width={48}
+                    height={48}
+                  />
                 </EmptyState.Icon>
                 <EmptyState.Title>No documents</EmptyState.Title>
                 <EmptyState.Description>
                   Get started by creating a new document.
                 </EmptyState.Description>
                 <EmptyState.Actions>
-                  <Button size="sm" variant="primary">New Document</Button>
+                  <Button size="sm" variant="primary">
+                    New Document
+                  </Button>
                 </EmptyState.Actions>
               </EmptyState>
             </div>
           </div>
 
           <div class="space-y-3">
-            <h3 class="text-xs font-semibold uppercase opacity-70">Search Results</h3>
+            <h3 class="text-xs font-semibold uppercase opacity-70">
+              Search Results
+            </h3>
             <div class="rounded-lg border border-base-300 bg-base-100">
               <EmptyState>
                 <EmptyState.Icon>
@@ -3905,10 +4686,13 @@ export default function App() {
                 </EmptyState.Icon>
                 <EmptyState.Title>No results found</EmptyState.Title>
                 <EmptyState.Description>
-                  Try adjusting your search or filter to find what you're looking for.
+                  Try adjusting your search or filter to find what you're
+                  looking for.
                 </EmptyState.Description>
                 <EmptyState.Actions>
-                  <Button size="sm" variant="secondary">Clear filters</Button>
+                  <Button size="sm" variant="secondary">
+                    Clear filters
+                  </Button>
                 </EmptyState.Actions>
               </EmptyState>
             </div>
@@ -3918,20 +4702,32 @@ export default function App() {
         <section class="space-y-4 rounded-xl border border-base-300 bg-base-200 p-4">
           <div>
             <h2 class="text-sm font-semibold">ColorArea</h2>
-            <p class="text-xs opacity-70">HSV saturation/brightness area with pointer and keyboard interaction.</p>
+            <p class="text-xs opacity-70">
+              HSV saturation/brightness area with pointer and keyboard
+              interaction.
+            </p>
           </div>
 
           <div class="grid gap-6 md:grid-cols-2">
             <div class="space-y-3">
-              <h3 class="text-xs font-semibold uppercase opacity-70">Controlled</h3>
-              <ColorArea value={colorAreaValue()} onChange={setColorAreaValue} />
+              <h3 class="text-xs font-semibold uppercase opacity-70">
+                Controlled
+              </h3>
+              <ColorArea
+                value={colorAreaValue()}
+                onChange={setColorAreaValue}
+              />
               <p class="text-xs opacity-70">
-                H {Math.round(colorAreaValue().h)} S {Math.round(colorAreaValue().s)} V {Math.round(colorAreaValue().v)}
+                H {Math.round(colorAreaValue().h)} S{" "}
+                {Math.round(colorAreaValue().s)} V{" "}
+                {Math.round(colorAreaValue().v)}
               </p>
             </div>
 
             <div class="space-y-3">
-              <h3 class="text-xs font-semibold uppercase opacity-70">Disabled</h3>
+              <h3 class="text-xs font-semibold uppercase opacity-70">
+                Disabled
+              </h3>
               <ColorArea value={{ h: 40, s: 70, v: 85 }} isDisabled />
             </div>
           </div>
@@ -3940,12 +4736,17 @@ export default function App() {
         <section class="space-y-4 rounded-xl border border-base-300 bg-base-200 p-4">
           <div>
             <h2 class="text-sm font-semibold">ColorField</h2>
-            <p class="text-xs opacity-70">Text input for color editing with parsing, formatting, and validation.</p>
+            <p class="text-xs opacity-70">
+              Text input for color editing with parsing, formatting, and
+              validation.
+            </p>
           </div>
 
           <div class="grid gap-6 md:grid-cols-2">
             <div class="space-y-3">
-              <h3 class="text-xs font-semibold uppercase opacity-70">Controlled (HEX)</h3>
+              <h3 class="text-xs font-semibold uppercase opacity-70">
+                Controlled (HEX)
+              </h3>
               <ColorField
                 value={colorFieldValue()}
                 onChange={setColorFieldValue}
@@ -3956,7 +4757,9 @@ export default function App() {
             </div>
 
             <div class="space-y-3">
-              <h3 class="text-xs font-semibold uppercase opacity-70">Formats + Disabled</h3>
+              <h3 class="text-xs font-semibold uppercase opacity-70">
+                Formats + Disabled
+              </h3>
               <div class="flex flex-col gap-3">
                 <ColorField defaultValue="rgb(59, 130, 246)" format="rgb" />
                 <ColorField defaultValue="hsl(217, 91%, 60%)" format="hsl" />
@@ -3969,13 +4772,21 @@ export default function App() {
         <section class="space-y-4 rounded-xl border border-base-300 bg-base-200 p-4">
           <div>
             <h2 class="text-sm font-semibold">ColorSwatch</h2>
-            <p class="text-xs opacity-70">Single selectable swatch with keyboard and disabled states.</p>
+            <p class="text-xs opacity-70">
+              Single selectable swatch with keyboard and disabled states.
+            </p>
           </div>
 
           <div class="grid gap-6 md:grid-cols-2">
             <div class="space-y-3">
-              <h3 class="text-xs font-semibold uppercase opacity-70">Selectable</h3>
-              <div class="flex flex-wrap items-center gap-3" role="listbox" aria-label="Color swatches">
+              <h3 class="text-xs font-semibold uppercase opacity-70">
+                Selectable
+              </h3>
+              <div
+                class="flex flex-wrap items-center gap-3"
+                role="listbox"
+                aria-label="Color swatches"
+              >
                 <ColorSwatch
                   color="#3B82F6"
                   isSelected={selectedSwatch() === "#3B82F6"}
@@ -4002,7 +4813,9 @@ export default function App() {
             </div>
 
             <div class="space-y-3">
-              <h3 class="text-xs font-semibold uppercase opacity-70">Sizes + Disabled</h3>
+              <h3 class="text-xs font-semibold uppercase opacity-70">
+                Sizes + Disabled
+              </h3>
               <div class="flex items-center gap-3">
                 <ColorSwatch color="#8B5CF6" size="xs" />
                 <ColorSwatch color="#8B5CF6" size="sm" />
@@ -4018,24 +4831,35 @@ export default function App() {
         <section class="space-y-4 rounded-xl border border-base-300 bg-base-200 p-4">
           <div>
             <h2 class="text-sm font-semibold">ColorSwatchPicker</h2>
-            <p class="text-xs opacity-70">Single-select palette built from ColorSwatch primitives.</p>
+            <p class="text-xs opacity-70">
+              Single-select palette built from ColorSwatch primitives.
+            </p>
           </div>
 
           <div class="grid gap-6 md:grid-cols-2">
             <div class="space-y-3">
-              <h3 class="text-xs font-semibold uppercase opacity-70">Controlled</h3>
-              <ColorSwatchPicker value={selectedSwatchPicker()} onChange={setSelectedSwatchPicker}>
+              <h3 class="text-xs font-semibold uppercase opacity-70">
+                Controlled
+              </h3>
+              <ColorSwatchPicker
+                value={selectedSwatchPicker()}
+                onChange={setSelectedSwatchPicker}
+              >
                 <ColorSwatch color="#3B82F6" />
                 <ColorSwatch color="#EF4444" />
                 <ColorSwatch color="#10B981" />
                 <ColorSwatch color="#F59E0B" />
                 <ColorSwatch color="#8B5CF6" />
               </ColorSwatchPicker>
-              <p class="text-xs opacity-70">Selected: {selectedSwatchPicker()}</p>
+              <p class="text-xs opacity-70">
+                Selected: {selectedSwatchPicker()}
+              </p>
             </div>
 
             <div class="space-y-3">
-              <h3 class="text-xs font-semibold uppercase opacity-70">Uncontrolled + Disabled</h3>
+              <h3 class="text-xs font-semibold uppercase opacity-70">
+                Uncontrolled + Disabled
+              </h3>
               <div class="flex flex-col gap-3">
                 <ColorSwatchPicker defaultValue="#10B981">
                   <ColorSwatch color="#3B82F6" shape="square" />
@@ -4056,14 +4880,22 @@ export default function App() {
         <section class="space-y-4 rounded-xl border border-base-300 bg-base-200 p-4">
           <div>
             <h2 class="text-sm font-semibold">ColorSlider</h2>
-            <p class="text-xs opacity-70">Single-axis slider for hue and alpha control.</p>
+            <p class="text-xs opacity-70">
+              Single-axis slider for hue and alpha control.
+            </p>
           </div>
 
           <div class="grid gap-6 md:grid-cols-2">
             <div class="space-y-3">
               <h3 class="text-xs font-semibold uppercase opacity-70">Hue</h3>
-              <ColorSlider type="hue" value={colorSliderHue()} onChange={setColorSliderHue} />
-              <p class="text-xs opacity-70">Hue: {Math.round(colorSliderHue())}°</p>
+              <ColorSlider
+                type="hue"
+                value={colorSliderHue()}
+                onChange={setColorSliderHue}
+              />
+              <p class="text-xs opacity-70">
+                Hue: {Math.round(colorSliderHue())}°
+              </p>
             </div>
 
             <div class="space-y-3">
@@ -4074,7 +4906,9 @@ export default function App() {
                 onChange={setColorSliderAlpha}
                 style={{ "--color-slider-alpha-color": "rgb(59 130 246)" }}
               />
-              <p class="text-xs opacity-70">Alpha: {(colorSliderAlpha() * 100).toFixed(0)}%</p>
+              <p class="text-xs opacity-70">
+                Alpha: {(colorSliderAlpha() * 100).toFixed(0)}%
+              </p>
             </div>
           </div>
         </section>
@@ -4082,18 +4916,27 @@ export default function App() {
         <section class="space-y-4 rounded-xl border border-base-300 bg-base-200 p-4">
           <div>
             <h2 class="text-sm font-semibold">ColorPicker</h2>
-            <p class="text-xs opacity-70">Composed color selection with synced area and field.</p>
+            <p class="text-xs opacity-70">
+              Composed color selection with synced area and field.
+            </p>
           </div>
 
           <div class="grid gap-6 md:grid-cols-2">
             <div class="space-y-3">
-              <h3 class="text-xs font-semibold uppercase opacity-70">Controlled</h3>
-              <ColorPicker value={colorPickerValue()} onChange={setColorPickerValue} />
+              <h3 class="text-xs font-semibold uppercase opacity-70">
+                Controlled
+              </h3>
+              <ColorPicker
+                value={colorPickerValue()}
+                onChange={setColorPickerValue}
+              />
               <p class="text-xs opacity-70">Current: {colorPickerValue()}</p>
             </div>
 
             <div class="space-y-3">
-              <h3 class="text-xs font-semibold uppercase opacity-70">Custom Composition</h3>
+              <h3 class="text-xs font-semibold uppercase opacity-70">
+                Custom Composition
+              </h3>
               <ColorPicker defaultValue="#EF4444">
                 <ColorPicker.Area />
                 <ColorPicker.Slider type="hue" />
@@ -4105,13 +4948,19 @@ export default function App() {
         </section>
         <section class="space-y-4 rounded-xl border border-base-300 bg-base-200 p-4">
           <div>
-            <h2 class="text-sm font-semibold">ThemeColorPicker (Flower Wheel)</h2>
-            <p class="text-xs opacity-70">Top-right flower wheel demo with synced hue slider + hex field.</p>
+            <h2 class="text-sm font-semibold">
+              ThemeColorPicker (Flower Wheel)
+            </h2>
+            <p class="text-xs opacity-70">
+              Top-right flower wheel demo with synced hue slider + hex field.
+            </p>
           </div>
 
           <div class="grid gap-6 md:grid-cols-2">
             <div class="space-y-3">
-              <h3 class="text-xs font-semibold uppercase opacity-70">Interactive</h3>
+              <h3 class="text-xs font-semibold uppercase opacity-70">
+                Interactive
+              </h3>
               <div class="flex items-center gap-3">
                 <ThemeColorPicker
                   onColorChange={(hue, saturation) => {
@@ -4119,13 +4968,18 @@ export default function App() {
                     setThemeSaturation(saturation);
                   }}
                 />
-                <span class="text-xs opacity-70">Open the palette button to test flower selection.</span>
+                <span class="text-xs opacity-70">
+                  Open the palette button to test flower selection.
+                </span>
               </div>
             </div>
 
             <div class="space-y-2 rounded-lg border border-base-300 bg-base-100 p-3 text-xs">
               <p>
-                Hue: {themeHue() === null ? "neutral" : `${Math.round(themeHue() ?? 0)}deg`}
+                Hue:{" "}
+                {themeHue() === null
+                  ? "neutral"
+                  : `${Math.round(themeHue() ?? 0)}deg`}
               </p>
               <p>Saturation: {Math.round(themeSaturation())}%</p>
             </div>
@@ -4136,7 +4990,8 @@ export default function App() {
           <div>
             <h2 class="text-sm font-semibold">Accordion</h2>
             <p class="text-xs opacity-70">
-              HeroUI-style compound accordion with single/multiple and controlled/uncontrolled modes.
+              HeroUI-style compound accordion with single/multiple and
+              controlled/uncontrolled modes.
             </p>
           </div>
 
@@ -4147,76 +5002,105 @@ export default function App() {
                 <Accordion.Item value="getting-started">
                   <Accordion.Trigger>Getting started</Accordion.Trigger>
                   <Accordion.Content>
-                    Install the package, import components from <code>@pathscale/ui</code>, and apply your theme.
+                    Install the package, import components from{" "}
+                    <code>@pathscale/ui</code>, and apply your theme.
                   </Accordion.Content>
                 </Accordion.Item>
                 <Accordion.Item value="customization">
                   <Accordion.Trigger>Customization</Accordion.Trigger>
                   <Accordion.Content>
-                    Use component props plus CSS variables to align visuals with your product style.
+                    Use component props plus CSS variables to align visuals with
+                    your product style.
                   </Accordion.Content>
                 </Accordion.Item>
               </Accordion>
             </div>
 
             <div class="space-y-3">
-              <h3 class="text-xs font-semibold uppercase opacity-70">Multiple items open</h3>
-              <Accordion selectionMode="multiple" defaultValue={["shipping", "returns"]}>
+              <h3 class="text-xs font-semibold uppercase opacity-70">
+                Multiple items open
+              </h3>
+              <Accordion
+                selectionMode="multiple"
+                defaultValue={["shipping", "returns"]}
+              >
                 <Accordion.Item value="shipping">
                   <Accordion.Trigger>Shipping policy</Accordion.Trigger>
                   <Accordion.Content>
-                    Standard shipping takes 3-5 business days. Expedited shipping takes 1-2 business days.
+                    Standard shipping takes 3-5 business days. Expedited
+                    shipping takes 1-2 business days.
                   </Accordion.Content>
                 </Accordion.Item>
                 <Accordion.Item value="returns">
                   <Accordion.Trigger>Return policy</Accordion.Trigger>
                   <Accordion.Content>
-                    Returns are accepted within 30 days for unused items in original condition.
+                    Returns are accepted within 30 days for unused items in
+                    original condition.
                   </Accordion.Content>
                 </Accordion.Item>
                 <Accordion.Item value="support">
                   <Accordion.Trigger>Support channels</Accordion.Trigger>
                   <Accordion.Content>
-                    Reach us via email, live chat, or the support portal for account-specific issues.
+                    Reach us via email, live chat, or the support portal for
+                    account-specific issues.
                   </Accordion.Content>
                 </Accordion.Item>
               </Accordion>
             </div>
 
             <div class="space-y-3">
-              <h3 class="text-xs font-semibold uppercase opacity-70">Single-open mode</h3>
+              <h3 class="text-xs font-semibold uppercase opacity-70">
+                Single-open mode
+              </h3>
               <Accordion selectionMode="single" defaultValue="billing">
                 <Accordion.Item value="billing">
                   <Accordion.Trigger>Billing</Accordion.Trigger>
                   <Accordion.Content>
-                    Monthly invoices are generated automatically and can be downloaded from settings.
+                    Monthly invoices are generated automatically and can be
+                    downloaded from settings.
                   </Accordion.Content>
                 </Accordion.Item>
                 <Accordion.Item value="security">
                   <Accordion.Trigger>Security</Accordion.Trigger>
                   <Accordion.Content>
-                    Enable multi-factor authentication and rotate API keys regularly for safer access.
+                    Enable multi-factor authentication and rotate API keys
+                    regularly for safer access.
                   </Accordion.Content>
                 </Accordion.Item>
                 <Accordion.Item value="integrations">
                   <Accordion.Trigger>Integrations</Accordion.Trigger>
                   <Accordion.Content>
-                    Connect with analytics, observability, and communication providers from the integrations page.
+                    Connect with analytics, observability, and communication
+                    providers from the integrations page.
                   </Accordion.Content>
                 </Accordion.Item>
               </Accordion>
             </div>
 
             <div class="space-y-3">
-              <h3 class="text-xs font-semibold uppercase opacity-70">Controlled</h3>
+              <h3 class="text-xs font-semibold uppercase opacity-70">
+                Controlled
+              </h3>
               <div class="flex flex-wrap gap-2">
-                <Button size="sm" variant="secondary" onClick={() => setControlledAccordionValue(["billing"])}>
+                <Button
+                  size="sm"
+                  variant="secondary"
+                  onClick={() => setControlledAccordionValue(["billing"])}
+                >
                   Open Billing
                 </Button>
-                <Button size="sm" variant="secondary" onClick={() => setControlledAccordionValue(["security"])}>
+                <Button
+                  size="sm"
+                  variant="secondary"
+                  onClick={() => setControlledAccordionValue(["security"])}
+                >
                   Open Security
                 </Button>
-                <Button size="sm" variant="secondary" onClick={() => setControlledAccordionValue([])}>
+                <Button
+                  size="sm"
+                  variant="secondary"
+                  onClick={() => setControlledAccordionValue([])}
+                >
                   Collapse All
                 </Button>
               </div>
@@ -4229,17 +5113,21 @@ export default function App() {
                 <Accordion.Item value="billing">
                   <Accordion.Trigger>Billing</Accordion.Trigger>
                   <Accordion.Content>
-                    This panel is controlled via external state from the buttons above.
+                    This panel is controlled via external state from the buttons
+                    above.
                   </Accordion.Content>
                 </Accordion.Item>
                 <Accordion.Item value="security">
                   <Accordion.Trigger>Security</Accordion.Trigger>
                   <Accordion.Content>
-                    Controlled selection allows synchronized UI with tabs, routes, or URL parameters.
+                    Controlled selection allows synchronized UI with tabs,
+                    routes, or URL parameters.
                   </Accordion.Content>
                 </Accordion.Item>
               </Accordion>
-              <p class="text-xs opacity-70">Open item: {controlledAccordionValue()[0] ?? "none"}</p>
+              <p class="text-xs opacity-70">
+                Open item: {controlledAccordionValue()[0] ?? "none"}
+              </p>
             </div>
           </div>
         </section>
@@ -4248,16 +5136,28 @@ export default function App() {
           <div>
             <h2 class="text-sm font-semibold">Layout Primitives</h2>
             <p class="text-xs opacity-70">
-              Flex, Grid, Navbar, and Footer examples using the refactored component styling system.
+              Flex, Grid, Navbar, and Footer examples using the refactored
+              component styling system.
             </p>
           </div>
 
           <div class="space-y-3">
             <h3 class="text-xs font-semibold uppercase opacity-70">Flex</h3>
-            <Flex direction={{ base: "col", md: "row" }} gap="md" justify="between" align="center">
-              <div class="rounded-lg border border-base-300 bg-base-100 px-3 py-2 text-sm">Item A</div>
-              <div class="rounded-lg border border-base-300 bg-base-100 px-3 py-2 text-sm">Item B</div>
-              <div class="rounded-lg border border-base-300 bg-base-100 px-3 py-2 text-sm">Item C</div>
+            <Flex
+              direction={{ base: "col", md: "row" }}
+              gap="md"
+              justify="between"
+              align="center"
+            >
+              <div class="rounded-lg border border-base-300 bg-base-100 px-3 py-2 text-sm">
+                Item A
+              </div>
+              <div class="rounded-lg border border-base-300 bg-base-100 px-3 py-2 text-sm">
+                Item B
+              </div>
+              <div class="rounded-lg border border-base-300 bg-base-100 px-3 py-2 text-sm">
+                Item C
+              </div>
             </Flex>
           </div>
 
@@ -4298,21 +5198,54 @@ export default function App() {
 
           <div class="space-y-3">
             <h3 class="text-xs font-semibold uppercase opacity-70">Footer</h3>
-            <Footer horizontal class="rounded-lg border border-base-300 bg-base-100 p-4">
+            <Footer
+              horizontal
+              class="rounded-lg border border-base-300 bg-base-100 p-4"
+            >
               <div>
                 <Footer.Title>Product</Footer.Title>
-                <a href="#" class="text-sm text-base-content/80 underline-offset-4 hover:underline">Features</a>
-                <a href="#" class="text-sm text-base-content/80 underline-offset-4 hover:underline">Pricing</a>
+                <a
+                  href="#"
+                  class="text-sm text-base-content/80 underline-offset-4 hover:underline"
+                >
+                  Features
+                </a>
+                <a
+                  href="#"
+                  class="text-sm text-base-content/80 underline-offset-4 hover:underline"
+                >
+                  Pricing
+                </a>
               </div>
               <div>
                 <Footer.Title>Company</Footer.Title>
-                <a href="#" class="text-sm text-base-content/80 underline-offset-4 hover:underline">About</a>
-                <a href="#" class="text-sm text-base-content/80 underline-offset-4 hover:underline">Contact</a>
+                <a
+                  href="#"
+                  class="text-sm text-base-content/80 underline-offset-4 hover:underline"
+                >
+                  About
+                </a>
+                <a
+                  href="#"
+                  class="text-sm text-base-content/80 underline-offset-4 hover:underline"
+                >
+                  Contact
+                </a>
               </div>
               <div>
                 <Footer.Title>Legal</Footer.Title>
-                <a href="#" class="text-sm text-base-content/80 underline-offset-4 hover:underline">Terms</a>
-                <a href="#" class="text-sm text-base-content/80 underline-offset-4 hover:underline">Privacy</a>
+                <a
+                  href="#"
+                  class="text-sm text-base-content/80 underline-offset-4 hover:underline"
+                >
+                  Terms
+                </a>
+                <a
+                  href="#"
+                  class="text-sm text-base-content/80 underline-offset-4 hover:underline"
+                >
+                  Privacy
+                </a>
               </div>
             </Footer>
           </div>
@@ -4322,7 +5255,6 @@ export default function App() {
         <TableHooksExample />
         <TableVirtualizedExample />
         <StreamingComposableExample />
-
       </div>
       <Toast.Provider placement="top-end" />
     </main>

@@ -534,6 +534,16 @@ export type {
   ProgressCircleSize,
   ProgressCircleColor,
 } from "./components/progress-circle";
+export { default as Popover } from "./components/popover";
+export type {
+  PopoverProps,
+  PopoverRootProps,
+  PopoverTriggerProps,
+  PopoverContentProps,
+  PopoverDialogProps,
+  PopoverArrowProps,
+  PopoverHeadingProps,
+} from "./components/popover";
 export { default as Radio } from "./components/radio";
 export {
   RadioGroup,
