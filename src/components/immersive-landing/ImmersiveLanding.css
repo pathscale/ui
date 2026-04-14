@@ -210,6 +210,7 @@
     bottom: 1rem;
     left: 1rem;
     z-index: 51;
+    pointer-events: auto;
     animation: immersive-landing-slide-up 220ms ease;
   }
 
@@ -559,4 +560,3 @@
     }
   }
 }
-
