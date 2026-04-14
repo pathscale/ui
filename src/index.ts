@@ -233,6 +233,26 @@ export type {
   DrawerCloseTriggerProps,
 } from "./components/drawer";
 export { default as Dropdown } from "./components/dropdown";
+export { default as Disclosure } from "./components/disclosure";
+export type {
+  DisclosureProps,
+  DisclosureRootProps,
+  DisclosureHeadingProps,
+  DisclosureTriggerProps,
+  DisclosureContentProps,
+  DisclosureBodyProps,
+  DisclosureIndicatorProps,
+} from "./components/disclosure";
+export {
+  default as DisclosureGroup,
+  useDisclosureGroupNavigation,
+} from "./components/disclosure-group";
+export type {
+  DisclosureGroupProps,
+  DisclosureGroupRootProps,
+  UseDisclosureGroupNavigationProps,
+  UseDisclosureGroupNavigationReturn,
+} from "./components/disclosure-group";
 export { EmptyState, type EmptyStateProps } from "./components/empty-state";
 export {
   default as ErrorMessage,

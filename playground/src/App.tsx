@@ -57,6 +57,9 @@ import {
   FloatingDock,
   Grid,
   Dropdown,
+  Disclosure,
+  DisclosureGroup,
+  useDisclosureGroupNavigation,
   Description,
   Header,
   Icon,
@@ -187,6 +190,12 @@ const ALERT_STATUSES = [
   "success",
   "warning",
   "danger",
+] as const;
+
+const DISCLOSURE_ITEMS = [
+  { id: "first", title: "First section", content: "Details for the first disclosure." },
+  { id: "second", title: "Second section", content: "More details for the second disclosure." },
+  { id: "third", title: "Third section", content: "Extra details for the third disclosure." },
 ] as const;
 
 const LISTBOX_USERS = [
@@ -329,6 +338,9 @@ export default function App() {
   const [controlledAccordionValue, setControlledAccordionValue] = createSignal<
     string[]
   >(["security"]);
+  const [disclosureKeys, setDisclosureKeys] = createSignal<Set<string>>(
+    new Set(["first"]),
+  );
   const [emailError, setEmailError] =
     createSignal<string>("Email is required.");
   const [usernameError, setUsernameError] = createSignal<string>(
@@ -370,6 +382,13 @@ export default function App() {
     });
   const [glassPanelOpen, setGlassPanelOpen] = createSignal(true);
   const [controlledTimeValue, setControlledTimeValue] = createSignal("13:30");
+  const disclosureItemIds = () => DISCLOSURE_ITEMS.map((item) => item.id);
+  const disclosureNav = useDisclosureGroupNavigation({
+    expandedKeys: disclosureKeys,
+    itemIds: disclosureItemIds,
+    onExpandedChange: setDisclosureKeys,
+    allowsMultipleExpanded: false,
+  });
   const languageSwitcherI18n = createI18n({
     languages: [
       { code: "en", name: "English" },
@@ -3643,6 +3662,73 @@ export default function App() {
                 </Popover.Content>
               </Popover>
             </div>
+          </div>
+        </section>
+
+        <section class="space-y-4 rounded-xl border border-base-300 bg-base-200 p-4">
+          <div>
+            <h2 class="text-sm font-semibold">Disclosure</h2>
+            <p class="text-xs opacity-70">
+              Expand/collapse panels with optional grouping behavior.
+            </p>
+          </div>
+
+          <div class="space-y-3">
+            <h3 class="text-xs font-semibold uppercase opacity-70">Single</h3>
+            <Disclosure defaultOpen>
+              <Disclosure.Heading>
+                <Disclosure.Trigger class="w-full justify-between">
+                  Single disclosure
+                  <Disclosure.Indicator />
+                </Disclosure.Trigger>
+              </Disclosure.Heading>
+              <Disclosure.Content>
+                <Disclosure.Body>
+                  This disclosure manages its own open state.
+                </Disclosure.Body>
+              </Disclosure.Content>
+            </Disclosure>
+          </div>
+
+          <div class="space-y-3">
+            <h3 class="text-xs font-semibold uppercase opacity-70">Group (Accordion)</h3>
+            <div class="flex flex-wrap items-center gap-2">
+              <Button
+                size="sm"
+                variant="secondary"
+                onClick={disclosureNav.onPrevious}
+                disabled={disclosureNav.isPrevDisabled()}
+              >
+                Previous
+              </Button>
+              <Button
+                size="sm"
+                variant="secondary"
+                onClick={disclosureNav.onNext}
+                disabled={disclosureNav.isNextDisabled()}
+              >
+                Next
+              </Button>
+            </div>
+            <DisclosureGroup
+              expandedKeys={disclosureKeys()}
+              onExpandedChange={setDisclosureKeys}
+              allowsMultipleExpanded={false}
+            >
+              {DISCLOSURE_ITEMS.map((item) => (
+                <Disclosure id={item.id}>
+                  <Disclosure.Heading>
+                    <Disclosure.Trigger class="w-full justify-between">
+                      {item.title}
+                      <Disclosure.Indicator />
+                    </Disclosure.Trigger>
+                  </Disclosure.Heading>
+                  <Disclosure.Content>
+                    <Disclosure.Body>{item.content}</Disclosure.Body>
+                  </Disclosure.Content>
+                </Disclosure>
+              ))}
+            </DisclosureGroup>
           </div>
         </section>
 
