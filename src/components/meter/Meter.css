@@ -1,0 +1,89 @@
+@layer components {
+  .meter {
+    display: grid;
+    width: 100%;
+    gap: 0.25rem;
+    grid-template-areas:
+      "label output"
+      "track track";
+    grid-template-columns: 1fr auto;
+
+    --meter-fill: var(--color-accent);
+  }
+
+  .meter [data-slot="label"] {
+    grid-area: label;
+    width: fit-content;
+    font-size: 0.875rem;
+    line-height: 1.25rem;
+    font-weight: 500;
+  }
+
+  .meter__output {
+    grid-area: output;
+    font-size: 0.875rem;
+    line-height: 1.25rem;
+    font-weight: 500;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .meter__track {
+    grid-area: track;
+    position: relative;
+    overflow: hidden;
+    border-radius: 9999px;
+    background: var(--color-base-200);
+    height: 0.5rem;
+  }
+
+  .meter__fill {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100%;
+    border-radius: 9999px;
+    background-color: var(--meter-fill);
+    transition: width 300ms var(--ease-out);
+  }
+
+  .meter--sm .meter__track {
+    height: 0.25rem;
+  }
+
+  .meter--lg .meter__track {
+    height: 0.75rem;
+  }
+
+  .meter--default {
+    --meter-fill: var(--color-base-content);
+  }
+
+  .meter--accent {
+    --meter-fill: var(--color-accent);
+  }
+
+  .meter--success {
+    --meter-fill: var(--color-success);
+  }
+
+  .meter--warning {
+    --meter-fill: var(--color-warning);
+  }
+
+  .meter--danger {
+    --meter-fill: var(--color-danger);
+  }
+
+  .meter--disabled,
+  .meter[aria-disabled="true"],
+  .meter[data-disabled="true"] {
+    opacity: 0.6;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .meter__fill {
+      transition: none;
+    }
+  }
+}
+

@@ -32,6 +32,7 @@ import {
   LanguageSwitcher,
   createI18n,
   Menu,
+  Meter,
   Modal,
   Navbar,
   NoiseBackground,
@@ -4266,6 +4267,37 @@ export default function App() {
               <ProgressCircle value={72} size="lg" color="accent" />
               <ProgressCircle value={45} size="md" color="success" />
               <ProgressCircle isIndeterminate size="sm" color="warning" />
+            </div>
+          </div>
+
+          <div class="space-y-3">
+            <h3 class="text-xs font-semibold uppercase opacity-70">Meter</h3>
+            <div class="grid gap-4">
+              <Meter value={60} size="md" color="accent" aria-label="Storage usage">
+                <Label>Storage</Label>
+                <Meter.Output />
+                <Meter.Track>
+                  <Meter.Fill />
+                </Meter.Track>
+              </Meter>
+
+              <Meter
+                value={750}
+                minValue={0}
+                maxValue={1000}
+                lowValue={250}
+                highValue={850}
+                optimumValue={700}
+                formatOptions={{ style: "currency", currency: "USD" }}
+                color="success"
+                aria-label="Revenue meter"
+              >
+                <Label>Revenue</Label>
+                <Meter.Output />
+                <Meter.Track>
+                  <Meter.Fill />
+                </Meter.Track>
+              </Meter>
             </div>
           </div>
         </section>

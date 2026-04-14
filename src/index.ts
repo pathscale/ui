@@ -516,6 +516,23 @@ export type {
   ModalFooterProps,
   ModalCloseTriggerProps,
 } from "./components/modal";
+export {
+  default as Meter,
+  MeterRoot,
+  MeterOutput,
+  MeterTrack,
+  MeterFill,
+} from "./components/meter";
+export type {
+  MeterProps,
+  MeterRootProps,
+  MeterOutputProps,
+  MeterTrackProps,
+  MeterFillProps,
+  MeterSize,
+  MeterColor,
+  MeterRenderState,
+} from "./components/meter";
 export { default as Navbar } from "./components/navbar";
 export type { NavbarProps } from "./components/navbar";
 export type { NavbarStackProps } from "./components/navbar/NavbarStack";
