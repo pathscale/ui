@@ -224,8 +224,10 @@ export {
 } from "./components/drawer";
 export type {
   DrawerPlacement,
+  DrawerSize,
   DrawerBackdropVariant,
   DrawerDialogSide,
+  DrawerScrollBehavior,
   DrawerRootProps,
   DrawerTriggerProps,
   DrawerBackdropProps,
@@ -237,6 +239,7 @@ export type {
   DrawerFooterProps,
   DrawerHandleProps,
   DrawerCloseTriggerProps,
+  DrawerCloseProps,
 } from "./components/drawer";
 export { default as Dropdown } from "./components/dropdown";
 export { default as Disclosure } from "./components/disclosure";
