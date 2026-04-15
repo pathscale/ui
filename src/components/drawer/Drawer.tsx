@@ -68,9 +68,17 @@ export type DrawerContentProps = Omit<JSX.HTMLAttributes<HTMLDivElement>, "child
     placement?: DrawerPlacement;
   };
 
+export type DrawerDialogSide = "left" | "right";
+export type DrawerDialogBg = "base" | "surface-1" | "surface-2" | "surface-3";
+
 export type DrawerDialogProps = Omit<JSX.HTMLAttributes<HTMLDivElement>, "children"> &
   IComponentBaseProps & {
     children: JSX.Element;
+    side?: DrawerDialogSide;
+    width?: string;
+    maxWidth?: string;
+    bg?: DrawerDialogBg;
+    padding?: string;
   };
 
 export type DrawerHeaderProps = Omit<JSX.HTMLAttributes<HTMLDivElement>, "children"> &
@@ -346,6 +354,18 @@ const DrawerContent: ParentComponent<DrawerContentProps> = (props) => {
 /* -------------------------------------------------------------------------------------------------
  * Drawer Dialog
  * -----------------------------------------------------------------------------------------------*/
+const BG_MAP: Record<DrawerDialogBg, string> = {
+  "base": "drawer__dialog--bg-base",
+  "surface-1": "drawer__dialog--bg-surface-1",
+  "surface-2": "drawer__dialog--bg-surface-2",
+  "surface-3": "drawer__dialog--bg-surface-3",
+};
+
+const SIDE_MAP: Record<DrawerDialogSide, string> = {
+  left: "drawer__dialog--side-left",
+  right: "drawer__dialog--side-right",
+};
+
 const DrawerDialog: ParentComponent<DrawerDialogProps> = (props) => {
   const [local, others] = splitProps(props, [
     "children",
@@ -353,20 +373,45 @@ const DrawerDialog: ParentComponent<DrawerDialogProps> = (props) => {
     "className",
     "dataTheme",
     "style",
+    "side",
+    "width",
+    "maxWidth",
+    "bg",
+    "padding",
   ]);
 
   const ctx = useDrawerContext();
+
+  const mergedStyle = (): JSX.CSSProperties => {
+    const s: JSX.CSSProperties = {};
+    if (typeof local.style === "object" && local.style) Object.assign(s, local.style);
+    if (local.width) s["--drawer-dialog-width"] = local.width;
+    if (local.maxWidth) s["--drawer-dialog-max-width"] = local.maxWidth;
+    if (local.padding) s["--drawer-dialog-padding"] = local.padding;
+    return s;
+  };
+
+  const hasCustomSize = () => Boolean(local.width || local.maxWidth);
+  const hasCustomPadding = () => Boolean(local.padding);
 
   return (
     <div
       {...others}
       role="dialog"
       aria-modal="true"
-      {...{ class: twMerge(CLASSES.slot.dialog, local.class, local.className) }}
+      {...{ class: twMerge(
+        CLASSES.slot.dialog,
+        local.side ? SIDE_MAP[local.side] : undefined,
+        local.bg ? BG_MAP[local.bg] : undefined,
+        hasCustomSize() ? "drawer__dialog--custom-size" : undefined,
+        hasCustomPadding() ? "drawer__dialog--custom-padding" : undefined,
+        local.class,
+        local.className,
+      ) }}
       data-slot="drawer-dialog"
       data-placement={ctx.placement()}
       data-theme={local.dataTheme}
-      style={local.style}
+      style={mergedStyle()}
     >
       {local.children}
     </div>

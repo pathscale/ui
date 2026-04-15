@@ -225,6 +225,8 @@ export {
 export type {
   DrawerPlacement,
   DrawerBackdropVariant,
+  DrawerDialogSide,
+  DrawerDialogBg,
   DrawerRootProps,
   DrawerTriggerProps,
   DrawerBackdropProps,

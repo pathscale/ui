@@ -14,6 +14,8 @@ export {
   DrawerClose,
   type DrawerPlacement,
   type DrawerBackdropVariant,
+  type DrawerDialogSide,
+  type DrawerDialogBg,
   type DrawerRootProps,
   type DrawerTriggerProps,
   type DrawerBackdropProps,
