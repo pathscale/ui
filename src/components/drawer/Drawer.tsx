@@ -1,56 +1,91 @@
 import "./Drawer.css";
 import {
-  createContext,
+  Show,
   createEffect,
   createSignal,
+  createUniqueId,
   onCleanup,
   splitProps,
-  useContext,
-  Show,
   type Component,
   type JSX,
   type ParentComponent,
 } from "solid-js";
-import { twMerge } from "tailwind-merge";
 import { Portal } from "solid-js/web";
+import { twMerge } from "tailwind-merge";
 import type { IComponentBaseProps } from "../types";
+import {
+  focusFirst,
+  isSidePlacement,
+  isVisibleState,
+  trapFocus,
+  type DrawerAnimState,
+  type DrawerBackdropVariant,
+  type DrawerCloseReason,
+  type DrawerPlacement,
+  type DrawerScrollBehavior,
+  type DrawerSize,
+} from "./Drawer.a11y";
 import { CLASSES } from "./Drawer.classes";
+import { DrawerContext, useDrawerContext, type DrawerContextValue } from "./Drawer.context";
 
-/* -------------------------------------------------------------------------------------------------
- * Drawer Context
- * -----------------------------------------------------------------------------------------------*/
-export type DrawerPlacement = "top" | "bottom" | "left" | "right";
-export type DrawerBackdropVariant = "opaque" | "blur" | "transparent";
+export type {
+  DrawerPlacement,
+  DrawerSize,
+  DrawerBackdropVariant,
+  DrawerScrollBehavior,
+} from "./Drawer.a11y";
 
-type DrawerAnimState = "entering" | "open" | "exiting" | "closed";
+/* --------------------------- body-scroll locking -------------------------- */
 
-type DrawerContextValue = {
-  isOpen: () => boolean;
-  setIsOpen: (v: boolean) => void;
-  placement: () => DrawerPlacement;
-  isDismissable: () => boolean;
-  animState: () => DrawerAnimState;
+let bodyLockCount = 0;
+let prevBodyOverflow = "";
+let prevBodyPaddingRight = "";
+
+const lockBodyScroll = () => {
+  if (bodyLockCount === 0) {
+    prevBodyOverflow = document.body.style.overflow;
+    prevBodyPaddingRight = document.body.style.paddingRight;
+    const scrollbarWidth = window.innerWidth - document.documentElement.clientWidth;
+    if (scrollbarWidth > 0) {
+      document.body.style.paddingRight = `${scrollbarWidth}px`;
+    }
+    document.body.style.overflow = "hidden";
+  }
+  bodyLockCount += 1;
 };
 
-const DrawerContext = createContext<DrawerContextValue>();
-
-const useDrawerContext = () => {
-  const ctx = useContext(DrawerContext);
-  if (!ctx) throw new Error("Drawer compound components must be used within <Drawer>");
-  return ctx;
+const unlockBodyScroll = () => {
+  if (bodyLockCount <= 0) return;
+  bodyLockCount -= 1;
+  if (bodyLockCount === 0) {
+    document.body.style.overflow = prevBodyOverflow;
+    document.body.style.paddingRight = prevBodyPaddingRight;
+  }
 };
 
-/* -------------------------------------------------------------------------------------------------
- * Types
- * -----------------------------------------------------------------------------------------------*/
-export type DrawerRootProps = IComponentBaseProps & {
-  children: JSX.Element;
-  isOpen?: boolean;
-  defaultOpen?: boolean;
-  onOpenChange?: (isOpen: boolean) => void;
-};
+/* --------------------------------- props --------------------------------- */
 
-export type DrawerTriggerProps = Omit<JSX.HTMLAttributes<HTMLButtonElement>, "children"> &
+export type DrawerRootProps = Omit<JSX.HTMLAttributes<HTMLDivElement>, "children"> &
+  IComponentBaseProps & {
+    children: JSX.Element;
+    isOpen?: boolean;
+    defaultOpen?: boolean;
+    onOpenChange?: (isOpen: boolean) => void;
+    placement?: DrawerPlacement;
+    size?: DrawerSize;
+    backdrop?: DrawerBackdropVariant;
+    scrollBehavior?: DrawerScrollBehavior;
+    isDismissable?: boolean;
+    shouldCloseOnEsc?: boolean;
+    shouldCloseOnBackdropClick?: boolean;
+    trapFocus?: boolean;
+    restoreFocus?: boolean;
+  };
+
+export type DrawerTriggerProps = Omit<
+  JSX.ButtonHTMLAttributes<HTMLButtonElement>,
+  "children"
+> &
   IComponentBaseProps & {
     children: JSX.Element;
   };
@@ -59,13 +94,18 @@ export type DrawerBackdropProps = Omit<JSX.HTMLAttributes<HTMLDivElement>, "chil
   IComponentBaseProps & {
     children: JSX.Element;
     variant?: DrawerBackdropVariant;
+    /** @deprecated Configure dismissability at Drawer.Root `isDismissable` */
     isDismissable?: boolean;
+    /** @deprecated Configure backdrop closing at Drawer.Root `shouldCloseOnBackdropClick` */
+    shouldCloseOnBackdropClick?: boolean;
   };
 
 export type DrawerContentProps = Omit<JSX.HTMLAttributes<HTMLDivElement>, "children"> &
   IComponentBaseProps & {
     children: JSX.Element;
+    /** @deprecated Configure placement at Drawer.Root `placement` */
     placement?: DrawerPlacement;
+    scrollBehavior?: DrawerScrollBehavior;
   };
 
 export type DrawerDialogSide = "left" | "right";
@@ -80,6 +120,7 @@ export type DrawerDialogProps = Omit<JSX.HTMLAttributes<HTMLDivElement>, "childr
     padding?: string;
     borderWidth?: string;
     borderColor?: string;
+    size?: DrawerSize;
   };
 
 export type DrawerHeaderProps = Omit<JSX.HTMLAttributes<HTMLDivElement>, "children"> &
@@ -90,11 +131,13 @@ export type DrawerHeaderProps = Omit<JSX.HTMLAttributes<HTMLDivElement>, "childr
 export type DrawerHeadingProps = Omit<JSX.HTMLAttributes<HTMLHeadingElement>, "children"> &
   IComponentBaseProps & {
     children: JSX.Element;
+    id?: string;
   };
 
 export type DrawerBodyProps = Omit<JSX.HTMLAttributes<HTMLDivElement>, "children"> &
   IComponentBaseProps & {
     children: JSX.Element;
+    id?: string;
   };
 
 export type DrawerFooterProps = Omit<JSX.HTMLAttributes<HTMLDivElement>, "children"> &
@@ -104,56 +147,230 @@ export type DrawerFooterProps = Omit<JSX.HTMLAttributes<HTMLDivElement>, "childr
 
 export type DrawerHandleProps = JSX.HTMLAttributes<HTMLDivElement> & IComponentBaseProps;
 
-export type DrawerCloseTriggerProps = Omit<JSX.HTMLAttributes<HTMLButtonElement>, "children"> &
+export type DrawerCloseTriggerProps = Omit<
+  JSX.ButtonHTMLAttributes<HTMLButtonElement>,
+  "children"
+> &
   IComponentBaseProps & {
     children?: JSX.Element;
     startIcon?: JSX.Element;
     endIcon?: JSX.Element;
   };
 
-/* -------------------------------------------------------------------------------------------------
- * Drawer Root
- * -----------------------------------------------------------------------------------------------*/
+export type DrawerCloseProps = {
+  children: JSX.Element;
+};
+
+/* ---------------------------------- root --------------------------------- */
+
+const EXIT_MS = 200;
+
 const DrawerRoot: ParentComponent<DrawerRootProps> = (props) => {
-  const [local, _others] = splitProps(props, [
+  const [local, others] = splitProps(props, [
     "children",
+    "class",
+    "className",
+    "dataTheme",
+    "style",
     "isOpen",
     "defaultOpen",
     "onOpenChange",
-    "dataTheme",
-    "class",
-    "className",
-    "style",
+    "placement",
+    "size",
+    "backdrop",
+    "scrollBehavior",
+    "isDismissable",
+    "shouldCloseOnEsc",
+    "shouldCloseOnBackdropClick",
+    "trapFocus",
+    "restoreFocus",
   ]);
 
   const [internalOpen, setInternalOpen] = createSignal(Boolean(local.defaultOpen));
+  const [animState, setAnimState] = createSignal<DrawerAnimState>(
+    Boolean(local.isOpen ?? local.defaultOpen) ? "open" : "closed",
+  );
+
+  const [dialogRef, setDialogRef] = createSignal<HTMLDivElement | undefined>();
+  const [labelledBy, setLabelledBy] = createSignal<string | undefined>();
+  const [describedBy, setDescribedBy] = createSignal<string | undefined>();
+
+  const [placementOverride, setPlacementOverride] = createSignal<DrawerPlacement | undefined>(
+    undefined,
+  );
+  const [backdropDismissableOverride, setBackdropDismissableOverride] = createSignal<
+    boolean | undefined
+  >(undefined);
+  const [backdropCloseOnClickOverride, setBackdropCloseOnClickOverride] = createSignal<
+    boolean | undefined
+  >(undefined);
 
   const isControlled = () => local.isOpen !== undefined;
   const isOpen = () => (isControlled() ? Boolean(local.isOpen) : internalOpen());
 
-  const setIsOpen = (v: boolean) => {
-    if (!isControlled()) setInternalOpen(v);
-    local.onOpenChange?.(v);
+  const placement = () => placementOverride() ?? local.placement ?? "bottom";
+  const size = () => local.size ?? "md";
+  const backdrop = () => local.backdrop ?? "opaque";
+  const scrollBehavior = () => local.scrollBehavior ?? "inside";
+  const isDismissable = () => backdropDismissableOverride() ?? local.isDismissable ?? true;
+  const shouldCloseOnEsc = () => local.shouldCloseOnEsc ?? true;
+  const shouldCloseOnBackdropClick = () =>
+    backdropCloseOnClickOverride() ?? local.shouldCloseOnBackdropClick ?? true;
+  const trapFocusEnabled = () => local.trapFocus ?? true;
+  const restoreFocusEnabled = () => local.restoreFocus ?? true;
+
+  const setIsOpen = (next: boolean) => {
+    if (next === isOpen()) return;
+    if (!isControlled()) setInternalOpen(next);
+    local.onOpenChange?.(next);
   };
 
-  const ctx: DrawerContextValue = {
+  const requestClose = (reason: DrawerCloseReason) => {
+    if (!isDismissable()) return;
+    if (reason === "escape" && !shouldCloseOnEsc()) return;
+    if (reason === "backdrop" && !shouldCloseOnBackdropClick()) return;
+    setIsOpen(false);
+  };
+
+  let exitTimer: ReturnType<typeof setTimeout> | undefined;
+
+  createEffect(() => {
+    const open = isOpen();
+    const state = animState();
+
+    if (open) {
+      if (exitTimer) {
+        clearTimeout(exitTimer);
+        exitTimer = undefined;
+      }
+      if (state === "closed" || state === "exiting") {
+        setAnimState("entering");
+        requestAnimationFrame(() => {
+          requestAnimationFrame(() => setAnimState("open"));
+        });
+      }
+      return;
+    }
+
+    if (state === "open" || state === "entering") {
+      setAnimState("exiting");
+      exitTimer = setTimeout(() => setAnimState("closed"), EXIT_MS);
+    }
+  });
+
+  onCleanup(() => {
+    if (exitTimer) clearTimeout(exitTimer);
+  });
+
+  let hasScrollLock = false;
+  createEffect(() => {
+    const visible = isVisibleState(animState());
+    if (visible && !hasScrollLock) {
+      lockBodyScroll();
+      hasScrollLock = true;
+    } else if (!visible && hasScrollLock) {
+      unlockBodyScroll();
+      hasScrollLock = false;
+    }
+  });
+
+  onCleanup(() => {
+    if (hasScrollLock) unlockBodyScroll();
+  });
+
+  let restoreFocusTarget: HTMLElement | null = null;
+  createEffect(() => {
+    const state = animState();
+    const dialog = dialogRef();
+    if (!isVisibleState(state) || !dialog) return;
+
+    if (!restoreFocusTarget) {
+      const active = document.activeElement;
+      if (active instanceof HTMLElement) restoreFocusTarget = active;
+    }
+
+    queueMicrotask(() => {
+      if (trapFocusEnabled() && !dialog.contains(document.activeElement)) {
+        focusFirst(dialog);
+      }
+    });
+
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (!isVisibleState(animState())) return;
+
+      if (event.key === "Escape") {
+        event.preventDefault();
+        requestClose("escape");
+        return;
+      }
+
+      if (event.key === "Tab" && trapFocusEnabled()) {
+        trapFocus(event, dialog);
+      }
+    };
+
+    document.addEventListener("keydown", onKeyDown);
+    onCleanup(() => document.removeEventListener("keydown", onKeyDown));
+  });
+
+  createEffect(() => {
+    if (animState() !== "closed" || !restoreFocusEnabled()) return;
+    if (!restoreFocusTarget) return;
+    queueMicrotask(() => {
+      restoreFocusTarget?.focus?.();
+      restoreFocusTarget = null;
+    });
+  });
+
+  const contextValue: DrawerContextValue = {
     isOpen,
     setIsOpen,
-    placement: () => "bottom",
-    isDismissable: () => true,
-    animState: () => "closed" as DrawerAnimState,
+    requestClose,
+    animState,
+    placement,
+    size,
+    backdrop,
+    scrollBehavior,
+    isDismissable,
+    shouldCloseOnEsc,
+    shouldCloseOnBackdropClick,
+    trapFocus: trapFocusEnabled,
+    restoreFocus: restoreFocusEnabled,
+    dialogRef,
+    setDialogRef,
+    labelledBy,
+    setLabelledBy,
+    describedBy,
+    setDescribedBy,
+    setPlacementOverride,
+    setBackdropDismissableOverride,
+    setBackdropCloseOnClickOverride,
   };
 
   return (
-    <DrawerContext.Provider value={ctx}>
-      {local.children}
+    <DrawerContext.Provider value={contextValue}>
+      <div
+        {...others}
+        class={twMerge(
+          CLASSES.Root.base,
+          isOpen() && CLASSES.Root.state.open,
+          animState() === "entering" && CLASSES.Root.state.entering,
+          animState() === "exiting" && CLASSES.Root.state.exiting,
+          animState() === "closed" && CLASSES.Root.state.closed,
+          local.class,
+          local.className,
+        )}
+        data-slot="drawer-root"
+        data-open={isVisibleState(animState()) ? "true" : "false"}
+        data-theme={local.dataTheme}
+        style={local.style}
+      >
+        {local.children}
+      </div>
     </DrawerContext.Provider>
   );
 };
 
-/* -------------------------------------------------------------------------------------------------
- * Drawer Trigger
- * -----------------------------------------------------------------------------------------------*/
 const DrawerTrigger: Component<DrawerTriggerProps> = (props) => {
   const [local, others] = splitProps(props, [
     "children",
@@ -166,16 +383,16 @@ const DrawerTrigger: Component<DrawerTriggerProps> = (props) => {
 
   const ctx = useDrawerContext();
 
-  const handleClick: JSX.EventHandlerUnion<HTMLButtonElement, MouseEvent> = (e) => {
+  const handleClick: JSX.EventHandlerUnion<HTMLButtonElement, MouseEvent> = (event) => {
     ctx.setIsOpen(true);
-    if (typeof local.onClick === "function") local.onClick(e);
+    if (typeof local.onClick === "function") local.onClick(event);
   };
 
   return (
     <button
       {...others}
       type="button"
-      {...{ class: twMerge(CLASSES.slot.trigger, local.class, local.className) }}
+      class={twMerge(CLASSES.Trigger.base, local.class, local.className)}
       data-slot="drawer-trigger"
       data-theme={local.dataTheme}
       style={local.style}
@@ -186,13 +403,50 @@ const DrawerTrigger: Component<DrawerTriggerProps> = (props) => {
   );
 };
 
-/* -------------------------------------------------------------------------------------------------
- * Drawer Backdrop
- * -----------------------------------------------------------------------------------------------*/
-const BACKDROP_VARIANT_MAP: Record<DrawerBackdropVariant, string> = {
-  opaque: CLASSES.backdrop.opaque,
-  blur: CLASSES.backdrop.blur,
-  transparent: CLASSES.backdrop.transparent,
+const DrawerContent: ParentComponent<DrawerContentProps> = (props) => {
+  const [local, others] = splitProps(props, [
+    "children",
+    "class",
+    "className",
+    "dataTheme",
+    "style",
+    "placement",
+    "scrollBehavior",
+  ]);
+
+  const ctx = useDrawerContext();
+  const placement = () => local.placement ?? ctx.placement();
+  const scrollBehavior = () => local.scrollBehavior ?? ctx.scrollBehavior();
+
+  createEffect(() => {
+    if (local.placement === undefined) return;
+    ctx.setPlacementOverride(local.placement);
+    onCleanup(() => ctx.setPlacementOverride(undefined));
+  });
+
+  return (
+    <div
+      {...others}
+      class={twMerge(
+        CLASSES.Content.base,
+        CLASSES.Content.placement[placement()],
+        CLASSES.Content.scroll[scrollBehavior()],
+        ctx.animState() === "entering" && CLASSES.Content.state.entering,
+        ctx.animState() === "exiting" && CLASSES.Content.state.exiting,
+        local.class,
+        local.className,
+      )}
+      data-slot="drawer-content"
+      data-placement={placement()}
+      data-scroll={scrollBehavior()}
+      data-entering={ctx.animState() === "entering" ? "true" : undefined}
+      data-exiting={ctx.animState() === "exiting" ? "true" : undefined}
+      data-theme={local.dataTheme}
+      style={local.style}
+    >
+      {local.children}
+    </div>
+  );
 };
 
 const DrawerBackdrop: ParentComponent<DrawerBackdropProps> = (props) => {
@@ -204,162 +458,65 @@ const DrawerBackdrop: ParentComponent<DrawerBackdropProps> = (props) => {
     "style",
     "variant",
     "isDismissable",
+    "shouldCloseOnBackdropClick",
     "onClick",
   ]);
 
   const ctx = useDrawerContext();
-  const variant = () => local.variant ?? "opaque";
-  const isDismissable = () => local.isDismissable !== false;
-
-  // Track enter/exit animation state
-  const [animState, setAnimState] = createSignal<"entering" | "open" | "exiting" | "closed">("closed");
+  const variant = () => local.variant ?? ctx.backdrop();
 
   createEffect(() => {
-    if (ctx.isOpen()) {
-      setAnimState("entering");
-      requestAnimationFrame(() => {
-        requestAnimationFrame(() => setAnimState("open"));
-      });
-    } else if (animState() === "open" || animState() === "entering") {
-      setAnimState("exiting");
+    if (local.isDismissable !== undefined) {
+      ctx.setBackdropDismissableOverride(local.isDismissable);
+      onCleanup(() => ctx.setBackdropDismissableOverride(undefined));
     }
   });
 
-  const handleTransitionEnd = () => {
-    if (animState() === "exiting") {
-      setAnimState("closed");
-    }
-  };
-
-  const handleBackdropClick: JSX.EventHandlerUnion<HTMLDivElement, MouseEvent> = (e) => {
-    if (e.target === e.currentTarget && isDismissable()) {
-      ctx.setIsOpen(false);
-    }
-    if (typeof local.onClick === "function") local.onClick(e);
-  };
-
-  // Lock body scroll when open
   createEffect(() => {
-    const state = animState();
-    if (state === "entering" || state === "open") {
-      const prev = document.body.style.overflow;
-      document.body.style.overflow = "hidden";
-      onCleanup(() => {
-        document.body.style.overflow = prev;
-      });
+    if (local.shouldCloseOnBackdropClick !== undefined) {
+      ctx.setBackdropCloseOnClickOverride(local.shouldCloseOnBackdropClick);
+      onCleanup(() => ctx.setBackdropCloseOnClickOverride(undefined));
     }
   });
 
-  // Handle Escape key
-  createEffect(() => {
-    if (!ctx.isOpen() || !isDismissable()) return;
-    const handler = (e: KeyboardEvent) => {
-      if (e.key === "Escape") ctx.setIsOpen(false);
-    };
-    document.addEventListener("keydown", handler);
-    onCleanup(() => document.removeEventListener("keydown", handler));
-  });
-
-  // Provide updated context with isDismissable and animState
-  const updatedCtx: DrawerContextValue = {
-    isOpen: ctx.isOpen,
-    setIsOpen: ctx.setIsOpen,
-    placement: ctx.placement,
-    isDismissable,
-    animState,
+  const handleClick: JSX.EventHandlerUnion<HTMLDivElement, MouseEvent> = (event) => {
+    if (event.target === event.currentTarget) {
+      ctx.requestClose("backdrop");
+    }
+    if (typeof local.onClick === "function") local.onClick(event);
   };
 
   return (
-    <Show when={animState() !== "closed"}>
+    <Show when={ctx.animState() !== "closed"}>
       <Portal>
-        <DrawerContext.Provider value={updatedCtx}>
-          <div
-            {...others}
-            {...{ class: twMerge(
-              CLASSES.slot.backdrop,
-              BACKDROP_VARIANT_MAP[variant()],
-              local.class,
-              local.className,
-            ) }}
-            data-slot="drawer-backdrop"
-            data-entering={animState() === "entering" ? "true" : undefined}
-            data-exiting={animState() === "exiting" ? "true" : undefined}
-            data-theme={local.dataTheme}
-            style={local.style}
-            onClick={handleBackdropClick}
-            onTransitionEnd={handleTransitionEnd}
-          >
-            {local.children}
-          </div>
-        </DrawerContext.Provider>
+        <div
+          {...others}
+          class={twMerge(
+            CLASSES.Backdrop.base,
+            CLASSES.Backdrop.variant[variant()],
+            ctx.animState() === "entering" && CLASSES.Backdrop.state.entering,
+            ctx.animState() === "exiting" && CLASSES.Backdrop.state.exiting,
+            local.class,
+            local.className,
+          )}
+          data-slot="drawer-backdrop"
+          data-entering={ctx.animState() === "entering" ? "true" : undefined}
+          data-exiting={ctx.animState() === "exiting" ? "true" : undefined}
+          data-theme={local.dataTheme}
+          style={local.style}
+          onClick={handleClick}
+        >
+          {local.children}
+        </div>
       </Portal>
     </Show>
   );
 };
 
-/* -------------------------------------------------------------------------------------------------
- * Drawer Content
- * -----------------------------------------------------------------------------------------------*/
-const PLACEMENT_CLASS_MAP: Record<DrawerPlacement, string> = {
-  top: CLASSES.placement.top,
-  bottom: CLASSES.placement.bottom,
-  left: CLASSES.placement.left,
-  right: CLASSES.placement.right,
-};
-
-const DrawerContent: ParentComponent<DrawerContentProps> = (props) => {
-  const [local, others] = splitProps(props, [
-    "children",
-    "class",
-    "className",
-    "dataTheme",
-    "style",
-    "placement",
-  ]);
-
-  const parentCtx = useDrawerContext();
-  const placement = () => local.placement ?? "bottom";
-
-  // Provide updated context with placement
-  const updatedCtx: DrawerContextValue = {
-    isOpen: parentCtx.isOpen,
-    setIsOpen: parentCtx.setIsOpen,
-    isDismissable: parentCtx.isDismissable,
-    animState: parentCtx.animState,
-    placement,
-  };
-
-  return (
-    <DrawerContext.Provider value={updatedCtx}>
-      <div
-        {...others}
-        {...{ class: twMerge(
-          CLASSES.slot.content,
-          PLACEMENT_CLASS_MAP[placement()],
-          local.class,
-          local.className,
-        ) }}
-        data-slot="drawer-content"
-        data-placement={placement()}
-        data-entering={parentCtx.animState() === "entering" ? "true" : undefined}
-        data-exiting={parentCtx.animState() === "exiting" ? "true" : undefined}
-        data-theme={local.dataTheme}
-        style={local.style}
-      >
-        {local.children}
-      </div>
-    </DrawerContext.Provider>
-  );
-};
-
-/* -------------------------------------------------------------------------------------------------
- * Drawer Dialog
- * -----------------------------------------------------------------------------------------------*/
 const SIDE_MAP: Record<DrawerDialogSide, string> = {
   left: "drawer__dialog--side-left",
   right: "drawer__dialog--side-right",
 };
-
 const DrawerDialog: ParentComponent<DrawerDialogProps> = (props) => {
   const [local, others] = splitProps(props, [
     "children",
@@ -374,9 +531,18 @@ const DrawerDialog: ParentComponent<DrawerDialogProps> = (props) => {
     "padding",
     "borderWidth",
     "borderColor",
+    "ref",
+    "size",
+    "role",
+    "tabIndex",
+    "aria-labelledby",
+    "aria-describedby",
   ]);
 
   const ctx = useDrawerContext();
+  const placement = () => ctx.placement();
+  const axis = () => (isSidePlacement(placement()) ? "side" : "edge");
+  const size = () => local.size ?? ctx.size();
 
   const mergedStyle = (): JSX.CSSProperties => {
     const s: JSX.CSSProperties = {};
@@ -397,19 +563,31 @@ const DrawerDialog: ParentComponent<DrawerDialogProps> = (props) => {
   return (
     <div
       {...others}
-      role="dialog"
+      ref={(node) => {
+        ctx.setDialogRef(node);
+        if (typeof local.ref === "function") local.ref(node);
+      }}
+      role={local.role ?? "dialog"}
       aria-modal="true"
-      {...{ class: twMerge(
-        CLASSES.slot.dialog,
+      aria-labelledby={local["aria-labelledby"] ?? ctx.labelledBy()}
+      aria-describedby={local["aria-describedby"] ?? ctx.describedBy()}
+      tabIndex={local.tabIndex ?? -1}
+      class={twMerge(
+        CLASSES.Dialog.base,
+        CLASSES.Dialog.axis[axis()],
+        CLASSES.Dialog.size[axis()][size()],
+        ctx.animState() === "entering" && CLASSES.Dialog.state.entering,
+        ctx.animState() === "exiting" && CLASSES.Dialog.state.exiting,
         local.side ? SIDE_MAP[local.side] : undefined,
         hasCustomBg() ? "drawer__dialog--custom-bg" : undefined,
         hasCustomSize() ? "drawer__dialog--custom-size" : undefined,
         hasCustomPadding() ? "drawer__dialog--custom-padding" : undefined,
         local.class,
         local.className,
-      ) }}
+      )}
       data-slot="drawer-dialog"
-      data-placement={ctx.placement()}
+      data-placement={placement()}
+      data-size={size()}
       data-theme={local.dataTheme}
       style={mergedStyle()}
     >
@@ -418,9 +596,6 @@ const DrawerDialog: ParentComponent<DrawerDialogProps> = (props) => {
   );
 };
 
-/* -------------------------------------------------------------------------------------------------
- * Drawer Header
- * -----------------------------------------------------------------------------------------------*/
 const DrawerHeader: ParentComponent<DrawerHeaderProps> = (props) => {
   const [local, others] = splitProps(props, [
     "children",
@@ -433,7 +608,7 @@ const DrawerHeader: ParentComponent<DrawerHeaderProps> = (props) => {
   return (
     <div
       {...others}
-      {...{ class: twMerge(CLASSES.slot.header, local.class, local.className) }}
+      class={twMerge(CLASSES.Header.base, local.class, local.className)}
       data-slot="drawer-header"
       data-theme={local.dataTheme}
       style={local.style}
@@ -443,9 +618,6 @@ const DrawerHeader: ParentComponent<DrawerHeaderProps> = (props) => {
   );
 };
 
-/* -------------------------------------------------------------------------------------------------
- * Drawer Heading
- * -----------------------------------------------------------------------------------------------*/
 const DrawerHeading: ParentComponent<DrawerHeadingProps> = (props) => {
   const [local, others] = splitProps(props, [
     "children",
@@ -453,12 +625,25 @@ const DrawerHeading: ParentComponent<DrawerHeadingProps> = (props) => {
     "className",
     "dataTheme",
     "style",
+    "id",
   ]);
+  const ctx = useDrawerContext();
+  const uid = createUniqueId();
+  const headingId = () => local.id ?? `drawer-heading-${uid}`;
+
+  createEffect(() => {
+    const id = headingId();
+    ctx.setLabelledBy(id);
+    onCleanup(() => {
+      if (ctx.labelledBy() === id) ctx.setLabelledBy(undefined);
+    });
+  });
 
   return (
     <h2
       {...others}
-      {...{ class: twMerge(CLASSES.slot.heading, local.class, local.className) }}
+      id={headingId()}
+      class={twMerge(CLASSES.Heading.base, local.class, local.className)}
       data-slot="drawer-heading"
       data-theme={local.dataTheme}
       style={local.style}
@@ -468,9 +653,6 @@ const DrawerHeading: ParentComponent<DrawerHeadingProps> = (props) => {
   );
 };
 
-/* -------------------------------------------------------------------------------------------------
- * Drawer Body
- * -----------------------------------------------------------------------------------------------*/
 const DrawerBody: ParentComponent<DrawerBodyProps> = (props) => {
   const [local, others] = splitProps(props, [
     "children",
@@ -478,24 +660,34 @@ const DrawerBody: ParentComponent<DrawerBodyProps> = (props) => {
     "className",
     "dataTheme",
     "style",
+    "id",
   ]);
+  const ctx = useDrawerContext();
+  const uid = createUniqueId();
+  const bodyId = () => local.id ?? `drawer-body-${uid}`;
+
+  createEffect(() => {
+    const id = bodyId();
+    ctx.setDescribedBy(id);
+    onCleanup(() => {
+      if (ctx.describedBy() === id) ctx.setDescribedBy(undefined);
+    });
+  });
 
   return (
     <div
       {...others}
-      {...{ class: twMerge(CLASSES.slot.body, local.class, local.className) }}
+      id={bodyId()}
+      class={twMerge(CLASSES.Body.base, local.class, local.className)}
       data-slot="drawer-body"
       data-theme={local.dataTheme}
-      style={Object.assign({}, local.style, { "touch-action": "pan-y" })}
+      style={local.style}
     >
       {local.children}
     </div>
   );
 };
 
-/* -------------------------------------------------------------------------------------------------
- * Drawer Footer
- * -----------------------------------------------------------------------------------------------*/
 const DrawerFooter: ParentComponent<DrawerFooterProps> = (props) => {
   const [local, others] = splitProps(props, [
     "children",
@@ -508,7 +700,7 @@ const DrawerFooter: ParentComponent<DrawerFooterProps> = (props) => {
   return (
     <div
       {...others}
-      {...{ class: twMerge(CLASSES.slot.footer, local.class, local.className) }}
+      class={twMerge(CLASSES.Footer.base, local.class, local.className)}
       data-slot="drawer-footer"
       data-theme={local.dataTheme}
       style={local.style}
@@ -518,34 +710,23 @@ const DrawerFooter: ParentComponent<DrawerFooterProps> = (props) => {
   );
 };
 
-/* -------------------------------------------------------------------------------------------------
- * Drawer Handle
- * -----------------------------------------------------------------------------------------------*/
 const DrawerHandle: Component<DrawerHandleProps> = (props) => {
-  const [local, others] = splitProps(props, [
-    "class",
-    "className",
-    "dataTheme",
-    "style",
-  ]);
+  const [local, others] = splitProps(props, ["class", "className", "dataTheme", "style"]);
 
   return (
     <div
       {...others}
       aria-hidden="true"
-      {...{ class: twMerge(CLASSES.slot.handle, local.class, local.className) }}
+      class={twMerge(CLASSES.Handle.base, local.class, local.className)}
       data-slot="drawer-handle"
       data-theme={local.dataTheme}
       style={local.style}
     >
-      <div data-slot="drawer-handle-bar" />
+      <div class={CLASSES.Handle.bar} data-slot="drawer-handle-bar" />
     </div>
   );
 };
 
-/* -------------------------------------------------------------------------------------------------
- * Drawer Close Trigger
- * -----------------------------------------------------------------------------------------------*/
 const DrawerCloseTrigger: Component<DrawerCloseTriggerProps> = (props) => {
   const [local, others] = splitProps(props, [
     "children",
@@ -556,40 +737,35 @@ const DrawerCloseTrigger: Component<DrawerCloseTriggerProps> = (props) => {
     "startIcon",
     "endIcon",
     "onClick",
+    "aria-label",
   ]);
 
   const ctx = useDrawerContext();
 
-  const handleClick: JSX.EventHandlerUnion<HTMLButtonElement, MouseEvent> = (e) => {
-    ctx.setIsOpen(false);
-    if (typeof local.onClick === "function") local.onClick(e);
+  const handleClick: JSX.EventHandlerUnion<HTMLButtonElement, MouseEvent> = (event) => {
+    ctx.requestClose("trigger");
+    if (typeof local.onClick === "function") local.onClick(event);
   };
 
   return (
     <button
       {...others}
       type="button"
-      {...{ class: twMerge(CLASSES.slot.closeTrigger, local.class, local.className) }}
+      aria-label={local["aria-label"] ?? "Close"}
+      class={twMerge(CLASSES.CloseTrigger.base, local.class, local.className)}
       data-slot="drawer-close-trigger"
       data-theme={local.dataTheme}
       style={local.style}
-      aria-label="Close"
       onClick={handleClick}
     >
       {local.startIcon ? (
-        <span
-          {...{ class: twMerge(CLASSES.slot.closeIcon, CLASSES.closeIconStart) }}
-          data-slot="drawer-close-trigger-start-icon"
-        >
+        <span class={twMerge(CLASSES.CloseTrigger.icon, CLASSES.CloseTrigger.iconStart)}>
           {local.startIcon}
         </span>
       ) : null}
       {local.children}
       {local.endIcon ? (
-        <span
-          {...{ class: twMerge(CLASSES.slot.closeIcon, CLASSES.closeIconEnd) }}
-          data-slot="drawer-close-trigger-end-icon"
-        >
+        <span class={twMerge(CLASSES.CloseTrigger.icon, CLASSES.CloseTrigger.iconEnd)}>
           {local.endIcon}
         </span>
       ) : null}
@@ -597,18 +773,11 @@ const DrawerCloseTrigger: Component<DrawerCloseTriggerProps> = (props) => {
   );
 };
 
-/* -------------------------------------------------------------------------------------------------
- * Drawer Close — wraps any element and closes the drawer on click
- * -----------------------------------------------------------------------------------------------*/
-export type DrawerCloseProps = {
-  children: JSX.Element;
-};
-
 const DrawerClose: ParentComponent<DrawerCloseProps> = (props) => {
   const ctx = useDrawerContext();
 
   const handleClick = () => {
-    ctx.setIsOpen(false);
+    ctx.requestClose("trigger");
   };
 
   return (
@@ -618,9 +787,6 @@ const DrawerClose: ParentComponent<DrawerCloseProps> = (props) => {
   );
 };
 
-/* -------------------------------------------------------------------------------------------------
- * Compound Component
- * -----------------------------------------------------------------------------------------------*/
 const Drawer = Object.assign(DrawerRoot, {
   Root: DrawerRoot,
   Trigger: DrawerTrigger,

@@ -1,28 +1,89 @@
 export const CLASSES = {
-  slot: {
-    trigger: "drawer__trigger",
-    backdrop: "drawer__backdrop",
-    content: "drawer__content",
-    dialog: "drawer__dialog",
-    header: "drawer__header",
-    heading: "drawer__heading",
-    body: "drawer__body",
-    footer: "drawer__footer",
-    handle: "drawer__handle",
-    closeTrigger: "drawer__close-trigger",
-    closeIcon: "drawer__close-icon",
+  Root: {
+    base: "drawer",
+    state: {
+      open: "drawer--open",
+      entering: "drawer--entering",
+      exiting: "drawer--exiting",
+      closed: "drawer--closed",
+    },
   },
-  backdrop: {
-    opaque: "drawer__backdrop--opaque",
-    blur: "drawer__backdrop--blur",
-    transparent: "drawer__backdrop--transparent",
+
+  Trigger: {
+    base: "drawer__trigger",
   },
-  placement: {
-    top: "drawer__content--top",
-    bottom: "drawer__content--bottom",
-    left: "drawer__content--left",
-    right: "drawer__content--right",
+
+  Backdrop: {
+    base: "drawer__backdrop",
+    variant: {
+      opaque: "drawer__backdrop--opaque",
+      blur: "drawer__backdrop--blur",
+      transparent: "drawer__backdrop--transparent",
+    },
+    state: {
+      entering: "drawer__backdrop--entering",
+      exiting: "drawer__backdrop--exiting",
+    },
   },
-  closeIconStart: "drawer__close-icon--start",
-  closeIconEnd: "drawer__close-icon--end",
+
+  Content: {
+    base: "drawer__content",
+    placement: {
+      top: "drawer__content--top",
+      bottom: "drawer__content--bottom",
+      left: "drawer__content--left",
+      right: "drawer__content--right",
+    },
+    scroll: {
+      inside: "drawer__content--scroll-inside",
+      outside: "drawer__content--scroll-outside",
+    },
+    state: {
+      entering: "drawer__content--entering",
+      exiting: "drawer__content--exiting",
+    },
+  },
+
+  Dialog: {
+    base: "drawer__dialog",
+    axis: {
+      side: "drawer__dialog--axis-side",
+      edge: "drawer__dialog--axis-edge",
+    },
+    size: {
+      side: {
+        sm: "drawer__dialog--side-sm",
+        md: "drawer__dialog--side-md",
+        lg: "drawer__dialog--side-lg",
+        full: "drawer__dialog--side-full",
+      },
+      edge: {
+        sm: "drawer__dialog--edge-sm",
+        md: "drawer__dialog--edge-md",
+        lg: "drawer__dialog--edge-lg",
+        full: "drawer__dialog--edge-full",
+      },
+    },
+    state: {
+      entering: "drawer__dialog--entering",
+      exiting: "drawer__dialog--exiting",
+    },
+  },
+
+  Header: { base: "drawer__header" },
+  Heading: { base: "drawer__heading" },
+  Body: { base: "drawer__body" },
+  Footer: { base: "drawer__footer" },
+
+  Handle: {
+    base: "drawer__handle",
+    bar: "drawer__handle-bar",
+  },
+
+  CloseTrigger: {
+    base: "drawer__close-trigger",
+    icon: "drawer__close-icon",
+    iconStart: "drawer__close-icon--start",
+    iconEnd: "drawer__close-icon--end",
+  },
 } as const;
