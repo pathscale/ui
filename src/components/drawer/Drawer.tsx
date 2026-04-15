@@ -69,7 +69,6 @@ export type DrawerContentProps = Omit<JSX.HTMLAttributes<HTMLDivElement>, "child
   };
 
 export type DrawerDialogSide = "left" | "right";
-export type DrawerDialogBg = "base" | "surface-1" | "surface-2" | "surface-3";
 
 export type DrawerDialogProps = Omit<JSX.HTMLAttributes<HTMLDivElement>, "children"> &
   IComponentBaseProps & {
@@ -77,7 +76,7 @@ export type DrawerDialogProps = Omit<JSX.HTMLAttributes<HTMLDivElement>, "childr
     side?: DrawerDialogSide;
     width?: string;
     maxWidth?: string;
-    bg?: DrawerDialogBg;
+    bg?: string;
     padding?: string;
   };
 
@@ -354,13 +353,6 @@ const DrawerContent: ParentComponent<DrawerContentProps> = (props) => {
 /* -------------------------------------------------------------------------------------------------
  * Drawer Dialog
  * -----------------------------------------------------------------------------------------------*/
-const BG_MAP: Record<DrawerDialogBg, string> = {
-  "base": "drawer__dialog--bg-base",
-  "surface-1": "drawer__dialog--bg-surface-1",
-  "surface-2": "drawer__dialog--bg-surface-2",
-  "surface-3": "drawer__dialog--bg-surface-3",
-};
-
 const SIDE_MAP: Record<DrawerDialogSide, string> = {
   left: "drawer__dialog--side-left",
   right: "drawer__dialog--side-right",
@@ -387,12 +379,14 @@ const DrawerDialog: ParentComponent<DrawerDialogProps> = (props) => {
     if (typeof local.style === "object" && local.style) Object.assign(s, local.style);
     if (local.width) s["--drawer-dialog-width"] = local.width;
     if (local.maxWidth) s["--drawer-dialog-max-width"] = local.maxWidth;
+    if (local.bg) s["--drawer-dialog-bg"] = local.bg;
     if (local.padding) s["--drawer-dialog-padding"] = local.padding;
     return s;
   };
 
   const hasCustomSize = () => Boolean(local.width || local.maxWidth);
   const hasCustomPadding = () => Boolean(local.padding);
+  const hasCustomBg = () => Boolean(local.bg);
 
   return (
     <div
@@ -402,7 +396,7 @@ const DrawerDialog: ParentComponent<DrawerDialogProps> = (props) => {
       {...{ class: twMerge(
         CLASSES.slot.dialog,
         local.side ? SIDE_MAP[local.side] : undefined,
-        local.bg ? BG_MAP[local.bg] : undefined,
+        hasCustomBg() ? "drawer__dialog--custom-bg" : undefined,
         hasCustomSize() ? "drawer__dialog--custom-size" : undefined,
         hasCustomPadding() ? "drawer__dialog--custom-padding" : undefined,
         local.class,
