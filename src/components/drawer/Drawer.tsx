@@ -78,6 +78,8 @@ export type DrawerDialogProps = Omit<JSX.HTMLAttributes<HTMLDivElement>, "childr
     maxWidth?: string;
     bg?: string;
     padding?: string;
+    borderWidth?: string;
+    borderColor?: string;
   };
 
 export type DrawerHeaderProps = Omit<JSX.HTMLAttributes<HTMLDivElement>, "children"> &
@@ -370,6 +372,8 @@ const DrawerDialog: ParentComponent<DrawerDialogProps> = (props) => {
     "maxWidth",
     "bg",
     "padding",
+    "borderWidth",
+    "borderColor",
   ]);
 
   const ctx = useDrawerContext();
@@ -381,6 +385,8 @@ const DrawerDialog: ParentComponent<DrawerDialogProps> = (props) => {
     if (local.maxWidth) s["--drawer-dialog-max-width"] = local.maxWidth;
     if (local.bg) s["--drawer-dialog-bg"] = local.bg;
     if (local.padding) s["--drawer-dialog-padding"] = local.padding;
+    if (local.borderWidth) s["--drawer-dialog-border-width"] = local.borderWidth;
+    if (local.borderColor) s["--drawer-dialog-border-color"] = local.borderColor;
     return s;
   };
 

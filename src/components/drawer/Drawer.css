@@ -172,14 +172,18 @@
   }
 
   /* -------------------------------------------------------------------------------------------------
-   * Dialog — semantic prop: side (border indicator)
+   * Dialog — semantic prop: side (border indicator, parametric width & color)
    * -----------------------------------------------------------------------------------------------*/
   .drawer__dialog--side-left {
-    border-right: 1px solid color-mix(in oklab, var(--color-base-content) 10%, transparent);
+    border-right-width: var(--drawer-dialog-border-width, 1px);
+    border-right-style: solid;
+    border-right-color: var(--drawer-dialog-border-color, color-mix(in oklab, var(--color-base-content) 10%, transparent));
   }
 
   .drawer__dialog--side-right {
-    border-left: 1px solid color-mix(in oklab, var(--color-base-content) 10%, transparent);
+    border-left-width: var(--drawer-dialog-border-width, 1px);
+    border-left-style: solid;
+    border-left-color: var(--drawer-dialog-border-color, color-mix(in oklab, var(--color-base-content) 10%, transparent));
   }
 
   /* -------------------------------------------------------------------------------------------------
