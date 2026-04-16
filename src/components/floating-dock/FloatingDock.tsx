@@ -14,6 +14,7 @@ import { twMerge } from "tailwind-merge";
 
 import type { IComponentBaseProps } from "../types";
 import { CLASSES } from "./FloatingDock.classes";
+import { LIQUID_GLASS_MAP_DATA_URL } from "./liquidGlassMap";
 
 /* ------------------------------------------------------------------ */
 /*  Types                                                             */
@@ -540,7 +541,8 @@ const FloatingDock = (rawProps: FloatingDockProps): JSX.Element => {
     iconSize: local.iconSize ?? 20,
     hoverIconSize: local.hoverIconSize ?? 20,
     magnifyRange: local.magnifyRange ?? 110,
-    magnify: local.magnify !== false,
+    // Default OFF — Liquid Glass dock is calm; hover scale/expand opt-in via prop.
+    magnify: local.magnify === true,
     nudge: local.nudge ?? 20,
     gap: local.gap ?? 8,
     tooltipDir: local.tooltipDirection ?? "top",
@@ -556,6 +558,40 @@ const FloatingDock = (rawProps: FloatingDockProps): JSX.Element => {
 
   return (
     <div {...{ class: CLASSES.base }} data-theme={local.dataTheme} style={local.style} {...others}>
+      {/* Liquid Glass SVG filter — exact technique from
+          https://css-tricks.com/getting-clarity-on-apples-liquid-glass/
+          A pre-rendered displacement map (smooth lens-shaped gradient) is fed into
+          feDisplacementMap to bend the backdrop, mimicking Apple's Liquid Glass.
+          Referenced from CSS via `backdrop-filter: blur(...) url(#fd-liquid-glass) saturate(...)`. */}
+      <svg
+        class="floating-dock__filter-defs"
+        width="0"
+        height="0"
+        aria-hidden="true"
+      >
+        <filter id="fd-liquid-glass" primitiveUnits="objectBoundingBox">
+          <feImage
+            result="map"
+            width="100%"
+            height="100%"
+            x="0"
+            y="0"
+            preserveAspectRatio="none"
+            href={LIQUID_GLASS_MAP_DATA_URL}
+          />
+          <feGaussianBlur in="SourceGraphic" stdDeviation="0.005" result="blur" />
+          {/* scale is in objectBoundingBox units (0..1 = 0..100% of element).
+              Article used 0.5 because their pill is ~244px wide; on our long dock
+              that produced a giant smear through the center. 0.04 ≈ ~6px of refraction. */}
+          <feDisplacementMap
+            in="blur"
+            in2="map"
+            scale="0.04"
+            xChannelSelector="R"
+            yChannelSelector="G"
+          />
+        </filter>
+      </svg>
       <Show when={local.showDesktop !== false}>
         <FloatingDockDesktop
           items={local.items}
