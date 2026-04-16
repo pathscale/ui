@@ -97,6 +97,7 @@ import { TableExamples } from "./examples/TableExamples";
 import { TableHooksExample } from "./examples/TableHooksExample";
 import { TableVirtualizedExample } from "./examples/TableVirtualizedExample";
 import { StreamingComposableExample } from "./examples/StreamingComposableExample";
+import { FormExample } from "./examples/FormExample";
 
 const BADGE_COLORS = [
   "default",
@@ -5528,6 +5529,7 @@ export default function App() {
           </div>
         </section>
 
+        <FormExample />
         <TableExamples />
         <TableHooksExample />
         <TableVirtualizedExample />
