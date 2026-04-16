@@ -52,7 +52,7 @@
     align-items: center;
     justify-content: center;
     border-radius: 9999px;
-    background-color: var(--color-base-200);
+    background-color: transparent;
     opacity: 0.8;
     transform-origin: bottom center;
     will-change: transform;
