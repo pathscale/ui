@@ -69,6 +69,8 @@
     "@solid-primitives/scroll": "^2.0.20",
     "@solid-primitives/storage": "^2.1.1",
     "@solid-primitives/utils": "^6.2.1",
+    "@standard-schema/spec": "^1.0.0",
+    "@tanstack/solid-form": "^1.29.0",
     "@tanstack/solid-table": "^8.21.3",
     "@types/bun": "^1.2.12",
     "babel-preset-solid": "^1.9.6",
@@ -102,13 +104,24 @@
     "@solid-primitives/scroll": "^2.0.20",
     "@solid-primitives/storage": "^2.1.1",
     "@solid-primitives/utils": "^6.2.1",
+    "@standard-schema/spec": "^1.0.0",
+    "@tanstack/solid-form": "^1.29.0",
     "@tanstack/solid-table": "^8.0.0",
     "popmotion": "^11.0.5",
     "solid-js": "^1.9",
     "valibot": "^1.0.0"
   },
   "peerDependenciesMeta": {
+    "@felte/solid": {
+      "optional": true
+    },
+    "@standard-schema/spec": {
+      "optional": true
+    },
     "popmotion": {
+      "optional": true
+    },
+    "valibot": {
       "optional": true
     }
   },

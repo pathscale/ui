@@ -303,16 +303,37 @@ export type {
   FieldGroupProps,
   FieldsetActionsProps,
 } from "./components/fieldset";
-export { default as Form, FormRoot } from "./components/form";
+// ---------------------------------------------------------------------------
+// Form components — legacy (Felte-based) + new (TanStack-based)
+// ---------------------------------------------------------------------------
+export {
+  default as Form,
+  FormRoot,
+  FormWithContext,
+} from "./components/form";
+export {
+  FormField,
+  FormSubmitButton,
+  FieldErrorMessage,
+} from "./components/form";
+export { useDesktop } from "./hooks/layout";
+export type {
+  FormProps,
+  FormRootProps,
+  FormWithContextProps,
+  FormFieldProps,
+  FormSubmitButtonProps,
+  FieldErrorMessageProps,
+} from "./components/form";
+
+// Legacy Felte-based hooks (deprecated — will be removed after migration)
 export {
   useForm,
-  useField,
+  useFieldLegacy,
   useFieldProps,
   useFieldError,
   useFieldMeta,
 } from "./hooks/form";
-export { useDesktop } from "./hooks/layout";
-export type { FormProps, FormRootProps } from "./components/form";
 export type {
   FormController,
   FormDirective,
@@ -321,8 +342,23 @@ export type {
   FieldName,
   UseFieldOptions,
   UseFieldMetaResult,
-  UseFieldResult,
+  UseFieldLegacyResult,
   UseFieldPropsResult,
+} from "./hooks/form";
+
+// New TanStack Form-based API
+export {
+  createForm,
+  useFormContext,
+  useField,
+  getFirstFieldError,
+  FormContext,
+} from "./hooks/form";
+export type {
+  CreateFormOptions,
+  FormApi,
+  AnyFormApi,
+  UseFieldResult,
 } from "./hooks/form";
 export { default as Grid } from "./components/grid";
 export { default as Header, HeaderRoot } from "./components/header";
