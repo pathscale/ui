@@ -113,14 +113,12 @@ const FormWithContext: Component<FormWithContextProps> = (props) => {
  * <Form use:form class="space-y-4">{...}</Form>
  * ```
  */
-function Form(props: FormWithContextProps): JSX.Element;
-function Form(props: FormRootProps): JSX.Element;
-function Form(props: FormRootProps | FormWithContextProps): JSX.Element {
+const Form = (props: FormRootProps | FormWithContextProps): JSX.Element => {
   if ("form" in props && props.form != null) {
     return <FormWithContext {...(props as FormWithContextProps)} />;
   }
   return <FormRoot {...(props as FormRootProps)} />;
-}
+};
 
 // Attach sub-components for compound-component usage
 (Form as unknown as Record<string, unknown>).Root = FormRoot;
@@ -129,4 +127,3 @@ function Form(props: FormRootProps | FormWithContextProps): JSX.Element {
 export default Form;
 export { Form, FormRoot, FormWithContext };
 export type { FormRootProps as FormProps };
-export type { FormWithContextProps };

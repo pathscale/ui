@@ -19,6 +19,9 @@
   },
   "dependencies": {
     "@iconify/tailwind4": "^1.0.6",
-    "popmotion": "^11.0.5"
+    "@standard-schema/spec": "^1.1.0",
+    "@tanstack/solid-form": "^1.29.0",
+    "popmotion": "^11.0.5",
+    "zod": "^4.3.6"
   }
 }
