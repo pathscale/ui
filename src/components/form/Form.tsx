@@ -6,10 +6,6 @@ import type { IComponentBaseProps } from "../types";
 import { CLASSES } from "./Form.classes";
 import { FormContext, type AnyFormApi } from "../../hooks/form/FormContext";
 
-// ---------------------------------------------------------------------------
-// FormRoot — original implementation, no form logic (backward compat)
-// ---------------------------------------------------------------------------
-
 export type FormRootProps = JSX.FormHTMLAttributes<HTMLFormElement> & IComponentBaseProps;
 
 const FormRoot: Component<FormRootProps> = (props) => {
@@ -30,10 +26,6 @@ const FormRoot: Component<FormRootProps> = (props) => {
     />
   );
 };
-
-// ---------------------------------------------------------------------------
-// FormWithContext — new variant: wires FormContext + handles submit
-// ---------------------------------------------------------------------------
 
 export type FormWithContextProps = Omit<JSX.FormHTMLAttributes<HTMLFormElement>, "onSubmit"> &
   IComponentBaseProps & {
@@ -66,7 +58,6 @@ const FormWithContext: Component<FormWithContextProps> = (props) => {
     e.preventDefault();
     e.stopPropagation();
     local.form._tsForm.handleSubmit();
-    // Forward to any additional onSubmit the consumer provided
     if (typeof local.onSubmit === "function") {
       local.onSubmit(e);
     }
@@ -88,15 +79,10 @@ const FormWithContext: Component<FormWithContextProps> = (props) => {
   );
 };
 
-// ---------------------------------------------------------------------------
-// Unified Form export
-// ---------------------------------------------------------------------------
-
 /**
  * Styled form element.
  *
  * **Without `form` prop** — renders a plain `<form>` with DaisyUI base styles.
- * Use this with the legacy Felte-based `useForm` + `use:form` directive pattern.
  *
  * **With `form` prop** — provides the form instance via context so that child
  * `<FormField>`, `<FormSubmitButton>`, and `useField()` calls resolve
@@ -104,13 +90,8 @@ const FormWithContext: Component<FormWithContextProps> = (props) => {
  * `form.handleSubmit()` automatically.
  *
  * ```tsx
- * // New API
  * const form = createForm({ defaultValues, schema, onSubmit });
  * <Form form={form} class="space-y-4">{...}</Form>
- *
- * // Legacy API — unchanged
- * const form = useForm({ schema, onSubmit });
- * <Form use:form class="space-y-4">{...}</Form>
  * ```
  */
 const Form = (props: FormRootProps | FormWithContextProps): JSX.Element => {
@@ -120,7 +101,6 @@ const Form = (props: FormRootProps | FormWithContextProps): JSX.Element => {
   return <FormRoot {...(props as FormRootProps)} />;
 };
 
-// Attach sub-components for compound-component usage
 (Form as unknown as Record<string, unknown>).Root = FormRoot;
 (Form as unknown as Record<string, unknown>).WithContext = FormWithContext;
 

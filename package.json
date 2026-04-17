@@ -53,7 +53,6 @@
   },
   "devDependencies": {
     "@biomejs/biome": "1.9.4",
-    "@felte/solid": "^1.2.11",
     "@iconify/json": "^2.2.342",
     "@iconify/utils": "^2.3.0",
     "@rsbuild/core": "^1.3.20",
@@ -89,11 +88,9 @@
     "@iconify/tailwind4": "^1.2.1",
     "@pathscale/ui": "^1.1.11",
     "@tanstack/solid-virtual": "^3.13.23",
-    "valibot": "^1.0.0",
     "rsbuild-plugin-iconify": "^1.0.3"
   },
   "peerDependencies": {
-    "@felte/solid": "^1.2.0",
     "@solid-primitives/event-listener": "^2.3.0",
     "@solid-primitives/intersection-observer": "^2.1.3",
     "@solid-primitives/keyboard": "^1.2.5",
@@ -108,20 +105,13 @@
     "@tanstack/solid-form": "^1.29.0",
     "@tanstack/solid-table": "^8.0.0",
     "popmotion": "^11.0.5",
-    "solid-js": "^1.9",
-    "valibot": "^1.0.0"
+    "solid-js": "^1.9"
   },
   "peerDependenciesMeta": {
-    "@felte/solid": {
-      "optional": true
-    },
     "@standard-schema/spec": {
       "optional": true
     },
     "popmotion": {
-      "optional": true
-    },
-    "valibot": {
       "optional": true
     }
   },

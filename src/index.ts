@@ -304,7 +304,7 @@ export type {
   FieldsetActionsProps,
 } from "./components/fieldset";
 // ---------------------------------------------------------------------------
-// Form components — legacy (Felte-based) + new (TanStack-based)
+// Form components and hooks (TanStack-based API)
 // ---------------------------------------------------------------------------
 export {
   default as Form,
@@ -326,27 +326,7 @@ export type {
   FieldErrorMessageProps,
 } from "./components/form";
 
-// Legacy Felte-based hooks (deprecated — will be removed after migration)
-export {
-  useForm,
-  useFieldLegacy,
-  useFieldProps,
-  useFieldError,
-  useFieldMeta,
-} from "./hooks/form";
-export type {
-  FormController,
-  FormDirective,
-  FormPathQuery,
-  UseFormOptions,
-  FieldName,
-  UseFieldOptions,
-  UseFieldMetaResult,
-  UseFieldLegacyResult,
-  UseFieldPropsResult,
-} from "./hooks/form";
-
-// New TanStack Form-based API
+// Form API
 export {
   createForm,
   useFormContext,

@@ -17,8 +17,9 @@ import {
   FieldError,
   Fieldset,
   Form,
-  useForm,
-  useFieldProps,
+  createForm,
+  FormField,
+  FormSubmitButton,
   ChatBubble,
   DateField,
   DatePicker,
@@ -416,9 +417,9 @@ export default function App() {
         locale as keyof typeof LANGUAGE_SWITCHER_DEMO_TRANSLATIONS
       ] ?? LANGUAGE_SWITCHER_DEMO_TRANSLATIONS.en,
   });
-  const validatedForm = useForm({
+  const validatedForm = createForm({
     schema: FORM_VALIDATION_SCHEMA,
-    initialValues: {
+    defaultValues: {
       demoName: "",
       demoEmail: "",
       demoPassword: "",
@@ -432,25 +433,14 @@ export default function App() {
       );
     },
   });
-  const controlledForm = useForm({
+  const controlledForm = createForm({
     schema: FORM_CONTROLLED_SCHEMA,
-    initialValues: {
+    defaultValues: {
       controlledEmail: "team@pathscale.com",
     },
     onSubmit: (values) => {
       setFormSummary(`Controlled submit: ${values.controlledEmail}`);
     },
-  });
-  const demoNameField = useFieldProps("demoName", { form: validatedForm });
-  const demoEmailField = useFieldProps("demoEmail", { form: validatedForm });
-  const demoPasswordField = useFieldProps("demoPassword", {
-    form: validatedForm,
-  });
-  const demoQueryField = useFieldProps("demoQuery", { form: validatedForm });
-  const demoSeatsField = useFieldProps("demoSeats", { form: validatedForm });
-  const demoDateField = useFieldProps("demoDate", { form: validatedForm });
-  const controlledEmailField = useFieldProps("controlledEmail", {
-    form: controlledForm,
   });
 
   return (
@@ -1666,60 +1656,39 @@ export default function App() {
 
           <div class="grid gap-4 lg:grid-cols-2">
             <Form
+              form={validatedForm}
               class="space-y-3 rounded-xl border border-base-300 bg-base-100 p-4"
-              use:validatedForm
             >
-              <div class="space-y-1">
-                <Label htmlFor="form-demo-name">Name</Label>
-                <Input
-                  id="form-demo-name"
-                  name={demoNameField.name()}
-                  value={String(demoNameField.value() ?? "")}
-                  onInput={demoNameField.onInput}
-                  onBlur={demoNameField.onBlur}
-                  placeholder="Pathscale user"
-                  fullWidth
-                />
-                <FieldError name="demoName" />
-              </div>
+              <FormField
+                name="demoName"
+                label="Name"
+                inputProps={{ id: "form-demo-name", placeholder: "Pathscale user" }}
+              />
 
-              <div class="space-y-1">
-                <Label htmlFor="form-demo-email">Email</Label>
-                <Input
-                  id="form-demo-email"
-                  name={demoEmailField.name()}
-                  value={String(demoEmailField.value() ?? "")}
-                  onInput={demoEmailField.onInput}
-                  onBlur={demoEmailField.onBlur}
-                  type="email"
-                  placeholder="name@email.com"
-                  fullWidth
-                />
-                <Description>
-                  We only use this for account notifications.
-                </Description>
-                <FieldError name="demoEmail" />
-              </div>
+              <FormField
+                name="demoEmail"
+                label="Email"
+                inputProps={{
+                  id: "form-demo-email",
+                  type: "email",
+                  placeholder: "name@email.com",
+                }}
+              />
+              <Description>
+                We only use this for account notifications.
+              </Description>
 
-              <div class="space-y-1">
-                <Label htmlFor="form-demo-password">Password</Label>
-                <Input
-                  id="form-demo-password"
-                  name={demoPasswordField.name()}
-                  value={String(demoPasswordField.value() ?? "")}
-                  onInput={demoPasswordField.onInput}
-                  onBlur={demoPasswordField.onBlur}
-                  type={showDemoPassword() ? "text" : "password"}
-                  placeholder="At least 8 characters"
-                  fullWidth
-                  endIcon={
+              <FormField
+                name="demoPassword"
+                label="Password"
+                inputProps={{
+                  id: "form-demo-password",
+                  type: showDemoPassword() ? "text" : "password",
+                  placeholder: "At least 8 characters",
+                  endIcon: (
                     <button
                       type="button"
-                      aria-label={
-                        showDemoPassword()
-                          ? "Hide password"
-                          : "Show password"
-                      }
+                      aria-label={showDemoPassword() ? "Hide password" : "Show password"}
                       title={showDemoPassword() ? "Hide password" : "Show password"}
                       class="inline-flex items-center justify-center text-base-content/75 hover:text-base-content"
                       onMouseDown={(event) => event.preventDefault()}
@@ -1735,96 +1704,50 @@ export default function App() {
                         height={16}
                       />
                     </button>
-                  }
-                />
-                <Description>
-                  Playground test: click the eye icon to toggle visibility.
-                </Description>
-                <FieldError name="demoPassword" />
-              </div>
+                  ),
+                }}
+              />
+              <Description>
+                Playground test: click the eye icon to toggle visibility.
+              </Description>
 
-              <div class="space-y-1">
-                <Label htmlFor="form-demo-query">Search Query</Label>
-                <SearchField
-                  id="form-demo-query"
-                  name={demoQueryField.name()}
-                  value={String(demoQueryField.value() ?? "")}
-                  onChange={demoQueryField.onChange}
-                  onBlur={demoQueryField.onBlur}
-                  fullWidth
-                >
-                  <SearchField.Group>
-                    <SearchField.SearchIcon>
-                      {searchIcon()}
-                    </SearchField.SearchIcon>
-                    <SearchField.Input id="form-demo-query" />
-                    <SearchField.ClearButton endIcon={closeIcon()} />
-                  </SearchField.Group>
-                </SearchField>
-                <FieldError name="demoQuery" />
-              </div>
+              <FormField
+                name="demoQuery"
+                label="Search Query"
+                inputProps={{ id: "form-demo-query", placeholder: "Search docs" }}
+              />
 
               <div class="grid gap-3 sm:grid-cols-2">
-                <div class="space-y-1">
-                  <Label htmlFor="form-demo-seats">Seats</Label>
-                  <NumberField
-                    id="form-demo-seats"
-                    name={demoSeatsField.name()}
-                    value={Number(demoSeatsField.value() ?? 0)}
-                    onChange={demoSeatsField.onChange}
-                    onBlur={demoSeatsField.onBlur}
-                    min={1}
-                    fullWidth
-                  >
-                    <NumberField.Group>
-                      <NumberField.DecrementButton />
-                      <NumberField.Input id="form-demo-seats" />
-                      <NumberField.IncrementButton />
-                    </NumberField.Group>
-                  </NumberField>
-                  <FieldError name="demoSeats" />
-                </div>
-
-                <div class="space-y-1">
-                  <Label htmlFor="form-demo-date">Launch Date</Label>
-                  <DateField
-                    id="form-demo-date"
-                    name={demoDateField.name()}
-                    value={String(demoDateField.value() ?? "")}
-                    onChange={demoDateField.onChange}
-                    onBlur={demoDateField.onBlur}
-                    fullWidth
-                  >
-                    <DateField.Group>
-                      <DateField.Input id="form-demo-date" />
-                    </DateField.Group>
-                  </DateField>
-                  <FieldError name="demoDate" />
-                </div>
+                <FormField
+                  name="demoSeats"
+                  label="Seats"
+                  inputProps={{ id: "form-demo-seats", type: "number", min: 1 }}
+                />
+                <FormField
+                  name="demoDate"
+                  label="Launch Date"
+                  inputProps={{ id: "form-demo-date", type: "date" }}
+                />
               </div>
 
-              <Button type="submit">Submit</Button>
+              <FormSubmitButton>Submit</FormSubmitButton>
             </Form>
 
             <Form
+              form={controlledForm}
               class="space-y-3 rounded-xl border border-base-300 bg-base-100 p-4"
-              use:controlledForm
             >
-              <Label htmlFor="form-controlled-email">Controlled Field</Label>
-              <Input
-                id="form-controlled-email"
-                name={controlledEmailField.name()}
-                value={String(controlledEmailField.value() ?? "")}
-                onInput={controlledEmailField.onInput}
-                onBlur={controlledEmailField.onBlur}
-                placeholder="team@pathscale.com"
-                fullWidth
+              <FormField
+                name="controlledEmail"
+                label="Controlled Field"
+                inputProps={{
+                  id: "form-controlled-email",
+                  placeholder: "team@pathscale.com",
+                }}
               />
               <Description>
-                This input is controlled by local state while validation comes
-                from the form hook.
+                This input is controlled through the form API and validated on blur/submit.
               </Description>
-              <FieldError name="controlledEmail" />
 
               <div class="flex flex-wrap gap-2">
                 <Button
@@ -1832,14 +1755,15 @@ export default function App() {
                   size="sm"
                   variant="outline"
                   onClick={() => {
-                    controlledEmailField.onChange("hello@pathscale.com");
+                    controlledForm._tsForm.setFieldValue(
+                      "controlledEmail" as never,
+                      "hello@pathscale.com" as never,
+                    );
                   }}
                 >
                   Autofill
                 </Button>
-                <Button type="submit" size="sm">
-                  Submit Controlled
-                </Button>
+                <FormSubmitButton size="sm">Submit Controlled</FormSubmitButton>
               </div>
             </Form>
 

@@ -1,9 +1,9 @@
 import "./FieldError.css";
-import { createMemo, splitProps, type Accessor, type Component, type JSX } from "solid-js";
+import { createMemo, splitProps, type Component, type JSX } from "solid-js";
 import { twMerge } from "tailwind-merge";
 
-import type { FormController } from "../../hooks/form";
-import { useFieldError } from "../../hooks/form";
+import { getFirstFieldError } from "../../hooks/form/getFirstFieldError";
+import { useFormContext, type AnyFormApi } from "../../hooks/form";
 import type { IComponentBaseProps } from "../types";
 import { CLASSES } from "./FieldError.classes";
 
@@ -16,13 +16,11 @@ export type FieldErrorRootProps = Omit<JSX.HTMLAttributes<HTMLDivElement>, "chil
     children?: JSX.Element | ((props: FieldErrorRenderProps) => JSX.Element);
     isVisible?: boolean;
     name?: string;
-    form?: FormController<Record<string, unknown>> | Accessor<FormController<Record<string, unknown>> | undefined>;
+    form?: AnyFormApi;
     showWhenTouched?: boolean;
   };
 
 const FieldErrorRoot: Component<FieldErrorRootProps> = (props) => {
-  let rootRef: HTMLDivElement | undefined;
-
   const [local, others] = splitProps(props, [
     "children",
     "class",
@@ -36,16 +34,24 @@ const FieldErrorRoot: Component<FieldErrorRootProps> = (props) => {
     "showWhenTouched",
   ]);
 
-  const hookError = useFieldError(
-    () => local.name,
-    {
-      form: local.form,
-      element: () => rootRef,
-      showWhenTouched: local.showWhenTouched,
-    },
-  );
+  const hookMessage = createMemo(() => {
+    if (!local.name) {
+      return undefined;
+    }
 
-  const hookMessage = createMemo(() => hookError());
+    const form = local.form ?? useFormContext();
+    const fieldMeta = form._tsForm.getFieldMeta(local.name as never);
+
+    if (!fieldMeta) {
+      return undefined;
+    }
+
+    if ((local.showWhenTouched ?? true) && !fieldMeta.isTouched) {
+      return undefined;
+    }
+
+    return getFirstFieldError((fieldMeta.errors ?? []) as unknown[]);
+  });
 
   const isVisible = () => {
     if (typeof local.isVisible === "boolean") {
@@ -73,7 +79,6 @@ const FieldErrorRoot: Component<FieldErrorRootProps> = (props) => {
 
   return (
     <div
-      ref={rootRef}
       {...others}
       {...{ class: twMerge(CLASSES.base, local.class, local.className) }}
       data-slot="field-error"
