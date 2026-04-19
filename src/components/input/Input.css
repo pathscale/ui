@@ -140,4 +140,16 @@
     width: 1rem;
     height: 1rem;
   }
+
+  @media (max-width: 767px) {
+    .input-control--sm,
+    .input-control--md,
+    .input-control--lg {
+      font-size: 1rem;
+    }
+
+    .input-field {
+      font-size: 1rem;
+    }
+  }
 }

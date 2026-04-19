@@ -1,4 +1,5 @@
 import { type Component, type JSX, Show, For, createSignal, createMemo, createEffect, onCleanup, splitProps } from "solid-js";
+import clsx from "clsx";
 import { twMerge } from "tailwind-merge";
 import type { ColorValue, ColorPickerContextType, ColorFormat } from "../color-wheel-flower";
 import { ColorPickerContext, ColorWheelFlower } from "../color-wheel-flower";
@@ -9,6 +10,8 @@ import type { IComponentBaseProps } from "../types";
 import { createHueShiftStore, type HueShiftStore } from "./hueShift";
 import { CLASSES } from "./ThemeColorPicker.classes";
 
+export type ThemeColorPickerAlign = "start" | "end";
+
 export interface ThemeColorPickerProps extends IComponentBaseProps {
   /**
    * Prefix for localStorage keys (e.g., "myapp" becomes "myapp_theme_color")
@@ -17,7 +20,7 @@ export interface ThemeColorPickerProps extends IComponentBaseProps {
   storagePrefix?: string;
   /**
    * Callback when color changes. Passes the hex string (or null on reset).
-   * Kept with legacy `(hue, saturation)` signature for backward compatibility —
+   * Kept with legacy `(hue, saturation)` signature for backward compatibility -
    * hue is derived from the picked hex, saturation is forwarded as-is.
    */
   onColorChange?: (hue: number | null, saturation: number) => void;
@@ -29,6 +32,13 @@ export interface ThemeColorPickerProps extends IComponentBaseProps {
    * ARIA label for the button
    */
   "aria-label"?: string;
+  /**
+   * Popover alignment relative to the trigger.
+   * "end" aligns the popover to the trigger's right edge (opens leftward).
+   * "start" aligns it to the trigger's left edge (opens rightward).
+   * @default "end"
+   */
+  align?: ThemeColorPickerAlign;
   /**
    * Custom button content (defaults to palette icon)
    */
@@ -48,6 +58,7 @@ const ThemeColorPicker: Component<ThemeColorPickerProps> = (props) => {
     "onColorChange",
     "onThemeSwitch",
     "aria-label",
+    "align",
     "children",
     "class",
     "className",
@@ -146,6 +157,12 @@ const ThemeColorPicker: Component<ThemeColorPickerProps> = (props) => {
 
   const classes = () => twMerge(CLASSES.base, local.class, local.className);
 
+  const popoverClasses = () =>
+    clsx(
+      CLASSES.popover,
+      local.align === "start" ? CLASSES.popoverAlignStart : CLASSES.popoverAlignEnd,
+    );
+
   return (
     <Show when={featureAvailable()}>
       <div ref={containerRef} {...{ class: classes() }} onKeyDown={handleKeyDown} style={local.style} {...others}>
@@ -168,7 +185,7 @@ const ThemeColorPicker: Component<ThemeColorPickerProps> = (props) => {
         </Button>
 
         <Show when={isOpen()}>
-          <div {...{ class: CLASSES.popover }}>
+          <div {...{ class: popoverClasses() }}>
             <ColorPickerContext.Provider value={contextValue()}>
               <div {...{ class: CLASSES.row }}>
                 <div {...{ class: CLASSES.wheelWrap }}>

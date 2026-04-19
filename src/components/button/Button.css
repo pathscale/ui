@@ -19,6 +19,7 @@
     user-select: none;
     outline: none;
     cursor: pointer;
+    touch-action: manipulation;
     transition:
       transform 250ms ease,
       background-color 100ms ease,

@@ -2,8 +2,8 @@
   .immersive-landing {
     position: fixed;
     inset: 0;
-    width: 100vw;
-    height: 100vh;
+    width: 100%;
+    height: 100%;
     overflow: hidden;
     isolation: isolate;
     background: transparent;
@@ -84,6 +84,7 @@
     border: 0;
     background: color-mix(in oklab, var(--color-base-content) 10%, transparent);
     cursor: pointer;
+    touch-action: manipulation;
     transform: translateY(-50%);
     transition: background-color 160ms ease;
   }
@@ -142,6 +143,7 @@
     color: color-mix(in oklab, var(--color-base-content) 70%, transparent);
     background: transparent;
     cursor: pointer;
+    touch-action: manipulation;
     transition: background-color 150ms ease, color 150ms ease;
   }
 
@@ -182,6 +184,7 @@
     border: 0;
     background: color-mix(in oklab, var(--color-base-content) 30%, transparent);
     cursor: pointer;
+    touch-action: manipulation;
     transition: transform 150ms ease, background-color 150ms ease;
   }
 
