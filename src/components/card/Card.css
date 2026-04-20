@@ -5,7 +5,7 @@
     flex-direction: column;
     gap: 0.75rem;
     overflow: hidden;
-    border-radius: var(--card-radius, calc(var(--radius-box, 0.75rem) * 2));
+    border-radius: var(--card-radius, calc(var(--radius-box, 0.75rem) + var(--card-padding, 1rem)));
     padding: var(--card-padding, 1rem);
     color: var(--card-fg, var(--color-base-content));
     background-color: var(--card-bg, var(--color-base-100));

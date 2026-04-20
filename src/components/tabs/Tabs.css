@@ -48,7 +48,7 @@
     width: 100%;
     align-items: center;
     justify-content: center;
-    border-radius: 1.5rem;
+    border-radius: var(--radius-box, 1rem);
     padding-inline: 1rem;
     text-align: center;
     white-space: nowrap;
