@@ -94,6 +94,8 @@ export const createForm = <TValues extends AnyValues = AnyValues>(
     validators: options.schema
       ? {
           // biome-ignore lint/suspicious/noExplicitAny: Standard Schema bridges Zod/Valibot/etc.
+          onChange: options.schema as any,
+          // biome-ignore lint/suspicious/noExplicitAny: Standard Schema bridges Zod/Valibot/etc.
           onBlur: options.schema as any,
           // biome-ignore lint/suspicious/noExplicitAny: Standard Schema bridges Zod/Valibot/etc.
           onSubmit: options.schema as any,
