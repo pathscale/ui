@@ -19,8 +19,9 @@ export type CreateFormOptions<TValues extends AnyValues = AnyValues> = {
   defaultValues: TValues;
 
   /**
-   * Any Standard Schema-compatible schema (Zod, Valibot, Arktype, …).
-   * Applied as `validators.onBlur` and `validators.onSubmit` by default.
+   * Any Standard Schema-compatible schema (Zod, Valibot, Arktype, ...).
+   * Applied as `validators.onChange`, `validators.onBlur` and
+   * `validators.onSubmit`.
    */
   schema?: StandardSchemaV1<TValues>;
 
@@ -62,6 +63,115 @@ export type FormApi<TValues extends AnyValues = AnyValues> = {
 };
 
 // ---------------------------------------------------------------------------
+// Internal validation logic
+// ---------------------------------------------------------------------------
+
+type ValidationCause = "change" | "blur" | "submit" | "mount" | "server";
+
+type ValidationLogicProps = {
+  // biome-ignore lint/suspicious/noExplicitAny: TanStack Form validator map shape is internal
+  validators?: any;
+  // biome-ignore lint/suspicious/noExplicitAny: TanStack Form API type is intentionally erased in wrapper
+  form: any;
+  event: {
+    type: ValidationCause;
+    async: boolean;
+  };
+  runValidation: (props: {
+    validators: Array<
+      | {
+          // biome-ignore lint/suspicious/noExplicitAny: validator function types are internal
+          fn: any;
+          cause: ValidationCause;
+        }
+      | undefined
+    >;
+    // biome-ignore lint/suspicious/noExplicitAny: TanStack Form API type is intentionally erased in wrapper
+    form: any;
+  }) => void;
+};
+
+const createValidationLogic = (props: ValidationLogicProps) => {
+  if (!props.validators) {
+    return props.runValidation({
+      validators: [],
+      form: props.form,
+    });
+  }
+
+  const isAsync = props.event.async;
+
+  const onMountValidator = isAsync
+    ? undefined
+    : ({ fn: props.validators.onMount, cause: "mount" as const });
+
+  const onChangeValidator = {
+    fn: isAsync ? props.validators.onChangeAsync : props.validators.onChange,
+    cause: "change" as const,
+  };
+
+  const onBlurValidator = {
+    fn: isAsync ? props.validators.onBlurAsync : props.validators.onBlur,
+    cause: "blur" as const,
+  };
+
+  const onSubmitValidator = {
+    fn: isAsync ? props.validators.onSubmitAsync : props.validators.onSubmit,
+    cause: "submit" as const,
+  };
+
+  const onServerValidator = isAsync
+    ? undefined
+    : ({
+        fn: () => undefined,
+        cause: "server" as const,
+      });
+
+  switch (props.event.type) {
+    case "mount": {
+      return props.runValidation({
+        validators: [onMountValidator],
+        form: props.form,
+      });
+    }
+    case "submit": {
+      return props.runValidation({
+        validators: [
+          onChangeValidator,
+          onBlurValidator,
+          onSubmitValidator,
+          onServerValidator,
+        ],
+        form: props.form,
+      });
+    }
+    case "server": {
+      return props.runValidation({
+        validators: [],
+        form: props.form,
+      });
+    }
+    case "blur": {
+      return props.runValidation({
+        validators: [onBlurValidator, onServerValidator],
+        form: props.form,
+      });
+    }
+    case "change": {
+      // Re-run blur validators on each change so blur-origin errors are cleared
+      // immediately when the value becomes valid again.
+      return props.runValidation({
+        validators: [onChangeValidator, onBlurValidator, onServerValidator],
+        form: props.form,
+      });
+    }
+    default: {
+      throw new Error(`Unknown validation event type: ${props.event.type}`);
+    }
+  }
+};
+
+// ---------------------------------------------------------------------------
 // Factory
 // ---------------------------------------------------------------------------
 
@@ -87,11 +197,14 @@ export type FormApi<TValues extends AnyValues = AnyValues> = {
 export const createForm = <TValues extends AnyValues = AnyValues>(
   options: CreateFormOptions<TValues>,
 ): FormApi<TValues> => {
+  const hasSchema = Boolean(options.schema);
+  const hasAsyncValidators = Boolean(options.asyncValidators);
+
   // biome-ignore lint/suspicious/noExplicitAny: TanStack Form generics are erased at our wrapper boundary
   const tsForm: any = createTSForm(() => ({
     defaultValues: options.defaultValues as Record<string, unknown>,
 
-    validators: options.schema
+    validators: hasSchema || hasAsyncValidators
       ? {
           // biome-ignore lint/suspicious/noExplicitAny: Standard Schema bridges Zod/Valibot/etc.
           onChange: options.schema as any,
@@ -99,8 +212,12 @@ export const createForm = <TValues extends AnyValues = AnyValues>(
           onBlur: options.schema as any,
           // biome-ignore lint/suspicious/noExplicitAny: Standard Schema bridges Zod/Valibot/etc.
           onSubmit: options.schema as any,
+          onBlurAsync: options.asyncValidators?.onBlur as any,
+          onSubmitAsync: options.asyncValidators?.onSubmit as any,
         }
       : undefined,
+
+    validationLogic: createValidationLogic,
 
     onSubmit: async ({ value }: { value: unknown }) => {
       await options.onSubmit?.(value as TValues);
