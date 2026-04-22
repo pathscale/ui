@@ -12,14 +12,14 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Checkout rebuild-plugin-ui-css-purge
+      - name: Checkout rsbuild-plugin-ui-css-purge
         uses: actions/checkout@v4
         with:
-          repository: pathscale/rebuild-plugin-ui-css-purge
-          path: rebuild-plugin-ui-css-purge
+          repository: pathscale/rsbuild-plugin-ui-css-purge
+          path: rsbuild-plugin-ui-css-purge
 
       - name: Symlink plugin to expected path
-        run: ln -s $GITHUB_WORKSPACE/rebuild-plugin-ui-css-purge ../rebuild-plugin-ui-css-purge
+        run: ln -s $GITHUB_WORKSPACE/rsbuild-plugin-ui-css-purge ../rsbuild-plugin-ui-css-purge
 
       - name: Setup Bun
         uses: oven-sh/setup-bun@v1
