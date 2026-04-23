@@ -316,6 +316,7 @@ export default function App() {
   const [controlledState, setControlledState] = createSignal<string | null>(
     "california",
   );
+  const [controlledPopoverOpen, setControlledPopoverOpen] = createSignal(false);
   const [selectedRegions, setSelectedRegions] = createSignal<string[]>([
     "north-america",
     "europe",
@@ -3762,16 +3763,22 @@ export default function App() {
               Controlled
             </h3>
             <div class="flex flex-wrap items-center gap-6 py-10 min-h-[140px]">
-              <Popover isOpen placement="top">
+              <Popover
+                isOpen={controlledPopoverOpen()}
+                onOpenChange={setControlledPopoverOpen}
+                placement="top"
+              >
                 <Popover.Trigger>
-                  <Button variant="outline">Always open</Button>
+                  <Button variant="outline">
+                    {controlledPopoverOpen() ? "Close controlled" : "Open controlled"}
+                  </Button>
                 </Popover.Trigger>
                 <Popover.Content>
                   <Popover.Arrow />
                   <Popover.Dialog>
                     <Popover.Heading>Controlled</Popover.Heading>
                     <div class="mt-2 text-xs opacity-80">
-                      This popover is forced open.
+                      Open state is managed externally.
                     </div>
                   </Popover.Dialog>
                 </Popover.Content>
