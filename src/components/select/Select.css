@@ -132,10 +132,8 @@
 
   .ui-select__popover {
     display: none;
-    position: absolute;
+    position: fixed;
     z-index: 80;
-    top: calc(100% + 0.375rem);
-    inset-inline-start: 0;
     min-width: max(100%, 14rem);
     max-width: min(30rem, calc(100vw - 2rem));
     max-height: min(24rem, 70vh);
@@ -162,8 +160,44 @@
     display: block;
     visibility: visible;
     opacity: 1;
-    transform: translateY(0) scale(1);
+    transform: scale(1);
     pointer-events: auto;
+  }
+
+  .ui-select__popover[data-placement="top"] {
+    transform: translateY(4px) scale(0.98);
+    transform-origin: bottom;
+  }
+
+  .ui-select__popover[data-placement="top"][data-open="true"] {
+    transform: translateY(0) scale(1);
+  }
+
+  .ui-select__popover[data-placement="bottom"] {
+    transform: translateY(-4px) scale(0.98);
+    transform-origin: top;
+  }
+
+  .ui-select__popover[data-placement="bottom"][data-open="true"] {
+    transform: translateY(0) scale(1);
+  }
+
+  .ui-select__popover[data-placement="left"] {
+    transform: translateX(4px) scale(0.98);
+    transform-origin: right;
+  }
+
+  .ui-select__popover[data-placement="left"][data-open="true"] {
+    transform: translateX(0) scale(1);
+  }
+
+  .ui-select__popover[data-placement="right"] {
+    transform: translateX(-4px) scale(0.98);
+    transform-origin: left;
+  }
+
+  .ui-select__popover[data-placement="right"][data-open="true"] {
+    transform: translateX(0) scale(1);
   }
 
   .ui-select__listbox {

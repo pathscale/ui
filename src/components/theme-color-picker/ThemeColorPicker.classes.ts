@@ -1,7 +1,7 @@
 export const CLASSES = {
   base: "relative",
   iconActive: "text-primary",
-  popover: "absolute z-50 mt-2 rounded-lg bg-base-200/80 p-4 shadow-xl backdrop-blur-sm",
+  popover: "fixed z-50 rounded-lg bg-base-200/80 p-4 shadow-xl backdrop-blur-sm",
   popoverAlignStart: "left-0",
   popoverAlignEnd: "right-0",
   row: "flex items-center gap-3",

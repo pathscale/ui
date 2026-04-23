@@ -1,5 +1,5 @@
 import { type Component, type JSX, Show, For, createSignal, createMemo, createEffect, onCleanup, splitProps } from "solid-js";
-import clsx from "clsx";
+import { Portal } from "solid-js/web";
 import { twMerge } from "tailwind-merge";
 import type { ColorValue, ColorPickerContextType, ColorFormat } from "../color-wheel-flower";
 import { ColorPickerContext, ColorWheelFlower } from "../color-wheel-flower";
@@ -7,10 +7,15 @@ import { createColorFromHsl, parseColor } from "../color-wheel-flower/ColorUtils
 import Button from "../button";
 import Icon from "../icon";
 import type { IComponentBaseProps } from "../types";
+import {
+  createOverlayPosition,
+  type OverlayPlacement,
+} from "../_shared/overlayPosition";
 import { createHueShiftStore, type HueShiftStore } from "./hueShift";
 import { CLASSES } from "./ThemeColorPicker.classes";
 
 export type ThemeColorPickerAlign = "start" | "end";
+export type ThemeColorPickerPlacement = OverlayPlacement;
 
 export interface ThemeColorPickerProps extends IComponentBaseProps {
   /**
@@ -40,6 +45,16 @@ export interface ThemeColorPickerProps extends IComponentBaseProps {
    */
   align?: ThemeColorPickerAlign;
   /**
+   * Preferred popover placement.
+   * @default "bottom"
+   */
+  placement?: ThemeColorPickerPlacement;
+  /**
+   * Automatically flip the popover when there is insufficient viewport space.
+   * @default true
+   */
+  autoFlip?: boolean;
+  /**
    * Custom button content (defaults to palette icon)
    */
   children?: JSX.Element;
@@ -59,6 +74,8 @@ const ThemeColorPicker: Component<ThemeColorPickerProps> = (props) => {
     "onThemeSwitch",
     "aria-label",
     "align",
+    "placement",
+    "autoFlip",
     "children",
     "class",
     "className",
@@ -68,7 +85,8 @@ const ThemeColorPicker: Component<ThemeColorPickerProps> = (props) => {
 
   const [isOpen, setIsOpen] = createSignal(false);
   const [featureAvailable, setFeatureAvailable] = createSignal(true);
-  let containerRef: HTMLDivElement | undefined;
+  const [containerRef, setContainerRef] = createSignal<HTMLDivElement | undefined>();
+  const [popoverRef, setPopoverRef] = createSignal<HTMLDivElement | undefined>();
 
   const store: HueShiftStore = createHueShiftStore(local.storagePrefix ?? "theme");
 
@@ -119,9 +137,10 @@ const ThemeColorPicker: Component<ThemeColorPickerProps> = (props) => {
     if (!isOpen()) return;
 
     const handleClickOutside = (e: MouseEvent) => {
-      if (containerRef && !containerRef.contains(e.target as Node)) {
-        setIsOpen(false);
-      }
+      const target = e.target as Node;
+      if (containerRef()?.contains(target)) return;
+      if (popoverRef()?.contains(target)) return;
+      setIsOpen(false);
     };
 
     const timer = setTimeout(() => {
@@ -157,15 +176,29 @@ const ThemeColorPicker: Component<ThemeColorPickerProps> = (props) => {
 
   const classes = () => twMerge(CLASSES.base, local.class, local.className);
 
-  const popoverClasses = () =>
-    clsx(
-      CLASSES.popover,
-      local.align === "start" ? CLASSES.popoverAlignStart : CLASSES.popoverAlignEnd,
-    );
+  const popoverClasses = () => CLASSES.popover;
+
+  const overlayPosition = createOverlayPosition({
+    open: isOpen,
+    triggerRef: containerRef,
+    overlayRef: popoverRef,
+    placement: () => local.placement ?? "bottom",
+    offset: () => 8,
+    autoFlip: () => local.autoFlip ?? true,
+    align: () => (local.align === "start" ? "start" : "end"),
+  });
+
+  const popoverStyle = () => overlayPosition.style();
 
   return (
     <Show when={featureAvailable()}>
-      <div ref={containerRef} {...{ class: classes() }} onKeyDown={handleKeyDown} style={local.style} {...others}>
+      <div
+        ref={setContainerRef}
+        {...{ class: classes() }}
+        onKeyDown={handleKeyDown}
+        style={local.style}
+        {...others}
+      >
         <Button
           type="button"
           size="sm"
@@ -185,29 +218,36 @@ const ThemeColorPicker: Component<ThemeColorPickerProps> = (props) => {
         </Button>
 
         <Show when={isOpen()}>
-          <div {...{ class: popoverClasses() }}>
-            <ColorPickerContext.Provider value={contextValue()}>
-              <div {...{ class: CLASSES.row }}>
-                <div {...{ class: CLASSES.wheelWrap }}>
-                  <ColorWheelFlower {...{ class: CLASSES.wheelCustom }} />
-                </div>
+          <Portal>
+            <div
+              ref={setPopoverRef}
+              {...{ class: popoverClasses() }}
+              data-placement={overlayPosition.placement()}
+              style={popoverStyle()}
+            >
+              <ColorPickerContext.Provider value={contextValue()}>
+                <div {...{ class: CLASSES.row }}>
+                  <div {...{ class: CLASSES.wheelWrap }}>
+                    <ColorWheelFlower {...{ class: CLASSES.wheelCustom }} />
+                  </div>
 
-                <div {...{ class: CLASSES.grayscaleList }}>
-                  <For each={GRAYSCALE_SWATCHES}>
-                    {(g) => (
-                      <button
-                        type="button"
-                        {...{ class: CLASSES.swatchButton }}
-                        style={{ "background-color": `${g.hex}` }}
-                        aria-label={g.label}
-                        onClick={() => handleGrayscale(g)}
-                      />
-                    )}
-                  </For>
+                  <div {...{ class: CLASSES.grayscaleList }}>
+                    <For each={GRAYSCALE_SWATCHES}>
+                      {(g) => (
+                        <button
+                          type="button"
+                          {...{ class: CLASSES.swatchButton }}
+                          style={{ "background-color": `${g.hex}` }}
+                          aria-label={g.label}
+                          onClick={() => handleGrayscale(g)}
+                        />
+                      )}
+                    </For>
+                  </div>
                 </div>
-              </div>
-            </ColorPickerContext.Provider>
-          </div>
+              </ColorPickerContext.Provider>
+            </div>
+          </Portal>
         </Show>
       </div>
     </Show>

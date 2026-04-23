@@ -5,7 +5,7 @@
   }
 
   .popover {
-    position: absolute;
+    position: fixed;
     z-index: var(--z-overlay, 70);
     border-radius: 1.5rem;
     padding: 0;
@@ -26,51 +26,43 @@
   .popover[data-open="true"] {
     opacity: 1;
     pointer-events: auto;
-    transform: translateY(0) scale(1);
+    transform: scale(1);
   }
 
   .popover[data-placement="top"] {
-    bottom: calc(100% + var(--popover-offset, 8px));
-    left: 50%;
-    transform: translateX(-50%) translateY(4px) scale(0.96);
+    transform: translateY(4px) scale(0.96);
     transform-origin: bottom;
   }
 
   .popover[data-placement="top"][data-open="true"] {
-    transform: translateX(-50%) translateY(0) scale(1);
+    transform: translateY(0) scale(1);
   }
 
   .popover[data-placement="bottom"] {
-    top: calc(100% + var(--popover-offset, 8px));
-    left: 50%;
-    transform: translateX(-50%) translateY(-4px) scale(0.96);
+    transform: translateY(-4px) scale(0.96);
     transform-origin: top;
   }
 
   .popover[data-placement="bottom"][data-open="true"] {
-    transform: translateX(-50%) translateY(0) scale(1);
+    transform: translateY(0) scale(1);
   }
 
   .popover[data-placement="left"] {
-    right: calc(100% + var(--popover-offset, 8px));
-    top: 50%;
-    transform: translateX(4px) translateY(-50%) scale(0.96);
+    transform: translateX(4px) scale(0.96);
     transform-origin: right;
   }
 
   .popover[data-placement="left"][data-open="true"] {
-    transform: translateX(0) translateY(-50%) scale(1);
+    transform: translateX(0) scale(1);
   }
 
   .popover[data-placement="right"] {
-    left: calc(100% + var(--popover-offset, 8px));
-    top: 50%;
-    transform: translateX(-4px) translateY(-50%) scale(0.96);
+    transform: translateX(-4px) scale(0.96);
     transform-origin: left;
   }
 
   .popover[data-placement="right"][data-open="true"] {
-    transform: translateX(0) translateY(-50%) scale(1);
+    transform: translateX(0) scale(1);
   }
 
   .popover__dialog {

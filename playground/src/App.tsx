@@ -2123,6 +2123,61 @@ export default function App() {
               </Dropdown.Root>
             </div>
           </div>
+
+          <div class="space-y-3">
+            <h3 class="text-xs font-semibold uppercase opacity-70">
+              Drawer Footer
+            </h3>
+            <p class="text-xs opacity-70">
+              Requests bottom placement from a drawer footer so auto-flip is
+              easy to inspect near the viewport edge.
+            </p>
+            <Drawer>
+              <Drawer.Trigger>
+                <Button variant="outline">Open dropdown footer demo</Button>
+              </Drawer.Trigger>
+              <Drawer.Backdrop>
+                <Drawer.Content placement="bottom">
+                  <Drawer.Dialog>
+                    <Drawer.Handle />
+                    <Drawer.CloseTrigger endIcon={closeIcon()} />
+                    <Drawer.Header>
+                      <Drawer.Heading>Dropdown footer demo</Drawer.Heading>
+                    </Drawer.Header>
+                    <Drawer.Body>
+                      <p class="text-sm opacity-80">
+                        The trigger stays pinned in the footer while the menu
+                        requests <code>bottom</code> placement with auto-flip.
+                      </p>
+                    </Drawer.Body>
+                    <Drawer.Footer>
+                      <div class="flex w-full flex-col gap-3">
+                        <Dropdown.Root
+                          class="w-full"
+                          placement="bottom"
+                          autoFlip
+                        >
+                          <Dropdown.Trigger class="w-full justify-between">
+                            Footer actions
+                          </Dropdown.Trigger>
+                          <Dropdown.Menu align="start">
+                            <Dropdown.Item>Profile</Dropdown.Item>
+                            <Dropdown.Item>Team</Dropdown.Item>
+                            <Dropdown.Item>Billing</Dropdown.Item>
+                          </Dropdown.Menu>
+                        </Dropdown.Root>
+                        <Drawer.Close>
+                          <Button class="w-full" variant="secondary">
+                            Close
+                          </Button>
+                        </Drawer.Close>
+                      </div>
+                    </Drawer.Footer>
+                  </Drawer.Dialog>
+                </Drawer.Content>
+              </Drawer.Backdrop>
+            </Drawer>
+          </div>
         </section>
 
         <section class="space-y-4 rounded-xl border border-base-300 bg-base-200 p-4">
@@ -2317,6 +2372,84 @@ export default function App() {
                 </Select.Popover>
               </Select>
             </div>
+          </div>
+
+          <div class="space-y-3">
+            <h3 class="text-xs font-semibold uppercase opacity-70">
+              Drawer Footer
+            </h3>
+            <p class="text-xs opacity-70">
+              Confirms the popover tracks trigger width and flips inside a
+              mobile-style footer.
+            </p>
+            <Drawer>
+              <Drawer.Trigger>
+                <Button variant="outline">Open select footer demo</Button>
+              </Drawer.Trigger>
+              <Drawer.Backdrop>
+                <Drawer.Content placement="bottom">
+                  <Drawer.Dialog>
+                    <Drawer.Handle />
+                    <Drawer.CloseTrigger endIcon={closeIcon()} />
+                    <Drawer.Header>
+                      <Drawer.Heading>Select footer demo</Drawer.Heading>
+                    </Drawer.Header>
+                    <Drawer.Body>
+                      <p class="text-sm opacity-80">
+                        This select asks for <code>bottom</code> placement and
+                        should flip upward when the drawer footer reaches the
+                        viewport edge.
+                      </p>
+                    </Drawer.Body>
+                    <Drawer.Footer>
+                      <div class="flex w-full flex-col gap-3">
+                        <Select
+                          placement="bottom"
+                          autoFlip
+                          fullWidth
+                          placeholder="Choose a region"
+                        >
+                          <Select.Trigger>
+                            <Select.Value />
+                            <Select.Indicator endIcon={chevronDownIcon()} />
+                          </Select.Trigger>
+                          <Select.Popover>
+                            <Select.Listbox>
+                              <Select.Option
+                                value="north-america"
+                                textValue="North America"
+                                endIcon={checkIcon()}
+                              >
+                                North America
+                              </Select.Option>
+                              <Select.Option
+                                value="europe"
+                                textValue="Europe"
+                                endIcon={checkIcon()}
+                              >
+                                Europe
+                              </Select.Option>
+                              <Select.Option
+                                value="asia"
+                                textValue="Asia"
+                                endIcon={checkIcon()}
+                              >
+                                Asia
+                              </Select.Option>
+                            </Select.Listbox>
+                          </Select.Popover>
+                        </Select>
+                        <Drawer.Close>
+                          <Button class="w-full" variant="secondary">
+                            Close
+                          </Button>
+                        </Drawer.Close>
+                      </div>
+                    </Drawer.Footer>
+                  </Drawer.Dialog>
+                </Drawer.Content>
+              </Drawer.Backdrop>
+            </Drawer>
           </div>
         </section>
 
@@ -3666,6 +3799,65 @@ export default function App() {
               </Popover>
             </div>
           </div>
+
+          <div class="space-y-3">
+            <h3 class="text-xs font-semibold uppercase opacity-70">
+              Drawer Footer
+            </h3>
+            <p class="text-xs opacity-70">
+              Uses the same footer placement that caused clipping in mobile
+              navigation.
+            </p>
+            <Drawer>
+              <Drawer.Trigger>
+                <Button variant="outline">Open popover footer demo</Button>
+              </Drawer.Trigger>
+              <Drawer.Backdrop>
+                <Drawer.Content placement="bottom">
+                  <Drawer.Dialog>
+                    <Drawer.Handle />
+                    <Drawer.CloseTrigger endIcon={closeIcon()} />
+                    <Drawer.Header>
+                      <Drawer.Heading>Popover footer demo</Drawer.Heading>
+                    </Drawer.Header>
+                    <Drawer.Body>
+                      <p class="text-sm opacity-80">
+                        The popover requests <code>bottom</code> placement with
+                        auto-flip, so the dialog should move above the trigger
+                        when space below runs out.
+                      </p>
+                    </Drawer.Body>
+                    <Drawer.Footer>
+                      <div class="flex w-full flex-col gap-3">
+                        <Popover placement="bottom" autoFlip>
+                          <Popover.Trigger>
+                            <Button class="w-full justify-between" variant="secondary">
+                              Footer details
+                            </Button>
+                          </Popover.Trigger>
+                          <Popover.Content>
+                            <Popover.Arrow />
+                            <Popover.Dialog>
+                              <Popover.Heading>Footer popover</Popover.Heading>
+                              <div class="mt-2 text-xs opacity-80">
+                                Portaled positioning keeps this visible inside
+                                the drawer footer.
+                              </div>
+                            </Popover.Dialog>
+                          </Popover.Content>
+                        </Popover>
+                        <Drawer.Close>
+                          <Button class="w-full" variant="secondary">
+                            Close
+                          </Button>
+                        </Drawer.Close>
+                      </div>
+                    </Drawer.Footer>
+                  </Drawer.Dialog>
+                </Drawer.Content>
+              </Drawer.Backdrop>
+            </Drawer>
+          </div>
         </section>
 
         <section class="space-y-4 rounded-xl border border-base-300 bg-base-200 p-4">
@@ -4599,6 +4791,50 @@ export default function App() {
                 {languageSwitcherI18n.t("helper")}
               </p>
             </div>
+
+            <div class="space-y-3 rounded-lg border border-base-300 bg-base-100 p-4 md:col-span-2">
+              <h3 class="text-xs font-semibold uppercase opacity-70">
+                Drawer Footer
+              </h3>
+              <p class="text-xs opacity-70">
+                Recreates the mobile footer case where the language menu sits
+                close to the viewport edge.
+              </p>
+              <Drawer>
+                <Drawer.Trigger>
+                  <Button variant="outline">Open language footer demo</Button>
+                </Drawer.Trigger>
+                <Drawer.Backdrop>
+                  <Drawer.Content placement="bottom">
+                    <Drawer.Dialog>
+                      <Drawer.Handle />
+                      <Drawer.CloseTrigger endIcon={closeIcon()} />
+                      <Drawer.Header>
+                        <Drawer.Heading>Language footer demo</Drawer.Heading>
+                      </Drawer.Header>
+                      <Drawer.Body>
+                        <p class="text-sm opacity-80">
+                          Open the language menu from the footer to verify that
+                          the overlay stays visible without app-level CSS.
+                        </p>
+                      </Drawer.Body>
+                      <Drawer.Footer>
+                        <div class="flex w-full flex-col gap-3">
+                          <div class="flex w-full items-center justify-center">
+                            <LanguageSwitcher i18n={languageSwitcherI18n} />
+                          </div>
+                          <Drawer.Close>
+                            <Button class="w-full" variant="secondary">
+                              Close
+                            </Button>
+                          </Drawer.Close>
+                        </div>
+                      </Drawer.Footer>
+                    </Drawer.Dialog>
+                  </Drawer.Content>
+                </Drawer.Backdrop>
+              </Drawer>
+            </div>
           </div>
         </section>
 
@@ -5147,6 +5383,57 @@ export default function App() {
                   : `${Math.round(themeHue() ?? 0)}deg`}
               </p>
               <p>Saturation: {Math.round(themeSaturation())}%</p>
+            </div>
+
+            <div class="space-y-3 md:col-span-2">
+              <h3 class="text-xs font-semibold uppercase opacity-70">
+                Drawer Footer
+              </h3>
+              <p class="text-xs opacity-70">
+                Mirrors the footer trigger used in mobile navigation so the
+                flower wheel can be checked near the viewport edge.
+              </p>
+              <Drawer>
+                <Drawer.Trigger>
+                  <Button variant="outline">Open picker footer demo</Button>
+                </Drawer.Trigger>
+                <Drawer.Backdrop>
+                  <Drawer.Content placement="bottom">
+                    <Drawer.Dialog>
+                      <Drawer.Handle />
+                      <Drawer.CloseTrigger endIcon={closeIcon()} />
+                      <Drawer.Header>
+                        <Drawer.Heading>Theme picker footer demo</Drawer.Heading>
+                      </Drawer.Header>
+                      <Drawer.Body>
+                        <p class="text-sm opacity-80">
+                          The picker requests <code>bottom</code> placement with
+                          auto-flip, matching the mobile drawer footer case.
+                        </p>
+                      </Drawer.Body>
+                      <Drawer.Footer>
+                        <div class="flex w-full flex-col gap-3">
+                          <div class="flex w-full items-center justify-center">
+                            <ThemeColorPicker
+                              placement="bottom"
+                              autoFlip
+                              onColorChange={(hue, saturation) => {
+                                setThemeHue(hue);
+                                setThemeSaturation(saturation);
+                              }}
+                            />
+                          </div>
+                          <Drawer.Close>
+                            <Button class="w-full" variant="secondary">
+                              Close
+                            </Button>
+                          </Drawer.Close>
+                        </div>
+                      </Drawer.Footer>
+                    </Drawer.Dialog>
+                  </Drawer.Content>
+                </Drawer.Backdrop>
+              </Drawer>
             </div>
           </div>
         </section>

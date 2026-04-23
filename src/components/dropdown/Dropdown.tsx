@@ -1,5 +1,6 @@
 import "./Dropdown.css";
 import {
+  Show,
   createContext,
   createEffect,
   createSignal,
@@ -11,10 +12,16 @@ import {
   type Accessor,
   type JSX,
 } from "solid-js";
+import { Portal } from "solid-js/web";
 import { twMerge } from "tailwind-merge";
+import {
+  createOverlayPosition,
+  type OverlayPlacement,
+} from "../_shared/overlayPosition";
 import { CLASSES } from "./Dropdown.classes";
 
 type DropdownAlign = "start" | "end";
+type DropdownPlacement = OverlayPlacement;
 type DropdownFocusRequest = "first" | "last" | null;
 
 type DropdownItemRecord = {
@@ -28,6 +35,10 @@ type DropdownContextValue = {
   disabled: Accessor<boolean>;
   triggerId: string;
   menuId: string;
+  placement: Accessor<DropdownPlacement>;
+  autoFlip: Accessor<boolean>;
+  triggerRef: Accessor<HTMLButtonElement | undefined>;
+  menuRef: Accessor<HTMLDivElement | undefined>;
   focusedKey: Accessor<string | undefined>;
   setFocusedKey: (key: string | undefined) => void;
   setOpen: (next: boolean, options?: { focusTrigger?: boolean }) => void;
@@ -38,6 +49,7 @@ type DropdownContextValue = {
   registerItem: (item: DropdownItemRecord) => void;
   unregisterItem: (key: string) => void;
   setTriggerRef: (el: HTMLButtonElement) => void;
+  setMenuRef: (el: HTMLDivElement) => void;
   setRootRef: (el: HTMLDivElement) => void;
 };
 
@@ -68,6 +80,8 @@ type DropdownRootProps = Omit<JSX.HTMLAttributes<HTMLDivElement>, "onChange"> & 
   open?: boolean;
   defaultOpen?: boolean;
   onOpenChange?: (open: boolean) => void;
+  placement?: DropdownPlacement;
+  autoFlip?: boolean;
   disabled?: boolean;
   dataTheme?: string;
   className?: string;
@@ -80,6 +94,8 @@ const DropdownRoot = (props: DropdownRootProps): JSX.Element => {
     "open",
     "defaultOpen",
     "onOpenChange",
+    "placement",
+    "autoFlip",
     "disabled",
     "dataTheme",
     "className",
@@ -95,11 +111,14 @@ const DropdownRoot = (props: DropdownRootProps): JSX.Element => {
   const [focusedKey, setFocusedKey] = createSignal<string | undefined>(undefined);
   const [focusRequest, setFocusRequest] = createSignal<DropdownFocusRequest>(null);
   const [triggerRef, setTriggerRefSignal] = createSignal<HTMLButtonElement | undefined>(undefined);
+  const [menuRef, setMenuRefSignal] = createSignal<HTMLDivElement | undefined>(undefined);
   const [rootRef, setRootRefSignal] = createSignal<HTMLDivElement | undefined>(undefined);
 
   const isControlled = () => local.open !== undefined;
   const isDisabled = () => Boolean(local.disabled);
   const open = () => (isControlled() ? Boolean(local.open) : internalOpen());
+  const placement = () => local.placement ?? "bottom";
+  const autoFlip = () => local.autoFlip ?? true;
 
   const setRootRef = (el: HTMLDivElement) => {
     setRootRefSignal(el);
@@ -110,6 +129,10 @@ const DropdownRoot = (props: DropdownRootProps): JSX.Element => {
 
   const setTriggerRef = (el: HTMLButtonElement) => {
     setTriggerRefSignal(el);
+  };
+
+  const setMenuRef = (el: HTMLDivElement) => {
+    setMenuRefSignal(el);
   };
 
   const getEnabledItems = () => items().filter((item) => !item.disabled);
@@ -209,9 +232,10 @@ const DropdownRoot = (props: DropdownRootProps): JSX.Element => {
   onMount(() => {
     const handlePointerDown = (event: PointerEvent) => {
       if (!open()) return;
-      const root = rootRef();
-      if (!root) return;
-      if (root.contains(event.target as Node)) return;
+      const target = event.target as Node;
+      if (rootRef()?.contains(target)) return;
+      if (menuRef()?.contains(target)) return;
+      if (triggerRef()?.contains(target)) return;
       setOpen(false);
     };
 
@@ -228,6 +252,10 @@ const DropdownRoot = (props: DropdownRootProps): JSX.Element => {
         disabled: isDisabled,
         triggerId,
         menuId,
+        placement,
+        autoFlip,
+        triggerRef,
+        menuRef,
         focusedKey,
         setFocusedKey,
         setOpen,
@@ -238,6 +266,7 @@ const DropdownRoot = (props: DropdownRootProps): JSX.Element => {
         registerItem,
         unregisterItem,
         setTriggerRef,
+        setMenuRef,
         setRootRef,
       }}
     >
@@ -358,6 +387,8 @@ const DropdownTrigger = (props: DropdownTriggerProps): JSX.Element => {
 
 type DropdownMenuProps = JSX.HTMLAttributes<HTMLDivElement> & {
   align?: DropdownAlign;
+  placement?: DropdownPlacement;
+  autoFlip?: boolean;
   sideOffset?: number;
 };
 
@@ -367,6 +398,8 @@ const DropdownMenu = (props: DropdownMenuProps): JSX.Element => {
     "class",
     "children",
     "align",
+    "placement",
+    "autoFlip",
     "sideOffset",
     "onKeyDown",
     "style",
@@ -380,6 +413,16 @@ const DropdownMenu = (props: DropdownMenuProps): JSX.Element => {
       </div>
     );
   }
+
+  const overlayPosition = createOverlayPosition({
+    open: ctx.open,
+    triggerRef: ctx.triggerRef,
+    overlayRef: ctx.menuRef,
+    placement: () => local.placement ?? ctx.placement(),
+    offset: () => local.sideOffset ?? 6,
+    autoFlip: () => local.autoFlip ?? ctx.autoFlip(),
+    align: () => (local.align === "end" ? "end" : "start"),
+  });
 
   const handleKeyDown: JSX.EventHandlerUnion<HTMLDivElement, KeyboardEvent> = (event) => {
     invokeEventHandler(local.onKeyDown, event);
@@ -415,32 +458,48 @@ const DropdownMenu = (props: DropdownMenuProps): JSX.Element => {
   };
 
   const menuStyle = () => {
+    const overlayStyle = overlayPosition.style();
+
     if (typeof local.style === "string") {
-      return `${local.style}; --dropdown-offset: ${local.sideOffset ?? 6}px;`;
+      return [
+        local.style,
+        Object.entries(overlayStyle)
+          .map(([key, value]) => `${key}: ${String(value)}`)
+          .join("; "),
+      ]
+        .filter(Boolean)
+        .join("; ");
     }
+
     return {
       ...(local.style ?? {}),
-      "--dropdown-offset": `${local.sideOffset ?? 6}px`,
+      ...overlayStyle,
     } as JSX.CSSProperties;
   };
 
   return (
-    <div
-      {...others}
-      id={ctx.menuId}
-      {...{ class: twMerge(CLASSES.slot.popover, local.class) }}
-      role={local.role ?? "menu"}
-      data-slot="dropdown-popover"
-      data-open={ctx.open() ? "true" : "false"}
-      data-align={local.align ?? "start"}
-      aria-hidden={ctx.open() ? "false" : "true"}
-      style={menuStyle()}
-      onKeyDown={handleKeyDown}
-    >
-      <div {...{ class: CLASSES.slot.menu }} data-slot="dropdown-menu">
-        {local.children}
-      </div>
-    </div>
+    <Show when={ctx.open()}>
+      <Portal>
+        <div
+          {...others}
+          ref={ctx.setMenuRef}
+          id={ctx.menuId}
+          {...{ class: twMerge(CLASSES.slot.popover, local.class) }}
+          role={local.role ?? "menu"}
+          data-slot="dropdown-popover"
+          data-open={ctx.open() ? "true" : "false"}
+          data-align={local.align ?? "start"}
+          data-placement={overlayPosition.placement()}
+          aria-hidden={ctx.open() ? "false" : "true"}
+          style={menuStyle()}
+          onKeyDown={handleKeyDown}
+        >
+          <div {...{ class: CLASSES.slot.menu }} data-slot="dropdown-menu">
+            {local.children}
+          </div>
+        </div>
+      </Portal>
+    </Show>
   );
 };
 
@@ -586,6 +645,7 @@ export {
 
 export type {
   DropdownAlign,
+  DropdownPlacement,
   DropdownRootProps,
   DropdownTriggerProps,
   DropdownMenuProps,

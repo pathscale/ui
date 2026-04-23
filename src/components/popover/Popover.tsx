@@ -1,5 +1,7 @@
 import "./Popover.css";
 import {
+  Show,
+  createEffect,
   createContext,
   createMemo,
   createSignal,
@@ -11,17 +13,25 @@ import {
   type JSX,
   type ParentComponent,
 } from "solid-js";
+import { Portal } from "solid-js/web";
 import { twMerge } from "tailwind-merge";
 
 import type { IComponentBaseProps } from "../types";
+import {
+  createOverlayPosition,
+  type OverlayPlacement,
+} from "../_shared/overlayPosition";
 import { CLASSES } from "./Popover.classes";
 
-export type PopoverPlacement = "top" | "bottom" | "left" | "right";
+export type PopoverPlacement = OverlayPlacement;
 
 type PopoverContextValue = {
   isOpen: () => boolean;
   setIsOpen: (next: boolean, options?: { focusTrigger?: boolean }) => void;
+  preferredPlacement: () => PopoverPlacement;
   placement: () => PopoverPlacement;
+  setPlacement: (next: PopoverPlacement) => void;
+  autoFlip: () => boolean;
   triggerRef: () => HTMLElement | undefined;
   setTriggerRef: (el: HTMLElement) => void;
   contentRef: () => HTMLElement | undefined;
@@ -47,6 +57,7 @@ export type PopoverRootProps = IComponentBaseProps &
     defaultOpen?: boolean;
     onOpenChange?: (open: boolean) => void;
     placement?: PopoverPlacement;
+    autoFlip?: boolean;
     offset?: number;
     closeOnOutsideClick?: boolean;
     closeOnEscape?: boolean;
@@ -64,6 +75,7 @@ const PopoverRoot: ParentComponent<PopoverRootProps> = (props) => {
     "defaultOpen",
     "onOpenChange",
     "placement",
+    "autoFlip",
     "offset",
     "closeOnOutsideClick",
     "closeOnEscape",
@@ -75,6 +87,9 @@ const PopoverRoot: ParentComponent<PopoverRootProps> = (props) => {
   const [contentRef, setContentRef] = createSignal<HTMLElement | undefined>();
   const [triggerId] = createSignal(`popover-trigger-${Math.random().toString(36).slice(2, 8)}`);
   const [contentId] = createSignal(`popover-content-${Math.random().toString(36).slice(2, 8)}`);
+  const [resolvedPlacement, setResolvedPlacement] = createSignal<PopoverPlacement>(
+    local.placement ?? "bottom",
+  );
 
   const isControlled = createMemo(() => local.isOpen !== undefined);
   const isOpen = createMemo(() => (isControlled() ? Boolean(local.isOpen) : internalOpen()));
@@ -87,8 +102,10 @@ const PopoverRoot: ParentComponent<PopoverRootProps> = (props) => {
     }
   };
 
-  const placement = () => local.placement ?? "bottom";
+  const preferredPlacement = () => local.placement ?? "bottom";
+  const placement = () => resolvedPlacement();
   const offset = () => local.offset ?? 8;
+  const autoFlip = () => local.autoFlip ?? true;
 
   onMount(() => {
     const handlePointerDown = (event: PointerEvent) => {
@@ -122,7 +139,10 @@ const PopoverRoot: ParentComponent<PopoverRootProps> = (props) => {
   const ctx: PopoverContextValue = {
     isOpen,
     setIsOpen,
+    preferredPlacement,
     placement,
+    setPlacement: setResolvedPlacement,
+    autoFlip,
     triggerRef,
     setTriggerRef,
     contentRef,
@@ -224,34 +244,61 @@ const PopoverContent: Component<PopoverContentProps> = (props) => {
   ]);
 
   const ctx = usePopoverContext();
+  const overlayPosition = createOverlayPosition({
+    open: ctx.isOpen,
+    triggerRef: ctx.triggerRef,
+    overlayRef: ctx.contentRef,
+    placement: ctx.preferredPlacement,
+    offset: () => local.sideOffset ?? ctx.offset(),
+    autoFlip: ctx.autoFlip,
+    align: () => "center",
+  });
+
+  createEffect(() => {
+    ctx.setPlacement(overlayPosition.placement());
+  });
 
   const style = () => {
+    const overlayStyle = overlayPosition.style();
+
     if (typeof local.style === "string") {
-      return `${local.style}; --popover-offset: ${local.sideOffset ?? ctx.offset()}px;`;
+      return [
+        local.style,
+        Object.entries(overlayStyle)
+          .map(([key, value]) => `${key}: ${String(value)}`)
+          .join("; "),
+      ]
+        .filter(Boolean)
+        .join("; ");
     }
+
     return {
       ...(local.style ?? {}),
-      "--popover-offset": `${local.sideOffset ?? ctx.offset()}px`,
+      ...overlayStyle,
     } as JSX.CSSProperties;
   };
 
   return (
-    <div
-      {...others}
-      ref={(el) => ctx.setContentRef(el)}
-      id={ctx.contentId()}
-      role="dialog"
-      {...{ class: twMerge(CLASSES.base, local.class, local.className) }}
-      data-slot="popover-content"
-      data-open={ctx.isOpen() ? "true" : "false"}
-      data-placement={ctx.placement()}
-      data-theme={local.dataTheme}
-      style={style()}
-      aria-labelledby={ctx.triggerId()}
-      aria-hidden={ctx.isOpen() ? "false" : "true"}
-    >
-      {local.children}
-    </div>
+    <Show when={ctx.isOpen()}>
+      <Portal>
+        <div
+          {...others}
+          ref={(el) => ctx.setContentRef(el)}
+          id={ctx.contentId()}
+          role="dialog"
+          {...{ class: twMerge(CLASSES.base, local.class, local.className) }}
+          data-slot="popover-content"
+          data-open={ctx.isOpen() ? "true" : "false"}
+          data-placement={ctx.placement()}
+          data-theme={local.dataTheme}
+          style={style()}
+          aria-labelledby={ctx.triggerId()}
+          aria-hidden={ctx.isOpen() ? "false" : "true"}
+        >
+          {local.children}
+        </div>
+      </Portal>
+    </Show>
   );
 };
 

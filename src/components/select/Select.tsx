@@ -1,5 +1,6 @@
 import "./Select.css";
 import {
+  Show,
   createContext,
   createEffect,
   createMemo,
@@ -13,7 +14,12 @@ import {
   type Component,
   type JSX,
 } from "solid-js";
+import { Portal } from "solid-js/web";
 import { twMerge } from "tailwind-merge";
+import {
+  createOverlayPosition,
+  type OverlayPlacement,
+} from "../_shared/overlayPosition";
 import type { IComponentBaseProps } from "../types";
 import { CLASSES } from "./Select.classes";
 
@@ -21,6 +27,7 @@ type SelectKey = string | number;
 export type SelectValueType = SelectKey | SelectKey[] | null;
 export type SelectVariant = "primary" | "secondary";
 export type SelectSelectionMode = "single" | "multiple";
+export type SelectPlacement = OverlayPlacement;
 type SelectFocusRequest = "selected" | "first" | "last" | null;
 
 type SelectOptionRecord = {
@@ -39,6 +46,10 @@ type SelectContextValue = {
   placeholder: Accessor<string>;
   triggerId: string;
   listboxId: string;
+  placement: Accessor<SelectPlacement>;
+  autoFlip: Accessor<boolean>;
+  triggerRef: Accessor<HTMLButtonElement | undefined>;
+  popoverRef: Accessor<HTMLDivElement | undefined>;
   selectedKeys: Accessor<string[]>;
   selectedText: Accessor<string>;
   focusedKey: Accessor<string | undefined>;
@@ -53,6 +64,7 @@ type SelectContextValue = {
   registerOption: (option: SelectOptionRecord) => void;
   unregisterOption: (key: string) => void;
   setTriggerRef: (el: HTMLButtonElement) => void;
+  setPopoverRef: (el: HTMLDivElement) => void;
   setRootRef: (el: HTMLDivElement) => void;
 };
 
@@ -125,6 +137,8 @@ export type SelectRootProps = Omit<JSX.HTMLAttributes<HTMLDivElement>, "onChange
     fullWidth?: boolean;
     variant?: SelectVariant;
     selectionMode?: SelectSelectionMode;
+    placement?: SelectPlacement;
+    autoFlip?: boolean;
     isOpen?: boolean;
     defaultOpen?: boolean;
     onOpenChange?: (open: boolean) => void;
@@ -148,6 +162,8 @@ const SelectRoot: Component<SelectRootProps> = (props) => {
     "fullWidth",
     "variant",
     "selectionMode",
+    "placement",
+    "autoFlip",
     "isOpen",
     "defaultOpen",
     "onOpenChange",
@@ -173,9 +189,12 @@ const SelectRoot: Component<SelectRootProps> = (props) => {
   const [focusedKey, setFocusedKey] = createSignal<string | undefined>();
   const [focusRequest, setFocusRequest] = createSignal<SelectFocusRequest>(null);
   const [triggerRef, setTriggerRefSignal] = createSignal<HTMLButtonElement | undefined>();
+  const [popoverRef, setPopoverRefSignal] = createSignal<HTMLDivElement | undefined>();
   const [rootRef, setRootRefSignal] = createSignal<HTMLDivElement | undefined>();
 
   const open = () => (local.isOpen !== undefined ? Boolean(local.isOpen) : internalOpen());
+  const placement = () => local.placement ?? "bottom";
+  const autoFlip = () => local.autoFlip ?? true;
 
   const selectedKeys = createMemo(() => {
     const controlledValue =
@@ -308,6 +327,10 @@ const SelectRoot: Component<SelectRootProps> = (props) => {
     setTriggerRefSignal(el);
   };
 
+  const setPopoverRef = (el: HTMLDivElement) => {
+    setPopoverRefSignal(el);
+  };
+
   const setRootRef = (el: HTMLDivElement) => {
     setRootRefSignal(el);
     if (typeof local.ref === "function") {
@@ -341,9 +364,10 @@ const SelectRoot: Component<SelectRootProps> = (props) => {
   onMount(() => {
     const handlePointerDown = (event: PointerEvent) => {
       if (!open()) return;
-      const root = rootRef();
-      if (!root) return;
-      if (root.contains(event.target as Node)) return;
+      const target = event.target as Node;
+      if (rootRef()?.contains(target)) return;
+      if (popoverRef()?.contains(target)) return;
+      if (triggerRef()?.contains(target)) return;
       setOpen(false);
     };
 
@@ -364,6 +388,10 @@ const SelectRoot: Component<SelectRootProps> = (props) => {
         placeholder: () => local.placeholder ?? "Select an option",
         triggerId,
         listboxId,
+        placement,
+        autoFlip,
+        triggerRef,
+        popoverRef,
         selectedKeys,
         selectedText,
         focusedKey,
@@ -378,6 +406,7 @@ const SelectRoot: Component<SelectRootProps> = (props) => {
         registerOption,
         unregisterOption,
         setTriggerRef,
+        setPopoverRef,
         setRootRef,
       }}
     >
@@ -622,18 +651,58 @@ const SelectPopover: Component<SelectPopoverProps> = (props) => {
     "class",
     "className",
     "dataTheme",
+    "style",
   ]);
 
+  const overlayPosition = createOverlayPosition({
+    open: () => ctx?.open() ?? false,
+    triggerRef: () => ctx?.triggerRef(),
+    overlayRef: () => ctx?.popoverRef(),
+    placement: () => ctx?.placement() ?? "bottom",
+    offset: () => 6,
+    autoFlip: () => ctx?.autoFlip() ?? true,
+    align: () => "start",
+    matchTriggerWidth: () => true,
+    minWidth: () => 224,
+  });
+
+  const popoverStyle = () => {
+    const overlayStyle = overlayPosition.style();
+
+    if (typeof local.style === "string") {
+      return [
+        local.style,
+        Object.entries(overlayStyle)
+          .map(([key, value]) => `${key}: ${String(value)}`)
+          .join("; "),
+      ]
+        .filter(Boolean)
+        .join("; ");
+    }
+
+    return {
+      ...(local.style ?? {}),
+      ...overlayStyle,
+    } as JSX.CSSProperties;
+  };
+
   return (
-    <div
-      {...others}
-      {...{ class: twMerge(CLASSES.slot.popover, local.class, local.className) }}
-      data-theme={local.dataTheme}
-      data-slot="ui-select-popover"
-      data-open={ctx?.open() ? "true" : "false"}
-    >
-      {local.children}
-    </div>
+    <Show when={ctx?.open()}>
+      <Portal>
+        <div
+          {...others}
+          ref={ctx?.setPopoverRef}
+          {...{ class: twMerge(CLASSES.slot.popover, local.class, local.className) }}
+          data-theme={local.dataTheme}
+          data-slot="ui-select-popover"
+          data-open={ctx?.open() ? "true" : "false"}
+          data-placement={overlayPosition.placement()}
+          style={popoverStyle()}
+        >
+          {local.children}
+        </div>
+      </Portal>
+    </Show>
   );
 };
 

@@ -1,5 +1,9 @@
 export { default as ThemeColorPicker } from "./ThemeColorPicker";
-export type { ThemeColorPickerProps, ThemeColorPickerAlign } from "./ThemeColorPicker";
+export type {
+  ThemeColorPickerProps,
+  ThemeColorPickerAlign,
+  ThemeColorPickerPlacement,
+} from "./ThemeColorPicker";
 export {
   createHueShiftStore,
   getDefaultHueShiftStore,
