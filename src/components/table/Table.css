@@ -149,6 +149,7 @@
      -------------------------------------------------------------------------- */
   .table__column {
     position: relative;
+    overflow: hidden;
     padding-inline: 1rem;
     padding-block: 0.625rem;
     text-align: left;
@@ -156,6 +157,11 @@
     font-weight: 500;
     white-space: nowrap;
     vertical-align: middle;
+  }
+
+  .table__column > * {
+    min-width: 0;
+    max-width: 100%;
   }
 
   @supports (color: color-mix(in lab, red, red)) {
