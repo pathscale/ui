@@ -1,6 +1,5 @@
 import "./Select.css";
 import {
-  Show,
   createContext,
   createEffect,
   createMemo,
@@ -104,7 +103,7 @@ const normalizeSelection = (
 
   const normalized = entries
     .map((entry) => String(entry))
-    .filter((entry, index, source) => entry.length > 0 && source.indexOf(entry) === index);
+    .filter((entry, index, source) => source.indexOf(entry) === index);
 
   if (selectionMode === "single") {
     return normalized.slice(0, 1);
@@ -186,6 +185,7 @@ const SelectRoot: Component<SelectRootProps> = (props) => {
   const [internalSelectedKeys, setInternalSelectedKeys] = createSignal<string[]>(initialSelected);
   const [internalOpen, setInternalOpen] = createSignal(Boolean(local.defaultOpen));
   const [options, setOptions] = createSignal<SelectOptionRecord[]>([]);
+  const [optionTextByKey, setOptionTextByKey] = createSignal(new Map<string, string>());
   const [focusedKey, setFocusedKey] = createSignal<string | undefined>();
   const [focusRequest, setFocusRequest] = createSignal<SelectFocusRequest>(null);
   const [triggerRef, setTriggerRefSignal] = createSignal<HTMLButtonElement | undefined>();
@@ -210,9 +210,8 @@ const SelectRoot: Component<SelectRootProps> = (props) => {
   const selectedText = createMemo(() => {
     if (!selectedKeys().length) return "";
 
-    const optionMap = new Map(options().map((option) => [option.key, option.textValue]));
     return selectedKeys()
-      .map((key) => optionMap.get(key) ?? key)
+      .map((key) => optionTextByKey().get(key) ?? key)
       .join(selectionMode() === "multiple" ? ", " : "");
   });
 
@@ -308,6 +307,12 @@ const SelectRoot: Component<SelectRootProps> = (props) => {
   };
 
   const registerOption = (option: SelectOptionRecord) => {
+    setOptionTextByKey((current) => {
+      if (current.get(option.key) === option.textValue) return current;
+      const next = new Map(current);
+      next.set(option.key, option.textValue);
+      return next;
+    });
     setOptions((current) =>
       sortOptionsByDomOrder([
         ...current.filter((entry) => entry.key !== option.key),
@@ -585,7 +590,7 @@ const SelectValue: Component<SelectValueProps> = (props) => {
 
   const placeholder = () => ctx?.placeholder() ?? "";
   const text = () => ctx?.selectedText() ?? "";
-  const isPlaceholder = () => text().length === 0;
+  const isPlaceholder = () => (ctx?.selectedKeys().length ?? 0) === 0;
 
   return (
     <span
@@ -687,22 +692,20 @@ const SelectPopover: Component<SelectPopoverProps> = (props) => {
   };
 
   return (
-    <Show when={ctx?.open()}>
-      <Portal>
-        <div
-          {...others}
-          ref={ctx?.setPopoverRef}
-          {...{ class: twMerge(CLASSES.slot.popover, local.class, local.className) }}
-          data-theme={local.dataTheme}
-          data-slot="ui-select-popover"
-          data-open={ctx?.open() ? "true" : "false"}
-          data-placement={overlayPosition.placement()}
-          style={popoverStyle()}
-        >
-          {local.children}
-        </div>
-      </Portal>
-    </Show>
+    <Portal>
+      <div
+        {...others}
+        ref={ctx?.setPopoverRef}
+        {...{ class: twMerge(CLASSES.slot.popover, local.class, local.className) }}
+        data-theme={local.dataTheme}
+        data-slot="ui-select-popover"
+        data-open={ctx?.open() ? "true" : "false"}
+        data-placement={overlayPosition.placement()}
+        style={popoverStyle()}
+      >
+        {local.children}
+      </div>
+    </Portal>
   );
 };
 
