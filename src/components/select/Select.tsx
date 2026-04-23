@@ -657,6 +657,7 @@ const SelectPopover: Component<SelectPopoverProps> = (props) => {
     "className",
     "dataTheme",
     "style",
+    "onPointerDown",
   ]);
 
   const overlayPosition = createOverlayPosition({
@@ -702,6 +703,10 @@ const SelectPopover: Component<SelectPopoverProps> = (props) => {
         data-open={ctx?.open() ? "true" : "false"}
         data-placement={overlayPosition.placement()}
         style={popoverStyle()}
+        onPointerDown={(event) => {
+          invokeEventHandler(local.onPointerDown, event);
+          if (!event.defaultPrevented) event.stopPropagation();
+        }}
       >
         {local.children}
       </div>
