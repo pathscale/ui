@@ -79,6 +79,7 @@ import {
   Select,
   Separator,
   Slider,
+  Table,
   Tag,
   TagGroup,
   Tabs,
@@ -3843,6 +3844,95 @@ export default function App() {
                 </Tooltip.Content>
               </Tooltip>
             </div>
+          </div>
+
+          <div class="space-y-3">
+            <h3 class="text-xs font-semibold uppercase opacity-70">
+              Auto Flip
+            </h3>
+            <div class="relative flex min-h-[10rem] items-end justify-center rounded-xl border border-base-300 bg-base-100 p-4">
+              <Tooltip placement="bottom" sideOffset={8}>
+                <Tooltip.Trigger>
+                  <Button variant="secondary">Bottom edge</Button>
+                </Tooltip.Trigger>
+                <Tooltip.Content>
+                  <Tooltip.Arrow />
+                  Flips above when viewport space below is constrained.
+                </Tooltip.Content>
+              </Tooltip>
+            </div>
+          </div>
+
+          <div class="space-y-3">
+            <h3 class="text-xs font-semibold uppercase opacity-70">
+              Overflow Container
+            </h3>
+            <div class="h-52 overflow-hidden rounded-xl border border-base-300 bg-base-100 p-4">
+              <div class="flex h-full flex-col justify-between">
+                <div class="text-xs opacity-70">Clipped parent</div>
+                <div class="flex justify-end">
+                  <Tooltip placement="bottom" sideOffset={8}>
+                    <Tooltip.Trigger>
+                      <Button variant="ghost" isIconOnly aria-label="Copy">
+                        <Icon name="icon-[lucide--copy]" width={16} height={16} />
+                      </Button>
+                    </Tooltip.Trigger>
+                    <Tooltip.Content>
+                      <Tooltip.Arrow />
+                      Portal escapes overflow clipping.
+                    </Tooltip.Content>
+                  </Tooltip>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="space-y-3">
+            <h3 class="text-xs font-semibold uppercase opacity-70">
+              Table Actions
+            </h3>
+            <Table.Root class="max-h-56 grid-rows-[minmax(0,1fr)]">
+              <div class="min-h-0 overflow-auto">
+                <Table.ScrollContainer>
+                  <Table.Content>
+                    <Table.Header>
+                      <Table.Row>
+                        <Table.Column id="app">Application</Table.Column>
+                        <Table.Column id="status">Status</Table.Column>
+                        <Table.Column id="actions">Actions</Table.Column>
+                      </Table.Row>
+                    </Table.Header>
+                    <Table.Body>
+                      <For each={["Authentication", "Billing", "Analytics", "Production"]}>
+                        {(name, index) => (
+                          <Table.Row>
+                            <Table.Cell>{name}</Table.Cell>
+                            <Table.Cell>{index() === 3 ? "Enabled" : "Idle"}</Table.Cell>
+                            <Table.Cell>
+                              <Tooltip placement="bottom" sideOffset={8}>
+                                <Tooltip.Trigger>
+                                  <Button
+                                    variant="ghost"
+                                    isIconOnly
+                                    aria-label={`Edit ${name}`}
+                                  >
+                                    <Icon name="icon-[lucide--pencil]" width={16} height={16} />
+                                  </Button>
+                                </Tooltip.Trigger>
+                                <Tooltip.Content>
+                                  <Tooltip.Arrow />
+                                  Last row action stays visible.
+                                </Tooltip.Content>
+                              </Tooltip>
+                            </Table.Cell>
+                          </Table.Row>
+                        )}
+                      </For>
+                    </Table.Body>
+                  </Table.Content>
+                </Table.ScrollContainer>
+              </div>
+            </Table.Root>
           </div>
         </section>
 

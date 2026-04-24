@@ -1,6 +1,7 @@
 import "./Tooltip.css";
 import {
   createContext,
+  createEffect,
   createSignal,
   onCleanup,
   splitProps,
@@ -10,7 +11,12 @@ import {
   type JSX,
   type ParentComponent,
 } from "solid-js";
+import { Portal } from "solid-js/web";
 import { twMerge } from "tailwind-merge";
+import {
+  createOverlayPosition,
+  type OverlayPlacement,
+} from "../_shared/overlayPosition";
 import type { IComponentBaseProps } from "../types";
 import { CLASSES } from "./Tooltip.classes";
 
@@ -20,28 +26,42 @@ import { CLASSES } from "./Tooltip.classes";
 type TooltipContextValue = {
   isOpen: () => boolean;
   setIsOpen: (v: boolean) => void;
+  openTooltip: () => void;
+  closeTooltip: () => void;
+  preferredPlacement: () => TooltipPlacement;
   placement: () => TooltipPlacement;
+  setPlacement: (next: TooltipPlacement) => void;
+  autoFlip: () => boolean;
+  sideOffset: () => number;
   showArrow: () => boolean;
   triggerRef: () => HTMLElement | undefined;
   setTriggerRef: (el: HTMLElement) => void;
+  contentRef: () => HTMLElement | undefined;
+  setContentRef: (el: HTMLElement) => void;
+  dataTheme: () => string | undefined;
 };
 
 const TooltipContext = createContext<TooltipContextValue>();
 
 const useTooltipContext = () => {
   const ctx = useContext(TooltipContext);
-  if (!ctx) throw new Error("Tooltip compound components must be used within <Tooltip>");
+  if (!ctx)
+    throw new Error(
+      "Tooltip compound components must be used within <Tooltip>",
+    );
   return ctx;
 };
 
 /* -------------------------------------------------------------------------------------------------
  * Types
  * -----------------------------------------------------------------------------------------------*/
-export type TooltipPlacement = "top" | "bottom" | "left" | "right";
+export type TooltipPlacement = OverlayPlacement;
 
 export type TooltipRootProps = IComponentBaseProps & {
   children: JSX.Element;
   placement?: TooltipPlacement;
+  autoFlip?: boolean;
+  sideOffset?: number;
   showArrow?: boolean;
   delay?: number;
   closeDelay?: number;
@@ -50,12 +70,18 @@ export type TooltipRootProps = IComponentBaseProps & {
   onOpenChange?: (isOpen: boolean) => void;
 };
 
-export type TooltipTriggerProps = Omit<JSX.HTMLAttributes<HTMLDivElement>, "children"> &
+export type TooltipTriggerProps = Omit<
+  JSX.HTMLAttributes<HTMLDivElement>,
+  "children"
+> &
   IComponentBaseProps & {
     children: JSX.Element;
   };
 
-export type TooltipContentProps = Omit<JSX.HTMLAttributes<HTMLDivElement>, "children"> &
+export type TooltipContentProps = Omit<
+  JSX.HTMLAttributes<HTMLDivElement>,
+  "children"
+> &
   IComponentBaseProps & {
     children: JSX.Element;
   };
@@ -72,6 +98,8 @@ const TooltipRoot: ParentComponent<TooltipRootProps> = (props) => {
   const [local, _others] = splitProps(props, [
     "children",
     "placement",
+    "autoFlip",
+    "sideOffset",
     "showArrow",
     "delay",
     "closeDelay",
@@ -84,24 +112,58 @@ const TooltipRoot: ParentComponent<TooltipRootProps> = (props) => {
     "style",
   ]);
 
-  const [internalOpen, setInternalOpen] = createSignal(Boolean(local.defaultOpen));
+  const [internalOpen, setInternalOpen] = createSignal(
+    Boolean(local.defaultOpen),
+  );
   const [triggerRef, setTriggerRef] = createSignal<HTMLElement | undefined>();
+  const [contentRef, setContentRef] = createSignal<HTMLElement | undefined>();
+  const [resolvedPlacement, setResolvedPlacement] =
+    createSignal<TooltipPlacement>(local.placement ?? "top");
+  let delayTimer: ReturnType<typeof setTimeout> | undefined;
+  let closeTimer: ReturnType<typeof setTimeout> | undefined;
 
   const isControlled = () => local.isOpen !== undefined;
-  const isOpen = () => (isControlled() ? Boolean(local.isOpen) : internalOpen());
+  const isOpen = () =>
+    isControlled() ? Boolean(local.isOpen) : internalOpen();
 
   const setIsOpen = (v: boolean) => {
     if (!isControlled()) setInternalOpen(v);
     local.onOpenChange?.(v);
   };
 
+  const openTooltip = () => {
+    clearTimeout(closeTimer);
+    clearTimeout(delayTimer);
+    delayTimer = setTimeout(() => setIsOpen(true), local.delay ?? 0);
+  };
+
+  const closeTooltip = () => {
+    clearTimeout(delayTimer);
+    clearTimeout(closeTimer);
+    closeTimer = setTimeout(() => setIsOpen(false), local.closeDelay ?? 100);
+  };
+
+  onCleanup(() => {
+    clearTimeout(delayTimer);
+    clearTimeout(closeTimer);
+  });
+
   const ctx: TooltipContextValue = {
     isOpen,
     setIsOpen,
-    placement: () => local.placement ?? "top",
+    openTooltip,
+    closeTooltip,
+    preferredPlacement: () => local.placement ?? "top",
+    placement: () => resolvedPlacement(),
+    setPlacement: setResolvedPlacement,
+    autoFlip: () => local.autoFlip ?? true,
+    sideOffset: () => local.sideOffset ?? 12,
     showArrow: () => Boolean(local.showArrow),
     triggerRef,
     setTriggerRef,
+    contentRef,
+    setContentRef,
+    dataTheme: () => local.dataTheme,
   };
 
   return (
@@ -135,32 +197,31 @@ const TooltipTrigger: Component<TooltipTriggerProps> = (props) => {
   ]);
 
   const ctx = useTooltipContext();
-  let delayTimer: ReturnType<typeof setTimeout> | undefined;
-  let closeTimer: ReturnType<typeof setTimeout> | undefined;
 
-  onCleanup(() => {
-    clearTimeout(delayTimer);
-    clearTimeout(closeTimer);
-  });
-
-  const handleMouseEnter: JSX.EventHandlerUnion<HTMLDivElement, MouseEvent> = (e) => {
-    clearTimeout(closeTimer);
-    ctx.setIsOpen(true);
+  const handleMouseEnter: JSX.EventHandlerUnion<HTMLDivElement, MouseEvent> = (
+    e,
+  ) => {
+    ctx.openTooltip();
     if (typeof local.onMouseEnter === "function") local.onMouseEnter(e);
   };
 
-  const handleMouseLeave: JSX.EventHandlerUnion<HTMLDivElement, MouseEvent> = (e) => {
-    closeTimer = setTimeout(() => ctx.setIsOpen(false), 100);
+  const handleMouseLeave: JSX.EventHandlerUnion<HTMLDivElement, MouseEvent> = (
+    e,
+  ) => {
+    ctx.closeTooltip();
     if (typeof local.onMouseLeave === "function") local.onMouseLeave(e);
   };
 
-  const handleFocusIn: JSX.EventHandlerUnion<HTMLDivElement, FocusEvent> = (e) => {
-    clearTimeout(closeTimer);
-    ctx.setIsOpen(true);
+  const handleFocusIn: JSX.EventHandlerUnion<HTMLDivElement, FocusEvent> = (
+    e,
+  ) => {
+    ctx.openTooltip();
     if (typeof local.onFocusIn === "function") local.onFocusIn(e);
   };
 
-  const handleFocusOut: JSX.EventHandlerUnion<HTMLDivElement, FocusEvent> = (e) => {
+  const handleFocusOut: JSX.EventHandlerUnion<HTMLDivElement, FocusEvent> = (
+    e,
+  ) => {
     ctx.setIsOpen(false);
     if (typeof local.onFocusOut === "function") local.onFocusOut(e);
   };
@@ -169,7 +230,9 @@ const TooltipTrigger: Component<TooltipTriggerProps> = (props) => {
     <div
       {...others}
       ref={(el) => ctx.setTriggerRef(el)}
-      {...{ class: twMerge(CLASSES.slot.trigger, local.class, local.className) }}
+      {...{
+        class: twMerge(CLASSES.slot.trigger, local.class, local.className),
+      }}
       data-slot="tooltip-trigger"
       data-theme={local.dataTheme}
       style={local.style}
@@ -193,23 +256,81 @@ const TooltipContent: Component<TooltipContentProps> = (props) => {
     "className",
     "dataTheme",
     "style",
+    "onMouseEnter",
+    "onMouseLeave",
   ]);
 
   const ctx = useTooltipContext();
+  const overlayPosition = createOverlayPosition({
+    open: ctx.isOpen,
+    triggerRef: ctx.triggerRef,
+    overlayRef: ctx.contentRef,
+    placement: ctx.preferredPlacement,
+    offset: ctx.sideOffset,
+    autoFlip: ctx.autoFlip,
+    align: () => "center",
+  });
+
+  createEffect(() => {
+    ctx.setPlacement(overlayPosition.placement());
+  });
+
+  const style = () => {
+    const overlayStyle = overlayPosition.style();
+
+    if (typeof local.style === "string") {
+      return [
+        local.style,
+        Object.entries(overlayStyle)
+          .map(([key, value]) => `${key}: ${String(value)}`)
+          .join("; "),
+      ]
+        .filter(Boolean)
+        .join("; ");
+    }
+
+    return {
+      ...(local.style ?? {}),
+      ...overlayStyle,
+    } as JSX.CSSProperties;
+  };
+
+  const handleMouseEnter: JSX.EventHandlerUnion<HTMLDivElement, MouseEvent> = (
+    event,
+  ) => {
+    ctx.openTooltip();
+    if (typeof local.onMouseEnter === "function") local.onMouseEnter(event);
+  };
+
+  const handleMouseLeave: JSX.EventHandlerUnion<HTMLDivElement, MouseEvent> = (
+    event,
+  ) => {
+    ctx.closeTooltip();
+    if (typeof local.onMouseLeave === "function") local.onMouseLeave(event);
+  };
 
   return (
-    <div
-      {...others}
-      role="tooltip"
-      {...{ class: twMerge(CLASSES.slot.content, local.class, local.className) }}
-      data-slot="tooltip-content"
-      data-placement={ctx.placement()}
-      data-open={ctx.isOpen() ? "true" : "false"}
-      data-theme={local.dataTheme}
-      style={local.style}
-    >
-      {local.children}
-    </div>
+    <Show when={ctx.isOpen()}>
+      <Portal>
+        <div
+          {...others}
+          ref={(el) => ctx.setContentRef(el)}
+          role="tooltip"
+          {...{
+            class: twMerge(CLASSES.slot.content, local.class, local.className),
+          }}
+          data-slot="tooltip-content"
+          data-placement={ctx.placement()}
+          data-open={ctx.isOpen() ? "true" : "false"}
+          data-theme={local.dataTheme ?? ctx.dataTheme()}
+          style={style()}
+          onMouseEnter={handleMouseEnter}
+          onMouseLeave={handleMouseLeave}
+        >
+          {local.children}
+        </div>
+      </Portal>
+    </Show>
   );
 };
 
@@ -236,7 +357,10 @@ const TooltipArrow: Component<TooltipArrowProps> = (props) => {
       width="12"
       xmlns="http://www.w3.org/2000/svg"
     >
-      <path d="M0 0C5.48483 8 6.5 8 12 0Z" fill="currentColor" />
+      <path
+        d="M0 0C5.48483 8 6.5 8 12 0Z"
+        fill="currentColor"
+      />
     </svg>
   );
 
@@ -250,7 +374,10 @@ const TooltipArrow: Component<TooltipArrowProps> = (props) => {
       style={local.style}
       aria-hidden="true"
     >
-      <Show when={local.children} fallback={defaultArrow}>
+      <Show
+        when={local.children}
+        fallback={defaultArrow}
+      >
         {local.children}
       </Show>
     </span>

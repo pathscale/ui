@@ -3,7 +3,6 @@
    * Root
    * -----------------------------------------------------------------------------------------------*/
   .tooltip {
-    position: relative;
     display: inline-flex;
   }
 
@@ -27,7 +26,7 @@
    * Content
    * -----------------------------------------------------------------------------------------------*/
   .tooltip__content {
-    position: absolute;
+    position: fixed;
     z-index: 9999;
     max-width: 20rem;
     border-radius: var(--radius-field, 0.5rem);
@@ -41,15 +40,12 @@
     pointer-events: none;
     background-color: var(--color-neutral);
     color: var(--color-neutral-content);
-    box-shadow:
-      0 4px 6px -1px oklch(0% 0 0 / 0.1),
-      0 2px 4px -2px oklch(0% 0 0 / 0.1);
+    box-shadow: 0 4px 6px -1px oklch(0% 0 0 / 0.1), 0 2px 4px -2px
+      oklch(0% 0 0 / 0.1);
 
     opacity: 0;
     overflow: visible;
-    transition:
-      opacity 150ms ease,
-      transform 150ms ease;
+    transition: opacity 150ms ease, transform 150ms ease;
   }
 
   /* Visible state */
@@ -60,46 +56,42 @@
 
   /* ----- Placement: top (default) ----- */
   .tooltip__content[data-placement="top"] {
-    bottom: calc(100% + 0.75rem);
-    left: 50%;
-    transform: translateX(-50%) translateY(0.25rem);
+    transform: translateY(0.25rem);
+    transform-origin: bottom;
   }
 
   .tooltip__content[data-placement="top"][data-open="true"] {
-    transform: translateX(-50%) translateY(0);
+    transform: translateY(0);
   }
 
   /* ----- Placement: bottom ----- */
   .tooltip__content[data-placement="bottom"] {
-    top: calc(100% + 0.75rem);
-    left: 50%;
-    transform: translateX(-50%) translateY(-0.25rem);
+    transform: translateY(-0.25rem);
+    transform-origin: top;
   }
 
   .tooltip__content[data-placement="bottom"][data-open="true"] {
-    transform: translateX(-50%) translateY(0);
+    transform: translateY(0);
   }
 
   /* ----- Placement: left ----- */
   .tooltip__content[data-placement="left"] {
-    right: calc(100% + 0.75rem);
-    top: 50%;
-    transform: translateX(0.25rem) translateY(-50%);
+    transform: translateX(0.25rem);
+    transform-origin: right;
   }
 
   .tooltip__content[data-placement="left"][data-open="true"] {
-    transform: translateX(0) translateY(-50%);
+    transform: translateX(0);
   }
 
   /* ----- Placement: right ----- */
   .tooltip__content[data-placement="right"] {
-    left: calc(100% + 0.75rem);
-    top: 50%;
-    transform: translateX(-0.25rem) translateY(-50%);
+    transform: translateX(-0.25rem);
+    transform-origin: left;
   }
 
   .tooltip__content[data-placement="right"][data-open="true"] {
-    transform: translateX(0) translateY(-50%);
+    transform: translateX(0);
   }
 
   /* ----- Reduced motion ----- */
