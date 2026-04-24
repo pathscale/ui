@@ -240,6 +240,13 @@ const COMBO_BOX_LONG_ITEMS = Array.from({ length: 40 }, (_, index) => ({
   label: `City ${index + 1}`,
 }));
 
+const FILTER_STATUS_OPTIONS = [
+  { value: "", label: "All statuses" },
+  { value: "enabled", label: "Enabled" },
+  { value: "disabled", label: "Disabled" },
+  { value: "archived", label: "Archived" },
+] as const;
+
 const FORM_VALIDATION_SCHEMA = z.object({
   demoName: z.string().min(1, "Name is required."),
   demoEmail: z
@@ -316,7 +323,11 @@ export default function App() {
   const [controlledState, setControlledState] = createSignal<string | null>(
     "california",
   );
+  const [emptyValueStatus, setEmptyValueStatus] = createSignal("");
   const [controlledPopoverOpen, setControlledPopoverOpen] = createSignal(false);
+  const [nestedFilterPopoverOpen, setNestedFilterPopoverOpen] =
+    createSignal(false);
+  const [nestedFilterStatus, setNestedFilterStatus] = createSignal("");
   const [selectedRegions, setSelectedRegions] = createSignal<string[]>([
     "north-america",
     "europe",
@@ -2372,6 +2383,117 @@ export default function App() {
                   </Select.Listbox>
                 </Select.Popover>
               </Select>
+            </div>
+          </div>
+
+          <div class="grid gap-6 md:grid-cols-2">
+            <div class="space-y-3">
+              <h3 class="text-xs font-semibold uppercase opacity-70">
+                Empty String Value
+              </h3>
+              <p class="text-xs opacity-70">
+                Regression coverage for the <code>value=&quot;&quot;</code>{" "}
+                case used by &quot;All&quot; filters.
+              </p>
+              <Select
+                value={emptyValueStatus()}
+                onChange={(value) =>
+                  setEmptyValueStatus(typeof value === "string" ? value : "")
+                }
+                fullWidth
+              >
+                <Select.Trigger>
+                  <Select.Value />
+                  <Select.Indicator endIcon={chevronDownIcon()} />
+                </Select.Trigger>
+                <Select.Popover>
+                  <Select.Listbox>
+                    <For each={FILTER_STATUS_OPTIONS}>
+                      {(option) => (
+                        <Select.Option
+                          value={option.value}
+                          textValue={option.label}
+                          endIcon={checkIcon()}
+                        >
+                          {option.label}
+                        </Select.Option>
+                      )}
+                    </For>
+                  </Select.Listbox>
+                </Select.Popover>
+              </Select>
+              <p class="text-xs opacity-70">
+                Stored value: {emptyValueStatus() === "" ? '""' : emptyValueStatus()}
+              </p>
+            </div>
+
+            <div class="space-y-3">
+              <h3 class="text-xs font-semibold uppercase opacity-70">
+                Nested Popover Filter
+              </h3>
+              <p class="text-xs opacity-70">
+                Reproduces the admin table filter pattern: a parent popover that
+                contains a portaled select.
+              </p>
+              <Popover
+                isOpen={nestedFilterPopoverOpen()}
+                onOpenChange={setNestedFilterPopoverOpen}
+                placement="bottom"
+              >
+                <Popover.Trigger>
+                  <Button class="w-full justify-between" variant="secondary">
+                    Status filter
+                  </Button>
+                </Popover.Trigger>
+                <Popover.Content class="min-w-72">
+                  <Popover.Arrow />
+                  <Popover.Dialog class="space-y-3">
+                    <Popover.Heading>Table Filter Regression</Popover.Heading>
+                    <Select
+                      aria-label="Status filter"
+                      fullWidth
+                      value={nestedFilterStatus()}
+                      onChange={(value) =>
+                        setNestedFilterStatus(
+                          typeof value === "string" ? value : "",
+                        )
+                      }
+                    >
+                      <Select.Trigger>
+                        <Select.Value />
+                        <Select.Indicator endIcon={chevronDownIcon()} />
+                      </Select.Trigger>
+                      <Select.Popover>
+                        <Select.Listbox>
+                          <For each={FILTER_STATUS_OPTIONS}>
+                            {(option) => (
+                              <Select.Option
+                                value={option.value}
+                                textValue={option.label}
+                                endIcon={checkIcon()}
+                              >
+                                {option.label}
+                              </Select.Option>
+                            )}
+                          </For>
+                        </Select.Listbox>
+                      </Select.Popover>
+                    </Select>
+                    <div class="flex items-center justify-between text-xs opacity-70">
+                      <span>
+                        Selected:{" "}
+                        {nestedFilterStatus() === ""
+                          ? "All statuses"
+                          : nestedFilterStatus()}
+                      </span>
+                      <span>
+                        Parent popover:{" "}
+                        {nestedFilterPopoverOpen() ? "open" : "closed"}
+                      </span>
+                    </div>
+                  </Popover.Dialog>
+                </Popover.Content>
+              </Popover>
             </div>
           </div>
 
