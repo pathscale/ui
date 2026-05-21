@@ -27,6 +27,7 @@ export const CLASSES = {
     ghost: "glass-panel--accent-ghost",
   },
   flag: {
+    liquid: "glass-panel--liquid",
     transparent: "glass-panel--transparent",
     glow: "glass-panel--glow",
     contentCollapsed: "glass-panel__content--collapsed",

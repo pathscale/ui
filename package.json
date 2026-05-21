@@ -1,6 +1,6 @@
 {
   "name": "@pathscale/ui",
-  "version": "1.1.73",
+  "version": "1.1.74",
   "author": "pathscale",
   "repository": {
     "type": "git",
@@ -8,14 +8,9 @@
   },
   "license": "MIT",
   "description": "Highly opinionated SolidJS component library — batteries and kitchen sink included, but optimized and shiny.",
-  "files": [
-    "dist"
-  ],
+  "files": ["dist"],
   "homepage": "https://github.com/pathscale/ui",
-  "keywords": [
-    "solid",
-    "solidjs"
-  ],
+  "keywords": ["solid", "solidjs"],
   "bugs": {
     "url": "https://github.com/pathscale/ui/issues"
   },
@@ -129,8 +124,6 @@
     "playground:build": "cd playground && bun run build",
     "playground:preview": "cd playground && bun run preview"
   },
-  "sideEffects": [
-    "**/*.css"
-  ],
+  "sideEffects": ["**/*.css"],
   "type": "module"
 }
