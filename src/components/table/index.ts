@@ -44,6 +44,10 @@ export { default as ExpandToggle } from "./ExpandToggle";
 export type { ExpandToggleProps } from "./ExpandToggle";
 export { default as VirtualSpacerRow } from "./VirtualSpacerRow";
 export type { VirtualSpacerRowProps } from "./VirtualSpacerRow";
+export { default as MobileListView } from "./MobileListView";
+export type { MobileListViewProps } from "./MobileListView";
+export { default as InlineConfirm } from "./InlineConfirm";
+export type { InlineConfirmProps, InlineConfirmVariant } from "./InlineConfirm";
 
 export {
   useTableModel,

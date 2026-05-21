@@ -661,6 +661,8 @@ export {
   SortIcon as TableSortIcon,
   ExpandToggle as TableExpandToggle,
   VirtualSpacerRow as TableVirtualSpacerRow,
+  MobileListView as TableMobileListView,
+  InlineConfirm as TableInlineConfirm,
 } from "./components/table";
 export type {
   TableProps,
@@ -671,6 +673,9 @@ export type {
   SortIconState as TableSortIconState,
   ExpandToggleProps as TableExpandToggleProps,
   VirtualSpacerRowProps as TableVirtualSpacerRowProps,
+  MobileListViewProps as TableMobileListViewProps,
+  InlineConfirmProps as TableInlineConfirmProps,
+  InlineConfirmVariant as TableInlineConfirmVariant,
 } from "./components/table";
 export {
   useTableModel,

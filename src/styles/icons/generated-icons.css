@@ -40,6 +40,17 @@
   background-image: var(--svg);
 }
 
+.icon-[mdi--inbox-outline] {
+  --svg: url("data:image/svg+xml,%3Csvg%20width%3D%2224%22%20height%3D%2224%22%20viewBox%3D%220%200%2024%2024%22%3E%3Cpath%20fill%3D%22currentColor%22%20d%3D%22M19%203H5a2%202%200%200%200-2%202v14a2%202%200%200%200%202%202h14a2%202%200%200%200%202-2V5a2%202%200%200%200-2-2M5%2019v-2h3.13a4.13%204.13%200%200%200%201.27%202m9.6%200h-4.4a4.13%204.13%200%200%200%201.27-2H19m0-2h-5v1a2%202%200%200%201-4%200v-1H5V5h14Z%22%2F%3E%3C%2Fsvg%3E");
+}
+.icon-[mdi--inbox-outline].iconify {
+  -webkit-mask-image: var(--svg);
+  mask-image: var(--svg);
+}
+.icon-[mdi--inbox-outline].iconify-color {
+  background-image: var(--svg);
+}
+
 .icon-[mdi--loading] {
   --svg: url("data:image/svg+xml,%3Csvg%20width%3D%2224%22%20height%3D%2224%22%20viewBox%3D%220%200%2024%2024%22%3E%3Cpath%20fill%3D%22currentColor%22%20d%3D%22M12%204V2A10%2010%200%200%200%202%2012h2a8%208%200%200%201%208-8%22%2F%3E%3C%2Fsvg%3E");
 }

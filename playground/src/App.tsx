@@ -81,6 +81,8 @@ import {
   Slider,
   Table,
   TableExpandToggle,
+  TableInlineConfirm,
+  TableMobileListView,
   TableSortIcon,
   TableVirtualSpacerRow,
   Tag,
@@ -319,6 +321,7 @@ export default function App() {
     createSignal("#3B82F6");
   const [toggleOn, setToggleOn] = createSignal(false);
   const [tableExpandOpen, setTableExpandOpen] = createSignal(false);
+  const [inlineConfirmLoading, setInlineConfirmLoading] = createSignal(false);
   const [sliderVal, setSliderVal] = createSignal(30);
   const [sliderSm, setSliderSm] = createSignal(50);
   const [sliderLg, setSliderLg] = createSignal(70);
@@ -3994,6 +3997,70 @@ export default function App() {
                   </Table.Content>
                 </Table.ScrollContainer>
               </Table.Root>
+
+              <div class="space-y-2">
+                <div class="text-xs font-semibold uppercase opacity-70">
+                  Mobile list view
+                </div>
+                <TableMobileListView
+                  rows={[
+                    { id: "studio-1", name: "Morning Show", status: "Live" },
+                    { id: "studio-2", name: "Crypto Weekly", status: "Idle" },
+                  ]}
+                  renderRow={(row) => (
+                    <div class="flex items-center justify-between gap-3 py-3">
+                      <span class="truncate text-sm font-medium">{row.name}</span>
+                      <span class="text-xs opacity-70">{row.status}</span>
+                    </div>
+                  )}
+                  class="max-w-xl md:hidden"
+                />
+                <TableMobileListView
+                  rows={[]}
+                  class="max-w-xl md:hidden"
+                  empty={
+                    <EmptyState>
+                      <EmptyState.Icon>
+                        <Icon name="icon-[mdi--inbox-outline]" width={24} height={24} />
+                      </EmptyState.Icon>
+                      <EmptyState.Title>No mobile rows</EmptyState.Title>
+                    </EmptyState>
+                  }
+                />
+              </div>
+
+              <div class="space-y-2">
+                <div class="text-xs font-semibold uppercase opacity-70">
+                  Inline confirm
+                </div>
+                <TableInlineConfirm
+                  prompt="Remove this row?"
+                  confirmLabel="Confirm"
+                  cancelLabel="Cancel"
+                  onConfirm={() => {}}
+                  onCancel={() => {}}
+                />
+                <TableInlineConfirm
+                  prompt="Delete cannot be undone."
+                  confirmLabel="Delete"
+                  cancelLabel="Cancel"
+                  confirmVariant="danger"
+                  onConfirm={() => {
+                    setInlineConfirmLoading(true);
+                    setTimeout(() => setInlineConfirmLoading(false), 700);
+                  }}
+                  onCancel={() => setInlineConfirmLoading(false)}
+                  loading={inlineConfirmLoading()}
+                />
+                <TableInlineConfirm
+                  prompt="Apply with warning mode?"
+                  confirmLabel="Apply"
+                  cancelLabel="Back"
+                  confirmVariant="warning"
+                  onConfirm={() => {}}
+                  onCancel={() => {}}
+                />
+              </div>
             </div>
           </div>
         </section>
