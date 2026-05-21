@@ -1,7 +1,7 @@
 import "./LanguageSwitcher.css";
 import { type Component, For, Show, splitProps } from "solid-js";
 import { twMerge } from "tailwind-merge";
-import Dropdown from "../dropdown";
+import Dropdown, { type DropdownAlign } from "../dropdown";
 import Icon from "../icon";
 import type { IComponentBaseProps } from "../types";
 import type { I18nStore } from "./createI18n";
@@ -29,6 +29,11 @@ export interface LanguageSwitcherProps extends IComponentBaseProps {
    */
   loadingLabel?: string;
   /**
+   * Menu alignment relative to the trigger. Forwarded to the underlying
+   * Dropdown.Menu.
+   */
+  align?: DropdownAlign;
+  /**
    * Callback when language changes
    */
   onLanguageChange?: (lang: string) => void;
@@ -44,6 +49,7 @@ const LanguageSwitcher: Component<LanguageSwitcherProps> = (props) => {
     "currentLanguageLabel",
     "optionsLabel",
     "loadingLabel",
+    "align",
     "onLanguageChange",
   ]);
 
@@ -87,7 +93,11 @@ const LanguageSwitcher: Component<LanguageSwitcherProps> = (props) => {
         </Show>
       </Dropdown.Trigger>
 
-      <Dropdown.Menu {...{ class: CLASSES.menu }} aria-label={local.optionsLabel ?? "Language options"}>
+      <Dropdown.Menu
+        {...{ class: CLASSES.menu }}
+        align={local.align}
+        aria-label={local.optionsLabel ?? "Language options"}
+      >
         <For each={local.i18n.languages}>
           {(lang) => (
             <Dropdown.Item
