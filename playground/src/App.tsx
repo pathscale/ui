@@ -4106,7 +4106,7 @@ export default function App() {
               description="Access your account"
               brandingSlot={
                 <AuthPoweredBy
-                  label="Secured by Honey"
+                  label="Secured by Honey.id"
                   variant="inline"
                   logo={<Icon name="icon-[lucide--shield-check]" width={14} height={14} />}
                 />

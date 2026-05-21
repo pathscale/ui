@@ -34,7 +34,7 @@ const AuthPoweredBy: Component<AuthPoweredByProps> = (props) => {
     "dataTheme",
   ]);
 
-  const label = () => local.label ?? "Powered by Honey";
+  const label = () => local.label ?? "Powered by Honey.id";
 
   const content = () => (
     <span class="inline-flex items-center gap-1.5">
