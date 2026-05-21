@@ -329,6 +329,24 @@ export type {
   FieldErrorMessageProps,
 } from "./components/form";
 
+export { AuthCard, type AuthCardProps } from "./components/auth-card";
+export { AuthForm, type AuthFormProps } from "./components/auth-form";
+export { AuthFieldGroup, type AuthFieldGroupProps } from "./components/auth-field-group";
+export { PasswordField, type PasswordFieldProps } from "./components/password-field";
+export { PasswordRequirements, type PasswordRequirementsProps } from "./components/password-requirements";
+export { AuthErrorMessage, type AuthErrorMessageProps } from "./components/auth-error-message";
+export { AuthSuccessMessage, type AuthSuccessMessageProps } from "./components/auth-success-message";
+export { AuthSubmitButton, type AuthSubmitButtonProps } from "./components/auth-submit-button";
+export { AuthFooterLinks, type AuthFooterLinksProps, type AuthFooterLinkItem } from "./components/auth-footer-links";
+export { AuthPoweredBy, type AuthPoweredByProps } from "./components/auth-powered-by";
+export {
+  evaluatePasswordRules,
+  matchPasswordConfirmation,
+  type PasswordRuleConfig,
+  type PasswordRuleResult,
+  type PasswordCustomRegexRule,
+} from "./passwordRules";
+
 // Form API
 export {
   createForm,

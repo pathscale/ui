@@ -98,6 +98,18 @@ import {
   Toggle,
   Tooltip,
   ThemeColorPicker,
+  AuthCard,
+  AuthForm,
+  AuthFieldGroup,
+  PasswordField,
+  PasswordRequirements,
+  AuthErrorMessage,
+  AuthSuccessMessage,
+  AuthSubmitButton,
+  AuthFooterLinks,
+  AuthPoweredBy,
+  evaluatePasswordRules,
+  matchPasswordConfirmation,
   REGEXP_ONLY_DIGITS,
 } from "@pathscale/ui";
 import { TableExamples } from "./examples/TableExamples";
@@ -388,6 +400,21 @@ export default function App() {
   const [comboIsOpen, setComboIsOpen] = createSignal(false);
   const [otpValue, setOtpValue] = createSignal("");
   const [otpCompletedCode, setOtpCompletedCode] = createSignal("");
+  const [authPassword, setAuthPassword] = createSignal("");
+  const [authConfirmPassword, setAuthConfirmPassword] = createSignal("");
+  const [authPending, setAuthPending] = createSignal(false);
+
+  const authRuleResults = () =>
+    evaluatePasswordRules(authPassword(), {
+      minLength: 8,
+      requireUpper: true,
+      requireLower: true,
+      requireNumber: true,
+      requireSpecial: true,
+    });
+
+  const authPasswordsMatch = () =>
+    matchPasswordConfirmation(authPassword(), authConfirmPassword());
   const [modalOpen, setModalOpen] = createSignal(false);
   const [nonDismissableModalOpen, setNonDismissableModalOpen] =
     createSignal(false);
@@ -4062,6 +4089,126 @@ export default function App() {
                 />
               </div>
             </div>
+          </div>
+        </section>
+
+        <section class="space-y-4 rounded-xl border border-base-300 bg-base-200 p-4">
+          <div>
+            <h2 class="text-sm font-semibold">Auth Primitives</h2>
+            <p class="text-xs opacity-70">
+              Reusable auth card, form, password field, feedback, footer links, and powered-by branding.
+            </p>
+          </div>
+
+          <div class="grid gap-4 lg:grid-cols-2">
+            <AuthCard
+              title="Sign in"
+              description="Access your account"
+              brandingSlot={
+                <AuthPoweredBy
+                  label="Secured by Honey"
+                  variant="inline"
+                  logo={<Icon name="icon-[lucide--shield-check]" width={14} height={14} />}
+                />
+              }
+              footer={
+                <AuthFooterLinks
+                  align="left"
+                  items={[
+                    { key: "forgot", label: "Forgot password", href: "#" },
+                    { key: "signup", label: "Create account", href: "#" },
+                  ]}
+                />
+              }
+            >
+              <AuthForm
+                onSubmit={(event) => {
+                  event.preventDefault();
+                  setAuthPending(true);
+                  setTimeout(() => setAuthPending(false), 700);
+                }}
+              >
+                <AuthFieldGroup gap="md">
+                  <Input label="Username" placeholder="jane.doe" />
+                  <PasswordField
+                    label="Password"
+                    placeholder="••••••••"
+                    autocomplete="current-password"
+                    showLabel="Show password"
+                    hideLabel="Hide password"
+                    value={authPassword()}
+                    onInput={setAuthPassword}
+                  />
+                </AuthFieldGroup>
+
+                <AuthErrorMessage message={authPassword().length > 0 && authPassword().length < 8 ? "Password is too short." : null} />
+
+                <AuthSubmitButton pending={authPending()}>
+                  Sign in
+                </AuthSubmitButton>
+              </AuthForm>
+            </AuthCard>
+
+            <AuthCard
+              title="Create account"
+              description="Meet configurable password policies"
+              footer={
+                <AuthPoweredBy
+                  variant="card"
+                  href="#"
+                  logo={<Icon name="icon-[lucide--shield-check]" width={14} height={14} />}
+                />
+              }
+            >
+              <AuthForm>
+                <AuthFieldGroup gap="md">
+                  <Input label="Email" placeholder="you.com" />
+                  <PasswordField
+                    label="New password"
+                    placeholder="Create a strong password"
+                    autocomplete="new-password"
+                    showLabel="Show password"
+                    hideLabel="Hide password"
+                    value={authPassword()}
+                    onInput={setAuthPassword}
+                  />
+                  <PasswordField
+                    label="Confirm password"
+                    placeholder="Repeat password"
+                    autocomplete="new-password"
+                    showLabel="Show password"
+                    hideLabel="Hide password"
+                    value={authConfirmPassword()}
+                    onInput={setAuthConfirmPassword}
+                  />
+                </AuthFieldGroup>
+
+                <PasswordRequirements
+                  title="Password requirements"
+                  results={authRuleResults()}
+                />
+
+                <AuthSuccessMessage
+                  message={authConfirmPassword().length > 0 && authPasswordsMatch() ? "Passwords match." : null}
+                />
+
+                <AuthErrorMessage
+                  message={authConfirmPassword().length > 0 && !authPasswordsMatch() ? "Passwords do not match." : null}
+                />
+
+                <AuthSubmitButton variant="primary">
+                  Create account
+                </AuthSubmitButton>
+
+                <AuthFooterLinks
+                  items={[
+                    { key: "terms", label: "Terms", href: "#" },
+                    { key: "privacy", label: "Privacy", href: "#" },
+                    { key: "help", label: "Need help?", onClick: () => {} },
+                  ]}
+                />
+              </AuthForm>
+            </AuthCard>
           </div>
         </section>
 
