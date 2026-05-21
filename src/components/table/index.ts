@@ -38,6 +38,12 @@ export type {
   TableSortDescriptor,
   TableColumnRenderProps,
 } from "./Table";
+export { default as SortIcon } from "./SortIcon";
+export type { SortIconProps, SortIconState } from "./SortIcon";
+export { default as ExpandToggle } from "./ExpandToggle";
+export type { ExpandToggleProps } from "./ExpandToggle";
+export { default as VirtualSpacerRow } from "./VirtualSpacerRow";
+export type { VirtualSpacerRowProps } from "./VirtualSpacerRow";
 
 export {
   useTableModel,

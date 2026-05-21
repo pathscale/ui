@@ -657,11 +657,20 @@ export type {
 } from "./components/surface";
 
 export { default as Table } from "./components/table";
+export {
+  SortIcon as TableSortIcon,
+  ExpandToggle as TableExpandToggle,
+  VirtualSpacerRow as TableVirtualSpacerRow,
+} from "./components/table";
 export type {
   TableProps,
   TableSortDirection,
   TableSortDescriptor,
   TableColumnRenderProps,
+  SortIconProps as TableSortIconProps,
+  SortIconState as TableSortIconState,
+  ExpandToggleProps as TableExpandToggleProps,
+  VirtualSpacerRowProps as TableVirtualSpacerRowProps,
 } from "./components/table";
 export {
   useTableModel,

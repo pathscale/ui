@@ -80,6 +80,9 @@ import {
   Separator,
   Slider,
   Table,
+  TableExpandToggle,
+  TableSortIcon,
+  TableVirtualSpacerRow,
   Tag,
   TagGroup,
   Tabs,
@@ -315,6 +318,7 @@ export default function App() {
   const [selectedSwatchPicker, setSelectedSwatchPicker] =
     createSignal("#3B82F6");
   const [toggleOn, setToggleOn] = createSignal(false);
+  const [tableExpandOpen, setTableExpandOpen] = createSignal(false);
   const [sliderVal, setSliderVal] = createSignal(30);
   const [sliderSm, setSliderSm] = createSignal(50);
   const [sliderLg, setSliderLg] = createSignal(70);
@@ -3933,6 +3937,64 @@ export default function App() {
                 </Table.ScrollContainer>
               </div>
             </Table.Root>
+          </div>
+
+          <div class="space-y-3">
+            <h3 class="text-xs font-semibold uppercase opacity-70">
+              Table Helpers
+            </h3>
+            <div class="space-y-4 rounded-xl border border-base-300 bg-base-100 p-4">
+              <div class="flex flex-wrap items-center gap-4">
+                <div class="flex items-center gap-2 text-sm">
+                  <span class="opacity-70">Sort asc</span>
+                  <TableSortIcon state="asc" />
+                </div>
+                <div class="flex items-center gap-2 text-sm">
+                  <span class="opacity-70">Sort desc</span>
+                  <TableSortIcon state="desc" />
+                </div>
+                <div class="flex items-center gap-2 text-sm">
+                  <span class="opacity-70">Sort none</span>
+                  <TableSortIcon state="none" />
+                </div>
+              </div>
+
+              <div class="flex flex-wrap items-center gap-3">
+                <TableExpandToggle
+                  expanded={tableExpandOpen()}
+                  onToggle={() => setTableExpandOpen((open) => !open)}
+                  label="Toggle expanded row"
+                />
+                <TableExpandToggle expanded disabled label="Disabled expanded toggle" />
+                <span class="text-xs opacity-70">
+                  Expanded: {tableExpandOpen() ? "true" : "false"}
+                </span>
+              </div>
+
+              <Table.Root class="max-h-52 grid-rows-[minmax(0,1fr)]">
+                <Table.ScrollContainer>
+                  <Table.Content>
+                    <Table.Header>
+                      <Table.Row>
+                        <Table.Column id="name">Name</Table.Column>
+                        <Table.Column id="status">Status</Table.Column>
+                      </Table.Row>
+                    </Table.Header>
+                    <Table.Body>
+                      <Table.Row>
+                        <Table.Cell>Row before spacer</Table.Cell>
+                        <Table.Cell>Ready</Table.Cell>
+                      </Table.Row>
+                      <TableVirtualSpacerRow height={28} colSpan={2} />
+                      <Table.Row>
+                        <Table.Cell>Row after spacer</Table.Cell>
+                        <Table.Cell>Ready</Table.Cell>
+                      </Table.Row>
+                    </Table.Body>
+                  </Table.Content>
+                </Table.ScrollContainer>
+              </Table.Root>
+            </div>
           </div>
         </section>
 
