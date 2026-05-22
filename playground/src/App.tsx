@@ -403,6 +403,7 @@ export default function App() {
   const [authPassword, setAuthPassword] = createSignal("");
   const [authConfirmPassword, setAuthConfirmPassword] = createSignal("");
   const [authPending, setAuthPending] = createSignal(false);
+  const [authVisibilityState, setAuthVisibilityState] = createSignal("hidden");
 
   const authRuleResults = () =>
     evaluatePasswordRules(authPassword(), {
@@ -4209,6 +4210,57 @@ export default function App() {
                 />
               </AuthForm>
             </AuthCard>
+          </div>
+
+          <div class="rounded-lg border border-base-300 bg-base-100 p-4">
+            <h3 class="text-xs font-semibold uppercase opacity-70">
+              PasswordField States
+            </h3>
+            <div class="mt-3 grid gap-4 md:grid-cols-2">
+              <div class="space-y-3">
+                <PasswordField
+                  id="password-field-controlled"
+                  label="Controlled password"
+                  placeholder="Type and toggle visibility"
+                  autocomplete="current-password"
+                  showLabel="Show password"
+                  hideLabel="Hide password"
+                  value={authPassword()}
+                  onInput={setAuthPassword}
+                  onVisibilityChange={(visible) =>
+                    setAuthVisibilityState(visible ? "visible" : "hidden")
+                  }
+                  aria-describedby="password-field-helper"
+                />
+                <p id="password-field-helper" class="text-xs opacity-70">
+                  Visibility state: {authVisibilityState()}.
+                </p>
+              </div>
+
+              <div class="space-y-3">
+                <PasswordField
+                  label="Uncontrolled with custom icons"
+                  placeholder="Uncontrolled password field"
+                  showLabel="Reveal secret"
+                  hideLabel="Mask secret"
+                  hiddenIcon={
+                    <Icon name="icon-[mdi--eye]" width={16} height={16} />
+                  }
+                  visibleIcon={
+                    <Icon name="icon-[mdi--eye-off]" width={16} height={16} />
+                  }
+                />
+                <PasswordField
+                  label="Disabled invalid sample"
+                  placeholder="Disabled password"
+                  showLabel="Show disabled password"
+                  hideLabel="Hide disabled password"
+                  disabled
+                  invalid
+                  value="cannot-edit"
+                />
+              </div>
+            </div>
           </div>
         </section>
 
