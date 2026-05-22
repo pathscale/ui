@@ -1,115 +1,179 @@
 @layer components {
   .glass-panel {
+    --glass-panel-blur: var(--glass-blur, 11px);
+    --glass-panel-background: color-mix(
+      in oklab,
+      var(--glass-background-color, white) var(--glass-background-opacity, 38%),
+      transparent
+    );
+    --glass-panel-border: color-mix(
+      in oklab,
+      var(--glass-border-color, white) var(--glass-border-opacity, 30%),
+      transparent
+    );
+    --glass-panel-highlight: color-mix(
+      in oklab,
+      var(--glass-highlight-color, white) var(--glass-highlight-opacity, 80%),
+      transparent
+    );
+    --glass-panel-bottom-highlight: color-mix(
+      in oklab,
+      var(--glass-highlight-color, white)
+        var(--glass-bottom-highlight-opacity, 10%),
+      transparent
+    );
+    --glass-panel-edge-highlight: color-mix(
+      in oklab,
+      var(--glass-highlight-color, white)
+        var(--glass-edge-highlight-opacity, 30%),
+      transparent
+    );
+    --glass-panel-depth-sheen: color-mix(
+      in oklab,
+      var(--glass-highlight-color, white) var(--glass-depth-sheen-opacity, 40%),
+      transparent
+    );
+    --glass-panel-rim-start: color-mix(
+      in oklab,
+      var(--glass-rim-start-color, var(--glass-border-color, white))
+        var(--glass-rim-start-opacity, 21%),
+      transparent
+    );
+    --glass-panel-rim-end: color-mix(
+      in oklab,
+      var(--glass-rim-end-color, var(--glass-highlight-color, white))
+        var(--glass-rim-end-opacity, 35%),
+      transparent
+    );
+    --glass-panel-inner-glow: rgb(
+      var(--glass-inner-glow-rgb, 255 255 255) /
+      var(--glass-inner-glow-alpha, 0.5)
+    );
+    --glass-panel-depth-top-glow: color-mix(
+      in oklab,
+      var(--glass-highlight-color, white)
+        var(--glass-depth-top-glow-opacity, 8%),
+      transparent
+    );
+    --glass-panel-depth-bottom-glow: color-mix(
+      in oklab,
+      var(--glass-highlight-color, white)
+        var(--glass-depth-bottom-glow-opacity, 12%),
+      transparent
+    );
     position: relative;
-    border-radius: 0.75rem;
-    transition: all 200ms ease-in-out;
-    background: color-mix(in srgb, var(--color-base-300) 45%, transparent);
-    border: 1px solid
-      color-mix(in srgb, var(--color-base-content) 12%, transparent);
+    isolation: isolate;
+    overflow: hidden;
+    border-radius: var(--glass-border-radius, 20px);
+    transition: background-color 200ms ease-in-out, border-color 200ms
+      ease-in-out, box-shadow 200ms ease-in-out, backdrop-filter 200ms
+      ease-in-out;
+    background: var(--glass-panel-background);
+    border: 1px solid var(--glass-panel-border);
+    box-shadow: var(--glass-shadow-depth, 0 8px 32px rgb(0 0 0 / 10%)), inset 0
+      1px 0 var(--glass-panel-highlight), inset 0 -1px 0
+      var(--glass-panel-bottom-highlight);
+    backdrop-filter: blur(var(--glass-panel-blur));
+    -webkit-backdrop-filter: blur(var(--glass-panel-blur));
+  }
+
+  .glass-panel::before,
+  .glass-panel::after {
+    content: "";
+    position: absolute;
+    pointer-events: none;
+    z-index: 1;
+  }
+
+  .glass-panel::before {
+    top: 0;
+    right: 12%;
+    left: 12%;
+    height: 1px;
+    background: linear-gradient(
+      90deg,
+      transparent,
+      var(--glass-panel-highlight),
+      transparent
+    );
+  }
+
+  .glass-panel::after {
+    top: 0;
+    bottom: 0;
+    left: 0;
+    width: 1px;
+    background: linear-gradient(
+      180deg,
+      var(--glass-panel-highlight),
+      transparent 45%,
+      var(--glass-panel-edge-highlight)
+    );
   }
 
   .glass-panel--transparent {
     background: transparent;
     border-color: transparent;
+    box-shadow: none;
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+  }
+
+  .glass-panel--transparent::before,
+  .glass-panel--transparent::after,
+  .glass-panel--transparent > .glass-panel__rim,
+  .glass-panel--transparent > .glass-panel__depth,
+  .glass-panel--transparent > .glass-panel__sheen {
+    display: none;
   }
 
   .glass-panel--glow {
-    box-shadow: inset 0 1px 0
-      color-mix(in srgb, var(--color-base-content) 5%, transparent);
+    box-shadow: var(--glass-shadow-depth, 0 8px 32px rgb(0 0 0 / 10%)), 0 0 0
+      1px
+      color-mix(
+        in oklab,
+        var(--color-primary) var(--glass-glow-ring-opacity, 10%),
+        transparent
+      ), inset 0 1px 0 var(--glass-panel-highlight), inset 0 -1px 0
+      var(--glass-panel-bottom-highlight);
   }
 
   .glass-panel--liquid {
-    --glass-panel-liquid-bg: color-mix(
-      in oklab,
-      var(--color-base-100) 12%,
-      transparent
-    );
-    --glass-panel-liquid-border: color-mix(
-      in oklab,
-      var(--color-base-content) 14%,
-      transparent
-    );
-    --glass-panel-liquid-highlight: color-mix(
-      in oklab,
-      var(--color-base-100) 48%,
-      transparent
-    );
-    --glass-panel-liquid-inner: color-mix(
-      in oklab,
-      var(--color-base-100) 10%,
-      transparent
-    );
-    --glass-panel-liquid-brightness: 1.03;
-    --glass-panel-liquid-saturation: 1.18;
-    isolation: isolate;
-    overflow: hidden;
-    background: var(--glass-panel-liquid-bg);
-    border-color: var(--glass-panel-liquid-border);
-    box-shadow:
-      inset 0 0 3px 0 var(--glass-panel-liquid-highlight),
-      inset 0 1px 10px var(--glass-panel-liquid-inner);
-    backdrop-filter: blur(1px) blur(2px)
-      brightness(var(--glass-panel-liquid-brightness, 1.08))
-      saturate(var(--glass-panel-liquid-saturation, 1.35));
-    -webkit-backdrop-filter: blur(1px) blur(2px)
-      brightness(var(--glass-panel-liquid-brightness, 1.08))
-      saturate(var(--glass-panel-liquid-saturation, 1.35));
-  }
-
-  [data-theme="dark"] .glass-panel--liquid,
-  .glass-panel--liquid[data-theme="dark"] {
-    --glass-panel-liquid-bg: color-mix(
-      in oklab,
-      var(--color-base-200) 22%,
-      transparent
-    );
-    --glass-panel-liquid-border: color-mix(
-      in oklab,
-      var(--color-base-content) 10%,
-      transparent
-    );
-    --glass-panel-liquid-highlight: color-mix(
-      in oklab,
-      var(--color-base-content) 14%,
-      transparent
-    );
-    --glass-panel-liquid-inner: color-mix(
-      in oklab,
-      var(--color-base-content) 5%,
-      transparent
-    );
-    --glass-panel-liquid-brightness: 0.98;
-    --glass-panel-liquid-saturation: 1.08;
+    box-shadow: var(--glass-shadow-depth, 0 8px 32px rgb(0 0 0 / 10%)), inset 0
+      0 var(--glass-liquid-edge-size, 3px) 0 var(--glass-panel-highlight), inset
+      0 1px var(--glass-liquid-inner-blur, 18px)
+      var(--glass-panel-edge-highlight);
   }
 
   .glass-panel--liquid > .glass-panel__header-button,
   .glass-panel--liquid > .glass-panel__content {
     position: relative;
-    z-index: 1;
+    z-index: 2;
   }
 
   .glass-panel--blur-none {
     backdrop-filter: none;
+    -webkit-backdrop-filter: none;
   }
 
   .glass-panel--blur-sm {
-    backdrop-filter: blur(4px);
+    --glass-panel-blur: calc(var(--glass-blur, 11px) * 0.5);
   }
 
   .glass-panel--blur-md {
-    backdrop-filter: blur(12px);
+    --glass-panel-blur: var(--glass-blur, 11px);
   }
 
   .glass-panel--blur-lg {
-    backdrop-filter: blur(16px);
+    --glass-panel-blur: calc(var(--glass-blur, 11px) * 1.25);
   }
 
   .glass-panel--blur-xl {
-    backdrop-filter: blur(24px);
+    --glass-panel-blur: calc(var(--glass-blur, 11px) * 1.5);
   }
 
   .glass-panel--blur-2xl {
-    backdrop-filter: blur(40px);
+    --glass-panel-blur: calc(var(--glass-blur, 11px) * 2);
   }
 
   .glass-panel--accent-primary,
@@ -161,6 +225,8 @@
   }
 
   .glass-panel__header-button {
+    position: relative;
+    z-index: 2;
     display: flex;
     width: 100%;
     cursor: pointer;
@@ -200,7 +266,64 @@
     transform: rotate(180deg);
   }
 
+  .glass-panel__rim,
+  .glass-panel__depth,
+  .glass-panel__sheen {
+    position: absolute;
+    pointer-events: none;
+    z-index: 1;
+  }
+
+  .glass-panel__rim {
+    inset: 0;
+    border-radius: inherit;
+    padding: 1px;
+    background: linear-gradient(
+      180deg,
+      var(--glass-panel-rim-start) 1%,
+      var(--glass-panel-rim-end) 100%
+    );
+    mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    mask-composite: exclude;
+    -webkit-mask: linear-gradient(#fff 0 0) content-box,
+      linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+  }
+
+  .glass-panel__depth {
+    inset: 1px;
+    border-radius: max(0px, calc(var(--glass-border-radius, 20px) - 1px));
+    background: radial-gradient(
+      circle at 50% 45%,
+      color-mix(
+          in oklab,
+          var(--glass-highlight-color, white)
+            var(--glass-depth-surface-opacity, 8%),
+          transparent
+        )
+        0%,
+      transparent var(--glass-depth-surface-size, 82%)
+    );
+    box-shadow: inset 0 0 var(--glass-inner-glow-blur, 10px)
+      var(--glass-inner-glow-spread, 5px) var(--glass-panel-inner-glow), inset 0
+      2px 4px 0 var(--glass-panel-depth-top-glow), inset 0 -2px 2px 0
+      var(--glass-panel-depth-bottom-glow);
+  }
+
+  .glass-panel__sheen {
+    inset: 2px;
+    border-radius: max(0px, calc(var(--glass-border-radius, 20px) - 2px));
+    background: radial-gradient(
+      circle at 30% 20%,
+      var(--glass-panel-depth-sheen) 0%,
+      transparent var(--glass-depth-sheen-size, 70%)
+    );
+    mix-blend-mode: overlay;
+  }
+
   .glass-panel__content {
+    position: relative;
+    z-index: 2;
     display: grid;
     transition: grid-template-rows 200ms ease-in-out, opacity 200ms ease-in-out;
   }
@@ -235,5 +358,19 @@
 
   .glass-panel__content--xl {
     padding: 1.5rem;
+  }
+
+  @supports not (
+      (backdrop-filter: blur(1px)) or
+      (-webkit-backdrop-filter: blur(1px))
+    ) {
+    .glass-panel {
+      background: color-mix(
+        in oklab,
+        var(--glass-background-color, white)
+          var(--glass-fallback-background-opacity, 78%),
+        transparent
+      );
+    }
   }
 }

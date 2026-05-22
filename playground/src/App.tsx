@@ -1,8 +1,14 @@
-import { For, createSignal } from "solid-js";
-import { z } from "zod";
 import {
   Accordion,
   Alert,
+  AuthCard,
+  AuthErrorMessage,
+  AuthFieldGroup,
+  AuthFooterLinks,
+  AuthForm,
+  AuthPoweredBy,
+  AuthSubmitButton,
+  AuthSuccessMessage,
   Avatar,
   Badge,
   Breadcrumbs,
@@ -10,61 +16,40 @@ import {
   ButtonGroup,
   Calendar,
   Card,
-  Chip,
+  ChatBubble,
+  Checkbox,
   CheckboxGroup,
+  Chip,
+  CloseButton,
+  ColorArea,
+  ColorField,
+  ColorPicker,
+  ColorSlider,
+  ColorSwatch,
+  ColorSwatchPicker,
+  ComboBox,
+  DateField,
+  DatePicker,
+  DateRangePicker,
+  type DateRangeValue,
+  Description,
+  Disclosure,
+  DisclosureGroup,
+  Drawer,
+  Dropdown,
   EmptyState,
   ErrorMessage,
   FieldError,
   Fieldset,
-  Form,
-  createForm,
-  FormField,
-  FormSubmitButton,
-  ChatBubble,
-  DateField,
-  DatePicker,
-  DateRangePicker,
-  RangeCalendar,
-  type DateRangeValue,
-  GlassPanel,
-  GlowCard,
-  ListBox,
-  Spinner,
-  LiveChatBubble,
-  LanguageSwitcher,
-  createI18n,
-  Menu,
-  Meter,
-  Modal,
-  Navbar,
-  NoiseBackground,
-  NumberField,
-  ProgressBar,
-  ProgressCircle,
-  Popover,
-  ScrollShadow,
-  SearchField,
-  Skeleton,
-  Surface,
-  Checkbox,
-  ColorArea,
-  ColorField,
-  ColorSlider,
-  ColorSwatch,
-  ColorSwatchPicker,
-  ColorPicker,
-  ComboBox,
-  CloseButton,
-  Drawer,
-  Footer,
   Flex,
   FloatingDock,
+  Footer,
+  Form,
+  FormField,
+  FormSubmitButton,
+  GlassPanel,
+  GlowCard,
   Grid,
-  Dropdown,
-  Disclosure,
-  DisclosureGroup,
-  useDisclosureGroupNavigation,
-  Description,
   Header,
   Icon,
   Input,
@@ -72,52 +57,68 @@ import {
   InputOTP,
   Kbd,
   Label,
+  LanguageSwitcher,
   Link,
+  ListBox,
+  LiveChatBubble,
+  Menu,
+  Meter,
+  Modal,
+  Navbar,
+  NoiseBackground,
+  NumberField,
   Pagination,
+  PasswordField,
+  PasswordRequirements,
+  Popover,
+  ProgressBar,
+  ProgressCircle,
+  REGEXP_ONLY_DIGITS,
   Radio,
   RadioGroup,
+  RangeCalendar,
+  ScrollShadow,
+  SearchField,
   Select,
   Separator,
+  Skeleton,
   Slider,
+  Spinner,
+  Surface,
   Table,
   TableExpandToggle,
   TableInlineConfirm,
   TableMobileListView,
   TableSortIcon,
   TableVirtualSpacerRow,
+  Tabs,
   Tag,
   TagGroup,
-  Tabs,
   Text,
   TextArea,
   TextField,
-  TimeField,
-  Toolbar,
-  Toast,
-  toast,
-  Toggle,
-  Tooltip,
   ThemeColorPicker,
-  AuthCard,
-  AuthForm,
-  AuthFieldGroup,
-  PasswordField,
-  PasswordRequirements,
-  AuthErrorMessage,
-  AuthSuccessMessage,
-  AuthSubmitButton,
-  AuthFooterLinks,
-  AuthPoweredBy,
+  TimeField,
+  Toast,
+  Toggle,
+  Toolbar,
+  Tooltip,
+  createForm,
+  createI18n,
   evaluatePasswordRules,
   matchPasswordConfirmation,
-  REGEXP_ONLY_DIGITS,
+  toast,
+  useDisclosureGroupNavigation,
 } from "@pathscale/ui";
+import { For, createEffect, createSignal } from "solid-js";
+import { z } from "zod";
+import glassDemoBackground from "./assets/glass-demo-background.svg";
+import { FormExample } from "./examples/FormExample";
+import { MotionExamples } from "./examples/MotionExamples";
+import { StreamingComposableExample } from "./examples/StreamingComposableExample";
 import { TableExamples } from "./examples/TableExamples";
 import { TableHooksExample } from "./examples/TableHooksExample";
 import { TableVirtualizedExample } from "./examples/TableVirtualizedExample";
-import { StreamingComposableExample } from "./examples/StreamingComposableExample";
-import { FormExample } from "./examples/FormExample";
-import { MotionExamples } from "./examples/MotionExamples";
 
 const BADGE_COLORS = [
   "default",
@@ -222,9 +223,21 @@ const SCROLL_SHADOW_HORIZONTAL_ITEMS = Array.from(
 );
 
 const DISCLOSURE_ITEMS = [
-  { id: "first", title: "First section", content: "Details for the first disclosure." },
-  { id: "second", title: "Second section", content: "More details for the second disclosure." },
-  { id: "third", title: "Third section", content: "Extra details for the third disclosure." },
+  {
+    id: "first",
+    title: "First section",
+    content: "Details for the first disclosure.",
+  },
+  {
+    id: "second",
+    title: "Second section",
+    content: "More details for the second disclosure.",
+  },
+  {
+    id: "third",
+    title: "Third section",
+    content: "Extra details for the third disclosure.",
+  },
 ] as const;
 
 const LISTBOX_USERS = [
@@ -272,9 +285,7 @@ const FORM_VALIDATION_SCHEMA = z.object({
     .string()
     .min(1, "Email is required.")
     .email("Provide a valid email."),
-  demoPassword: z
-    .string()
-    .min(8, "Password must be at least 8 characters."),
+  demoPassword: z.string().min(8, "Password must be at least 8 characters."),
   demoQuery: z.string().min(2, "Search query must be at least 2 characters."),
   demoSeats: z.number().min(1, "Seats must be at least 1."),
   demoDate: z.string().min(1, "Launch date is required."),
@@ -285,14 +296,32 @@ const FORM_CONTROLLED_SCHEMA = z.object({
 });
 
 const searchIcon = () => (
-  <Icon name="icon-[lucide--search]" width={16} height={16} />
+  <Icon
+    name="icon-[lucide--search]"
+    width={16}
+    height={16}
+  />
 );
-const closeIcon = () => <Icon name="icon-[lucide--x]" width={16} height={16} />;
+const closeIcon = () => (
+  <Icon
+    name="icon-[lucide--x]"
+    width={16}
+    height={16}
+  />
+);
 const chevronDownIcon = () => (
-  <Icon name="icon-[lucide--chevron-down]" width={20} height={20} />
+  <Icon
+    name="icon-[lucide--chevron-down]"
+    width={20}
+    height={20}
+  />
 );
 const checkIcon = () => (
-  <Icon name="icon-[lucide--check]" width={20} height={20} />
+  <Icon
+    name="icon-[lucide--check]"
+    width={20}
+    height={20}
+  />
 );
 const LANGUAGE_SWITCHER_DEMO_TRANSLATIONS = {
   en: {
@@ -444,6 +473,10 @@ export default function App() {
       end: new Date(2026, 3, 22),
     });
   const [glassPanelOpen, setGlassPanelOpen] = createSignal(true);
+  const [glassBlur, setGlassBlur] = createSignal(11);
+  const [glassRefraction, setGlassRefraction] = createSignal(38);
+  const [glassBorderOpacity, setGlassBorderOpacity] = createSignal(30);
+  const [glassDepth, setGlassDepth] = createSignal(5);
   const [controlledTimeValue, setControlledTimeValue] = createSignal("13:30");
   const disclosureItemIds = () => DISCLOSURE_ITEMS.map((item) => item.id);
   const disclosureNav = useDisclosureGroupNavigation({
@@ -466,6 +499,55 @@ export default function App() {
         locale as keyof typeof LANGUAGE_SWITCHER_DEMO_TRANSLATIONS
       ] ?? LANGUAGE_SWITCHER_DEMO_TRANSLATIONS.en,
   });
+
+  const glassSettings = () => ({
+    "--glass-blur": `${glassBlur()}px`,
+    "--glass-background-opacity": `${glassRefraction()}%`,
+    "--glass-border-opacity": `${glassBorderOpacity()}%`,
+    "--glass-inner-glow-alpha": "0",
+    "--glass-inner-glow-blur": "0px",
+    "--glass-inner-glow-spread": "0px",
+    "--glass-depth-sheen-opacity": `${Math.min(80, 20 + glassDepth() * 2)}%`,
+    "--glass-depth-sheen-size": `${Math.min(85, 45 + glassDepth())}%`,
+    "--glass-depth-surface-opacity": `${Math.min(24, 4 + glassDepth() * 0.6)}%`,
+    "--glass-depth-surface-size": `${Math.min(94, 70 + glassDepth() * 0.8)}%`,
+    "--glass-border-radius": "20px",
+    "--glass-refraction-depth": `${glassDepth()}px`,
+    "--glass-refraction-strength": (glassRefraction() / 100).toFixed(2),
+  });
+
+  const glassCssSnippet = () =>
+    `:root {
+  --glass-blur: ${glassBlur()}px;
+  --glass-background-opacity: ${glassRefraction()}%;
+  --glass-border-opacity: ${glassBorderOpacity()}%;
+  --glass-inner-glow-alpha: 0;
+  --glass-inner-glow-blur: 0px;
+  --glass-inner-glow-spread: 0px;
+  --glass-depth-sheen-opacity: ${Math.min(80, 20 + glassDepth() * 2)}%;
+  --glass-depth-sheen-size: ${Math.min(85, 45 + glassDepth())}%;
+  --glass-depth-surface-opacity: ${Math.min(24, 4 + glassDepth() * 0.6)}%;
+  --glass-depth-surface-size: ${Math.min(94, 70 + glassDepth() * 0.8)}%;
+  --glass-refraction-depth: ${glassDepth()}px;
+  --glass-refraction-strength: ${(glassRefraction() / 100).toFixed(2)};
+}`;
+
+  const resetGlassSettings = () => {
+    setGlassBlur(11);
+    setGlassRefraction(38);
+    setGlassBorderOpacity(30);
+    setGlassDepth(5);
+  };
+
+  createEffect(() => {
+    const root = document.documentElement;
+    const settings = glassSettings();
+
+    for (const [name, value] of Object.entries(settings)) {
+      root.style.setProperty(name, value);
+    }
+  });
+
   const validatedForm = createForm({
     schema: FORM_VALIDATION_SCHEMA,
     defaultValues: {
@@ -518,7 +600,10 @@ export default function App() {
               </p>
             </Card>
 
-            <Card variant="bordered" class="min-h-36">
+            <Card
+              variant="bordered"
+              class="min-h-36"
+            >
               <Card.Header>
                 <h3 class="text-sm font-medium">Header / Body / Footer</h3>
                 <p class="text-xs opacity-70">
@@ -531,7 +616,10 @@ export default function App() {
                 </p>
               </Card.Body>
               <Card.Footer>
-                <Button size="sm" variant="outline">
+                <Button
+                  size="sm"
+                  variant="outline"
+                >
                   Secondary action
                 </Button>
                 <Button size="sm">Primary action</Button>
@@ -544,7 +632,10 @@ export default function App() {
             <div class="grid gap-3 md:grid-cols-2 xl:grid-cols-4">
               <For each={CARD_VARIANTS}>
                 {(variant) => (
-                  <Card variant={variant} class="min-h-28">
+                  <Card
+                    variant={variant}
+                    class="min-h-28"
+                  >
                     <Card.Header>
                       <h4 class="text-xs font-semibold uppercase tracking-wide">
                         {variant}
@@ -585,7 +676,10 @@ export default function App() {
               </Card.Footer>
             </Card>
 
-            <Card variant="flat" class="min-h-36">
+            <Card
+              variant="flat"
+              class="min-h-36"
+            >
               <Card.Header>
                 <h3 class="text-sm font-medium">Nested Content</h3>
               </Card.Header>
@@ -699,7 +793,10 @@ export default function App() {
 
           <div class="space-y-2 rounded-xl border border-base-300 bg-base-100 p-3">
             <Text class="block">Default body copy for general content.</Text>
-            <Text class="block" variant="muted">
+            <Text
+              class="block"
+              variant="muted"
+            >
               Muted supporting copy for secondary information.
             </Text>
           </div>
@@ -709,7 +806,10 @@ export default function App() {
             <div class="space-y-1 rounded-xl border border-base-300 bg-base-100 p-3">
               <For each={TEXT_SIZES}>
                 {(size) => (
-                  <Text size={size} class="block">
+                  <Text
+                    size={size}
+                    class="block"
+                  >
                     Size {size}: Typography scale example
                   </Text>
                 )}
@@ -722,7 +822,10 @@ export default function App() {
             <div class="flex flex-wrap items-center gap-3 rounded-xl border border-base-300 bg-base-100 p-3">
               <For each={TEXT_VARIANTS}>
                 {(variant) => (
-                  <Text variant={variant} size="sm">
+                  <Text
+                    variant={variant}
+                    size="sm"
+                  >
                     {variant}
                   </Text>
                 )}
@@ -760,7 +863,10 @@ export default function App() {
           <div class="space-y-2 rounded-xl border border-base-300 bg-base-100 p-3">
             <Header class="flex items-center justify-between">
               <span>Team Members</span>
-              <Button size="sm" variant="ghost">
+              <Button
+                size="sm"
+                variant="ghost"
+              >
                 Invite
               </Button>
             </Header>
@@ -1015,16 +1121,26 @@ export default function App() {
               <Label htmlFor="input-group-website">Website</Label>
               <InputGroup fullWidth>
                 <InputGroup.Prefix>
-                  <Icon name="icon-[lucide--globe]" width={16} height={16} />
+                  <Icon
+                    name="icon-[lucide--globe]"
+                    width={16}
+                    height={16}
+                  />
                 </InputGroup.Prefix>
-                <InputGroup.Input id="input-group-website" value="pathscale" />
+                <InputGroup.Input
+                  id="input-group-website"
+                  value="pathscale"
+                />
                 <InputGroup.Suffix>.io</InputGroup.Suffix>
               </InputGroup>
             </div>
 
             <div class="space-y-2 rounded-xl border border-base-300 bg-base-100 p-3">
               <Label htmlFor="input-group-notes">Notes</Label>
-              <InputGroup variant="secondary" fullWidth>
+              <InputGroup
+                variant="secondary"
+                fullWidth
+              >
                 <InputGroup.Prefix>#</InputGroup.Prefix>
                 <InputGroup.TextArea
                   id="input-group-notes"
@@ -1032,7 +1148,10 @@ export default function App() {
                   placeholder="Document rollout details..."
                 />
                 <InputGroup.Suffix>
-                  <Button size="sm" variant="ghost">
+                  <Button
+                    size="sm"
+                    variant="ghost"
+                  >
                     Save
                   </Button>
                 </InputGroup.Suffix>
@@ -1084,7 +1203,11 @@ export default function App() {
 
             <div class="space-y-2 rounded-xl border border-base-300 bg-base-100 p-3">
               <Label isDisabled>Disabled 4-digit PIN</Label>
-              <InputOTP isDisabled maxLength={4} value="1284">
+              <InputOTP
+                isDisabled
+                maxLength={4}
+                value="1284"
+              >
                 <InputOTP.Group>
                   <InputOTP.Slot index={0} />
                   <InputOTP.Slot index={1} />
@@ -1615,7 +1738,10 @@ export default function App() {
               <h3 class="text-xs font-semibold uppercase tracking-wide opacity-70">
                 External
               </h3>
-              <Link href="https://heroui.com" isExternal>
+              <Link
+                href="https://heroui.com"
+                isExternal
+              >
                 HeroUI
                 <Link.Icon />
               </Link>
@@ -1626,13 +1752,22 @@ export default function App() {
                 Underline Modes
               </h3>
               <div class="flex flex-col gap-2">
-                <Link href="#link-underline-always" underline="always">
+                <Link
+                  href="#link-underline-always"
+                  underline="always"
+                >
                   Always underline
                 </Link>
-                <Link href="#link-underline-hover" underline="hover">
+                <Link
+                  href="#link-underline-hover"
+                  underline="hover"
+                >
                   Underline on hover
                 </Link>
-                <Link href="#link-underline-none" underline="none">
+                <Link
+                  href="#link-underline-none"
+                  underline="none"
+                >
                   No underline
                 </Link>
               </div>
@@ -1686,7 +1821,10 @@ export default function App() {
               </TextField>
             </Fieldset.Group>
             <Fieldset.Actions>
-              <Button size="sm" variant="outline">
+              <Button
+                size="sm"
+                variant="outline"
+              >
                 Cancel
               </Button>
               <Button size="sm">Save</Button>
@@ -1711,7 +1849,10 @@ export default function App() {
               <FormField
                 name="demoName"
                 label="Name"
-                inputProps={{ id: "form-demo-name", placeholder: "Pathscale user" }}
+                inputProps={{
+                  id: "form-demo-name",
+                  placeholder: "Pathscale user",
+                }}
               />
 
               <FormField
@@ -1737,8 +1878,12 @@ export default function App() {
                   endIcon: (
                     <button
                       type="button"
-                      aria-label={showDemoPassword() ? "Hide password" : "Show password"}
-                      title={showDemoPassword() ? "Hide password" : "Show password"}
+                      aria-label={
+                        showDemoPassword() ? "Hide password" : "Show password"
+                      }
+                      title={
+                        showDemoPassword() ? "Hide password" : "Show password"
+                      }
                       class="inline-flex items-center justify-center text-base-content/75 hover:text-base-content"
                       onMouseDown={(event) => event.preventDefault()}
                       onClick={() => setShowDemoPassword((value) => !value)}
@@ -1763,7 +1908,10 @@ export default function App() {
               <FormField
                 name="demoQuery"
                 label="Search Query"
-                inputProps={{ id: "form-demo-query", placeholder: "Search docs" }}
+                inputProps={{
+                  id: "form-demo-query",
+                  placeholder: "Search docs",
+                }}
               />
 
               <div class="grid gap-3 sm:grid-cols-2">
@@ -1795,7 +1943,8 @@ export default function App() {
                 }}
               />
               <Description>
-                This input is controlled through the form API and validated on blur/submit.
+                This input is controlled through the form API and validated on
+                blur/submit.
               </Description>
 
               <div class="flex flex-wrap gap-2">
@@ -1827,7 +1976,10 @@ export default function App() {
               <Description>
                 This example keeps native browser behavior unchanged.
               </Description>
-              <Button type="submit" variant="outline">
+              <Button
+                type="submit"
+                variant="outline"
+              >
                 Native submit
               </Button>
             </Form>
@@ -1844,7 +1996,10 @@ export default function App() {
                 <div class="flex flex-col items-center gap-2">
                   <Badge.Anchor>
                     <div class="h-14 w-14 rounded-xl border border-base-300 bg-base-100" />
-                    <Badge color={color} size="sm">
+                    <Badge
+                      color={color}
+                      size="sm"
+                    >
                       5
                     </Badge>
                   </Badge.Anchor>
@@ -1863,7 +2018,11 @@ export default function App() {
                 <div class="flex flex-col items-center gap-2">
                   <Badge.Anchor>
                     <div class="h-14 w-14 rounded-xl border border-base-300 bg-base-100" />
-                    <Badge color="accent" variant={variant} size="sm">
+                    <Badge
+                      color="accent"
+                      variant={variant}
+                      size="sm"
+                    >
                       5
                     </Badge>
                   </Badge.Anchor>
@@ -1882,7 +2041,10 @@ export default function App() {
                 <div class="flex flex-col items-center gap-2">
                   <Badge.Anchor>
                     <div class="h-14 w-14 rounded-xl border border-base-300 bg-base-100" />
-                    <Badge color="accent" size={size}>
+                    <Badge
+                      color="accent"
+                      size={size}
+                    >
                       5
                     </Badge>
                   </Badge.Anchor>
@@ -1901,7 +2063,11 @@ export default function App() {
                 <div class="flex flex-col items-center gap-2">
                   <Badge.Anchor>
                     <div class="h-16 w-16 rounded-xl border border-base-300 bg-base-100" />
-                    <Badge color="accent" size="sm" placement={placement} />
+                    <Badge
+                      color="accent"
+                      size="sm"
+                      placement={placement}
+                    />
                   </Badge.Anchor>
                   <span class="text-xs opacity-70">{placement}</span>
                 </div>
@@ -1917,7 +2083,11 @@ export default function App() {
               {(size) => (
                 <Badge.Anchor>
                   <div class="h-16 w-16 rounded-xl border border-base-300 bg-base-100" />
-                  <Badge color="success" size={size} placement="bottom-right" />
+                  <Badge
+                    color="success"
+                    size={size}
+                    placement="bottom-right"
+                  />
                 </Badge.Anchor>
               )}
             </For>
@@ -1942,7 +2112,10 @@ export default function App() {
                 <div class="flex flex-wrap items-center gap-3">
                   <For each={CHIP_COLORS}>
                     {(color) => (
-                      <Chip variant={variant} color={color}>
+                      <Chip
+                        variant={variant}
+                        color={color}
+                      >
                         {variant}/{color}
                       </Chip>
                     )}
@@ -1957,7 +2130,11 @@ export default function App() {
             <div class="flex flex-wrap items-center gap-3">
               <For each={CHIP_SIZES}>
                 {(size) => (
-                  <Chip size={size} variant="flat" color="accent">
+                  <Chip
+                    size={size}
+                    variant="flat"
+                    color="accent"
+                  >
                     {size}
                   </Chip>
                 )}
@@ -1974,7 +2151,11 @@ export default function App() {
                 variant="flat"
                 color="primary"
                 startIcon={
-                  <Icon name="icon-[lucide--dot]" width={12} height={12} />
+                  <Icon
+                    name="icon-[lucide--dot]"
+                    width={12}
+                    height={12}
+                  />
                 }
               >
                 Live stream
@@ -1983,7 +2164,11 @@ export default function App() {
                 variant="bordered"
                 color="success"
                 endIcon={
-                  <Icon name="icon-[lucide--check]" width={14} height={14} />
+                  <Icon
+                    name="icon-[lucide--check]"
+                    width={14}
+                    height={14}
+                  />
                 }
               >
                 Connection
@@ -2028,7 +2213,10 @@ export default function App() {
                   <Tabs.List aria-label="Primary tabs">
                     <For each={TAB_ITEMS}>
                       {(item) => (
-                        <Tabs.Tab id={item.key} isDisabled={item.disabled}>
+                        <Tabs.Tab
+                          id={item.key}
+                          isDisabled={item.disabled}
+                        >
                           <span>{item.label}</span>
                           <Tabs.Separator />
                         </Tabs.Tab>
@@ -2048,12 +2236,18 @@ export default function App() {
               <h3 class="text-xs font-semibold uppercase opacity-70">
                 Secondary
               </h3>
-              <Tabs.Root defaultSelectedKey="activity" variant="secondary">
+              <Tabs.Root
+                defaultSelectedKey="activity"
+                variant="secondary"
+              >
                 <Tabs.ListContainer>
                   <Tabs.List aria-label="Secondary tabs">
                     <For each={TAB_ITEMS}>
                       {(item) => (
-                        <Tabs.Tab id={item.key} isDisabled={item.disabled}>
+                        <Tabs.Tab
+                          id={item.key}
+                          isDisabled={item.disabled}
+                        >
                           <span>{item.label}</span>
                         </Tabs.Tab>
                       )}
@@ -2074,7 +2268,10 @@ export default function App() {
               <h3 class="text-xs font-semibold uppercase opacity-70">
                 Primary Vertical
               </h3>
-              <Tabs.Root defaultSelectedKey="details" orientation="vertical">
+              <Tabs.Root
+                defaultSelectedKey="details"
+                orientation="vertical"
+              >
                 <Tabs.ListContainer>
                   <Tabs.List aria-label="Vertical tabs">
                     <For each={VERTICAL_TAB_ITEMS}>
@@ -2216,7 +2413,10 @@ export default function App() {
                           </Dropdown.Menu>
                         </Dropdown.Root>
                         <Drawer.Close>
-                          <Button class="w-full" variant="secondary">
+                          <Button
+                            class="w-full"
+                            variant="secondary"
+                          >
                             Close
                           </Button>
                         </Drawer.Close>
@@ -2429,8 +2629,8 @@ export default function App() {
                 Empty String Value
               </h3>
               <p class="text-xs opacity-70">
-                Regression coverage for the <code>value=&quot;&quot;</code>{" "}
-                case used by &quot;All&quot; filters.
+                Regression coverage for the <code>value=&quot;&quot;</code> case
+                used by &quot;All&quot; filters.
               </p>
               <Select
                 value={emptyValueStatus()}
@@ -2460,7 +2660,8 @@ export default function App() {
                 </Select.Popover>
               </Select>
               <p class="text-xs opacity-70">
-                Stored value: {emptyValueStatus() === "" ? '""' : emptyValueStatus()}
+                Stored value:{" "}
+                {emptyValueStatus() === "" ? '""' : emptyValueStatus()}
               </p>
             </div>
 
@@ -2478,7 +2679,10 @@ export default function App() {
                 placement="bottom"
               >
                 <Popover.Trigger>
-                  <Button class="w-full justify-between" variant="secondary">
+                  <Button
+                    class="w-full justify-between"
+                    variant="secondary"
+                  >
                     Status filter
                   </Button>
                 </Popover.Trigger>
@@ -2600,7 +2804,10 @@ export default function App() {
                           </Select.Popover>
                         </Select>
                         <Drawer.Close>
-                          <Button class="w-full" variant="secondary">
+                          <Button
+                            class="w-full"
+                            variant="secondary"
+                          >
                             Close
                           </Button>
                         </Drawer.Close>
@@ -2635,7 +2842,10 @@ export default function App() {
             <div class="flex flex-wrap items-center gap-3">
               <For each={BUTTON_SIZES}>
                 {(size) => (
-                  <Button size={size} variant="secondary">
+                  <Button
+                    size={size}
+                    variant="secondary"
+                  >
                     {size}
                   </Button>
                 )}
@@ -2646,16 +2856,30 @@ export default function App() {
           <div class="space-y-3">
             <h3 class="text-xs font-semibold uppercase opacity-70">States</h3>
             <div class="flex flex-wrap gap-3">
-              <Button variant="primary" isDisabled>
+              <Button
+                variant="primary"
+                isDisabled
+              >
                 Disabled
               </Button>
-              <Button variant="primary" isPending>
+              <Button
+                variant="primary"
+                isPending
+              >
                 Spinner
               </Button>
-              <Button variant="ghost" isIconOnly aria-label="Icon only">
+              <Button
+                variant="ghost"
+                isIconOnly
+                aria-label="Icon only"
+              >
                 +
               </Button>
-              <Button variant="outline" fullWidth class="max-w-xs">
+              <Button
+                variant="outline"
+                fullWidth
+                class="max-w-xs"
+              >
                 Full Width
               </Button>
             </div>
@@ -2691,7 +2915,10 @@ export default function App() {
             <div class="flex flex-wrap items-center gap-3">
               <For each={BUTTON_SIZES}>
                 {(size) => (
-                  <ButtonGroup size={size} variant="secondary">
+                  <ButtonGroup
+                    size={size}
+                    variant="secondary"
+                  >
                     <Button>Left</Button>
                     <Button>
                       <ButtonGroup.Separator />
@@ -2724,7 +2951,10 @@ export default function App() {
                 </Button>
               </ButtonGroup>
 
-              <ButtonGroup variant="danger-soft" isDisabled>
+              <ButtonGroup
+                variant="danger-soft"
+                isDisabled
+              >
                 <Button>Save</Button>
                 <Button>
                   <ButtonGroup.Separator />
@@ -2741,7 +2971,10 @@ export default function App() {
             <div class="grid gap-3 md:grid-cols-2">
               <div class="space-y-2">
                 <p class="text-xs opacity-70">Horizontal</p>
-                <ButtonGroup fullWidth variant="secondary">
+                <ButtonGroup
+                  fullWidth
+                  variant="secondary"
+                >
                   <Button>List</Button>
                   <Button>
                     <ButtonGroup.Separator />
@@ -2792,9 +3025,18 @@ export default function App() {
             </h3>
             <div class="flex flex-wrap items-center gap-3">
               <CloseButton endIcon={closeIcon()} />
-              <CloseButton aria-label="Dismiss panel" endIcon={closeIcon()} />
-              <CloseButton isDisabled endIcon={closeIcon()} />
-              <CloseButton isPending endIcon={closeIcon()} />
+              <CloseButton
+                aria-label="Dismiss panel"
+                endIcon={closeIcon()}
+              />
+              <CloseButton
+                isDisabled
+                endIcon={closeIcon()}
+              />
+              <CloseButton
+                isPending
+                endIcon={closeIcon()}
+              />
             </div>
           </div>
 
@@ -2806,7 +3048,11 @@ export default function App() {
               <CloseButton
                 aria-label="Close with custom icon"
                 endIcon={
-                  <Icon name="icon-[lucide--plus]" width={16} height={16} />
+                  <Icon
+                    name="icon-[lucide--plus]"
+                    width={16}
+                    height={16}
+                  />
                 }
               />
             </div>
@@ -2852,7 +3098,10 @@ export default function App() {
                     This modal closes on backdrop click and Escape by default.
                   </Modal.Body>
                   <Modal.Footer>
-                    <Button size="sm" variant="ghost">
+                    <Button
+                      size="sm"
+                      variant="ghost"
+                    >
                       Cancel
                     </Button>
                     <Button size="sm">Save</Button>
@@ -2865,10 +3114,16 @@ export default function App() {
               <h3 class="text-xs font-semibold uppercase tracking-wide opacity-70">
                 Controlled
               </h3>
-              <Button size="sm" onClick={() => setModalOpen(true)}>
+              <Button
+                size="sm"
+                onClick={() => setModalOpen(true)}
+              >
                 Open controlled modal
               </Button>
-              <Modal isOpen={modalOpen()} onOpenChange={setModalOpen}>
+              <Modal
+                isOpen={modalOpen()}
+                onOpenChange={setModalOpen}
+              >
                 <Modal.Content>
                   <Modal.Header>
                     <Modal.Heading>Controlled modal</Modal.Heading>
@@ -2885,7 +3140,10 @@ export default function App() {
                     >
                       Close
                     </Button>
-                    <Button size="sm" onClick={() => setModalOpen(false)}>
+                    <Button
+                      size="sm"
+                      onClick={() => setModalOpen(false)}
+                    >
                       Confirm
                     </Button>
                   </Modal.Footer>
@@ -2954,7 +3212,10 @@ export default function App() {
                   <Tag id="travel">Travel</Tag>
                   <Tag id="gaming">Gaming</Tag>
                 </TagGroup.List>
-                <span class="text-xs opacity-70" data-slot="description">
+                <span
+                  class="text-xs opacity-70"
+                  data-slot="description"
+                >
                   Selected: {Array.from(selectedTag()).join(", ") || "None"}
                 </span>
               </TagGroup>
@@ -2994,7 +3255,10 @@ export default function App() {
               <TagGroup.List
                 items={removableTags()}
                 renderEmptyState={() => (
-                  <span class="text-xs opacity-70" data-slot="description">
+                  <span
+                    class="text-xs opacity-70"
+                    data-slot="description"
+                  >
                     No tags left
                   </span>
                 )}
@@ -3016,7 +3280,10 @@ export default function App() {
             <h3 class="text-xs font-semibold uppercase opacity-70">
               Custom Remove Button
             </h3>
-            <TagGroup selectionMode="single" onRemove={() => undefined}>
+            <TagGroup
+              selectionMode="single"
+              onRemove={() => undefined}
+            >
               <TagGroup.List>
                 <Tag id="alpha">
                   {(state) => (
@@ -3062,7 +3329,10 @@ export default function App() {
               >
                 <For each={LISTBOX_USERS}>
                   {(user) => (
-                    <ListBox.Item id={user.id} textValue={user.name}>
+                    <ListBox.Item
+                      id={user.id}
+                      textValue={user.name}
+                    >
                       <div class="flex flex-col">
                         <span data-slot="label">{user.name}</span>
                         <span
@@ -3098,7 +3368,10 @@ export default function App() {
                 {(item) => {
                   const topic = item as (typeof LISTBOX_TOPICS)[number];
                   return (
-                    <ListBox.Item id={topic.id} textValue={topic.label}>
+                    <ListBox.Item
+                      id={topic.id}
+                      textValue={topic.label}
+                    >
                       <span data-slot="label">{topic.label}</span>
                       <ListBox.ItemIndicator />
                     </ListBox.Item>
@@ -3128,18 +3401,30 @@ export default function App() {
                     <span class="px-2 py-1 text-xs font-semibold">Actions</span>
                   }
                 >
-                  <ListBox.Item id="new-file" textValue="New file">
+                  <ListBox.Item
+                    id="new-file"
+                    textValue="New file"
+                  >
                     <div class="flex flex-col">
                       <span data-slot="label">New file</span>
-                      <span class="text-xs opacity-70" data-slot="description">
+                      <span
+                        class="text-xs opacity-70"
+                        data-slot="description"
+                      >
                         Create a new file
                       </span>
                     </div>
                   </ListBox.Item>
-                  <ListBox.Item id="edit-file" textValue="Edit file">
+                  <ListBox.Item
+                    id="edit-file"
+                    textValue="Edit file"
+                  >
                     <div class="flex flex-col">
                       <span data-slot="label">Edit file</span>
-                      <span class="text-xs opacity-70" data-slot="description">
+                      <span
+                        class="text-xs opacity-70"
+                        data-slot="description"
+                      >
                         Make changes
                       </span>
                     </div>
@@ -3160,7 +3445,10 @@ export default function App() {
                   >
                     <div class="flex flex-col">
                       <span data-slot="label">Delete file</span>
-                      <span class="text-xs opacity-70" data-slot="description">
+                      <span
+                        class="text-xs opacity-70"
+                        data-slot="description"
+                      >
                         Move to trash
                       </span>
                     </div>
@@ -3184,7 +3472,10 @@ export default function App() {
                 {(item) => {
                   const entry = item as (typeof LISTBOX_LONG_ITEMS)[number];
                   return (
-                    <ListBox.Item id={entry.id} textValue={entry.label}>
+                    <ListBox.Item
+                      id={entry.id}
+                      textValue={entry.label}
+                    >
                       <span data-slot="label">{entry.label}</span>
                       <ListBox.ItemIndicator />
                     </ListBox.Item>
@@ -3215,15 +3506,24 @@ export default function App() {
                 onSelectionChange={(keys) => setSelectedMenuMode(new Set(keys))}
                 class="max-w-xs rounded-3xl border border-base-300 bg-base-100 p-2"
               >
-                <Menu.Item id="preview" textValue="Preview">
+                <Menu.Item
+                  id="preview"
+                  textValue="Preview"
+                >
                   <span data-slot="label">Preview</span>
                   <Menu.ItemIndicator />
                 </Menu.Item>
-                <Menu.Item id="edit" textValue="Edit">
+                <Menu.Item
+                  id="edit"
+                  textValue="Edit"
+                >
                   <span data-slot="label">Edit</span>
                   <Menu.ItemIndicator />
                 </Menu.Item>
-                <Menu.Item id="duplicate" textValue="Duplicate">
+                <Menu.Item
+                  id="duplicate"
+                  textValue="Duplicate"
+                >
                   <span data-slot="label">Duplicate</span>
                   <Menu.ItemIndicator />
                 </Menu.Item>
@@ -3243,13 +3543,23 @@ export default function App() {
                 onAction={(key) => setLastMenuAction(key)}
                 class="max-w-xs rounded-3xl border border-base-300 bg-base-100 p-2"
               >
-                <Menu.Item id="share" textValue="Share">
+                <Menu.Item
+                  id="share"
+                  textValue="Share"
+                >
                   <span data-slot="label">Share</span>
                 </Menu.Item>
-                <Menu.Item id="archive" textValue="Archive">
+                <Menu.Item
+                  id="archive"
+                  textValue="Archive"
+                >
                   <span data-slot="label">Archive</span>
                 </Menu.Item>
-                <Menu.Item id="delete" textValue="Delete" variant="danger">
+                <Menu.Item
+                  id="delete"
+                  textValue="Delete"
+                  variant="danger"
+                >
                   <span data-slot="label">Delete</span>
                 </Menu.Item>
               </Menu>
@@ -3274,10 +3584,16 @@ export default function App() {
                     <span class="px-2 py-1 text-xs font-semibold">File</span>
                   }
                 >
-                  <Menu.Item id="new" textValue="New">
+                  <Menu.Item
+                    id="new"
+                    textValue="New"
+                  >
                     <span data-slot="label">New</span>
                   </Menu.Item>
-                  <Menu.Item id="open" textValue="Open">
+                  <Menu.Item
+                    id="open"
+                    textValue="Open"
+                  >
                     <span data-slot="label">Open</span>
                   </Menu.Item>
                 </Menu.Section>
@@ -3289,7 +3605,11 @@ export default function App() {
                     </span>
                   }
                 >
-                  <Menu.Item id="history" textValue="History" hasSubmenu>
+                  <Menu.Item
+                    id="history"
+                    textValue="History"
+                    hasSubmenu
+                  >
                     <span data-slot="label">History</span>
                     <Menu.Item.SubmenuIndicator />
                   </Menu.Item>
@@ -3309,15 +3629,24 @@ export default function App() {
                 }
                 class="max-w-xs rounded-3xl border border-base-300 bg-base-100 p-2"
               >
-                <Menu.Item id="all" textValue="All">
+                <Menu.Item
+                  id="all"
+                  textValue="All"
+                >
                   <span data-slot="label">All</span>
                   <Menu.ItemIndicator type="dot" />
                 </Menu.Item>
-                <Menu.Item id="mentions" textValue="Mentions">
+                <Menu.Item
+                  id="mentions"
+                  textValue="Mentions"
+                >
                   <span data-slot="label">Mentions</span>
                   <Menu.ItemIndicator type="dot" />
                 </Menu.Item>
-                <Menu.Item id="unread" textValue="Unread">
+                <Menu.Item
+                  id="unread"
+                  textValue="Unread"
+                >
                   <span data-slot="label">Unread</span>
                   <Menu.ItemIndicator type="dot" />
                 </Menu.Item>
@@ -3397,7 +3726,11 @@ export default function App() {
                 label="Start Icon"
                 placeholder="Search..."
                 startIcon={
-                  <Icon name="icon-[lucide--search]" width={16} height={16} />
+                  <Icon
+                    name="icon-[lucide--search]"
+                    width={16}
+                    height={16}
+                  />
                 }
                 fullWidth
               />
@@ -3428,14 +3761,22 @@ export default function App() {
 
           <div class="space-y-3">
             <h3 class="text-xs font-semibold uppercase opacity-70">Basic</h3>
-            <Pagination page={basicPage()} total={6} onChange={setBasicPage} />
+            <Pagination
+              page={basicPage()}
+              total={6}
+              onChange={setBasicPage}
+            />
           </div>
 
           <div class="space-y-3">
             <h3 class="text-xs font-semibold uppercase opacity-70">
               Large Set (Ellipsis)
             </h3>
-            <Pagination page={largePage()} total={24} onChange={setLargePage} />
+            <Pagination
+              page={largePage()}
+              total={24}
+              onChange={setLargePage}
+            />
           </div>
 
           <div class="space-y-3">
@@ -3516,7 +3857,10 @@ export default function App() {
               >
                 <Radio value="solid">Solid</Radio>
                 <Radio value="react">React</Radio>
-                <Radio value="vue" disabled>
+                <Radio
+                  value="vue"
+                  disabled
+                >
                   Vue (disabled)
                 </Radio>
               </RadioGroup>
@@ -3533,10 +3877,16 @@ export default function App() {
                 label="Environment"
                 errorMessage="Select at least one environment."
               >
-                <Radio value="dev" isInvalid>
+                <Radio
+                  value="dev"
+                  isInvalid
+                >
                   Development
                 </Radio>
-                <Radio value="staging" isInvalid>
+                <Radio
+                  value="staging"
+                  isInvalid
+                >
                   Staging
                 </Radio>
               </RadioGroup>
@@ -3575,7 +3925,10 @@ export default function App() {
                 <Checkbox>Unchecked</Checkbox>
                 <Checkbox defaultChecked>Checked</Checkbox>
                 <Checkbox isIndeterminate>Indeterminate</Checkbox>
-                <Checkbox isDisabled defaultChecked>
+                <Checkbox
+                  isDisabled
+                  defaultChecked
+                >
                   Disabled checked
                 </Checkbox>
               </div>
@@ -3595,7 +3948,10 @@ export default function App() {
                   Accept terms ({checkedTerms() ? "on" : "off"})
                 </Checkbox>
                 <Checkbox variant="secondary">Secondary variant</Checkbox>
-                <Checkbox isInvalid defaultChecked>
+                <Checkbox
+                  isInvalid
+                  defaultChecked
+                >
                   Invalid checked
                 </Checkbox>
                 <Checkbox description="Description text aligns control to the top.">
@@ -3619,7 +3975,10 @@ export default function App() {
               <div class="flex flex-col gap-3">
                 <For each={TOGGLE_COLORS}>
                   {(color) => (
-                    <Toggle color={color} defaultChecked>
+                    <Toggle
+                      color={color}
+                      defaultChecked
+                    >
                       {color}
                     </Toggle>
                   )}
@@ -3632,7 +3991,11 @@ export default function App() {
               <div class="flex flex-col gap-3">
                 <For each={TOGGLE_SIZES}>
                   {(size) => (
-                    <Toggle size={size} defaultChecked color="accent">
+                    <Toggle
+                      size={size}
+                      defaultChecked
+                      color="accent"
+                    >
                       {size}
                     </Toggle>
                   )}
@@ -3648,7 +4011,10 @@ export default function App() {
                 <Toggle>Unchecked</Toggle>
                 <Toggle defaultChecked>Checked</Toggle>
                 <Toggle isDisabled>Disabled off</Toggle>
-                <Toggle isDisabled defaultChecked>
+                <Toggle
+                  isDisabled
+                  defaultChecked
+                >
                   Disabled on
                 </Toggle>
               </div>
@@ -3817,7 +4183,12 @@ export default function App() {
 
           <div class="space-y-3">
             <h3 class="text-xs font-semibold uppercase opacity-70">Disabled</h3>
-            <Slider label="Locked" value={60} onChange={() => {}} disabled />
+            <Slider
+              label="Locked"
+              value={60}
+              onChange={() => {}}
+              disabled
+            />
           </div>
         </section>
 
@@ -3870,7 +4241,10 @@ export default function App() {
               Controlled
             </h3>
             <div class="flex flex-wrap items-center gap-6 py-4 pt-10">
-              <Tooltip placement="right" isOpen>
+              <Tooltip
+                placement="right"
+                isOpen
+              >
                 <Tooltip.Trigger>
                   <Button variant="primary">Always open</Button>
                 </Tooltip.Trigger>
@@ -3887,7 +4261,10 @@ export default function App() {
               Auto Flip
             </h3>
             <div class="relative flex min-h-[10rem] items-end justify-center rounded-xl border border-base-300 bg-base-100 p-4">
-              <Tooltip placement="bottom" sideOffset={8}>
+              <Tooltip
+                placement="bottom"
+                sideOffset={8}
+              >
                 <Tooltip.Trigger>
                   <Button variant="secondary">Bottom edge</Button>
                 </Tooltip.Trigger>
@@ -3907,10 +4284,21 @@ export default function App() {
               <div class="flex h-full flex-col justify-between">
                 <div class="text-xs opacity-70">Clipped parent</div>
                 <div class="flex justify-end">
-                  <Tooltip placement="bottom" sideOffset={8}>
+                  <Tooltip
+                    placement="bottom"
+                    sideOffset={8}
+                  >
                     <Tooltip.Trigger>
-                      <Button variant="ghost" isIconOnly aria-label="Copy">
-                        <Icon name="icon-[lucide--copy]" width={16} height={16} />
+                      <Button
+                        variant="ghost"
+                        isIconOnly
+                        aria-label="Copy"
+                      >
+                        <Icon
+                          name="icon-[lucide--copy]"
+                          width={16}
+                          height={16}
+                        />
                       </Button>
                     </Tooltip.Trigger>
                     <Tooltip.Content>
@@ -3939,20 +4327,36 @@ export default function App() {
                       </Table.Row>
                     </Table.Header>
                     <Table.Body>
-                      <For each={["Authentication", "Billing", "Analytics", "Production"]}>
+                      <For
+                        each={[
+                          "Authentication",
+                          "Billing",
+                          "Analytics",
+                          "Production",
+                        ]}
+                      >
                         {(name, index) => (
                           <Table.Row>
                             <Table.Cell>{name}</Table.Cell>
-                            <Table.Cell>{index() === 3 ? "Enabled" : "Idle"}</Table.Cell>
                             <Table.Cell>
-                              <Tooltip placement="bottom" sideOffset={8}>
+                              {index() === 3 ? "Enabled" : "Idle"}
+                            </Table.Cell>
+                            <Table.Cell>
+                              <Tooltip
+                                placement="bottom"
+                                sideOffset={8}
+                              >
                                 <Tooltip.Trigger>
                                   <Button
                                     variant="ghost"
                                     isIconOnly
                                     aria-label={`Edit ${name}`}
                                   >
-                                    <Icon name="icon-[lucide--pencil]" width={16} height={16} />
+                                    <Icon
+                                      name="icon-[lucide--pencil]"
+                                      width={16}
+                                      height={16}
+                                    />
                                   </Button>
                                 </Tooltip.Trigger>
                                 <Tooltip.Content>
@@ -3997,7 +4401,11 @@ export default function App() {
                   onToggle={() => setTableExpandOpen((open) => !open)}
                   label="Toggle expanded row"
                 />
-                <TableExpandToggle expanded disabled label="Disabled expanded toggle" />
+                <TableExpandToggle
+                  expanded
+                  disabled
+                  label="Disabled expanded toggle"
+                />
                 <span class="text-xs opacity-70">
                   Expanded: {tableExpandOpen() ? "true" : "false"}
                 </span>
@@ -4017,7 +4425,10 @@ export default function App() {
                         <Table.Cell>Row before spacer</Table.Cell>
                         <Table.Cell>Ready</Table.Cell>
                       </Table.Row>
-                      <TableVirtualSpacerRow height={28} colSpan={2} />
+                      <TableVirtualSpacerRow
+                        height={28}
+                        colSpan={2}
+                      />
                       <Table.Row>
                         <Table.Cell>Row after spacer</Table.Cell>
                         <Table.Cell>Ready</Table.Cell>
@@ -4038,7 +4449,9 @@ export default function App() {
                   ]}
                   renderRow={(row) => (
                     <div class="flex items-center justify-between gap-3 py-3">
-                      <span class="truncate text-sm font-medium">{row.name}</span>
+                      <span class="truncate text-sm font-medium">
+                        {row.name}
+                      </span>
                       <span class="text-xs opacity-70">{row.status}</span>
                     </div>
                   )}
@@ -4050,7 +4463,11 @@ export default function App() {
                   empty={
                     <EmptyState>
                       <EmptyState.Icon>
-                        <Icon name="icon-[mdi--inbox-outline]" width={24} height={24} />
+                        <Icon
+                          name="icon-[mdi--inbox-outline]"
+                          width={24}
+                          height={24}
+                        />
                       </EmptyState.Icon>
                       <EmptyState.Title>No mobile rows</EmptyState.Title>
                     </EmptyState>
@@ -4098,7 +4515,8 @@ export default function App() {
           <div>
             <h2 class="text-sm font-semibold">Auth Primitives</h2>
             <p class="text-xs opacity-70">
-              Reusable auth card, form, password field, feedback, footer links, and powered-by branding.
+              Reusable auth card, form, password field, feedback, footer links,
+              and powered-by branding.
             </p>
           </div>
 
@@ -4110,7 +4528,13 @@ export default function App() {
                 <AuthPoweredBy
                   label="Secured by Honey.id"
                   variant="inline"
-                  logo={<Icon name="icon-[lucide--shield-check]" width={14} height={14} />}
+                  logo={
+                    <Icon
+                      name="icon-[lucide--shield-check]"
+                      width={14}
+                      height={14}
+                    />
+                  }
                 />
               }
               footer={
@@ -4131,7 +4555,10 @@ export default function App() {
                 }}
               >
                 <AuthFieldGroup gap="md">
-                  <Input label="Username" placeholder="jane.doe" />
+                  <Input
+                    label="Username"
+                    placeholder="jane.doe"
+                  />
                   <PasswordField
                     label="Password"
                     placeholder="••••••••"
@@ -4143,7 +4570,13 @@ export default function App() {
                   />
                 </AuthFieldGroup>
 
-                <AuthErrorMessage message={authPassword().length > 0 && authPassword().length < 8 ? "Password is too short." : null} />
+                <AuthErrorMessage
+                  message={
+                    authPassword().length > 0 && authPassword().length < 8
+                      ? "Password is too short."
+                      : null
+                  }
+                />
 
                 <AuthSubmitButton pending={authPending()}>
                   Sign in
@@ -4158,13 +4591,22 @@ export default function App() {
                 <AuthPoweredBy
                   variant="card"
                   href="#"
-                  logo={<Icon name="icon-[lucide--shield-check]" width={14} height={14} />}
+                  logo={
+                    <Icon
+                      name="icon-[lucide--shield-check]"
+                      width={14}
+                      height={14}
+                    />
+                  }
                 />
               }
             >
               <AuthForm>
                 <AuthFieldGroup gap="md">
-                  <Input label="Email" placeholder="you.com" />
+                  <Input
+                    label="Email"
+                    placeholder="you.com"
+                  />
                   <PasswordField
                     label="New password"
                     placeholder="Create a strong password"
@@ -4191,11 +4633,19 @@ export default function App() {
                 />
 
                 <AuthSuccessMessage
-                  message={authConfirmPassword().length > 0 && authPasswordsMatch() ? "Passwords match." : null}
+                  message={
+                    authConfirmPassword().length > 0 && authPasswordsMatch()
+                      ? "Passwords match."
+                      : null
+                  }
                 />
 
                 <AuthErrorMessage
-                  message={authConfirmPassword().length > 0 && !authPasswordsMatch() ? "Passwords do not match." : null}
+                  message={
+                    authConfirmPassword().length > 0 && !authPasswordsMatch()
+                      ? "Passwords do not match."
+                      : null
+                  }
                 />
 
                 <AuthSubmitButton variant="primary">
@@ -4233,7 +4683,10 @@ export default function App() {
                   }
                   aria-describedby="password-field-helper"
                 />
-                <p id="password-field-helper" class="text-xs opacity-70">
+                <p
+                  id="password-field-helper"
+                  class="text-xs opacity-70"
+                >
                   Visibility state: {authVisibilityState()}.
                 </p>
               </div>
@@ -4245,10 +4698,18 @@ export default function App() {
                   showLabel="Reveal secret"
                   hideLabel="Mask secret"
                   hiddenIcon={
-                    <Icon name="icon-[mdi--eye]" width={16} height={16} />
+                    <Icon
+                      name="icon-[mdi--eye]"
+                      width={16}
+                      height={16}
+                    />
                   }
                   visibleIcon={
-                    <Icon name="icon-[mdi--eye-off]" width={16} height={16} />
+                    <Icon
+                      name="icon-[mdi--eye-off]"
+                      width={16}
+                      height={16}
+                    />
                   }
                 />
                 <PasswordField
@@ -4311,7 +4772,9 @@ export default function App() {
               >
                 <Popover.Trigger>
                   <Button variant="outline">
-                    {controlledPopoverOpen() ? "Close controlled" : "Open controlled"}
+                    {controlledPopoverOpen()
+                      ? "Close controlled"
+                      : "Open controlled"}
                   </Button>
                 </Popover.Trigger>
                 <Popover.Content>
@@ -4377,9 +4840,15 @@ export default function App() {
                     </Drawer.Body>
                     <Drawer.Footer>
                       <div class="flex w-full flex-col gap-3">
-                        <Popover placement="bottom" autoFlip>
+                        <Popover
+                          placement="bottom"
+                          autoFlip
+                        >
                           <Popover.Trigger>
-                            <Button class="w-full justify-between" variant="secondary">
+                            <Button
+                              class="w-full justify-between"
+                              variant="secondary"
+                            >
                               Footer details
                             </Button>
                           </Popover.Trigger>
@@ -4395,7 +4864,10 @@ export default function App() {
                           </Popover.Content>
                         </Popover>
                         <Drawer.Close>
-                          <Button class="w-full" variant="secondary">
+                          <Button
+                            class="w-full"
+                            variant="secondary"
+                          >
                             Close
                           </Button>
                         </Drawer.Close>
@@ -4434,7 +4906,9 @@ export default function App() {
           </div>
 
           <div class="space-y-3">
-            <h3 class="text-xs font-semibold uppercase opacity-70">Group (Accordion)</h3>
+            <h3 class="text-xs font-semibold uppercase opacity-70">
+              Group (Accordion)
+            </h3>
             <div class="flex flex-wrap items-center gap-2">
               <Button
                 size="sm"
@@ -4566,7 +5040,10 @@ export default function App() {
                   get the latest features.
                 </Alert.Description>
               </Alert.Content>
-              <Button size="sm" variant="primary">
+              <Button
+                size="sm"
+                variant="primary"
+              >
                 Refresh
               </Button>
             </Alert>
@@ -4716,12 +5193,18 @@ export default function App() {
                           </Drawer.Body>
                           <Drawer.Footer>
                             <Drawer.Close>
-                              <Button size="sm" variant="secondary">
+                              <Button
+                                size="sm"
+                                variant="secondary"
+                              >
                                 Cancel
                               </Button>
                             </Drawer.Close>
                             <Drawer.Close>
-                              <Button size="sm" variant="primary">
+                              <Button
+                                size="sm"
+                                variant="primary"
+                              >
                                 Done
                               </Button>
                             </Drawer.Close>
@@ -4762,7 +5245,10 @@ export default function App() {
                           </Drawer.Body>
                           <Drawer.Footer>
                             <Drawer.Close>
-                              <Button size="sm" variant="primary">
+                              <Button
+                                size="sm"
+                                variant="primary"
+                              >
                                 Close
                               </Button>
                             </Drawer.Close>
@@ -4825,7 +5311,10 @@ export default function App() {
             <div class="flex items-center gap-4">
               <For each={["accent", "success", "warning", "danger"] as const}>
                 {(color) => (
-                  <Avatar color={color} variant="soft">
+                  <Avatar
+                    color={color}
+                    variant="soft"
+                  >
                     <Avatar.Fallback>
                       {color.charAt(0).toUpperCase()}
                     </Avatar.Fallback>
@@ -4992,7 +5481,11 @@ export default function App() {
             <h3 class="text-xs font-semibold uppercase opacity-70">
               Bar Indeterminate
             </h3>
-            <ProgressBar isIndeterminate label="Processing" color="accent" />
+            <ProgressBar
+              isIndeterminate
+              label="Processing"
+              color="accent"
+            />
           </div>
 
           <div class="space-y-3">
@@ -5000,16 +5493,33 @@ export default function App() {
               Progress Circle
             </h3>
             <div class="flex flex-wrap items-center gap-4">
-              <ProgressCircle value={72} size="lg" color="accent" />
-              <ProgressCircle value={45} size="md" color="success" />
-              <ProgressCircle isIndeterminate size="sm" color="warning" />
+              <ProgressCircle
+                value={72}
+                size="lg"
+                color="accent"
+              />
+              <ProgressCircle
+                value={45}
+                size="md"
+                color="success"
+              />
+              <ProgressCircle
+                isIndeterminate
+                size="sm"
+                color="warning"
+              />
             </div>
           </div>
 
           <div class="space-y-3">
             <h3 class="text-xs font-semibold uppercase opacity-70">Meter</h3>
             <div class="grid gap-4">
-              <Meter value={60} size="md" color="accent" aria-label="Storage usage">
+              <Meter
+                value={60}
+                size="md"
+                color="accent"
+                aria-label="Storage usage"
+              >
                 <Label>Storage</Label>
                 <Meter.Output />
                 <Meter.Track>
@@ -5062,10 +5572,19 @@ export default function App() {
           <div class="space-y-3">
             <h3 class="text-xs font-semibold uppercase opacity-70">Pulse</h3>
             <div class="flex items-center gap-4">
-              <Skeleton animationType="pulse" class="h-12 w-12 rounded-full" />
+              <Skeleton
+                animationType="pulse"
+                class="h-12 w-12 rounded-full"
+              />
               <div class="flex flex-col gap-2">
-                <Skeleton animationType="pulse" class="h-4 w-40 rounded" />
-                <Skeleton animationType="pulse" class="h-3 w-28 rounded" />
+                <Skeleton
+                  animationType="pulse"
+                  class="h-4 w-40 rounded"
+                />
+                <Skeleton
+                  animationType="pulse"
+                  class="h-3 w-28 rounded"
+                />
               </div>
             </div>
           </div>
@@ -5095,7 +5614,12 @@ export default function App() {
             <h3 class="text-xs font-semibold uppercase opacity-70">Sizes</h3>
             <div class="flex items-center gap-4">
               <For each={["xs", "sm", "md", "lg", "xl"] as const}>
-                {(size) => <Spinner size={size} color="accent" />}
+                {(size) => (
+                  <Spinner
+                    size={size}
+                    color="accent"
+                  />
+                )}
               </For>
             </div>
           </div>
@@ -5108,7 +5632,12 @@ export default function App() {
                   ["current", "accent", "success", "warning", "danger"] as const
                 }
               >
-                {(color) => <Spinner size="lg" color={color} />}
+                {(color) => (
+                  <Spinner
+                    size="lg"
+                    color={color}
+                  />
+                )}
               </For>
             </div>
           </div>
@@ -5130,7 +5659,11 @@ export default function App() {
               >
                 {(variant) => (
                   <div class="flex flex-col items-center gap-2">
-                    <Spinner size="lg" variant={variant} color="accent" />
+                    <Spinner
+                      size="lg"
+                      variant={variant}
+                      color="accent"
+                    />
                     <span class="text-xs opacity-70">{variant}</span>
                   </div>
                 )}
@@ -5157,7 +5690,11 @@ export default function App() {
                   {
                     title: "Microphone",
                     icon: (
-                      <Icon name="icon-[lucide--mic]" width={20} height={20} />
+                      <Icon
+                        name="icon-[lucide--mic]"
+                        width={20}
+                        height={20}
+                      />
                     ),
                     onClick: () => alert("Mic toggled"),
                   },
@@ -5208,7 +5745,11 @@ export default function App() {
                   {
                     title: "Leave",
                     icon: (
-                      <Icon name="icon-[lucide--x]" width={20} height={20} />
+                      <Icon
+                        name="icon-[lucide--x]"
+                        width={20}
+                        height={20}
+                      />
                     ),
                     onClick: () => alert("Leave call"),
                   },
@@ -5227,7 +5768,11 @@ export default function App() {
                   {
                     title: "Bold",
                     icon: (
-                      <Icon name="icon-[lucide--bold]" width={16} height={16} />
+                      <Icon
+                        name="icon-[lucide--bold]"
+                        width={16}
+                        height={16}
+                      />
                     ),
                     onClick: () => {},
                   },
@@ -5256,7 +5801,11 @@ export default function App() {
                   {
                     title: "Link",
                     icon: (
-                      <Icon name="icon-[lucide--link]" width={16} height={16} />
+                      <Icon
+                        name="icon-[lucide--link]"
+                        width={16}
+                        height={16}
+                      />
                     ),
                     onClick: () => {},
                   },
@@ -5283,7 +5832,11 @@ export default function App() {
                   {
                     title: "Mic",
                     icon: (
-                      <Icon name="icon-[lucide--mic]" width={18} height={18} />
+                      <Icon
+                        name="icon-[lucide--mic]"
+                        width={18}
+                        height={18}
+                      />
                     ),
                     onClick: () => {},
                   },
@@ -5301,7 +5854,11 @@ export default function App() {
                   {
                     title: "End",
                     icon: (
-                      <Icon name="icon-[lucide--x]" width={18} height={18} />
+                      <Icon
+                        name="icon-[lucide--x]"
+                        width={18}
+                        height={18}
+                      />
                     ),
                     onClick: () => {},
                   },
@@ -5372,7 +5929,10 @@ export default function App() {
                             <LanguageSwitcher i18n={languageSwitcherI18n} />
                           </div>
                           <Drawer.Close>
-                            <Button class="w-full" variant="secondary">
+                            <Button
+                              class="w-full"
+                              variant="secondary"
+                            >
                               Close
                             </Button>
                           </Drawer.Close>
@@ -5425,66 +5985,144 @@ export default function App() {
         </section>
 
         <section class="space-y-4 rounded-xl border border-base-300 bg-base-200 p-4">
-          <div>
+          <div class="flex flex-wrap items-start justify-between gap-3">
+            <div>
+              <h2 class="text-sm font-semibold">Glass Theme Editor</h2>
+              <p class="text-xs opacity-70">
+                Match the glassmorphism generator controls and copy the
+                resulting theme recipe.
+              </p>
+            </div>
+            <Button
+              size="sm"
+              variant="outline"
+              onClick={resetGlassSettings}
+            >
+              Reset glass
+            </Button>
+          </div>
+
+          <div
+            class="min-h-[760px] overflow-hidden rounded-xl border border-base-300 p-6"
+            style={{
+              "background-image": `linear-gradient(180deg, rgb(0 0 0 / 10%), rgb(0 0 0 / 18%)), url(${glassDemoBackground})`,
+              "background-position": "center",
+              "background-size": "cover",
+            }}
+          >
+            <GlassPanel class="mx-auto max-w-[980px] p-8 text-white md:p-12">
+              <div class="mb-10 flex items-center justify-between gap-4">
+                <h3 class="text-4xl font-bold">Settings</h3>
+                <span class="text-sm opacity-70">GlassPanel theme preview</span>
+              </div>
+
+              <div class="space-y-10">
+                <label class="block space-y-4">
+                  <span class="flex items-center justify-between gap-3">
+                    <span class="text-2xl font-bold">Blur value</span>
+                    <code class="text-3xl font-bold text-lime-400">
+                      {glassBlur()}
+                    </code>
+                  </span>
+                  <input
+                    class="h-3 w-full accent-lime-400"
+                    type="range"
+                    min="0"
+                    max="48"
+                    step="1"
+                    value={glassBlur()}
+                    onInput={(event) =>
+                      setGlassBlur(Number(event.currentTarget.value))
+                    }
+                  />
+                </label>
+
+                <label class="block space-y-4">
+                  <span class="flex items-center justify-between gap-3">
+                    <span class="text-2xl font-bold">Opacity</span>
+                    <code class="text-3xl font-bold text-lime-400">
+                      {(glassRefraction() / 100).toFixed(2)}
+                    </code>
+                  </span>
+                  <input
+                    class="h-3 w-full accent-lime-400"
+                    type="range"
+                    min="0"
+                    max="40"
+                    step="1"
+                    value={glassRefraction()}
+                    onInput={(event) =>
+                      setGlassRefraction(Number(event.currentTarget.value))
+                    }
+                  />
+                </label>
+
+                <label class="block space-y-4">
+                  <span class="flex items-center justify-between gap-3">
+                    <span class="text-2xl font-bold">Border opacity</span>
+                    <code class="text-3xl font-bold text-lime-400">
+                      {(glassBorderOpacity() / 100).toFixed(2)}
+                    </code>
+                  </span>
+                  <input
+                    class="h-3 w-full accent-lime-400"
+                    type="range"
+                    min="0"
+                    max="80"
+                    step="1"
+                    value={glassBorderOpacity()}
+                    onInput={(event) =>
+                      setGlassBorderOpacity(Number(event.currentTarget.value))
+                    }
+                  />
+                </label>
+
+                <label class="block space-y-4">
+                  <span class="flex items-center justify-between gap-3">
+                    <span class="text-2xl font-bold">Depth</span>
+                    <code class="text-3xl font-bold text-lime-400">
+                      {glassDepth()}
+                    </code>
+                  </span>
+                  <input
+                    class="h-3 w-full accent-lime-400"
+                    type="range"
+                    min="0"
+                    max="30"
+                    step="1"
+                    value={glassDepth()}
+                    onInput={(event) =>
+                      setGlassDepth(Number(event.currentTarget.value))
+                    }
+                  />
+                </label>
+
+                <pre class="max-h-64 overflow-auto rounded-lg bg-black/45 p-6 text-sm leading-relaxed shadow-xl md:text-xl">
+                  <code>{glassCssSnippet()}</code>
+                </pre>
+              </div>
+            </GlassPanel>
+          </div>
+
+          <div class="space-y-3">
             <h2 class="text-sm font-semibold">Glass Panel</h2>
             <p class="text-xs opacity-70">
               Frosted panel with optional collapse behavior, accent edges, and
               blur levels.
             </p>
-          </div>
 
-          <div class="grid gap-4 md:grid-cols-2">
-            <div class="space-y-3">
-              <div class="flex items-center gap-2">
-                <Button
-                  size="sm"
-                  variant="secondary"
-                  onClick={() => setGlassPanelOpen((current) => !current)}
-                >
-                  Toggle Controlled Panel
-                </Button>
-                <span class="text-xs opacity-70">
-                  State: {glassPanelOpen() ? "open" : "closed"}
-                </span>
-              </div>
-              <GlassPanel
-                title="Service Health"
-                icon={
-                  <Icon
-                    name="icon-[lucide--shield-check]"
-                    width={16}
-                    height={16}
-                  />
-                }
-                collapsible
-                open={glassPanelOpen()}
-                onToggle={setGlassPanelOpen}
-                blur="lg"
-                accent="success"
+            <div class="flex items-center gap-2">
+              <Button
+                size="sm"
+                variant="secondary"
+                onClick={() => setGlassPanelOpen((current) => !current)}
               >
-                <p class="text-sm">
-                  API uptime is stable and all background jobs are running
-                  normally.
-                </p>
-              </GlassPanel>
+                Toggle Controlled Panel
+              </Button>
+              <span class="text-xs opacity-70">
+                State: {glassPanelOpen() ? "open" : "closed"}
+              </span>
             </div>
-
-            <GlassPanel
-              blur="2xl"
-              glow
-              accent="info"
-              title="Release Notes"
-              collapsible
-              defaultOpen
-            >
-              <ul class="list-disc space-y-1 pl-4 text-sm">
-                <li>Calendar and picker behaviors are now unified.</li>
-                <li>Layout primitives migrated to `.classes.ts` convention.</li>
-                <li>
-                  Icon placement now uses `startIcon` and `endIcon` slots.
-                </li>
-              </ul>
-            </GlassPanel>
           </div>
         </section>
 
@@ -5541,7 +6179,10 @@ export default function App() {
                   Motion-enabled gradient surface for callouts and promo blocks.
                 </p>
               </div>
-              <Button size="sm" variant="secondary">
+              <Button
+                size="sm"
+                variant="secondary"
+              >
                 Explore Metrics
               </Button>
             </NoiseBackground>
@@ -5616,7 +6257,10 @@ export default function App() {
                   Get started by creating a new document.
                 </EmptyState.Description>
                 <EmptyState.Actions>
-                  <Button size="sm" variant="primary">
+                  <Button
+                    size="sm"
+                    variant="primary"
+                  >
                     New Document
                   </Button>
                 </EmptyState.Actions>
@@ -5631,7 +6275,11 @@ export default function App() {
             <div class="rounded-lg border border-base-300 bg-base-100">
               <EmptyState>
                 <EmptyState.Icon>
-                  <Icon name="icon-[lucide--search]" width={48} height={48} />
+                  <Icon
+                    name="icon-[lucide--search]"
+                    width={48}
+                    height={48}
+                  />
                 </EmptyState.Icon>
                 <EmptyState.Title>No results found</EmptyState.Title>
                 <EmptyState.Description>
@@ -5639,7 +6287,10 @@ export default function App() {
                   looking for.
                 </EmptyState.Description>
                 <EmptyState.Actions>
-                  <Button size="sm" variant="secondary">
+                  <Button
+                    size="sm"
+                    variant="secondary"
+                  >
                     Clear filters
                   </Button>
                 </EmptyState.Actions>
@@ -5677,7 +6328,10 @@ export default function App() {
               <h3 class="text-xs font-semibold uppercase opacity-70">
                 Disabled
               </h3>
-              <ColorArea value={{ h: 40, s: 70, v: 85 }} isDisabled />
+              <ColorArea
+                value={{ h: 40, s: 70, v: 85 }}
+                isDisabled
+              />
             </div>
           </div>
         </section>
@@ -5710,9 +6364,19 @@ export default function App() {
                 Formats + Disabled
               </h3>
               <div class="flex flex-col gap-3">
-                <ColorField defaultValue="rgb(59, 130, 246)" format="rgb" />
-                <ColorField defaultValue="hsl(217, 91%, 60%)" format="hsl" />
-                <ColorField value="#9CA3AF" isDisabled format="hex" />
+                <ColorField
+                  defaultValue="rgb(59, 130, 246)"
+                  format="rgb"
+                />
+                <ColorField
+                  defaultValue="hsl(217, 91%, 60%)"
+                  format="hsl"
+                />
+                <ColorField
+                  value="#9CA3AF"
+                  isDisabled
+                  format="hex"
+                />
               </div>
             </div>
           </div>
@@ -5766,12 +6430,30 @@ export default function App() {
                 Sizes + Disabled
               </h3>
               <div class="flex items-center gap-3">
-                <ColorSwatch color="#8B5CF6" size="xs" />
-                <ColorSwatch color="#8B5CF6" size="sm" />
-                <ColorSwatch color="#8B5CF6" size="md" />
-                <ColorSwatch color="#8B5CF6" size="lg" />
-                <ColorSwatch color="#8B5CF6" size="xl" />
-                <ColorSwatch color="#9CA3AF" isDisabled />
+                <ColorSwatch
+                  color="#8B5CF6"
+                  size="xs"
+                />
+                <ColorSwatch
+                  color="#8B5CF6"
+                  size="sm"
+                />
+                <ColorSwatch
+                  color="#8B5CF6"
+                  size="md"
+                />
+                <ColorSwatch
+                  color="#8B5CF6"
+                  size="lg"
+                />
+                <ColorSwatch
+                  color="#8B5CF6"
+                  size="xl"
+                />
+                <ColorSwatch
+                  color="#9CA3AF"
+                  isDisabled
+                />
               </div>
             </div>
           </div>
@@ -5811,12 +6493,24 @@ export default function App() {
               </h3>
               <div class="flex flex-col gap-3">
                 <ColorSwatchPicker defaultValue="#10B981">
-                  <ColorSwatch color="#3B82F6" shape="square" />
-                  <ColorSwatch color="#10B981" shape="square" />
-                  <ColorSwatch color="#F59E0B" shape="square" />
+                  <ColorSwatch
+                    color="#3B82F6"
+                    shape="square"
+                  />
+                  <ColorSwatch
+                    color="#10B981"
+                    shape="square"
+                  />
+                  <ColorSwatch
+                    color="#F59E0B"
+                    shape="square"
+                  />
                 </ColorSwatchPicker>
 
-                <ColorSwatchPicker isDisabled defaultValue="#9CA3AF">
+                <ColorSwatchPicker
+                  isDisabled
+                  defaultValue="#9CA3AF"
+                >
                   <ColorSwatch color="#9CA3AF" />
                   <ColorSwatch color="#6B7280" />
                   <ColorSwatch color="#4B5563" />
@@ -5951,7 +6645,9 @@ export default function App() {
                       <Drawer.Handle />
                       <Drawer.CloseTrigger endIcon={closeIcon()} />
                       <Drawer.Header>
-                        <Drawer.Heading>Theme picker footer demo</Drawer.Heading>
+                        <Drawer.Heading>
+                          Theme picker footer demo
+                        </Drawer.Heading>
                       </Drawer.Header>
                       <Drawer.Body>
                         <p class="text-sm opacity-80">
@@ -5972,7 +6668,10 @@ export default function App() {
                             />
                           </div>
                           <Drawer.Close>
-                            <Button class="w-full" variant="secondary">
+                            <Button
+                              class="w-full"
+                              variant="secondary"
+                            >
                               Close
                             </Button>
                           </Drawer.Close>
@@ -6052,7 +6751,10 @@ export default function App() {
               <h3 class="text-xs font-semibold uppercase opacity-70">
                 Single-open mode
               </h3>
-              <Accordion selectionMode="single" defaultValue="billing">
+              <Accordion
+                selectionMode="single"
+                defaultValue="billing"
+              >
                 <Accordion.Item value="billing">
                   <Accordion.Trigger>Billing</Accordion.Trigger>
                   <Accordion.Content>
@@ -6163,7 +6865,10 @@ export default function App() {
 
           <div class="space-y-3">
             <h3 class="text-xs font-semibold uppercase opacity-70">Grid</h3>
-            <Grid cols={{ base: "1", sm: "2", lg: "4" }} gap="md">
+            <Grid
+              cols={{ base: "1", sm: "2", lg: "4" }}
+              gap="md"
+            >
               <For each={["One", "Two", "Three", "Four"]}>
                 {(item) => (
                   <div class="rounded-lg border border-base-300 bg-base-100 px-3 py-4 text-center text-sm">
@@ -6181,31 +6886,74 @@ export default function App() {
                 aria-label="Text formatting toolbar"
                 class="rounded-lg border border-base-300 bg-base-100 p-2"
               >
-                <Button size="sm" variant="secondary">
+                <Button
+                  size="sm"
+                  variant="secondary"
+                >
                   Bold
                 </Button>
-                <Button size="sm" variant="secondary">
+                <Button
+                  size="sm"
+                  variant="secondary"
+                >
                   Italic
                 </Button>
                 <Separator />
-                <Button size="sm" variant="ghost">
+                <Button
+                  size="sm"
+                  variant="ghost"
+                >
                   Undo
                 </Button>
-                <Button size="sm" variant="ghost">
+                <Button
+                  size="sm"
+                  variant="ghost"
+                >
                   Redo
                 </Button>
               </Toolbar>
 
-              <Toolbar aria-label="Attached tools" orientation="vertical" isAttached>
-                <Button size="sm" variant="secondary" isIconOnly aria-label="Copy">
-                  <Icon name="icon-[lucide--copy]" width={16} height={16} />
+              <Toolbar
+                aria-label="Attached tools"
+                orientation="vertical"
+                isAttached
+              >
+                <Button
+                  size="sm"
+                  variant="secondary"
+                  isIconOnly
+                  aria-label="Copy"
+                >
+                  <Icon
+                    name="icon-[lucide--copy]"
+                    width={16}
+                    height={16}
+                  />
                 </Button>
-                <Button size="sm" variant="secondary" isIconOnly aria-label="Scissors">
-                  <Icon name="icon-[lucide--scissors]" width={16} height={16} />
+                <Button
+                  size="sm"
+                  variant="secondary"
+                  isIconOnly
+                  aria-label="Scissors"
+                >
+                  <Icon
+                    name="icon-[lucide--scissors]"
+                    width={16}
+                    height={16}
+                  />
                 </Button>
                 <Separator />
-                <Button size="sm" variant="secondary" isIconOnly aria-label="Download">
-                  <Icon name="icon-[lucide--download]" width={16} height={16} />
+                <Button
+                  size="sm"
+                  variant="secondary"
+                  isIconOnly
+                  aria-label="Download"
+                >
+                  <Icon
+                    name="icon-[lucide--download]"
+                    width={16}
+                    height={16}
+                  />
                 </Button>
               </Toolbar>
             </div>
@@ -6214,7 +6962,10 @@ export default function App() {
           <div class="space-y-3">
             <h3 class="text-xs font-semibold uppercase opacity-70">Navbar</h3>
             <Navbar.Stack class="rounded-lg border border-base-300 overflow-hidden">
-              <Navbar.Row color="ghost" bordered>
+              <Navbar.Row
+                color="ghost"
+                bordered
+              >
                 <Navbar>
                   <Navbar.Start>
                     <Text class="font-semibold">Pathscale UI</Text>

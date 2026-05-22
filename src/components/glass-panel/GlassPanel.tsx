@@ -27,11 +27,10 @@ type GlassPanelGeometry = {
   radius: number;
 };
 
-const LIQUID_DEPTH_RATIO = 0.05;
-const LIQUID_RADIUS_RATIO = 0.08;
-const LIQUID_STRENGTH_RATIO = 0.5;
-const LIQUID_CHROMATIC_ABERRATION_RATIO = 0.025;
-const LIQUID_BLUR = 2;
+const DEFAULT_GLASS_REFRACTION_DEPTH = 10;
+const DEFAULT_GLASS_REFRACTION_RADIUS_RATIO = 0.08;
+const DEFAULT_GLASS_REFRACTION_STRENGTH = 0.42;
+const DEFAULT_GLASS_CHROMATIC_ABERRATION = 0.018;
 
 const getDisplacementMap = ({
   height,
@@ -112,13 +111,13 @@ const getDisplacementFilter = ({
     <defs>
         <filter id="displace" color-interpolation-filters="sRGB">
             <feImage x="0" y="0" height="${height}" width="${width}" href="${getDisplacementMap(
-    {
-      height,
-      width,
-      radius,
-      depth,
-    },
-  )}" result="displacementMap" />
+              {
+                height,
+                width,
+                radius,
+                depth,
+              },
+            )}" result="displacementMap" />
             <feDisplacementMap
                 transform-origin="center"
                 in="SourceGraphic"
@@ -176,6 +175,15 @@ const getPx = (value: string) => {
   return Number.isFinite(parsed) ? parsed : 0;
 };
 
+const getCssNumber = (
+  style: CSSStyleDeclaration,
+  name: string,
+  fallback: number,
+) => {
+  const parsed = Number.parseFloat(style.getPropertyValue(name));
+  return Number.isFinite(parsed) ? parsed : fallback;
+};
+
 const callEventHandler = <TEvent extends Event>(
   handler: unknown,
   event: TEvent,
@@ -229,7 +237,7 @@ const GlassPanel = (props: GlassPanelProps): JSX.Element => {
   ]);
 
   const contentId = createUniqueId();
-  const blur = () => local.blur ?? "none";
+  const blur = () => local.blur ?? "md";
   const size = () => local.size ?? "md";
   const isLiquid = () => local.effect === "liquid";
   const [geometry, setGeometry] = createSignal<GlassPanelGeometry>();
@@ -287,26 +295,41 @@ const GlassPanel = (props: GlassPanelProps): JSX.Element => {
     const nextGeometry = geometry();
     if (!nextGeometry) return;
 
+    const style = window.getComputedStyle(element);
     const minSide = Math.min(nextGeometry.width, nextGeometry.height);
     const maxDepth = Math.max(1, Math.floor(minSide / 2) - 1);
-    const depth = Math.min(
-      maxDepth,
-      Math.max(10, Math.round(minSide * LIQUID_DEPTH_RATIO)) /
-        (pressed() ? 0.7 : 1),
+    const baseDepth = Math.max(
+      1,
+      getCssNumber(
+        style,
+        "--glass-refraction-depth",
+        DEFAULT_GLASS_REFRACTION_DEPTH,
+      ),
+    );
+    const depth = Math.min(maxDepth, baseDepth * (pressed() ? 1.35 : 1));
+    const radiusRatio = getCssNumber(
+      style,
+      "--glass-refraction-radius-ratio",
+      DEFAULT_GLASS_REFRACTION_RADIUS_RATIO,
+    );
+    const strengthRatio = getCssNumber(
+      style,
+      "--glass-refraction-strength",
+      DEFAULT_GLASS_REFRACTION_STRENGTH,
+    );
+    const chromaticRatio = getCssNumber(
+      style,
+      "--glass-refraction-chromatic-aberration",
+      DEFAULT_GLASS_CHROMATIC_ABERRATION,
     );
     const filter = getDisplacementFilter({
       ...nextGeometry,
-      radius: Math.max(
-        nextGeometry.radius,
-        Math.round(minSide * LIQUID_RADIUS_RATIO),
-      ),
+      radius: Math.max(nextGeometry.radius, Math.round(minSide * radiusRatio)),
       depth,
-      strength: Math.round(minSide * LIQUID_STRENGTH_RATIO),
-      chromaticAberration: Math.round(
-        minSide * LIQUID_CHROMATIC_ABERRATION_RATIO,
-      ),
+      strength: Math.round(minSide * strengthRatio),
+      chromaticAberration: Math.round(minSide * chromaticRatio),
     });
-    const backdropFilter = `blur(${LIQUID_BLUR / 2}px) url('${filter}') blur(${LIQUID_BLUR}px) brightness(var(--glass-panel-liquid-brightness, 1.1)) saturate(var(--glass-panel-liquid-saturation, 1.5))`;
+    const backdropFilter = `blur(calc(var(--glass-panel-blur, var(--glass-blur, 16px)) / 2)) url('${filter}') blur(var(--glass-panel-blur, var(--glass-blur, 16px))) brightness(var(--glass-brightness, 1)) saturate(var(--glass-saturation, 1.2))`;
 
     element.style.backdropFilter = backdropFilter;
     element.style.setProperty("-webkit-backdrop-filter", backdropFilter);
@@ -357,6 +380,10 @@ const GlassPanel = (props: GlassPanelProps): JSX.Element => {
       }}
       style={local.style}
     >
+      <span class="glass-panel__rim" aria-hidden="true" />
+      <span class="glass-panel__depth" aria-hidden="true" />
+      <span class="glass-panel__sheen" aria-hidden="true" />
+
       <Show when={local.collapsible && local.title}>
         <button
           type="button"

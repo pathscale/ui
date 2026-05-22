@@ -1,6 +1,16 @@
 .glow-card {
-  --glow-color-border: oklch(100% 0 0 / 0.3);
-  --glow-color-bg: oklch(100% 0 0 / 0.1);
+  --glow-color-border: color-mix(
+    in oklab,
+    var(--glass-highlight-color, var(--color-base-content))
+      var(--glass-border-opacity, 24%),
+    transparent
+  );
+  --glow-color-bg: color-mix(
+    in oklab,
+    var(--glass-highlight-color, var(--color-base-100))
+      var(--glass-background-opacity, 58%),
+    transparent
+  );
   position: relative;
   border-radius: inherit;
 }
@@ -28,12 +38,8 @@
   );
   z-index: 1;
   inset: -1px;
-  -webkit-mask:
-    linear-gradient(#fff 0 0) content-box,
-    linear-gradient(#fff 0 0);
-  mask:
-    linear-gradient(#fff 0 0) content-box,
-    linear-gradient(#fff 0 0);
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
   -webkit-mask-composite: xor;
   mask-composite: exclude;
   padding: 1px;
@@ -51,14 +57,6 @@
 .glow-card:hover::before,
 .glow-card:hover::after {
   opacity: 1;
-}
-
-[data-theme="light"] .glow-card::before {
-  --glow-color-border: oklch(30% 0.15 260 / 0.4);
-}
-
-[data-theme="light"] .glow-card::after {
-  --glow-color-bg: oklch(30% 0.15 260 / 0.15);
 }
 
 @media (prefers-reduced-motion: reduce) {
