@@ -30,6 +30,18 @@ export {
 } from "./presets";
 export { MotionDiv, type MotionDivProps } from "./solid";
 export {
+  Presence,
+  nextPresenceState,
+  type PresenceProps,
+  type PresenceRenderProp,
+} from "./solid";
+export {
+  AnimatedCollapse,
+  nextCollapsePhase,
+  computeCollapseStyle,
+  type AnimatedCollapseProps,
+} from "./solid";
+export {
   createPopmotionDriver,
   enablePopmotion,
   type PopmotionAnimate,

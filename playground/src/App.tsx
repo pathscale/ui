@@ -117,6 +117,7 @@ import { TableHooksExample } from "./examples/TableHooksExample";
 import { TableVirtualizedExample } from "./examples/TableVirtualizedExample";
 import { StreamingComposableExample } from "./examples/StreamingComposableExample";
 import { FormExample } from "./examples/FormExample";
+import { MotionExamples } from "./examples/MotionExamples";
 
 const BADGE_COLORS = [
   "default",
@@ -6292,6 +6293,7 @@ export default function App() {
         <TableHooksExample />
         <TableVirtualizedExample />
         <StreamingComposableExample />
+        <MotionExamples />
       </div>
       <Toast.Provider placement="top-end" />
     </main>
