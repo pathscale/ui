@@ -473,9 +473,8 @@ export default function App() {
       end: new Date(2026, 3, 22),
     });
   const [glassPanelOpen, setGlassPanelOpen] = createSignal(true);
-  const [glassBlur, setGlassBlur] = createSignal(11);
-  const [glassRefraction, setGlassRefraction] = createSignal(38);
-  const [glassBorderOpacity, setGlassBorderOpacity] = createSignal(30);
+  const [glassBlur, setGlassBlur] = createSignal(50);
+  const [glassRefraction, setGlassRefraction] = createSignal(0.08);
   const [glassDepth, setGlassDepth] = createSignal(5);
   const [controlledTimeValue, setControlledTimeValue] = createSignal("13:30");
   const disclosureItemIds = () => DISCLOSURE_ITEMS.map((item) => item.id);
@@ -502,40 +501,47 @@ export default function App() {
 
   const glassSettings = () => ({
     "--glass-blur": `${glassBlur()}px`,
-    "--glass-background-opacity": `${glassRefraction()}%`,
-    "--glass-border-opacity": `${glassBorderOpacity()}%`,
-    "--glass-inner-glow-alpha": "0",
-    "--glass-inner-glow-blur": "0px",
+    "--glass-background-opacity": `${glassRefraction() * 12}%`,
+    "--glass-border-opacity": "30%",
+    "--glass-highlight-opacity": `${glassRefraction() * 80}%`,
+    "--glass-bottom-highlight-opacity": `${glassRefraction() * 40}%`,
+    "--glass-edge-highlight-opacity": `${glassRefraction() * 100}%`,
+    "--glass-saturation": "1.2",
+    "--glass-brightness": "1",
+    "--glass-inner-glow-alpha": "0.15",
+    "--glass-inner-glow-blur": "2px",
     "--glass-inner-glow-spread": "0px",
-    "--glass-depth-sheen-opacity": `${Math.min(80, 20 + glassDepth() * 2)}%`,
-    "--glass-depth-sheen-size": `${Math.min(85, 45 + glassDepth())}%`,
-    "--glass-depth-surface-opacity": `${Math.min(24, 4 + glassDepth() * 0.6)}%`,
-    "--glass-depth-surface-size": `${Math.min(94, 70 + glassDepth() * 0.8)}%`,
+    "--glass-depth-top-glow-opacity": "8%",
+    "--glass-depth-bottom-glow-opacity": "12%",
+    "--glass-depth-sheen-opacity": `${glassDepth() * 1.5}%`,
+    "--glass-depth-sheen-size": "70%",
+    "--glass-depth-surface-opacity": "0%",
     "--glass-border-radius": "20px",
-    "--glass-refraction-depth": `${glassDepth()}px`,
-    "--glass-refraction-strength": (glassRefraction() / 100).toFixed(2),
   });
 
   const glassCssSnippet = () =>
     `:root {
   --glass-blur: ${glassBlur()}px;
-  --glass-background-opacity: ${glassRefraction()}%;
-  --glass-border-opacity: ${glassBorderOpacity()}%;
-  --glass-inner-glow-alpha: 0;
-  --glass-inner-glow-blur: 0px;
+  --glass-background-opacity: ${glassRefraction() * 12}%;
+  --glass-border-opacity: 30%;
+  --glass-highlight-opacity: ${glassRefraction() * 80}%;
+  --glass-bottom-highlight-opacity: ${glassRefraction() * 40}%;
+  --glass-edge-highlight-opacity: ${glassRefraction() * 100}%;
+  --glass-saturation: 1.2;
+  --glass-brightness: 1;
+  --glass-inner-glow-alpha: 0.15;
+  --glass-inner-glow-blur: 2px;
   --glass-inner-glow-spread: 0px;
-  --glass-depth-sheen-opacity: ${Math.min(80, 20 + glassDepth() * 2)}%;
-  --glass-depth-sheen-size: ${Math.min(85, 45 + glassDepth())}%;
-  --glass-depth-surface-opacity: ${Math.min(24, 4 + glassDepth() * 0.6)}%;
-  --glass-depth-surface-size: ${Math.min(94, 70 + glassDepth() * 0.8)}%;
-  --glass-refraction-depth: ${glassDepth()}px;
-  --glass-refraction-strength: ${(glassRefraction() / 100).toFixed(2)};
+  --glass-depth-top-glow-opacity: 8%;
+  --glass-depth-bottom-glow-opacity: 12%;
+  --glass-depth-sheen-opacity: ${glassDepth() * 1.5}%;
+  --glass-depth-sheen-size: 70%;
+  --glass-depth-surface-opacity: 0%;
 }`;
 
   const resetGlassSettings = () => {
-    setGlassBlur(11);
-    setGlassRefraction(38);
-    setGlassBorderOpacity(30);
+    setGlassBlur(50);
+    setGlassRefraction(0.08);
     setGlassDepth(5);
   };
 
@@ -6028,7 +6034,7 @@ export default function App() {
                     class="h-3 w-full accent-lime-400"
                     type="range"
                     min="0"
-                    max="48"
+                    max="50"
                     step="1"
                     value={glassBlur()}
                     onInput={(event) =>
@@ -6039,40 +6045,20 @@ export default function App() {
 
                 <label class="block space-y-4">
                   <span class="flex items-center justify-between gap-3">
-                    <span class="text-2xl font-bold">Opacity</span>
+                    <span class="text-2xl font-bold">Refraction</span>
                     <code class="text-3xl font-bold text-lime-400">
-                      {(glassRefraction() / 100).toFixed(2)}
+                      {glassRefraction().toFixed(2)}
                     </code>
                   </span>
                   <input
                     class="h-3 w-full accent-lime-400"
                     type="range"
-                    min="0"
-                    max="40"
-                    step="1"
+                    min="0.05"
+                    max="0.4"
+                    step="0.01"
                     value={glassRefraction()}
                     onInput={(event) =>
                       setGlassRefraction(Number(event.currentTarget.value))
-                    }
-                  />
-                </label>
-
-                <label class="block space-y-4">
-                  <span class="flex items-center justify-between gap-3">
-                    <span class="text-2xl font-bold">Border opacity</span>
-                    <code class="text-3xl font-bold text-lime-400">
-                      {(glassBorderOpacity() / 100).toFixed(2)}
-                    </code>
-                  </span>
-                  <input
-                    class="h-3 w-full accent-lime-400"
-                    type="range"
-                    min="0"
-                    max="80"
-                    step="1"
-                    value={glassBorderOpacity()}
-                    onInput={(event) =>
-                      setGlassBorderOpacity(Number(event.currentTarget.value))
                     }
                   />
                 </label>

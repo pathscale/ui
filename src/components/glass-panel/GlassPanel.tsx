@@ -5,8 +5,6 @@ import {
   createEffect,
   createSignal,
   createUniqueId,
-  onCleanup,
-  onMount,
   splitProps,
 } from "solid-js";
 import { twMerge } from "tailwind-merge";
@@ -20,178 +18,6 @@ import { CLASSES } from "./GlassPanel.classes";
 
 export type GlassPanelBlur = "none" | "sm" | "md" | "lg" | "xl" | "2xl";
 export type GlassPanelEffect = "default" | "liquid";
-
-type GlassPanelGeometry = {
-  width: number;
-  height: number;
-  radius: number;
-};
-
-const DEFAULT_GLASS_REFRACTION_DEPTH = 10;
-const DEFAULT_GLASS_REFRACTION_RADIUS_RATIO = 0.08;
-const DEFAULT_GLASS_REFRACTION_STRENGTH = 0.42;
-const DEFAULT_GLASS_CHROMATIC_ABERRATION = 0.018;
-
-const getDisplacementMap = ({
-  height,
-  width,
-  radius,
-  depth,
-}: GlassPanelGeometry & { depth: number }) =>
-  `data:image/svg+xml;utf8,${encodeURIComponent(`<svg height="${height}" width="${width}" viewBox="0 0 ${width} ${height}" xmlns="http://www.w3.org/2000/svg">
-    <style>
-        .mix { mix-blend-mode: screen; }
-    </style>
-    <defs>
-        <linearGradient
-          id="Y"
-          x1="0"
-          x2="0"
-          y1="${Math.ceil((radius / height) * 15)}%"
-          y2="${Math.floor(100 - (radius / height) * 15)}%">
-            <stop offset="0%" stop-color="#0F0" />
-            <stop offset="100%" stop-color="#000" />
-        </linearGradient>
-        <linearGradient
-          id="X"
-          x1="${Math.ceil((radius / width) * 15)}%"
-          x2="${Math.floor(100 - (radius / width) * 15)}%"
-          y1="0"
-          y2="0">
-            <stop offset="0%" stop-color="#F00" />
-            <stop offset="100%" stop-color="#000" />
-        </linearGradient>
-    </defs>
-
-    <rect x="0" y="0" height="${height}" width="${width}" fill="#808080" />
-    <g filter="blur(2px)">
-      <rect x="0" y="0" height="${height}" width="${width}" fill="#000080" />
-      <rect
-          x="0"
-          y="0"
-          height="${height}"
-          width="${width}"
-          fill="url(#Y)"
-          class="mix"
-      />
-      <rect
-          x="0"
-          y="0"
-          height="${height}"
-          width="${width}"
-          fill="url(#X)"
-          class="mix"
-      />
-      <rect
-          x="${depth}"
-          y="${depth}"
-          height="${height - 2 * depth}"
-          width="${width - 2 * depth}"
-          fill="#808080"
-          rx="${radius}"
-          ry="${radius}"
-          filter="blur(${depth}px)"
-      />
-    </g>
-</svg>`)}`;
-
-const getDisplacementFilter = ({
-  height,
-  width,
-  radius,
-  depth,
-  strength,
-  chromaticAberration,
-}: GlassPanelGeometry & {
-  depth: number;
-  strength: number;
-  chromaticAberration: number;
-}) =>
-  `data:image/svg+xml;utf8,${encodeURIComponent(`<svg height="${height}" width="${width}" viewBox="0 0 ${width} ${height}" xmlns="http://www.w3.org/2000/svg">
-    <defs>
-        <filter id="displace" color-interpolation-filters="sRGB">
-            <feImage x="0" y="0" height="${height}" width="${width}" href="${getDisplacementMap(
-              {
-                height,
-                width,
-                radius,
-                depth,
-              },
-            )}" result="displacementMap" />
-            <feDisplacementMap
-                transform-origin="center"
-                in="SourceGraphic"
-                in2="displacementMap"
-                scale="${strength + chromaticAberration * 2}"
-                xChannelSelector="R"
-                yChannelSelector="G"
-            />
-            <feColorMatrix
-            type="matrix"
-            values="1 0 0 0 0
-                    0 0 0 0 0
-                    0 0 0 0 0
-                    0 0 0 1 0"
-            result="displacedR"
-                    />
-            <feDisplacementMap
-                in="SourceGraphic"
-                in2="displacementMap"
-                scale="${strength + chromaticAberration}"
-                xChannelSelector="R"
-                yChannelSelector="G"
-            />
-            <feColorMatrix
-            type="matrix"
-            values="0 0 0 0 0
-                    0 1 0 0 0
-                    0 0 0 0 0
-                    0 0 0 1 0"
-            result="displacedG"
-                    />
-            <feDisplacementMap
-                    in="SourceGraphic"
-                    in2="displacementMap"
-                    scale="${strength}"
-                    xChannelSelector="R"
-                    yChannelSelector="G"
-                />
-                <feColorMatrix
-                type="matrix"
-                values="0 0 0 0 0
-                        0 0 0 0 0
-                        0 0 1 0 0
-                        0 0 0 1 0"
-                result="displacedB"
-                        />
-              <feBlend in="displacedR" in2="displacedG" mode="screen"/>
-              <feBlend in2="displacedB" mode="screen"/>
-        </filter>
-    </defs>
-</svg>`)}#displace`;
-
-const getPx = (value: string) => {
-  const parsed = Number.parseFloat(value);
-  return Number.isFinite(parsed) ? parsed : 0;
-};
-
-const getCssNumber = (
-  style: CSSStyleDeclaration,
-  name: string,
-  fallback: number,
-) => {
-  const parsed = Number.parseFloat(style.getPropertyValue(name));
-  return Number.isFinite(parsed) ? parsed : fallback;
-};
-
-const callEventHandler = <TEvent extends Event>(
-  handler: unknown,
-  event: TEvent,
-) => {
-  if (typeof handler === "function") {
-    (handler as (event: TEvent) => void)(event);
-  }
-};
 
 export type GlassPanelProps = IComponentBaseProps &
   JSX.HTMLAttributes<HTMLDivElement> & {
@@ -240,8 +66,6 @@ const GlassPanel = (props: GlassPanelProps): JSX.Element => {
   const blur = () => local.blur ?? "md";
   const size = () => local.size ?? "md";
   const isLiquid = () => local.effect === "liquid";
-  const [geometry, setGeometry] = createSignal<GlassPanelGeometry>();
-  const [pressed, setPressed] = createSignal(false);
 
   const isControlled = () => local.open !== undefined;
   const [internalOpen, setInternalOpen] = createSignal(
@@ -258,79 +82,18 @@ const GlassPanel = (props: GlassPanelProps): JSX.Element => {
     local.onToggle?.(next);
   };
 
-  const syncGeometry = () => {
-    if (!rootRef) return;
-
-    const rect = rootRef.getBoundingClientRect();
-    if (rect.width <= 0 || rect.height <= 0) return;
-
-    const style = window.getComputedStyle(rootRef);
-    setGeometry({
-      width: Math.round(rect.width),
-      height: Math.round(rect.height),
-      radius: Math.round(getPx(style.borderTopLeftRadius)),
-    });
-  };
-
-  onMount(() => {
-    syncGeometry();
-
-    if (!rootRef || typeof ResizeObserver === "undefined") return;
-
-    const observer = new ResizeObserver(syncGeometry);
-    observer.observe(rootRef);
-    onCleanup(() => observer.disconnect());
-  });
-
   createEffect(() => {
     const element = rootRef;
     if (!element) return;
 
-    if (!isLiquid()) {
+    if (!isLiquid() || local.transparent) {
       element.style.removeProperty("backdrop-filter");
       element.style.removeProperty("-webkit-backdrop-filter");
       return;
     }
 
-    const nextGeometry = geometry();
-    if (!nextGeometry) return;
-
-    const style = window.getComputedStyle(element);
-    const minSide = Math.min(nextGeometry.width, nextGeometry.height);
-    const maxDepth = Math.max(1, Math.floor(minSide / 2) - 1);
-    const baseDepth = Math.max(
-      1,
-      getCssNumber(
-        style,
-        "--glass-refraction-depth",
-        DEFAULT_GLASS_REFRACTION_DEPTH,
-      ),
-    );
-    const depth = Math.min(maxDepth, baseDepth * (pressed() ? 1.35 : 1));
-    const radiusRatio = getCssNumber(
-      style,
-      "--glass-refraction-radius-ratio",
-      DEFAULT_GLASS_REFRACTION_RADIUS_RATIO,
-    );
-    const strengthRatio = getCssNumber(
-      style,
-      "--glass-refraction-strength",
-      DEFAULT_GLASS_REFRACTION_STRENGTH,
-    );
-    const chromaticRatio = getCssNumber(
-      style,
-      "--glass-refraction-chromatic-aberration",
-      DEFAULT_GLASS_CHROMATIC_ABERRATION,
-    );
-    const filter = getDisplacementFilter({
-      ...nextGeometry,
-      radius: Math.max(nextGeometry.radius, Math.round(minSide * radiusRatio)),
-      depth,
-      strength: Math.round(minSide * strengthRatio),
-      chromaticAberration: Math.round(minSide * chromaticRatio),
-    });
-    const backdropFilter = `blur(calc(var(--glass-panel-blur, var(--glass-blur, 16px)) / 2)) url('${filter}') blur(var(--glass-panel-blur, var(--glass-blur, 16px))) brightness(var(--glass-brightness, 1)) saturate(var(--glass-saturation, 1.2))`;
-
+    const backdropFilter =
+      "blur(var(--glass-panel-blur)) saturate(var(--glass-saturation, 1.2)) brightness(var(--glass-brightness, 1))";
     element.style.backdropFilter = backdropFilter;
     element.style.setProperty("-webkit-backdrop-filter", backdropFilter);
   });
@@ -366,18 +129,6 @@ const GlassPanel = (props: GlassPanelProps): JSX.Element => {
       {...{ class: containerClasses() }}
       data-theme={local.dataTheme}
       data-glass-effect={isLiquid() ? "liquid" : undefined}
-      onMouseDown={(event) => {
-        callEventHandler(others.onMouseDown, event);
-        setPressed(true);
-      }}
-      onMouseUp={(event) => {
-        callEventHandler(others.onMouseUp, event);
-        setPressed(false);
-      }}
-      onMouseLeave={(event) => {
-        callEventHandler(others.onMouseLeave, event);
-        setPressed(false);
-      }}
       style={local.style}
     >
       <span class="glass-panel__rim" aria-hidden="true" />
