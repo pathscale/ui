@@ -289,7 +289,7 @@ export type {
 export { default as Flex } from "./components/flex";
 export { default as GlassPanel } from "./components/glass-panel";
 export { GlowCard, type GlowCardProps } from "./components/glow-card";
-export type { GlassPanelProps, GlassPanelBlur } from "./components/glass-panel";
+export type { GlassPanelProps } from "./components/glass-panel";
 export { default as Footer } from "./components/footer";
 export type { FooterProps, FooterTitleProps } from "./components/footer";
 export {

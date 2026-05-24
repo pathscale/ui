@@ -1,6 +1,1 @@
-export {
-  default,
-  type GlassPanelBlur,
-  type GlassPanelEffect,
-  type GlassPanelProps,
-} from "./GlassPanel";
+export { default, type GlassPanelProps } from "./GlassPanel";

@@ -73,8 +73,19 @@
     box-shadow: var(--glass-shadow-depth, 0 8px 32px rgb(0 0 0 / 10%)), inset 0
       1px 0 var(--glass-panel-highlight), inset 0 -1px 0
       var(--glass-panel-bottom-highlight);
-    backdrop-filter: blur(var(--glass-panel-blur));
-    -webkit-backdrop-filter: blur(var(--glass-panel-blur));
+    backdrop-filter: blur(var(--glass-panel-blur))
+      saturate(var(--glass-saturation, 1.2))
+      brightness(var(--glass-brightness, 1));
+    -webkit-backdrop-filter: blur(var(--glass-panel-blur))
+      saturate(var(--glass-saturation, 1.2))
+      brightness(var(--glass-brightness, 1));
+    background-clip: padding-box;
+  }
+
+  .glass-panel > .glass-panel__header-button,
+  .glass-panel > .glass-panel__content {
+    position: relative;
+    z-index: 2;
   }
 
   .glass-panel::before,
@@ -127,107 +138,7 @@
     display: none;
   }
 
-  .glass-panel--glow {
-    box-shadow: var(--glass-shadow-depth, 0 8px 32px rgb(0 0 0 / 10%)), 0 0 0
-      1px
-      color-mix(
-        in oklab,
-        var(--color-primary) var(--glass-glow-ring-opacity, 10%),
-        transparent
-      ), inset 0 1px 0 var(--glass-panel-highlight), inset 0 -1px 0
-      var(--glass-panel-bottom-highlight);
-  }
-
-  .glass-panel--liquid {
-    backdrop-filter: blur(var(--glass-panel-blur))
-      saturate(var(--glass-saturation, 1.2)) brightness(var(--glass-brightness, 1));
-    -webkit-backdrop-filter: blur(var(--glass-panel-blur))
-      saturate(var(--glass-saturation, 1.2)) brightness(var(--glass-brightness, 1));
-    background-clip: padding-box;
-  }
-
-  .glass-panel--liquid > .glass-panel__header-button,
-  .glass-panel--liquid > .glass-panel__content {
-    position: relative;
-    z-index: 2;
-  }
-
-  .glass-panel--blur-none {
-    backdrop-filter: none;
-    -webkit-backdrop-filter: none;
-  }
-
-  .glass-panel--blur-sm {
-    --glass-panel-blur: calc(var(--glass-blur, 11px) * 0.5);
-  }
-
-  .glass-panel--blur-md {
-    --glass-panel-blur: var(--glass-blur, 11px);
-  }
-
-  .glass-panel--blur-lg {
-    --glass-panel-blur: calc(var(--glass-blur, 11px) * 1.25);
-  }
-
-  .glass-panel--blur-xl {
-    --glass-panel-blur: calc(var(--glass-blur, 11px) * 1.5);
-  }
-
-  .glass-panel--blur-2xl {
-    --glass-panel-blur: calc(var(--glass-blur, 11px) * 2);
-  }
-
-  .glass-panel--accent-primary,
-  .glass-panel--accent-secondary,
-  .glass-panel--accent-accent,
-  .glass-panel--accent-info,
-  .glass-panel--accent-success,
-  .glass-panel--accent-warning,
-  .glass-panel--accent-error,
-  .glass-panel--accent-neutral,
-  .glass-panel--accent-ghost {
-    border-left-width: 2px;
-  }
-
-  .glass-panel--accent-primary {
-    border-left-color: var(--color-primary);
-  }
-
-  .glass-panel--accent-secondary {
-    border-left-color: var(--color-secondary);
-  }
-
-  .glass-panel--accent-accent {
-    border-left-color: var(--color-accent);
-  }
-
-  .glass-panel--accent-info {
-    border-left-color: var(--color-info);
-  }
-
-  .glass-panel--accent-success {
-    border-left-color: var(--color-success);
-  }
-
-  .glass-panel--accent-warning {
-    border-left-color: var(--color-warning);
-  }
-
-  .glass-panel--accent-error {
-    border-left-color: var(--color-error);
-  }
-
-  .glass-panel--accent-neutral {
-    border-left-color: var(--color-neutral);
-  }
-
-  .glass-panel--accent-ghost {
-    border-left-color: transparent;
-  }
-
   .glass-panel__header-button {
-    position: relative;
-    z-index: 2;
     display: flex;
     width: 100%;
     cursor: pointer;
@@ -323,8 +234,6 @@
   }
 
   .glass-panel__content {
-    position: relative;
-    z-index: 2;
     display: grid;
     transition: grid-template-rows 200ms ease-in-out, opacity 200ms ease-in-out;
   }

@@ -1,13 +1,5 @@
 export const CLASSES = {
   base: "glass-panel",
-  blur: {
-    none: "glass-panel--blur-none",
-    sm: "glass-panel--blur-sm",
-    md: "glass-panel--blur-md",
-    lg: "glass-panel--blur-lg",
-    xl: "glass-panel--blur-xl",
-    "2xl": "glass-panel--blur-2xl",
-  },
   size: {
     xs: "glass-panel__content--xs",
     sm: "glass-panel__content--sm",
@@ -15,21 +7,8 @@ export const CLASSES = {
     lg: "glass-panel__content--lg",
     xl: "glass-panel__content--xl",
   },
-  accent: {
-    primary: "glass-panel--accent-primary",
-    secondary: "glass-panel--accent-secondary",
-    accent: "glass-panel--accent-accent",
-    info: "glass-panel--accent-info",
-    success: "glass-panel--accent-success",
-    warning: "glass-panel--accent-warning",
-    error: "glass-panel--accent-error",
-    neutral: "glass-panel--accent-neutral",
-    ghost: "glass-panel--accent-ghost",
-  },
   flag: {
-    liquid: "glass-panel--liquid",
     transparent: "glass-panel--transparent",
-    glow: "glass-panel--glow",
     contentCollapsed: "glass-panel__content--collapsed",
     contentCollapsible: "glass-panel__content--collapsible",
     contentInnerHidden: "glass-panel__content-inner--hidden",
