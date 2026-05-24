@@ -73,10 +73,10 @@
     box-shadow: var(--glass-shadow-depth, 0 8px 32px rgb(0 0 0 / 10%)), inset 0
       1px 0 var(--glass-panel-highlight), inset 0 -1px 0
       var(--glass-panel-bottom-highlight);
-    backdrop-filter: blur(var(--glass-panel-blur))
+    -webkit-backdrop-filter: blur(var(--glass-panel-blur))
       saturate(var(--glass-saturation, 1.2))
       brightness(var(--glass-brightness, 1));
-    -webkit-backdrop-filter: blur(var(--glass-panel-blur))
+    backdrop-filter: blur(var(--glass-panel-blur))
       saturate(var(--glass-saturation, 1.2))
       brightness(var(--glass-brightness, 1));
     background-clip: padding-box;
@@ -126,8 +126,8 @@
     background: transparent;
     border-color: transparent;
     box-shadow: none;
-    backdrop-filter: none;
     -webkit-backdrop-filter: none;
+    backdrop-filter: none;
   }
 
   .glass-panel--transparent::before,
