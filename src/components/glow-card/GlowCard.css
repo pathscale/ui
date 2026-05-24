@@ -1,101 +1,103 @@
-.glow-card {
-  --glow-card-blur: var(--glass-blur, 11px);
-  --glow-color-border: color-mix(
-    in oklab,
-    var(--glass-highlight-color, var(--color-base-content))
-      var(--glass-border-opacity, 24%),
-    transparent
-  );
-  --glow-color-bg: color-mix(
-    in oklab,
-    var(--glass-highlight-color, var(--color-base-100))
-      var(--glass-background-opacity, 58%),
-    transparent
-  );
-  position: relative;
-  border-radius: inherit;
-  background: color-mix(
-    in oklab,
-    var(--glass-background-color, var(--color-base-100))
-      var(--glass-background-opacity, 38%),
-    transparent
-  );
-  border: 1px solid
-    color-mix(
+@layer components {
+  .glow-card {
+    --glow-card-blur: var(--glass-blur, 11px);
+    --glow-color-border: color-mix(
       in oklab,
-      var(--glass-border-color, white) var(--glass-border-opacity, 30%),
+      var(--glass-highlight-color, var(--color-base-content))
+        var(--glass-border-opacity, 24%),
       transparent
     );
-  backdrop-filter: blur(var(--glow-card-blur))
-    saturate(var(--glass-saturation, 1.2))
-    brightness(var(--glass-brightness, 1));
-  -webkit-backdrop-filter: blur(var(--glow-card-blur))
-    saturate(var(--glass-saturation, 1.2))
-    brightness(var(--glass-brightness, 1));
-  background-clip: padding-box;
-}
-
-.glow-card--isolate {
-  isolation: isolate;
-}
-
-.glow-card::before,
-.glow-card::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  border-radius: inherit;
-  opacity: 0;
-  transition: opacity 0.3s ease;
-  pointer-events: none;
-}
-
-.glow-card::before {
-  background: radial-gradient(
-    250px circle at var(--mouse-x) var(--mouse-y),
-    var(--glow-color-border),
-    transparent 80%
-  );
-  z-index: 1;
-  inset: -1px;
-  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-  mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-  -webkit-mask-composite: xor;
-  mask-composite: exclude;
-  padding: 1px;
-}
-
-.glow-card::after {
-  background: radial-gradient(
-    400px circle at var(--mouse-x) var(--mouse-y),
-    var(--glow-color-bg),
-    transparent 80%
-  );
-  z-index: 0;
-}
-
-.glow-card:hover::before,
-.glow-card:hover::after {
-  opacity: 1;
-}
-
-@supports not (
-    (backdrop-filter: blur(1px)) or
-    (-webkit-backdrop-filter: blur(1px))
-  ) {
-  .glow-card {
+    --glow-color-bg: color-mix(
+      in oklab,
+      var(--glass-highlight-color, var(--color-base-100))
+        var(--glass-background-opacity, 58%),
+      transparent
+    );
+    position: relative;
+    border-radius: inherit;
     background: color-mix(
       in oklab,
-      var(--glass-background-color, var(--color-base-100))
-        var(--glass-fallback-background-opacity, 78%),
+      var(--glass-background-color, white) var(--glass-background-opacity, 38%),
       transparent
     );
+    border: 1px solid
+      color-mix(
+        in oklab,
+        var(--glass-border-color, white) var(--glass-border-opacity, 30%),
+        transparent
+      );
+    backdrop-filter: blur(var(--glow-card-blur))
+      saturate(var(--glass-saturation, 1.2))
+      brightness(var(--glass-brightness, 1));
+    -webkit-backdrop-filter: blur(var(--glow-card-blur))
+      saturate(var(--glass-saturation, 1.2))
+      brightness(var(--glass-brightness, 1));
+    background-clip: padding-box;
   }
-}
 
-@media (prefers-reduced-motion: reduce) {
+  .glow-card--isolate {
+    isolation: isolate;
+  }
+
   .glow-card::before,
   .glow-card::after {
-    opacity: 0 !important;
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    pointer-events: none;
+  }
+
+  .glow-card::before {
+    background: radial-gradient(
+      250px circle at var(--mouse-x) var(--mouse-y),
+      var(--glow-color-border),
+      transparent 80%
+    );
+    z-index: 1;
+    inset: -1px;
+    -webkit-mask: linear-gradient(#fff 0 0) content-box,
+      linear-gradient(#fff 0 0);
+    mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    padding: 1px;
+  }
+
+  .glow-card::after {
+    background: radial-gradient(
+      400px circle at var(--mouse-x) var(--mouse-y),
+      var(--glow-color-bg),
+      transparent 80%
+    );
+    z-index: 0;
+  }
+
+  .glow-card:hover::before,
+  .glow-card:hover::after {
+    opacity: 1;
+  }
+
+  @supports not (
+      (backdrop-filter: blur(1px)) or
+      (-webkit-backdrop-filter: blur(1px))
+    ) {
+    .glow-card {
+      background: color-mix(
+        in oklab,
+        var(--glass-background-color, white)
+          var(--glass-fallback-background-opacity, 78%),
+        transparent
+      );
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .glow-card::before,
+    .glow-card::after {
+      opacity: 0 !important;
+    }
   }
 }
