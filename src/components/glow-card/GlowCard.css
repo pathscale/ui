@@ -26,9 +26,6 @@
         var(--glass-border-color, white) var(--glass-border-opacity, 30%),
         transparent
       );
-    -webkit-backdrop-filter: blur(var(--glow-card-blur))
-      saturate(var(--glass-saturation, 1.2))
-      brightness(var(--glass-brightness, 1));
     backdrop-filter: blur(var(--glow-card-blur))
       saturate(var(--glass-saturation, 1.2))
       brightness(var(--glass-brightness, 1));
