@@ -18,13 +18,13 @@
     );
     --glass-panel-bottom-highlight: color-mix(
       in oklab,
-      var(--glass-highlight-color, white)
+      var(--glass-bottom-highlight-color, var(--glass-highlight-color, white))
         var(--glass-bottom-highlight-opacity, 10%),
       transparent
     );
     --glass-panel-edge-highlight: color-mix(
       in oklab,
-      var(--glass-highlight-color, white)
+      var(--glass-refraction-color, var(--glass-highlight-color, white))
         var(--glass-edge-highlight-opacity, 30%),
       transparent
     );
@@ -57,7 +57,7 @@
     );
     --glass-panel-depth-bottom-glow: color-mix(
       in oklab,
-      var(--glass-highlight-color, white)
+      var(--glass-bottom-highlight-color, var(--glass-highlight-color, white))
         var(--glass-depth-bottom-glow-opacity, 12%),
       transparent
     );
@@ -134,6 +134,83 @@
     display: none;
   }
 
+  .glass-panel--tone-secondary:not(.glass-panel--transparent) {
+    background: color-mix(
+      in oklab,
+      var(--glass-background-color, white)
+        var(
+          --glass-app-secondary-surface-opacity,
+          var(--glass-app-surface-elevated-opacity, 0%)
+        ),
+      transparent
+    );
+    border-color: color-mix(
+      in oklab,
+      var(--glass-border-color, white)
+        var(
+          --glass-app-secondary-border-opacity,
+          var(--glass-app-border-opacity, 0%)
+        ),
+      transparent
+    );
+  }
+
+  .glass-panel--highlight:not(.glass-panel--transparent) {
+    background: linear-gradient(
+      135deg,
+      color-mix(
+        in oklab,
+        var(--color-primary) var(--glass-app-highlight-tint-opacity, 14%),
+        transparent
+      ),
+      color-mix(
+        in oklab,
+        var(--glass-highlight-color, white)
+          var(--glass-app-highlight-surface-opacity, 12%),
+        transparent
+      )
+    );
+    border-color: color-mix(
+      in oklab,
+      var(--color-primary) var(--glass-app-highlight-border-opacity, 28%),
+      transparent
+    );
+    box-shadow: var(--glass-shadow-depth, 0 8px 32px rgb(0 0 0 / 10%)), 0 10px
+      24px
+      color-mix(
+        in oklab,
+        var(--color-primary) var(--glass-app-highlight-glow-opacity, 12%),
+        transparent
+      ), inset 0 1px 0 var(--glass-panel-highlight), inset 0 -1px 0
+      var(--glass-panel-bottom-highlight);
+  }
+
+  .glass-panel--interactive:not(.glass-panel--transparent) {
+    cursor: pointer;
+  }
+
+  .glass-panel--interactive:not(.glass-panel--transparent):hover {
+    background: linear-gradient(
+      135deg,
+      color-mix(
+        in oklab,
+        var(--color-primary) var(--glass-app-hover-tint-opacity, 8%),
+        transparent
+      ),
+      color-mix(
+        in oklab,
+        var(--glass-highlight-color, white)
+          var(--glass-app-hover-surface-opacity, 8%),
+        transparent
+      )
+    );
+    border-color: color-mix(
+      in oklab,
+      var(--color-primary) var(--glass-app-hover-border-opacity, 18%),
+      transparent
+    );
+  }
+
   .glass-panel__header-button {
     display: flex;
     width: 100%;
@@ -205,7 +282,7 @@
       circle at 50% 45%,
       color-mix(
           in oklab,
-          var(--glass-highlight-color, white)
+          var(--glass-depth-color, var(--glass-highlight-color, white))
             var(--glass-depth-surface-opacity, 8%),
           transparent
         )

@@ -9,6 +9,9 @@ export const CLASSES = {
   },
   flag: {
     transparent: "glass-panel--transparent",
+    toneSecondary: "glass-panel--tone-secondary",
+    highlight: "glass-panel--highlight",
+    interactive: "glass-panel--interactive",
     contentCollapsed: "glass-panel__content--collapsed",
     contentCollapsible: "glass-panel__content--collapsible",
     contentInnerHidden: "glass-panel__content-inner--hidden",

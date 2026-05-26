@@ -23,6 +23,9 @@ export type GlassPanelProps = IComponentBaseProps &
     transparent?: boolean;
     paddingX?: string;
     paddingY?: string;
+    tone?: "default" | "secondary";
+    highlight?: boolean;
+    interactive?: boolean;
   };
 
 const GlassPanel = (props: GlassPanelProps): JSX.Element => {
@@ -37,6 +40,9 @@ const GlassPanel = (props: GlassPanelProps): JSX.Element => {
     "transparent",
     "paddingX",
     "paddingY",
+    "tone",
+    "highlight",
+    "interactive",
     "children",
     "class",
     "className",
@@ -65,6 +71,9 @@ const GlassPanel = (props: GlassPanelProps): JSX.Element => {
     twMerge(
       CLASSES.base,
       local.transparent && CLASSES.flag.transparent,
+      local.tone === "secondary" && CLASSES.flag.toneSecondary,
+      local.highlight && CLASSES.flag.highlight,
+      local.interactive && CLASSES.flag.interactive,
       local.class,
       local.className,
     );
@@ -88,9 +97,18 @@ const GlassPanel = (props: GlassPanelProps): JSX.Element => {
       data-theme={local.dataTheme}
       style={local.style}
     >
-      <span class="glass-panel__rim" aria-hidden="true" />
-      <span class="glass-panel__depth" aria-hidden="true" />
-      <span class="glass-panel__sheen" aria-hidden="true" />
+      <span
+        class="glass-panel__rim"
+        aria-hidden="true"
+      />
+      <span
+        class="glass-panel__depth"
+        aria-hidden="true"
+      />
+      <span
+        class="glass-panel__sheen"
+        aria-hidden="true"
+      />
 
       <Show when={local.collapsible && local.title}>
         <button
