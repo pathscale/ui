@@ -35,6 +35,7 @@ const AuthPoweredBy: Component<AuthPoweredByProps> = (props) => {
   ]);
 
   const label = () => local.label ?? "Secure Auth by Honey";
+  const href = () => local.href ?? "https://honey.id/";
 
   const content = () => (
     <span class="inline-flex items-center gap-1.5">
@@ -60,14 +61,14 @@ const AuthPoweredBy: Component<AuthPoweredByProps> = (props) => {
       data-theme={local.dataTheme}
       data-slot="auth-powered-by"
     >
-      <Show
-        when={local.href}
-        fallback={content()}
+      <a
+        href={href()}
+        target="_blank"
+        rel="noopener noreferrer"
+        class="underline-offset-4 transition hover:underline"
       >
-        <a href={local.href} class="underline-offset-4 transition hover:underline">
-          {content()}
-        </a>
-      </Show>
+        {content()}
+      </a>
     </div>
   );
 };
