@@ -1,7 +1,7 @@
+import { pluginIconify } from "@pathscale/rsbuild-plugin-iconify";
 import { pluginBabel } from "@rsbuild/plugin-babel";
 import { pluginSolid } from "@rsbuild/plugin-solid";
 import { defineConfig } from "@rslib/core";
-import { pluginIconify } from "rsbuild-plugin-iconify";
 
 export default defineConfig({
   source: {

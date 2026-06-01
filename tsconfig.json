@@ -12,10 +12,9 @@
     "emitDeclarationOnly": true,
     "skipLibCheck": true,
     "types": ["bun-types"],
-    "baseUrl": ".",
     "paths": {
-      "~/*": ["src/*"],
-      "@src/*": ["src/*"]
+      "~/*": ["./src/*"],
+      "@src/*": ["./src/*"]
     }
   },
   "include": ["src/**/*.ts", "src/**/*.tsx"],
