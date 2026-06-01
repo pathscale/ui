@@ -1,7 +1,8 @@
 export const CLASSES = {
-  navbar: {
-    base: "navbar",
-  },
+  navbar: { base: "navbar" },
+  start: { base: "navbar__section navbar__section--start" },
+  center: { base: "navbar__section navbar__section--center" },
+  end: { base: "navbar__section navbar__section--end" },
   section: {
     base: "navbar__section",
     variant: {
