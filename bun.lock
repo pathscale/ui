@@ -9,8 +9,6 @@
         "@pathscale/rsbuild-plugin-iconify": "^1.0.4",
         "@pathscale/ui": "^1.2.6",
         "@tanstack/solid-virtual": "^3.13.26",
-        "baseline-browser-mapping": "^2.10.33",
-        "caniuse-lite": "^1.0.30001793",
       },
       "devDependencies": {
         "@biomejs/biome": "^2.4.16",
