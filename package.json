@@ -1,6 +1,6 @@
 {
   "name": "@pathscale/ui",
-  "version": "1.2.8",
+  "version": "1.2.9",
   "author": "pathscale",
   "repository": {
     "type": "git",
@@ -55,7 +55,7 @@
     "@biomejs/biome": "^2.4.16",
     "@iconify/json": "^2.2.481",
     "@iconify/utils": "^2.3.0",
-    "@pathscale/rsbuild-plugin-ui-css-purge": "^0.9.8",
+    "@pathscale/rsbuild-plugin-ui-css-purge": "^0.9.9",
     "@rsbuild/core": "^2.0.9",
     "@rsbuild/plugin-solid": "^1.2.1",
     "@rslib/core": "^0.22.0",
@@ -88,8 +88,8 @@
   "dependencies": {
     "@iconify/tailwind4": "^1.2.3",
     "@pathscale/rsbuild-plugin-iconify": "^1.0.4",
-    "@pathscale/ui": "^1.2.7",
-    "@tanstack/solid-virtual": "^3.13.26"
+    "@pathscale/ui": "^1.2.8",
+    "@tanstack/solid-virtual": "^3.13.27"
   },
   "peerDependencies": {
     "@solid-primitives/event-listener": "^2.3.0",
