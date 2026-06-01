@@ -7,14 +7,14 @@
       "dependencies": {
         "@iconify/tailwind4": "^1.2.3",
         "@pathscale/rsbuild-plugin-iconify": "^1.0.4",
-        "@pathscale/ui": "^1.2.8",
+        "@pathscale/ui": "^1.2.9",
         "@tanstack/solid-virtual": "^3.13.27",
       },
       "devDependencies": {
         "@biomejs/biome": "^2.4.16",
         "@iconify/json": "^2.2.481",
         "@iconify/utils": "^2.3.0",
-        "@pathscale/rsbuild-plugin-ui-css-purge": "^0.9.9",
+        "@pathscale/rsbuild-plugin-ui-css-purge": "^0.9.11",
         "@rsbuild/core": "^2.0.9",
         "@rsbuild/plugin-solid": "^1.2.1",
         "@rslib/core": "^0.22.0",
@@ -220,7 +220,7 @@
 
     "@pathscale/rsbuild-plugin-ui-css-purge": ["@pathscale/rsbuild-plugin-ui-css-purge@0.9.11", "", { "dependencies": { "@swc/core": "^1.15.40", "lightningcss": "^1.32.0", "postcss": "^8.5.15" }, "bin": { "rsbuild-plugin-ui-css-purge": "dist/postbuild-purge.js", "generate-manifest": "src/generate-manifest.ts" } }, "sha512-iIyScjlJ1/yfbtD+vPWQP+S5WSQp6tBtppDAMGImBPCxzoSnpQPwhvsyFGpNyVwGUZj/8QxhbpY34ev0FXKpng=="],
 
-    "@pathscale/ui": ["@pathscale/ui@1.2.9", "", { "dependencies": { "@iconify/tailwind4": "^1.2.3", "@pathscale/rsbuild-plugin-iconify": "^1.0.4", "@pathscale/ui": "^1.2.8", "@tanstack/solid-virtual": "^3.13.27" }, "peerDependencies": { "@solid-primitives/event-listener": "^2.3.0", "@solid-primitives/intersection-observer": "^2.1.3", "@solid-primitives/keyboard": "^1.2.5", "@solid-primitives/media": "^2.2.5", "@solid-primitives/props": "^3.1.8", "@solid-primitives/resize-observer": "^2.0.22", "@solid-primitives/scheduled": "^1.4.1", "@solid-primitives/scroll": "^2.0.20", "@solid-primitives/storage": "^2.1.1", "@solid-primitives/utils": "^6.2.1", "@standard-schema/spec": "^1.0.0", "@tanstack/solid-form": "^1.29.0", "@tanstack/solid-table": "^8.0.0", "popmotion": "^11.0.5", "solid-js": "^1.9" }, "optionalPeers": ["@standard-schema/spec", "popmotion"] }, "sha512-6p/8My9iyH/9fnKqX4T2l37BDqC5iycYa7hG5hw58w1/kjL/9t8degycJA5RLOImpldka3kQfMxS7q3MVG6JCQ=="],
+    "@pathscale/ui": ["@pathscale/ui@1.2.10", "", { "dependencies": { "@iconify/tailwind4": "^1.2.3", "@pathscale/rsbuild-plugin-iconify": "^1.0.4", "@pathscale/ui": "^1.2.9", "@tanstack/solid-virtual": "^3.13.27" }, "peerDependencies": { "@solid-primitives/event-listener": "^2.3.0", "@solid-primitives/intersection-observer": "^2.1.3", "@solid-primitives/keyboard": "^1.2.5", "@solid-primitives/media": "^2.2.5", "@solid-primitives/props": "^3.1.8", "@solid-primitives/resize-observer": "^2.0.22", "@solid-primitives/scheduled": "^1.4.1", "@solid-primitives/scroll": "^2.0.20", "@solid-primitives/storage": "^2.1.1", "@solid-primitives/utils": "^6.2.1", "@standard-schema/spec": "^1.0.0", "@tanstack/solid-form": "^1.29.0", "@tanstack/solid-table": "^8.0.0", "popmotion": "^11.0.5", "solid-js": "^1.9" }, "optionalPeers": ["@standard-schema/spec", "popmotion"] }, "sha512-foJPQsE5lZU/k6VjDNCC6tzo6IkSURiB0vvY8xxzEGNMp/QuIe4ZNcEULoc4TSAGxDwOIe0o0s0uXrSW5BTr5g=="],
 
     "@rsbuild/core": ["@rsbuild/core@2.0.9", "", { "dependencies": { "@rspack/core": "~2.0.5", "@swc/helpers": "^0.5.23" }, "peerDependencies": { "core-js": ">= 3.0.0" }, "optionalPeers": ["core-js"], "bin": { "rsbuild": "./bin/rsbuild.js" } }, "sha512-lK2bMNuwh3TuLXLskS7nG3fnQk+6eaLeeZiquJWcna4JZx9iaI59JSd+iLcg5TeZLjEVygkwn/HcE+yuYDQRAw=="],
 
