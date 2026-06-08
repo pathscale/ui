@@ -1,0 +1,40 @@
+@layer components {
+  .metal-border {
+    position: relative;
+    display: inline-block;
+    vertical-align: top;
+    max-inline-size: 100%;
+    border-radius: var(--metal-border-radius, inherit);
+  }
+
+  .metal-border--enabled {
+    isolation: isolate;
+  }
+
+  .metal-border__effect,
+  .metal-border__canvas,
+  .metal-border__glow {
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+  }
+
+  .metal-border__effect {
+    pointer-events: none;
+    overflow: hidden;
+    z-index: 1;
+  }
+
+  .metal-border__canvas,
+  .metal-border__glow,
+  .metal-border__glow > .metal-fx-glow-svg {
+    inline-size: 100%;
+    block-size: 100%;
+  }
+
+  .metal-border__content {
+    position: relative;
+    z-index: 0;
+    border-radius: inherit;
+  }
+}

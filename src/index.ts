@@ -290,6 +290,13 @@ export { default as Flex } from "./components/flex";
 export { default as GlassPanel } from "./components/glass-panel";
 export { GlowCard, type GlowCardProps } from "./components/glow-card";
 export type { GlassPanelProps } from "./components/glass-panel";
+export { MetalBorder, type MetalBorderProps } from "./components/metal-border";
+export type {
+  MetalBorderKind,
+  MetalBorderPreset,
+  MetalBorderResolvedTheme,
+  MetalBorderTheme,
+} from "./components/metal-border";
 export { default as Footer } from "./components/footer";
 export type { FooterProps, FooterTitleProps } from "./components/footer";
 export {

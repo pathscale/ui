@@ -49,6 +49,7 @@ import {
   FormSubmitButton,
   GlassPanel,
   GlowCard,
+  MetalBorder,
   Grid,
   Header,
   Icon,
@@ -200,6 +201,8 @@ const BUTTON_VARIANTS = [
 
 const BUTTON_SIZES = ["sm", "md", "lg"] as const;
 const INPUT_SIZES = ["sm", "md", "lg"] as const;
+const METAL_BORDER_PRESETS = ["silver", "gold", "chromatic"] as const;
+const METAL_BORDER_KINDS = ["pill", "circle"] as const;
 const TOGGLE_COLORS = [
   "default",
   "accent",
@@ -476,6 +479,14 @@ export default function App() {
   const [glassBlur, setGlassBlur] = createSignal(50);
   const [glassRefraction, setGlassRefraction] = createSignal(0.08);
   const [glassDepth, setGlassDepth] = createSignal(5);
+  const [metalBorderPreset, setMetalBorderPreset] =
+    createSignal<(typeof METAL_BORDER_PRESETS)[number]>("silver");
+  const [metalBorderStrength, setMetalBorderStrength] = createSignal(90);
+  const [metalBorderKind, setMetalBorderKind] =
+    createSignal<(typeof METAL_BORDER_KINDS)[number]>("pill");
+  const [metalBorderPaused, setMetalBorderPaused] = createSignal(false);
+  const [metalBorderGlow, setMetalBorderGlow] = createSignal(false);
+  const [metalBorderClicks, setMetalBorderClicks] = createSignal(0);
   const [controlledTimeValue, setControlledTimeValue] = createSignal("13:30");
   const disclosureItemIds = () => DISCLOSURE_ITEMS.map((item) => item.id);
   const disclosureNav = useDisclosureGroupNavigation({
@@ -6136,6 +6147,228 @@ export default function App() {
                 surfaces.
               </p>
             </GlowCard>
+          </div>
+        </section>
+
+        <section class="space-y-4 rounded-xl border border-base-300 bg-base-200 p-4">
+          <div>
+            <h2 class="text-sm font-semibold">Metal Border</h2>
+            <p class="text-xs opacity-70">
+              Shared WebGL metal frame wrapper for forms, buttons, and generic
+              panels. The overlay is pointer-events none and no-ops when WebGL
+              is unavailable.
+            </p>
+          </div>
+
+          <div class="grid gap-3 lg:grid-cols-[minmax(0,1.2fr)_minmax(16rem,0.8fr)]">
+            <div class="space-y-4">
+              <MetalBorder
+                class="block w-full rounded-[24px]"
+                contentClass="rounded-[24px]"
+                cornerRadius={24}
+                glow={metalBorderGlow()}
+                kind={metalBorderKind()}
+                paused={metalBorderPaused()}
+                preset={metalBorderPreset()}
+                strength={metalBorderStrength()}
+              >
+                <Card class="min-h-72 rounded-[24px] border border-base-300 bg-base-100 p-0 shadow-none">
+                  <Card.Header class="gap-1 border-b border-base-300 px-5 pt-5 pb-4">
+                    <h3 class="text-base font-semibold">
+                      Form card with interactive children
+                    </h3>
+                    <p class="text-sm opacity-70">
+                      Confirm focus, typing, and button clicks still work under
+                      the metal layer.
+                    </p>
+                  </Card.Header>
+                  <Card.Body class="gap-4 px-5 py-5">
+                    <Input
+                      label="Email"
+                      placeholder="team@pathscale.dev"
+                    />
+                    <Input
+                      label="Company"
+                      placeholder="Pathscale"
+                    />
+                    <div class="grid gap-3 sm:grid-cols-2">
+                      <Button variant="secondary">
+                        Secondary Action
+                      </Button>
+                      <Button
+                        onClick={() =>
+                          setMetalBorderClicks((count) => count + 1)}
+                      >
+                        Primary Action
+                      </Button>
+                    </div>
+                  </Card.Body>
+                  <Card.Footer class="justify-between border-t border-base-300 px-5 pt-4 pb-5 text-xs opacity-70">
+                    <span>Button clicks: {metalBorderClicks()}</span>
+                    <span>
+                      Reduced motion pauses animation automatically.
+                    </span>
+                  </Card.Footer>
+                </Card>
+              </MetalBorder>
+
+              <div class="grid gap-4 md:grid-cols-3">
+                <For each={METAL_BORDER_PRESETS}>
+                  {(presetName) => (
+                    <MetalBorder
+                      class="block rounded-[22px]"
+                      contentClass="rounded-[22px]"
+                      cornerRadius={22}
+                      glow={presetName === "chromatic"}
+                      kind="pill"
+                      preset={presetName}
+                      strength={presetName === "gold" ? 82 : 90}
+                    >
+                      <Card class="min-h-32 rounded-[22px] border border-base-300 bg-base-100 p-4 shadow-none">
+                        <Card.Header>
+                          <h3 class="text-sm font-semibold capitalize">
+                            {presetName}
+                          </h3>
+                        </Card.Header>
+                        <Card.Body>
+                          <p class="text-sm opacity-75">
+                            Concurrent preset validation on separate instances.
+                          </p>
+                        </Card.Body>
+                      </Card>
+                    </MetalBorder>
+                  )}
+                </For>
+              </div>
+
+              <div class="flex flex-wrap items-center gap-4">
+                <MetalBorder
+                  class="rounded-full"
+                  contentClass="rounded-full"
+                  cornerRadius={999}
+                  glow={metalBorderGlow()}
+                  kind="pill"
+                  paused={metalBorderPaused()}
+                  preset={metalBorderPreset()}
+                  strength={metalBorderStrength()}
+                >
+                  <Button class="rounded-full px-5">
+                    Metal pill button
+                  </Button>
+                </MetalBorder>
+                <MetalBorder
+                  class="rounded-full"
+                  contentClass="rounded-full"
+                  cornerRadius={999}
+                  glow={metalBorderGlow()}
+                  kind="circle"
+                  paused={metalBorderPaused()}
+                  preset={metalBorderPreset()}
+                  strength={metalBorderStrength()}
+                >
+                  <Button class="size-12 rounded-full px-0">
+                    Go
+                  </Button>
+                </MetalBorder>
+              </div>
+            </div>
+
+            <div class="space-y-4 rounded-[22px] border border-base-300 bg-base-100 p-4">
+              <div>
+                <h3 class="text-sm font-semibold">Controls</h3>
+                <p class="text-xs opacity-70">
+                  Live prop updates should keep one canvas per instance without
+                  blocking child interaction.
+                </p>
+              </div>
+
+              <label class="flex flex-col gap-2 text-sm">
+                <span class="font-medium">Preset</span>
+                <select
+                  class="rounded-lg border border-base-300 bg-base-100 px-3 py-2"
+                  value={metalBorderPreset()}
+                  onInput={(event) =>
+                    setMetalBorderPreset(
+                      event.currentTarget
+                        .value as (typeof METAL_BORDER_PRESETS)[number],
+                    )}
+                >
+                  <For each={METAL_BORDER_PRESETS}>
+                    {(presetName) => (
+                      <option value={presetName}>
+                        {presetName}
+                      </option>
+                    )}
+                  </For>
+                </select>
+              </label>
+
+              <label class="flex flex-col gap-2 text-sm">
+                <span class="font-medium">Kind</span>
+                <select
+                  class="rounded-lg border border-base-300 bg-base-100 px-3 py-2"
+                  value={metalBorderKind()}
+                  onInput={(event) =>
+                    setMetalBorderKind(
+                      event.currentTarget
+                        .value as (typeof METAL_BORDER_KINDS)[number],
+                    )}
+                >
+                  <For each={METAL_BORDER_KINDS}>
+                    {(kindName) => (
+                      <option value={kindName}>
+                        {kindName}
+                      </option>
+                    )}
+                  </For>
+                </select>
+              </label>
+
+              <label class="flex flex-col gap-2 text-sm">
+                <span class="flex items-center justify-between font-medium">
+                  <span>Strength</span>
+                  <span class="text-xs opacity-70">
+                    {metalBorderStrength()}%
+                  </span>
+                </span>
+                <input
+                  type="range"
+                  min="0"
+                  max="100"
+                  value={metalBorderStrength()}
+                  onInput={(event) =>
+                    setMetalBorderStrength(
+                      Number(event.currentTarget.value),
+                    )}
+                />
+              </label>
+
+              <label class="flex items-center justify-between gap-3 text-sm">
+                <span class="font-medium">Glow</span>
+                <input
+                  type="checkbox"
+                  checked={metalBorderGlow()}
+                  onChange={(event) =>
+                    setMetalBorderGlow(event.currentTarget.checked)}
+                />
+              </label>
+
+              <label class="flex items-center justify-between gap-3 text-sm">
+                <span class="font-medium">Paused</span>
+                <input
+                  type="checkbox"
+                  checked={metalBorderPaused()}
+                  onChange={(event) =>
+                    setMetalBorderPaused(event.currentTarget.checked)}
+                />
+              </label>
+
+              <div class="rounded-xl border border-dashed border-base-300 px-3 py-2 text-xs opacity-70">
+                WebGL fallback is a graceful no-op. If the browser or device
+                cannot create the renderer, children still render normally with
+                no extra overlay behavior.
+              </div>
+            </div>
           </div>
         </section>
 
