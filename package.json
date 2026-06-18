@@ -39,10 +39,6 @@
       "types": "./dist/hooks/*/index.d.ts",
       "import": "./dist/hooks/*/index.js"
     },
-    "./stores": {
-      "types": "./dist/stores/index.d.ts",
-      "import": "./dist/stores/index.js"
-    },
     "./motion": {
       "types": "./dist/motion/index.d.ts",
       "import": "./dist/motion/index.js"
