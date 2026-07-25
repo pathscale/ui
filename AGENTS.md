@@ -73,7 +73,11 @@ to every agent and human; private memory dies with your machine.
 
 - **Always specify the branch when pushing**: `git push origin branch-name`
 - **Branch naming**: `fix/issue-description` or `feat/issue-description`
-- **No force-pushing** during PR review
+- **Force-push your own branch freely.** Rebasing a feature branch onto a moved
+  base, or amending before review, is normal and correct — use
+  `--force-with-lease` so you don't clobber someone else's push.
+- **Never force-push the default branch** (`main`/`master`). That is the history
+  everyone else builds on, and it is protected server-side for a reason.
 
 ## Guardrails
 
