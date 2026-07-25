@@ -9,6 +9,10 @@ natively, and Claude Code loads it through the `@AGENTS.md` import in
 
 ## Invariants (don't break these)
 
+- **[`docs/ui-usage.md`](docs/ui-usage.md) is the source of truth for how this
+  library is consumed** — theming, component conventions, forms, table, toast,
+  icons. Every consuming app links here instead of keeping its own copy. If you
+  change a public component API, update that file in the same change.
 - **Read [`docs/frontend-conventions.md`](docs/frontend-conventions.md) before opening
   implementation files.** It is the frontend working agreement: SolidJS/`@pathscale/ui`
   conventions, and a context-efficient workflow. Reading it first keeps

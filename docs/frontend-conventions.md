@@ -56,7 +56,7 @@ Load only the reference needed for the current task — not all of them automati
 
 - **project map** — feature structure, routes, stores and app flow
 - **services contract** — endpoint wiring, hooks and generated DTO rules
-- **UI conventions** — SolidJS and `@pathscale/ui` usage
+- **UI conventions** — [`ui-usage.md`](ui-usage.md) ✅ *(this repo owns it)*
 - **validation** — exact commands for this repository (see above)
 
 > **TODO — these reference docs do not exist yet.** The names above are the intended
