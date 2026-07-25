@@ -9,6 +9,13 @@ natively, and Claude Code loads it through the `@AGENTS.md` import in
 
 ## Invariants (don't break these)
 
+- **This repository is public.** Don't name the private application repositories that
+  consume this library, and don't describe their internals — directory layouts, file
+  names, per-repo differences. Write about the library and the patterns, not about who
+  uses them. Documentation that needs to describe a consuming app belongs in that app's
+  own repo, or in the public [`ui-starter-app`](https://github.com/pathscale/ui-starter-app)
+  template. Check `gh api repos/pathscale/<name> --jq .visibility` before writing about
+  another repo here.
 - **[`docs/ui-usage.md`](docs/ui-usage.md) is the source of truth for how this
   library is consumed** — theming, component conventions, forms, table, toast,
   icons. Every consuming app links here instead of keeping its own copy. If you
