@@ -77,7 +77,8 @@ function getNestedValue(obj: unknown, path: string): string {
 
 /**
  * Creates an i18n store with configurable options.
- * API matches nofilter.io's i18nStore for easy migration.
+ * API matches the i18nStore pattern used across consuming apps, so migrating
+ * an existing store to this one is a drop-in.
  *
  * @example
  * ```tsx
@@ -181,7 +182,7 @@ export function createI18n(options: I18nOptions): I18nStore {
     await setLocale(detected);
   };
 
-  // Return object with getters for reactive properties (matches nofilter.io API)
+  // Return object with getters for reactive properties (matches the i18nStore API)
   return {
     get locale() { return localeSignal(); },
     get isLoading() { return isLoadingSignal(); },
