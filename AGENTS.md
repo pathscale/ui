@@ -82,17 +82,21 @@ to every agent and human; private memory dies with your machine.
   `--force-with-lease` so you don't clobber someone else's push.
 - **Never force-push the default branch** (`main`/`master`). That is the history
   everyone else builds on, and it is protected server-side for a reason.
-- **Never create merge commits.** Not locally, not to refresh a branch. If your branch
+- **Never create merge commits — this is a hard ban.** Not locally, not to refresh a
+  branch, not to land a pull request. If your branch
   has fallen behind, **rebase** it onto the moved base (`git rebase origin/master`, then
   `--force-with-lease`). `git merge master` into a feature branch is not an acceptable
   shortcut: it adds a commit whose only content is the fact that you were behind, and it
   turns a readable line of work into a diamond. Merge commits are disabled server-side on
   these repositories — that is a backstop, not a licence to rely on it.
-- **Land pull requests with rebase, not squash.** Individual commits carry information:
-  what was tried, in what order, and why. Squashing throws that away and leaves one
-  commit whose message can only summarise. Write commits worth keeping, then land them
-  intact. Reach for squash only when a branch is genuinely one logical change scattered
-  across fixup commits.
+- **Rebase is the default everywhere** — refreshing a branch, and landing a pull request.
+  Individual commits carry information: what was tried, in what order, and why. A rebase
+  merge keeps that granularity on the base branch, so write commits worth keeping and land
+  them intact.
+- **Squash is acceptable** where it genuinely makes things easier or is the more
+  appropriate shape for the branch — one logical change scattered across fixup commits, or
+  a long branch whose intermediate states aren't worth preserving. It is a judgement call,
+  not a violation. Merging is the only thing that is never allowed.
 
 ## Guardrails
 
