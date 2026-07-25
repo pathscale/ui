@@ -9,6 +9,10 @@ natively, and Claude Code loads it through the `@AGENTS.md` import in
 
 ## Invariants (don't break these)
 
+- **Read [`docs/frontend-conventions.md`](docs/frontend-conventions.md) before opening
+  implementation files.** It is the frontend working agreement: SolidJS/`@pathscale/ui`
+  conventions, and a context-efficient workflow. Reading it first keeps
+  context small and avoids re-deriving patterns that already exist.
 - **Publishing to npm is irreversible.** A version can never be reused. Check the built artifact before releasing.
 - **`bun` is the package manager** — its lockfile is authoritative. Don't introduce a second one by running npm/yarn/pnpm here.
 - **Docs describe what is true now.** If you change behaviour, update the README and any affected doc in the same change.
