@@ -155,3 +155,23 @@ bun install && cd playground && bun install && cd ..
 bun run playground:dev     # Vite; @pathscale/ui aliased to local src/ — edits hot-reload, no rebuild
 ```
 `playground/src/App.tsx` (~7,300 lines) demos every component; examples in `playground/src/examples/` (Form, Motion, Streaming, Table×3). Playground forces `data-theme="dark"` at runtime in `playground/src/index.tsx`.
+
+---
+
+## Mirroring to the public showcase (js.software)
+
+**Not mirrored today.** `js.software` authors its docs pages as hand-written TSX
+(`src/pages/docs/Installation.tsx`, `Components.tsx`, `Index.tsx`) with no markdown
+pipeline, so this file cannot simply be dropped in.
+
+Three options, in order of risk:
+
+1. **Link out** (low risk) — the existing docs pages link to this file on GitHub. No
+   build change. Weakest presentation, but zero breakage.
+2. **Markdown pipeline** (medium risk) — add MDX/markdown rendering to js.software and
+   render this file directly. Correct long-term answer, since it keeps one source of
+   truth, but it is a build-config change and its own piece of work.
+3. **Hand-port to TSX** (do not) — recreates the seven-way drift problem this document
+   exists to solve, one copy at a time.
+
+Whoever picks this up: prefer (2). Do not do (3).
