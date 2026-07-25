@@ -1,9 +1,8 @@
 # @pathscale/ui — Usage Reference
 
 **This is the source of truth for `@pathscale/ui` usage conventions**, for humans and
-agents alike, and for every consuming app (24x.ai, honey.id, pathscale.com,
-pays.online, support.cafe, web3.trading, nofilter.io). Those repos link here rather
-than keeping their own copy — one library, one set of conventions, no drift.
+agents alike, and for every consuming application. Those apps link here rather than
+keeping their own copy — one library, one set of conventions, no drift.
 
 SolidJS component library, HeroUI-parity API, daisyUI-style theming. ~104 components.
 
