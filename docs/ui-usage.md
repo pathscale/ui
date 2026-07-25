@@ -23,9 +23,13 @@ import { Button, Flex, Modal, toast } from "@pathscale/ui";   // everything is i
 import "@pathscale/ui/index.css";                              // tokens + themes + base + icons
 ```
 
-Subpath exports also exist: `./components/*`, `./primitives/*`, `./hooks/*`, `./motion`, `./styles/*`.
-⚠️ `@pathscale/ui/stores` is declared in package.json but **broken** (no source backs it) — never import it.
-⚠️ README mentions `dist/styles/compat/daisy-primitives.css` and `docs/motion.md` — both **stale/nonexistent**.
+Subpath exports also exist: `./components/*`, `./primitives/*`, `./hooks/*`, `./motion`,
+`./styles/*`.
+
+> ⚠️ The README still references two paths that do not exist:
+> `dist/styles/compat/daisy-primitives.css` and `docs/motion.md`. Ignore both until the
+> README is corrected. *(The previously-documented broken `@pathscale/ui/stores` export
+> was removed in `85e1633` and is no longer a concern.)*
 
 ## Theming
 
@@ -160,18 +164,27 @@ bun run playground:dev     # Vite; @pathscale/ui aliased to local src/ — edits
 
 ## Mirroring to the public showcase (js.software)
 
-**Not mirrored today.** `js.software` authors its docs pages as hand-written TSX
-(`src/pages/docs/Installation.tsx`, `Components.tsx`, `Index.tsx`) with no markdown
-pipeline, so this file cannot simply be dropped in.
+**Decision (2026-07-26): hand-port this to TSX in js.software.** It has no markdown
+pipeline — docs pages are hand-written TSX under `src/pages/docs/` — and adding one was
+judged not worth it.
 
-Three options, in order of risk:
+**Entry point: a third homepage button, "Usage Cheatsheet".** `src/pages/Home.tsx`
+currently has two (`Start Building Today` → `ROUTES.DOCS_INSTALLATION`, `Explore
+Components` → `ROUTES.SHOWCASES`). A third is right rather than folding this into
+Installation, because the three serve different intents: *get started* (first five
+minutes), *browse* (visual), *look something up while working* (this document). Burying
+a reference inside a getting-started flow hides it from the people who need it most.
+Style it subordinate to the existing two — `btn-ghost`, not a third `btn-primary` — so
+the hero stays a hero and not a menu.
 
-1. **Link out** (low risk) — the existing docs pages link to this file on GitHub. No
-   build change. Weakest presentation, but zero breakage.
-2. **Markdown pipeline** (medium risk) — add MDX/markdown rendering to js.software and
-   render this file directly. Correct long-term answer, since it keeps one source of
-   truth, but it is a build-config change and its own piece of work.
-3. **Hand-port to TSX** (do not) — recreates the seven-way drift problem this document
-   exists to solve, one copy at a time.
+**Build it with `@pathscale/ui` components**, not raw markup — the showcase should be
+built from the library it documents. Follow the existing page conventions in
+`src/pages/docs/Installation.tsx`: `ContentContainer`, `CodeBlock`, `Callout`, and
+`Flex` from `@pathscale/ui`.
 
-Whoever picks this up: prefer (2). Do not do (3).
+**Drift control — this matters.** This file stays the source of truth. Port the *stable*
+narrative sections (Install, Component conventions, Forms, Table, Toast, Icons, Dates)
+and have **Theming tokens** and the **Component inventory** link back here rather than
+duplicating them: those two change whenever the library changes, and a TSX copy has
+nothing keeping it honest. The inventory alone is ~40 lines that go stale the moment a
+component is added.
