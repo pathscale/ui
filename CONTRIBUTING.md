@@ -10,9 +10,23 @@
 
 ```bash
 bun install
-bun dev        # dev server
-bun build      # production build
+bun run dev      # dev server
+bun run build    # production build
+bun run lint
+bun run format
 ```
+
+### Playground — hot-test without rebuilding
+
+The fastest way to try a change. Run from the repository root:
+
+```bash
+bun run playground:dev
+```
+
+The playground aliases `@pathscale/ui` to local `src/` via Vite, so edits under `src/` and
+`src/styles/` refresh immediately — no rebuild, no relink. `playground/src/App.tsx` demos
+every component, with longer examples in `playground/src/examples/`.
 
 ## Commit Convention
 
