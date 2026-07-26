@@ -36,7 +36,7 @@ import "@pathscale/ui/index.css";
 
 export const Example = () => (
   <Flex direction="col" gap="sm">
-    <Button color="primary" size="md">Primary</Button>
+    <Button variant="primary" size="md">Primary</Button>
   </Flex>
 );
 ```
@@ -81,8 +81,12 @@ The rules that hold across every component — worth two minutes before your fir
 
 - **Booleans are HeroUI-style `is*`**: `isDisabled`, `isOpen`, `isInvalid`, `isPending`,
   `isIconOnly`. Native `disabled` is honored too.
-- **Sizes** are `xs | sm | md | lg | xl`. **Colors** are
-  `neutral | primary | secondary | accent | info | success | warning | error | ghost`.
+- **Sizes and variants are per-component.** `Button` takes
+  `variant` (`primary | secondary | tertiary | outline | ghost | danger | danger-soft`)
+  and `size` (`sm | md | lg`); a smaller set of components — `Badge`, `Chip`, `Avatar`,
+  `Spinner`, `Toggle`, the progress components — take `color` instead. Check the
+  component's own types, or the [showcase](https://js.software), rather than assuming a
+  shared union.
 - **Both `class` and `className` work** everywhere, and your classes win — they are merged
   last via twMerge.
 - **Controlled/uncontrolled come in triples**: `isOpen/defaultOpen/onOpenChange`,
