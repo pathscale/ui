@@ -30,10 +30,14 @@ jobs:
       release_created: ${{ steps.release.outputs.release_created }}
       tag_name: ${{ steps.release.outputs.tag_name }}
     steps:
+      # Version baseline comes from .release-please-manifest.json, not from git
+      # tags: the newest tag here is v1.1.51 while npm is on 1.2.11, so tag-derived
+      # versioning would propose a version below what is already published.
       - uses: googleapis/release-please-action@v4
         id: release
         with:
-          release-type: node
+          config-file: release-please-config.json
+          manifest-file: .release-please-manifest.json
 
   publish:
     needs: release-please
