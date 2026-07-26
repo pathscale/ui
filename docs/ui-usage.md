@@ -25,11 +25,6 @@ import "@pathscale/ui/index.css";                              // tokens + theme
 Subpath exports also exist: `./components/*`, `./primitives/*`, `./hooks/*`, `./motion`,
 `./styles/*`.
 
-> ⚠️ The README still references two paths that do not exist:
-> `dist/styles/compat/daisy-primitives.css` and `docs/motion.md`. Ignore both until the
-> README is corrected. *(The previously-documented broken `@pathscale/ui/stores` export
-> was removed in `85e1633` and is no longer a concern.)*
-
 ## Theming
 
 - Two themes: `light` (default when no attribute) and `dark`. Switch: `document.documentElement.setAttribute("data-theme", "dark")`.
@@ -40,7 +35,13 @@ Subpath exports also exist: `./components/*`, `./primitives/*`, `./hooks/*`, `./
 ## Component conventions (consumer-facing)
 
 - Booleans are HeroUI-style `is*`: `isDisabled`, `isOpen`, `isInvalid`, `isPending`, `isIconOnly`, `isHoverable`, `isPressable`. Native `disabled` also honored.
-- Sizes: `xs | sm | md | lg | xl` (`ComponentSize`). Colors: `neutral | primary | secondary | accent | info | success | warning | error | ghost` (`ComponentColor`).
+- Sizes and colour-ish props are **per-component, not a shared union in practice**.
+  `ComponentSize` and `ComponentColor` are declared in `src/components/types.ts` with the
+  full unions, but **they are not re-exported from the root barrel**, so consumers cannot
+  import them, and individual components narrow them. `Button` takes
+  `variant` (`primary | secondary | tertiary | outline | ghost | danger | danger-soft`)
+  and `size` (`sm | md | lg`); `Badge`, `Chip`, `Avatar`, `Spinner`, `Toggle`, `Meter` and
+  the progress components take `color`. Read the component's own props before assuming.
 - Both `class` and `className` accepted everywhere; consumer classes win (merged last via twMerge).
 - Controlled/uncontrolled triples: `isOpen/defaultOpen/onOpenChange`, `value/defaultValue/onChange`, `selectedKey/defaultSelectedKey/onSelectionChange`. Event callbacks pass **values, not events**.
 - Compound components: `Modal.Trigger`, `Tabs.List`, `Select.Option`, etc. (`Object.assign` statics; also exported flat: `AccordionRoot`, `AlertTitle`, …). Parts are styleable/testable via `data-slot="..."` and state attrs (`data-open`, `data-selected`, `data-invalid`).
@@ -48,7 +49,7 @@ Subpath exports also exist: `./components/*`, `./primitives/*`, `./hooks/*`, `./
 
 ```tsx
 <Flex direction="col" gap="sm">
-  <Button color="primary" size="md" isPending={saving()}>Save</Button>
+  <Button variant="primary" size="md" isPending={saving()}>Save</Button>
 </Flex>
 ```
 
