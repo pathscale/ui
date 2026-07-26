@@ -134,6 +134,7 @@
     "lint": "bun biome lint --write",
     "check": "bun run scripts/check-contracts.ts",
     "check:package": "bun run scripts/check-package.ts",
+    "next-version": "bun run scripts/next-version.ts",
     "playground:dev": "cd playground && bun run dev",
     "playground:build": "cd playground && bun run build",
     "playground:preview": "cd playground && bun run preview"
