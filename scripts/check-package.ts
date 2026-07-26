@@ -18,8 +18,31 @@ const failures: Failure[] = [];
 
 // ---------------------------------------------------------------- pack
 
-const packLine = execSync("npm pack --json --silent", { encoding: "utf8" });
-const tarball: string = JSON.parse(packLine)[0].filename;
+const pkgJson = JSON.parse(readFileSync("package.json", "utf8"));
+
+/**
+ * `npm pack --json` output shape is not stable across npm versions, and under
+ * `--silent` npm 11 prints nothing at all. Derive the name ourselves — npm drops
+ * the leading `@` and turns `/` into `-` — and only fall back to parsing stdout.
+ */
+const packTarball = (): string => {
+  const expected = `${String(pkgJson.name).replace(/^@/, "").replace(/\//g, "-")}-${pkgJson.version}.tgz`;
+  const stdout = execSync("npm pack --silent", { encoding: "utf8" });
+  if (existsSync(expected)) return expected;
+
+  const printed = stdout
+    .split("\n")
+    .map((l) => l.trim())
+    .filter((l) => l.endsWith(".tgz"))
+    .pop();
+  if (printed && existsSync(printed)) return printed;
+
+  throw new Error(
+    `npm pack produced no tarball (expected ${expected}); stdout was: ${JSON.stringify(stdout)}`,
+  );
+};
+
+const tarball = packTarball();
 
 // Paths inside the tarball are prefixed with `package/`.
 const entries = new Set(
@@ -47,7 +70,7 @@ const shippedGlob = (pattern: string) => {
 
 // ------------------------------------------------------- exports resolve
 
-const pkg = JSON.parse(readFileSync("package.json", "utf8"));
+const pkg = pkgJson;
 
 const targetsOf = (value: unknown): string[] => {
   if (typeof value === "string") return [value];
