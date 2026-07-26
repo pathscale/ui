@@ -104,6 +104,19 @@ if (existsSync("README.md")) {
   for (const spec of specifiers) {
     const subpath = spec === pkg.name ? "." : `./${spec.slice(pkg.name.length + 1)}`;
 
+    // A specifier containing `*` is prose describing a family of subpaths
+    // ("also @pathscale/ui/hooks/*"), not something anyone imports literally.
+    // Require that an exports key covers the pattern; do not resolve it to a file.
+    if (subpath.includes("*")) {
+      if (!Object.keys(pkg.exports ?? {}).includes(subpath)) {
+        failures.push({
+          rule: "README documents a subpath pattern that is not exported",
+          detail: `${spec} has no matching "exports" key`,
+        });
+      }
+      continue;
+    }
+
     // Find the exports key that would match, honouring a single wildcard segment.
     const key = Object.keys(pkg.exports ?? {}).find((k) => {
       if (k === subpath) return true;
