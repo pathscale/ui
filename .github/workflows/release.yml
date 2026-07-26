@@ -1,18 +1,20 @@
 name: Release
 
-# Publish on version change.
+# Fully automatic releases. Push to master, and if the commits since the last
+# published version warrant a release, this bumps the version, publishes to npm
+# and tags it. No version-bump PR, no manual step.
 #
-# When package.json's version is not yet on npm, the publish job runs. The bump
-# arrives as an ordinary pull request opened by a person or an agent — GitHub
-# Actions never creates a pull request here, so this needs none of the
-# "Allow GitHub Actions to create and approve pull requests" permission that
-# blocked the previous release-please setup.
+# The version comes from conventional commits (scripts/next-version.ts):
+#   type! / BREAKING CHANGE -> major, feat -> minor, fix|perf|revert -> patch.
+# Docs- or chore-only pushes release nothing.
 #
-# So the flow is: open a version-bump PR -> merge it -> this publishes.
-# Pushes that do not change the version are a no-op.
+# Two modes, so a half-finished release always recovers:
+#   * package.json's version is NOT on npm  -> publish it as-is (recovery, or a
+#     hand-written bump someone committed deliberately)
+#   * it IS on npm -> compute the next version, bump, publish, tag
 #
-# Publishing uses npm Trusted Publishing (OIDC), so no NPM_TOKEN exists in this
-# repository. It requires one-time setup on npmjs.com:
+# Publishing uses npm Trusted Publishing (OIDC): no NPM_TOKEN exists in this
+# repository. Requires one-time setup on npmjs.com:
 #   @pathscale/ui -> Settings -> Trusted Publisher -> GitHub Actions
 #   repository: pathscale/ui, workflow: release.yml
 # Without it the publish step fails closed rather than publishing unauthenticated.
@@ -20,42 +22,58 @@ name: Release
 on:
   push:
     branches: [master]
-  workflow_dispatch: # manual re-run, e.g. if a publish failed after the build
+  workflow_dispatch:
 
 permissions:
   contents: read
 
 jobs:
-  check:
+  decide:
     runs-on: ubuntu-latest
     outputs:
+      mode: ${{ steps.decide.outputs.mode }}
       version: ${{ steps.decide.outputs.version }}
-      publish: ${{ steps.decide.outputs.publish }}
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0 # next-version.ts reads commit history
 
-      - name: Is package.json's version already on npm?
+      - uses: oven-sh/setup-bun@v1
+        with:
+          bun-version: latest
+
+      - name: Decide whether to release, and as what version
         id: decide
         run: |
-          version="$(node -p "require('./package.json').version")"
-          echo "version=$version" >> "$GITHUB_OUTPUT"
-          # Query the exact version rather than `latest`, so re-runs are idempotent
-          # and backfilling an older version is still recognised as published.
-          if npm view "@pathscale/ui@$version" version >/dev/null 2>&1; then
-            echo "publish=false" >> "$GITHUB_OUTPUT"
-            echo "::notice::@pathscale/ui@$version is already on npm — nothing to publish"
-          else
-            echo "publish=true" >> "$GITHUB_OUTPUT"
-            echo "::notice::@pathscale/ui@$version is not on npm — publishing"
+          current="$(node -p "require('./package.json').version")"
+
+          if ! npm view "@pathscale/ui@$current" version >/dev/null 2>&1; then
+            echo "mode=publish-current" >> "$GITHUB_OUTPUT"
+            echo "version=$current" >> "$GITHUB_OUTPUT"
+            echo "::notice::$current is not on npm — publishing it as-is"
+            exit 0
           fi
 
-  publish:
-    needs: check
-    if: needs.check.outputs.publish == 'true'
+          next="$(bun run scripts/next-version.ts)"
+          if [ -z "$next" ]; then
+            echo "mode=none" >> "$GITHUB_OUTPUT"
+            echo "::notice::no releasable commits since $current — nothing to do"
+            exit 0
+          fi
+
+          echo "mode=bump" >> "$GITHUB_OUTPUT"
+          echo "version=$next" >> "$GITHUB_OUTPUT"
+          echo "::notice::releasing $current -> $next"
+
+  release:
+    needs: decide
+    if: needs.decide.outputs.mode != 'none'
     runs-on: ubuntu-latest
     permissions:
-      contents: write # create the git tag and GitHub release after publishing
+      contents: write # push the bump commit, create the tag and release
       id-token: write # OIDC trusted publishing + provenance
+    env:
+      VERSION: ${{ needs.decide.outputs.version }}
     steps:
       - uses: actions/checkout@v4
 
@@ -84,6 +102,19 @@ jobs:
           npm install -g npm@latest
           npm --version
 
+      # Commit the bump before publishing, so master always states the version we
+      # intend to ship. If a later step fails, the next run sees a version that is
+      # not on npm and finishes the job via publish-current.
+      - name: Bump version on master
+        if: needs.decide.outputs.mode == 'bump'
+        run: |
+          npm version "$VERSION" --no-git-tag-version
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add package.json
+          git commit -m "chore(release): $VERSION [skip ci]"
+          git push origin HEAD:master
+
       - name: Install dependencies
         run: bun install
 
@@ -110,14 +141,13 @@ jobs:
       - name: Publish to npm
         run: npm publish --provenance --access public
 
-      # Tags here have drifted from reality in the past (newest was v1.1.51 while
-      # npm was on 1.2.11). Tagging as part of publishing keeps them honest.
+      # Tag only after a successful publish, so tags never point at a version that
+      # is not on npm. Tags had drifted badly before this — newest was v1.1.51
+      # while npm was on 1.2.11.
       - name: Tag the release
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          VERSION: ${{ needs.check.outputs.version }}
         run: |
           gh release create "v$VERSION" \
             --title "v$VERSION" \
-            --generate-notes \
-            --verify-tag=false
+            --generate-notes
