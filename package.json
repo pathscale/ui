@@ -11,10 +11,21 @@
   "files": [
     "dist"
   ],
-  "homepage": "https://github.com/pathscale/ui",
+  "homepage": "https://js.software",
   "keywords": [
     "solid",
-    "solidjs"
+    "solidjs",
+    "solid-js",
+    "component-library",
+    "ui",
+    "ui-components",
+    "design-system",
+    "tailwind",
+    "tailwindcss",
+    "daisyui",
+    "headless-ui",
+    "accessible",
+    "typescript"
   ],
   "bugs": {
     "url": "https://github.com/pathscale/ui/issues"
