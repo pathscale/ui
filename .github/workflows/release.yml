@@ -1,0 +1,97 @@
+name: Release
+
+# Release PR -> merge -> publish.
+#
+# release-please keeps a version-bump + changelog PR open against master. Merging
+# it tags the release and triggers the publish job below. Nothing publishes until
+# that PR is merged, so this workflow is inert on ordinary pushes.
+#
+# Publishing uses npm Trusted Publishing (OIDC): there is no NPM_TOKEN anywhere.
+# It requires a one-time setup on npmjs.com —
+#   @pathscale/ui -> Settings -> Trusted Publisher -> GitHub Actions
+#   repository: pathscale/ui, workflow: release.yml
+# Until that is configured the publish step fails closed; it cannot publish
+# unsigned or unauthenticated.
+
+on:
+  push:
+    branches: [master]
+
+permissions:
+  contents: read
+
+jobs:
+  release-please:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
+    outputs:
+      release_created: ${{ steps.release.outputs.release_created }}
+      tag_name: ${{ steps.release.outputs.tag_name }}
+    steps:
+      - uses: googleapis/release-please-action@v4
+        id: release
+        with:
+          release-type: node
+
+  publish:
+    needs: release-please
+    if: needs.release-please.outputs.release_created == 'true'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      id-token: write # required for OIDC trusted publishing + provenance
+    steps:
+      - uses: actions/checkout@v4
+
+      # Mirrors ci.yml — the build resolves this plugin from a sibling directory.
+      - name: Checkout rsbuild-plugin-ui-css-purge
+        uses: actions/checkout@v4
+        with:
+          repository: pathscale/rsbuild-plugin-ui-css-purge
+          path: rsbuild-plugin-ui-css-purge
+
+      - name: Symlink plugin to expected path
+        run: ln -s $GITHUB_WORKSPACE/rsbuild-plugin-ui-css-purge ../rsbuild-plugin-ui-css-purge
+
+      - uses: oven-sh/setup-bun@v1
+        with:
+          bun-version: latest
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          registry-url: https://registry.npmjs.org
+
+      # Trusted publishing needs npm >= 11.5.1.
+      - name: Ensure npm supports trusted publishing
+        run: |
+          npm install -g npm@latest
+          npm --version
+
+      - name: Install dependencies
+        run: bun install
+
+      - name: Contract check
+        run: bun run check
+
+      - name: Type check
+        run: npx tsc --noEmit
+
+      - name: Build
+        run: bun run build
+
+      # ---- pre-publish gates. A version can never be reused; fail before shipping.
+
+      - name: Package check (exports and README resolve against the tarball)
+        run: bun run check:package
+
+      - name: publint (publish config, exports, file paths)
+        run: npx --yes publint --strict
+
+      - name: Are the types wrong? (consumer type resolution)
+        run: npx --yes @arethetypeswrong/cli --pack --ignore-rules cjs-resolves-to-esm
+
+      - name: Publish to npm
+        run: npm publish --provenance --access public
