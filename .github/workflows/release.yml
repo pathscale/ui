@@ -135,13 +135,18 @@ jobs:
       - name: publint (publish config, exports, file paths)
         run: npx --yes publint --strict
 
-      # Advisory, not blocking. The published 1.2.11 fails this identically, so it
-      # reports a pre-existing condition rather than a regression, and gating on it
-      # would block releases that are strictly better than what is live. The .d.ts
-      # internal-resolution problem is real and worth fixing on its own.
-      - name: Are the types wrong? (advisory)
+      # Replaces @arethetypeswrong/cli, which modelled four TypeScript resolution
+      # modes — three of which nothing here ships to — and reported 378 findings
+      # with none actionable. This installs the packed tarball into a fixture app
+      # configured like our real consumers and typechecks it, which on its first
+      # run caught tailwind-merge being a devDependency while 127 shipped files
+      # import it.
+      #
+      # Advisory for now; promote to blocking once it has run green a few times.
+      # Today's release failed four times on gates that had never run in CI.
+      - name: Consumer smoke test (advisory)
         continue-on-error: true
-        run: npx --yes @arethetypeswrong/cli --pack --ignore-rules cjs-resolves-to-esm
+        run: bun run smoke
 
       - name: Publish to npm
         run: npm publish --provenance --access public
