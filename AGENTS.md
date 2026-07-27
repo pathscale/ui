@@ -109,3 +109,11 @@ running any command family listed in
 [`.claude/hooks/ask-before-risky-commands.sh`](.claude/hooks/ask-before-risky-commands.sh).
 It is one layer of defence, not a guarantee — a pattern match over a command string is
 best-effort.
+
+## No AI attribution
+
+Never add AI attribution to anything in this repo or leaving it: no "Generated with
+Claude Code" / robot-emoji footers, no `Co-Authored-By: Claude` (or any AI) trailers,
+and no AI credit in commit messages, PR or issue titles/bodies, changelogs, release
+notes, or code comments. Applies to every agent and every vendor. Work product should
+be indistinguishable from a human teammate's.
