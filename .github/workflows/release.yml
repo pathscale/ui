@@ -29,7 +29,7 @@ permissions:
 
 jobs:
   decide:
-    runs-on: ubuntu-latest
+    runs-on: ubicloud-standard-2
     outputs:
       mode: ${{ steps.decide.outputs.mode }}
       version: ${{ steps.decide.outputs.version }}
@@ -68,7 +68,7 @@ jobs:
   release:
     needs: decide
     if: needs.decide.outputs.mode != 'none'
-    runs-on: ubuntu-latest
+    runs-on: ubicloud-standard-2
     permissions:
       contents: write # push the bump commit, create the tag and release
       id-token: write # OIDC trusted publishing + provenance

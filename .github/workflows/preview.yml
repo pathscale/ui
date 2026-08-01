@@ -10,7 +10,7 @@ permissions:
 
 jobs:
   deploy-preview:
-    runs-on: ubuntu-latest
+    runs-on: ubicloud-standard-2
     name: Deploy PR Preview
     steps:
       - uses: actions/checkout@v4
