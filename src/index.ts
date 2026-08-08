@@ -160,7 +160,15 @@ export type {
   ColorPickerFieldProps,
 } from "./components/color-picker";
 export { ColorWheelFlower } from "./components/color-wheel-flower";
-export type { ColorWheelFlowerProps } from "./components/color-wheel-flower";
+export {
+  COLOR_WHEEL_FLOWER_COLOR_COUNT,
+  COLOR_WHEEL_FLOWER_PALETTES,
+  resolveColorWheelFlowerPalette,
+} from "./components/color-wheel-flower";
+export type {
+  ColorWheelFlowerMode,
+  ColorWheelFlowerProps,
+} from "./components/color-wheel-flower";
 
 export {
   default as Description,
