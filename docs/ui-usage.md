@@ -71,7 +71,9 @@ Renames from old versions (see `docs/component-migration-map.md`): Loading→Spi
 palettes share hue positions, while dark mode uses genuinely darker values. Pass
 `mode="light"|"dark"` to make the mode explicit, or `palette={colors}` to render a custom
 31-color literal palette (12 outer, 12 middle, 6 inner, 1 center). A picked swatch emits
-the same normalized hex that it displays.
+the same normalized hex that it displays. Surface strength, softness and accent mixing
+remain consumer theme concerns; use the literal selected hex as their input rather than
+making the wheel silently transform it.
 
 ## Forms (TanStack Form + Standard Schema)
 

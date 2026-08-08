@@ -11,7 +11,10 @@ const hslHex = (hue: number, saturation: number, lightness: number) =>
   createColorFromHsl(hue, saturation, lightness).hex.toUpperCase();
 
 const createPalette = (mode: ColorWheelFlowerMode): readonly string[] => {
-  const levels = mode === "dark" ? [28, 40, 52] : [52, 66, 80];
+  // Validated in a full settings surface: 28/40/52 let the inner ring turn a
+  // dark interface into a bright colour field. These levels keep every ring
+  // visibly coloured while preserving a genuinely dark base.
+  const levels = mode === "dark" ? [22, 33, 44] : [52, 66, 80];
   return [
     ...RING_HUES.map((hue) => hslHex(hue, 72, levels[0])),
     ...RING_HUES.map((hue) => hslHex(hue, 68, levels[1])),

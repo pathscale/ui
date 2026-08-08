@@ -31,6 +31,21 @@ describe("ColorWheelFlower palettes", () => {
       averageLightness(COLOR_WHEEL_FLOWER_PALETTES.light) -
         averageLightness(COLOR_WHEEL_FLOWER_PALETTES.dark),
     ).toBeGreaterThan(20);
+    expect(
+      COLOR_WHEEL_FLOWER_PALETTES.dark
+        .slice(0, 12)
+        .every((color) => parseColor(color)?.hsl.l === 22),
+    ).toBe(true);
+    expect(
+      COLOR_WHEEL_FLOWER_PALETTES.dark
+        .slice(12, 24)
+        .every((color) => parseColor(color)?.hsl.l === 33),
+    ).toBe(true);
+    expect(
+      COLOR_WHEEL_FLOWER_PALETTES.dark
+        .slice(24, 30)
+        .every((color) => parseColor(color)?.hsl.l === 44),
+    ).toBe(true);
   });
 
   it("accepts a complete custom palette and rejects partial palettes", () => {
