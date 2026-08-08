@@ -15,10 +15,15 @@ import ColorSwatchPicker from "../color-swatch-picker";
 import { useColorPickerContext } from "./colorWheelFlowerContext";
 import {
   createColorFromHsl,
+  parseColor,
   rgbToHex,
   rgbToHsl,
   type ColorValue,
 } from "./ColorUtils";
+import {
+  type ColorWheelFlowerMode,
+  resolveColorWheelFlowerPalette,
+} from "./ColorWheelFlower.palette";
 import {
   motionDistances,
   motionDurations,
@@ -33,6 +38,10 @@ import { CLASSES } from "./ColorWheelFlower.classes";
 export interface ColorWheelFlowerProps {
   class?: string;
   className?: string;
+  /** Explicit mode. Omit to follow the root `data-theme` attribute. */
+  mode?: ColorWheelFlowerMode;
+  /** Exactly 31 literal colors, ordered outer ring, middle ring, inner ring, center. */
+  palette?: readonly string[];
 }
 
 type ColorItem = {
@@ -68,16 +77,17 @@ const parseRgbToHsl = (rgbString: string) => {
 
 const createColorItem = (
   id: string,
-  rgb: string,
+  color: string,
   offsetX: number,
   offsetY: number,
   options?: { isCenter?: boolean },
 ): ColorItem => {
+  const parsed = parseColor(color) ?? parseColor("#ffffff");
+  const r = parsed?.rgb.r ?? 255;
+  const g = parsed?.rgb.g ?? 255;
+  const b = parsed?.rgb.b ?? 255;
+  const rgb = `rgb(${r},${g},${b})`;
   const hsl = parseRgbToHsl(rgb);
-  const rgbMatch = rgb.match(/^rgb\((\d+),\s*(\d+),\s*(\d+)\)$/);
-  const r = Number.parseInt(rgbMatch?.[1] ?? "255", 10);
-  const g = Number.parseInt(rgbMatch?.[2] ?? "255", 10);
-  const b = Number.parseInt(rgbMatch?.[3] ?? "255", 10);
 
   return {
     id,
@@ -139,11 +149,13 @@ const getLiftOffset = (item: ColorItem, distance: number) => {
   };
 };
 
-const easeOutBack = (overshoot = 1.4) => (t: number) => {
-  const c1 = overshoot;
-  const c3 = c1 + 1;
-  return 1 + c3 * (t - 1) ** 3 + c1 * (t - 1) ** 2;
-};
+const easeOutBack =
+  (overshoot = 1.4) =>
+  (t: number) => {
+    const c1 = overshoot;
+    const c3 = c1 + 1;
+    return 1 + c3 * (t - 1) ** 3 + c1 * (t - 1) ** 2;
+  };
 
 const toRgba = (rgb: string, alpha: number) => {
   const match = rgb.match(/^rgb\((\d+),\s*(\d+),\s*(\d+)\)$/);
@@ -173,149 +185,51 @@ interface ColorLayout {
 
 const LAYOUT: ColorLayout[] = [
   // Outer ring (12)
-  { id: "outer-1",  offsetX: 47.631,  offsetY: -27.5 },
-  { id: "outer-2",  offsetX: 27.5,    offsetY: -47.631 },
-  { id: "outer-3",  offsetX: 0,       offsetY: -55 },
-  { id: "outer-4",  offsetX: -27.5,   offsetY: -47.631 },
-  { id: "outer-5",  offsetX: -47.631, offsetY: -27.5 },
-  { id: "outer-6",  offsetX: -55,     offsetY: 0 },
-  { id: "outer-7",  offsetX: -47.631, offsetY: 27.5 },
-  { id: "outer-8",  offsetX: -27.5,   offsetY: 47.631 },
-  { id: "outer-9",  offsetX: 0,       offsetY: 55 },
-  { id: "outer-10", offsetX: 27.5,    offsetY: 47.631 },
-  { id: "outer-11", offsetX: 47.631,  offsetY: 27.5 },
-  { id: "outer-12", offsetX: 55,      offsetY: 0 },
+  { id: "outer-1", offsetX: 47.631, offsetY: -27.5 },
+  { id: "outer-2", offsetX: 27.5, offsetY: -47.631 },
+  { id: "outer-3", offsetX: 0, offsetY: -55 },
+  { id: "outer-4", offsetX: -27.5, offsetY: -47.631 },
+  { id: "outer-5", offsetX: -47.631, offsetY: -27.5 },
+  { id: "outer-6", offsetX: -55, offsetY: 0 },
+  { id: "outer-7", offsetX: -47.631, offsetY: 27.5 },
+  { id: "outer-8", offsetX: -27.5, offsetY: 47.631 },
+  { id: "outer-9", offsetX: 0, offsetY: 55 },
+  { id: "outer-10", offsetX: 27.5, offsetY: 47.631 },
+  { id: "outer-11", offsetX: 47.631, offsetY: 27.5 },
+  { id: "outer-12", offsetX: 55, offsetY: 0 },
   // Middle ring (12)
-  { id: "middle-1",  offsetX: 34.641,  offsetY: -20 },
-  { id: "middle-2",  offsetX: 20,      offsetY: -34.641 },
-  { id: "middle-3",  offsetX: 0,       offsetY: -40 },
-  { id: "middle-4",  offsetX: -20,     offsetY: -34.641 },
-  { id: "middle-5",  offsetX: -34.641, offsetY: -20 },
-  { id: "middle-6",  offsetX: -40,     offsetY: 0 },
-  { id: "middle-7",  offsetX: -34.641, offsetY: 20 },
-  { id: "middle-8",  offsetX: -20,     offsetY: 34.641 },
-  { id: "middle-9",  offsetX: 0,       offsetY: 40 },
-  { id: "middle-10", offsetX: 20,      offsetY: 34.641 },
-  { id: "middle-11", offsetX: 34.641,  offsetY: 20 },
-  { id: "middle-12", offsetX: 40,      offsetY: 0 },
+  { id: "middle-1", offsetX: 34.641, offsetY: -20 },
+  { id: "middle-2", offsetX: 20, offsetY: -34.641 },
+  { id: "middle-3", offsetX: 0, offsetY: -40 },
+  { id: "middle-4", offsetX: -20, offsetY: -34.641 },
+  { id: "middle-5", offsetX: -34.641, offsetY: -20 },
+  { id: "middle-6", offsetX: -40, offsetY: 0 },
+  { id: "middle-7", offsetX: -34.641, offsetY: 20 },
+  { id: "middle-8", offsetX: -20, offsetY: 34.641 },
+  { id: "middle-9", offsetX: 0, offsetY: 40 },
+  { id: "middle-10", offsetX: 20, offsetY: 34.641 },
+  { id: "middle-11", offsetX: 34.641, offsetY: 20 },
+  { id: "middle-12", offsetX: 40, offsetY: 0 },
   // Inner ring (6)
-  { id: "inner-1", offsetX: 10,  offsetY: -17.3205 },
+  { id: "inner-1", offsetX: 10, offsetY: -17.3205 },
   { id: "inner-2", offsetX: -10, offsetY: -17.3205 },
   { id: "inner-3", offsetX: -20, offsetY: 0 },
   { id: "inner-4", offsetX: -10, offsetY: 17.3205 },
-  { id: "inner-5", offsetX: 10,  offsetY: 17.3205 },
-  { id: "inner-6", offsetX: 20,  offsetY: 0 },
+  { id: "inner-5", offsetX: 10, offsetY: 17.3205 },
+  { id: "inner-6", offsetX: 20, offsetY: 0 },
   // Center
   { id: "center", offsetX: 0, offsetY: 0, isCenter: true },
 ];
 
-// Material Design 2 color palette — Light theme
-// Outer: Material 800, Middle: Material 500, Inner: Material 200
-const LIGHT_RGBS: string[] = [
-  // Outer — Material 800
-  "rgb(249,168,37)",  // Yellow 800
-  "rgb(239,108,0)",   // Orange 800
-  "rgb(198,40,40)",   // Red 800
-  "rgb(173,20,87)",   // Pink 800
-  "rgb(106,27,154)",  // Purple 800
-  "rgb(69,39,160)",   // Deep Purple 800
-  "rgb(40,53,147)",   // Indigo 800
-  "rgb(21,101,192)",  // Blue 800
-  "rgb(0,131,143)",   // Cyan 800
-  "rgb(0,105,92)",    // Teal 800
-  "rgb(46,125,50)",   // Green 800
-  "rgb(85,139,47)",   // Light Green 800
-  // Middle — Material 500
-  "rgb(255,235,59)",  // Yellow
-  "rgb(255,152,0)",   // Orange
-  "rgb(244,67,54)",   // Red
-  "rgb(233,30,99)",   // Pink
-  "rgb(156,39,176)",  // Purple
-  "rgb(103,58,183)",  // Deep Purple
-  "rgb(63,81,181)",   // Indigo
-  "rgb(33,150,243)",  // Blue
-  "rgb(0,188,212)",   // Cyan
-  "rgb(0,150,136)",   // Teal
-  "rgb(76,175,80)",   // Green
-  "rgb(139,195,74)",  // Light Green
-  // Inner — Material 200
-  "rgb(239,154,154)", // Red 200
-  "rgb(206,147,216)", // Purple 200
-  "rgb(144,202,249)", // Blue 200
-  "rgb(128,222,234)", // Cyan 200
-  "rgb(165,214,167)", // Green 200
-  "rgb(255,224,130)", // Amber 200
-  // Center
-  "rgb(255,255,255)",
-];
-
-// Material Design 2 color palette — Dark theme
-// Outer: Material 400, Middle: Material 200, Inner: Material 100
-const DARK_RGBS: string[] = [
-  // Outer — Material 400
-  "rgb(255,238,88)",  // Yellow 400
-  "rgb(255,167,38)",  // Orange 400
-  "rgb(239,83,80)",   // Red 400
-  "rgb(236,64,122)",  // Pink 400
-  "rgb(171,71,188)",  // Purple 400
-  "rgb(126,87,194)",  // Deep Purple 400
-  "rgb(92,107,192)",  // Indigo 400
-  "rgb(66,165,245)",  // Blue 400
-  "rgb(38,198,218)",  // Cyan 400
-  "rgb(38,166,154)",  // Teal 400
-  "rgb(102,187,106)", // Green 400
-  "rgb(156,204,101)", // Light Green 400
-  // Middle — Material 200
-  "rgb(255,245,157)", // Yellow 200
-  "rgb(255,204,128)", // Orange 200
-  "rgb(239,154,154)", // Red 200
-  "rgb(244,143,177)", // Pink 200
-  "rgb(206,147,216)", // Purple 200
-  "rgb(179,157,219)", // Deep Purple 200
-  "rgb(159,168,218)", // Indigo 200
-  "rgb(144,202,249)", // Blue 200
-  "rgb(128,222,234)", // Cyan 200
-  "rgb(128,203,196)", // Teal 200
-  "rgb(165,214,167)", // Green 200
-  "rgb(197,225,165)", // Light Green 200
-  // Inner — Material 100
-  "rgb(255,205,210)", // Red 100
-  "rgb(225,190,231)", // Purple 100
-  "rgb(187,222,251)", // Blue 100
-  "rgb(178,235,242)", // Cyan 100
-  "rgb(200,230,201)", // Green 100
-  "rgb(255,236,179)", // Amber 100
-  // Center
-  "rgb(255,255,255)",
-];
-
-const LIGHT_RAINBOW = `conic-gradient(
-  from 0deg,
-  rgb(244,67,54) 0deg,
-  rgb(255,152,0) 30deg,
-  rgb(255,235,59) 60deg,
-  rgb(76,175,80) 120deg,
-  rgb(0,188,212) 180deg,
-  rgb(63,81,181) 240deg,
-  rgb(156,39,176) 300deg,
-  rgb(244,67,54) 360deg
-)`;
-
-const DARK_RAINBOW = `conic-gradient(
-  from 0deg,
-  rgb(239,154,154) 0deg,
-  rgb(255,204,128) 30deg,
-  rgb(255,245,157) 60deg,
-  rgb(165,214,167) 120deg,
-  rgb(128,222,234) 180deg,
-  rgb(159,168,218) 240deg,
-  rgb(206,147,216) 300deg,
-  rgb(239,154,154) 360deg
-)`;
-
-function buildColors(rgbs: string[]): ColorItem[] {
+function buildColors(palette: readonly string[]): ColorItem[] {
   return LAYOUT.map((layout, i) =>
-    createColorItem(layout.id, rgbs[i], layout.offsetX, layout.offsetY, layout.isCenter ? { isCenter: true } : undefined)
+    createColorItem(
+      layout.id,
+      palette[i],
+      layout.offsetX,
+      layout.offsetY,
+      layout.isCenter ? { isCenter: true } : undefined,
+    ),
   );
 }
 
@@ -327,7 +241,7 @@ const MAX_WAVE_DISTANCE = MAX_RADIUS * 2;
 const MAX_WAVE_DELAY = 0.12;
 
 const ColorWheelFlower = (props: ColorWheelFlowerProps): JSX.Element => {
-  const [local] = splitProps(props, ["class", "className"]);
+  const [local] = splitProps(props, ["class", "className", "mode", "palette"]);
   const context = useColorPickerContext();
 
   const [selectedIndex, setSelectedIndex] = createSignal<number | null>(null);
@@ -341,9 +255,10 @@ const ColorWheelFlower = (props: ColorWheelFlowerProps): JSX.Element => {
 
   // Theme-reactive colors
   const [currentTheme, setCurrentTheme] = createSignal<"light" | "dark">(
-    typeof document !== "undefined"
-      ? (document.documentElement.getAttribute("data-theme") as "light" | "dark") ?? "light"
-      : "light"
+    typeof document !== "undefined" &&
+      document.documentElement.getAttribute("data-theme") === "dark"
+      ? "dark"
+      : "light",
   );
 
   if (typeof window !== "undefined") {
@@ -351,16 +266,26 @@ const ColorWheelFlower = (props: ColorWheelFlowerProps): JSX.Element => {
       const t = document.documentElement.getAttribute("data-theme");
       setCurrentTheme(t === "dark" ? "dark" : "light");
     });
-    observer.observe(document.documentElement, { attributes: true, attributeFilter: ["data-theme"] });
+    observer.observe(document.documentElement, {
+      attributes: true,
+      attributeFilter: ["data-theme"],
+    });
     onCleanup(() => observer.disconnect());
   }
 
+  const mode = (): ColorWheelFlowerMode => local.mode ?? currentTheme();
   const colors = createMemo(() =>
-    buildColors(currentTheme() === "dark" ? DARK_RGBS : LIGHT_RGBS)
+    buildColors(resolveColorWheelFlowerPalette(mode(), local.palette)),
   );
 
-  const rainbowGradient = () =>
-    currentTheme() === "dark" ? DARK_RAINBOW : LIGHT_RAINBOW;
+  const rainbowGradient = () => {
+    const outer = colors().slice(0, 12);
+    const stops = outer.map(
+      (item, index) => `${item.rgb} ${(index / outer.length) * 360}deg`,
+    );
+    stops.push(`${outer[0].rgb} 360deg`);
+    return `conic-gradient(from 0deg, ${stops.join(", ")})`;
+  };
 
   const reduceMotion = prefersReducedMotion();
   const ringTransition: MotionTransition = reduceMotion
@@ -395,7 +320,8 @@ const ColorWheelFlower = (props: ColorWheelFlowerProps): JSX.Element => {
       const hueDelta = hueDistance(current.hsl.h, item.hue);
       const saturationDelta = Math.abs(current.hsl.s - item.saturation);
       const lightnessDelta = Math.abs(current.hsl.l - item.lightness);
-      const score = hueDelta * 2.0 + saturationDelta * 1.0 + lightnessDelta * 0.1;
+      const score =
+        hueDelta * 2.0 + saturationDelta * 1.0 + lightnessDelta * 0.1;
 
       if (score < bestScore) {
         bestScore = score;
@@ -406,7 +332,9 @@ const ColorWheelFlower = (props: ColorWheelFlowerProps): JSX.Element => {
     return closest;
   });
 
-  const visualSelectedIndex = createMemo(() => selectedIndex() ?? closestIndex());
+  const visualSelectedIndex = createMemo(
+    () => selectedIndex() ?? closestIndex(),
+  );
 
   const triggerPulse = (index: number) => {
     const pulseKey = Date.now();
@@ -416,11 +344,14 @@ const ColorWheelFlower = (props: ColorWheelFlowerProps): JSX.Element => {
       clearTimeout(pulseTimeout);
     }
 
-    pulseTimeout = window.setTimeout(() => {
-      setPulseState((prev) =>
-        prev?.index === index && prev?.key === pulseKey ? null : prev,
-      );
-    }, reduceMotion ? 0 : 220);
+    pulseTimeout = window.setTimeout(
+      () => {
+        setPulseState((prev) =>
+          prev?.index === index && prev?.key === pulseKey ? null : prev,
+        );
+      },
+      reduceMotion ? 0 : 220,
+    );
   };
 
   const handlePickerChange = (selectedHex: string) => {
@@ -570,19 +501,26 @@ const ColorWheelFlower = (props: ColorWheelFlowerProps): JSX.Element => {
   return (
     <div
       ref={containerRef}
-      {...{ class: twMerge(
-        CLASSES.base,
-        clsx({ [CLASSES.flag.disabled]: context.disabled() }),
-        local.class,
-        local.className,
-      ) }}
+      {...{
+        class: twMerge(
+          CLASSES.base,
+          clsx({ [CLASSES.flag.disabled]: context.disabled() }),
+          local.class,
+          local.className,
+        ),
+      }}
       onMouseMove={handlePointerMove}
       onMouseLeave={handlePointerLeave}
       data-slot="color-wheel-flower"
+      data-color-mode={mode()}
       data-disabled={context.disabled() ? "true" : "false"}
     >
       <div {...{ class: CLASSES.rings }}>
-        <div {...{ class: twMerge(CLASSES.ringShell.base, CLASSES.ringShell.outer) }}>
+        <div
+          {...{
+            class: twMerge(CLASSES.ringShell.base, CLASSES.ringShell.outer),
+          }}
+        >
           <div
             ref={outerRingRef}
             {...{ class: twMerge(CLASSES.ring.base, CLASSES.ring.outer) }}
@@ -596,7 +534,11 @@ const ColorWheelFlower = (props: ColorWheelFlowerProps): JSX.Element => {
           />
         </div>
 
-        <div {...{ class: twMerge(CLASSES.ringShell.base, CLASSES.ringShell.inner) }}>
+        <div
+          {...{
+            class: twMerge(CLASSES.ringShell.base, CLASSES.ringShell.inner),
+          }}
+        >
           <div {...{ class: twMerge(CLASSES.ring.base, CLASSES.ring.inner) }} />
         </div>
       </div>
@@ -780,11 +722,17 @@ const ColorWheelFlower = (props: ColorWheelFlowerProps): JSX.Element => {
                     <ColorSwatch
                       color={item.hex}
                       size="lg"
-                      {...{ class: twMerge(
-                        CLASSES.swatch.base,
-                        item.isCenter && CLASSES.swatch.center,
-                      ) }}
-                      colorName={item.isCenter ? "Reset to neutral" : `Theme color ${item.hex}`}
+                      {...{
+                        class: twMerge(
+                          CLASSES.swatch.base,
+                          item.isCenter && CLASSES.swatch.center,
+                        ),
+                      }}
+                      colorName={
+                        item.isCenter
+                          ? "Reset to neutral"
+                          : `Theme color ${item.hex}`
+                      }
                       isDisabled={context.disabled()}
                       onMouseEnter={() => {
                         if (!context.disabled()) {
@@ -829,11 +777,13 @@ const ColorWheelFlower = (props: ColorWheelFlowerProps): JSX.Element => {
                     />
 
                     <span
-                      {...{ class: clsx(
-                        CLASSES.highlight.base,
-                        isHovered() && CLASSES.highlight.hovered,
-                        isPulsing() && CLASSES.highlight.pulsing,
-                      ) }}
+                      {...{
+                        class: clsx(
+                          CLASSES.highlight.base,
+                          isHovered() && CLASSES.highlight.hovered,
+                          isPulsing() && CLASSES.highlight.pulsing,
+                        ),
+                      }}
                     />
                   </div>
                 </div>

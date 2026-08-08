@@ -67,6 +67,12 @@ Subpath exports also exist: `./components/*`, `./primitives/*`, `./hooks/*`, `./
 
 Renames from old versions (see `docs/component-migration-map.md`): Loading→Spinner, DropdownSelect→Select, RadialProgress→ProgressCircle, RangeSlider→Slider, Progress→ProgressBar/ProgressCircle. ~40 components removed outright (Carousel, Rating, Steps, Stats, FileInput, …).
 
+`ColorWheelFlower` follows the root `data-theme` by default. Its built-in light and dark
+palettes share hue positions, while dark mode uses genuinely darker values. Pass
+`mode="light"|"dark"` to make the mode explicit, or `palette={colors}` to render a custom
+31-color literal palette (12 outer, 12 middle, 6 inner, 1 center). A picked swatch emits
+the same normalized hex that it displays.
+
 ## Forms (TanStack Form + Standard Schema)
 
 ```tsx
