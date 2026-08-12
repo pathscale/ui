@@ -16,7 +16,9 @@ import { Portal } from "solid-js/web";
 import { twMerge } from "tailwind-merge";
 
 import type { IComponentBaseProps } from "../types";
-import { CLASSES } from "./Modal.classes";
+import { CLASSES } from "./Modal.recipe";
+import type { Layout } from "../../lib/layouts";
+import { componentRecipe } from "./Modal.recipe";
 
 export type ModalPlacement = "auto" | "top" | "center" | "bottom";
 export type ModalSize = "xs" | "sm" | "md" | "lg" | "cover" | "full";
@@ -219,7 +221,7 @@ export type ModalCloseTriggerProps = Omit<JSX.ButtonHTMLAttributes<HTMLButtonEle
     children?: JSX.Element;
   };
 
-const ModalRoot: ParentComponent<ModalRootProps> = (props) => {
+const ModalRoot: Layout<typeof componentRecipe, ModalRootProps> = () => {
   const [local, others] = splitProps(props, [
     "children",
     "class",
@@ -407,7 +409,7 @@ const ModalRoot: ParentComponent<ModalRootProps> = (props) => {
   );
 };
 
-const ModalTrigger: Component<ModalTriggerProps> = (props) => {
+const ModalTrigger: Layout<typeof componentRecipe, ModalTriggerProps> = () => {
   const [local, others] = splitProps(props, [
     "children",
     "class",
@@ -442,7 +444,7 @@ const ModalTrigger: Component<ModalTriggerProps> = (props) => {
   );
 };
 
-const ModalBackdrop: ParentComponent<ModalBackdropProps> = (props) => {
+const ModalBackdrop: Layout<typeof componentRecipe, ModalBackdropProps> = () => {
   const [local, others] = splitProps(props, [
     "children",
     "class",
@@ -500,7 +502,7 @@ const ModalBackdrop: ParentComponent<ModalBackdropProps> = (props) => {
   );
 };
 
-const ModalContent: ParentComponent<ModalContentProps> = (props) => {
+const ModalContent: Layout<typeof componentRecipe, ModalContentProps> = () => {
   const [local, others] = splitProps(props, [
     "children",
     "class",
@@ -596,7 +598,7 @@ const ModalContent: ParentComponent<ModalContentProps> = (props) => {
   );
 };
 
-const ModalHeader: ParentComponent<ModalHeaderProps> = (props) => {
+const ModalHeader: Layout<typeof componentRecipe, ModalHeaderProps> = () => {
   const [local, others] = splitProps(props, [
     "children",
     "class",
@@ -618,7 +620,7 @@ const ModalHeader: ParentComponent<ModalHeaderProps> = (props) => {
   );
 };
 
-const ModalHeading: ParentComponent<ModalHeadingProps> = (props) => {
+const ModalHeading: Layout<typeof componentRecipe, ModalHeadingProps> = () => {
   const [local, others] = splitProps(props, [
     "children",
     "class",
@@ -657,7 +659,7 @@ const ModalHeading: ParentComponent<ModalHeadingProps> = (props) => {
   );
 };
 
-const ModalIcon: ParentComponent<ModalIconProps> = (props) => {
+const ModalIcon: Layout<typeof componentRecipe, ModalIconProps> = () => {
   const [local, others] = splitProps(props, [
     "children",
     "class",
@@ -679,7 +681,7 @@ const ModalIcon: ParentComponent<ModalIconProps> = (props) => {
   );
 };
 
-const ModalBody: ParentComponent<ModalBodyProps> = (props) => {
+const ModalBody: Layout<typeof componentRecipe, ModalBodyProps> = () => {
   const [local, others] = splitProps(props, [
     "children",
     "class",
@@ -724,7 +726,7 @@ const ModalBody: ParentComponent<ModalBodyProps> = (props) => {
   );
 };
 
-const ModalFooter: ParentComponent<ModalFooterProps> = (props) => {
+const ModalFooter: Layout<typeof componentRecipe, ModalFooterProps> = () => {
   const [local, others] = splitProps(props, [
     "children",
     "class",
@@ -746,7 +748,7 @@ const ModalFooter: ParentComponent<ModalFooterProps> = (props) => {
   );
 };
 
-const ModalCloseTrigger: Component<ModalCloseTriggerProps> = (props) => {
+const ModalCloseTrigger: Layout<typeof componentRecipe, ModalCloseTriggerProps> = () => {
   const [local, others] = splitProps(props, [
     "children",
     "class",

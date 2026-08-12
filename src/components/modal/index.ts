@@ -26,4 +26,4 @@ export {
   type ModalBodyProps,
   type ModalFooterProps,
   type ModalCloseTriggerProps,
-} from "./Modal";
+} from "./Modal.generated";
