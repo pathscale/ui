@@ -1,3 +1,4 @@
+import { recipe } from "../../lib/layouts";
 export const CLASSES = {
   base: "button",
   variant: {
@@ -25,3 +26,4 @@ export const CLASSES = {
     iconEnd: "button__icon--end",
   },
 } as const;
+export const componentRecipe = recipe({component:"button",slots:{"button":{},"button-end-icon":{},"button-start-icon":{},"root":{},"spinner":{},},});
