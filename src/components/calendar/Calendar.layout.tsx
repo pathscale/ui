@@ -25,7 +25,9 @@ import {
   type CalendarSelectionMode,
 } from "../../hooks/date";
 import type { IComponentBaseProps } from "../types";
-import { CLASSES } from "./Calendar.classes";
+import { CLASSES } from "./Calendar.recipe";
+import type { Layout } from "../../lib/layouts";
+import { componentRecipe } from "./Calendar.recipe";
 
 export type CalendarWeekdayFormat = "narrow" | "short" | "long";
 export type { CalendarSelectionMode };
@@ -59,7 +61,7 @@ export type CalendarProps = Omit<
   IComponentBaseProps &
   CalendarBaseProps;
 
-const Calendar = (props: CalendarProps): JSX.Element => {
+const Calendar: Layout<typeof componentRecipe, CalendarProps> = () => {
   const [local, others] = splitProps(props, [
     "class",
     "className",
