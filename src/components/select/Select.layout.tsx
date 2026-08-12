@@ -20,7 +20,9 @@ import {
   type OverlayPlacement,
 } from "../_shared/overlayPosition";
 import type { IComponentBaseProps } from "../types";
-import { CLASSES } from "./Select.classes";
+import { CLASSES } from "./Select.recipe";
+import type { Layout } from "../../lib/layouts";
+import { componentRecipe } from "./Select.recipe";
 
 type SelectKey = string | number;
 export type SelectValueType = SelectKey | SelectKey[] | null;
@@ -143,7 +145,7 @@ export type SelectRootProps = Omit<JSX.HTMLAttributes<HTMLDivElement>, "onChange
     onOpenChange?: (open: boolean) => void;
   };
 
-const SelectRoot: Component<SelectRootProps> = (props) => {
+const SelectRoot: Layout<typeof componentRecipe, SelectRootProps> = () => {
   const [local, others] = splitProps(props, [
     "children",
     "class",
@@ -443,7 +445,7 @@ export type SelectTriggerProps = JSX.ButtonHTMLAttributes<HTMLButtonElement> &
     endIcon?: JSX.Element;
   };
 
-const SelectTrigger: Component<SelectTriggerProps> = (props) => {
+const SelectTrigger: Layout<typeof componentRecipe, SelectTriggerProps> = () => {
   const ctx = useContext(SelectContext);
   const [local, others] = splitProps(props, [
     "children",
@@ -579,7 +581,7 @@ const SelectTrigger: Component<SelectTriggerProps> = (props) => {
 export type SelectValueProps = JSX.HTMLAttributes<HTMLSpanElement> &
   IComponentBaseProps;
 
-const SelectValue: Component<SelectValueProps> = (props) => {
+const SelectValue: Layout<typeof componentRecipe, SelectValueProps> = () => {
   const ctx = useContext(SelectContext);
   const [local, others] = splitProps(props, [
     "children",
@@ -611,7 +613,7 @@ export type SelectIndicatorProps = JSX.HTMLAttributes<HTMLSpanElement> &
     endIcon?: JSX.Element;
   };
 
-const SelectIndicator: Component<SelectIndicatorProps> = (props) => {
+const SelectIndicator: Layout<typeof componentRecipe, SelectIndicatorProps> = () => {
   const ctx = useContext(SelectContext);
   const [local, others] = splitProps(props, [
     "children",
@@ -649,7 +651,7 @@ const SelectIndicator: Component<SelectIndicatorProps> = (props) => {
 export type SelectPopoverProps = JSX.HTMLAttributes<HTMLDivElement> &
   IComponentBaseProps;
 
-const SelectPopover: Component<SelectPopoverProps> = (props) => {
+const SelectPopover: Layout<typeof componentRecipe, SelectPopoverProps> = () => {
   const ctx = useContext(SelectContext);
   const [local, others] = splitProps(props, [
     "children",
@@ -717,7 +719,7 @@ const SelectPopover: Component<SelectPopoverProps> = (props) => {
 export type SelectListboxProps = JSX.HTMLAttributes<HTMLDivElement> &
   IComponentBaseProps;
 
-const SelectListbox: Component<SelectListboxProps> = (props) => {
+const SelectListbox: Layout<typeof componentRecipe, SelectListboxProps> = () => {
   const ctx = useContext(SelectContext);
   const [local, others] = splitProps(props, [
     "children",
@@ -751,7 +753,7 @@ export type SelectOptionProps = Omit<JSX.ButtonHTMLAttributes<HTMLButtonElement>
     endIcon?: JSX.Element;
   };
 
-const SelectOption: Component<SelectOptionProps> = (props) => {
+const SelectOption: Layout<typeof componentRecipe, SelectOptionProps> = () => {
   const ctx = useContext(SelectContext);
   const [local, others] = splitProps(props, [
     "children",
