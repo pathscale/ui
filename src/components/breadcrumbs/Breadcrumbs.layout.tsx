@@ -10,7 +10,9 @@ import {
 } from "solid-js";
 import { twMerge } from "tailwind-merge";
 import type { IComponentBaseProps } from "../types";
-import { CLASSES } from "./Breadcrumbs.classes";
+import { CLASSES } from "./Breadcrumbs.recipe";
+import type { Layout } from "../../lib/layouts";
+import { componentRecipe } from "./Breadcrumbs.recipe";
 
 /* -------------------------------------------------------------------------------------------------
  * Breadcrumbs Context
@@ -69,7 +71,7 @@ const ChevronRight = () => (
 /* -------------------------------------------------------------------------------------------------
  * Breadcrumbs Root
  * -----------------------------------------------------------------------------------------------*/
-const BreadcrumbsRoot: ParentComponent<BreadcrumbsRootProps> = (props) => {
+const BreadcrumbsRoot: Layout<typeof componentRecipe, BreadcrumbsRootProps> = () => {
   const [local, others] = splitProps(props, [
     "children",
     "class",
@@ -104,7 +106,7 @@ const BreadcrumbsRoot: ParentComponent<BreadcrumbsRootProps> = (props) => {
  * -----------------------------------------------------------------------------------------------*/
 const [ITEM_CLASS, LINK_CLASS, SEPARATOR_CLASS] = CLASSES.Item.base;
 
-const BreadcrumbsItem: Component<BreadcrumbsItemProps> = (props) => {
+const BreadcrumbsItem: Layout<typeof componentRecipe, BreadcrumbsItemProps> = () => {
   const [local, others] = splitProps(props, [
     "children",
     "class",

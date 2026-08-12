@@ -1,3 +1,4 @@
+import { recipe } from "../../lib/layouts";
 // CSS class contract for Breadcrumbs.
 //
 // Compound shape: this file exports a single CLASSES const whose top-level keys are the
@@ -19,3 +20,4 @@ export const CLASSES = {
     base: ["breadcrumbs__item", "breadcrumbs__link", "breadcrumbs__separator"],
   },
 } as const;
+export const componentRecipe = recipe({component:"breadcrumbs",slots:{"breadcrumbs":{},"breadcrumbs-item":{},"breadcrumbs-link":{},"breadcrumbs-separator":{},"root":{},},});
