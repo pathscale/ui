@@ -5,7 +5,9 @@ import { twMerge } from "tailwind-merge";
 import { getFirstFieldError } from "../../hooks/form/getFirstFieldError";
 import { useFormContext, type AnyFormApi } from "../../hooks/form";
 import type { IComponentBaseProps } from "../types";
-import { CLASSES } from "./FieldError.classes";
+import { CLASSES } from "./FieldError.recipe";
+import type { Layout } from "../../lib/layouts";
+import { componentRecipe } from "./FieldError.recipe";
 
 export type FieldErrorRenderProps = {
   isVisible: boolean;
@@ -20,7 +22,7 @@ export type FieldErrorRootProps = Omit<JSX.HTMLAttributes<HTMLDivElement>, "chil
     showWhenTouched?: boolean;
   };
 
-const FieldErrorRoot: Component<FieldErrorRootProps> = (props) => {
+const FieldErrorRoot: Layout<typeof componentRecipe, FieldErrorRootProps> = () => {
   const [local, others] = splitProps(props, [
     "children",
     "class",

@@ -5,4 +5,4 @@ export {
   type FieldErrorProps,
   type FieldErrorRootProps,
   type FieldErrorRenderProps,
-} from "./FieldError";
+} from "./FieldError.generated";
