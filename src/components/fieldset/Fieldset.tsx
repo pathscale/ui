@@ -1,111 +1,69 @@
 import "./Fieldset.css";
-import { splitProps, type Component, type JSX, type ParentComponent } from "solid-js";
-import { twMerge } from "tailwind-merge";
+import type { JSX } from "solid-js";
+import { defineComponent } from "solid-layouts";
 
 import type { IComponentBaseProps } from "../types";
-import { CLASSES } from "./Fieldset.classes";
+import {
+  FieldGroupLayout,
+  FieldsetActionsLayout,
+  FieldsetLegendLayout,
+  FieldsetRootLayout,
+} from "./Fieldset.layout";
+import { fieldset } from "./Fieldset.recipe";
 
-export type FieldsetRootProps = JSX.FieldsetHTMLAttributes<HTMLFieldSetElement> & IComponentBaseProps;
+export type FieldsetRootProps =
+  JSX.FieldsetHTMLAttributes<HTMLFieldSetElement> & IComponentBaseProps;
 
-export type FieldsetLegendProps = JSX.HTMLAttributes<HTMLLegendElement> & IComponentBaseProps;
+export type FieldsetLegendProps = JSX.HTMLAttributes<HTMLLegendElement> &
+  IComponentBaseProps;
 
-export type FieldGroupProps = Omit<JSX.HTMLAttributes<HTMLDivElement>, "children"> &
+export type FieldGroupProps = Omit<
+  JSX.HTMLAttributes<HTMLDivElement>,
+  "children"
+> &
   IComponentBaseProps & {
     children?: JSX.Element;
   };
 
-export type FieldsetActionsProps = Omit<JSX.HTMLAttributes<HTMLDivElement>, "children"> &
+export type FieldsetActionsProps = Omit<
+  JSX.HTMLAttributes<HTMLDivElement>,
+  "children"
+> &
   IComponentBaseProps & {
     children?: JSX.Element;
   };
 
-const FieldsetRoot: ParentComponent<FieldsetRootProps> = (props) => {
-  const [local, others] = splitProps(props, [
-    "children",
-    "class",
-    "className",
-    "dataTheme",
-    "style",
-  ]);
+/**
+ * `disabled` is not listed anywhere: `<fieldset disabled>` is plain HTML and
+ * the fourth prop bucket carries it to the element, where the browser already
+ * knows what it means.
+ */
+const FieldsetRoot = defineComponent({
+  recipe: fieldset,
+  name: "Fieldset",
+  layout: FieldsetRootLayout,
+}) as unknown as (props: FieldsetRootProps) => JSX.Element;
 
-  return (
-    <fieldset
-      {...others}
-      {...{ class: twMerge(CLASSES.Root.base, local.class, local.className) }}
-      data-slot="fieldset"
-      data-theme={local.dataTheme}
-      style={local.style}
-    >
-      {local.children}
-    </fieldset>
-  );
-};
+const FieldsetLegend = defineComponent({
+  recipe: fieldset,
+  name: "FieldsetLegend",
+  slot: "legend",
+  layout: FieldsetLegendLayout,
+}) as unknown as (props: FieldsetLegendProps) => JSX.Element;
 
-const FieldsetLegend: ParentComponent<FieldsetLegendProps> = (props) => {
-  const [local, others] = splitProps(props, [
-    "children",
-    "class",
-    "className",
-    "dataTheme",
-    "style",
-  ]);
+const FieldGroup = defineComponent({
+  recipe: fieldset,
+  name: "FieldGroup",
+  slot: "group",
+  layout: FieldGroupLayout,
+}) as unknown as (props: FieldGroupProps) => JSX.Element;
 
-  return (
-    <legend
-      {...others}
-      {...{ class: twMerge(CLASSES.Legend.base, local.class, local.className) }}
-      data-slot="fieldset-legend"
-      data-theme={local.dataTheme}
-      style={local.style}
-    >
-      {local.children}
-    </legend>
-  );
-};
-
-const FieldGroup: ParentComponent<FieldGroupProps> = (props) => {
-  const [local, others] = splitProps(props, [
-    "children",
-    "class",
-    "className",
-    "dataTheme",
-    "style",
-  ]);
-
-  return (
-    <div
-      {...others}
-      {...{ class: twMerge(CLASSES.Group.base, local.class, local.className) }}
-      data-slot="fieldset-field-group"
-      data-theme={local.dataTheme}
-      style={local.style}
-    >
-      {local.children}
-    </div>
-  );
-};
-
-const FieldsetActions: ParentComponent<FieldsetActionsProps> = (props) => {
-  const [local, others] = splitProps(props, [
-    "children",
-    "class",
-    "className",
-    "dataTheme",
-    "style",
-  ]);
-
-  return (
-    <div
-      {...others}
-      {...{ class: twMerge(CLASSES.Actions.base, local.class, local.className) }}
-      data-slot="fieldset-actions"
-      data-theme={local.dataTheme}
-      style={local.style}
-    >
-      {local.children}
-    </div>
-  );
-};
+const FieldsetActions = defineComponent({
+  recipe: fieldset,
+  name: "FieldsetActions",
+  slot: "actions",
+  layout: FieldsetActionsLayout,
+}) as unknown as (props: FieldsetActionsProps) => JSX.Element;
 
 const Fieldset = Object.assign(FieldsetRoot, {
   Root: FieldsetRoot,
@@ -115,5 +73,5 @@ const Fieldset = Object.assign(FieldsetRoot, {
 });
 
 export default Fieldset;
-export { Fieldset, FieldsetRoot, FieldsetLegend, FieldGroup, FieldsetActions };
 export type { FieldsetRootProps as FieldsetProps };
+export { FieldGroup, Fieldset, FieldsetActions, FieldsetLegend, FieldsetRoot };
