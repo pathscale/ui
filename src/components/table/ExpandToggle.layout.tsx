@@ -2,6 +2,8 @@ import { type Component, type JSX, Show, splitProps } from "solid-js";
 import { twMerge } from "tailwind-merge";
 import Icon from "../icon";
 import type { IComponentBaseProps } from "../types";
+import type { Layout } from "../../lib/layouts";
+import { componentRecipe } from "./Table.recipe";
 
 export type ExpandToggleProps = Omit<JSX.ButtonHTMLAttributes<HTMLButtonElement>, "onToggle"> &
   IComponentBaseProps & {
@@ -12,7 +14,7 @@ export type ExpandToggleProps = Omit<JSX.ButtonHTMLAttributes<HTMLButtonElement>
     disabled?: boolean;
   };
 
-const ExpandToggle: Component<ExpandToggleProps> = (props) => {
+const ExpandToggle: Layout<typeof componentRecipe, ExpandToggleProps> = () => {
   const [local, rest] = splitProps(props, [
     "expanded",
     "onToggle",

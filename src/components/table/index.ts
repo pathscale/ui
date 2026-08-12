@@ -1,4 +1,4 @@
-export { default } from "./Table";
+export { default } from "./Table.generated";
 export {
   TableRoot,
   TableScrollContainer,
@@ -15,7 +15,7 @@ export {
   TableColumnResizer,
   TableLoadMore,
   TableLoadMoreContent,
-} from "./Table";
+} from "./Table.generated";
 export type {
   TableRootProps as TableProps,
   TableRootProps,
@@ -37,17 +37,17 @@ export type {
   TableSortDirection,
   TableSortDescriptor,
   TableColumnRenderProps,
-} from "./Table";
-export { default as SortIcon } from "./SortIcon";
-export type { SortIconProps, SortIconState } from "./SortIcon";
-export { default as ExpandToggle } from "./ExpandToggle";
-export type { ExpandToggleProps } from "./ExpandToggle";
-export { default as VirtualSpacerRow } from "./VirtualSpacerRow";
-export type { VirtualSpacerRowProps } from "./VirtualSpacerRow";
-export { default as MobileListView } from "./MobileListView";
-export type { MobileListViewProps } from "./MobileListView";
-export { default as InlineConfirm } from "./InlineConfirm";
-export type { InlineConfirmProps, InlineConfirmVariant } from "./InlineConfirm";
+} from "./Table.generated";
+export { default as SortIcon } from "./SortIcon.generated";
+export type { SortIconProps, SortIconState } from "./SortIcon.generated";
+export { default as ExpandToggle } from "./ExpandToggle.generated";
+export type { ExpandToggleProps } from "./ExpandToggle.generated";
+export { default as VirtualSpacerRow } from "./VirtualSpacerRow.generated";
+export type { VirtualSpacerRowProps } from "./VirtualSpacerRow.generated";
+export { default as MobileListView } from "./MobileListView.generated";
+export type { MobileListViewProps } from "./MobileListView.generated";
+export { default as InlineConfirm } from "./InlineConfirm.generated";
+export type { InlineConfirmProps, InlineConfirmVariant } from "./InlineConfirm.generated";
 
 export {
   useTableModel,

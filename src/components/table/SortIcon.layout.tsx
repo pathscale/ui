@@ -2,6 +2,8 @@ import { type Component, type JSX, Show, splitProps } from "solid-js";
 import { twMerge } from "tailwind-merge";
 import Icon from "../icon";
 import type { IComponentBaseProps } from "../types";
+import type { Layout } from "../../lib/layouts";
+import { componentRecipe } from "./Table.recipe";
 
 export type SortIconState = "asc" | "desc" | "none";
 
@@ -13,7 +15,7 @@ export type SortIconProps = IComponentBaseProps & {
   neutralIcon?: JSX.Element;
 };
 
-const SortIcon: Component<SortIconProps> = (props) => {
+const SortIcon: Layout<typeof componentRecipe, SortIconProps> = () => {
   const [local, rest] = splitProps(props, [
     "state",
     "size",

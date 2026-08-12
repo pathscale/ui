@@ -2,7 +2,9 @@ import "./Table.css";
 import { type Accessor, type Component, type JSX, splitProps, createContext, useContext } from "solid-js";
 import { twMerge } from "tailwind-merge";
 import type { IComponentBaseProps } from "../types";
-import { CLASSES } from "./Table.classes";
+import { CLASSES } from "./Table.recipe";
+import type { Layout } from "../../lib/layouts";
+import { componentRecipe } from "./Table.recipe";
 
 /* -------------------------------------------------------------------------------------------------
  * Table Context
@@ -75,7 +77,7 @@ export type TableRootProps = JSX.HTMLAttributes<HTMLDivElement> &
     variant?: TableVariant;
   };
 
-const TableRoot: Component<TableRootProps> = (props) => {
+const TableRoot: Layout<typeof componentRecipe, TableRootProps> = () => {
   const [local, rest] = splitProps(props, [
     "children",
     "variant",
@@ -112,7 +114,7 @@ const TableRoot: Component<TableRootProps> = (props) => {
 export type TableScrollContainerProps = JSX.HTMLAttributes<HTMLDivElement> &
   IComponentBaseProps;
 
-const TableScrollContainer: Component<TableScrollContainerProps> = (props) => {
+const TableScrollContainer: Layout<typeof componentRecipe, TableScrollContainerProps> = () => {
   const [local, rest] = splitProps(props, [
     "children",
     "class",
@@ -141,7 +143,7 @@ export type TableContentProps = JSX.HTMLAttributes<HTMLTableElement> &
     onSortChange?: (descriptor: TableSortDescriptor) => void;
   };
 
-const TableContent: Component<TableContentProps> = (props) => {
+const TableContent: Layout<typeof componentRecipe, TableContentProps> = () => {
   const [local, rest] = splitProps(props, [
     "children",
     "class",
@@ -178,7 +180,7 @@ const TableContent: Component<TableContentProps> = (props) => {
 export type TableHeaderProps = JSX.HTMLAttributes<HTMLTableSectionElement> &
   IComponentBaseProps;
 
-const TableHeader: Component<TableHeaderProps> = (props) => {
+const TableHeader: Layout<typeof componentRecipe, TableHeaderProps> = () => {
   const [local, rest] = splitProps(props, [
     "children",
     "class",
@@ -208,7 +210,7 @@ export type TableColumnProps = Omit<JSX.ThHTMLAttributes<HTMLTableCellElement>, 
     children?: TableColumnChildren;
   };
 
-const TableColumn: Component<TableColumnProps> = (props) => {
+const TableColumn: Layout<typeof componentRecipe, TableColumnProps> = () => {
   const contentContext = useTableContentContext();
   const [local, rest] = splitProps(props, [
     "id",
@@ -287,7 +289,7 @@ const TableColumn: Component<TableColumnProps> = (props) => {
 export type TableBodyProps = JSX.HTMLAttributes<HTMLTableSectionElement> &
   IComponentBaseProps;
 
-const TableBody: Component<TableBodyProps> = (props) => {
+const TableBody: Layout<typeof componentRecipe, TableBodyProps> = () => {
   const [local, rest] = splitProps(props, [
     "children",
     "class",
@@ -313,7 +315,7 @@ const TableBody: Component<TableBodyProps> = (props) => {
 export type TableRowProps = JSX.HTMLAttributes<HTMLTableRowElement> &
   IComponentBaseProps;
 
-const TableRow: Component<TableRowProps> = (props) => {
+const TableRow: Layout<typeof componentRecipe, TableRowProps> = () => {
   const [local, rest] = splitProps(props, [
     "children",
     "class",
@@ -339,7 +341,7 @@ const TableRow: Component<TableRowProps> = (props) => {
 export type TableCellProps = JSX.TdHTMLAttributes<HTMLTableCellElement> &
   IComponentBaseProps;
 
-const TableCell: Component<TableCellProps> = (props) => {
+const TableCell: Layout<typeof componentRecipe, TableCellProps> = () => {
   const [local, rest] = splitProps(props, [
     "children",
     "class",
@@ -370,7 +372,7 @@ export type TableExpandedRowProps = JSX.HTMLAttributes<HTMLTableRowElement> &
     cellDataTheme?: string;
   };
 
-const TableExpandedRow: Component<TableExpandedRowProps> = (props) => {
+const TableExpandedRow: Layout<typeof componentRecipe, TableExpandedRowProps> = () => {
   const [local, rest] = splitProps(props, [
     "children",
     "class",
@@ -406,7 +408,7 @@ const TableExpandedRow: Component<TableExpandedRowProps> = (props) => {
 export type TableFooterProps = JSX.HTMLAttributes<HTMLDivElement> &
   IComponentBaseProps;
 
-const TableFooter: Component<TableFooterProps> = (props) => {
+const TableFooter: Layout<typeof componentRecipe, TableFooterProps> = () => {
   const [local, rest] = splitProps(props, [
     "children",
     "class",
@@ -442,7 +444,7 @@ export type TablePageSizeProps = Omit<
     selectClassName?: string;
   };
 
-const TablePageSize: Component<TablePageSizeProps> = (props) => {
+const TablePageSize: Layout<typeof componentRecipe, TablePageSizeProps> = () => {
   const [local, rest] = splitProps(props, [
     "class",
     "className",
@@ -488,7 +490,7 @@ const TablePageSize: Component<TablePageSizeProps> = (props) => {
 export type TableResizableContainerProps = JSX.HTMLAttributes<HTMLDivElement> &
   IComponentBaseProps;
 
-const TableResizableContainer: Component<TableResizableContainerProps> = (props) => {
+const TableResizableContainer: Layout<typeof componentRecipe, TableResizableContainerProps> = () => {
   const [local, rest] = splitProps(props, [
     "children",
     "class",
@@ -514,7 +516,7 @@ const TableResizableContainer: Component<TableResizableContainerProps> = (props)
 export type TableColumnResizerProps = JSX.HTMLAttributes<HTMLDivElement> &
   IComponentBaseProps;
 
-const TableColumnResizer: Component<TableColumnResizerProps> = (props) => {
+const TableColumnResizer: Layout<typeof componentRecipe, TableColumnResizerProps> = () => {
   const [local, rest] = splitProps(props, [
     "children",
     "class",
@@ -544,7 +546,7 @@ const TableColumnResizer: Component<TableColumnResizerProps> = (props) => {
 export type TableLoadMoreProps = JSX.HTMLAttributes<HTMLTableRowElement> &
   IComponentBaseProps;
 
-const TableLoadMore: Component<TableLoadMoreProps> = (props) => {
+const TableLoadMore: Layout<typeof componentRecipe, TableLoadMoreProps> = () => {
   const [local, rest] = splitProps(props, [
     "children",
     "class",
@@ -570,7 +572,7 @@ const TableLoadMore: Component<TableLoadMoreProps> = (props) => {
 export type TableLoadMoreContentProps = JSX.HTMLAttributes<HTMLDivElement> &
   IComponentBaseProps;
 
-const TableLoadMoreContent: Component<TableLoadMoreContentProps> = (props) => {
+const TableLoadMoreContent: Layout<typeof componentRecipe, TableLoadMoreContentProps> = () => {
   const [local, rest] = splitProps(props, [
     "children",
     "class",

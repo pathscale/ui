@@ -3,6 +3,8 @@ import { twMerge } from "tailwind-merge";
 import { EmptyState } from "../empty-state";
 import Icon from "../icon";
 import type { IComponentBaseProps } from "../types";
+import type { Layout } from "../../lib/layouts";
+import { componentRecipe } from "./Table.recipe";
 
 export type MobileListViewProps<TRow> = IComponentBaseProps & {
   rows: TRow[];
@@ -15,7 +17,7 @@ export type MobileListViewProps<TRow> = IComponentBaseProps & {
   emptyIcon?: string;
 };
 
-const MobileListView = <TRow,>(props: MobileListViewProps<TRow>): JSX.Element => {
+const MobileListView: Layout<typeof componentRecipe, MobileListViewProps<unknown>> = () => {
   const [local, rest] = splitProps(props, [
     "rows",
     "renderRow",
@@ -29,7 +31,7 @@ const MobileListView = <TRow,>(props: MobileListViewProps<TRow>): JSX.Element =>
     "className",
     "dataTheme",
   ]);
-  const renderRow = (row: TRow, index: number) => {
+  const renderRow = (row: unknown, index: number) => {
     if (local.renderRow) return local.renderRow(row, index);
     if (local.children) return local.children(row, index);
     return null;
@@ -89,4 +91,4 @@ const MobileListView = <TRow,>(props: MobileListViewProps<TRow>): JSX.Element =>
   );
 };
 
-export default MobileListView;
+export default MobileListView as <TRow>(props: MobileListViewProps<TRow>) => JSX.Element;

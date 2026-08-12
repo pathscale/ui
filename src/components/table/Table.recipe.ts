@@ -1,3 +1,4 @@
+import { recipe } from "../../lib/layouts";
 export const CLASSES = {
   root: {
     base: "table-root",
@@ -24,3 +25,4 @@ export const CLASSES = {
   loadMore: "table__load-more",
   loadMoreContent: "table__load-more-content",
 } as const;
+export const componentRecipe = recipe({component:"table",slots:{"root":{},"table":{},"table-body":{},"table-cell":{},"table-column":{},"table-column-resizer":{},"table-content":{},"table-expand-toggle":{},"table-expanded-row":{},"table-footer":{},"table-header":{},"table-inline-confirm":{},"table-inline-confirm-actions":{},"table-inline-confirm-prompt":{},"table-load-more":{},"table-load-more-content":{},"table-mobile-list-view":{},"table-mobile-list-view-empty":{},"table-mobile-list-view-item":{},"table-mobile-list-view-list":{},"table-page-size":{},"table-page-size-label":{},"table-resizable-container":{},"table-row":{},"table-scroll-container":{},"table-sort-icon":{},"table-virtual-spacer-row":{},},});
