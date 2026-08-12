@@ -1,8 +1,8 @@
-export { default as MetalBorder } from "./MetalBorder";
+export { default as MetalBorder } from "./MetalBorder.generated";
 export type {
   MetalBorderProps,
   MetalBorderKind,
   MetalBorderPreset,
   MetalBorderResolvedTheme,
   MetalBorderTheme,
-} from "./MetalBorder";
+} from "./MetalBorder.generated";

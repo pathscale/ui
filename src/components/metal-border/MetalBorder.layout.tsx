@@ -4,7 +4,8 @@ import { twMerge } from "tailwind-merge";
 
 import { prefersReducedMotion } from "../../motion/reduced-motion";
 import type { IComponentBaseProps } from "../types";
-import { CLASSES } from "./MetalBorder.classes";
+import { CLASSES, componentRecipe } from "./MetalBorder.recipe";
+import type { Layout } from "../../lib/layouts";
 import {
   createInstance,
   destroyInstance,
@@ -118,7 +119,7 @@ const ensureGlowCallback = () => {
   });
 };
 
-export default function MetalBorder(props: MetalBorderProps): JSX.Element {
+const MetalBorder: Layout<typeof componentRecipe, MetalBorderProps> = () => {
   const [local, others] = splitProps(props, [
     "children",
     "class",
@@ -381,4 +382,6 @@ export default function MetalBorder(props: MetalBorderProps): JSX.Element {
       </div>
     </div>
   );
-}
+};
+
+export default MetalBorder;
