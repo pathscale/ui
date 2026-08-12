@@ -1,8 +1,8 @@
 export {
   default,
   Text,
-  TextRoot,
   type TextProps,
+  TextRoot,
   type TextRootProps,
   type TextSize,
   type TextVariant,

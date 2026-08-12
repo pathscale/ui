@@ -1,14 +1,19 @@
 import { recipe } from "solid-layouts";
 
 /**
- * Text's design vocabulary.
+ * Text is styled entirely from attribute selectors — `.text[data-size="lg"]`
+ * rather than `.text--lg` — so both axes resolve to no class at all.
  *
- * The class names are unchanged. What moves is the decision about which class
- * a value implies, out of the component body and into a declaration the
- * compiler can read.
+ * They are still declared. The axis is what gives the prop a type, puts it
+ * through the defaults cascade, and keeps it out of the plain-HTML bucket,
+ * where `size` would have been written to the element as an attribute.
  */
 export const text = recipe({
   component: "text",
   element: "span",
   slots: { root: { base: "text" } },
+  props: {
+    size: { xs: "", sm: "", base: "", lg: "", xl: "" },
+    variant: { default: "", muted: "", success: "", warning: "", danger: "" },
+  },
 });
