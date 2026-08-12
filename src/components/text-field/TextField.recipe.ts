@@ -1,3 +1,4 @@
+import { recipe } from "../../lib/layouts";
 export const CLASSES = {
   base: "text-field",
   variant: {
@@ -8,3 +9,4 @@ export const CLASSES = {
     fullWidth: "text-field--full-width",
   },
 } as const;
+export const componentRecipe = recipe({component:"text-field",slots:{"root":{},"textfield":{},},});

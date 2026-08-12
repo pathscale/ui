@@ -9,4 +9,4 @@ export {
   type TextFieldVariant,
   type TextFieldRenderProps,
   type TextFieldContextValue,
-} from "./TextField";
+} from "./TextField.generated";

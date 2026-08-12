@@ -10,7 +10,9 @@ import {
 import { twMerge } from "tailwind-merge";
 
 import type { IComponentBaseProps } from "../types";
-import { CLASSES } from "./TextField.classes";
+import { CLASSES } from "./TextField.recipe";
+import type { Layout } from "../../lib/layouts";
+import { componentRecipe } from "./TextField.recipe";
 
 export type TextFieldVariant = "primary" | "secondary";
 
@@ -41,7 +43,7 @@ export type TextFieldRootProps = Omit<JSX.HTMLAttributes<HTMLDivElement>, "child
     isRequired?: boolean;
   };
 
-const TextFieldRoot: Component<TextFieldRootProps> = (props) => {
+const TextFieldRoot: Layout<typeof componentRecipe, TextFieldRootProps> = () => {
   const [local, others] = splitProps(props, [
     "children",
     "class",
