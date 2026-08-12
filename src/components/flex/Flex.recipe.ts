@@ -1,3 +1,4 @@
+import { recipe } from "../../lib/layouts";
 export const CLASSES = {
   base: "flex-layout",
   direction: {
@@ -63,3 +64,4 @@ export const CLASSES = {
     xl: "basis-32",
   },
 } as const;
+export const componentRecipe = recipe({component:"flex",slots:{"root":{},},});

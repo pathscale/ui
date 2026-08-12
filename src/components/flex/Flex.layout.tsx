@@ -11,7 +11,9 @@ import { twMerge } from "tailwind-merge";
 import type { IComponentBaseProps } from "../types";
 import type { ResponsiveProp } from "../types";
 import { mapResponsiveProp } from "../utils";
-import { CLASSES } from "./Flex.classes";
+import { CLASSES } from "./Flex.recipe";
+import type { Layout } from "../../lib/layouts";
+import { componentRecipe } from "./Flex.recipe";
 
 export type FlexProps = IComponentBaseProps &
   Omit<JSX.HTMLAttributes<HTMLElement>, "ref"> & {
@@ -84,7 +86,7 @@ export type FlexProps = IComponentBaseProps &
  * xl:basis-0 xl:basis-8 xl:basis-16 xl:basis-24 xl:basis-32
  */
 
-const Flex = (props: FlexProps): JSX.Element => {
+const Flex: Layout<typeof componentRecipe, FlexProps> = () => {
   const [local, rest] = splitProps(props, [
     "as",
     "class",
