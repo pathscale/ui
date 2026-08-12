@@ -13,7 +13,7 @@ recipe nor the plain-HTML bucket covers: the contract a port has to preserve.
 no consumer cannot be verified in a browser, only typechecked, so those are
 the ones to be careful with rather than the ones to do first.
 
-44 of them have no consumer.
+12 of them have no consumer.
 
 | component | wired | class map gone | shown | props to keep |
 | --- | --- | --- | --- | --- |
@@ -23,14 +23,14 @@ the ones to be careful with rather than the ones to do first.
 | Badge | yes | yes | yes | — |
 | Breadcrumbs | — | — | yes | isCurrent, separator |
 | Button | — | — | yes | endIcon, isDisabled, isPending, startIcon |
-| ButtonGroup | — | — | — | isDisabled, size, variant |
+| ButtonGroup | — | — | yes | isDisabled, size, variant |
 | Calendar | — | — | yes | defaultValue, isDateUnavailable, isDisabled, locale, maxValue, minValue, rangePreview, ref, selectionMode, showOutsideDays, weekdayFormat |
 | Card | yes | yes | yes | — |
 | ChatBubble | — | — | yes | end |
 | Checkbox | — | — | yes | defaultChecked, description, indeterminate, isDisabled, isIndeterminate, isInvalid |
-| CheckboxGroup | — | — | — | defaultValue, isDisabled, isInvalid |
+| CheckboxGroup | — | — | yes | defaultValue, isDisabled, isInvalid |
 | Chip | — | — | yes | endIcon, isDisabled, removeButtonLabel, startIcon |
-| CloseButton | — | — | — | endIcon, isDisabled, isPending, startIcon |
+| CloseButton | — | — | yes | endIcon, isDisabled, isPending, startIcon |
 | ColorArea | — | — | — | isDisabled |
 | ColorField | — | — | — | defaultValue, format, isDisabled |
 | ColorPicker | — | — | yes | defaultValue, format, fullWidth, isDisabled |
@@ -39,17 +39,17 @@ the ones to be careful with rather than the ones to do first.
 | ColorSwatchPicker | — | — | yes | defaultValue, isDisabled |
 | ColorWheelFlower | — | — | yes | mode, palette |
 | ComboBox | — | — | — | allowsCustomValue, defaultFilter, defaultInputValue, defaultOpen, defaultSelectedKey, disabled, endIcon, inputValue, isDisabled, isInvalid, isOpen, isRequired, itemDisabled, itemKey, itemTextValue, items, menuTrigger, ref, renderEmptyState, selectedKey, startIcon |
-| DateField | — | — | — | defaultValue, disabled, isDisabled, isInvalid, isRequired, segment |
+| DateField | — | — | yes | defaultValue, disabled, isDisabled, isInvalid, isRequired, segment |
 | DatePicker | — | — | — | defaultOpen, defaultValue, isDateUnavailable, isDisabled, isOpen, locale, maxValue, minValue, ref, weekdayFormat |
 | DateRangePicker | — | — | — | defaultOpen, defaultValue, endName, endPlaceholder, isDateUnavailable, isDisabled, isOpen, locale, maxValue, minValue, ref, startName, startPlaceholder, weekdayFormat |
-| Description | — | — | — | — |
-| Disclosure | — | — | — | defaultOpen, isDisabled, isOpen, keepMounted |
-| DisclosureGroup | — | — | — | allowsMultipleExpanded, defaultExpandedKeys, disabled, expandedKeys, isDisabled |
+| Description | — | — | yes | — |
+| Disclosure | — | — | yes | defaultOpen, isDisabled, isOpen, keepMounted |
+| DisclosureGroup | — | — | yes | allowsMultipleExpanded, defaultExpandedKeys, disabled, expandedKeys, isDisabled |
 | Drawer | — | — | yes | backdrop, bg, borderColor, borderWidth, defaultOpen, endIcon, isDismissable, isOpen, maxWidth, padding, ref, restoreFocus, scrollBehavior, shouldCloseOnBackdropClick, shouldCloseOnEsc, side, startIcon, trapFocus, variant |
 | Dropdown | — | — | yes | align, autoFlip, closeOnSelect, defaultOpen, disabled, placement, ref, sideOffset |
-| EmptyState | — | — | — | — |
-| ErrorMessage | — | — | — | — |
-| FieldError | — | — | — | isVisible, showWhenTouched |
+| EmptyState | — | — | yes | — |
+| ErrorMessage | — | — | yes | — |
+| FieldError | — | — | yes | isVisible, showWhenTouched |
 | Fieldset | yes | yes | yes | — |
 | Flex | — | — | yes | as |
 | FloatingDock | — | — | yes | baseSize, desktopClass, gap, hoverIconSize, hoverSize, iconSize, itemClass, items, magnify, magnifyRange, mobileClass, mobileMode, mobilePopupDirection, mobileToggleIcon, nudge, showContainer, showDesktop, showMobile, springDamping, springMass, springStiffness, tooltipClass, tooltipDirection |
@@ -61,47 +61,47 @@ the ones to be careful with rather than the ones to do first.
 | Header | — | — | — | — |
 | Icon | — | — | yes | color |
 | Input | — | — | yes | disabled, endIcon, errorMessage, helperText, invalid, isDisabled, isInvalid, label, startIcon |
-| InputGroup | — | — | — | disabled, isDisabled, isInvalid, ref |
-| InputOTP | — | — | — | autoFocus, defaultValue, disabled, index, inputClassName, inputMode, isDisabled, isInvalid, maxLength, ref |
+| InputGroup | — | — | yes | disabled, isDisabled, isInvalid, ref |
+| InputOTP | — | — | yes | autoFocus, defaultValue, disabled, index, inputClassName, inputMode, isDisabled, isInvalid, maxLength, ref |
 | Join | — | — | yes | horizontal, responsive, vertical |
 | Kbd | — | — | yes | keyValue |
 | Label | — | — | yes | htmlFor, isDisabled, isInvalid, isRequired |
 | LanguageSwitcher | — | — | — | align, currentLanguageLabel, i18n, loadingLabel, optionsLabel |
 | Link | — | — | yes | isDisabled, isExternal |
-| ListBox | — | — | — | defaultSelectedKeys, disabled, disabledKeys, disallowEmptySelection, isDisabled, items, renderEmptyState, selectedKeys, selectionMode |
+| ListBox | — | — | yes | defaultSelectedKeys, disabled, disabledKeys, disallowEmptySelection, isDisabled, items, renderEmptyState, selectedKeys, selectionMode |
 | LiveChat | — | — | — | — |
 | Menu | — | — | yes | defaultSelectedKeys, disabled, disabledKeys, disallowEmptySelection, isDisabled, items, renderEmptyState, selectedKeys, selectionMode |
-| MetalBorder | — | — | — | contentClass, cornerRadius, glow, preset, ref, strength, theme |
-| Meter | — | — | — | formatOptions, formatValue, highValue, isDisabled, lowValue, maxValue, minValue, optimumValue |
+| MetalBorder | — | — | yes | contentClass, cornerRadius, glow, preset, ref, strength, theme |
+| Meter | — | — | yes | formatOptions, formatValue, highValue, isDisabled, lowValue, maxValue, minValue, optimumValue |
 | Modal | — | — | yes | backdrop, defaultOpen, isDismissable, isOpen, placement, ref, scrollBehavior, shouldCloseOnBackdropClick, shouldCloseOnEsc, variant |
 | Navbar | — | — | yes | as |
 | NoiseBackground | — | — | yes | animating, borderRadius, containerClass, gradientColors, noiseIntensity, noiseSrc, showNoise, speed |
-| NumberField | — | — | — | defaultValue, disabled, isDisabled, isInvalid |
+| NumberField | — | — | yes | defaultValue, disabled, isDisabled, isInvalid |
 | Pagination | — | — | yes | isDisabled, page, total |
-| Popover | — | — | — | autoFlip, closeOnEscape, closeOnOutsideClick, defaultOpen, isOpen, offset, placement, sideOffset |
-| ProgressBar | — | — | — | formatValue, isDisabled, isIndeterminate, label, maxValue, minValue, showValue |
-| ProgressCircle | — | — | — | formatValue, isDisabled, isIndeterminate, label, maxValue, minValue |
+| Popover | — | — | yes | autoFlip, closeOnEscape, closeOnOutsideClick, defaultOpen, isOpen, offset, placement, sideOffset |
+| ProgressBar | — | — | yes | formatValue, isDisabled, isIndeterminate, label, maxValue, minValue, showValue |
+| ProgressCircle | — | — | yes | formatValue, isDisabled, isIndeterminate, label, maxValue, minValue |
 | Radio | — | — | yes | description, indicator, isDisabled, isInvalid |
 | RadioGroup | — | — | yes | defaultValue, description, errorMessage, isDisabled, isInvalid, label |
 | RangeCalendar | — | — | — | defaultValue, isDateUnavailable, isDisabled, locale, maxValue, minValue, ref, showOutsideDays, weekdayFormat |
-| ScrollShadow | — | — | — | isEnabled, offset, ref, size, visibility |
-| SearchField | — | — | — | defaultValue, disabled, endIcon, isDisabled, isEmpty, isInvalid, startIcon |
+| ScrollShadow | — | — | yes | isEnabled, offset, ref, size, visibility |
+| SearchField | — | — | yes | defaultValue, disabled, endIcon, isDisabled, isEmpty, isInvalid, startIcon |
 | Select | — | — | yes | autoFlip, defaultOpen, defaultSelectedKeys, defaultValue, disabled, endIcon, isDisabled, isOpen, placement, ref, selectedKeys, selectionMode, startIcon, textValue |
-| Separator | yes | yes | — | — |
-| SizePicker | — | — | — | storagePrefix |
+| Separator | yes | yes | yes | — |
+| SizePicker | — | — | yes | storagePrefix |
 | Skeleton | yes | yes | yes | animationType |
-| Slider | — | — | — | disabled, formatValue, label |
-| Spinner | — | — | — | label |
-| Surface | — | — | — | — |
+| Slider | — | — | yes | disabled, formatValue, label |
+| Spinner | — | — | yes | label |
+| Surface | — | — | yes | — |
 | Table | — | — | yes | allowsSorting, cellClass, cellClassName, cellDataTheme, label, options, selectClass, selectClassName, sortDescriptor, sortDirection |
 | Tabs | — | — | yes | defaultSelectedKey, isDisabled, orientation, ref, selectedKey |
-| Tag | — | — | — | allowsRemoving, endIcon, isDisabled, isSelected, startIcon, textValue |
-| TagGroup | — | — | — | defaultSelectedKeys, disabled, disabledKeys, isDisabled, items, renderEmptyState, selectedKeys, selectionMode, size, variant |
-| Text | — | — | — | size, variant |
-| TextArea | — | — | — | disabled, isDisabled, isInvalid |
-| TextField | — | — | — | disabled, isDisabled, isInvalid, isRequired |
+| Tag | — | — | yes | allowsRemoving, endIcon, isDisabled, isSelected, startIcon, textValue |
+| TagGroup | — | — | yes | defaultSelectedKeys, disabled, disabledKeys, isDisabled, items, renderEmptyState, selectedKeys, selectionMode, size, variant |
+| Text | — | — | yes | size, variant |
+| TextArea | — | — | yes | disabled, isDisabled, isInvalid |
+| TextField | — | — | yes | disabled, isDisabled, isInvalid, isRequired |
 | ThemeColorPicker | — | — | — | autoFlip, placement, storagePrefix |
-| TimeField | — | — | — | defaultValue, disabled, isDisabled, isInvalid, isRequired, segment |
+| TimeField | — | — | yes | defaultValue, disabled, isDisabled, isInvalid, isRequired, segment |
 | Toggle | — | — | yes | defaultChecked, description, icon, isDisabled |
 | Toolbar | — | — | — | isAttached, ref |
 | Tooltip | — | — | yes | autoFlip, closeDelay, defaultOpen, delay, isOpen, placement, showArrow, sideOffset |
