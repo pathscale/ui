@@ -5,10 +5,10 @@ export {
   ColorPickerArea,
   ColorPickerSlider,
   ColorPickerField,
-} from "./ColorPicker";
+} from "./ColorPicker.generated";
 export type {
   ColorPickerProps,
   ColorPickerAreaProps,
   ColorPickerSliderProps,
   ColorPickerFieldProps,
-} from "./ColorPicker";
+} from "./ColorPicker.generated";
