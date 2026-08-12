@@ -23,6 +23,21 @@ export default defineConfig({
       },
     },
   ],
+  tools: {
+    rspack: {
+      module: {
+        rules: [
+          {
+            // Before the Solid JSX transform: after it there is no
+            // <Accordion.Trigger> left to match against a Layout, only
+            // _$createComponent calls.
+            test: /\.(tsx|ts)$/,
+            use: [{ loader: require.resolve("solid-layouts-oxc/loader") }],
+          },
+        ],
+      },
+    },
+  },
   output: {
     target: "web",
     copy: [
