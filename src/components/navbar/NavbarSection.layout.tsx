@@ -1,6 +1,8 @@
 import { type JSX, splitProps } from "solid-js";
 import { twMerge } from "tailwind-merge";
-import { CLASSES } from "./Navbar.classes";
+import { CLASSES } from "./Navbar.recipe";
+import type { Layout } from "../../lib/layouts";
+import { componentRecipe } from "./Navbar.recipe";
 
 export type NavbarSectionProps = JSX.HTMLAttributes<HTMLDivElement> & {
   section: "start" | "center" | "end";
@@ -8,7 +10,7 @@ export type NavbarSectionProps = JSX.HTMLAttributes<HTMLDivElement> & {
   className?: string;
 };
 
-const NavbarSection = (props: NavbarSectionProps): JSX.Element => {
+const NavbarSection: Layout<typeof componentRecipe, NavbarSectionProps> = () => {
   const [local, others] = splitProps(props, [
     "children",
     "section",

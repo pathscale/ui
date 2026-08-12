@@ -1,4 +1,4 @@
-export { default } from "./Navbar";
-export type { NavbarProps } from "./Navbar";
-export type { NavbarStackProps } from "./NavbarStack";
-export type { NavbarRowProps } from "./NavbarRow";
+export { default } from "./Navbar.generated";
+export type { NavbarProps } from "./Navbar.generated";
+export type { NavbarStackProps } from "./NavbarStack.generated";
+export type { NavbarRowProps } from "./NavbarRow.generated";
