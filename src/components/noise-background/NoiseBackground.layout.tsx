@@ -3,7 +3,9 @@ import { type JSX, onCleanup, onMount, splitProps } from "solid-js";
 import { twMerge } from "tailwind-merge";
 
 import type { IComponentBaseProps } from "../types";
-import { CLASSES } from "./NoiseBackground.classes";
+import { CLASSES } from "./NoiseBackground.recipe";
+import type { Layout } from "../../lib/layouts";
+import { componentRecipe } from "./NoiseBackground.recipe";
 
 /* ------------------------------------------------------------------ */
 /*  Props                                                             */
@@ -53,7 +55,7 @@ function createSpring(initial: number, stiffness = 100, damping = 30) {
 /*  Component                                                         */
 /* ------------------------------------------------------------------ */
 
-const NoiseBackground = (rawProps: NoiseBackgroundProps): JSX.Element => {
+const NoiseBackground: Layout<typeof componentRecipe, NoiseBackgroundProps> = () => {
   const [local, others] = splitProps(rawProps, [
     "children",
     "class",
