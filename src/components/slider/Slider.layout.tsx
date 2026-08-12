@@ -9,7 +9,9 @@ import {
 } from "solid-js";
 import { twMerge } from "tailwind-merge";
 import type { IComponentBaseProps } from "../types";
-import { CLASSES } from "./Slider.classes";
+import { CLASSES } from "./Slider.recipe";
+import type { Layout } from "../../lib/layouts";
+import { componentRecipe } from "./Slider.recipe";
 
 export type SliderSize = "sm" | "md" | "lg";
 
@@ -42,7 +44,7 @@ function snapToStep(val: number, min: number, max: number, step: number) {
   return clamp(snapped, min, max);
 }
 
-const Slider: Component<SliderProps> = (props) => {
+const Slider: Layout<typeof componentRecipe, SliderProps> = () => {
   let trackRef: HTMLDivElement | undefined;
 
   const [local] = splitProps(props, [
