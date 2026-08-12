@@ -3,19 +3,21 @@ import { createMemo, type JSX, splitProps } from "solid-js";
 import { twMerge } from "tailwind-merge";
 
 import type { IComponentBaseProps } from "../types";
-import ChatBubbleHeader from "./ChatBubbleHeader";
-import ChatBubbleTime from "./ChatBubbleTime";
-import ChatBubbleAvatar from "./ChatBubbleAvatar";
-import ChatBubbleMessage from "./ChatBubbleMessage";
-import ChatBubbleFooter from "./ChatBubbleFooter";
-import { CLASSES } from "./ChatBubble.classes";
+import ChatBubbleHeader from "./ChatBubbleHeader.generated";
+import ChatBubbleTime from "./ChatBubbleTime.generated";
+import ChatBubbleAvatar from "./ChatBubbleAvatar.generated";
+import ChatBubbleMessage from "./ChatBubbleMessage.generated";
+import ChatBubbleFooter from "./ChatBubbleFooter.generated";
+import { CLASSES } from "./ChatBubble.recipe";
+import type { Layout } from "../../lib/layouts";
+import { componentRecipe } from "./ChatBubble.recipe";
 
 export type ChatBubbleProps = IComponentBaseProps &
   JSX.HTMLAttributes<HTMLDivElement> & {
     end?: boolean;
   };
 
-const ChatBubble = (props: ChatBubbleProps): JSX.Element => {
+const ChatBubble: Layout<typeof componentRecipe, ChatBubbleProps> = () => {
   const [local, others] = splitProps(props, [
     "end",
     "dataTheme",

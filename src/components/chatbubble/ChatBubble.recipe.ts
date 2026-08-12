@@ -1,3 +1,4 @@
+import { recipe } from "../../lib/layouts";
 export const CLASSES = {
   base: "chatbubble",
   align: {
@@ -22,3 +23,4 @@ export const CLASSES = {
     error: "chatbubble__message--error",
   },
 } as const;
+export const componentRecipe = recipe({component:"chatbubble",slots:{"root":{},},});

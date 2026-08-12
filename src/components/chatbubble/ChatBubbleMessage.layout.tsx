@@ -1,7 +1,9 @@
 import { splitProps, type JSX } from "solid-js";
 import { twMerge } from "tailwind-merge";
 import type { IComponentBaseProps } from "../types";
-import { CLASSES } from "./ChatBubble.classes";
+import { CLASSES } from "./ChatBubble.recipe";
+import type { Layout } from "../../lib/layouts";
+import { componentRecipe } from "./ChatBubble.recipe";
 
 export type ChatBubbleMessageProps = JSX.HTMLAttributes<HTMLDivElement> &
   IComponentBaseProps & {
@@ -16,7 +18,7 @@ export type ChatBubbleMessageProps = JSX.HTMLAttributes<HTMLDivElement> &
       | "error";
   };
 
-const ChatBubbleMessage = (props: ChatBubbleMessageProps): JSX.Element => {
+const ChatBubbleMessage: Layout<typeof componentRecipe, ChatBubbleMessageProps> = () => {
   const [local, others] = splitProps(props, ["color", "class", "className"]);
 
   const colorClass = () => {
