@@ -7,7 +7,7 @@ import Popover, {
   PopoverDialog,
   PopoverArrow,
   PopoverHeading,
-} from "./Popover";
+} from "./Popover.generated";
 
 export type PopoverProps = ComponentProps<typeof PopoverRoot>;
 export type PopoverRootProps = ComponentProps<typeof PopoverRoot>;
