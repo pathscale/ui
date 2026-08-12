@@ -13,4 +13,4 @@ export {
   type InputGroupPrefixProps,
   type InputGroupSuffixProps,
   type InputGroupVariant,
-} from "./InputGroup";
+} from "./InputGroup.generated";
