@@ -2,7 +2,9 @@ import "./ProgressCircle.css";
 import { createMemo, splitProps, type JSX } from "solid-js";
 import { twMerge } from "tailwind-merge";
 import type { IComponentBaseProps } from "../types";
-import { CLASSES } from "./ProgressCircle.classes";
+import { CLASSES } from "./ProgressCircle.recipe";
+import type { Layout } from "../../lib/layouts";
+import { componentRecipe } from "./ProgressCircle.recipe";
 
 export type ProgressCircleSize = "sm" | "md" | "lg";
 export type ProgressCircleColor = "default" | "accent" | "success" | "warning" | "danger";
@@ -25,7 +27,7 @@ const CENTER = 18;
 const RADIUS = CENTER - STROKE_WIDTH / 2;
 const CIRCUMFERENCE = 2 * Math.PI * RADIUS;
 
-const ProgressCircle = (props: ProgressCircleProps): JSX.Element => {
+const ProgressCircle: Layout<typeof componentRecipe, ProgressCircleProps> = () => {
   const [local, others] = splitProps(props, [
     "value",
     "minValue",

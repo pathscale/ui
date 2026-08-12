@@ -1,3 +1,4 @@
+import { recipe } from "../../lib/layouts";
 export const CLASSES = {
   base: "progress-circle",
   svg: "progress-circle__track",
@@ -20,3 +21,4 @@ export const CLASSES = {
     disabled: "progress-circle--disabled",
   },
 } as const;
+export const componentRecipe = recipe({component:"progress-circle",slots:{"root":{},},});
