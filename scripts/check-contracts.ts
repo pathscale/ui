@@ -66,10 +66,15 @@ for (const entry of entries) {
   const source = readFileSync(mainPath, "utf8");
   const index = readFileSync(indexPath, "utf8");
 
-  const classesPath = join(componentDir, `${pascal}.classes.ts`);
-  const classesSource = existsSync(classesPath)
-    ? readFileSync(classesPath, "utf8")
-    : "";
+  // Both spellings: `.recipe.ts` is where a ported component declares its
+  // design vocabulary, `.classes.ts` is where an unported one still does.
+  const classesSource = [
+    join(componentDir, `${pascal}.recipe.ts`),
+    join(componentDir, `${pascal}.classes.ts`),
+  ]
+    .filter((path) => existsSync(path))
+    .map((path) => readFileSync(path, "utf8"))
+    .join("\n");
 
   const layoutPath = join(componentDir, `${pascal}.layout.tsx`);
   const hasLayout = existsSync(layoutPath);
@@ -78,7 +83,14 @@ for (const entry of entries) {
 
   // Must separate component props from HTML pass-through. `splitBase` is the
   // shared form of the same call.
-  if (!source.includes("splitProps") && !source.includes("splitBase")) {
+  // A component built by `defineComponent` does no prop splitting of its own:
+  // the runtime does it, from the recipe. Demanding `splitProps` here would
+  // require every ported component to keep a call it no longer needs.
+  const splitsProps =
+    source.includes("splitProps") ||
+    source.includes("splitBase") ||
+    source.includes("defineComponent(");
+  if (!splitsProps) {
     fail(dir, "props", "must use splitProps/splitBase to separate component props from HTML pass-through", "Props");
   }
 
@@ -90,6 +102,7 @@ for (const entry of entries) {
   const composesClasses =
     source.includes("twMerge") ||
     classesSource.includes("recipe(") ||
+    source.includes("defineComponent(") ||
     source.includes("cx(");
   if (!composesClasses) {
     fail(dir, "props", "must compose classes via recipe() in its .classes.ts, or twMerge() for Tailwind-emitting components", "Props");
