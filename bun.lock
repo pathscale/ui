@@ -10,6 +10,7 @@
         "@tanstack/solid-virtual": "^3.13.27",
       },
       "devDependencies": {
+        "@babel/core": "^7.29.0",
         "@biomejs/biome": "^2.4.16",
         "@iconify/json": "^2.2.481",
         "@iconify/utils": "^2.3.0",

@@ -1,9 +1,10 @@
 import "./Icon.css";
-import { createMemo, type JSX, splitProps } from "solid-js";
+import { createMemo } from "solid-js";
 import { twMerge } from "tailwind-merge";
+import type { Layout } from "../../lib/layouts";
 import type { IComponentBaseProps } from "../types";
 import type { ComponentColor } from "../types";
-import { CLASSES } from "./Icon.classes";
+import { icon } from "./Icon.recipe";
 
 export type IconProps = IComponentBaseProps & {
   width?: number;
@@ -12,27 +13,17 @@ export type IconProps = IComponentBaseProps & {
   name?: string;
 };
 
-const Icon = (props: IconProps): JSX.Element => {
-  const [local, others] = splitProps(props, [
-    "width",
-    "height",
-    "className",
-    "class",
-    "name",
-    "style",
-    "dataTheme",
-  ]);
-
+const Icon: Layout<typeof icon, IconProps> = () => {
   const width = local.width ?? 24;
   const height = local.height ?? 24;
 
   const classes = createMemo(() =>
-    twMerge(CLASSES.base, local.name, local.class, local.className),
+    twMerge(slot.root.class, local.name, local.class, local.className),
   );
 
   return (
     <span
-      {...others}
+      {...slot.root}
       {...{ class: classes() }}
       style={{
         width: `${width}px`,
@@ -44,4 +35,5 @@ const Icon = (props: IconProps): JSX.Element => {
   );
 };
 
+export const IconLayout = Icon;
 export default Icon;

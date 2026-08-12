@@ -34,3 +34,4 @@ bun.lockb
 
 # Finder (MacOS) folder config
 .DS_Store
+*.generated.tsx
