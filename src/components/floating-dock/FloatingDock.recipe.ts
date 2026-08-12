@@ -1,3 +1,4 @@
+import { recipe } from "../../lib/layouts";
 export const CLASSES = {
   base: "floating-dock",
   bar: "floating-dock__bar",
@@ -23,3 +24,4 @@ export const CLASSES = {
   buttonReset: "floating-dock__button-reset",
   menuIcon: "floating-dock__menu-icon",
 } as const;
+export const componentRecipe = recipe({component:"floating-dock",slots:{"root":{},},});

@@ -1,6 +1,6 @@
-export { default } from "./FloatingDock";
+export { default } from "./FloatingDock.generated";
 export type {
   FloatingDockProps,
   FloatingDockItem,
   FloatingDockDirection,
-} from "./FloatingDock";
+} from "./FloatingDock.generated";
