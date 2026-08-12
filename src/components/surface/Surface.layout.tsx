@@ -3,7 +3,9 @@ import { splitProps, type JSX } from "solid-js";
 import { twMerge } from "tailwind-merge";
 
 import type { IComponentBaseProps } from "../types";
-import { CLASSES } from "./Surface.classes";
+import { CLASSES } from "./Surface.recipe";
+import type { Layout } from "../../lib/layouts";
+import { componentRecipe } from "./Surface.recipe";
 
 export type SurfaceVariant = "default" | "secondary" | "tertiary" | "transparent";
 
@@ -17,7 +19,7 @@ export type SurfaceProps = Omit<JSX.HTMLAttributes<HTMLDivElement>, "children"> 
     children?: JSX.Element;
   };
 
-export function Surface(props: SurfaceProps) {
+export const Surface: Layout<typeof componentRecipe, SurfaceProps> = () => {
   const [local, others] = splitProps(props, [
     "children",
     "class",

@@ -1,3 +1,4 @@
+import { recipe } from "../../lib/layouts";
 export const CLASSES = {
   base: "surface",
   variant: {
@@ -7,3 +8,4 @@ export const CLASSES = {
     transparent: "surface--transparent",
   },
 } as const;
+export const componentRecipe = recipe({component:"surface",slots:{"root":{},"surface":{},},});
