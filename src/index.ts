@@ -593,8 +593,8 @@ export type {
 } from "./components/meter";
 export { default as Navbar } from "./components/navbar";
 export type { NavbarProps } from "./components/navbar";
-export type { NavbarStackProps } from "./components/navbar/NavbarStack";
-export type { NavbarRowProps } from "./components/navbar/NavbarRow";
+export type { NavbarStackProps } from "./components/navbar/NavbarStack.generated";
+export type { NavbarRowProps } from "./components/navbar/NavbarRow.generated";
 export {
   default as NumberField,
   NumberFieldRoot,

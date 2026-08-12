@@ -6,7 +6,9 @@ import {
 } from "solid-js";
 import { twMerge } from "tailwind-merge";
 import type { IComponentBaseProps, ComponentColor } from "../types";
-import { CLASSES } from "./Navbar.classes";
+import { CLASSES } from "./Navbar.recipe";
+import type { Layout } from "../../lib/layouts";
+import { componentRecipe } from "./Navbar.recipe";
 
 export type NavbarRowProps = JSX.HTMLAttributes<HTMLDivElement> &
   IComponentBaseProps & {
@@ -15,7 +17,7 @@ export type NavbarRowProps = JSX.HTMLAttributes<HTMLDivElement> &
     color?: ComponentColor;
   };
 
-const NavbarRow = (props: NavbarRowProps): JSX.Element => {
+const NavbarRow: Layout<typeof componentRecipe, NavbarRowProps> = () => {
   const [local, others] = splitProps(props, [
     "children",
     "bordered",

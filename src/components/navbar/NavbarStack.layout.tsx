@@ -6,7 +6,9 @@ import {
 } from "solid-js";
 import { twMerge } from "tailwind-merge";
 import type { IComponentBaseProps } from "../types";
-import { CLASSES } from "./Navbar.classes";
+import { CLASSES } from "./Navbar.recipe";
+import type { Layout } from "../../lib/layouts";
+import { componentRecipe } from "./Navbar.recipe";
 
 export type NavbarStackProps = JSX.HTMLAttributes<HTMLDivElement> &
   IComponentBaseProps & {
@@ -16,7 +18,7 @@ export type NavbarStackProps = JSX.HTMLAttributes<HTMLDivElement> &
     dataTheme?: string;
   };
 
-const NavbarStack = (props: NavbarStackProps): JSX.Element => {
+const NavbarStack: Layout<typeof componentRecipe, NavbarStackProps> = () => {
   const [local, others] = splitProps(props, [
     "children",
     "sticky",

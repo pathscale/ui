@@ -1,3 +1,4 @@
+import { recipe } from "../../lib/layouts";
 export const CLASSES = {
   navbar: { base: "navbar" },
   start: { base: "navbar__section navbar__section--start" },
@@ -37,3 +38,4 @@ export const CLASSES = {
     },
   },
 } as const;
+export const componentRecipe = recipe({component:"navbar",slots:{"root":{},},});

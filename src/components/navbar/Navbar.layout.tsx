@@ -2,11 +2,13 @@ import "./Navbar.css";
 import { type JSX, splitProps } from "solid-js";
 import { Dynamic } from "solid-js/web";
 import { twMerge } from "tailwind-merge";
-import NavbarSection from "./NavbarSection";
-import NavbarStack from "./NavbarStack";
-import NavbarRow from "./NavbarRow";
+import NavbarSection from "./NavbarSection.generated";
+import NavbarStack from "./NavbarStack.generated";
+import NavbarRow from "./NavbarRow.generated";
 import type { IComponentBaseProps } from "../types";
-import { CLASSES } from "./Navbar.classes";
+import { CLASSES } from "./Navbar.recipe";
+import type { Layout } from "../../lib/layouts";
+import { componentRecipe } from "./Navbar.recipe";
 
 export type NavbarProps = JSX.HTMLAttributes<HTMLElement> &
   IComponentBaseProps & {
@@ -15,7 +17,7 @@ export type NavbarProps = JSX.HTMLAttributes<HTMLElement> &
     className?: string;
   };
 
-const Navbar = (props: NavbarProps): JSX.Element => {
+const Navbar: Layout<typeof componentRecipe, NavbarProps> = () => {
   const [local, others] = splitProps(props, [
     "as",
     "class",
@@ -43,25 +45,21 @@ const Navbar = (props: NavbarProps): JSX.Element => {
   );
 };
 
-const NavbarStart = (
-  props: JSX.HTMLAttributes<HTMLDivElement>,
-): JSX.Element => (
+const NavbarStart: Layout<typeof componentRecipe, JSX.HTMLAttributes<HTMLDivElement>> = () => (
   <NavbarSection
     section="start"
     {...props}
   />
 );
 
-const NavbarCenter = (
-  props: JSX.HTMLAttributes<HTMLDivElement>,
-): JSX.Element => (
+const NavbarCenter: Layout<typeof componentRecipe, JSX.HTMLAttributes<HTMLDivElement>> = () => (
   <NavbarSection
     section="center"
     {...props}
   />
 );
 
-const NavbarEnd = (props: JSX.HTMLAttributes<HTMLDivElement>): JSX.Element => (
+const NavbarEnd: Layout<typeof componentRecipe, JSX.HTMLAttributes<HTMLDivElement>> = () => (
   <NavbarSection
     section="end"
     {...props}
