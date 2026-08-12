@@ -1,3 +1,4 @@
+import { recipe } from "../../lib/layouts";
 export const CLASSES = {
   Root: {
     base: "drawer",
@@ -87,3 +88,4 @@ export const CLASSES = {
     iconEnd: "drawer__close-icon--end",
   },
 } as const;
+export const componentRecipe = recipe({component:"drawer",slots:{"drawer-backdrop":{},"drawer-body":{},"drawer-close":{},"drawer-close-trigger":{},"drawer-content":{},"drawer-dialog":{},"drawer-footer":{},"drawer-handle":{},"drawer-handle-bar":{},"drawer-header":{},"drawer-heading":{},"drawer-root":{},"drawer-trigger":{},"root":{},},});

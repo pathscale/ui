@@ -29,4 +29,4 @@ export {
   type DrawerHandleProps,
   type DrawerCloseTriggerProps,
   type DrawerCloseProps,
-} from "./Drawer";
+} from "./Drawer.generated";
