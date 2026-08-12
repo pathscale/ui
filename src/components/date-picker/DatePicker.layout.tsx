@@ -10,7 +10,9 @@ import {
 } from "../../hooks/date";
 import Calendar, { type CalendarWeekdayFormat } from "../calendar";
 import type { IComponentBaseProps } from "../types";
-import { CLASSES } from "./DatePicker.classes";
+import { CLASSES } from "./DatePicker.recipe";
+import type { Layout } from "../../lib/layouts";
+import { componentRecipe } from "./DatePicker.recipe";
 
 type DatePickerBaseProps = {
   value?: Date;
@@ -37,7 +39,7 @@ export type DatePickerProps = Omit<
   IComponentBaseProps &
   DatePickerBaseProps;
 
-const DatePicker = (props: DatePickerProps): JSX.Element => {
+const DatePicker: Layout<typeof componentRecipe, DatePickerProps> = () => {
   const [local, others] = splitProps(props, [
     "class",
     "className",
