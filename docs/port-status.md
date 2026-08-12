@@ -13,7 +13,7 @@ recipe nor the plain-HTML bucket covers: the contract a port has to preserve.
 no consumer cannot be verified in a browser, only typechecked, so those are
 the ones to be careful with rather than the ones to do first.
 
-12 of them have no consumer.
+1 of them have no consumer.
 
 | component | wired | class map gone | shown | props to keep |
 | --- | --- | --- | --- | --- |
@@ -31,17 +31,17 @@ the ones to be careful with rather than the ones to do first.
 | CheckboxGroup | — | — | yes | defaultValue, isDisabled, isInvalid |
 | Chip | — | — | yes | endIcon, isDisabled, removeButtonLabel, startIcon |
 | CloseButton | — | — | yes | endIcon, isDisabled, isPending, startIcon |
-| ColorArea | — | — | — | isDisabled |
-| ColorField | — | — | — | defaultValue, format, isDisabled |
+| ColorArea | — | — | yes | isDisabled |
+| ColorField | — | — | yes | defaultValue, format, isDisabled |
 | ColorPicker | — | — | yes | defaultValue, format, fullWidth, isDisabled |
-| ColorSlider | — | — | — | defaultValue, isDisabled |
+| ColorSlider | — | — | yes | defaultValue, isDisabled |
 | ColorSwatch | — | — | yes | color, colorName, disabled, isDisabled, isSelected |
 | ColorSwatchPicker | — | — | yes | defaultValue, isDisabled |
 | ColorWheelFlower | — | — | yes | mode, palette |
-| ComboBox | — | — | — | allowsCustomValue, defaultFilter, defaultInputValue, defaultOpen, defaultSelectedKey, disabled, endIcon, inputValue, isDisabled, isInvalid, isOpen, isRequired, itemDisabled, itemKey, itemTextValue, items, menuTrigger, ref, renderEmptyState, selectedKey, startIcon |
+| ComboBox | — | — | yes | allowsCustomValue, defaultFilter, defaultInputValue, defaultOpen, defaultSelectedKey, disabled, endIcon, inputValue, isDisabled, isInvalid, isOpen, isRequired, itemDisabled, itemKey, itemTextValue, items, menuTrigger, ref, renderEmptyState, selectedKey, startIcon |
 | DateField | — | — | yes | defaultValue, disabled, isDisabled, isInvalid, isRequired, segment |
-| DatePicker | — | — | — | defaultOpen, defaultValue, isDateUnavailable, isDisabled, isOpen, locale, maxValue, minValue, ref, weekdayFormat |
-| DateRangePicker | — | — | — | defaultOpen, defaultValue, endName, endPlaceholder, isDateUnavailable, isDisabled, isOpen, locale, maxValue, minValue, ref, startName, startPlaceholder, weekdayFormat |
+| DatePicker | — | — | yes | defaultOpen, defaultValue, isDateUnavailable, isDisabled, isOpen, locale, maxValue, minValue, ref, weekdayFormat |
+| DateRangePicker | — | — | yes | defaultOpen, defaultValue, endName, endPlaceholder, isDateUnavailable, isDisabled, isOpen, locale, maxValue, minValue, ref, startName, startPlaceholder, weekdayFormat |
 | Description | — | — | yes | — |
 | Disclosure | — | — | yes | defaultOpen, isDisabled, isOpen, keepMounted |
 | DisclosureGroup | — | — | yes | allowsMultipleExpanded, defaultExpandedKeys, disabled, expandedKeys, isDisabled |
@@ -58,7 +58,7 @@ the ones to be careful with rather than the ones to do first.
 | GlassPanel | — | — | yes | defaultOpen, icon, paddingX, paddingY, tone |
 | GlowCard | yes | yes | yes | — |
 | Grid | — | — | yes | as |
-| Header | — | — | — | — |
+| Header | — | — | yes | — |
 | Icon | — | — | yes | color |
 | Input | — | — | yes | disabled, endIcon, errorMessage, helperText, invalid, isDisabled, isInvalid, label, startIcon |
 | InputGroup | — | — | yes | disabled, isDisabled, isInvalid, ref |
@@ -66,7 +66,7 @@ the ones to be careful with rather than the ones to do first.
 | Join | — | — | yes | horizontal, responsive, vertical |
 | Kbd | — | — | yes | keyValue |
 | Label | — | — | yes | htmlFor, isDisabled, isInvalid, isRequired |
-| LanguageSwitcher | — | — | — | align, currentLanguageLabel, i18n, loadingLabel, optionsLabel |
+| LanguageSwitcher | — | — | yes | align, currentLanguageLabel, i18n, loadingLabel, optionsLabel |
 | Link | — | — | yes | isDisabled, isExternal |
 | ListBox | — | — | yes | defaultSelectedKeys, disabled, disabledKeys, disallowEmptySelection, isDisabled, items, renderEmptyState, selectedKeys, selectionMode |
 | LiveChat | — | — | — | — |
@@ -83,7 +83,7 @@ the ones to be careful with rather than the ones to do first.
 | ProgressCircle | — | — | yes | formatValue, isDisabled, isIndeterminate, label, maxValue, minValue |
 | Radio | — | — | yes | description, indicator, isDisabled, isInvalid |
 | RadioGroup | — | — | yes | defaultValue, description, errorMessage, isDisabled, isInvalid, label |
-| RangeCalendar | — | — | — | defaultValue, isDateUnavailable, isDisabled, locale, maxValue, minValue, ref, showOutsideDays, weekdayFormat |
+| RangeCalendar | — | — | yes | defaultValue, isDateUnavailable, isDisabled, locale, maxValue, minValue, ref, showOutsideDays, weekdayFormat |
 | ScrollShadow | — | — | yes | isEnabled, offset, ref, size, visibility |
 | SearchField | — | — | yes | defaultValue, disabled, endIcon, isDisabled, isEmpty, isInvalid, startIcon |
 | Select | — | — | yes | autoFlip, defaultOpen, defaultSelectedKeys, defaultValue, disabled, endIcon, isDisabled, isOpen, placement, ref, selectedKeys, selectionMode, startIcon, textValue |
@@ -100,9 +100,9 @@ the ones to be careful with rather than the ones to do first.
 | Text | — | — | yes | size, variant |
 | TextArea | — | — | yes | disabled, isDisabled, isInvalid |
 | TextField | — | — | yes | disabled, isDisabled, isInvalid, isRequired |
-| ThemeColorPicker | — | — | — | autoFlip, placement, storagePrefix |
+| ThemeColorPicker | — | — | yes | autoFlip, placement, storagePrefix |
 | TimeField | — | — | yes | defaultValue, disabled, isDisabled, isInvalid, isRequired, segment |
 | Toggle | — | — | yes | defaultChecked, description, icon, isDisabled |
-| Toolbar | — | — | — | isAttached, ref |
+| Toolbar | — | — | yes | isAttached, ref |
 | Tooltip | — | — | yes | autoFlip, closeDelay, defaultOpen, delay, isOpen, placement, showArrow, sideOffset |
 | VideoPreview | — | — | yes | mirror, stream |
