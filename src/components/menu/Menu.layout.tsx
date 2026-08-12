@@ -10,7 +10,7 @@ import {
 import { twMerge } from "tailwind-merge";
 
 import type { IComponentBaseProps } from "../types";
-import { CLASSES } from "./Menu.classes";
+import { CLASSES } from "./Menu.recipe";
 import {
   MenuContext,
   type MenuFocusTarget,
@@ -20,8 +20,10 @@ import {
 import MenuItem, {
   MenuItemIndicator,
   MenuItemRoot,
-} from "./MenuItem";
-import MenuSection, { MenuSectionRoot } from "./MenuSection";
+} from "./MenuItem.generated";
+import MenuSection, { MenuSectionRoot } from "./MenuSection.generated";
+import type { Layout } from "../../lib/layouts";
+import { componentRecipe } from "./Menu.recipe";
 
 const normalizeKeys = (keys?: Iterable<string | number>): Set<string> => {
   if (!keys) return new Set();
@@ -67,7 +69,7 @@ export type MenuRootProps<T = unknown> = Omit<
     disabled?: boolean;
   };
 
-const MenuRoot: Component<MenuRootProps> = (props) => {
+const MenuRoot: Layout<typeof componentRecipe, MenuRootProps> = () => {
   const [local, others] = splitProps(props, [
     "children",
     "class",

@@ -10,9 +10,9 @@ export {
   type MenuProps,
   type MenuRootProps,
   type MenuSelectionMode,
-} from "./Menu";
+} from "./Menu.generated";
 
-export { MenuItemSubmenuIndicator } from "./MenuItem";
+export { MenuItemSubmenuIndicator } from "./MenuItem.generated";
 
 export type {
   MenuItemProps,
@@ -21,9 +21,9 @@ export type {
   MenuItemSubmenuIndicatorProps,
   MenuItemRenderProps,
   MenuItemVariant,
-} from "./MenuItem";
+} from "./MenuItem.generated";
 
 export type {
   MenuSectionProps,
   MenuSectionRootProps,
-} from "./MenuSection";
+} from "./MenuSection.generated";

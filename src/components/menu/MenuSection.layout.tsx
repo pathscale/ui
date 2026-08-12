@@ -2,7 +2,9 @@ import { Show, splitProps, type Component, type JSX } from "solid-js";
 import { twMerge } from "tailwind-merge";
 
 import type { IComponentBaseProps } from "../types";
-import { CLASSES } from "./Menu.classes";
+import { CLASSES } from "./Menu.recipe";
+import type { Layout } from "../../lib/layouts";
+import { componentRecipe } from "./Menu.recipe";
 
 export type MenuSectionRootProps = Omit<JSX.HTMLAttributes<HTMLDivElement>, "children"> &
   IComponentBaseProps & {
@@ -10,7 +12,7 @@ export type MenuSectionRootProps = Omit<JSX.HTMLAttributes<HTMLDivElement>, "chi
     title?: JSX.Element;
   };
 
-const MenuSectionRoot: Component<MenuSectionRootProps> = (props) => {
+const MenuSectionRoot: Layout<typeof componentRecipe, MenuSectionRootProps> = () => {
   const [local, others] = splitProps(props, [
     "children",
     "class",
