@@ -5,4 +5,4 @@ export {
   type CalendarSelectionMode,
   type CalendarDaySelectHandler,
   type CalendarDayHoverHandler,
-} from "./Calendar";
+} from "./Calendar.generated";
