@@ -7,4 +7,4 @@ export {
   type ButtonGroupRootProps,
   type ButtonGroupSeparatorProps,
   type ButtonGroupOrientation,
-} from "./ButtonGroup";
+} from "./ButtonGroup.generated";
