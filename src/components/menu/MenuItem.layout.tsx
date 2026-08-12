@@ -14,7 +14,9 @@ import { twMerge } from "tailwind-merge";
 
 import type { IComponentBaseProps } from "../types";
 import { MenuContext, type MenuItemVariant, type MenuSelectionMode } from "./context";
-import { CLASSES } from "./Menu.classes";
+import { CLASSES } from "./Menu.recipe";
+import type { Layout } from "../../lib/layouts";
+import { componentRecipe } from "./Menu.recipe";
 
 type MenuItemRenderProps = {
   isSelected: boolean;
@@ -84,7 +86,7 @@ export type MenuItemSubmenuIndicatorProps = Omit<
     children?: JSX.Element;
   };
 
-const MenuItemRoot: ParentComponent<MenuItemRootProps> = (props) => {
+const MenuItemRoot: Layout<typeof componentRecipe, MenuItemRootProps> = () => {
   const menu = useContext(MenuContext);
   const fallbackKey = createUniqueId();
 
@@ -270,7 +272,7 @@ const MenuItemRoot: ParentComponent<MenuItemRootProps> = (props) => {
   );
 };
 
-const MenuItemIndicator: Component<MenuItemIndicatorProps> = (props) => {
+const MenuItemIndicator: Layout<typeof componentRecipe, MenuItemIndicatorProps> = () => {
   const context = useContext(MenuItemStateContext);
   const [local, others] = splitProps(props, [
     "children",
@@ -340,7 +342,7 @@ const MenuItemIndicator: Component<MenuItemIndicatorProps> = (props) => {
   );
 };
 
-const MenuItemSubmenuIndicator: Component<MenuItemSubmenuIndicatorProps> = (props) => {
+const MenuItemSubmenuIndicator: Layout<typeof componentRecipe, MenuItemSubmenuIndicatorProps> = () => {
   const context = useContext(MenuItemStateContext);
   const [local, others] = splitProps(props, ["children", "class", "className", "dataTheme", "style"]);
 
