@@ -1,3 +1,3 @@
-export { default, ColorSwatchPicker } from "./ColorSwatchPicker";
-export type { ColorSwatchPickerProps, ColorSwatchPickerContextValue } from "./ColorSwatchPicker";
-export { ColorSwatchPickerContext } from "./ColorSwatchPicker";
+export { default, ColorSwatchPicker } from "./ColorSwatchPicker.generated";
+export type { ColorSwatchPickerProps, ColorSwatchPickerContextValue } from "./ColorSwatchPicker.generated";
+export { ColorSwatchPickerContext } from "./ColorSwatchPicker.generated";

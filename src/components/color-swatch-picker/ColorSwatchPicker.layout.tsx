@@ -10,7 +10,9 @@ import {
 } from "solid-js";
 import { twMerge } from "tailwind-merge";
 import type { IComponentBaseProps } from "../types";
-import { CLASSES } from "./ColorSwatchPicker.classes";
+import { CLASSES } from "./ColorSwatchPicker.recipe";
+import type { Layout } from "../../lib/layouts";
+import { componentRecipe } from "./ColorSwatchPicker.recipe";
 
 const invokeEventHandler = (handler: unknown, event: Event) => {
   if (typeof handler === "function") {
@@ -40,7 +42,7 @@ export type ColorSwatchPickerProps = Omit<JSX.HTMLAttributes<HTMLDivElement>, "o
     isDisabled?: boolean;
   };
 
-const ColorSwatchPicker: Component<ColorSwatchPickerProps> = (props) => {
+const ColorSwatchPicker: Layout<typeof componentRecipe, ColorSwatchPickerProps> = () => {
   const [local, others] = splitProps(props, [
     "class",
     "className",
