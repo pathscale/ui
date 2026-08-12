@@ -3,7 +3,9 @@ import { Show, createEffect, createSignal, splitProps, useContext, type Componen
 import { twMerge } from "tailwind-merge";
 import { CheckboxGroupContext } from "../checkbox-group/context";
 import type { IComponentBaseProps } from "../types";
-import { CLASSES } from "./Checkbox.classes";
+import { CLASSES } from "./Checkbox.recipe";
+import type { Layout } from "../../lib/layouts";
+import { componentRecipe } from "./Checkbox.recipe";
 
 const invokeEventHandler = (handler: unknown, event: Event) => {
   if (typeof handler === "function") {
@@ -30,7 +32,7 @@ export type CheckboxProps = Omit<JSX.InputHTMLAttributes<HTMLInputElement>, "typ
     variant?: CheckboxVariant;
   };
 
-const Checkbox: Component<CheckboxProps> = (props) => {
+const Checkbox: Layout<typeof componentRecipe, CheckboxProps> = () => {
   let inputRef: HTMLInputElement | undefined;
   const group = useContext(CheckboxGroupContext);
 

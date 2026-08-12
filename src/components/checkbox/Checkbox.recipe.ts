@@ -1,3 +1,4 @@
+import { recipe } from "../../lib/layouts";
 export const CLASSES = {
   base: "checkbox",
   slot: {
@@ -15,3 +16,4 @@ export const CLASSES = {
     disabled: "checkbox--disabled",
   },
 } as const;
+export const componentRecipe = recipe({component:"checkbox",slots:{"checkbox":{},"checkbox-content":{},"checkbox-control":{},"checkbox-default-indicator--checkmark":{},"checkbox-default-indicator--indeterminate":{},"checkbox-indicator":{},"checkbox-input":{},"description":{},"label":{},"root":{},},});
