@@ -4,4 +4,4 @@ export {
   LabelRoot,
   type LabelProps,
   type LabelRootProps,
-} from "./Label";
+} from "./Label.generated";
