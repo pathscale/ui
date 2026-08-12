@@ -1,2 +1,2 @@
-export { default as VideoPreview } from "./VideoPreview";
-export type { VideoPreviewProps } from "./VideoPreview";
+export { default as VideoPreview } from "./VideoPreview.generated";
+export type { VideoPreviewProps } from "./VideoPreview.generated";

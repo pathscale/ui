@@ -2,7 +2,9 @@ import { type Accessor, type Component, Show, createEffect, onCleanup, splitProp
 import { twMerge } from "tailwind-merge";
 
 import type { IComponentBaseProps } from "../types";
-import { CLASSES } from "./VideoPreview.classes";
+import { CLASSES } from "./VideoPreview.recipe";
+import type { Layout } from "../../lib/layouts";
+import { componentRecipe } from "./VideoPreview.recipe";
 
 type VideoPreviewBaseProps = {
   /**
@@ -27,7 +29,7 @@ export type VideoPreviewProps = VideoPreviewBaseProps &
   IComponentBaseProps &
   Omit<JSX.VideoHTMLAttributes<HTMLVideoElement>, keyof VideoPreviewBaseProps>;
 
-export const VideoPreview: Component<VideoPreviewProps> = (props) => {
+export const VideoPreview: Layout<typeof componentRecipe, VideoPreviewProps> = () => {
   const [local, others] = splitProps(props, [
     "stream",
     "muted",
