@@ -1,1 +1,1 @@
-export { default, type GridProps } from "./Grid";
+export { default, type GridProps } from "./Grid.generated";

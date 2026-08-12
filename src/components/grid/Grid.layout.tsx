@@ -11,7 +11,9 @@ import type { IComponentBaseProps } from "../types";
 import clsx from "clsx";
 import type { ResponsiveProp } from "../types";
 import { mapResponsiveProp } from "../utils";
-import { CLASSES } from "./Grid.classes";
+import { CLASSES } from "./Grid.recipe";
+import type { Layout } from "../../lib/layouts";
+import { componentRecipe } from "./Grid.recipe";
 
 type GridFlow = "row" | "col" | "row-dense" | "col-dense";
 type GridSize =
@@ -85,7 +87,7 @@ export type GridProps = IComponentBaseProps &
  * xl:auto-rows-min xl:auto-rows-max xl:auto-rows-fr
  */
 
-const Grid = (props: GridProps) => {
+const Grid: Layout<typeof componentRecipe, GridProps> = () => {
   const merged = mergeProps({ as: "div" }, props);
   const [local, rest] = splitProps(merged, [
     "as",
