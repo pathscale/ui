@@ -13,8 +13,10 @@ import { twMerge } from "tailwind-merge";
 
 import type { IComponentBaseProps } from "../types";
 import type { TagSize, TagVariant } from "../tag";
-import { CLASSES } from "./TagGroup.classes";
+import { CLASSES } from "./TagGroup.recipe";
 import { TagGroupContext, type TagSelectionMode } from "./context";
+import type { Layout } from "../../lib/layouts";
+import { componentRecipe } from "./TagGroup.recipe";
 
 const normalizeKeys = (keys?: Iterable<string | number>): Set<string> => {
   if (!keys) return new Set();
@@ -43,7 +45,7 @@ export type TagGroupListProps = Omit<JSX.HTMLAttributes<HTMLDivElement>, "childr
     renderEmptyState?: () => JSX.Element;
   };
 
-const TagGroupRoot: ParentComponent<TagGroupRootProps> = (props) => {
+const TagGroupRoot: Layout<typeof componentRecipe, TagGroupRootProps> = () => {
   const [local, others] = splitProps(props, [
     "children",
     "class",
@@ -152,7 +154,7 @@ const TagGroupRoot: ParentComponent<TagGroupRootProps> = (props) => {
   );
 };
 
-const TagGroupList: Component<TagGroupListProps> = (props) => {
+const TagGroupList: Layout<typeof componentRecipe, TagGroupListProps> = () => {
   const group = useContext(TagGroupContext);
   const [local, others] = splitProps(props, [
     "children",

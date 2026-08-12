@@ -6,6 +6,6 @@ export {
   type TagGroupProps,
   type TagGroupRootProps,
   type TagGroupListProps,
-} from "./TagGroup";
+} from "./TagGroup.generated";
 
 export type { TagSelectionMode } from "./context";
