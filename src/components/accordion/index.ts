@@ -15,4 +15,4 @@ export {
   type AccordionSelectionMode,
   type AccordionVariant,
   type AccordionValue,
-} from "./Accordion";
+} from "./Accordion.generated";
