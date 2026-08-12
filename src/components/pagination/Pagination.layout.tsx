@@ -2,7 +2,9 @@ import "./Pagination.css";
 import { For, splitProps, type JSX } from "solid-js";
 import { twMerge } from "tailwind-merge";
 import type { IComponentBaseProps } from "../types";
-import { CLASSES } from "./Pagination.classes";
+import { CLASSES } from "./Pagination.recipe";
+import type { Layout } from "../../lib/layouts";
+import { componentRecipe } from "./Pagination.recipe";
 
 type PaginationToken = number | "ellipsis-left" | "ellipsis-right";
 
@@ -36,7 +38,7 @@ const getPaginationTokens = (page: number, total: number): PaginationToken[] => 
   return [1, "ellipsis-left", page - 1, page, page + 1, "ellipsis-right", total];
 };
 
-const Pagination = (props: PaginationProps): JSX.Element => {
+const Pagination: Layout<typeof componentRecipe, PaginationProps> = () => {
   const [local, others] = splitProps(props, [
     "class",
     "className",

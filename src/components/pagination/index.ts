@@ -1,2 +1,2 @@
-export type { PaginationProps } from "./Pagination";
-export { default } from "./Pagination";
+export type { PaginationProps } from "./Pagination.generated";
+export { default } from "./Pagination.generated";
