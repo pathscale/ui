@@ -23,6 +23,22 @@ export default defineConfig({
       },
     },
   ],
+  tools: {
+    rspack: {
+      module: {
+        rules: [
+          {
+            // Must run before the Solid JSX transform: after it there is no
+            // <Accordion.Trigger> left to match against a Layout, only
+            // _$createComponent calls. rspack applies a `use` array right to
+            // left, so being alone here puts it first.
+            test: /\.(tsx|ts)$/,
+            use: [{ loader: require.resolve("solid-layouts-oxc/loader") }],
+          },
+        ],
+      },
+    },
+  },
   output: {
     target: "web",
     copy: [
