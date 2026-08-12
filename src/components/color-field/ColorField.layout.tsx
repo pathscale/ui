@@ -3,7 +3,9 @@ import { createEffect, createSignal, splitProps, type Component, type JSX } from
 import { twMerge } from "tailwind-merge";
 import { formatColor, parseColor, type ColorFormat } from "../color-wheel-flower/ColorUtils";
 import type { IComponentBaseProps } from "../types";
-import { CLASSES } from "./ColorField.classes";
+import { CLASSES } from "./ColorField.recipe";
+import type { Layout } from "../../lib/layouts";
+import { componentRecipe } from "./ColorField.recipe";
 
 const FALLBACK_COLOR = "#FFFFFF";
 
@@ -41,7 +43,7 @@ export type ColorFieldProps = Omit<
     fullWidth?: boolean;
   };
 
-const ColorField: Component<ColorFieldProps> = (props) => {
+const ColorField: Layout<typeof componentRecipe, ColorFieldProps> = () => {
   const [local, others] = splitProps(props, [
     "class",
     "className",

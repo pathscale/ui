@@ -1,5 +1,5 @@
-import ColorField from "./ColorField";
+import ColorField from "./ColorField.generated";
 
-export type { ColorFieldProps, ColorFieldFormat } from "./ColorField";
+export type { ColorFieldProps, ColorFieldFormat } from "./ColorField.generated";
 
 export default ColorField;
