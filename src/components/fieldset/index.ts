@@ -10,4 +10,4 @@ export {
   type FieldsetLegendProps,
   type FieldGroupProps,
   type FieldsetActionsProps,
-} from "./Fieldset";
+} from "./Fieldset.generated";
