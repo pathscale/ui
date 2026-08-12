@@ -10,7 +10,9 @@ import {
   type JSX,
 } from "solid-js";
 import { twMerge } from "tailwind-merge";
-import { CLASSES } from "./Input.classes";
+import { CLASSES } from "./Input.recipe";
+import type { Layout } from "../../lib/layouts";
+import { componentRecipe } from "./Input.recipe";
 type InputSize = "sm" | "md" | "lg";
 
 type InputContextValue = {
@@ -34,7 +36,7 @@ type InputRootProps = Omit<JSX.HTMLAttributes<HTMLDivElement>, "children"> & {
   className?: string;
 };
 
-const InputRoot: Component<InputRootProps> = (props) => {
+const InputRoot: Layout<typeof componentRecipe, InputRootProps> = () => {
   const [local, others] = splitProps(props, [
     "children",
     "class",
@@ -93,7 +95,7 @@ type InputFieldProps = Omit<JSX.InputHTMLAttributes<HTMLInputElement>, "size" | 
   className?: string;
 };
 
-const InputField: Component<InputFieldProps> = (props) => {
+const InputField: Layout<typeof componentRecipe, InputFieldProps> = () => {
   const ctx = useContext(InputContext);
   const [local, others] = splitProps(props, [
     "class",
@@ -170,7 +172,7 @@ type InputLabelProps = JSX.LabelHTMLAttributes<HTMLLabelElement> & {
   className?: string;
 };
 
-const InputLabel: Component<InputLabelProps> = (props) => {
+const InputLabel: Layout<typeof componentRecipe, InputLabelProps> = () => {
   const ctx = useContext(InputContext);
   const [local, others] = splitProps(props, ["class", "className", "for", "children"]);
 
@@ -191,7 +193,7 @@ type InputHelperProps = JSX.HTMLAttributes<HTMLParagraphElement> & {
   className?: string;
 };
 
-const InputHelper: Component<InputHelperProps> = (props) => {
+const InputHelper: Layout<typeof componentRecipe, InputHelperProps> = () => {
   const ctx = useContext(InputContext);
   const [local, others] = splitProps(props, ["class", "className", "invalid", "id", "children"]);
 
@@ -221,7 +223,7 @@ type InputProps = Omit<InputFieldProps, "id" | "aria-describedby"> & {
   errorMessage?: JSX.Element;
 };
 
-const InputBase: Component<InputProps> = (props) => {
+const InputBase: Layout<typeof componentRecipe, InputProps> = () => {
   const generatedId = createUniqueId();
   const [local, fieldProps] = splitProps(props, [
     "id",
