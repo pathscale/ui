@@ -3,11 +3,13 @@ import { splitProps, type Component, type JSX } from "solid-js";
 import { twMerge } from "tailwind-merge";
 
 import type { IComponentBaseProps } from "../types";
-import { CLASSES } from "./ErrorMessage.classes";
+import { CLASSES } from "./ErrorMessage.recipe";
+import type { Layout } from "../../lib/layouts";
+import { componentRecipe } from "./ErrorMessage.recipe";
 
 export type ErrorMessageRootProps = JSX.HTMLAttributes<HTMLSpanElement> & IComponentBaseProps;
 
-const ErrorMessageRoot: Component<ErrorMessageRootProps> = (props) => {
+const ErrorMessageRoot: Layout<typeof componentRecipe, ErrorMessageRootProps> = () => {
   const [local, others] = splitProps(props, [
     "children",
     "class",

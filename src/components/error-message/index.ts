@@ -4,4 +4,4 @@ export {
   ErrorMessageRoot,
   type ErrorMessageProps,
   type ErrorMessageRootProps,
-} from "./ErrorMessage";
+} from "./ErrorMessage.generated";
