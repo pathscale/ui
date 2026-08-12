@@ -14,7 +14,9 @@ import {
 import { twMerge } from "tailwind-merge";
 
 import type { IComponentBaseProps } from "../types";
-import { CLASSES } from "./Accordion.classes";
+import { CLASSES } from "./Accordion.recipe";
+import type { Layout } from "../../lib/layouts";
+import { componentRecipe } from "./Accordion.recipe";
 
 export type AccordionSelectionMode = "single" | "multiple";
 export type AccordionVariant = "default" | "surface";
@@ -110,7 +112,7 @@ export type AccordionIndicatorProps = Omit<JSX.HTMLAttributes<HTMLSpanElement>, 
     children?: JSX.Element;
   };
 
-const AccordionRoot: ParentComponent<AccordionRootProps> = (props) => {
+const AccordionRoot: Layout<typeof componentRecipe, AccordionRootProps> = () => {
   const [local, others] = splitProps(props, [
     "children",
     "class",
@@ -264,7 +266,7 @@ const AccordionRoot: ParentComponent<AccordionRootProps> = (props) => {
   );
 };
 
-const AccordionItem: ParentComponent<AccordionItemProps> = (props) => {
+const AccordionItem: Layout<typeof componentRecipe, AccordionItemProps> = () => {
   const accordion = useContext(AccordionContext);
   const [local, others] = splitProps(props, [
     "value",
@@ -327,7 +329,7 @@ const AccordionItem: ParentComponent<AccordionItemProps> = (props) => {
   );
 };
 
-const AccordionTrigger: Component<AccordionTriggerProps> = (props) => {
+const AccordionTrigger: Layout<typeof componentRecipe, AccordionTriggerProps> = () => {
   const accordion = useContext(AccordionContext);
   const item = useContext(AccordionItemContext);
 
@@ -390,7 +392,7 @@ const AccordionTrigger: Component<AccordionTriggerProps> = (props) => {
   );
 };
 
-const AccordionContent: ParentComponent<AccordionContentProps> = (props) => {
+const AccordionContent: Layout<typeof componentRecipe, AccordionContentProps> = () => {
   const item = useContext(AccordionItemContext);
   const [local, others] = splitProps(props, [
     "children",
@@ -435,7 +437,7 @@ const AccordionContent: ParentComponent<AccordionContentProps> = (props) => {
   );
 };
 
-const AccordionIndicator: Component<AccordionIndicatorProps> = (props) => {
+const AccordionIndicator: Layout<typeof componentRecipe, AccordionIndicatorProps> = () => {
   const item = useContext(AccordionItemContext);
   const [local, others] = splitProps(props, [
     "children",
