@@ -2,7 +2,7 @@ import { createEffect, onCleanup, type Accessor } from "solid-js";
 import type {
   ScrollShadowOrientation,
   ScrollShadowVisibility,
-} from "./ScrollShadow";
+} from "./ScrollShadow.generated";
 
 export interface UseScrollShadowProps {
   containerRef: Accessor<HTMLElement | undefined>;

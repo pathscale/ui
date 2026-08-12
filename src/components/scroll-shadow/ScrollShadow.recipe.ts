@@ -1,3 +1,4 @@
+import { recipe } from "../../lib/layouts";
 export const CLASSES = {
   base: "scroll-shadow",
   orientation: {
@@ -12,3 +13,4 @@ export const CLASSES = {
   },
 } as const;
 
+export const componentRecipe = recipe({component:"scroll-shadow",slots:{"root":{},},});
