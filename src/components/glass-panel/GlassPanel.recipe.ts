@@ -1,3 +1,4 @@
+import { recipe } from "../../lib/layouts";
 export const CLASSES = {
   base: "glass-panel",
   size: {
@@ -25,3 +26,4 @@ export const CLASSES = {
     contentInner: "glass-panel__content-inner",
   },
 } as const;
+export const componentRecipe = recipe({component:"glass-panel",slots:{"root":{},},});
