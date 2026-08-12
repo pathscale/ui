@@ -2,7 +2,9 @@ import "./ColorArea.css";
 import { createSignal, splitProps, type Component, type JSX } from "solid-js";
 import { twMerge } from "tailwind-merge";
 import type { IComponentBaseProps } from "../types";
-import { CLASSES } from "./ColorArea.classes";
+import { CLASSES } from "./ColorArea.recipe";
+import type { Layout } from "../../lib/layouts";
+import { componentRecipe } from "./ColorArea.recipe";
 
 export type ColorAreaValue = {
   h: number;
@@ -72,7 +74,7 @@ const hsvToRgb = (h: number, s: number, v: number) => {
   };
 };
 
-const ColorArea: Component<ColorAreaProps> = (props) => {
+const ColorArea: Layout<typeof componentRecipe, ColorAreaProps> = () => {
   const [local, others] = splitProps(props, [
     "class",
     "className",
