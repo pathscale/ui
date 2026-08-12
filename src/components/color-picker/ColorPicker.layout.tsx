@@ -16,7 +16,9 @@ import ColorField, { type ColorFieldProps } from "../color-field";
 import ColorSlider, { type ColorSliderProps, type ColorSliderType } from "../color-slider";
 import { formatColor, parseColor, rgbToHex } from "../color-wheel-flower/ColorUtils";
 import type { IComponentBaseProps } from "../types";
-import { CLASSES } from "./ColorPicker.classes";
+import { CLASSES } from "./ColorPicker.recipe";
+import type { Layout } from "../../lib/layouts";
+import { componentRecipe } from "./ColorPicker.recipe";
 
 const DEFAULT_COLOR = "#3B82F6";
 
@@ -164,7 +166,7 @@ export type ColorPickerAreaProps = Omit<ColorAreaProps, "value" | "onChange" | "
   onChange?: (value: ColorAreaValue) => void;
 };
 
-const ColorPickerArea: Component<ColorPickerAreaProps> = (props) => {
+const ColorPickerArea: Layout<typeof componentRecipe, ColorPickerAreaProps> = () => {
   const ctx = useContext(ColorPickerContext);
   const [local, others] = splitProps(props, ["class", "className", "onChange", "dataTheme"]);
 
@@ -200,7 +202,7 @@ export type ColorPickerSliderProps = Omit<ColorSliderProps, "value" | "onChange"
   onChange?: (value: number) => void;
 };
 
-const ColorPickerSlider: Component<ColorPickerSliderProps> = (props) => {
+const ColorPickerSlider: Layout<typeof componentRecipe, ColorPickerSliderProps> = () => {
   const ctx = useContext(ColorPickerContext);
   const [local, others] = splitProps(props, [
     "class",
@@ -266,7 +268,7 @@ export type ColorPickerFieldProps = Omit<ColorFieldProps, "value" | "onChange" |
   onChange?: (value: string) => void;
 };
 
-const ColorPickerField: Component<ColorPickerFieldProps> = (props) => {
+const ColorPickerField: Layout<typeof componentRecipe, ColorPickerFieldProps> = () => {
   const ctx = useContext(ColorPickerContext);
   const [local, others] = splitProps(props, [
     "class",
@@ -318,7 +320,7 @@ export type ColorPickerProps = Omit<JSX.HTMLAttributes<HTMLDivElement>, "childre
     isDisabled?: boolean;
   };
 
-const ColorPickerRoot: Component<ColorPickerProps> = (props) => {
+const ColorPickerRoot: Layout<typeof componentRecipe, ColorPickerProps> = () => {
   const [local, others] = splitProps(props, [
     "class",
     "className",
