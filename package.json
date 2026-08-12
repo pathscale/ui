@@ -7,7 +7,7 @@
     "url": "https://github.com/pathscale/ui"
   },
   "license": "MIT",
-  "description": "Highly opinionated SolidJS component library — batteries and kitchen sink included, but optimized and shiny.",
+  "description": "Highly opinionated SolidJS component library \u2014 batteries and kitchen sink included, but optimized and shiny.",
   "files": [
     "dist"
   ],
@@ -89,14 +89,16 @@
     "postcss-selector-parser": "^7.1.1",
     "solid-js": "^1.9.13",
     "svgo": "^3.3.3",
-    "typescript": "^6.0.3"
+    "typescript": "^6.0.3",
+    "solid-layouts-oxc": "file:../solid-layouts/packages/solid-layouts-oxc"
   },
   "dependencies": {
     "@iconify/tailwind4": "^1.2.3",
     "@pathscale/rsbuild-plugin-iconify": "^1.0.4",
     "@pathscale/ui": "^1.2.10",
     "@tanstack/solid-virtual": "^3.13.27",
-    "tailwind-merge": "^3.6.0"
+    "tailwind-merge": "^3.6.0",
+    "solid-layouts": "file:../solid-layouts/packages/solid-layouts"
   },
   "peerDependencies": {
     "@solid-primitives/event-listener": "^2.3.0",
@@ -124,7 +126,7 @@
     }
   },
   "scripts": {
-    "build": "bun run scripts/check-contracts.ts && rslib build && bun run postbuild:manifest",
+    "build": "bun run dedupe && bun run generate && bun run scripts/check-contracts.ts && rslib build && bun run postbuild:manifest",
     "postbuild:manifest": "bun run node_modules/@pathscale/rsbuild-plugin-ui-css-purge/src/generate-manifest.ts src/components --out dist/purge-manifest.json",
     "build:watch": "rslib build --watch",
     "dev": "rslib dev",
@@ -138,7 +140,10 @@
     "smoke": "bun run scripts/smoke-consumer.ts",
     "playground:dev": "cd playground && bun run dev",
     "playground:build": "cd playground && bun run build",
-    "playground:preview": "cd playground && bun run preview"
+    "playground:preview": "cd playground && bun run preview",
+    "dedupe": "rm -rf node_modules/solid-layouts/node_modules/solid-js",
+    "generate": "bun run scripts/generate-index.ts",
+    "postinstall": "bun run dedupe"
   },
   "sideEffects": [
     "**/*.css"
