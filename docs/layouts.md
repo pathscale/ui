@@ -919,10 +919,66 @@ Three things to measure once a migration exists, rather than argue about now:
 
 ## 12. How this gets implemented
 
-### Phase 0 — plain TypeScript, no build step
+### The shape of it
 
-Everything here is runtime. `recipe()`, `layout()` and `defineComponent()` are ordinary
-functions. `tsc`, Biome and editors work untouched. This ships first and is usable on its own.
+Compilation is **required**, not an optimisation. The pieces:
+
+```
+A   Layouts        the distributable unit. Typically @pathscale/ui, but any
+                   package or local directory can ship them
+B   user code      parsed
+        │
+        └──► match each component against a Layout in A
+                     │
+                     ▼
+                     C   what the runtime consumes
+```
+
+The runtime cannot run B. It runs C, and C only exists after the compiler has
+matched user code against the Layouts it was given. There is no interpretive
+fallback and no degraded mode.
+
+**C still imports a runtime, and it has to.** Fully specialising each component
+would emit 38 copies of the same application logic, which is the duplication
+section 11 exists to remove. The division is data against behaviour:
+
+| Compiled in, per component, as data | Shared at runtime, once |
+| --- | --- |
+| slot names | applying a lookup table to a selection |
+| the variant lookup table | constructing the getters behind `p` |
+| the `data-*` keys | the defaults cascade |
+| which props are presentation, which are state | resolving children |
+
+So the compiler removes the per-component *code* — the `splitProps` key arrays,
+the prop routing, the `defineComponent` config object — and leaves one copy of
+the logic they all called into. The runtime shrinks; it does not disappear, and
+a design that made it disappear would be worse.
+
+**An unmatched component is a hard error**, reported with the file and line of
+the reference that could not be resolved. Falling through to something would
+mean shipping a component whose presentation nobody declared, which is the one
+outcome the design exists to prevent.
+
+### Where Layouts come from
+
+Configuration with a default, never hardcoded. The audience for this is people
+building their own component libraries, and a compiler that only understands
+one library is useless to them.
+
+```ts
+// layouts.config.ts
+export default {
+  layouts: ["@pathscale/ui"],                 // the default
+  // layouts: ["@pathscale/ui", "./src/ui"],  // plus your own
+  // layouts: ["my-design-system"],           // instead of
+};
+```
+
+Resolution follows the import graph rather than a flat list:
+`import { Button } from "@pathscale/ui"` looks Button up in that package's
+Layout set, and `from "./ui"` looks in the local one. A third party's library
+gets identical treatment with no special-casing, and the default means most
+people never write the config at all.
 
 ### Phase 1 — codegen, not a compiler
 
@@ -1047,8 +1103,12 @@ Less than it first appeared. The bundle win in section 11 comes from the shared 
 change needing no tooling. After codegen removes the wiring, Phase 2 buys the `p.` prefix and the
 `@once` research. Both worth doing, neither urgent, neither blocking.
 
-**The constraint at every phase: deleting the tooling leaves working code.** If removing it
-changes behaviour rather than size, the design is wrong and the phase does not ship.
+**The compiler is load-bearing.** An earlier revision of this document claimed the opposite,
+that the pass was purely an optimiser and deleting it left working code. That was true of a
+design where the recipe is a runtime value and classes resolve on every state change, and it is
+not true here: matching against a Layout is what produces C, so there is nothing to run without
+it. The runtime-resolving variant is smaller to build and pays for it on every render, which is
+the wrong trade for an interpreter with no JIT.
 
 ---
 
