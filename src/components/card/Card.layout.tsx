@@ -3,7 +3,9 @@ import { splitProps, type Component, type JSX, type ParentComponent } from "soli
 import { twMerge } from "tailwind-merge";
 
 import type { IComponentBaseProps } from "../types";
-import { CLASSES } from "./Card.classes";
+import { CLASSES } from "./Card.recipe";
+import type { Layout } from "../../lib/layouts";
+import { componentRecipe } from "./Card.recipe";
 
 export type CardVariant = "default" | "flat" | "bordered" | "shadow";
 
@@ -33,7 +35,7 @@ const invokeEventHandler = (handler: unknown, event: Event) => {
   }
 };
 
-const CardRoot: ParentComponent<CardRootProps> = (props) => {
+const CardRoot: Layout<typeof componentRecipe, CardRootProps> = () => {
   const [local, others] = splitProps(props, [
     "children",
     "class",
@@ -88,7 +90,7 @@ const CardRoot: ParentComponent<CardRootProps> = (props) => {
   );
 };
 
-const CardHeader: Component<CardHeaderProps> = (props) => {
+const CardHeader: Layout<typeof componentRecipe, CardHeaderProps> = () => {
   const [local, others] = splitProps(props, [
     "children",
     "class",
@@ -110,7 +112,7 @@ const CardHeader: Component<CardHeaderProps> = (props) => {
   );
 };
 
-const CardBody: Component<CardBodyProps> = (props) => {
+const CardBody: Layout<typeof componentRecipe, CardBodyProps> = () => {
   const [local, others] = splitProps(props, [
     "children",
     "class",
@@ -132,7 +134,7 @@ const CardBody: Component<CardBodyProps> = (props) => {
   );
 };
 
-const CardFooter: Component<CardFooterProps> = (props) => {
+const CardFooter: Layout<typeof componentRecipe, CardFooterProps> = () => {
   const [local, others] = splitProps(props, [
     "children",
     "class",

@@ -1,3 +1,4 @@
+import { recipe } from "../../lib/layouts";
 export const CLASSES = {
   Root: {
     base: "card",
@@ -22,3 +23,4 @@ export const CLASSES = {
     base: "card__footer",
   },
 } as const;
+export const componentRecipe = recipe({component:"card",slots:{"card":{},"card-body":{},"card-footer":{},"card-header":{},"root":{},},});

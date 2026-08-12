@@ -11,4 +11,4 @@ export {
   type CardHeaderProps,
   type CardBodyProps,
   type CardFooterProps,
-} from "./Card";
+} from "./Card.generated";
