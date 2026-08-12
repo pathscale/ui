@@ -1,4 +1,4 @@
-export { default as Textarea } from "./Textarea";
+export { default as Textarea } from "./Textarea.generated";
 export {
   default,
   TextArea,
@@ -6,4 +6,4 @@ export {
   type TextareaProps as TextAreaProps,
   type TextareaRootProps as TextAreaRootProps,
   type TextareaVariant as TextAreaVariant,
-} from "./Textarea";
+} from "./Textarea.generated";

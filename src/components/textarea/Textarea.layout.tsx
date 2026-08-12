@@ -8,13 +8,15 @@ import {
   type TextAreaRootProps as BaseTextAreaRootProps,
   type TextAreaVariant as BaseTextAreaVariant,
 } from "../text-area";
-import { CLASSES } from "./Textarea.classes";
+import { CLASSES } from "./Textarea.recipe";
+import type { Layout } from "../../lib/layouts";
+import { componentRecipe } from "./Textarea.recipe";
 
 export type TextareaVariant = BaseTextAreaVariant;
 export type TextareaRootProps = BaseTextAreaRootProps;
 export type TextareaProps = BaseTextAreaProps;
 
-const TextareaRoot: Component<TextareaRootProps> = (props) => {
+const TextareaRoot: Layout<typeof componentRecipe, TextareaRootProps> = () => {
   const [local, others] = splitProps(props, ["class", "className"]);
 
   return <TextAreaRoot {...others} {...{ class: twMerge(CLASSES.base, local.class, local.className) }} />;
