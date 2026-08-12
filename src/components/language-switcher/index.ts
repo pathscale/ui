@@ -1,5 +1,5 @@
-export { default as LanguageSwitcher } from "./LanguageSwitcher";
-export type { LanguageSwitcherProps } from "./LanguageSwitcher";
+export { default as LanguageSwitcher } from "./LanguageSwitcher.generated";
+export type { LanguageSwitcherProps } from "./LanguageSwitcher.generated";
 export {
   createI18n,
   I18nProvider,

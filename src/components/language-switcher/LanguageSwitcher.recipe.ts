@@ -1,3 +1,4 @@
+import { recipe } from "../../lib/layouts";
 export const CLASSES = {
   base: "language-switcher",
   trigger: "language-switcher__trigger",
@@ -7,3 +8,4 @@ export const CLASSES = {
   item: "language-switcher__item",
   itemSelected: "language-switcher__item--selected",
 } as const;
+export const componentRecipe = recipe({component:"language-switcher",slots:{"root":{},},});
