@@ -448,6 +448,10 @@ if (problems.length > 0) {
 for (const component of convertible) {
   const path = join(COMPONENTS, component.dir, "index.ts");
   const next = generate(component);
+  // Generated output does not belong in the source tree. A .gitignore beside it
+  // keeps that true without a central list to maintain as components convert.
+  writeFileSync(join(COMPONENTS, component.dir, ".gitignore"), "index.ts\n");
+
   const current = (() => {
     try {
       return read(path);
