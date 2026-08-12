@@ -3,7 +3,9 @@ import { splitProps, type Component, type JSX } from "solid-js";
 import { twMerge } from "tailwind-merge";
 
 import type { IComponentBaseProps } from "../types";
-import { CLASSES } from "./CloseButton.classes";
+import { CLASSES } from "./CloseButton.recipe";
+import type { Layout } from "../../lib/layouts";
+import { componentRecipe } from "./CloseButton.recipe";
 
 export type CloseButtonVariant = "default";
 
@@ -17,7 +19,7 @@ export type CloseButtonProps = Omit<JSX.ButtonHTMLAttributes<HTMLButtonElement>,
     className?: string;
   };
 
-const CloseButton: Component<CloseButtonProps> = (props) => {
+const CloseButton: Layout<typeof componentRecipe, CloseButtonProps> = () => {
   const [local, others] = splitProps(props, [
     "children",
     "class",
