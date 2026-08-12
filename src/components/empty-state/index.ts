@@ -10,7 +10,7 @@ export {
   type EmptyStateTitleProps,
   type EmptyStateDescriptionProps,
   type EmptyStateActionsProps,
-} from "./EmptyState";
+} from "./EmptyState.generated";
 
 /** @deprecated Use EmptyStateRootProps instead */
-export type { EmptyStateRootProps as EmptyStateProps } from "./EmptyState";
+export type { EmptyStateRootProps as EmptyStateProps } from "./EmptyState.generated";

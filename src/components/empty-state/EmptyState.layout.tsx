@@ -2,7 +2,9 @@ import "./EmptyState.css";
 import { splitProps, type Component, type JSX, type ParentComponent } from "solid-js";
 import { twMerge } from "tailwind-merge";
 import type { IComponentBaseProps } from "../types";
-import { CLASSES } from "./EmptyState.classes";
+import { CLASSES } from "./EmptyState.recipe";
+import type { Layout } from "../../lib/layouts";
+import { componentRecipe } from "./EmptyState.recipe";
 
 /* -------------------------------------------------------------------------------------------------
  * Types
@@ -35,7 +37,7 @@ export type EmptyStateActionsProps = Omit<JSX.HTMLAttributes<HTMLDivElement>, "c
 /* -------------------------------------------------------------------------------------------------
  * EmptyState Root
  * -----------------------------------------------------------------------------------------------*/
-const EmptyStateRoot: ParentComponent<EmptyStateRootProps> = (props) => {
+const EmptyStateRoot: Layout<typeof componentRecipe, EmptyStateRootProps> = () => {
   const [local, others] = splitProps(props, [
     "children",
     "class",
@@ -61,7 +63,7 @@ const EmptyStateRoot: ParentComponent<EmptyStateRootProps> = (props) => {
 /* -------------------------------------------------------------------------------------------------
  * EmptyState Icon
  * -----------------------------------------------------------------------------------------------*/
-const EmptyStateIcon: Component<EmptyStateIconProps> = (props) => {
+const EmptyStateIcon: Layout<typeof componentRecipe, EmptyStateIconProps> = () => {
   const [local, others] = splitProps(props, [
     "children",
     "class",
@@ -87,7 +89,7 @@ const EmptyStateIcon: Component<EmptyStateIconProps> = (props) => {
 /* -------------------------------------------------------------------------------------------------
  * EmptyState Title
  * -----------------------------------------------------------------------------------------------*/
-const EmptyStateTitle: ParentComponent<EmptyStateTitleProps> = (props) => {
+const EmptyStateTitle: Layout<typeof componentRecipe, EmptyStateTitleProps> = () => {
   const [local, others] = splitProps(props, [
     "children",
     "class",
@@ -112,7 +114,7 @@ const EmptyStateTitle: ParentComponent<EmptyStateTitleProps> = (props) => {
 /* -------------------------------------------------------------------------------------------------
  * EmptyState Description
  * -----------------------------------------------------------------------------------------------*/
-const EmptyStateDescription: ParentComponent<EmptyStateDescriptionProps> = (props) => {
+const EmptyStateDescription: Layout<typeof componentRecipe, EmptyStateDescriptionProps> = () => {
   const [local, others] = splitProps(props, [
     "children",
     "class",
@@ -137,7 +139,7 @@ const EmptyStateDescription: ParentComponent<EmptyStateDescriptionProps> = (prop
 /* -------------------------------------------------------------------------------------------------
  * EmptyState Actions
  * -----------------------------------------------------------------------------------------------*/
-const EmptyStateActions: ParentComponent<EmptyStateActionsProps> = (props) => {
+const EmptyStateActions: Layout<typeof componentRecipe, EmptyStateActionsProps> = () => {
   const [local, others] = splitProps(props, [
     "children",
     "class",
