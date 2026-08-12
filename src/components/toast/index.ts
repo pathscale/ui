@@ -35,4 +35,4 @@ export {
   type HeroUIToastOptions,
   type ToastPromiseOptions,
   type ToastFunction,
-} from "./Toast";
+} from "./Toast.generated";

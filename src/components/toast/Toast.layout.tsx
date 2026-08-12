@@ -19,7 +19,9 @@ import { twMerge } from "tailwind-merge";
 import Button, { type ButtonProps } from "../button";
 import CloseButton, { type CloseButtonProps } from "../close-button";
 import type { IComponentBaseProps } from "../types";
-import { CLASSES } from "./Toast.classes";
+import { CLASSES } from "./Toast.recipe";
+import type { Layout } from "../../lib/layouts";
+import { componentRecipe } from "./Toast.recipe";
 
 export const DEFAULT_GAP = 12;
 export const DEFAULT_MAX_VISIBLE_TOAST = 3;
@@ -471,9 +473,7 @@ const CloseIcon = () => (
   </svg>
 );
 
-const DefaultIndicator: Component<{ variant: ResolvedToastVariant; isLoading: boolean }> = (
-  props,
-) => {
+const DefaultIndicator: Layout<typeof componentRecipe, { variant: ResolvedToastVariant; isLoading: boolean }> = () => {
   if (props.isLoading) {
     return <span {...{ class: CLASSES.Spinner.base }} aria-hidden="true" />;
   }
@@ -538,7 +538,7 @@ export type ToastCloseButtonProps = Omit<
 > &
   Omit<CloseButtonProps, "children" | "startIcon" | "endIcon">;
 
-const ToastContent: ParentComponent<ToastContentProps> = (props) => {
+const ToastContent: Layout<typeof componentRecipe, ToastContentProps> = () => {
   const [local, others] = splitProps(props, ["children", "class", "className", "dataTheme", "style"]);
 
   return (
@@ -554,7 +554,7 @@ const ToastContent: ParentComponent<ToastContentProps> = (props) => {
   );
 };
 
-const ToastIndicator: Component<ToastIndicatorProps> = (props) => {
+const ToastIndicator: Layout<typeof componentRecipe, ToastIndicatorProps> = () => {
   const ctx = useToastItemContext();
   const [local, others] = splitProps(props, [
     "children",
@@ -585,7 +585,7 @@ const ToastIndicator: Component<ToastIndicatorProps> = (props) => {
   );
 };
 
-const ToastTitle: ParentComponent<ToastTitleProps> = (props) => {
+const ToastTitle: Layout<typeof componentRecipe, ToastTitleProps> = () => {
   const [local, others] = splitProps(props, ["children", "class", "className", "dataTheme", "style"]);
 
   return (
@@ -601,7 +601,7 @@ const ToastTitle: ParentComponent<ToastTitleProps> = (props) => {
   );
 };
 
-const ToastDescription: ParentComponent<ToastDescriptionProps> = (props) => {
+const ToastDescription: Layout<typeof componentRecipe, ToastDescriptionProps> = () => {
   const [local, others] = splitProps(props, ["children", "class", "className", "dataTheme", "style"]);
 
   return (
@@ -617,7 +617,7 @@ const ToastDescription: ParentComponent<ToastDescriptionProps> = (props) => {
   );
 };
 
-const ToastActionButton: Component<ToastActionButtonProps> = (props) => {
+const ToastActionButton: Layout<typeof componentRecipe, ToastActionButtonProps> = () => {
   const [local, others] = splitProps(props, ["class", "className"]);
 
   return (
@@ -633,7 +633,7 @@ const ToastActionButton: Component<ToastActionButtonProps> = (props) => {
   );
 };
 
-const ToastCloseButton: Component<ToastCloseButtonProps> = (props) => {
+const ToastCloseButton: Layout<typeof componentRecipe, ToastCloseButtonProps> = () => {
   const ctx = useToastItemContext();
   const [local, others] = splitProps(props, [
     "class",
@@ -664,7 +664,7 @@ const ToastCloseButton: Component<ToastCloseButtonProps> = (props) => {
   );
 };
 
-const ToastRoot: ParentComponent<ToastRootProps> = (props) => {
+const ToastRoot: Layout<typeof componentRecipe, ToastRootProps> = () => {
   const [local, others] = splitProps(props, [
     "children",
     "class",
@@ -771,7 +771,7 @@ export type ToastProviderProps = Omit<JSX.HTMLAttributes<HTMLDivElement>, "child
     renderToast?: ToastRenderFn;
   };
 
-const ToastProvider: ParentComponent<ToastProviderProps> = (props) => {
+const ToastProvider: Layout<typeof componentRecipe, ToastProviderProps> = () => {
   const [local, others] = splitProps(props, [
     "children",
     "class",
