@@ -5,5 +5,5 @@ export {
   type ToolbarProps,
   type ToolbarRootProps,
   type ToolbarOrientation,
-} from "./Toolbar";
+} from "./Toolbar.generated";
 
