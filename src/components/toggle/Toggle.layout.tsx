@@ -2,7 +2,9 @@ import "./Toggle.css";
 import { Show, createSignal, splitProps, type Component, type JSX } from "solid-js";
 import { twMerge } from "tailwind-merge";
 import type { IComponentBaseProps } from "../types";
-import { CLASSES } from "./Toggle.classes";
+import { CLASSES } from "./Toggle.recipe";
+import type { Layout } from "../../lib/layouts";
+import { componentRecipe } from "./Toggle.recipe";
 
 const invokeEventHandler = (handler: unknown, event: Event) => {
   if (typeof handler === "function") {
@@ -29,7 +31,7 @@ export type ToggleProps = Omit<JSX.InputHTMLAttributes<HTMLInputElement>, "type"
     size?: ToggleSize;
   };
 
-const Toggle: Component<ToggleProps> = (props) => {
+const Toggle: Layout<typeof componentRecipe, ToggleProps> = () => {
   const [local, others] = splitProps(props, [
     "class",
     "className",

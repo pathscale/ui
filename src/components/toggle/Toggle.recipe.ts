@@ -1,3 +1,4 @@
+import { recipe } from "../../lib/layouts";
 export const CLASSES = {
   base: "toggle",
   slot: {
@@ -24,3 +25,4 @@ export const CLASSES = {
     disabled: "toggle--disabled",
   },
 } as const;
+export const componentRecipe = recipe({component:"toggle",slots:{"description":{},"label":{},"root":{},"toggle":{},"toggle-content":{},"toggle-control":{},"toggle-icon":{},"toggle-input":{},"toggle-thumb":{},},});
