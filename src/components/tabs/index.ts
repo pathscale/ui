@@ -1,4 +1,4 @@
-export { default, Tabs } from "./Tabs";
+export { default, Tabs } from "./Tabs.generated";
 export type {
   TabsRootProps,
   TabListContainerProps,
@@ -7,4 +7,4 @@ export type {
   TabIndicatorProps,
   TabSeparatorProps,
   TabPanelProps,
-} from "./Tabs";
+} from "./Tabs.generated";
