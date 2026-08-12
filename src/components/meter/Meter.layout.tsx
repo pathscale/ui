@@ -11,7 +11,9 @@ import {
 import { twMerge } from "tailwind-merge";
 
 import type { IComponentBaseProps } from "../types";
-import { CLASSES } from "./Meter.classes";
+import { CLASSES } from "./Meter.recipe";
+import type { Layout } from "../../lib/layouts";
+import { componentRecipe } from "./Meter.recipe";
 
 export type MeterSize = "sm" | "md" | "lg";
 export type MeterColor = "default" | "accent" | "success" | "warning" | "danger";
@@ -61,7 +63,7 @@ const useMeterContext = (): MeterContextValue => {
 
 const clamp = (value: number, min: number, max: number): number => Math.min(Math.max(value, min), max);
 
-const MeterRoot: Component<MeterRootProps> = (props) => {
+const MeterRoot: Layout<typeof componentRecipe, MeterRootProps> = () => {
   const [local, others] = splitProps(props, [
     "children",
     "class",
@@ -158,7 +160,7 @@ const MeterRoot: Component<MeterRootProps> = (props) => {
   );
 };
 
-const MeterOutput: Component<MeterOutputProps> = (props) => {
+const MeterOutput: Layout<typeof componentRecipe, MeterOutputProps> = () => {
   const [local, others] = splitProps(props, [
     "children",
     "class",
@@ -181,7 +183,7 @@ const MeterOutput: Component<MeterOutputProps> = (props) => {
   );
 };
 
-const MeterTrack: Component<MeterTrackProps> = (props) => {
+const MeterTrack: Layout<typeof componentRecipe, MeterTrackProps> = () => {
   const [local, others] = splitProps(props, [
     "children",
     "class",
@@ -203,7 +205,7 @@ const MeterTrack: Component<MeterTrackProps> = (props) => {
   );
 };
 
-const MeterFill: Component<MeterFillProps> = (props) => {
+const MeterFill: Layout<typeof componentRecipe, MeterFillProps> = () => {
   const [local, others] = splitProps(props, ["class", "className", "dataTheme", "style"]);
   const { state } = useMeterContext();
 
