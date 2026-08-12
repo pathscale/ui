@@ -19,4 +19,4 @@ export {
   type TimeFieldVariant,
   type TimeFieldRenderProps,
   type TimeFieldSegmentValue,
-} from "./TimeField";
+} from "./TimeField.generated";
