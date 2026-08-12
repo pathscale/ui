@@ -1,7 +1,7 @@
 import type { JSX } from "solid-js";
 import type { Layout } from "solid-layouts";
 
-import { pressableKeyDown } from "./Card.logic";
+import { pressableKeyDown } from "./card";
 import type { card } from "./Card.recipe";
 
 /**
