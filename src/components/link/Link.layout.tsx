@@ -3,7 +3,9 @@ import { splitProps, type Component, type JSX } from "solid-js";
 import { twMerge } from "tailwind-merge";
 
 import type { IComponentBaseProps } from "../types";
-import { CLASSES } from "./Link.classes";
+import { CLASSES } from "./Link.recipe";
+import type { Layout } from "../../lib/layouts";
+import { componentRecipe } from "./Link.recipe";
 
 export type LinkVariant = "default";
 export type LinkUnderline = "always" | "hover" | "none";
@@ -25,7 +27,7 @@ const ensureExternalRel = (value: string | undefined) => {
   return Array.from(relTokens).join(" ");
 };
 
-const LinkRoot: Component<LinkRootProps> = (props) => {
+const LinkRoot: Layout<typeof componentRecipe, LinkRootProps> = () => {
   const [local, others] = splitProps(props, [
     "children",
     "href",
@@ -75,7 +77,7 @@ const LinkRoot: Component<LinkRootProps> = (props) => {
   );
 };
 
-const LinkIcon: Component<LinkIconProps> = (props) => {
+const LinkIcon: Layout<typeof componentRecipe, LinkIconProps> = () => {
   const [local, others] = splitProps(props, [
     "class",
     "className",

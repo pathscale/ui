@@ -1,3 +1,4 @@
+import { recipe } from "../../lib/layouts";
 export const CLASSES = {
   base: "link",
   variant: {
@@ -17,3 +18,4 @@ export const CLASSES = {
     iconDefault: "link__icon-default",
   },
 } as const;
+export const componentRecipe = recipe({component:"link",slots:{"link":{},"link-default-icon":{},"link-icon":{},"root":{},},});
