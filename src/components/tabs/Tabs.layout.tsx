@@ -13,7 +13,9 @@ import {
   type JSX,
 } from "solid-js";
 import { twMerge } from "tailwind-merge";
-import { CLASSES } from "./Tabs.classes";
+import { CLASSES } from "./Tabs.recipe";
+import type { Layout } from "../../lib/layouts";
+import { componentRecipe } from "./Tabs.recipe";
 
 type TabsOrientation = "horizontal" | "vertical";
 type TabsVariant = "primary" | "secondary";
@@ -59,7 +61,7 @@ type TabsRootProps = Omit<JSX.HTMLAttributes<HTMLDivElement>, "onChange"> & {
   onSelectionChange?: (key: TabKey) => void;
 };
 
-const TabsRoot = (props: TabsRootProps): JSX.Element => {
+const TabsRoot: Layout<typeof componentRecipe, TabsRootProps> = () => {
   const [local, others] = splitProps(props, [
     "children",
     "class",
@@ -142,7 +144,7 @@ const TabsRoot = (props: TabsRootProps): JSX.Element => {
 
 type TabListContainerProps = JSX.HTMLAttributes<HTMLDivElement>;
 
-const TabListContainer = (props: TabListContainerProps): JSX.Element => {
+const TabListContainer: Layout<typeof componentRecipe, TabListContainerProps> = () => {
   const [local, others] = splitProps(props, ["class", "children"]);
   return (
     <div
@@ -159,7 +161,7 @@ type TabListProps = JSX.HTMLAttributes<HTMLDivElement> & {
   "aria-label"?: string;
 };
 
-const TabList = (props: TabListProps): JSX.Element => {
+const TabList: Layout<typeof componentRecipe, TabListProps> = () => {
   const ctx = useContext(TabsContext);
   const [local, others] = splitProps(props, ["class", "children", "ref"]);
 
@@ -285,7 +287,7 @@ type TabProps = Omit<JSX.ButtonHTMLAttributes<HTMLButtonElement>, "id"> & {
   isDisabled?: boolean;
 };
 
-const Tab = (props: TabProps): JSX.Element => {
+const Tab: Layout<typeof componentRecipe, TabProps> = () => {
   const ctx = useContext(TabsContext);
   const [local, others] = splitProps(props, [
     "class",
@@ -405,7 +407,7 @@ type TabPanelProps = Omit<JSX.HTMLAttributes<HTMLDivElement>, "id"> & {
   id: TabKey;
 };
 
-const TabPanel = (props: TabPanelProps): JSX.Element => {
+const TabPanel: Layout<typeof componentRecipe, TabPanelProps> = () => {
   const ctx = useContext(TabsContext);
   const [local, others] = splitProps(props, ["class", "children", "id"]);
 
@@ -433,7 +435,7 @@ const TabPanel = (props: TabPanelProps): JSX.Element => {
 
 type TabSeparatorProps = JSX.HTMLAttributes<HTMLSpanElement>;
 
-const TabSeparator = (props: TabSeparatorProps): JSX.Element => {
+const TabSeparator: Layout<typeof componentRecipe, TabSeparatorProps> = () => {
   const [local, others] = splitProps(props, ["class"]);
   return (
     <span
