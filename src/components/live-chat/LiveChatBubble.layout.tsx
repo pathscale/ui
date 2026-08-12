@@ -2,9 +2,11 @@ import "./LiveChat.css";
 import { type Component, type JSX, createSignal, Show, splitProps } from "solid-js";
 import { twMerge } from "tailwind-merge";
 import type { IComponentBaseProps } from "../types";
-import LiveChatPanel from "./LiveChatPanel";
-import type { LiveChatPanelProps } from "./LiveChatPanel";
-import { CLASSES } from "./LiveChat.classes";
+import LiveChatPanel from "./LiveChatPanel.generated";
+import type { LiveChatPanelProps } from "./LiveChatPanel.generated";
+import { CLASSES } from "./LiveChat.recipe";
+import type { Layout } from "../../lib/layouts";
+import { componentRecipe } from "./LiveChat.recipe";
 
 export interface LiveChatBubbleProps extends IComponentBaseProps {
   /**
@@ -55,7 +57,7 @@ export interface LiveChatBubbleProps extends IComponentBaseProps {
   children?: JSX.Element;
 }
 
-const LiveChatBubble: Component<LiveChatBubbleProps> = (props) => {
+const LiveChatBubble: Layout<typeof componentRecipe, LiveChatBubbleProps> = () => {
   const [local, others] = splitProps(props, [
     "position",
     "aria-label",

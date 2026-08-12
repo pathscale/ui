@@ -14,7 +14,9 @@ import Button from "../button";
 import Input from "../input";
 import type { IComponentBaseProps } from "../types";
 import type { ChatMessage, SendMessagePayload, SendMessageResponse } from "./types";
-import { CLASSES } from "./LiveChat.classes";
+import { CLASSES } from "./LiveChat.recipe";
+import type { Layout } from "../../lib/layouts";
+import { componentRecipe } from "./LiveChat.recipe";
 
 export interface LiveChatPanelProps extends IComponentBaseProps {
   /**
@@ -144,7 +146,7 @@ const formatTime = (timestamp: number) => {
   }).format(new Date(timestamp));
 };
 
-const LiveChatPanel: Component<LiveChatPanelProps> = (props) => {
+const LiveChatPanel: Layout<typeof componentRecipe, LiveChatPanelProps> = () => {
   const [local, others] = splitProps(props, [
     "onClose",
     "title",
