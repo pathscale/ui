@@ -2,7 +2,9 @@ import "./Button.css";
 import { Show, splitProps, useContext, type JSX } from "solid-js";
 import { twMerge } from "tailwind-merge";
 import { ButtonGroupContext } from "../button-group/context";
-import { CLASSES } from "./Button.classes";
+import { CLASSES } from "./Button.recipe";
+import type { Layout } from "../../lib/layouts";
+import { componentRecipe } from "./Button.recipe";
 
 export type ButtonVariant = keyof typeof CLASSES.variant;
 export type ButtonSize = keyof typeof CLASSES.size;
@@ -19,7 +21,7 @@ type ButtonProps = Omit<JSX.ButtonHTMLAttributes<HTMLButtonElement>, "disabled">
   className?: string;
 };
 
-const Button = (props: ButtonProps): JSX.Element => {
+const Button: Layout<typeof componentRecipe, ButtonProps> = () => {
   const [local, others] = splitProps(props, [
     "children",
     "class",
