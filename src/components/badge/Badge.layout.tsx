@@ -3,7 +3,9 @@ import { type JSX, splitProps } from "solid-js";
 import { twMerge } from "tailwind-merge";
 
 import "./Badge.css";
-import { CLASSES } from "./Badge.classes";
+import { CLASSES } from "./Badge.recipe";
+import type { Layout } from "../../lib/layouts";
+import { componentRecipe } from "./Badge.recipe";
 
 /* -------------------------------------------------------------------------------------------------
  * Badge Anchor
@@ -13,7 +15,7 @@ interface BadgeAnchorProps extends JSX.HTMLAttributes<HTMLSpanElement> {
   children: JSX.Element;
 }
 
-const BadgeAnchor = (props: BadgeAnchorProps) => {
+const BadgeAnchor: Layout<typeof componentRecipe, BadgeAnchorProps> = () => {
   const [local, others] = splitProps(props, ["children", "class"]);
 
   return (
@@ -44,7 +46,7 @@ interface BadgeRootProps extends Omit<JSX.HTMLAttributes<HTMLSpanElement>, "colo
   placement?: BadgePlacement;
 }
 
-const BadgeRoot = (props: BadgeRootProps) => {
+const BadgeRoot: Layout<typeof componentRecipe, BadgeRootProps> = () => {
   const [local, others] = splitProps(props, [
     "children",
     "class",
@@ -94,7 +96,7 @@ interface BadgeLabelProps extends JSX.HTMLAttributes<HTMLSpanElement> {
   class?: string;
 }
 
-const BadgeLabel = (props: BadgeLabelProps) => {
+const BadgeLabel: Layout<typeof componentRecipe, BadgeLabelProps> = () => {
   const [local, others] = splitProps(props, ["children", "class"]);
 
   return (

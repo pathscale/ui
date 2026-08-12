@@ -1,3 +1,4 @@
+import { recipe } from "../../lib/layouts";
 export const CLASSES = {
   base: "badge",
   slot: {
@@ -28,3 +29,4 @@ export const CLASSES = {
     "bottom-left": "badge--bottom-left",
   },
 } as const;
+export const componentRecipe = recipe({component:"badge",slots:{"badge":{},"badge-anchor":{},"badge-label":{},"root":{},},});

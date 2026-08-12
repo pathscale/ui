@@ -1,4 +1,4 @@
-import { BadgeAnchor, BadgeLabel, BadgeRoot } from "./Badge";
+import { BadgeAnchor, BadgeLabel, BadgeRoot } from "./Badge.generated";
 
 /* -------------------------------------------------------------------------------------------------
  * Compound Component
@@ -21,4 +21,4 @@ export type {
   BadgeRootProps as BadgeProps,
   BadgeLabelProps,
   BadgeAnchorProps,
-} from "./Badge";
+} from "./Badge.generated";
