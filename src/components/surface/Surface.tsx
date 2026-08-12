@@ -1,45 +1,39 @@
 import "./Surface.css";
-import { splitProps, type JSX } from "solid-js";
-import { twMerge } from "tailwind-merge";
+import type { JSX } from "solid-js";
+import { defineComponent } from "solid-layouts";
 
 import type { IComponentBaseProps } from "../types";
-import { CLASSES } from "./Surface.classes";
+import { surface } from "./Surface.recipe";
 
-export type SurfaceVariant = "default" | "secondary" | "tertiary" | "transparent";
+export type SurfaceVariant =
+  | "default"
+  | "secondary"
+  | "tertiary"
+  | "transparent";
 
 export type SurfaceVariants = {
   variant?: SurfaceVariant;
 };
 
-export type SurfaceProps = Omit<JSX.HTMLAttributes<HTMLDivElement>, "children"> &
+export type SurfaceProps = Omit<
+  JSX.HTMLAttributes<HTMLDivElement>,
+  "children"
+> &
   IComponentBaseProps &
   SurfaceVariants & {
     children?: JSX.Element;
   };
 
-export function Surface(props: SurfaceProps) {
-  const [local, others] = splitProps(props, [
-    "children",
-    "class",
-    "className",
-    "dataTheme",
-    "style",
-    "variant",
-  ]);
-
-  const variant = () => local.variant ?? "default";
-
-  return (
-    <div
-      {...others}
-      {...{ class: twMerge(CLASSES.base, CLASSES.variant[variant()], local.class, local.className) }}
-      data-slot="surface"
-      data-theme={local.dataTheme}
-      style={local.style}
-    >
-      {local.children}
-    </div>
-  );
-}
+/**
+ * No layout: one element, one slot, nothing to arrange. The runtime renders
+ * the recipe's element directly, which is what `element: "div"` in the recipe
+ * is for.
+ */
+const Surface = defineComponent({
+  recipe: surface,
+  name: "Surface",
+  defaults: { variant: "default" },
+}) as unknown as (props: SurfaceProps) => JSX.Element;
 
 export default Surface;
+export { Surface };
