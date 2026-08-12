@@ -13,7 +13,9 @@ import { Portal } from "solid-js/web";
 import { twMerge } from "tailwind-merge";
 
 import type { IComponentBaseProps } from "../types";
-import { CLASSES } from "./FloatingDock.classes";
+import { CLASSES } from "./FloatingDock.recipe";
+import type { Layout } from "../../lib/layouts";
+import { componentRecipe } from "./FloatingDock.recipe";
 
 /* ------------------------------------------------------------------ */
 /*  Types                                                             */
@@ -158,11 +160,11 @@ const TOOLTIP_TRANSFORM: Record<FloatingDockDirection, string> = {
   right: "translate(0, -50%)",
 };
 
-const DockItem: Component<{
+const DockItem: Layout<typeof componentRecipe, {
   item: FloatingDockItem;
   cfg: ResolvedConfig;
   registerRefs: (wrap: HTMLDivElement, icon: HTMLDivElement) => void;
-}> = (props) => {
+}> = () => {
   let wrapRef: HTMLDivElement | undefined;
   let iconRef: HTMLDivElement | undefined;
 
@@ -238,12 +240,12 @@ const DockItem: Component<{
 /*  Desktop dock                                                      */
 /* ------------------------------------------------------------------ */
 
-const FloatingDockDesktop: Component<{
+const FloatingDockDesktop: Layout<typeof componentRecipe, {
   items: FloatingDockItem[];
   class?: string;
   cfg: ResolvedConfig;
   showContainer: boolean;
-}> = (props) => {
+}> = () => {
   const [mousePos, setMousePos] = createSignal(Infinity);
   const isH = () => props.cfg.orientation === "horizontal";
   const cfg = props.cfg;
@@ -423,13 +425,13 @@ const FloatingDockDesktop: Component<{
 /*  Mobile dock                                                       */
 /* ------------------------------------------------------------------ */
 
-const FloatingDockMobile: Component<{
+const FloatingDockMobile: Layout<typeof componentRecipe, {
   items: FloatingDockItem[];
   class?: string;
   toggleIcon?: JSX.Element;
   popupDirection: FloatingDockDirection;
   cfg: ResolvedConfig;
-}> = (props) => {
+}> = () => {
   const [open, setOpen] = createSignal(false);
 
   const handleItemClick = (item: FloatingDockItem, e: MouseEvent) => {
@@ -524,7 +526,7 @@ const FloatingDockMobile: Component<{
 /*  Main                                                              */
 /* ------------------------------------------------------------------ */
 
-const FloatingDock = (rawProps: FloatingDockProps): JSX.Element => {
+const FloatingDock: Layout<typeof componentRecipe, FloatingDockProps> = () => {
   const [local, others] = splitProps(rawProps, [
     "items", "orientation", "tooltipDirection", "mobilePopupDirection", "mobileMode", "gap",
     "baseSize", "hoverSize", "iconSize", "hoverIconSize", "magnifyRange",
