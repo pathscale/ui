@@ -71,6 +71,33 @@ shows.
 
 ---
 
+## 0. Where a prop goes
+
+Four destinations, decided by what declares the name. This is the rule everything
+else follows from.
+
+| Bucket | Declared by | Goes to |
+| --- | --- | --- |
+| **Presentation** | the recipe's `props` | the class map |
+| **Behaviour** | the component's `behaviour` list | the setup function |
+| **Escape hatches** | fixed: `class`, `className`, `style`, `children` | merged by the runtime |
+| **Everything else** | nothing | straight onto the element as HTML |
+
+The fourth is not a leftover, it is the common case: `id`, `onClick`,
+`aria-label`, `title`, `data-testid`. Without it those are swallowed and never
+reach the DOM, which is exactly what happened when this document listed only
+three buckets.
+
+Behaviour has to be declared for the same reason presentation does. Nothing
+else distinguishes `onValueChange`, which belongs to the logic, from `onClick`,
+which belongs on the element, and one of the two would have to lose.
+
+Pass-through is applied **before** the recipe's attributes. A caller may set
+`id` or `aria-label`; a caller must not be able to overwrite the class or the
+`data-slot` that identifies the component.
+
+---
+
 ## 1. Where parameters are defined
 
 The call site is the presentation layer. Colors, sizes and appearance are declared there and go
@@ -139,7 +166,43 @@ ids and be invalid HTML. The two concepts separate:
 | | Scope | Emitted as | Purpose |
 | --- | --- | --- | --- |
 | **Slot name** | per definition | `data-slot="accordion-trigger"` | what the element *is*. Static, addressable, checkable |
-| **Instance id** | per render | `id="accordion-item-3-trigger"` | aria wiring only. Emitted when `aria-controls` or `aria-labelledby` needs it |
+| **Slot index** | per definition | compiled in | a stable integer per `(component, slot)`, assigned by the compiler |
+| **Instance id** | per render | `id="4-3"` | aria wiring only. The slot index and an instance counter |
+
+### Nothing registers
+
+The compiler sees every recipe it is given, so it enumerates each
+`(component, slot)` pair and assigns the index ahead of time. The runtime's
+whole contribution is a counter, which makes an id an integer pair rather than
+a string built on every mount.
+
+A registry was the alternative: each component announcing itself on first
+render so ids could be handed out. That costs a map write per component type,
+makes ids depend on render order, and means nothing is resolvable until it has
+rendered at least once.
+
+Indices are ordered by component name rather than by discovery, so adding an
+unrelated file does not renumber everything after it and invalidate a manifest
+built against the old numbering.
+
+The compiler also emits the index-to-name manifest, which is what lets tooling
+holding only the DOM resolve `data-slot` back to `accordion-item-trigger`
+without the document carrying the long form.
+
+### A caller may still set `id`
+
+`id` is a standard HTML attribute and `<label for>`, anchor links and test
+hooks all need it, so it is passed through rather than refused. When a caller
+sets one, the aria wiring prefers it and derives the other slots from it:
+
+```
+<Badge id="save" />   root: "save",  icon: "save-icon"
+<Badge />             root: "4-3",   icon: "5-3"
+```
+
+Slot identity is a different thing from `id`, and lives in `data-slot`. That
+one is never user-settable: the runtime spreads it after any caller
+pass-through, so it cannot be overwritten whatever it is called.
 
 The `data-slot` value is `${component}-${slot}`, so it is unique across the whole library by
 construction rather than by convention.
@@ -1135,7 +1198,9 @@ time.
 **`p.expanded` is a value, not `p.expanded()`.** `layout()` builds `p` with getters over the
 model's accessors, so reading it inside JSX tracks the same as calling the accessor.
 
-**Phase 0 needs no tooling at all.** All of it is runtime and plain TypeScript.
+**`__` marks the compiler-to-runtime boundary.** A `__`-prefixed name is
+written by the compiler, read by the runtime, and carries no stability
+guarantee. Nothing `__`-prefixed appears in the package's public exports.
 
 Known gaps against VUE3: no `<template>` block, no scoped styles, and no named slots in the Vue
 sense (a content slot here is just a prop holding JSX, distinct from the element slots in
