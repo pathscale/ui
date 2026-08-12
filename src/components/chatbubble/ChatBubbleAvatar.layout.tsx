@@ -3,7 +3,9 @@ import { twMerge } from "tailwind-merge";
 import Avatar from "../avatar";
 import type { AvatarRootProps } from "../avatar";
 import type { IComponentBaseProps } from "../types";
-import { CLASSES } from "./ChatBubble.classes";
+import { CLASSES } from "./ChatBubble.recipe";
+import type { Layout } from "../../lib/layouts";
+import { componentRecipe } from "./ChatBubble.recipe";
 
 export type ChatBubbleAvatarProps = {
   src?: string;
@@ -12,7 +14,7 @@ export type ChatBubbleAvatarProps = {
 } & Omit<AvatarRootProps, "children"> &
   IComponentBaseProps;
 
-const ChatBubbleAvatar = (props: ChatBubbleAvatarProps): JSX.Element => {
+const ChatBubbleAvatar: Layout<typeof componentRecipe, ChatBubbleAvatarProps> = () => {
   return (
     <Avatar
       size={props.size ?? "sm"}

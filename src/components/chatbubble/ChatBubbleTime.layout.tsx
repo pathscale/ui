@@ -1,12 +1,14 @@
 import { splitProps, type JSX } from "solid-js";
 import { twMerge } from "tailwind-merge";
 import type { IComponentBaseProps } from "../types";
-import { CLASSES } from "./ChatBubble.classes";
+import { CLASSES } from "./ChatBubble.recipe";
+import type { Layout } from "../../lib/layouts";
+import { componentRecipe } from "./ChatBubble.recipe";
 
 export type ChatBubbleTimeProps = JSX.HTMLAttributes<HTMLTimeElement> &
   IComponentBaseProps;
 
-const ChatBubbleTime = (props: ChatBubbleTimeProps): JSX.Element => {
+const ChatBubbleTime: Layout<typeof componentRecipe, ChatBubbleTimeProps> = () => {
   const [local, others] = splitProps(props, ["class", "className"]);
 
   return (
