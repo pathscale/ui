@@ -14,4 +14,4 @@ export {
   type SearchFieldClearButtonProps,
   type SearchFieldVariant,
   type SearchFieldRenderProps,
-} from "./SearchField";
+} from "./SearchField.generated";

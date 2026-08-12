@@ -1,3 +1,4 @@
+import { recipe } from "../../lib/layouts";
 export const CLASSES = {
   Root: {
     base: "search-field",
@@ -25,3 +26,4 @@ export const CLASSES = {
     base: "search-field__clear-button",
   },
 } as const;
+export const componentRecipe = recipe({component:"search-field",slots:{"root":{},"search-field":{},"search-field-clear-button":{},"search-field-group":{},"search-field-input":{},"search-field-search-icon":{},},});

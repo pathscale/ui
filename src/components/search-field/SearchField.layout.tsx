@@ -14,7 +14,9 @@ import { twMerge } from "tailwind-merge";
 
 import CloseButton, { type CloseButtonProps } from "../close-button";
 import type { IComponentBaseProps } from "../types";
-import { CLASSES } from "./SearchField.classes";
+import { CLASSES } from "./SearchField.recipe";
+import type { Layout } from "../../lib/layouts";
+import { componentRecipe } from "./SearchField.recipe";
 
 export type SearchFieldVariant = "primary" | "secondary";
 
@@ -90,7 +92,7 @@ export type SearchFieldClearButtonProps = Omit<CloseButtonProps, "onClick"> &
     onClick?: JSX.EventHandlerUnion<HTMLButtonElement, MouseEvent>;
   };
 
-const SearchFieldRoot: ParentComponent<SearchFieldRootProps> = (props) => {
+const SearchFieldRoot: Layout<typeof componentRecipe, SearchFieldRootProps> = () => {
   const [local, others] = splitProps(props, [
     "children",
     "startIcon",
@@ -187,7 +189,7 @@ const SearchFieldRoot: ParentComponent<SearchFieldRootProps> = (props) => {
   );
 };
 
-const SearchFieldGroup: ParentComponent<SearchFieldGroupProps> = (props) => {
+const SearchFieldGroup: Layout<typeof componentRecipe, SearchFieldGroupProps> = () => {
   const context = useContext(SearchFieldContext);
   const [local, others] = splitProps(props, ["children", "class", "className", "dataTheme", "style"]);
 
@@ -218,7 +220,7 @@ const SearchFieldGroup: ParentComponent<SearchFieldGroupProps> = (props) => {
   );
 };
 
-const SearchFieldInput: Component<SearchFieldInputProps> = (props) => {
+const SearchFieldInput: Layout<typeof componentRecipe, SearchFieldInputProps> = () => {
   const context = useContext(SearchFieldContext);
   const [local, others] = splitProps(props, [
     "class",
@@ -260,7 +262,7 @@ const SearchFieldInput: Component<SearchFieldInputProps> = (props) => {
   );
 };
 
-const SearchFieldSearchIcon: Component<SearchFieldSearchIconProps> = (props) => {
+const SearchFieldSearchIcon: Layout<typeof componentRecipe, SearchFieldSearchIconProps> = () => {
   const [local, others] = splitProps(props, ["children", "class", "className", "dataTheme", "style"]);
 
   if (!local.children) return null;
@@ -278,7 +280,7 @@ const SearchFieldSearchIcon: Component<SearchFieldSearchIconProps> = (props) => 
   );
 };
 
-const SearchFieldClearButton: Component<SearchFieldClearButtonProps> = (props) => {
+const SearchFieldClearButton: Layout<typeof componentRecipe, SearchFieldClearButtonProps> = () => {
   const context = useContext(SearchFieldContext);
   const hasIcon = () => props.children != null || props.startIcon != null || props.endIcon != null;
   const [local, others] = splitProps(props, ["class", "className", "dataTheme", "style", "onClick"]);
