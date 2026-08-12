@@ -6,4 +6,4 @@ export {
   type TextRootProps,
   type TextSize,
   type TextVariant,
-} from "./Text";
+} from "./Text.generated";
