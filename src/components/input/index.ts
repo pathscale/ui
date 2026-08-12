@@ -1,4 +1,4 @@
-import Input from "./Input";
+import Input from "./Input.generated";
 
 export type {
   InputProps,
@@ -7,6 +7,6 @@ export type {
   InputFieldProps,
   InputLabelProps,
   InputHelperProps,
-} from "./Input";
+} from "./Input.generated";
 
 export default Input;

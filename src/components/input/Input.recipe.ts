@@ -1,3 +1,4 @@
+import { recipe } from "../../lib/layouts";
 export const CLASSES = {
   base: "input-root",
   slot: {
@@ -22,3 +23,4 @@ export const CLASSES = {
     helperInvalid: "input-helper--invalid",
   },
 } as const;
+export const componentRecipe = recipe({component:"input",slots:{"input-control":{},"input-end-icon":{},"input-field":{},"input-helper":{},"input-label":{},"input-root":{},"input-start-icon":{},"root":{},},});
