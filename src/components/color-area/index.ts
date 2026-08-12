@@ -1,5 +1,5 @@
-import ColorArea from "./ColorArea";
+import ColorArea from "./ColorArea.generated";
 
-export type { ColorAreaProps, ColorAreaValue } from "./ColorArea";
+export type { ColorAreaProps, ColorAreaValue } from "./ColorArea.generated";
 
 export default ColorArea;
