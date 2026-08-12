@@ -12,7 +12,9 @@ import {
 import { twMerge } from "tailwind-merge";
 
 import type { IComponentBaseProps } from "../types";
-import { CLASSES } from "./TimeField.classes";
+import { CLASSES } from "./TimeField.recipe";
+import type { Layout } from "../../lib/layouts";
+import { componentRecipe } from "./TimeField.recipe";
 
 export type TimeFieldVariant = "primary" | "secondary";
 
@@ -97,7 +99,7 @@ export type TimeFieldSegmentProps = JSX.HTMLAttributes<HTMLSpanElement> &
 export type TimeFieldPrefixProps = JSX.HTMLAttributes<HTMLDivElement> & IComponentBaseProps;
 export type TimeFieldSuffixProps = JSX.HTMLAttributes<HTMLDivElement> & IComponentBaseProps;
 
-const TimeFieldRoot: ParentComponent<TimeFieldRootProps> = (props) => {
+const TimeFieldRoot: Layout<typeof componentRecipe, TimeFieldRootProps> = () => {
   const [local, others] = splitProps(props, [
     "children",
     "class",
@@ -188,7 +190,7 @@ const TimeFieldRoot: ParentComponent<TimeFieldRootProps> = (props) => {
   );
 };
 
-const TimeFieldGroup: ParentComponent<TimeFieldGroupProps> = (props) => {
+const TimeFieldGroup: Layout<typeof componentRecipe, TimeFieldGroupProps> = () => {
   const context = useContext(TimeFieldContext);
   const [local, others] = splitProps(props, ["children", "class", "className", "dataTheme", "style"]);
 
@@ -220,7 +222,7 @@ const TimeFieldGroup: ParentComponent<TimeFieldGroupProps> = (props) => {
   );
 };
 
-const TimeFieldInput: Component<TimeFieldInputProps> = (props) => {
+const TimeFieldInput: Layout<typeof componentRecipe, TimeFieldInputProps> = () => {
   const context = useContext(TimeFieldContext);
   const [local, others] = splitProps(props, [
     "class",
@@ -263,7 +265,7 @@ const TimeFieldInput: Component<TimeFieldInputProps> = (props) => {
   );
 };
 
-const TimeFieldInputContainer: ParentComponent<TimeFieldInputContainerProps> = (props) => {
+const TimeFieldInputContainer: Layout<typeof componentRecipe, TimeFieldInputContainerProps> = () => {
   const [local, others] = splitProps(props, ["children", "class", "className", "dataTheme", "style"]);
 
   return (
@@ -279,7 +281,7 @@ const TimeFieldInputContainer: ParentComponent<TimeFieldInputContainerProps> = (
   );
 };
 
-const TimeFieldSegment: ParentComponent<TimeFieldSegmentProps> = (props) => {
+const TimeFieldSegment: Layout<typeof componentRecipe, TimeFieldSegmentProps> = () => {
   const [local, others] = splitProps(props, [
     "children",
     "class",
@@ -307,7 +309,7 @@ const TimeFieldSegment: ParentComponent<TimeFieldSegmentProps> = (props) => {
   );
 };
 
-const TimeFieldPrefix: ParentComponent<TimeFieldPrefixProps> = (props) => {
+const TimeFieldPrefix: Layout<typeof componentRecipe, TimeFieldPrefixProps> = () => {
   const [local, others] = splitProps(props, ["children", "class", "className", "dataTheme", "style"]);
 
   return (
@@ -323,7 +325,7 @@ const TimeFieldPrefix: ParentComponent<TimeFieldPrefixProps> = (props) => {
   );
 };
 
-const TimeFieldSuffix: ParentComponent<TimeFieldSuffixProps> = (props) => {
+const TimeFieldSuffix: Layout<typeof componentRecipe, TimeFieldSuffixProps> = () => {
   const [local, others] = splitProps(props, ["children", "class", "className", "dataTheme", "style"]);
 
   return (
