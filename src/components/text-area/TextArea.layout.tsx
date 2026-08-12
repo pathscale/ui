@@ -4,7 +4,9 @@ import { twMerge } from "tailwind-merge";
 
 import { useTextFieldContext, type TextFieldVariant } from "../text-field";
 import type { IComponentBaseProps } from "../types";
-import { CLASSES } from "./TextArea.classes";
+import { CLASSES } from "./TextArea.recipe";
+import type { Layout } from "../../lib/layouts";
+import { componentRecipe } from "./TextArea.recipe";
 
 export type TextAreaVariant = TextFieldVariant;
 
@@ -17,7 +19,7 @@ export type TextAreaRootProps = Omit<JSX.TextareaHTMLAttributes<HTMLTextAreaElem
     disabled?: boolean;
   };
 
-const TextAreaRoot: Component<TextAreaRootProps> = (props) => {
+const TextAreaRoot: Layout<typeof componentRecipe, TextAreaRootProps> = () => {
   const textFieldContext = useTextFieldContext();
   const [local, others] = splitProps(props, [
     "class",

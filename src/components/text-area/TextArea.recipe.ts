@@ -1,3 +1,4 @@
+import { recipe } from "../../lib/layouts";
 export const CLASSES = {
   base: "textarea",
   variant: {
@@ -8,3 +9,4 @@ export const CLASSES = {
     fullWidth: "textarea--full-width",
   },
 } as const;
+export const componentRecipe = recipe({component:"text-area",slots:{"root":{},"textarea":{},},});

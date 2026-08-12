@@ -5,4 +5,4 @@ export {
   type TextAreaProps,
   type TextAreaRootProps,
   type TextAreaVariant,
-} from "./TextArea";
+} from "./TextArea.generated";
