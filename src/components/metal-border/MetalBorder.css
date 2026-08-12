@@ -37,4 +37,93 @@
     z-index: 0;
     border-radius: inherit;
   }
+
+  /* The fallback for engines with no WebGL, and the cheap path everywhere.
+   *
+   * `MetalBorder.tsx` already sets `--unavailable` when the renderer fails to
+   * start, but nothing styled it, so the class was applied and the border
+   * simply vanished. That is the whole bug: not a missing detector, a missing
+   * rule.
+   *
+   * A conic gradient on a padded box, with the content painting its own fill
+   * over the middle, leaves a ring exactly `--metal-border-width` thick. The
+   * sweep is a rotation of that layer rather than an animated gradient angle,
+   * because animating the angle needs `@property` to register `<angle>` as an
+   * interpolable custom property, and an engine without WebGL usually has no
+   * `@property` either. Rotation is also the cheaper of the two: one transform
+   * per frame against re-rasterising a gradient.
+   *
+   * Cost is a transform on a single compositor-friendly layer — no canvas, no
+   * `requestAnimationFrame`, no GL context, and none of the per-frame pixel
+   * readback the shader path does to sample its own output.
+   */
+  .metal-border--unavailable {
+    position: relative;
+    isolation: isolate;
+    overflow: hidden;
+    padding: var(--metal-border-width, 1.5px);
+    border-radius: var(--metal-border-radius, inherit);
+    background: var(--metal-border-rail, #3a3d44);
+  }
+
+  .metal-border--unavailable::before {
+    content: "";
+    position: absolute;
+    /* Deliberately not `top/left: 50%` with `translate(-50%, -50%)`. The
+     * percentage there resolves against the element's own box, which several
+     * engines get wrong, and being wrong decentres the sweep. Insets resolve
+     * against the containing block, which is unambiguous. Overshooting past
+     * every corner is what keeps the ring lit all the way round. */
+    inset: -60%;
+    z-index: 0;
+    background: conic-gradient(
+      from 0deg,
+      transparent 0deg,
+      var(--metal-border-sheen-edge, #8b9096) 40deg,
+      var(--metal-border-sheen, #ffffff) 62deg,
+      var(--metal-border-sheen-edge, #8b9096) 84deg,
+      transparent 150deg,
+      transparent 360deg
+    );
+    animation: metal-border-sweep var(--metal-border-duration, 6s) linear
+      infinite;
+  }
+
+  /* `paused` is the author's choice; `prefers-reduced-motion` is the reader's.
+   * Both stop the sweep and keep the ring, so the border never disappears
+   * just because it stopped moving. */
+  .metal-border--unavailable.metal-border--paused::before {
+    animation: none;
+  }
+
+  /* What hides the sweep everywhere except the ring is the content's own
+   * background, which is why this defaults to `transparent` rather than to a
+   * colour: a card that already paints a background needs nothing, and picking
+   * a colour for it would paint over the consumer's.
+   *
+   * The consequence, stated because it is easy to hit and hard to diagnose:
+   * **translucent content lets the sweep through**, and it reads as a grey cone
+   * across the card rather than as a ring. Set `--metal-border-fill` to an
+   * opaque colour when the content is glass, or leave the effect off.
+   *
+   * The fix that would make this unconditional is `mask-composite: exclude`,
+   * cutting the interior out of the gradient layer so nothing is painted there
+   * to bleed. That needs `mask-image`, which is the one primitive this
+   * technique cannot be written without. */
+  .metal-border--unavailable > .metal-border__content {
+    z-index: 1;
+    background: var(--metal-border-fill, transparent);
+  }
+}
+
+@keyframes metal-border-sweep {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .metal-border--unavailable::before {
+    animation: none;
+  }
 }
