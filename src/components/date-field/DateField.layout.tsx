@@ -12,7 +12,9 @@ import {
 import { twMerge } from "tailwind-merge";
 
 import type { IComponentBaseProps } from "../types";
-import { CLASSES } from "./DateField.classes";
+import { CLASSES } from "./DateField.recipe";
+import type { Layout } from "../../lib/layouts";
+import { componentRecipe } from "./DateField.recipe";
 
 export type DateFieldVariant = "primary" | "secondary";
 
@@ -97,7 +99,7 @@ export type DateFieldSegmentProps = JSX.HTMLAttributes<HTMLSpanElement> &
 export type DateFieldPrefixProps = JSX.HTMLAttributes<HTMLDivElement> & IComponentBaseProps;
 export type DateFieldSuffixProps = JSX.HTMLAttributes<HTMLDivElement> & IComponentBaseProps;
 
-const DateFieldRoot: ParentComponent<DateFieldRootProps> = (props) => {
+const DateFieldRoot: Layout<typeof componentRecipe, DateFieldRootProps> = () => {
   const [local, others] = splitProps(props, [
     "children",
     "class",
@@ -188,7 +190,7 @@ const DateFieldRoot: ParentComponent<DateFieldRootProps> = (props) => {
   );
 };
 
-const DateFieldGroup: ParentComponent<DateFieldGroupProps> = (props) => {
+const DateFieldGroup: Layout<typeof componentRecipe, DateFieldGroupProps> = () => {
   const context = useContext(DateFieldContext);
   const [local, others] = splitProps(props, ["children", "class", "className", "dataTheme", "style"]);
 
@@ -220,7 +222,7 @@ const DateFieldGroup: ParentComponent<DateFieldGroupProps> = (props) => {
   );
 };
 
-const DateFieldInput: Component<DateFieldInputProps> = (props) => {
+const DateFieldInput: Layout<typeof componentRecipe, DateFieldInputProps> = () => {
   const context = useContext(DateFieldContext);
   const [local, others] = splitProps(props, [
     "class",
@@ -263,7 +265,7 @@ const DateFieldInput: Component<DateFieldInputProps> = (props) => {
   );
 };
 
-const DateFieldInputContainer: ParentComponent<DateFieldInputContainerProps> = (props) => {
+const DateFieldInputContainer: Layout<typeof componentRecipe, DateFieldInputContainerProps> = () => {
   const [local, others] = splitProps(props, ["children", "class", "className", "dataTheme", "style"]);
 
   return (
@@ -279,7 +281,7 @@ const DateFieldInputContainer: ParentComponent<DateFieldInputContainerProps> = (
   );
 };
 
-const DateFieldSegment: ParentComponent<DateFieldSegmentProps> = (props) => {
+const DateFieldSegment: Layout<typeof componentRecipe, DateFieldSegmentProps> = () => {
   const [local, others] = splitProps(props, [
     "children",
     "class",
@@ -307,7 +309,7 @@ const DateFieldSegment: ParentComponent<DateFieldSegmentProps> = (props) => {
   );
 };
 
-const DateFieldPrefix: ParentComponent<DateFieldPrefixProps> = (props) => {
+const DateFieldPrefix: Layout<typeof componentRecipe, DateFieldPrefixProps> = () => {
   const [local, others] = splitProps(props, ["children", "class", "className", "dataTheme", "style"]);
 
   return (
@@ -323,7 +325,7 @@ const DateFieldPrefix: ParentComponent<DateFieldPrefixProps> = (props) => {
   );
 };
 
-const DateFieldSuffix: ParentComponent<DateFieldSuffixProps> = (props) => {
+const DateFieldSuffix: Layout<typeof componentRecipe, DateFieldSuffixProps> = () => {
   const [local, others] = splitProps(props, ["children", "class", "className", "dataTheme", "style"]);
 
   return (
