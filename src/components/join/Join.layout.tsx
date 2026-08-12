@@ -7,7 +7,9 @@ import {
 import { clsx } from "clsx";
 import { twMerge } from "tailwind-merge";
 import type { IComponentBaseProps } from "../types";
-import { CLASSES } from "./Join.classes";
+import { CLASSES } from "./Join.recipe";
+import type { Layout } from "../../lib/layouts";
+import { componentRecipe } from "./Join.recipe";
 
 export type JoinProps = IComponentBaseProps &
   JSX.HTMLAttributes<HTMLDivElement> & {
@@ -16,7 +18,7 @@ export type JoinProps = IComponentBaseProps &
     horizontal?: boolean;
   };
 
-const Join = (props: JoinProps): JSX.Element => {
+const Join: Layout<typeof componentRecipe, JoinProps> = () => {
   const [local, others] = splitProps(props, [
     "responsive",
     "vertical",

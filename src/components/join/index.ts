@@ -1,2 +1,2 @@
-export type { JoinProps } from "./Join";
-export { default } from "./Join";
+export type { JoinProps } from "./Join.generated";
+export { default } from "./Join.generated";
