@@ -2,7 +2,9 @@ import "./ProgressBar.css";
 import { createMemo, splitProps, type JSX } from "solid-js";
 import { twMerge } from "tailwind-merge";
 import type { IComponentBaseProps } from "../types";
-import { CLASSES } from "./ProgressBar.classes";
+import { CLASSES } from "./ProgressBar.recipe";
+import type { Layout } from "../../lib/layouts";
+import { componentRecipe } from "./ProgressBar.recipe";
 
 export type ProgressBarSize = "sm" | "md" | "lg";
 export type ProgressBarColor = "default" | "accent" | "success" | "warning" | "danger";
@@ -21,7 +23,7 @@ export type ProgressBarProps = IComponentBaseProps &
     showValue?: boolean;
   };
 
-const ProgressBar = (props: ProgressBarProps): JSX.Element => {
+const ProgressBar: Layout<typeof componentRecipe, ProgressBarProps> = () => {
   const [local, others] = splitProps(props, [
     "value",
     "minValue",
