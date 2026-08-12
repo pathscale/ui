@@ -3,7 +3,9 @@ import { splitProps, type Component, type JSX } from "solid-js";
 import { twMerge } from "tailwind-merge";
 
 import type { IComponentBaseProps } from "../types";
-import { CLASSES } from "./Toolbar.classes";
+import { CLASSES } from "./Toolbar.recipe";
+import type { Layout } from "../../lib/layouts";
+import { componentRecipe } from "./Toolbar.recipe";
 
 export type ToolbarOrientation = "horizontal" | "vertical";
 
@@ -38,7 +40,7 @@ const isTypingContext = (target: EventTarget | null): boolean => {
 const getFocusableElements = (root: HTMLDivElement): HTMLElement[] =>
   Array.from(root.querySelectorAll<HTMLElement>(FOCUSABLE_SELECTOR)).filter(isFocusableElement);
 
-const ToolbarRoot: Component<ToolbarRootProps> = (props) => {
+const ToolbarRoot: Layout<typeof componentRecipe, ToolbarRootProps> = () => {
   const [local, others] = splitProps(props, [
     "children",
     "class",
