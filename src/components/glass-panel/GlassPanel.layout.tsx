@@ -9,7 +9,9 @@ import {
 import { twMerge } from "tailwind-merge";
 
 import type { ComponentSize, IComponentBaseProps } from "../types";
-import { CLASSES } from "./GlassPanel.classes";
+import { CLASSES } from "./GlassPanel.recipe";
+import type { Layout } from "../../lib/layouts";
+import { componentRecipe } from "./GlassPanel.recipe";
 
 export type GlassPanelProps = IComponentBaseProps &
   JSX.HTMLAttributes<HTMLDivElement> & {
@@ -28,7 +30,7 @@ export type GlassPanelProps = IComponentBaseProps &
     interactive?: boolean;
   };
 
-const GlassPanel = (props: GlassPanelProps): JSX.Element => {
+const GlassPanel: Layout<typeof componentRecipe, GlassPanelProps> = () => {
   const [local, others] = splitProps(props, [
     "collapsible",
     "open",

@@ -1,1 +1,1 @@
-export { default, type GlassPanelProps } from "./GlassPanel";
+export { default, type GlassPanelProps } from "./GlassPanel.generated";
