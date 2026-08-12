@@ -17,7 +17,9 @@ import {
 import { twMerge } from "tailwind-merge";
 
 import type { IComponentBaseProps } from "../types";
-import { CLASSES } from "./InputOTP.classes";
+import { CLASSES } from "./InputOTP.recipe";
+import type { Layout } from "../../lib/layouts";
+import { componentRecipe } from "./InputOTP.recipe";
 
 export type InputOTPVariant = "primary" | "secondary";
 
@@ -90,7 +92,7 @@ export type InputOTPSeparatorProps = Omit<JSX.HTMLAttributes<HTMLDivElement>, "c
     children?: JSX.Element;
   };
 
-const InputOTPRoot: ParentComponent<InputOTPRootProps> = (props) => {
+const InputOTPRoot: Layout<typeof componentRecipe, InputOTPRootProps> = () => {
   const [local, others] = splitProps(props, [
     "children",
     "class",
@@ -378,7 +380,7 @@ const InputOTPRoot: ParentComponent<InputOTPRootProps> = (props) => {
   );
 };
 
-const InputOTPGroup: ParentComponent<InputOTPGroupProps> = (props) => {
+const InputOTPGroup: Layout<typeof componentRecipe, InputOTPGroupProps> = () => {
   const [local, others] = splitProps(props, ["children", "class", "className", "dataTheme", "style"]);
 
   return (
@@ -394,7 +396,7 @@ const InputOTPGroup: ParentComponent<InputOTPGroupProps> = (props) => {
   );
 };
 
-const InputOTPSlot: Component<InputOTPSlotProps> = (props) => {
+const InputOTPSlot: Layout<typeof componentRecipe, InputOTPSlotProps> = () => {
   const context = useContext(InputOTPContext);
 
   const [local, others] = splitProps(props, [
@@ -446,7 +448,7 @@ const InputOTPSlot: Component<InputOTPSlotProps> = (props) => {
   );
 };
 
-const InputOTPSeparator: ParentComponent<InputOTPSeparatorProps> = (props) => {
+const InputOTPSeparator: Layout<typeof componentRecipe, InputOTPSeparatorProps> = () => {
   const [local, others] = splitProps(props, ["children", "class", "className", "dataTheme", "style"]);
 
   return (

@@ -14,4 +14,4 @@ export {
   type InputOTPSlotProps,
   type InputOTPSeparatorProps,
   type InputOTPVariant,
-} from "./InputOTP";
+} from "./InputOTP.generated";
