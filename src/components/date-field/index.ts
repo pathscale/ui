@@ -19,4 +19,4 @@ export {
   type DateFieldVariant,
   type DateFieldRenderProps,
   type DateFieldSegmentValue,
-} from "./DateField";
+} from "./DateField.generated";
