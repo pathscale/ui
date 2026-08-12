@@ -8,4 +8,4 @@ export {
   type TagRemoveButtonProps,
   type TagSize,
   type TagVariant,
-} from "./Tag";
+} from "./Tag.generated";

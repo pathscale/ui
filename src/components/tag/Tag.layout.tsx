@@ -16,7 +16,9 @@ import { twMerge } from "tailwind-merge";
 import CloseButton, { type CloseButtonProps } from "../close-button";
 import type { IComponentBaseProps } from "../types";
 import { TagGroupContext } from "../tag-group/context";
-import { CLASSES } from "./Tag.classes";
+import { CLASSES } from "./Tag.recipe";
+import type { Layout } from "../../lib/layouts";
+import { componentRecipe } from "./Tag.recipe";
 
 const invokeEventHandler = (handler: unknown, event: Event) => {
   if (typeof handler === "function") {
@@ -79,7 +81,7 @@ export type TagRemoveButtonProps = Omit<CloseButtonProps, "isDisabled"> &
     isDisabled?: boolean;
   };
 
-const TagRoot: ParentComponent<TagRootProps> = (props) => {
+const TagRoot: Layout<typeof componentRecipe, TagRootProps> = () => {
   const fallbackKey = createUniqueId();
   const group = useContext(TagGroupContext);
 
@@ -102,7 +104,9 @@ const TagRoot: ParentComponent<TagRootProps> = (props) => {
     "tabIndex",
   ]);
 
-  const resolvedChildren = children(() => local.children);
+  const resolvedChildren = children(() =>
+    typeof local.children === "function" ? undefined : local.children,
+  );
   const isRenderFnChild = () => typeof local.children === "function";
   const derivedText = createMemo(() =>
     isRenderFnChild() ? undefined : extractTextValue(resolvedChildren.toArray()),
@@ -225,7 +229,7 @@ const TagRoot: ParentComponent<TagRootProps> = (props) => {
   );
 };
 
-const TagRemoveButton: Component<TagRemoveButtonProps> = (props) => {
+const TagRemoveButton: Layout<typeof componentRecipe, TagRemoveButtonProps> = () => {
   const context = useContext(TagContext);
   const hasIcon = () =>
     props.children != null ||
