@@ -1,3 +1,4 @@
+import { recipe } from "../../lib/layouts";
 export const CLASSES = {
   base: "footer",
   title: "footer__title",
@@ -7,3 +8,4 @@ export const CLASSES = {
     vertical: "footer--vertical",
   },
 } as const;
+export const componentRecipe = recipe({component:"footer",slots:{"root":{},},});
