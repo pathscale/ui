@@ -21,17 +21,21 @@ export type RecipeConfig<T extends ConfigSchema> = Config<T> & {
    * can collide, so the join is both correct and much cheaper.
    *
    * 88 of this library's 92 class maps are pure BEM and all 92 called `twMerge`.
-   * Measured on this machine, per call, over 200k iterations:
+   * Measured under **Bun**, per call, over 200k iterations:
    *
-   *     twMerge, repeated input (its LRU cache hits)   66 ns
-   *     twMerge, varying input (cache misses)         891 ns
-   *     cx below                                       19 ns
+   *                                    repeated input   varying input
+   *     twMerge (has an LRU cache)          131 ns          994 ns
+   *     classes() in this directory         104 ns          132 ns
+   *     cx below                             38 ns           53 ns
    *
-   * Worth noting because it is counterintuitive: cached `twMerge` beats a
-   * naive `flat().filter().join()`, which costs ~153 ns because it allocates
-   * two arrays per call. Swapping `twMerge` for the `classes()` helper in this
-   * directory would have been a regression in the steady state. `cx` avoids
-   * both by never allocating.
+   * `cx` is the point: 3x faster than `twMerge` even when its cache hits, and
+   * 26x when it misses. A component's class string changes whenever its state
+   * does, so misses are not the rare case.
+   *
+   * Measure under the engine that runs the code. An earlier version of this
+   * comment reported Node figures, under which cached `twMerge` appeared to
+   * beat `classes()` — the opposite of what Bun shows, and a V8 artifact. For
+   * the chuzz shell the target is narrower still: Boa, with no JIT at all.
    */
   tailwind?: boolean;
 };

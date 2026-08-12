@@ -40,9 +40,9 @@ Numbers labelled *measured* were taken from built output or source on 2026-08-12
 
 ## Packages
 
-Names follow the ecosystem's prefix conventions rather than a vendor scope, because the tools
-resolve by prefix: `presets: ["solid-layouts"]` only expands to `babel-preset-solid-layouts` if
-the package is named that way. All were free on npm and crates.io as of 2026-08-12.
+Names follow the ecosystem's prefix conventions rather than a vendor scope, because the bundlers
+resolve by prefix: `vite-plugin-solid-layouts` is only found by that name. All were free on npm
+and crates.io as of 2026-08-12.
 
 | Package | What it is |
 | --- | --- |
@@ -50,7 +50,6 @@ the package is named that way. All were free on npm and crates.io as of 2026-08-
 | `solid-layouts-oxc` | The Rust pass, with NAPI bindings |
 | `rsbuild-plugin-solid-layouts` | Build integration |
 | `vite-plugin-solid-layouts` | Same, for Vite consumers |
-| `babel-preset-solid-layouts` | Only if a Babel adapter is ever built for reach |
 
 ## How to read this
 
@@ -927,7 +926,7 @@ which prop information is gone.
 | **[solid-jsx-oxc](https://github.com/Aeolun/solid-jsx-oxc)** | A Rust/oxc port of the Solid JSX transform with NAPI-RS bindings and Vite/Rolldown plugins. If the JSX transform is oxc-based, our pass can share the AST with it in one traversal. Community-maintained and currently forked across at least two repositories. |
 | **[oxc-loader](https://github.com/Sunny-117/oxc-loader)** | Drop-in replacement for `swc-loader` / `babel-loader`, reported 3-5x faster than SWC. Runs oxc's built-in transforms; a host for the pipeline, not for a custom pass. |
 | **SWC Wasm plugin** | Rspack supports these in `builtin:swc-loader`, but they are [experimental and not backward compatible](https://rspack.rs/errors/swc-plugin-version): pinned to the exact `swc_core` Rspack was built against, erroring on mismatch, with no official fix and no upstream priority. Avoid for anything other people consume. |
-| **Babel** | Works today, needs no new artifact, slowest by 20-50x. Fallback only. |
+| **Babel** | Ruled out. Requires Node, which is banned here, and buys reach that does not exist. |
 
 ### Which host
 
@@ -952,26 +951,28 @@ The costs of choosing oxc, stated plainly rather than waved past:
 - **`oxc_traverse` will churn.** Its own docs describe it as codegen-generated and internally
   steered. Pin the version and expect to bump it deliberately.
 
-Build the conformance corpus of input/output fixtures regardless. It is what would make a Babel
-adapter cheap rather than a rewrite, if external adoption ever becomes a goal worth paying for.
+Build the conformance corpus of input/output fixtures regardless. It is what would make any
+second host cheap rather than a rewrite, and it is how `solid-jsx-oxc` validates its own port:
+it vendors the original `babel-plugin-jsx-dom-expressions` and runs its test suite against the
+Rust implementation.
 
-### Not a PR to babel-preset-solid
+### No Babel adapter
 
-`babel-preset-solid` is 34 lines with a single dependency, so adding a pass to it is a three-line
-diff. It should still be rejected: it would make our transform a mandatory install for 3.44M
-monthly downloads, cost every Solid user an AST traversal for a feature they do not use, and ask
-the Solid maintainers to adopt one vendor's component architecture into core tooling. Its stated
-job is transforming JSX, and this is an authoring convention layered above that.
+There will not be one, and it is worth writing down why so the question is not reopened.
 
-Publish the mirror-image package instead, which needs no upstream agreement:
+A Babel host was only ever justified by reach, and there is none to buy: `solid-jsx-oxc` has 100
+monthly downloads, and a PR adding a pass to `babel-preset-solid` should be rejected on its
+merits. That package is 34 lines with a single dependency; adding to it would make this transform
+a mandatory install for 3.44M monthly downloads, cost every Solid user an AST traversal for a
+feature they do not use, and ask the Solid maintainers to adopt one vendor's component
+architecture into core tooling. Its job is transforming JSX; this is an authoring convention
+layered above that.
 
-```js
-// babel-preset-solid-layouts — same 34-line shape
-module.exports = (context, options = {}) => ({
-  presets: [[require("babel-preset-solid"), options.solid]],
-  plugins: [[require("./pass"), options.layouts]],
-});
-```
+Babel also requires Node, which is banned in this stack. Bun is the runtime everywhere, and Boa is
+the target that actually matters for chuzz.
+
+The conformance corpus is still worth building, because it is what would make any second host
+cheap rather than a rewrite if that calculus ever changes.
 
 The part that is genuinely upstreamable later is the `@once` analysis, and it belongs in
 `babel-plugin-jsx-dom-expressions` where `@once` is actually handled, not in the preset. That
