@@ -918,9 +918,29 @@ from it:
 Those 38 components stop having an implementation. They become a recipe, a defaults file and a
 `defineComponent` call, and one shared layout renders all of them.
 
-**Estimated, not measured:** each drops to roughly a 400-byte recipe plus a 100-byte definition,
-so ~113 KB becomes ~20 KB plus one shared layout. Call it 90 KB off a 1.09 MB dist, about 8%.
-Verify on a real migration before repeating this as fact.
+**Measured, across the whole library.** Every component with a class map has been ported:
+eighty-nine recipes, all compiling through the pass. Comments stripped from both sides, neither
+minified:
+
+| | bytes |
+| --- | ---: |
+| Current built JavaScript | 817,872 |
+| Recipes and defaults | 94,938 |
+| **Saved** | **88%** |
+
+This replaces an estimate of 113 KB falling to about 20 KB across the 38 single-box components.
+That was directionally right and conservative on scope: the whole library is 818 KB falling to
+95 KB. The shared runtime is a fixed cost paid once and is not in these figures.
+
+The saving is the machinery rather than the class strings. Every component carried its own
+`splitProps` key array, its own `?? "default"` accessors, its own `twMerge` call and its own
+hand-written `data-*` attributes, all copied from Button. Eighty-nine copies become eighty-nine
+declarations and one implementation.
+
+Six of the eighty-nine emit real Tailwind and declare `tailwind: true`: Flex, Grid, Join,
+SizePicker, ThemeColorPicker and VideoPreview. The other eighty-three emit BEM, cannot collide
+with a caller's class, and get a join rather than a parse. The old code called `twMerge` in all
+ninety-two components because there was nowhere to record which few needed it.
 
 Sharing is the default and opting out is per-component: supply a `layout` and you get your own
 markup and your own template. It is not a global mode, and a component can move either way
