@@ -5,7 +5,6 @@ export const closeButton = recipe({
   element: "button",
   slots: {
     root: { base: "close-button" },
-    icon: { base: "close-button__icon" },
     // Each carries the base icon class as well, because these are what the
     // layout renders — the old component composed the two by hand at every
     // call site, which is exactly the class composition a recipe exists to own.
