@@ -1,6 +1,6 @@
 import type { ComponentProps } from "solid-js";
 
-import DisclosureGroup, { DisclosureGroupRoot } from "./DisclosureGroup";
+import DisclosureGroup, { DisclosureGroupRoot } from "./DisclosureGroup.generated";
 import { useDisclosureGroupNavigation } from "./useDisclosureGroupNavigation";
 
 export type DisclosureGroupProps = ComponentProps<typeof DisclosureGroupRoot>;

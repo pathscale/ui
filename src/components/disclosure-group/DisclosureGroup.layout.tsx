@@ -3,7 +3,9 @@ import { createContext, createMemo, createSignal, splitProps, type JSX, type Par
 import { twMerge } from "tailwind-merge";
 
 import type { IComponentBaseProps } from "../types";
-import { CLASSES } from "./DisclosureGroup.classes";
+import { CLASSES } from "./DisclosureGroup.recipe";
+import type { Layout } from "../../lib/layouts";
+import { componentRecipe } from "./DisclosureGroup.recipe";
 
 export type DisclosureGroupContextValue = {
   expandedKeys: () => Set<string>;
@@ -30,7 +32,7 @@ const normalizeKeys = (keys: Set<string | number> | undefined) => {
   return new Set(Array.from(keys).map((key) => String(key)));
 };
 
-const DisclosureGroupRoot: ParentComponent<DisclosureGroupRootProps> = (props) => {
+const DisclosureGroupRoot: Layout<typeof componentRecipe, DisclosureGroupRootProps> = () => {
   const [local, others] = splitProps(props, [
     "children",
     "class",
