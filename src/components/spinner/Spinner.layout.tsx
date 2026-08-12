@@ -1,8 +1,8 @@
 import "./Spinner.css";
-import { splitProps, createUniqueId, type Component, type JSX } from "solid-js";
-import { twMerge } from "tailwind-merge";
+import { createUniqueId, type Component, type JSX } from "solid-js";
 import type { IComponentBaseProps } from "../types";
-import { CLASSES } from "./Spinner.classes";
+import type { Layout } from "../../lib/layouts";
+import { spinner } from "./Spinner.recipe";
 
 /* -------------------------------------------------------------------------------------------------
  * Types
@@ -61,44 +61,15 @@ const SpinnerSVG: Component = () => {
 /* -------------------------------------------------------------------------------------------------
  * Spinner Component
  * -----------------------------------------------------------------------------------------------*/
-const Spinner: Component<SpinnerProps> = (props) => {
-  const [local, others] = splitProps(props, [
-    "size",
-    "color",
-    "variant",
-    "label",
-    "class",
-    "className",
-    "dataTheme",
-    "style",
-  ]);
-
-  const size = () => local.size ?? "md";
-  const color = () => local.color ?? "current";
-  const variant = () => local.variant ?? "spinner";
-
-  return (
-    <span
-      {...others}
-      role="status"
-      aria-label={local.label ?? "Loading"}
-      aria-busy="true"
-      aria-live="polite"
-      class={twMerge(
-        CLASSES.base,
-        CLASSES.size[size()],
-        CLASSES.color[color()],
-        CLASSES.variant[variant()],
-        local.class,
-        local.className,
-      )}
-      data-slot="spinner"
-      data-theme={local.dataTheme}
-      style={local.style}
-    >
-      {variant() === "spinner" ? <SpinnerSVG /> : undefined}
-    </span>
-  );
-};
-
-export default Spinner;
+export const SpinnerLayout: Layout<typeof spinner, SpinnerProps> = () => (
+  <span
+    {...slot.root}
+    role="status"
+    aria-label={(label as string | undefined) ?? "Loading"}
+    aria-busy="true"
+    aria-live="polite"
+    style={style}
+  >
+    {variant === "spinner" ? <SpinnerSVG /> : undefined}
+  </span>
+);
