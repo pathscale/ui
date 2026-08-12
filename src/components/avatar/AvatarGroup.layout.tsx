@@ -3,7 +3,9 @@ import { Dynamic } from "solid-js/web";
 import { twMerge } from "tailwind-merge";
 
 import type { IComponentBaseProps } from "../types";
-import { CLASSES } from "./Avatar.classes";
+import { CLASSES } from "./Avatar.recipe";
+import type { Layout } from "../../lib/layouts";
+import { componentRecipe } from "./Avatar.recipe";
 
 type ElementType = keyof JSX.IntrinsicElements;
 
@@ -42,9 +44,7 @@ const VoidElementList: ElementType[] = [
   "wbr",
 ];
 
-const AvatarGroup = <E extends ElementType = "div">(
-  props: AvatarGroupProps<E>,
-): JSX.Element => {
+const AvatarGroup: Layout<typeof componentRecipe, AvatarGroupProps> = () => {
   const [local, others] = splitProps(
     props as AvatarGroupBaseProps & Record<string, unknown>,
     ["as", "class", "className", "children"],
@@ -80,4 +80,4 @@ const AvatarGroup = <E extends ElementType = "div">(
   );
 };
 
-export default AvatarGroup;
+export default AvatarGroup as <E extends ElementType = "div">(props: AvatarGroupProps<E>) => JSX.Element;

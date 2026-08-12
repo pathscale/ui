@@ -12,7 +12,9 @@ import {
 } from "solid-js";
 import { twMerge } from "tailwind-merge";
 import type { IComponentBaseProps } from "../types";
-import { CLASSES } from "./Avatar.classes";
+import { CLASSES } from "./Avatar.recipe";
+import type { Layout } from "../../lib/layouts";
+import { componentRecipe } from "./Avatar.recipe";
 
 /* -------------------------------------------------------------------------------------------------
  * Avatar Context
@@ -60,7 +62,7 @@ export type AvatarFallbackProps = Omit<JSX.HTMLAttributes<HTMLSpanElement>, "chi
 /* -------------------------------------------------------------------------------------------------
  * Avatar Root
  * -----------------------------------------------------------------------------------------------*/
-const AvatarRoot: ParentComponent<AvatarRootProps> = (props) => {
+const AvatarRoot: Layout<typeof componentRecipe, AvatarRootProps> = () => {
   const [local, others] = splitProps(props, [
     "children",
     "class",
@@ -109,7 +111,7 @@ const AvatarRoot: ParentComponent<AvatarRootProps> = (props) => {
 /* -------------------------------------------------------------------------------------------------
  * Avatar Image
  * -----------------------------------------------------------------------------------------------*/
-const AvatarImage: Component<AvatarImageProps> = (props) => {
+const AvatarImage: Layout<typeof componentRecipe, AvatarImageProps> = () => {
   const [local, others] = splitProps(props, [
     "class",
     "className",
@@ -150,7 +152,7 @@ const AvatarImage: Component<AvatarImageProps> = (props) => {
 /* -------------------------------------------------------------------------------------------------
  * Avatar Fallback
  * -----------------------------------------------------------------------------------------------*/
-const AvatarFallback: ParentComponent<AvatarFallbackProps> = (props) => {
+const AvatarFallback: Layout<typeof componentRecipe, AvatarFallbackProps> = () => {
   const [local, others] = splitProps(props, [
     "children",
     "class",

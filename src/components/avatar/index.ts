@@ -9,4 +9,4 @@ export {
   type AvatarRootProps,
   type AvatarImageProps,
   type AvatarFallbackProps,
-} from "./Avatar";
+} from "./Avatar.generated";
