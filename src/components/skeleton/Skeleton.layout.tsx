@@ -1,8 +1,8 @@
 import "./Skeleton.css";
-import { splitProps, type Component, type JSX } from "solid-js";
-import { twMerge } from "tailwind-merge";
+import type { JSX } from "solid-js";
 import type { IComponentBaseProps } from "../types";
-import { CLASSES } from "./Skeleton.classes";
+import type { Layout } from "../../lib/layouts";
+import { skeleton } from "./Skeleton.recipe";
 
 /* -------------------------------------------------------------------------------------------------
  * Types
@@ -20,26 +20,6 @@ export type SkeletonProps = Omit<JSX.HTMLAttributes<HTMLDivElement>, "children">
 /* -------------------------------------------------------------------------------------------------
  * Skeleton
  * -----------------------------------------------------------------------------------------------*/
-const Skeleton: Component<SkeletonProps> = (props) => {
-  const [local, others] = splitProps(props, [
-    "class",
-    "className",
-    "animationType",
-    "dataTheme",
-    "style",
-  ]);
-
-  const animation = () => local.animationType ?? "shimmer";
-
-  return (
-    <div
-      {...others}
-      {...{ class: twMerge(CLASSES.base, CLASSES.animation[animation()], local.class, local.className) }}
-      data-slot="skeleton"
-      data-theme={local.dataTheme}
-      style={local.style}
-    />
-  );
-};
-
-export default Skeleton;
+export const SkeletonLayout: Layout<typeof skeleton, SkeletonProps> = () => (
+  <div {...slot.root} style={style} />
+);

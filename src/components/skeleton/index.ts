@@ -1,5 +1,2 @@
-export {
-  default,
-  type SkeletonProps,
-  type SkeletonAnimation,
-} from "./Skeleton";
+export { SkeletonLayout as default } from "./Skeleton.generated";
+export type { SkeletonProps, SkeletonAnimation } from "./Skeleton.generated";
