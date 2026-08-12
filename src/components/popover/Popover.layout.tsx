@@ -21,7 +21,9 @@ import {
   createOverlayPosition,
   type OverlayPlacement,
 } from "../_shared/overlayPosition";
-import { CLASSES } from "./Popover.classes";
+import { CLASSES } from "./Popover.recipe";
+import type { Layout } from "../../lib/layouts";
+import { componentRecipe } from "./Popover.recipe";
 
 export type PopoverPlacement = OverlayPlacement;
 
@@ -64,7 +66,7 @@ export type PopoverRootProps = IComponentBaseProps &
     onInteractOutside?: (event: Event) => void;
   };
 
-const PopoverRoot: ParentComponent<PopoverRootProps> = (props) => {
+const PopoverRoot: Layout<typeof componentRecipe, PopoverRootProps> = () => {
   const [local, others] = splitProps(props, [
     "children",
     "class",
@@ -173,7 +175,7 @@ export type PopoverTriggerProps = IComponentBaseProps &
     children: JSX.Element;
   };
 
-const PopoverTrigger: Component<PopoverTriggerProps> = (props) => {
+const PopoverTrigger: Layout<typeof componentRecipe, PopoverTriggerProps> = () => {
   const [local, others] = splitProps(props, [
     "children",
     "class",
@@ -233,7 +235,7 @@ export type PopoverContentProps = IComponentBaseProps &
     sideOffset?: number;
   };
 
-const PopoverContent: Component<PopoverContentProps> = (props) => {
+const PopoverContent: Layout<typeof componentRecipe, PopoverContentProps> = () => {
   const [local, others] = splitProps(props, [
     "children",
     "class",
@@ -307,7 +309,7 @@ export type PopoverDialogProps = IComponentBaseProps &
     children: JSX.Element;
   };
 
-const PopoverDialog: Component<PopoverDialogProps> = (props) => {
+const PopoverDialog: Layout<typeof componentRecipe, PopoverDialogProps> = () => {
   const [local, others] = splitProps(props, [
     "children",
     "class",
@@ -334,7 +336,7 @@ export type PopoverArrowProps = IComponentBaseProps &
     children?: JSX.Element;
   };
 
-const PopoverArrow: Component<PopoverArrowProps> = (props) => {
+const PopoverArrow: Layout<typeof componentRecipe, PopoverArrowProps> = () => {
   const [local, others] = splitProps(props, [
     "children",
     "class",
@@ -378,7 +380,7 @@ export type PopoverHeadingProps = IComponentBaseProps &
     children: JSX.Element;
   };
 
-const PopoverHeading: Component<PopoverHeadingProps> = (props) => {
+const PopoverHeading: Layout<typeof componentRecipe, PopoverHeadingProps> = () => {
   const [local, others] = splitProps(props, [
     "children",
     "class",
