@@ -19,7 +19,9 @@ import {
 import { twMerge } from "tailwind-merge";
 
 import type { IComponentBaseProps } from "../types";
-import { CLASSES } from "./ComboBox.classes";
+import { CLASSES } from "./ComboBox.recipe";
+import type { Layout } from "../../lib/layouts";
+import { componentRecipe } from "./ComboBox.recipe";
 
 export type ComboBoxVariant = "primary" | "secondary";
 export type ComboBoxMenuTrigger = "focus" | "input" | "manual";
@@ -213,7 +215,7 @@ export type ComboBoxListProps = Omit<
     endIcon?: JSX.Element;
   };
 
-const ComboBoxRoot: ParentComponent<ComboBoxRootProps> = (props) => {
+const ComboBoxRoot: Layout<typeof componentRecipe, ComboBoxRootProps> = () => {
   const [local, others] = splitProps(props, [
     "children",
     "startIcon",
@@ -551,7 +553,7 @@ const ComboBoxRoot: ParentComponent<ComboBoxRootProps> = (props) => {
   );
 };
 
-const ComboBoxInputGroup: ParentComponent<ComboBoxInputGroupProps> = (props) => {
+const ComboBoxInputGroup: Layout<typeof componentRecipe, ComboBoxInputGroupProps> = () => {
   const context = useContext(ComboBoxContext);
   const [local, others] = splitProps(props, ["children", "class", "className", "dataTheme", "style"]);
 
@@ -575,7 +577,7 @@ const ComboBoxInputGroup: ParentComponent<ComboBoxInputGroupProps> = (props) => 
   );
 };
 
-const ComboBoxInput: Component<ComboBoxInputProps> = (props) => {
+const ComboBoxInput: Layout<typeof componentRecipe, ComboBoxInputProps> = () => {
   const context = useContext(ComboBoxContext);
   const [local, others] = splitProps(props, [
     "class",
@@ -714,7 +716,7 @@ const ComboBoxInput: Component<ComboBoxInputProps> = (props) => {
   );
 };
 
-const ComboBoxTrigger: Component<ComboBoxTriggerProps> = (props) => {
+const ComboBoxTrigger: Layout<typeof componentRecipe, ComboBoxTriggerProps> = () => {
   const context = useContext(ComboBoxContext);
   const [local, others] = splitProps(props, [
     "children",
@@ -771,7 +773,7 @@ const ComboBoxTrigger: Component<ComboBoxTriggerProps> = (props) => {
   );
 };
 
-const ComboBoxPopover: ParentComponent<ComboBoxPopoverProps> = (props) => {
+const ComboBoxPopover: Layout<typeof componentRecipe, ComboBoxPopoverProps> = () => {
   const context = useContext(ComboBoxContext);
   const [local, others] = splitProps(props, ["children", "class", "className", "dataTheme", "style"]);
 
@@ -789,7 +791,7 @@ const ComboBoxPopover: ParentComponent<ComboBoxPopoverProps> = (props) => {
   );
 };
 
-const ComboBoxList: Component<ComboBoxListProps> = (props) => {
+const ComboBoxList: Layout<typeof componentRecipe, ComboBoxListProps> = () => {
   const context = useContext(ComboBoxContext);
   const [local, others] = splitProps(props, [
     "children",

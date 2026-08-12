@@ -19,4 +19,4 @@ export {
   type ComboBoxMenuTrigger,
   type ComboBoxItem,
   type ComboBoxKey,
-} from "./ComboBox";
+} from "./ComboBox.generated";
