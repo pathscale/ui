@@ -14,8 +14,10 @@ import {
 import { twMerge } from "tailwind-merge";
 
 import type { IComponentBaseProps } from "../types";
-import { CLASSES } from "./Disclosure.classes";
-import { DisclosureGroupContext, type DisclosureGroupContextValue } from "../disclosure-group/DisclosureGroup";
+import { CLASSES } from "./Disclosure.recipe";
+import { DisclosureGroupContext, type DisclosureGroupContextValue } from "../disclosure-group/DisclosureGroup.generated";
+import type { Layout } from "../../lib/layouts";
+import { componentRecipe } from "./Disclosure.recipe";
 
 type DisclosureContextValue = {
   isExpanded: () => boolean;
@@ -102,7 +104,7 @@ const updateGroupExpanded = (
   group.setExpandedKeys(nextOpen ? new Set([id]) : new Set());
 };
 
-const DisclosureRoot: ParentComponent<DisclosureRootProps> = (props) => {
+const DisclosureRoot: Layout<typeof componentRecipe, DisclosureRootProps> = () => {
   const group = useContext(DisclosureGroupContext);
   const [local, others] = splitProps(props, [
     "children",
@@ -180,7 +182,7 @@ const DisclosureRoot: ParentComponent<DisclosureRootProps> = (props) => {
   );
 };
 
-const DisclosureHeading: Component<DisclosureHeadingProps> = (props) => {
+const DisclosureHeading: Layout<typeof componentRecipe, DisclosureHeadingProps> = () => {
   const [local, others] = splitProps(props, [
     "children",
     "class",
@@ -202,7 +204,7 @@ const DisclosureHeading: Component<DisclosureHeadingProps> = (props) => {
   );
 };
 
-const DisclosureTrigger: Component<DisclosureTriggerProps> = (props) => {
+const DisclosureTrigger: Layout<typeof componentRecipe, DisclosureTriggerProps> = () => {
   const ctx = useDisclosureContext();
   const [local, others] = splitProps(props, [
     "children",
@@ -253,7 +255,7 @@ const DisclosureTrigger: Component<DisclosureTriggerProps> = (props) => {
   );
 };
 
-const DisclosureContent: ParentComponent<DisclosureContentProps> = (props) => {
+const DisclosureContent: Layout<typeof componentRecipe, DisclosureContentProps> = () => {
   const ctx = useDisclosureContext();
   const [local, others] = splitProps(props, [
     "children",
@@ -289,7 +291,7 @@ const DisclosureContent: ParentComponent<DisclosureContentProps> = (props) => {
   );
 };
 
-const DisclosureBody: Component<DisclosureBodyProps> = (props) => {
+const DisclosureBody: Layout<typeof componentRecipe, DisclosureBodyProps> = () => {
   const [local, others] = splitProps(props, [
     "children",
     "class",
@@ -313,7 +315,7 @@ const DisclosureBody: Component<DisclosureBodyProps> = (props) => {
   );
 };
 
-const DisclosureIndicator: Component<DisclosureIndicatorProps> = (props) => {
+const DisclosureIndicator: Layout<typeof componentRecipe, DisclosureIndicatorProps> = () => {
   const ctx = useDisclosureContext();
   const [local, others] = splitProps(props, [
     "children",

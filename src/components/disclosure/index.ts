@@ -7,7 +7,7 @@ import Disclosure, {
   DisclosureContent,
   DisclosureBody,
   DisclosureIndicator,
-} from "./Disclosure";
+} from "./Disclosure.generated";
 
 export type DisclosureProps = ComponentProps<typeof DisclosureRoot>;
 export type DisclosureRootProps = ComponentProps<typeof DisclosureRoot>;
