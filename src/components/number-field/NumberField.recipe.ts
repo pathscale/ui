@@ -1,3 +1,4 @@
+import { recipe } from "../../lib/layouts";
 export const CLASSES = {
   Root: {
     base: "number-field",
@@ -25,3 +26,4 @@ export const CLASSES = {
     base: "number-field__decrement-button",
   },
 } as const;
+export const componentRecipe = recipe({component:"number-field",slots:{"number-field":{},"number-field-decrement-button":{},"number-field-decrement-button-icon":{},"number-field-group":{},"number-field-increment-button":{},"number-field-increment-button-icon":{},"number-field-input":{},"root":{},},});

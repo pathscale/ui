@@ -14,4 +14,4 @@ export {
   type NumberFieldDecrementButtonProps,
   type NumberFieldVariant,
   type NumberFieldRenderProps,
-} from "./NumberField";
+} from "./NumberField.generated";
