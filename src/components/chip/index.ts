@@ -1,4 +1,4 @@
-import { ChipLabel, ChipRoot } from "./Chip";
+import { ChipLabel, ChipRoot } from "./Chip.generated";
 
 const Chip = Object.assign(ChipRoot, {
   Root: ChipRoot,
@@ -16,4 +16,4 @@ export type {
   ChipVariant,
   ChipColor,
   ChipSize,
-} from "./Chip";
+} from "./Chip.generated";

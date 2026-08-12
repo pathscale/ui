@@ -1,3 +1,4 @@
+import { recipe } from "../../lib/layouts";
 export const CLASSES = {
   base: "chip",
   slot: {
@@ -27,3 +28,4 @@ export const CLASSES = {
     lg: "chip--lg",
   },
 } as const;
+export const componentRecipe = recipe({component:"chip",slots:{"chip":{},"chip-end-icon":{},"chip-label":{},"chip-remove":{},"chip-remove-icon":{},"chip-start-icon":{},"root":{},},});
