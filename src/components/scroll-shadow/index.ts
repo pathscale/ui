@@ -1,8 +1,8 @@
-export { default } from "./ScrollShadow";
+export { default } from "./ScrollShadow.generated";
 export type {
   ScrollShadowProps,
   ScrollShadowVisibility,
   ScrollShadowOrientation,
   ScrollShadowVariant,
-} from "./ScrollShadow";
+} from "./ScrollShadow.generated";
 

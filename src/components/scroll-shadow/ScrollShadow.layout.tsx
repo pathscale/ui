@@ -2,12 +2,14 @@ import "./ScrollShadow.css";
 import { createEffect, createMemo, splitProps, type JSX } from "solid-js";
 import { twMerge } from "tailwind-merge";
 import type { IComponentBaseProps } from "../types";
-import { CLASSES } from "./ScrollShadow.classes";
+import { CLASSES } from "./ScrollShadow.recipe";
 import {
   applyControlledScrollShadowVisibility,
   clearScrollShadowDataAttributes,
   useScrollShadow,
 } from "./useScrollShadow";
+import type { Layout } from "../../lib/layouts";
+import { componentRecipe } from "./ScrollShadow.recipe";
 
 export type ScrollShadowVisibility =
   | "auto"
@@ -33,7 +35,7 @@ export type ScrollShadowProps = IComponentBaseProps &
     onVisibilityChange?: (visibility: ScrollShadowVisibility) => void;
   };
 
-const ScrollShadow = (props: ScrollShadowProps): JSX.Element => {
+const ScrollShadow: Layout<typeof componentRecipe, ScrollShadowProps> = () => {
   const [local, others] = splitProps(props, [
     "children",
     "class",
