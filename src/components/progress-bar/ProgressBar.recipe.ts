@@ -1,3 +1,4 @@
+import { recipe } from "../../lib/layouts";
 export const CLASSES = {
   base: "progress-bar",
   label: "progress-bar__label",
@@ -21,3 +22,4 @@ export const CLASSES = {
     disabled: "progress-bar--disabled",
   },
 } as const;
+export const componentRecipe = recipe({component:"progress-bar",slots:{"root":{},},});
