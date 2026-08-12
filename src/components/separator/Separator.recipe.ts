@@ -1,3 +1,4 @@
+import { recipe } from "../../lib/layouts";
 export const CLASSES = {
   base: "separator",
   orientation: {
@@ -10,3 +11,4 @@ export const CLASSES = {
     tertiary: "separator--tertiary",
   },
 } as const;
+export const componentRecipe = recipe({component:"separator",slots:{"root":{},"separator":{},},});

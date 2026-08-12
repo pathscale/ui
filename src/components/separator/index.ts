@@ -4,4 +4,4 @@ export {
   type SeparatorProps,
   type SeparatorOrientation,
   type SeparatorVariant,
-} from "./Separator";
+} from "./Separator.generated";
