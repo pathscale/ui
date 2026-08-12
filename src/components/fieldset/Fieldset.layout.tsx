@@ -3,7 +3,9 @@ import { splitProps, type Component, type JSX, type ParentComponent } from "soli
 import { twMerge } from "tailwind-merge";
 
 import type { IComponentBaseProps } from "../types";
-import { CLASSES } from "./Fieldset.classes";
+import { CLASSES } from "./Fieldset.recipe";
+import type { Layout } from "../../lib/layouts";
+import { componentRecipe } from "./Fieldset.recipe";
 
 export type FieldsetRootProps = JSX.FieldsetHTMLAttributes<HTMLFieldSetElement> & IComponentBaseProps;
 
@@ -19,7 +21,7 @@ export type FieldsetActionsProps = Omit<JSX.HTMLAttributes<HTMLDivElement>, "chi
     children?: JSX.Element;
   };
 
-const FieldsetRoot: ParentComponent<FieldsetRootProps> = (props) => {
+const FieldsetRoot: Layout<typeof componentRecipe, FieldsetRootProps> = () => {
   const [local, others] = splitProps(props, [
     "children",
     "class",
@@ -41,7 +43,7 @@ const FieldsetRoot: ParentComponent<FieldsetRootProps> = (props) => {
   );
 };
 
-const FieldsetLegend: ParentComponent<FieldsetLegendProps> = (props) => {
+const FieldsetLegend: Layout<typeof componentRecipe, FieldsetLegendProps> = () => {
   const [local, others] = splitProps(props, [
     "children",
     "class",
@@ -63,7 +65,7 @@ const FieldsetLegend: ParentComponent<FieldsetLegendProps> = (props) => {
   );
 };
 
-const FieldGroup: ParentComponent<FieldGroupProps> = (props) => {
+const FieldGroup: Layout<typeof componentRecipe, FieldGroupProps> = () => {
   const [local, others] = splitProps(props, [
     "children",
     "class",
@@ -85,7 +87,7 @@ const FieldGroup: ParentComponent<FieldGroupProps> = (props) => {
   );
 };
 
-const FieldsetActions: ParentComponent<FieldsetActionsProps> = (props) => {
+const FieldsetActions: Layout<typeof componentRecipe, FieldsetActionsProps> = () => {
   const [local, others] = splitProps(props, [
     "children",
     "class",
