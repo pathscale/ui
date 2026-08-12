@@ -2,7 +2,9 @@ import "./ColorSlider.css";
 import { createEffect, createMemo, createSignal, splitProps, type Component, type JSX } from "solid-js";
 import { twMerge } from "tailwind-merge";
 import type { IComponentBaseProps } from "../types";
-import { CLASSES } from "./ColorSlider.classes";
+import { CLASSES } from "./ColorSlider.recipe";
+import type { Layout } from "../../lib/layouts";
+import { componentRecipe } from "./ColorSlider.recipe";
 
 export type ColorSliderType = "hue" | "alpha";
 
@@ -42,7 +44,7 @@ const fromPercent = (type: ColorSliderType, percent: number) => {
   return (clamped / 100) * 360;
 };
 
-const ColorSlider: Component<ColorSliderProps> = (props) => {
+const ColorSlider: Layout<typeof componentRecipe, ColorSliderProps> = () => {
   const [local, others] = splitProps(props, [
     "class",
     "className",
