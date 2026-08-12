@@ -4,4 +4,4 @@ export {
   DescriptionRoot,
   type DescriptionProps,
   type DescriptionRootProps,
-} from "./Description";
+} from "./Description.generated";
