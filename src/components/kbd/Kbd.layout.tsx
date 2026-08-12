@@ -3,7 +3,9 @@ import { splitProps, type Component, type JSX } from "solid-js";
 import { twMerge } from "tailwind-merge";
 
 import type { IComponentBaseProps } from "../types";
-import { CLASSES } from "./Kbd.classes";
+import { CLASSES } from "./Kbd.recipe";
+import type { Layout } from "../../lib/layouts";
+import { componentRecipe } from "./Kbd.recipe";
 
 export type KbdVariant = "default" | "light";
 export type KbdKey =
@@ -96,7 +98,7 @@ export type KbdContentProps = Omit<JSX.HTMLAttributes<HTMLSpanElement>, "childre
     children?: JSX.Element;
   };
 
-const KbdRoot: Component<KbdRootProps> = (props) => {
+const KbdRoot: Layout<typeof componentRecipe, KbdRootProps> = () => {
   const [local, others] = splitProps(props, [
     "class",
     "className",
@@ -127,7 +129,7 @@ const KbdRoot: Component<KbdRootProps> = (props) => {
   );
 };
 
-const KbdAbbr: Component<KbdAbbrProps> = (props) => {
+const KbdAbbr: Layout<typeof componentRecipe, KbdAbbrProps> = () => {
   const [local, others] = splitProps(props, [
     "class",
     "className",
@@ -152,7 +154,7 @@ const KbdAbbr: Component<KbdAbbrProps> = (props) => {
   );
 };
 
-const KbdContent: Component<KbdContentProps> = (props) => {
+const KbdContent: Layout<typeof componentRecipe, KbdContentProps> = () => {
   const [local, others] = splitProps(props, [
     "class",
     "className",

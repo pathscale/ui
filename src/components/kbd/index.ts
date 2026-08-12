@@ -11,4 +11,4 @@ export {
   type KbdContentProps,
   type KbdVariant,
   type KbdKey,
-} from "./Kbd";
+} from "./Kbd.generated";

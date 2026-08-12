@@ -1,3 +1,4 @@
+import { recipe } from "../../lib/layouts";
 export const CLASSES = {
   base: "kbd",
   variant: {
@@ -9,3 +10,4 @@ export const CLASSES = {
     content: "kbd__content",
   },
 } as const;
+export const componentRecipe = recipe({component:"kbd",slots:{"kbd":{},"kbd-abbr":{},"kbd-content":{},"root":{},},});
