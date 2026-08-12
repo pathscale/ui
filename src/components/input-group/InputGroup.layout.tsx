@@ -4,7 +4,9 @@ import { twMerge } from "tailwind-merge";
 
 import { useTextFieldContext, type TextFieldVariant } from "../text-field";
 import type { IComponentBaseProps } from "../types";
-import { CLASSES } from "./InputGroup.classes";
+import { CLASSES } from "./InputGroup.recipe";
+import type { Layout } from "../../lib/layouts";
+import { componentRecipe } from "./InputGroup.recipe";
 
 export type InputGroupVariant = TextFieldVariant;
 
@@ -62,7 +64,7 @@ export type InputGroupSuffixProps = Omit<JSX.HTMLAttributes<HTMLDivElement>, "ch
     children?: JSX.Element;
   };
 
-const InputGroupRoot: ParentComponent<InputGroupRootProps> = (props) => {
+const InputGroupRoot: Layout<typeof componentRecipe, InputGroupRootProps> = () => {
   const textFieldContext = useTextFieldContext();
 
   const [local, others] = splitProps(props, [
@@ -140,7 +142,7 @@ const InputGroupRoot: ParentComponent<InputGroupRootProps> = (props) => {
   );
 };
 
-const InputGroupInput: Component<InputGroupInputProps> = (props) => {
+const InputGroupInput: Layout<typeof componentRecipe, InputGroupInputProps> = () => {
   const context = useContext(InputGroupContext);
 
   const [local, others] = splitProps(props, [
@@ -170,7 +172,7 @@ const InputGroupInput: Component<InputGroupInputProps> = (props) => {
   );
 };
 
-const InputGroupTextArea: Component<InputGroupTextAreaProps> = (props) => {
+const InputGroupTextArea: Layout<typeof componentRecipe, InputGroupTextAreaProps> = () => {
   const context = useContext(InputGroupContext);
 
   const [local, others] = splitProps(props, [
@@ -200,7 +202,7 @@ const InputGroupTextArea: Component<InputGroupTextAreaProps> = (props) => {
   );
 };
 
-const InputGroupPrefix: ParentComponent<InputGroupPrefixProps> = (props) => {
+const InputGroupPrefix: Layout<typeof componentRecipe, InputGroupPrefixProps> = () => {
   const [local, others] = splitProps(props, ["children", "class", "className", "dataTheme", "style"]);
 
   return (
@@ -216,7 +218,7 @@ const InputGroupPrefix: ParentComponent<InputGroupPrefixProps> = (props) => {
   );
 };
 
-const InputGroupSuffix: ParentComponent<InputGroupSuffixProps> = (props) => {
+const InputGroupSuffix: Layout<typeof componentRecipe, InputGroupSuffixProps> = () => {
   const [local, others] = splitProps(props, ["children", "class", "className", "dataTheme", "style"]);
 
   return (

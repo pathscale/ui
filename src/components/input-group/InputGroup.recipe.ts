@@ -1,3 +1,4 @@
+import { recipe } from "../../lib/layouts";
 export const CLASSES = {
   Root: {
     base: "input-group",
@@ -19,3 +20,4 @@ export const CLASSES = {
     base: "input-group__suffix",
   },
 } as const;
+export const componentRecipe = recipe({component:"input-group",slots:{"input-group":{},"input-group-input":{},"input-group-prefix":{},"input-group-suffix":{},"input-group-textarea":{},"root":{},},});
