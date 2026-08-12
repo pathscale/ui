@@ -3,11 +3,13 @@ import { splitProps, type Component, type JSX } from "solid-js";
 import { twMerge } from "tailwind-merge";
 
 import type { IComponentBaseProps } from "../types";
-import { CLASSES } from "./Header.classes";
+import { CLASSES } from "./Header.recipe";
+import type { Layout } from "../../lib/layouts";
+import { componentRecipe } from "./Header.recipe";
 
 export type HeaderRootProps = JSX.HTMLAttributes<HTMLDivElement> & IComponentBaseProps;
 
-const HeaderRoot: Component<HeaderRootProps> = (props) => {
+const HeaderRoot: Layout<typeof componentRecipe, HeaderRootProps> = () => {
   const [local, others] = splitProps(props, [
     "children",
     "class",

@@ -4,4 +4,4 @@ export {
   HeaderRoot,
   type HeaderProps,
   type HeaderRootProps,
-} from "./Header";
+} from "./Header.generated";
