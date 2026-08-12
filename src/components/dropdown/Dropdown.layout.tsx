@@ -18,7 +18,9 @@ import {
   createOverlayPosition,
   type OverlayPlacement,
 } from "../_shared/overlayPosition";
-import { CLASSES } from "./Dropdown.classes";
+import { CLASSES } from "./Dropdown.recipe";
+import type { Layout } from "../../lib/layouts";
+import { componentRecipe } from "./Dropdown.recipe";
 
 type DropdownAlign = "start" | "end";
 type DropdownPlacement = OverlayPlacement;
@@ -87,7 +89,7 @@ type DropdownRootProps = Omit<JSX.HTMLAttributes<HTMLDivElement>, "onChange"> & 
   className?: string;
 };
 
-const DropdownRoot = (props: DropdownRootProps): JSX.Element => {
+const DropdownRoot: Layout<typeof componentRecipe, DropdownRootProps> = () => {
   const [local, others] = splitProps(props, [
     "children",
     "class",
@@ -286,7 +288,7 @@ const DropdownRoot = (props: DropdownRootProps): JSX.Element => {
 
 type DropdownTriggerProps = JSX.ButtonHTMLAttributes<HTMLButtonElement>;
 
-const DropdownTrigger = (props: DropdownTriggerProps): JSX.Element => {
+const DropdownTrigger: Layout<typeof componentRecipe, DropdownTriggerProps> = () => {
   const ctx = useContext(DropdownContext);
   const [local, others] = splitProps(props, [
     "class",
@@ -392,7 +394,7 @@ type DropdownMenuProps = JSX.HTMLAttributes<HTMLDivElement> & {
   sideOffset?: number;
 };
 
-const DropdownMenu = (props: DropdownMenuProps): JSX.Element => {
+const DropdownMenu: Layout<typeof componentRecipe, DropdownMenuProps> = () => {
   const ctx = useContext(DropdownContext);
   const [local, others] = splitProps(props, [
     "class",
@@ -507,7 +509,7 @@ type DropdownItemProps = JSX.ButtonHTMLAttributes<HTMLButtonElement> & {
   closeOnSelect?: boolean;
 };
 
-const DropdownItem = (props: DropdownItemProps): JSX.Element => {
+const DropdownItem: Layout<typeof componentRecipe, DropdownItemProps> = () => {
   const ctx = useContext(DropdownContext);
   const [local, others] = splitProps(props, [
     "class",
@@ -599,7 +601,7 @@ const DropdownItem = (props: DropdownItemProps): JSX.Element => {
 
 type DropdownGroupProps = JSX.HTMLAttributes<HTMLDivElement>;
 
-const DropdownGroup = (props: DropdownGroupProps): JSX.Element => {
+const DropdownGroup: Layout<typeof componentRecipe, DropdownGroupProps> = () => {
   const [local, others] = splitProps(props, ["class", "children"]);
   return (
     <div {...others} role="group" {...{ class: twMerge(CLASSES.slot.group, local.class) }} data-slot="dropdown-group">
@@ -610,7 +612,7 @@ const DropdownGroup = (props: DropdownGroupProps): JSX.Element => {
 
 type DropdownSeparatorProps = JSX.HTMLAttributes<HTMLDivElement>;
 
-const DropdownSeparator = (props: DropdownSeparatorProps): JSX.Element => {
+const DropdownSeparator: Layout<typeof componentRecipe, DropdownSeparatorProps> = () => {
   const [local, others] = splitProps(props, ["class"]);
   return (
     <div
