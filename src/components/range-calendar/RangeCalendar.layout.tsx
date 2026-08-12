@@ -8,7 +8,9 @@ import {
 } from "../../hooks/date";
 import Calendar, { type CalendarWeekdayFormat } from "../calendar";
 import type { IComponentBaseProps } from "../types";
-import { CLASSES } from "./RangeCalendar.classes";
+import { CLASSES } from "./RangeCalendar.recipe";
+import type { Layout } from "../../lib/layouts";
+import { componentRecipe } from "./RangeCalendar.recipe";
 
 export type RangeCalendarValue = ControlledDateRangeValue;
 
@@ -35,7 +37,7 @@ export type RangeCalendarProps = Omit<
   IComponentBaseProps &
   RangeCalendarBaseProps;
 
-const RangeCalendar = (props: RangeCalendarProps): JSX.Element => {
+const RangeCalendar: Layout<typeof componentRecipe, RangeCalendarProps> = () => {
   const [local, others] = splitProps(props, [
     "class",
     "className",
