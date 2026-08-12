@@ -1,4 +1,4 @@
-export { default } from "./Select";
+export { default } from "./Select.generated";
 export type {
   SelectProps,
   SelectRootProps,
@@ -12,4 +12,4 @@ export type {
   SelectPopoverProps,
   SelectListboxProps,
   SelectOptionProps,
-} from "./Select";
+} from "./Select.generated";
