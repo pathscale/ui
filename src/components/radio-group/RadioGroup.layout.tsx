@@ -3,7 +3,9 @@ import { Show, createSignal, createUniqueId, splitProps, type Component, type JS
 import { twMerge } from "tailwind-merge";
 import { RadioGroupContext, type RadioGroupContextValue } from "./context";
 import type { IComponentBaseProps } from "../types";
-import { CLASSES } from "./RadioGroup.classes";
+import { CLASSES } from "./RadioGroup.recipe";
+import type { Layout } from "../../lib/layouts";
+import { componentRecipe } from "./RadioGroup.recipe";
 
 export type RadioGroupOrientation = "vertical" | "horizontal";
 export type RadioGroupVariant = "primary" | "secondary";
@@ -25,7 +27,7 @@ export type RadioGroupProps = Omit<JSX.HTMLAttributes<HTMLDivElement>, "children
     errorMessage?: JSX.Element;
   };
 
-const RadioGroup: Component<RadioGroupProps> = (props) => {
+const RadioGroup: Layout<typeof componentRecipe, RadioGroupProps> = () => {
   const [local, others] = splitProps(props, [
     "children",
     "class",
