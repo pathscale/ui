@@ -3,7 +3,9 @@ import { splitProps, type Component, type JSX } from "solid-js";
 import { twMerge } from "tailwind-merge";
 
 import type { IComponentBaseProps } from "../types";
-import { CLASSES } from "./Text.classes";
+import { CLASSES } from "./Text.recipe";
+import type { Layout } from "../../lib/layouts";
+import { componentRecipe } from "./Text.recipe";
 
 export type TextSize = "xs" | "sm" | "base" | "lg" | "xl";
 export type TextVariant = "default" | "muted" | "success" | "warning" | "danger";
@@ -15,7 +17,7 @@ export type TextRootProps = Omit<JSX.HTMLAttributes<HTMLSpanElement>, "color"> &
     children?: JSX.Element;
   };
 
-const TextRoot: Component<TextRootProps> = (props) => {
+const TextRoot: Layout<typeof componentRecipe, TextRootProps> = () => {
   const [local, others] = splitProps(props, [
     "children",
     "class",
