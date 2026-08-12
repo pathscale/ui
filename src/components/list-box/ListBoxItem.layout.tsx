@@ -14,7 +14,9 @@ import { twMerge } from "tailwind-merge";
 
 import type { IComponentBaseProps } from "../types";
 import { ListBoxContext, type ListBoxVariant } from "./context";
-import { CLASSES } from "./ListBox.classes";
+import { CLASSES } from "./ListBox.recipe";
+import type { Layout } from "../../lib/layouts";
+import { componentRecipe } from "./ListBox.recipe";
 
 type ListBoxItemRenderProps = {
   isSelected: boolean;
@@ -69,7 +71,7 @@ export type ListBoxItemIndicatorProps = Omit<JSX.HTMLAttributes<HTMLSpanElement>
     children?: JSX.Element | ((props: ListBoxItemRenderProps) => JSX.Element);
   };
 
-const ListBoxItemRoot: ParentComponent<ListBoxItemRootProps> = (props) => {
+const ListBoxItemRoot: Layout<typeof componentRecipe, ListBoxItemRootProps> = () => {
   const listBox = useContext(ListBoxContext);
   const fallbackKey = createUniqueId();
 
@@ -236,7 +238,7 @@ const ListBoxItemRoot: ParentComponent<ListBoxItemRootProps> = (props) => {
   );
 };
 
-const ListBoxItemIndicator: Component<ListBoxItemIndicatorProps> = (props) => {
+const ListBoxItemIndicator: Layout<typeof componentRecipe, ListBoxItemIndicatorProps> = () => {
   const context = useContext(ListBoxItemContext);
   const [local, others] = splitProps(props, [
     "children",
