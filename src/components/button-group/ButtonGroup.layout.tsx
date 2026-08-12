@@ -4,8 +4,10 @@ import { twMerge } from "tailwind-merge";
 
 import type { ButtonSize, ButtonVariant } from "../button";
 import type { IComponentBaseProps } from "../types";
-import { CLASSES } from "./ButtonGroup.classes";
+import { CLASSES } from "./ButtonGroup.recipe";
 import { ButtonGroupContext } from "./context";
+import type { Layout } from "../../lib/layouts";
+import { componentRecipe } from "./ButtonGroup.recipe";
 
 export type ButtonGroupOrientation = "horizontal" | "vertical";
 
@@ -22,7 +24,7 @@ export type ButtonGroupRootProps = Omit<JSX.HTMLAttributes<HTMLDivElement>, "chi
 export type ButtonGroupSeparatorProps = Omit<JSX.HTMLAttributes<HTMLSpanElement>, "children"> &
   IComponentBaseProps;
 
-const ButtonGroupRoot: ParentComponent<ButtonGroupRootProps> = (props) => {
+const ButtonGroupRoot: Layout<typeof componentRecipe, ButtonGroupRootProps> = () => {
   const [local, others] = splitProps(props, [
     "children",
     "class",
@@ -70,7 +72,7 @@ const ButtonGroupRoot: ParentComponent<ButtonGroupRootProps> = (props) => {
   );
 };
 
-const ButtonGroupSeparator: Component<ButtonGroupSeparatorProps> = (props) => {
+const ButtonGroupSeparator: Layout<typeof componentRecipe, ButtonGroupSeparatorProps> = () => {
   const [local, others] = splitProps(props, ["class", "className", "dataTheme", "style"]);
 
   return (
