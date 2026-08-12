@@ -4,12 +4,13 @@ import { clsx } from "clsx";
 
 import type { IComponentBaseProps } from "../types";
 import "./GlowCard.css";
-import { CLASSES } from "./GlowCard.classes";
+import { CLASSES, componentRecipe } from "./GlowCard.recipe";
+import type { Layout } from "../../lib/layouts";
 
 export type GlowCardProps = IComponentBaseProps &
   JSX.HTMLAttributes<HTMLDivElement>;
 
-export default function GlowCard(props: GlowCardProps): JSX.Element {
+const GlowCard: Layout<typeof componentRecipe, GlowCardProps> = () => {
   const [local, others] = splitProps(props, [
     "children",
     "class",
@@ -49,4 +50,6 @@ export default function GlowCard(props: GlowCardProps): JSX.Element {
       {local.children}
     </div>
   );
-}
+};
+
+export default GlowCard;
