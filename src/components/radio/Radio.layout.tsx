@@ -3,7 +3,9 @@ import { Show, splitProps, useContext, type Component, type JSX } from "solid-js
 import { twMerge } from "tailwind-merge";
 import { RadioGroupContext } from "../radio-group/context";
 import type { IComponentBaseProps } from "../types";
-import { CLASSES } from "./Radio.classes";
+import { CLASSES } from "./Radio.recipe";
+import type { Layout } from "../../lib/layouts";
+import { componentRecipe } from "./Radio.recipe";
 
 const invokeEventHandler = (handler: unknown, event: Event) => {
   if (typeof handler === "function") {
@@ -25,7 +27,7 @@ export type RadioProps = Omit<JSX.InputHTMLAttributes<HTMLInputElement>, "type" 
     isInvalid?: boolean;
   };
 
-const Radio: Component<RadioProps> = (props) => {
+const Radio: Layout<typeof componentRecipe, RadioProps> = () => {
   const group = useContext(RadioGroupContext);
   const [local, others] = splitProps(props, [
     "class",
