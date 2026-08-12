@@ -17,7 +17,7 @@ export const FieldsetLegendLayout: Layout<typeof fieldset> = ({
   children,
 }) => <legend {...slot.legend}>{children}</legend>;
 
-export const FieldGroupLayout: Layout<typeof fieldset> = ({
+export const FieldsetGroupLayout: Layout<typeof fieldset> = ({
   slot,
   children,
 }) => <div {...slot.group}>{children}</div>;
