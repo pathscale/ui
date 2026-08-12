@@ -18,7 +18,9 @@ import {
   type OverlayPlacement,
 } from "../_shared/overlayPosition";
 import type { IComponentBaseProps } from "../types";
-import { CLASSES } from "./Tooltip.classes";
+import { CLASSES } from "./Tooltip.recipe";
+import type { Layout } from "../../lib/layouts";
+import { componentRecipe } from "./Tooltip.recipe";
 
 /* -------------------------------------------------------------------------------------------------
  * Tooltip Context
@@ -94,7 +96,7 @@ export type TooltipArrowProps = JSX.HTMLAttributes<HTMLSpanElement> &
 /* -------------------------------------------------------------------------------------------------
  * Tooltip Root
  * -----------------------------------------------------------------------------------------------*/
-const TooltipRoot: ParentComponent<TooltipRootProps> = (props) => {
+const TooltipRoot: Layout<typeof componentRecipe, TooltipRootProps> = () => {
   const [local, _others] = splitProps(props, [
     "children",
     "placement",
@@ -183,7 +185,7 @@ const TooltipRoot: ParentComponent<TooltipRootProps> = (props) => {
 /* -------------------------------------------------------------------------------------------------
  * Tooltip Trigger
  * -----------------------------------------------------------------------------------------------*/
-const TooltipTrigger: Component<TooltipTriggerProps> = (props) => {
+const TooltipTrigger: Layout<typeof componentRecipe, TooltipTriggerProps> = () => {
   const [local, others] = splitProps(props, [
     "children",
     "class",
@@ -249,7 +251,7 @@ const TooltipTrigger: Component<TooltipTriggerProps> = (props) => {
 /* -------------------------------------------------------------------------------------------------
  * Tooltip Content
  * -----------------------------------------------------------------------------------------------*/
-const TooltipContent: Component<TooltipContentProps> = (props) => {
+const TooltipContent: Layout<typeof componentRecipe, TooltipContentProps> = () => {
   const [local, others] = splitProps(props, [
     "children",
     "class",
@@ -337,7 +339,7 @@ const TooltipContent: Component<TooltipContentProps> = (props) => {
 /* -------------------------------------------------------------------------------------------------
  * Tooltip Arrow
  * -----------------------------------------------------------------------------------------------*/
-const TooltipArrow: Component<TooltipArrowProps> = (props) => {
+const TooltipArrow: Layout<typeof componentRecipe, TooltipArrowProps> = () => {
   const [local, others] = splitProps(props, [
     "children",
     "class",
