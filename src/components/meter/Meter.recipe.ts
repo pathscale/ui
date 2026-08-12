@@ -1,3 +1,4 @@
+import { recipe } from "../../lib/layouts";
 export const CLASSES = {
   base: "meter",
   output: "meter__output",
@@ -20,3 +21,4 @@ export const CLASSES = {
   },
 } as const;
 
+export const componentRecipe = recipe({component:"meter",slots:{"meter":{},"meter-fill":{},"meter-output":{},"meter-track":{},"root":{},},});

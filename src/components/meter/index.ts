@@ -13,5 +13,5 @@ export {
   type MeterSize,
   type MeterColor,
   type MeterRenderState,
-} from "./Meter";
+} from "./Meter.generated";
 
