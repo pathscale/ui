@@ -4,7 +4,7 @@ import Button from "../../button";
 import Card from "../../card";
 import Flex from "../../flex";
 import Icon from "../../icon";
-import { CLASSES } from "../ImmersiveLanding.classes";
+import { CLASSES } from "../ImmersiveLanding.recipe";
 
 const defaultTexts = {
   title: "Install App on Firefox",

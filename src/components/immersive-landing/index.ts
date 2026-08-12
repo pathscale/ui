@@ -1,6 +1,6 @@
 import "./ImmersiveLanding.css";
 
-export { default } from "./ImmersiveLanding";
+export { default } from "./ImmersiveLanding.generated";
 export { useImmersiveLanding } from "./useImmersiveLanding";
 export { ImmersiveLandingContext, useImmersiveLandingContext } from "./ImmersiveLandingContext";
 export { CookieConsent } from "./components/CookieConsent";

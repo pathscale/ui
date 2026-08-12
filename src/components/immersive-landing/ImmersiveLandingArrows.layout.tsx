@@ -1,9 +1,11 @@
 import { Show, splitProps, type JSX } from "solid-js";
 import { twMerge } from "tailwind-merge";
 import type { ImmersiveLandingArrowsProps } from "./types";
-import { CLASSES } from "./ImmersiveLanding.classes";
+import { CLASSES } from "./ImmersiveLanding.recipe";
+import type { Layout } from "../../lib/layouts";
+import { componentRecipe } from "./ImmersiveLanding.recipe";
 
-const ImmersiveLandingArrows = (props: ImmersiveLandingArrowsProps): JSX.Element => {
+const ImmersiveLandingArrows: Layout<typeof componentRecipe, ImmersiveLandingArrowsProps> = () => {
   const [local, others] = splitProps(props, [
     "onPrev",
     "onNext",
