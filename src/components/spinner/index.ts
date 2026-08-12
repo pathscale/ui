@@ -1,9 +1,6 @@
 export {
-  default,
-  default as Spinner,
-  default as Loading,
-  type SpinnerProps,
-  type SpinnerSize,
-  type SpinnerColor,
-  type SpinnerVariant,
-} from "./Spinner";
+  SpinnerLayout as default,
+  SpinnerLayout as Spinner,
+  SpinnerLayout as Loading,
+} from "./Spinner.generated";
+export type { SpinnerProps, SpinnerSize, SpinnerColor, SpinnerVariant } from "./Spinner.generated";

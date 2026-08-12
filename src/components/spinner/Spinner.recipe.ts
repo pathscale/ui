@@ -1,3 +1,5 @@
+import { recipe } from "../../lib/layouts";
+
 export const CLASSES = {
   base: "spinner",
   size: {
@@ -23,3 +25,11 @@ export const CLASSES = {
     infinity: "spinner--infinity",
   },
 } as const;
+
+export const spinner = recipe({
+  component: "spinner",
+  element: "span",
+  slots: { root: { base: CLASSES.base } },
+  props: { size: CLASSES.size, color: CLASSES.color, variant: CLASSES.variant, label: {} },
+  defaults: { size: "md", color: "current", variant: "spinner", label: "Loading" },
+});
