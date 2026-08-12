@@ -4,7 +4,9 @@ import { clsx } from "clsx";
 import Button from "../button";
 import type { IComponentBaseProps } from "../types";
 import { createSizeStore, type SizeStore, type SizePreset } from "./sizeStore";
-import { CLASSES } from "./SizePicker.classes";
+import { CLASSES } from "./SizePicker.recipe";
+import type { Layout } from "../../lib/layouts";
+import { componentRecipe } from "./SizePicker.recipe";
 
 const PRESETS: SizePreset[] = ["M", "L", "XL"];
 
@@ -14,7 +16,7 @@ export interface SizePickerProps extends IComponentBaseProps {
   "aria-label"?: string;
 }
 
-const SizePicker: Component<SizePickerProps> = (props) => {
+const SizePicker: Layout<typeof componentRecipe, SizePickerProps> = () => {
   const [local, others] = splitProps(props, [
     "storagePrefix",
     "onSizeChange",
