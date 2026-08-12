@@ -822,6 +822,33 @@ to 82 saves a few KB. The cost is the ~3 KB *around* each one, near-identical ev
 `splitProps` key array, a `mergeProps`, a `spread`, a `twMerge` over a class map, and the
 data-attribute serialisation.
 
+### The runtime is the mechanism
+
+The saving comes from a shared runtime, and that runtime is bundled with the application. That is
+the trade, stated plainly: today the machinery is copied into all 38 components; after, there is
+one copy of it and each component shrinks to a recipe plus a generated definition.
+
+`solid-layouts` ships `cx`, `recipe()`, `defineComponent`'s prop routing and `p` construction,
+`compound`, and the defaults cascade. **Estimated, not measured:** 3-5 KB minified, once, against
+the 113 KB it replaces.
+
+Three consequences worth stating, because they constrain the runtime's design rather than follow
+from it:
+
+- **The pass cannot erase the core.** Folding `configureUI` defaults removes the lookup and
+  inlining `defineComponent` removes that indirection, but class resolution stays: variants depend
+  on runtime state, and `expanded` changes when someone clicks. Precomputing every combination
+  into a lookup table works for two or three variants and explodes past that.
+- **It has to be tree-shakeable.** An application that never calls `configureUI`, never renders
+  `<UIDefaults>` and never calls `recipe.extend` must pay for none of them. That means separate
+  ESM exports, no module-level side effects, and `sideEffects: false`. Authored as one blob,
+  everyone pays for everything and the argument above weakens.
+- **Under Boa, per-call cost outweighs size.** chuzz loads one bundle with no code splitting, so
+  the runtime arrives once regardless; what matters is the cost paid on every component instance.
+  That is why `cx` at 38 ns against `twMerge`'s 131 ns cached and 994 ns uncached is the number
+  that decides things there, and why the measurement plan below separates per-instance cost from
+  bundle delta.
+
 ### What AFTER does about it
 
 Those 38 components stop having an implementation. They become a recipe, a defaults file and a
