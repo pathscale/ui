@@ -7,4 +7,4 @@ export {
   type LinkIconProps,
   type LinkVariant,
   type LinkUnderline,
-} from "./Link";
+} from "./Link.generated";
