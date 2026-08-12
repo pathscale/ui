@@ -311,14 +311,14 @@ export {
   default as Fieldset,
   FieldsetRoot,
   FieldsetLegend,
-  FieldGroup,
+  FieldsetGroup,
   FieldsetActions,
 } from "./components/fieldset";
 export type {
   FieldsetProps,
   FieldsetRootProps,
   FieldsetLegendProps,
-  FieldGroupProps,
+  FieldsetGroupProps,
   FieldsetActionsProps,
 } from "./components/fieldset";
 // ---------------------------------------------------------------------------
@@ -447,8 +447,6 @@ export {
   KbdRoot,
   KbdAbbr,
   KbdContent,
-  kbdKeysMap,
-  kbdKeysLabelMap,
 } from "./components/kbd";
 export type {
   KbdProps,
@@ -456,7 +454,6 @@ export type {
   KbdAbbrProps,
   KbdContentProps,
   KbdVariant,
-  KbdKey,
 } from "./components/kbd";
 export { default as Label, LabelRoot } from "./components/label";
 export type { LabelProps, LabelRootProps } from "./components/label";
@@ -685,7 +682,6 @@ export { default as Skeleton } from "./components/skeleton";
 export { default as Surface } from "./components/surface";
 export type {
   SurfaceVariant,
-  SurfaceVariants,
   SurfaceProps,
 } from "./components/surface";
 
@@ -768,10 +764,9 @@ export type {
   TabSeparatorProps,
   TabPanelProps,
 } from "./components/tabs";
-export { default as Text, TextRoot } from "./components/text";
+export { default as Text } from "./components/text";
 export type {
   TextProps,
-  TextRootProps,
   TextSize,
   TextVariant,
 } from "./components/text";
@@ -928,3 +923,9 @@ export type {
   UseStreamingSubscriptionOptions,
   UseStreamingSubscriptionResult,
 } from "./primitives/streaming";
+
+export {
+  kbdKeysMap,
+  kbdKeysLabelMap,
+} from "./components/kbd/Kbd.keys";
+export type { KbdKey } from "./components/kbd/Kbd.keys";
