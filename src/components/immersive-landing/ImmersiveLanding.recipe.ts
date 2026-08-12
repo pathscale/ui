@@ -1,3 +1,4 @@
+import { recipe } from "../../lib/layouts";
 export const CLASSES = {
   landing: {
     base: "immersive-landing",
@@ -82,3 +83,4 @@ export const CLASSES = {
   },
 } as const;
 
+export const componentRecipe = recipe({component:"immersive-landing",slots:{"root":{},},});

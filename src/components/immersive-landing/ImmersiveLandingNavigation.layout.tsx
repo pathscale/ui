@@ -1,9 +1,11 @@
 import { For, splitProps, type JSX } from "solid-js";
 import { twMerge } from "tailwind-merge";
 import type { ImmersiveLandingNavigationProps } from "./types";
-import { CLASSES } from "./ImmersiveLanding.classes";
+import { CLASSES } from "./ImmersiveLanding.recipe";
+import type { Layout } from "../../lib/layouts";
+import { componentRecipe } from "./ImmersiveLanding.recipe";
 
-const ImmersiveLandingNavigation = (props: ImmersiveLandingNavigationProps): JSX.Element => {
+const ImmersiveLandingNavigation: Layout<typeof componentRecipe, ImmersiveLandingNavigationProps> = () => {
   const [local, others] = splitProps(props, [
     "pages",
     "currentPageIndex",

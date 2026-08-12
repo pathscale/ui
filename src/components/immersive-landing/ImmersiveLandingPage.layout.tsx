@@ -2,9 +2,11 @@ import { splitProps, useContext, createMemo, type JSX } from "solid-js";
 import { twMerge } from "tailwind-merge";
 import type { ImmersiveLandingPageProps } from "./types";
 import { ImmersiveLandingContext } from "./ImmersiveLandingContext";
-import { CLASSES } from "./ImmersiveLanding.classes";
+import { CLASSES } from "./ImmersiveLanding.recipe";
+import type { Layout } from "../../lib/layouts";
+import { componentRecipe } from "./ImmersiveLanding.recipe";
 
-const ImmersiveLandingPage = (props: ImmersiveLandingPageProps): JSX.Element => {
+const ImmersiveLandingPage: Layout<typeof componentRecipe, ImmersiveLandingPageProps> = () => {
   const [local, others] = splitProps(props, ["id", "children", "class", "className", "style"]);
 
   const context = useContext(ImmersiveLandingContext);

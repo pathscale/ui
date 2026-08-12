@@ -5,17 +5,19 @@ import type {
   ImmersiveLandingProps,
   ImmersiveLandingContextValue,
 } from "./types";
-import { CLASSES } from "./ImmersiveLanding.classes";
+import { CLASSES } from "./ImmersiveLanding.recipe";
 import { useImmersiveLanding } from "./useImmersiveLanding";
 import { ImmersiveLandingContext } from "./ImmersiveLandingContext";
-import ImmersiveLandingPage from "./ImmersiveLandingPage";
-import ImmersiveLandingArrows from "./ImmersiveLandingArrows";
-import ImmersiveLandingNavigation from "./ImmersiveLandingNavigation";
+import ImmersiveLandingPage from "./ImmersiveLandingPage.generated";
+import ImmersiveLandingArrows from "./ImmersiveLandingArrows.generated";
+import ImmersiveLandingNavigation from "./ImmersiveLandingNavigation.generated";
 import { PWAInstallPrompt } from "./components/PWAInstallPrompt";
 import { FirefoxPWABanner } from "./components/FirefoxPWABanner";
 import { CookieConsent } from "./components/CookieConsent";
+import type { Layout } from "../../lib/layouts";
+import { componentRecipe } from "./ImmersiveLanding.recipe";
 
-const ImmersiveLanding: Component<ImmersiveLandingProps> = (props) => {
+const ImmersiveLanding: Layout<typeof componentRecipe, ImmersiveLandingProps> = () => {
   // Don't split children - access directly from props to preserve reactivity
   const [local, others] = splitProps(props, [
     "pages",

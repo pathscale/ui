@@ -10,7 +10,7 @@ import {
 import { ConsentType, CookieConsentProps } from "../types";
 import Button from "../../button";
 import Flex from "../../flex";
-import { CLASSES } from "../ImmersiveLanding.classes";
+import { CLASSES } from "../ImmersiveLanding.recipe";
 
 /**
  * CookieConsent Component
