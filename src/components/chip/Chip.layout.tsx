@@ -3,7 +3,9 @@ import { Show, splitProps, type JSX } from "solid-js";
 import { twMerge } from "tailwind-merge";
 
 import "./Chip.css";
-import { CLASSES } from "./Chip.classes";
+import { CLASSES } from "./Chip.recipe";
+import type { Layout } from "../../lib/layouts";
+import { componentRecipe } from "./Chip.recipe";
 
 type ChipVariant = "solid" | "flat" | "bordered";
 type ChipColor = "default" | "primary" | "accent" | "success" | "warning" | "danger";
@@ -23,7 +25,7 @@ interface ChipRootProps extends Omit<JSX.HTMLAttributes<HTMLSpanElement>, "color
   isDisabled?: boolean;
 }
 
-const ChipRoot = (props: ChipRootProps): JSX.Element => {
+const ChipRoot: Layout<typeof componentRecipe, ChipRootProps> = () => {
   const [local, others] = splitProps(props, [
     "children",
     "class",
@@ -111,7 +113,7 @@ interface ChipLabelProps extends JSX.HTMLAttributes<HTMLSpanElement> {
   class?: string;
 }
 
-const ChipLabel = (props: ChipLabelProps): JSX.Element => {
+const ChipLabel: Layout<typeof componentRecipe, ChipLabelProps> = () => {
   const [local, others] = splitProps(props, ["children", "class"]);
 
   return (
