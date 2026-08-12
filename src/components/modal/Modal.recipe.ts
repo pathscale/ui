@@ -1,3 +1,4 @@
+import { recipe } from "../../lib/layouts";
 export const CLASSES = {
   Root: {
     base: "modal",
@@ -84,3 +85,4 @@ export const CLASSES = {
     icon: "modal__close-trigger-icon",
   },
 } as const;
+export const componentRecipe = recipe({component:"modal",slots:{"modal-backdrop":{},"modal-body":{},"modal-close-trigger":{},"modal-close-trigger-icon":{},"modal-container":{},"modal-content":{},"modal-footer":{},"modal-header":{},"modal-heading":{},"modal-icon":{},"modal-root":{},"modal-trigger":{},"root":{},},});
