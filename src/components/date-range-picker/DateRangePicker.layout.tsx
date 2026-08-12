@@ -11,7 +11,9 @@ import {
 } from "../../hooks/date";
 import Calendar, { type CalendarWeekdayFormat } from "../calendar";
 import type { IComponentBaseProps } from "../types";
-import { CLASSES } from "./DateRangePicker.classes";
+import { CLASSES } from "./DateRangePicker.recipe";
+import type { Layout } from "../../lib/layouts";
+import { componentRecipe } from "./DateRangePicker.recipe";
 
 export type DateRangeValue = ControlledDateRangeValue;
 
@@ -42,7 +44,7 @@ export type DateRangePickerProps = Omit<
   IComponentBaseProps &
   DateRangePickerBaseProps;
 
-const DateRangePicker = (props: DateRangePickerProps): JSX.Element => {
+const DateRangePicker: Layout<typeof componentRecipe, DateRangePickerProps> = () => {
   const [local, others] = splitProps(props, [
     "class",
     "className",

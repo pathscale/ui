@@ -1,3 +1,4 @@
+import { recipe } from "../../lib/layouts";
 export const CLASSES = {
   Root: {
     base: "date-range-picker",
@@ -31,3 +32,4 @@ export const CLASSES = {
     base: "date-range-picker__calendar",
   },
 } as const;
+export const componentRecipe = recipe({component:"date-range-picker",slots:{"date-range-picker":{},"date-range-picker-calendar":{},"date-range-picker-end":{},"date-range-picker-popover":{},"date-range-picker-range-separator":{},"date-range-picker-start":{},"date-range-picker-trigger":{},"date-range-picker-trigger-icon":{},"date-range-picker-trigger-indicator":{},"root":{},},});
