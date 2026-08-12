@@ -1,3 +1,4 @@
+import { recipe } from "../../lib/layouts";
 export const CLASSES = {
   base: "label",
   flag: {
@@ -6,3 +7,4 @@ export const CLASSES = {
     invalid: "label--invalid",
   },
 } as const;
+export const componentRecipe = recipe({component:"label",slots:{"label":{},"root":{},},});

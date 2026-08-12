@@ -3,7 +3,9 @@ import { splitProps, type Component, type JSX } from "solid-js";
 import { twMerge } from "tailwind-merge";
 
 import type { IComponentBaseProps } from "../types";
-import { CLASSES } from "./Label.classes";
+import { CLASSES } from "./Label.recipe";
+import type { Layout } from "../../lib/layouts";
+import { componentRecipe } from "./Label.recipe";
 
 export type LabelRootProps = Omit<JSX.LabelHTMLAttributes<HTMLLabelElement>, "for"> &
   IComponentBaseProps & {
@@ -14,7 +16,7 @@ export type LabelRootProps = Omit<JSX.LabelHTMLAttributes<HTMLLabelElement>, "fo
     isInvalid?: boolean;
   };
 
-const LabelRoot: Component<LabelRootProps> = (props) => {
+const LabelRoot: Layout<typeof componentRecipe, LabelRootProps> = () => {
   const [local, others] = splitProps(props, [
     "children",
     "class",
