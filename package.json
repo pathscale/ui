@@ -59,6 +59,7 @@
     "./index.css": "./dist/index.css"
   },
   "devDependencies": {
+    "@babel/core": "^7.29.0",
     "@biomejs/biome": "^2.4.16",
     "@iconify/json": "^2.2.481",
     "@iconify/utils": "^2.3.0",
@@ -125,7 +126,8 @@
   },
   "scripts": {
     "build": "bun run scripts/check-contracts.ts && rslib build && bun run postbuild:manifest",
-    "postbuild:manifest": "bun run node_modules/@pathscale/rsbuild-plugin-ui-css-purge/src/generate-manifest.ts src/components --out dist/purge-manifest.json",
+    "layouts:generate": "bun run scripts/compile-layouts.ts",
+    "postbuild:manifest": "bun run scripts/generate-purge-manifest.ts",
     "build:watch": "rslib build --watch",
     "dev": "rslib dev",
     "preview": "rslib preview",

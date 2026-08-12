@@ -1,1 +1,2 @@
-export { default } from "./Icon";
+export { default } from "./Icon.generated";
+export type { IconProps } from "./Icon.generated";
