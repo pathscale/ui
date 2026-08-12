@@ -4,8 +4,10 @@ import { twMerge } from "tailwind-merge";
 
 import type { CheckboxVariant } from "../checkbox";
 import type { IComponentBaseProps } from "../types";
-import { CLASSES } from "./CheckboxGroup.classes";
+import { CLASSES } from "./CheckboxGroup.recipe";
 import { CheckboxGroupContext, type CheckboxGroupContextValue } from "./context";
+import type { Layout } from "../../lib/layouts";
+import { componentRecipe } from "./CheckboxGroup.recipe";
 
 export type CheckboxGroupVariant = CheckboxVariant;
 
@@ -22,7 +24,7 @@ export type CheckboxGroupProps = Omit<JSX.HTMLAttributes<HTMLDivElement>, "child
     variant?: CheckboxGroupVariant;
   };
 
-const CheckboxGroup: Component<CheckboxGroupProps> = (props) => {
+const CheckboxGroup: Layout<typeof componentRecipe, CheckboxGroupProps> = () => {
   const [local, others] = splitProps(props, [
     "children",
     "class",
