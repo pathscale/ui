@@ -428,10 +428,17 @@ function readPortState(): Map<string, { wired: boolean; classMap: boolean }> {
     for (const file of files) {
       if (!file.endsWith(".recipe.ts")) continue;
       const name = file.slice(0, -".recipe.ts".length);
-      const own = files.find((f) => f === `${name}.tsx`);
-      const wired = own
-        ? readFileSync(join(full, own), "utf8").includes("defineComponent")
-        : false;
+      // Converted means the generator owns it: no hand-written component file
+      // in the directory, and an index.ts that calls defineComponent. Looking
+      // for defineComponent in `<Name>.tsx` was the old shape, where the
+      // wiring was typed out by hand.
+      const legacy = files.some(
+        (f) => f.endsWith(".tsx") && !f.endsWith(".layout.tsx"),
+      );
+      const index = files.includes("index.ts")
+        ? readFileSync(join(full, "index.ts"), "utf8")
+        : "";
+      const wired = !legacy && index.includes("defineComponent");
       state.set(name, {
         wired,
         classMap: files.includes(`${name}.classes.ts`),
