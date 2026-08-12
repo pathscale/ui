@@ -1,4 +1,4 @@
-import ListBoxRoot from "./ListBox";
+import ListBoxRoot from "./ListBox.generated";
 import ListBoxItem, {
   ListBoxItemIndicator,
   ListBoxItemRoot,
@@ -6,12 +6,12 @@ import ListBoxItem, {
   type ListBoxItemProps,
   type ListBoxItemRenderProps,
   type ListBoxItemRootProps,
-} from "./ListBoxItem";
+} from "./ListBoxItem.generated";
 import ListBoxSection, {
   ListBoxSectionRoot,
   type ListBoxSectionProps,
   type ListBoxSectionRootProps,
-} from "./ListBoxSection";
+} from "./ListBoxSection.generated";
 
 const ListBox = Object.assign(ListBoxRoot, {
   Root: ListBoxRoot,
@@ -32,7 +32,7 @@ export {
   ListBoxSectionRoot,
 };
 
-export type { ListBoxProps, ListBoxRootProps } from "./ListBox";
+export type { ListBoxProps, ListBoxRootProps } from "./ListBox.generated";
 export type { ListBoxSelectionMode, ListBoxVariant } from "./context";
 export type {
   ListBoxItemProps,

@@ -2,7 +2,9 @@ import { Show, splitProps, type Component, type JSX } from "solid-js";
 import { twMerge } from "tailwind-merge";
 
 import type { IComponentBaseProps } from "../types";
-import { CLASSES } from "./ListBox.classes";
+import { CLASSES } from "./ListBox.recipe";
+import type { Layout } from "../../lib/layouts";
+import { componentRecipe } from "./ListBox.recipe";
 
 export type ListBoxSectionRootProps = Omit<JSX.HTMLAttributes<HTMLDivElement>, "children"> &
   IComponentBaseProps & {
@@ -10,7 +12,7 @@ export type ListBoxSectionRootProps = Omit<JSX.HTMLAttributes<HTMLDivElement>, "
     title?: JSX.Element;
   };
 
-const ListBoxSectionRoot: Component<ListBoxSectionRootProps> = (props) => {
+const ListBoxSectionRoot: Layout<typeof componentRecipe, ListBoxSectionRootProps> = () => {
   const [local, others] = splitProps(props, [
     "children",
     "class",

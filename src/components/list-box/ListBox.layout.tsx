@@ -10,7 +10,7 @@ import {
 import { twMerge } from "tailwind-merge";
 
 import type { IComponentBaseProps } from "../types";
-import { CLASSES } from "./ListBox.classes";
+import { CLASSES } from "./ListBox.recipe";
 import {
   ListBoxContext,
   type ListBoxFocusTarget,
@@ -18,6 +18,8 @@ import {
   type ListBoxSelectionMode,
   type ListBoxVariant,
 } from "./context";
+import type { Layout } from "../../lib/layouts";
+import { componentRecipe } from "./ListBox.recipe";
 
 const normalizeKeys = (keys?: Iterable<string | number>): Set<string> => {
   if (!keys) return new Set();
@@ -64,7 +66,7 @@ export type ListBoxRootProps<T = unknown> = Omit<
     disabled?: boolean;
   };
 
-const ListBoxRoot: Component<ListBoxRootProps> = (props) => {
+const ListBoxRoot: Layout<typeof componentRecipe, ListBoxRootProps> = () => {
   const [local, others] = splitProps(props, [
     "children",
     "class",
