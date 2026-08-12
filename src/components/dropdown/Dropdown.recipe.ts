@@ -1,3 +1,4 @@
+import { recipe } from "../../lib/layouts";
 export const CLASSES = {
   base: "dropdown",
   slot: {
@@ -9,3 +10,4 @@ export const CLASSES = {
     separator: "dropdown__separator",
   },
 } as const;
+export const componentRecipe = recipe({component:"dropdown",slots:{"dropdown":{},"dropdown-group":{},"dropdown-menu":{},"dropdown-popover":{},"dropdown-trigger":{},"menu-item":{},"root":{},"separator":{},},});

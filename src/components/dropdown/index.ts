@@ -1,4 +1,4 @@
-export { default, Dropdown } from "./Dropdown";
+export { default, Dropdown } from "./Dropdown.generated";
 export type {
   DropdownAlign,
   DropdownPlacement,
@@ -8,4 +8,4 @@ export type {
   DropdownItemProps,
   DropdownGroupProps,
   DropdownSeparatorProps,
-} from "./Dropdown";
+} from "./Dropdown.generated";
