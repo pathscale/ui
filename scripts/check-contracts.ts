@@ -19,6 +19,14 @@ function toPascalCase(kebab: string): string {
   return kebab.replace(/(^|-)([a-z])/g, (_, __, c) => c.toUpperCase());
 }
 
+/**
+ * Comments describe patterns, including the ones these rules ban. Scanning them
+ * makes documenting a mistake indistinguishable from making it.
+ */
+function stripComments(source: string): string {
+  return source.replace(/\/\*[\s\S]*?\*\//g, "").replace(/\/\/[^\n]*/g, "");
+}
+
 type Violation = { component: string; rule: string; detail: string; section: string };
 
 const violations: Violation[] = [];
@@ -58,16 +66,64 @@ for (const entry of entries) {
   const source = readFileSync(mainPath, "utf8");
   const index = readFileSync(indexPath, "utf8");
 
+  const classesPath = join(componentDir, `${pascal}.classes.ts`);
+  const classesSource = existsSync(classesPath)
+    ? readFileSync(classesPath, "utf8")
+    : "";
+
+  const layoutPath = join(componentDir, `${pascal}.layout.tsx`);
+  const hasLayout = existsSync(layoutPath);
+
   // --- Props rules ---
 
-  // Must use splitProps
-  if (!source.includes("splitProps")) {
-    fail(dir, "props", "must use splitProps to separate component props from HTML pass-through", "Props");
+  // Must separate component props from HTML pass-through. `splitBase` is the
+  // shared form of the same call.
+  if (!source.includes("splitProps") && !source.includes("splitBase")) {
+    fail(dir, "props", "must use splitProps/splitBase to separate component props from HTML pass-through", "Props");
   }
 
-  // Must use twMerge for class merging
-  if (!source.includes("twMerge")) {
-    fail(dir, "props", "must use twMerge() for class merging", "Props");
+  // Class composition must go through one of the approved paths. `twMerge` is
+  // the original one and is still correct for components that emit Tailwind;
+  // a `recipe()` in the component's own .classes.ts is the newer one and is
+  // preferred, because it picks the right merge strategy itself instead of
+  // making every call site pay for Tailwind parsing it does not need.
+  const composesClasses =
+    source.includes("twMerge") ||
+    classesSource.includes("recipe(") ||
+    source.includes("cx(");
+  if (!composesClasses) {
+    fail(dir, "props", "must compose classes via recipe() in its .classes.ts, or twMerge() for Tailwind-emitting components", "Props");
+  }
+
+  // --- Layer separation rules ---
+
+  if (hasLayout) {
+    const layout = readFileSync(layoutPath, "utf8");
+
+    // A layout file is markup. State belongs in the hook file, or the split
+    // has bought nothing: logic that leaks back into the layout is exactly the
+    // interleaving this structure exists to prevent.
+    const STATE_PRIMITIVES = [
+      "createSignal",
+      "createEffect",
+      "createMemo",
+      "createStore",
+      "createResource",
+      "onMount",
+    ];
+    const leaked = STATE_PRIMITIVES.filter((p) => layout.includes(`${p}(`));
+    if (leaked.length) {
+      fail(dir, "layering", `${pascal}.layout.tsx must contain markup only, found: ${leaked.join(", ")}`, "Layering");
+    }
+
+    // Hooks must be called in the component body and the result passed down.
+    // Called in a JSX prop position the call runs under the child's reactive
+    // scope, and anything the model reads later from an event handler has lost
+    // its owner. This matches `model={createFoo(props)}` / `form={useBar()}`.
+    const inJsx = stripComments(source).match(/=\{\s*(create|use)[A-Z]\w*\(/);
+    if (inJsx) {
+      fail(dir, "layering", `hook called in a JSX prop position ("${inJsx[0].trim()}…"); assign it in the component body and pass the result`, "Layering");
+    }
   }
 
   // --- Code style rules ---
