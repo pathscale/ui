@@ -2,6 +2,8 @@ import { type Component, splitProps } from "solid-js";
 import { twMerge } from "tailwind-merge";
 import Button from "../button";
 import type { IComponentBaseProps } from "../types";
+import type { Layout } from "../../lib/layouts";
+import { componentRecipe } from "./Table.recipe";
 
 export type InlineConfirmVariant = "primary" | "danger" | "warning";
 
@@ -22,7 +24,7 @@ const toButtonVariant = (variant: InlineConfirmVariant) => {
   return "primary";
 };
 
-const InlineConfirm: Component<InlineConfirmProps> = (props) => {
+const InlineConfirm: Layout<typeof componentRecipe, InlineConfirmProps> = () => {
   const [local, rest] = splitProps(props, [
     "prompt",
     "confirmLabel",
