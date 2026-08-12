@@ -132,9 +132,9 @@ const isExpanded = () =>                                // behaviour
                       │                                        │
                       └──────────────┬────────────────────────-┘
                                      ▼
-                          p.slot.root = class + data-*
+                       props.slot.root = class + data-*
                                      ▼
-                     <div {...p.slot.root}>   Accordion.layout.tsx
+                  <div {...slot.root}>   Accordion.layout.tsx
 ```
 
 The setup function never sees a presentation prop. Its argument type contains behaviour only.
@@ -228,7 +228,7 @@ import type { Layout } from "solid-layouts";
 import { accordionTrigger } from "./Accordion.recipe";
 
 export const AccordionTriggerLayout: Layout<typeof accordionTrigger> =
-  ({ slot, children }, p) => (
+  ({ slot, children }, props) => (
     <button {...slot.root} type="button">
       {children}
       <span {...slot.indicator} />
@@ -369,7 +369,7 @@ export const accordionItem = recipe({
 
 ```ts
 // what a slot resolves to
-p.slot.root
+slot.root
 // {
 //   class: "accordion__item accordion__item--primary accordion__item--expanded",
 //   "data-slot": "accordion-item-root",
@@ -494,21 +494,22 @@ const AccordionItem: ParentComponent<AccordionItemProps> = (props) => {
 // accordion.ts
 type ItemBehaviour = { value?: string; disabled?: boolean };
 
-export function createAccordionItem(p: ItemBehaviour) {
+export function createAccordionItem(behaviour: ItemBehaviour) {
   const accordion = useAccordion();
-  const value = () => p.value ?? p.slotId("root");
+  const value = () => behaviour.value ?? behaviour.slotId("root");
 
   return {
     value,
     expanded: () => accordion?.isExpanded(value()) ?? false,
-    disabled: () => Boolean(p.disabled) || Boolean(accordion?.disabled()),
-    toggle:   () => accordion?.toggle(value()),
+    disabled: () =>
+      Boolean(behaviour.disabled) || Boolean(accordion?.disabled()),
+    toggle: () => accordion?.toggle(value()),
   };
 }
 ```
 
 No `tone`, no `hideSeparator`, no `class`, no `style`. The keys it returns are the recipe's
-`state` keys, which is how the two halves meet. `p.slotId(name)` is how logic reaches a slot's
+`state` keys, which is how the two halves meet. `props.slotId(name)` is how logic reaches a slot's
 per-instance id, and `name` is checked against the recipe's declared slots.
 
 ### VUE3
@@ -579,10 +580,10 @@ import type { Layout } from "solid-layouts";
 import { accordionTrigger } from "./Accordion.recipe";
 
 export const AccordionTriggerLayout: Layout<typeof accordionTrigger> =
-  ({ slot, children }, p) => (
+  ({ slot, children }, props) => (
     <button {...slot.root} type="button">
       {children}
-      <Show when={p.showIndicator}>
+      <Show when={props.showIndicator}>
         <span {...slot.indicator} />
       </Show>
     </button>
@@ -594,7 +595,7 @@ only import from `solid-layouts` is `import type`, which TypeScript erases entir
 footprint of a layout file is the JSX and nothing else.
 
 The recipe survives only in type position, which is where it belongs: it was never runtime
-information, it was the thing that gives `p` its shape. `defineComponent` constructs `p` and calls
+information, it was the thing that gives `props` its shape. `defineComponent` constructs `p` and calls
 the function.
 
 ### VUE3
@@ -659,8 +660,8 @@ layout, and passes the rest to `setup`.
 ### What stays explicit, and why
 
 `Layout<typeof accordionTrigger>` keeps naming the recipe, in type position. That annotation is
-what types `p`, so `p.slot.indicator` is checkable and `p.expanded` is not `any`. Inferring it
-from a sibling filename would mean `p` has no type until a build step runs, breaking the rule that
+what types `props`, so `props.slot.indicator` is checkable and `props.expanded` is not `any`. Inferring it
+from a sibling filename would mean `props` has no type until a build step runs, breaking the rule that
 plain `tsc` works with no tooling.
 
 The rule: **implicit where the information is derivable and the reader loses nothing, explicit
@@ -680,7 +681,7 @@ it. But not everything handed to a layout is reactive, and the two kinds must no
 destructuring statement:
 
 ```tsx
-const { slot, children, showIndicator } = p;   // WRONG
+const { slot, children, showIndicator } = props;   // WRONG
 ```
 
 `slot` is a stable object, `children` is created once, and `showIndicator` is reactive. Written
@@ -689,7 +690,7 @@ other two.
 
 Splitting the parameter makes the distinction structural rather than a thing to remember. The
 first parameter holds only what is safe to destructure, so `{...slot.root}` and `{children}` are
-bare. Everything reactive stays behind `p`, where the access is visible at the point of use. The
+bare. Everything reactive stays behind `props`, where the access is visible at the point of use. The
 type system enforces it: `showIndicator` is not on the first parameter, so it cannot be
 destructured by accident.
 
@@ -976,7 +977,7 @@ Three things to measure once a migration exists, rather than argue about now:
 2. **Per-instance cost** of the shared layout versus a bespoke one, which is the number that
    decides whether aggressive sharing is right.
 3. **Whether the Phase 2 pass is worth building at all**, by measuring what `defineComponent` and
-   the `p` getter construction actually cost per component instance under an interpreter.
+   the `props` getter construction actually cost per component instance under an interpreter.
 
 ---
 
@@ -1008,7 +1009,7 @@ section 11 exists to remove. The division is data against behaviour:
 | Compiled in, per component, as data | Shared at runtime, once |
 | --- | --- |
 | slot names | applying a lookup table to a selection |
-| the variant lookup table | constructing the getters behind `p` |
+| the variant lookup table | constructing the getters behind `props` |
 | the `data-*` keys | the defaults cascade |
 | which props are presentation, which are state | resolving children |
 
@@ -1063,7 +1064,7 @@ declared, no duplicate slot names within a component.
 
 ### Phase 2 — a Rust pass, only if JSX-level rewriting is wanted
 
-Dropping the `p.` prefix and any `@once` placement means rewriting JSX, and that must happen
+Dropping the `props.` prefix and any `@once` placement means rewriting JSX, and that must happen
 **before** Solid's JSX transform, which lowers JSX to `template()` and `spread()` calls after
 which prop information is gone.
 
@@ -1163,7 +1164,7 @@ the authoring layer.
 ### How much is left for Phase 2
 
 Less than it first appeared. The bundle win in section 11 comes from the shared layout, a runtime
-change needing no tooling. After codegen removes the wiring, Phase 2 buys the `p.` prefix and the
+change needing no tooling. After codegen removes the wiring, Phase 2 buys the `props.` prefix and the
 `@once` research. Both worth doing, neither urgent, neither blocking.
 
 **The compiler is load-bearing.** An earlier revision of this document claimed the opposite,
@@ -1187,20 +1188,20 @@ declared-but-unrendered and rendered-but-undeclared. A component rendering twice
 file imports nothing from `solid-layouts` at runtime.
 
 **The two-parameter signature is load-bearing.** It is what makes `{...slot.root}` and
-`{children}` safe to destructure while keeping reactive reads behind `p`. Collapsing it to one
+`{children}` safe to destructure while keeping reactive reads behind `props`. Collapsing it to one
 parameter reintroduces the destructuring footgun.
 
-**`p.slot.root` takes no arguments.** The recipe declares both `props` and `state` key names, so
+**`props.slot.root` takes no arguments.** The recipe declares both `props` and `state` key names, so
 `layout()` knows which to read from the call site and which from the model. A `state` key returned
 by setup must match a `state` key in the recipe; a name in both groups is an error at definition
 time.
 
-**`p.expanded` is a value, not `p.expanded()`.** `layout()` builds `p` with getters over the
+**`props.expanded` is a value, not `props.expanded()`.** `layout()` builds `props` with getters over the
 model's accessors, so reading it inside JSX tracks the same as calling the accessor.
 
-**`__` marks the compiler-to-runtime boundary.** A `__`-prefixed name is
+**`_layouts` marks the compiler-to-runtime boundary.** That key is
 written by the compiler, read by the runtime, and carries no stability
-guarantee. Nothing `__`-prefixed appears in the package's public exports.
+guarantee. Nothing `_layouts` appears in the package's public exports.
 
 Known gaps against VUE3: no `<template>` block, no scoped styles, and no named slots in the Vue
 sense (a content slot here is just a prop holding JSX, distinct from the element slots in
