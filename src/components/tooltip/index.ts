@@ -9,4 +9,4 @@ export {
   type TooltipTriggerProps,
   type TooltipContentProps,
   type TooltipArrowProps,
-} from "./Tooltip";
+} from "./Tooltip.generated";
