@@ -11,4 +11,4 @@ export {
   type AlertContentProps,
   type AlertTitleProps,
   type AlertDescriptionProps,
-} from "./Alert";
+} from "./Alert.generated";

@@ -10,7 +10,9 @@ import {
 } from "solid-js";
 import { twMerge } from "tailwind-merge";
 import type { IComponentBaseProps } from "../types";
-import { CLASSES } from "./Alert.classes";
+import { CLASSES } from "./Alert.recipe";
+import type { Layout } from "../../lib/layouts";
+import { componentRecipe } from "./Alert.recipe";
 
 /* -------------------------------------------------------------------------------------------------
  * Alert Context
@@ -132,7 +134,7 @@ const STATUS_ICON_MAP: Record<AlertStatus, Component> = {
 /* -------------------------------------------------------------------------------------------------
  * Alert Root
  * -----------------------------------------------------------------------------------------------*/
-const AlertRoot: ParentComponent<AlertRootProps> = (props) => {
+const AlertRoot: Layout<typeof componentRecipe, AlertRootProps> = () => {
   const [local, others] = splitProps(props, [
     "children",
     "class",
@@ -166,7 +168,7 @@ const AlertRoot: ParentComponent<AlertRootProps> = (props) => {
 /* -------------------------------------------------------------------------------------------------
  * Alert Indicator
  * -----------------------------------------------------------------------------------------------*/
-const AlertIndicator: Component<AlertIndicatorProps> = (props) => {
+const AlertIndicator: Layout<typeof componentRecipe, AlertIndicatorProps> = () => {
   const [local, others] = splitProps(props, [
     "children",
     "class",
@@ -200,7 +202,7 @@ const AlertIndicator: Component<AlertIndicatorProps> = (props) => {
 /* -------------------------------------------------------------------------------------------------
  * Alert Content
  * -----------------------------------------------------------------------------------------------*/
-const AlertContent: ParentComponent<AlertContentProps> = (props) => {
+const AlertContent: Layout<typeof componentRecipe, AlertContentProps> = () => {
   const [local, others] = splitProps(props, [
     "children",
     "class",
@@ -225,7 +227,7 @@ const AlertContent: ParentComponent<AlertContentProps> = (props) => {
 /* -------------------------------------------------------------------------------------------------
  * Alert Title
  * -----------------------------------------------------------------------------------------------*/
-const AlertTitle: ParentComponent<AlertTitleProps> = (props) => {
+const AlertTitle: Layout<typeof componentRecipe, AlertTitleProps> = () => {
   const [local, others] = splitProps(props, [
     "children",
     "class",
@@ -250,7 +252,7 @@ const AlertTitle: ParentComponent<AlertTitleProps> = (props) => {
 /* -------------------------------------------------------------------------------------------------
  * Alert Description
  * -----------------------------------------------------------------------------------------------*/
-const AlertDescription: ParentComponent<AlertDescriptionProps> = (props) => {
+const AlertDescription: Layout<typeof componentRecipe, AlertDescriptionProps> = () => {
   const [local, others] = splitProps(props, [
     "children",
     "class",

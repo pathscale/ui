@@ -1,3 +1,4 @@
+import { recipe } from "../../lib/layouts";
 export const CLASSES = {
   base: "alert",
   slot: {
@@ -14,3 +15,4 @@ export const CLASSES = {
     danger: "alert--danger",
   },
 } as const;
+export const componentRecipe = recipe({component:"alert",slots:{"alert-content":{},"alert-default-icon":{},"alert-description":{},"alert-indicator":{},"alert-root":{},"alert-title":{},"root":{},},});
