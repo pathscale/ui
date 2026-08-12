@@ -7,7 +7,7 @@
     "url": "https://github.com/pathscale/ui"
   },
   "license": "MIT",
-  "description": "Highly opinionated SolidJS component library — batteries and kitchen sink included, but optimized and shiny.",
+  "description": "Highly opinionated SolidJS component library \u2014 batteries and kitchen sink included, but optimized and shiny.",
   "files": [
     "dist"
   ],
@@ -96,7 +96,8 @@
     "@pathscale/rsbuild-plugin-iconify": "^1.0.4",
     "@pathscale/ui": "^1.2.10",
     "@tanstack/solid-virtual": "^3.13.27",
-    "tailwind-merge": "^3.6.0"
+    "tailwind-merge": "^3.6.0",
+    "solid-layouts": "file:../solid-layouts/packages/solid-layouts"
   },
   "peerDependencies": {
     "@solid-primitives/event-listener": "^2.3.0",
