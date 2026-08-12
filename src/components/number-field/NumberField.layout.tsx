@@ -13,7 +13,9 @@ import {
 import { twMerge } from "tailwind-merge";
 
 import type { IComponentBaseProps } from "../types";
-import { CLASSES } from "./NumberField.classes";
+import { CLASSES } from "./NumberField.recipe";
+import type { Layout } from "../../lib/layouts";
+import { componentRecipe } from "./NumberField.recipe";
 
 export type NumberFieldVariant = "primary" | "secondary";
 
@@ -119,7 +121,7 @@ export type NumberFieldDecrementButtonProps = Omit<
 > &
   IComponentBaseProps;
 
-const NumberFieldRoot: ParentComponent<NumberFieldRootProps> = (props) => {
+const NumberFieldRoot: Layout<typeof componentRecipe, NumberFieldRootProps> = () => {
   const [local, others] = splitProps(props, [
     "children",
     "class",
@@ -255,7 +257,7 @@ const NumberFieldRoot: ParentComponent<NumberFieldRootProps> = (props) => {
   );
 };
 
-const NumberFieldGroup: ParentComponent<NumberFieldGroupProps> = (props) => {
+const NumberFieldGroup: Layout<typeof componentRecipe, NumberFieldGroupProps> = () => {
   const context = useContext(NumberFieldContext);
   const [local, others] = splitProps(props, ["children", "class", "className", "dataTheme", "style"]);
 
@@ -285,7 +287,7 @@ const NumberFieldGroup: ParentComponent<NumberFieldGroupProps> = (props) => {
   );
 };
 
-const NumberFieldInput: Component<NumberFieldInputProps> = (props) => {
+const NumberFieldInput: Layout<typeof componentRecipe, NumberFieldInputProps> = () => {
   const context = useContext(NumberFieldContext);
   const [local, others] = splitProps(props, [
     "class",
@@ -331,7 +333,7 @@ const NumberFieldInput: Component<NumberFieldInputProps> = (props) => {
   );
 };
 
-const NumberFieldIncrementButton: Component<NumberFieldIncrementButtonProps> = (props) => {
+const NumberFieldIncrementButton: Layout<typeof componentRecipe, NumberFieldIncrementButtonProps> = () => {
   const context = useContext(NumberFieldContext);
   const [local, others] = splitProps(props, ["children", "class", "className", "dataTheme", "style", "onClick"]);
 
@@ -372,7 +374,7 @@ const NumberFieldIncrementButton: Component<NumberFieldIncrementButtonProps> = (
   );
 };
 
-const NumberFieldDecrementButton: Component<NumberFieldDecrementButtonProps> = (props) => {
+const NumberFieldDecrementButton: Layout<typeof componentRecipe, NumberFieldDecrementButtonProps> = () => {
   const context = useContext(NumberFieldContext);
   const [local, others] = splitProps(props, ["children", "class", "className", "dataTheme", "style", "onClick"]);
 
