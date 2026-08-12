@@ -4,4 +4,4 @@ export {
   BreadcrumbsItem,
   type BreadcrumbsRootProps,
   type BreadcrumbsItemProps,
-} from "./Breadcrumbs";
+} from "./Breadcrumbs.generated";
