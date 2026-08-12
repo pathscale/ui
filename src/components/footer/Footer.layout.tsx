@@ -1,17 +1,20 @@
 import "./footer.css";
-import { type ParentComponent, splitProps } from "solid-js";
+import { type JSX, type ParentComponent, splitProps } from "solid-js";
 import { twMerge } from "tailwind-merge";
 import type { IComponentBaseProps } from "../types";
-import { FooterTitle } from "./FooterTitle";
-import { CLASSES } from "./Footer.classes";
+import { FooterTitle } from "./FooterTitle.generated";
+import { CLASSES } from "./Footer.recipe";
+import type { Layout } from "../../lib/layouts";
+import { componentRecipe } from "./Footer.recipe";
 
 export type FooterProps = IComponentBaseProps & {
+  children?: JSX.Element;
   center?: boolean;
   horizontal?: boolean;
   vertical?: boolean;
 };
 
-const Footer: ParentComponent<FooterProps> = (props) => {
+const Footer: Layout<typeof componentRecipe, FooterProps> = () => {
   const [local, others] = splitProps(props, [
     "children",
     "class",
