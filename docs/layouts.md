@@ -177,8 +177,8 @@ export const AccordionTriggerLayout: Layout<typeof accordionTrigger> =
 ```ts
 type Slots = SlotsOf<typeof accordionTrigger>;   // "root" | "indicator"
 
-p.slot.indicator     // ok
-p.slot.indictor      // Type error: not a slot of accordion-trigger
+slot.indicator       // ok
+slot.indictor        // Type error: not a slot of accordion-trigger
 ```
 
 Build time, the generator additionally rejects a declared slot that is never rendered, and a
