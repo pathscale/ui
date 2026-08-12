@@ -25,8 +25,10 @@ import {
   type DrawerScrollBehavior,
   type DrawerSize,
 } from "./Drawer.a11y";
-import { CLASSES } from "./Drawer.classes";
+import { CLASSES } from "./Drawer.recipe";
 import { DrawerContext, useDrawerContext, type DrawerContextValue } from "./Drawer.context";
+import type { Layout } from "../../lib/layouts";
+import { componentRecipe } from "./Drawer.recipe";
 
 export type {
   DrawerPlacement,
@@ -165,7 +167,7 @@ export type DrawerCloseProps = {
 
 const EXIT_MS = 200;
 
-const DrawerRoot: ParentComponent<DrawerRootProps> = (props) => {
+const DrawerRoot: Layout<typeof componentRecipe, DrawerRootProps> = () => {
   const [local, others] = splitProps(props, [
     "children",
     "class",
@@ -371,7 +373,7 @@ const DrawerRoot: ParentComponent<DrawerRootProps> = (props) => {
   );
 };
 
-const DrawerTrigger: Component<DrawerTriggerProps> = (props) => {
+const DrawerTrigger: Layout<typeof componentRecipe, DrawerTriggerProps> = () => {
   const [local, others] = splitProps(props, [
     "children",
     "class",
@@ -403,7 +405,7 @@ const DrawerTrigger: Component<DrawerTriggerProps> = (props) => {
   );
 };
 
-const DrawerContent: ParentComponent<DrawerContentProps> = (props) => {
+const DrawerContent: Layout<typeof componentRecipe, DrawerContentProps> = () => {
   const [local, others] = splitProps(props, [
     "children",
     "class",
@@ -449,7 +451,7 @@ const DrawerContent: ParentComponent<DrawerContentProps> = (props) => {
   );
 };
 
-const DrawerBackdrop: ParentComponent<DrawerBackdropProps> = (props) => {
+const DrawerBackdrop: Layout<typeof componentRecipe, DrawerBackdropProps> = () => {
   const [local, others] = splitProps(props, [
     "children",
     "class",
@@ -517,7 +519,7 @@ const SIDE_MAP: Record<DrawerDialogSide, string> = {
   left: "drawer__dialog--side-left",
   right: "drawer__dialog--side-right",
 };
-const DrawerDialog: ParentComponent<DrawerDialogProps> = (props) => {
+const DrawerDialog: Layout<typeof componentRecipe, DrawerDialogProps> = () => {
   const [local, others] = splitProps(props, [
     "children",
     "class",
@@ -596,7 +598,7 @@ const DrawerDialog: ParentComponent<DrawerDialogProps> = (props) => {
   );
 };
 
-const DrawerHeader: ParentComponent<DrawerHeaderProps> = (props) => {
+const DrawerHeader: Layout<typeof componentRecipe, DrawerHeaderProps> = () => {
   const [local, others] = splitProps(props, [
     "children",
     "class",
@@ -618,7 +620,7 @@ const DrawerHeader: ParentComponent<DrawerHeaderProps> = (props) => {
   );
 };
 
-const DrawerHeading: ParentComponent<DrawerHeadingProps> = (props) => {
+const DrawerHeading: Layout<typeof componentRecipe, DrawerHeadingProps> = () => {
   const [local, others] = splitProps(props, [
     "children",
     "class",
@@ -653,7 +655,7 @@ const DrawerHeading: ParentComponent<DrawerHeadingProps> = (props) => {
   );
 };
 
-const DrawerBody: ParentComponent<DrawerBodyProps> = (props) => {
+const DrawerBody: Layout<typeof componentRecipe, DrawerBodyProps> = () => {
   const [local, others] = splitProps(props, [
     "children",
     "class",
@@ -688,7 +690,7 @@ const DrawerBody: ParentComponent<DrawerBodyProps> = (props) => {
   );
 };
 
-const DrawerFooter: ParentComponent<DrawerFooterProps> = (props) => {
+const DrawerFooter: Layout<typeof componentRecipe, DrawerFooterProps> = () => {
   const [local, others] = splitProps(props, [
     "children",
     "class",
@@ -710,7 +712,7 @@ const DrawerFooter: ParentComponent<DrawerFooterProps> = (props) => {
   );
 };
 
-const DrawerHandle: Component<DrawerHandleProps> = (props) => {
+const DrawerHandle: Layout<typeof componentRecipe, DrawerHandleProps> = () => {
   const [local, others] = splitProps(props, ["class", "className", "dataTheme", "style"]);
 
   return (
@@ -727,7 +729,7 @@ const DrawerHandle: Component<DrawerHandleProps> = (props) => {
   );
 };
 
-const DrawerCloseTrigger: Component<DrawerCloseTriggerProps> = (props) => {
+const DrawerCloseTrigger: Layout<typeof componentRecipe, DrawerCloseTriggerProps> = () => {
   const [local, others] = splitProps(props, [
     "children",
     "class",
@@ -773,7 +775,7 @@ const DrawerCloseTrigger: Component<DrawerCloseTriggerProps> = (props) => {
   );
 };
 
-const DrawerClose: ParentComponent<DrawerCloseProps> = (props) => {
+const DrawerClose: Layout<typeof componentRecipe, DrawerCloseProps> = () => {
   const ctx = useDrawerContext();
 
   const handleClick = () => {
