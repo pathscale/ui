@@ -3,6 +3,8 @@ import Button from "../button";
 import type { ButtonProps } from "../button";
 import { useFormContext } from "../../hooks/form/FormContext";
 import type { AnyFormApi } from "../../hooks/form/FormContext";
+import type { Layout } from "../../lib/layouts";
+import { componentRecipe } from "./Form.recipe";
 
 // ---------------------------------------------------------------------------
 // Types
@@ -34,7 +36,7 @@ export type FormSubmitButtonProps = Omit<ButtonProps, "type" | "isDisabled" | "i
  * </Form>
  * ```
  */
-const FormSubmitButton: ParentComponent<FormSubmitButtonProps> = (props) => {
+const FormSubmitButton: Layout<typeof componentRecipe, FormSubmitButtonProps> = () => {
   const [local, others] = splitProps(props, ["form", "children"]);
 
   const resolveForm = (): AnyFormApi => {

@@ -3,12 +3,14 @@ import { splitProps, type Component, type JSX } from "solid-js";
 import { twMerge } from "tailwind-merge";
 
 import type { IComponentBaseProps } from "../types";
-import { CLASSES } from "./Form.classes";
+import { CLASSES } from "./Form.recipe";
 import { FormContext, type AnyFormApi } from "../../hooks/form/FormContext";
+import type { Layout } from "../../lib/layouts";
+import { componentRecipe } from "./Form.recipe";
 
 export type FormRootProps = JSX.FormHTMLAttributes<HTMLFormElement> & IComponentBaseProps;
 
-const FormRoot: Component<FormRootProps> = (props) => {
+const FormRoot: Layout<typeof componentRecipe, FormRootProps> = () => {
   const [local, others] = splitProps(props, [
     "class",
     "className",
@@ -43,7 +45,7 @@ export type FormWithContextProps = Omit<JSX.FormHTMLAttributes<HTMLFormElement>,
     onSubmit?: JSX.EventHandlerUnion<HTMLFormElement, SubmitEvent>;
   };
 
-const FormWithContext: Component<FormWithContextProps> = (props) => {
+const FormWithContext: Layout<typeof componentRecipe, FormWithContextProps> = () => {
   const [local, others] = splitProps(props, [
     "form",
     "class",
@@ -94,7 +96,7 @@ const FormWithContext: Component<FormWithContextProps> = (props) => {
  * <Form form={form} class="space-y-4">{...}</Form>
  * ```
  */
-const Form = (props: FormRootProps | FormWithContextProps): JSX.Element => {
+const Form: Layout<typeof componentRecipe, FormRootProps | FormWithContextProps> = () => {
   if ("form" in props && props.form != null) {
     return <FormWithContext {...(props as FormWithContextProps)} />;
   }

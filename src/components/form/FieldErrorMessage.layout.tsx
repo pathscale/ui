@@ -1,5 +1,7 @@
 import { Show, type Component, type JSX } from "solid-js";
 import { twMerge } from "tailwind-merge";
+import type { Layout } from "../../lib/layouts";
+import { componentRecipe } from "./Form.recipe";
 
 export type FieldErrorMessageProps = JSX.HTMLAttributes<HTMLParagraphElement> & {
   /** Pre-normalized error string. Renders nothing when undefined or empty. */
@@ -15,7 +17,7 @@ export type FieldErrorMessageProps = JSX.HTMLAttributes<HTMLParagraphElement> & 
  *
  * Hidden (returns null) when `message` is undefined or empty.
  */
-const FieldErrorMessage: Component<FieldErrorMessageProps> = (props) => {
+const FieldErrorMessage: Layout<typeof componentRecipe, FieldErrorMessageProps> = () => {
   return (
     <Show when={props.message}>
       <p
