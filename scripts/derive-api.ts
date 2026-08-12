@@ -308,12 +308,33 @@ function readComponentApi(): Map<string, Set<string>> {
           }
         }
         // `type XProps = ... & { foo?: Bar }` — the declared surface.
-        if (ts.isTypeLiteralNode(node)) {
-          for (const member of node.members) {
-            if (ts.isPropertySignature(member) && member.name) {
-              props.add(
-                member.name.getText(source).replace(/^["']|["']$/g, ""),
-              );
+        //
+        // Scoped to declarations whose name ends in `Props`, because a
+        // component file is full of other type literals: the object type of a
+        // compound export (`Modal.Root`), a context shape (`registerTab`), an
+        // internal row type. Collecting those made almost every component look
+        // as though it had behaviour to preserve.
+        if (
+          (ts.isTypeAliasDeclaration(node) ||
+            ts.isInterfaceDeclaration(node)) &&
+          node.name.text.endsWith("Props")
+        ) {
+          const lists: ts.NodeArray<ts.TypeElement>[] = [];
+          if (ts.isInterfaceDeclaration(node)) lists.push(node.members);
+          else {
+            const collect = (inner: ts.Node): void => {
+              if (ts.isTypeLiteralNode(inner)) lists.push(inner.members);
+              ts.forEachChild(inner, collect);
+            };
+            collect(node.type);
+          }
+          for (const list of lists) {
+            for (const member of list) {
+              if (ts.isPropertySignature(member) && member.name) {
+                props.add(
+                  member.name.getText(source).replace(/^["']|["']$/g, ""),
+                );
+              }
             }
           }
         }
@@ -403,6 +424,13 @@ type Report = {
   html: string[];
   /** Neither presentation nor HTML: each one needs a destination chosen. */
   undecided: { name: string; count: number; values: string[]; live: boolean }[];
+  /**
+   * Props the component declares that no consumer happens to pass, and that
+   * neither the recipe nor the HTML bucket covers. A port driven by usage
+   * alone would drop these silently: nothing in the corpus fails, and the prop
+   * stops working for whoever does use it.
+   */
+  behaviour: string[];
   unusedAxes: string[];
   hasRecipe: boolean;
 };
@@ -436,12 +464,24 @@ for (const [component, props] of [...usage].sort()) {
 
   undecided.sort((a, b) => b.count - a.count);
 
+  const behaviour = [...(current.get(base) ?? [])]
+    .filter(
+      (name) =>
+        !ESCAPE_HATCHES.has(name) &&
+        !isPlainHtml(name) &&
+        !recipe?.props.has(name) &&
+        !recipe?.state.has(name) &&
+        !props.has(name),
+    )
+    .sort();
+
   report.push({
     component,
     callSites,
     presentation: presentation.sort(),
     html: html.sort(),
     undecided,
+    behaviour: component.includes(".") ? [] : behaviour,
     // Only the root reports unused axes. A sub-component shares its parent's
     // recipe, so repeating them there says the same thing once per slot.
     unusedAxes:
