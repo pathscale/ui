@@ -12,7 +12,9 @@ import {
   type OverlayPlacement,
 } from "../_shared/overlayPosition";
 import { createHueShiftStore, type HueShiftStore } from "./hueShift";
-import { CLASSES } from "./ThemeColorPicker.classes";
+import { CLASSES } from "./ThemeColorPicker.recipe";
+import type { Layout } from "../../lib/layouts";
+import { componentRecipe } from "./ThemeColorPicker.recipe";
 
 export type ThemeColorPickerAlign = "start" | "end";
 export type ThemeColorPickerPlacement = OverlayPlacement;
@@ -67,7 +69,7 @@ function hexToColorValue(hex: string | null): ColorValue {
   return parseColor(hex) ?? createColorFromHsl(0, 0, 100, 1);
 }
 
-const ThemeColorPicker: Component<ThemeColorPickerProps> = (props) => {
+const ThemeColorPicker: Layout<typeof componentRecipe, ThemeColorPickerProps> = () => {
   const [local, others] = splitProps(props, [
     "storagePrefix",
     "onColorChange",

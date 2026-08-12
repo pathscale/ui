@@ -1,3 +1,4 @@
+import { recipe } from "../../lib/layouts";
 export const CLASSES = {
   base: "relative",
   iconActive: "text-primary",
@@ -10,3 +11,4 @@ export const CLASSES = {
   grayscaleList: "flex flex-col gap-1.5",
   swatchButton: "h-6 w-6 rounded-full border border-white/20 transition-transform hover:scale-110",
 } as const;
+export const componentRecipe = recipe({component:"theme-color-picker",slots:{"root":{},},});
