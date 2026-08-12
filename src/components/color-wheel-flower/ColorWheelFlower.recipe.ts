@@ -1,3 +1,4 @@
+import { recipe } from "../../lib/layouts";
 export const CLASSES = {
   base: "color-wheel-flower",
   flag: {
@@ -31,3 +32,4 @@ export const CLASSES = {
     pulsing: "color-wheel-flower__highlight--pulsing",
   },
 } as const;
+export const componentRecipe = recipe({component:"color-wheel-flower",slots:{"color-wheel-flower":{},"root":{},},});

@@ -33,7 +33,9 @@ import {
   type MotionState,
   type MotionTransition,
 } from "../../motion";
-import { CLASSES } from "./ColorWheelFlower.classes";
+import { CLASSES } from "./ColorWheelFlower.recipe";
+import type { Layout } from "../../lib/layouts";
+import { componentRecipe } from "./ColorWheelFlower.recipe";
 
 export interface ColorWheelFlowerProps {
   class?: string;
@@ -240,7 +242,7 @@ const MAX_RADIUS = Math.max(
 const MAX_WAVE_DISTANCE = MAX_RADIUS * 2;
 const MAX_WAVE_DELAY = 0.12;
 
-const ColorWheelFlower = (props: ColorWheelFlowerProps): JSX.Element => {
+const ColorWheelFlower: Layout<typeof componentRecipe, ColorWheelFlowerProps> = () => {
   const [local] = splitProps(props, ["class", "className", "mode", "palette"]);
   const context = useColorPickerContext();
 

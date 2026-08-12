@@ -1,5 +1,5 @@
-export { default as ColorWheelFlower } from "./ColorWheelFlower";
-export type { ColorWheelFlowerProps } from "./ColorWheelFlower";
+export { default as ColorWheelFlower } from "./ColorWheelFlower.generated";
+export type { ColorWheelFlowerProps } from "./ColorWheelFlower.generated";
 export {
   COLOR_WHEEL_FLOWER_COLOR_COUNT,
   COLOR_WHEEL_FLOWER_PALETTES,
