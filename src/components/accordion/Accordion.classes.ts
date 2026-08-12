@@ -1,59 +1,38 @@
-import { recipe } from "../../lib/style";
-
-/**
- * Accordion's design API.
- *
- * Each export is one part of the component, and its variant axes are the props
- * that part exposes. Reading this file tells you everything that can vary about
- * an accordion without opening the markup, which is the property the `.vue`
- * single-file components had and the old nested `CLASSES` object did not: there
- * the defaults lived in the `.tsx` as `?? "default"` accessors, and the flags
- * were `&&` chains at the point of use.
- *
- * No Tailwind here, so none of these declare `tailwind: true` and none of them
- * pay for `twMerge`.
- */
-
-export const accordionRoot = recipe({
-  base: "accordion",
-  variants: {
+export const CLASSES = {
+  Root: {
+    base: "accordion",
     variant: {
       default: "accordion--default",
       surface: "accordion--surface",
     },
   },
-  defaultVariants: {
-    variant: "default",
+  Item: {
+    base: "accordion__item",
+    flag: {
+      expanded: "accordion__item--expanded",
+      disabled: "accordion__item--disabled",
+      hideSeparator: "accordion__item--hide-separator",
+    },
   },
-});
-
-export const accordionItem = recipe({
-  base: "accordion__item",
-  variants: {
-    expanded: { true: "accordion__item--expanded" },
-    disabled: { true: "accordion__item--disabled" },
-    hideSeparator: { true: "accordion__item--hide-separator" },
+  Trigger: {
+    base: "accordion__trigger",
   },
-});
-
-export const accordionTrigger = recipe({
-  base: "accordion__trigger",
-});
-
-export const accordionIndicator = recipe({
-  base: "accordion__indicator",
-  variants: {
-    expanded: { true: "accordion__indicator--expanded" },
+  Indicator: {
+    base: "accordion__indicator",
+    flag: {
+      expanded: "accordion__indicator--expanded",
+    },
   },
-});
-
-export const accordionContent = recipe({
-  base: "accordion__content",
-  variants: {
-    expanded: { true: "accordion__content--expanded" },
+  Content: {
+    base: "accordion__content",
+    flag: {
+      expanded: "accordion__content--expanded",
+    },
   },
-});
-
-export const accordionBody = recipe({ base: "accordion__body" });
-
-export const accordionBodyInner = recipe({ base: "accordion__body-inner" });
+  Body: {
+    base: "accordion__body",
+  },
+  BodyInner: {
+    base: "accordion__body-inner",
+  },
+} as const;

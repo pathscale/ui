@@ -1,50 +1,104 @@
 import "./Spinner.css";
-import type { JSX } from "solid-js";
-import { defineComponent } from "solid-layouts";
-
+import { splitProps, createUniqueId, type Component, type JSX } from "solid-js";
+import { twMerge } from "tailwind-merge";
 import type { IComponentBaseProps } from "../types";
-import { SpinnerLayout } from "./Spinner.layout";
-import { spinner } from "./Spinner.recipe";
+import { CLASSES } from "./Spinner.classes";
 
+/* -------------------------------------------------------------------------------------------------
+ * Types
+ * -----------------------------------------------------------------------------------------------*/
 export type SpinnerSize = "xs" | "sm" | "md" | "lg" | "xl";
-export type SpinnerColor =
-  | "current"
-  | "accent"
-  | "success"
-  | "warning"
-  | "danger";
-export type SpinnerVariant =
-  | "spinner"
-  | "dots"
-  | "ring"
-  | "ball"
-  | "bars"
-  | "infinity";
+export type SpinnerColor = "current" | "accent" | "success" | "warning" | "danger";
+export type SpinnerVariant = "spinner" | "dots" | "ring" | "ball" | "bars" | "infinity";
 
-export type SpinnerProps = Omit<
-  JSX.HTMLAttributes<HTMLSpanElement>,
-  "children"
-> &
+export type SpinnerProps = Omit<JSX.HTMLAttributes<HTMLSpanElement>, "children"> &
   IComponentBaseProps & {
     size?: SpinnerSize;
     color?: SpinnerColor;
     variant?: SpinnerVariant;
-    /** The accessible name. Defaults to "Loading". */
     label?: string;
   };
 
-/**
- * `label` is behaviour rather than presentation: it names the element for a
- * screen reader and decides nothing about how it looks.
- */
-const Spinner = defineComponent({
-  recipe: spinner,
-  name: "Spinner",
-  defaults: { size: "md", color: "current", variant: "spinner" },
-  behaviour: ["label"],
-  setup: (behaviour) => ({ label: behaviour.label }),
-  layout: SpinnerLayout,
-}) as unknown as (props: SpinnerProps) => JSX.Element;
+/* -------------------------------------------------------------------------------------------------
+ * SVG Spinner (HeroUI-style gradient arc)
+ * -----------------------------------------------------------------------------------------------*/
+const SpinnerSVG: Component = () => {
+  const id = createUniqueId();
+
+  return (
+    <svg
+      aria-hidden="true"
+      data-slot="spinner-icon"
+      fill="none"
+      viewBox="0 0 24 24"
+    >
+      <defs>
+        <linearGradient id={`spinner-grad1-${id}`} x1="50%" x2="50%" y1="5.271%" y2="91.793%">
+          <stop offset="0%" stop-color="currentColor" />
+          <stop offset="100%" stop-color="currentColor" stop-opacity="0.55" />
+        </linearGradient>
+        <linearGradient id={`spinner-grad2-${id}`} x1="50%" x2="50%" y1="15.24%" y2="87.15%">
+          <stop offset="0%" stop-color="currentColor" stop-opacity="0" />
+          <stop offset="100%" stop-color="currentColor" stop-opacity="0.55" />
+        </linearGradient>
+      </defs>
+      <g fill="none">
+        <path
+          d="M8.749.021a1.5 1.5 0 0 1 .497 2.958A7.5 7.5 0 0 0 3 10.375a7.5 7.5 0 0 0 7.5 7.5v3c-5.799 0-10.5-4.7-10.5-10.5C0 5.23 3.726.865 8.749.021"
+          fill={`url(#spinner-grad1-${id})`}
+          transform="translate(1.5 1.625)"
+        />
+        <path
+          d="M15.392 2.673a1.5 1.5 0 0 1 2.119-.115A10.48 10.48 0 0 1 21 10.375c0 5.8-4.701 10.5-10.5 10.5v-3a7.5 7.5 0 0 0 5.007-13.084a1.5 1.5 0 0 1-.115-2.118"
+          fill={`url(#spinner-grad2-${id})`}
+          transform="translate(1.5 1.625)"
+        />
+      </g>
+    </svg>
+  );
+};
+
+/* -------------------------------------------------------------------------------------------------
+ * Spinner Component
+ * -----------------------------------------------------------------------------------------------*/
+const Spinner: Component<SpinnerProps> = (props) => {
+  const [local, others] = splitProps(props, [
+    "size",
+    "color",
+    "variant",
+    "label",
+    "class",
+    "className",
+    "dataTheme",
+    "style",
+  ]);
+
+  const size = () => local.size ?? "md";
+  const color = () => local.color ?? "current";
+  const variant = () => local.variant ?? "spinner";
+
+  return (
+    <span
+      {...others}
+      role="status"
+      aria-label={local.label ?? "Loading"}
+      aria-busy="true"
+      aria-live="polite"
+      class={twMerge(
+        CLASSES.base,
+        CLASSES.size[size()],
+        CLASSES.color[color()],
+        CLASSES.variant[variant()],
+        local.class,
+        local.className,
+      )}
+      data-slot="spinner"
+      data-theme={local.dataTheme}
+      style={local.style}
+    >
+      {variant() === "spinner" ? <SpinnerSVG /> : undefined}
+    </span>
+  );
+};
 
 export default Spinner;
-export { Spinner };

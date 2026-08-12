@@ -26,11 +26,7 @@
     --close-button-bg: var(--color-base-100);
     --close-button-bg-hover: var(--color-base-200);
     --close-button-bg-pressed: var(--color-base-300);
-    --close-button-fg: color-mix(
-      in oklab,
-      var(--color-base-content) 58%,
-      transparent
-    );
+    --close-button-fg: color-mix(in oklab, var(--color-base-content) 58%, transparent);
 
     background-color: var(--close-button-bg);
     color: var(--close-button-fg);

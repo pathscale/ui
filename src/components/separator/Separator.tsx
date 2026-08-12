@@ -1,35 +1,53 @@
 import "./Separator.css";
-import type { JSX } from "solid-js";
-import { defineComponent } from "solid-layouts";
-import type { PropsOf } from "solid-layouts";
+import { splitProps, type Component, type JSX } from "solid-js";
+import { twMerge } from "tailwind-merge";
 
-import defaults from "./Separator.defaults";
-import { separator } from "./Separator.recipe";
+import type { IComponentBaseProps } from "../types";
+import { CLASSES } from "./Separator.classes";
 
 export type SeparatorOrientation = "horizontal" | "vertical";
 export type SeparatorVariant = "default" | "secondary" | "tertiary";
 
-export type SeparatorProps = Omit<
-  JSX.HTMLAttributes<HTMLDivElement>,
-  "children"
-> &
-  PropsOf<typeof separator> & {
-    dataTheme?: string;
+export type SeparatorProps = Omit<JSX.HTMLAttributes<HTMLDivElement>, "children"> &
+  IComponentBaseProps & {
+    orientation?: SeparatorOrientation;
+    variant?: SeparatorVariant;
   };
 
-/**
- * Generated, once the generator exists.
- *
- * `role` and `aria-orientation` are not here because they are plain HTML: a
- * caller may set either, and anything the recipe does not declare passes
- * straight to the element. The old component listed `role` in its
- * `splitProps` call only to re-emit it with a default.
- */
-const Separator = defineComponent({
-  recipe: separator,
-  name: "Separator",
-  defaults: defaults.Separator,
-}) as (props: SeparatorProps) => JSX.Element;
+const Separator: Component<SeparatorProps> = (props) => {
+  const [local, others] = splitProps(props, [
+    "class",
+    "className",
+    "dataTheme",
+    "style",
+    "orientation",
+    "variant",
+    "role",
+  ]);
+
+  const orientation = () => local.orientation ?? "horizontal";
+  const variant = () => local.variant ?? "default";
+
+  return (
+    <div
+      {...others}
+      role={local.role ?? "separator"}
+      aria-orientation={orientation()}
+      data-slot="separator"
+      data-orientation={orientation()}
+      data-variant={variant()}
+      class={twMerge(
+        CLASSES.base,
+        CLASSES.orientation[orientation()],
+        CLASSES.variant[variant()],
+        local.class,
+        local.className,
+      )}
+      data-theme={local.dataTheme}
+      style={local.style}
+    />
+  );
+};
 
 export default Separator;
 export { Separator };

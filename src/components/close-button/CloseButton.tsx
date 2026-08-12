@@ -1,18 +1,13 @@
 import "./CloseButton.css";
-import type { JSX } from "solid-js";
-import { defineComponent } from "solid-layouts";
+import { splitProps, type Component, type JSX } from "solid-js";
+import { twMerge } from "tailwind-merge";
 
 import type { IComponentBaseProps } from "../types";
-import { CloseButtonLayout } from "./CloseButton.layout";
-import { createCloseButton } from "./CloseButton.logic";
-import { closeButton } from "./CloseButton.recipe";
+import { CLASSES } from "./CloseButton.classes";
 
 export type CloseButtonVariant = "default";
 
-export type CloseButtonProps = Omit<
-  JSX.ButtonHTMLAttributes<HTMLButtonElement>,
-  "disabled"
-> &
+export type CloseButtonProps = Omit<JSX.ButtonHTMLAttributes<HTMLButtonElement>, "disabled"> &
   IComponentBaseProps & {
     variant?: CloseButtonVariant;
     isDisabled?: boolean;
@@ -22,26 +17,62 @@ export type CloseButtonProps = Omit<
     className?: string;
   };
 
-/**
- * `type` and `aria-label` are declared as behaviour because the component
- * supplies defaults for both; left as plain HTML they would reach the element
- * first and the defaults would overwrite whatever the caller set.
- */
-const CloseButton = defineComponent({
-  recipe: closeButton,
-  name: "CloseButton",
-  defaults: { variant: "default" },
-  behaviour: [
+const CloseButton: Component<CloseButtonProps> = (props) => {
+  const [local, others] = splitProps(props, [
+    "children",
+    "class",
+    "className",
+    "variant",
     "isDisabled",
     "isPending",
     "startIcon",
     "endIcon",
     "type",
+    "dataTheme",
+    "style",
     "aria-label",
-  ],
-  setup: createCloseButton,
-  layout: CloseButtonLayout,
-}) as unknown as (props: CloseButtonProps) => JSX.Element;
+  ]);
+
+  const variant = () => local.variant ?? "default";
+  const disabled = () => Boolean(local.isDisabled) || Boolean(local.isPending);
+
+  return (
+    <button
+      {...others}
+      type={local.type ?? "button"}
+      aria-label={local["aria-label"] ?? "Close"}
+      {...{ class: twMerge(
+        CLASSES.base,
+        CLASSES.variant[variant()],
+        local.class,
+        local.className,
+      ) }}
+      data-slot="close-button"
+      data-pending={local.isPending ? "true" : "false"}
+      data-theme={local.dataTheme}
+      style={local.style}
+      disabled={disabled()}
+      aria-disabled={disabled() ? "true" : "false"}
+    >
+      {local.startIcon ? (
+        <span
+          {...{ class: twMerge(CLASSES.slot.icon, CLASSES.slot.iconStart) }}
+          data-slot="close-button-start-icon"
+        >
+          {local.startIcon}
+        </span>
+      ) : null}
+      {local.children}
+      {local.endIcon ? (
+        <span
+          {...{ class: twMerge(CLASSES.slot.icon, CLASSES.slot.iconEnd) }}
+          data-slot="close-button-end-icon"
+        >
+          {local.endIcon}
+        </span>
+      ) : null}
+    </button>
+  );
+};
 
 export default CloseButton;
-export { CloseButton };

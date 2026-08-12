@@ -5,19 +5,17 @@
     flex-direction: column;
     gap: 0.75rem;
     overflow: hidden;
-    border-radius: var(
-      --card-radius,
-      calc(var(--radius-box, 0.75rem) + var(--card-padding, 1rem))
-    );
+    border-radius: var(--card-radius, calc(var(--radius-box, 0.75rem) + var(--card-padding, 1rem)));
     padding: var(--card-padding, 1rem);
     color: var(--card-fg, var(--color-base-content));
     background-color: var(--card-bg, var(--color-base-100));
     border: 1px solid var(--card-border, transparent);
-    box-shadow: var(
-      --card-shadow,
-      0 8px 24px -18px rgb(0 0 0 / 0.45),
-      0 6px 14px -10px rgb(0 0 0 / 0.28)
-    );
+    box-shadow:
+      var(
+        --card-shadow,
+        0 8px 24px -18px rgb(0 0 0 / 0.45),
+        0 6px 14px -10px rgb(0 0 0 / 0.28)
+      );
     transition:
       background-color 160ms ease,
       border-color 160ms ease,
@@ -34,9 +32,11 @@
     --card-bg: var(--color-base-100);
     --card-border: transparent;
     --card-shadow:
-      0 8px 24px -18px rgb(0 0 0 / 0.45), 0 6px 14px -10px rgb(0 0 0 / 0.28);
+      0 8px 24px -18px rgb(0 0 0 / 0.45),
+      0 6px 14px -10px rgb(0 0 0 / 0.28);
     --card-hover-shadow:
-      0 16px 30px -20px rgb(0 0 0 / 0.5), 0 8px 18px -12px rgb(0 0 0 / 0.35);
+      0 16px 30px -20px rgb(0 0 0 / 0.5),
+      0 8px 18px -12px rgb(0 0 0 / 0.35);
   }
 
   .card--flat {
@@ -51,16 +51,19 @@
     --card-border: var(--color-base-300);
     --card-shadow: none;
     --card-hover-shadow:
-      0 6px 20px -16px rgb(0 0 0 / 0.4), 0 5px 12px -10px rgb(0 0 0 / 0.28);
+      0 6px 20px -16px rgb(0 0 0 / 0.4),
+      0 5px 12px -10px rgb(0 0 0 / 0.28);
   }
 
   .card--shadow {
     --card-bg: var(--color-base-100);
     --card-border: transparent;
     --card-shadow:
-      0 20px 40px -24px rgb(0 0 0 / 0.55), 0 12px 20px -14px rgb(0 0 0 / 0.35);
+      0 20px 40px -24px rgb(0 0 0 / 0.55),
+      0 12px 20px -14px rgb(0 0 0 / 0.35);
     --card-hover-shadow:
-      0 26px 44px -26px rgb(0 0 0 / 0.6), 0 14px 24px -15px rgb(0 0 0 / 0.4);
+      0 26px 44px -26px rgb(0 0 0 / 0.6),
+      0 14px 24px -15px rgb(0 0 0 / 0.4);
   }
 
   .card--hoverable,
