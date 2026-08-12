@@ -1,9 +1,11 @@
 import "./ColorSwatch.css";
 import { splitProps, useContext, type Component, type JSX } from "solid-js";
 import { twMerge } from "tailwind-merge";
-import { ColorSwatchPickerContext } from "../color-swatch-picker/ColorSwatchPicker";
+import { ColorSwatchPickerContext } from "../color-swatch-picker/ColorSwatchPicker.generated";
 import type { IComponentBaseProps } from "../types";
-import { CLASSES } from "./ColorSwatch.classes";
+import { CLASSES } from "./ColorSwatch.recipe";
+import type { Layout } from "../../lib/layouts";
+import { componentRecipe } from "./ColorSwatch.recipe";
 
 const invokeEventHandler = (handler: unknown, event: Event) => {
   if (typeof handler === "function") {
@@ -31,7 +33,7 @@ export type ColorSwatchProps = Omit<JSX.ButtonHTMLAttributes<HTMLButtonElement>,
     onChange?: (color: string) => void;
   };
 
-const ColorSwatch: Component<ColorSwatchProps> = (props) => {
+const ColorSwatch: Layout<typeof componentRecipe, ColorSwatchProps> = () => {
   const picker = useContext(ColorSwatchPickerContext);
 
   const [local, others] = splitProps(props, [
