@@ -7,8 +7,10 @@ import type { InputFieldProps } from "../input";
 import Label from "../label";
 import { useFormContext } from "../../hooks/form/FormContext";
 import { getFirstFieldError } from "../../hooks/form/getFirstFieldError";
-import { FieldErrorMessage } from "./FieldErrorMessage";
+import { FieldErrorMessage } from "./FieldErrorMessage.generated";
 import type { AnyFormApi } from "../../hooks/form/FormContext";
+import type { Layout } from "../../lib/layouts";
+import { componentRecipe } from "./Form.recipe";
 
 // ---------------------------------------------------------------------------
 // Types
@@ -58,7 +60,7 @@ export type FormFieldProps = {
  * </Form>
  * ```
  */
-const FormField: Component<FormFieldProps> = (props) => {
+const FormField: Layout<typeof componentRecipe, FormFieldProps> = () => {
   const [local, _rest] = splitProps(props, [
     "name",
     "label",

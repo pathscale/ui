@@ -6,7 +6,7 @@ export {
   type FormProps,
   type FormRootProps,
   type FormWithContextProps,
-} from "./Form";
-export { FormField, type FormFieldProps } from "./FormField";
-export { FormSubmitButton, type FormSubmitButtonProps } from "./FormSubmitButton";
-export { FieldErrorMessage, type FieldErrorMessageProps } from "./FieldErrorMessage";
+} from "./Form.generated";
+export { FormField, type FormFieldProps } from "./FormField.generated";
+export { FormSubmitButton, type FormSubmitButtonProps } from "./FormSubmitButton.generated";
+export { FieldErrorMessage, type FieldErrorMessageProps } from "./FieldErrorMessage.generated";
