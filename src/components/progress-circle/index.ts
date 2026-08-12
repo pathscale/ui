@@ -1,6 +1,6 @@
-export { default } from "./ProgressCircle";
+export { default } from "./ProgressCircle.generated";
 export type {
   ProgressCircleProps,
   ProgressCircleSize,
   ProgressCircleColor,
-} from "./ProgressCircle";
+} from "./ProgressCircle.generated";
