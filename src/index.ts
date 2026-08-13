@@ -1,6 +1,5 @@
 export {
   default as Accordion,
-  AccordionRoot,
   AccordionItem,
   AccordionTrigger,
   AccordionContent,
@@ -21,7 +20,6 @@ export { Callout } from "./components/callout";
 export type { CalloutProps, CalloutPlacement } from "./components/callout";
 export {
   default as Avatar,
-  AvatarRoot,
   AvatarImage,
   AvatarFallback,
 } from "./components/avatar";
@@ -36,7 +34,6 @@ export type {
 export { default as Badge } from "./components/badge";
 export {
   Breadcrumbs,
-  BreadcrumbsRoot,
   BreadcrumbsItem,
 } from "./components/breadcrumbs";
 export type {
@@ -47,7 +44,6 @@ export type {
 export { default as Button } from "./components/button";
 export {
   default as ButtonGroup,
-  ButtonGroupRoot,
   ButtonGroupSeparator,
 } from "./components/button-group";
 export type {
@@ -97,7 +93,6 @@ export type {
 } from "./components/close-button";
 export {
   default as ComboBox,
-  ComboBoxRoot,
   ComboBoxInputGroup,
   ComboBoxInput,
   ComboBoxTrigger,
@@ -158,7 +153,6 @@ export type {
 
 export {
   default as Description,
-  DescriptionRoot,
 } from "./components/description";
 export type {
   DescriptionProps,
@@ -166,7 +160,6 @@ export type {
 } from "./components/description";
 export {
   default as DateField,
-  DateFieldRoot,
   DateFieldGroup,
   DateFieldInput,
   DateFieldInputContainer,
@@ -203,7 +196,6 @@ export {
 } from "./components/range-calendar";
 export {
   default as Drawer,
-  DrawerRoot,
   DrawerTrigger,
   DrawerBackdrop,
   DrawerContent,
@@ -259,7 +251,6 @@ export type {
 export { EmptyState, type EmptyStateProps } from "./components/empty-state";
 export {
   default as ErrorMessage,
-  ErrorMessageRoot,
 } from "./components/error-message";
 export type {
   ErrorMessageProps,
@@ -267,7 +258,6 @@ export type {
 } from "./components/error-message";
 export {
   default as FieldError,
-  FieldErrorRoot,
 } from "./components/field-error";
 export type {
   FieldErrorProps,
@@ -295,7 +285,6 @@ export { default as Footer } from "./components/footer";
 export type { FooterProps, FooterTitleProps } from "./components/footer";
 export {
   default as Fieldset,
-  FieldsetRoot,
   FieldsetLegend,
   FieldGroup,
   FieldsetActions,
@@ -312,7 +301,6 @@ export type {
 // ---------------------------------------------------------------------------
 export {
   default as Form,
-  FormRoot,
   FormWithContext,
 } from "./components/form";
 export {
@@ -363,7 +351,7 @@ export type {
   UseFieldResult,
 } from "./hooks/form";
 export { default as Grid } from "./components/grid";
-export { default as Header, HeaderRoot } from "./components/header";
+export { default as Header } from "./components/header";
 export type { HeaderProps, HeaderRootProps } from "./components/header";
 export { default as Icon } from "./components/icon";
 export {
@@ -394,7 +382,6 @@ export type {
 export { default as Input } from "./components/input";
 export {
   default as InputGroup,
-  InputGroupRoot,
   InputGroupInput,
   InputGroupTextArea,
   InputGroupPrefix,
@@ -411,7 +398,6 @@ export type {
 } from "./components/input-group";
 export {
   default as InputOTP,
-  InputOTPRoot,
   InputOTPGroup,
   InputOTPSlot,
   InputOTPSeparator,
@@ -430,7 +416,6 @@ export type {
 export { default as Join } from "./components/join";
 export {
   default as Kbd,
-  KbdRoot,
   KbdAbbr,
   KbdContent,
   kbdKeysMap,
@@ -444,9 +429,9 @@ export type {
   KbdVariant,
   KbdKey,
 } from "./components/kbd";
-export { default as Label, LabelRoot } from "./components/label";
+export { default as Label } from "./components/label";
 export type { LabelProps, LabelRootProps } from "./components/label";
-export { default as Link, LinkRoot, LinkIcon } from "./components/link";
+export { default as Link, LinkIcon } from "./components/link";
 export type {
   LinkProps,
   LinkRootProps,
@@ -456,12 +441,9 @@ export type {
 } from "./components/link";
 export {
   default as ListBox,
-  ListBoxRoot,
   ListBoxItem,
-  ListBoxItemRoot,
   ListBoxItemIndicator,
   ListBoxSection,
-  ListBoxSectionRoot,
 } from "./components/list-box";
 export type {
   ListBoxProps,
@@ -508,13 +490,10 @@ export type {
 } from "./components/language-switcher";
 export {
   default as Menu,
-  MenuRoot,
   MenuItem,
-  MenuItemRoot,
   MenuItemIndicator,
   MenuItemSubmenuIndicator,
   MenuSection,
-  MenuSectionRoot,
 } from "./components/menu";
 export type {
   MenuProps,
@@ -531,7 +510,6 @@ export type {
 } from "./components/menu";
 export {
   default as Modal,
-  ModalRoot,
   ModalTrigger,
   ModalBackdrop,
   ModalContent,
@@ -562,7 +540,6 @@ export type {
 } from "./components/modal";
 export {
   default as Meter,
-  MeterRoot,
   MeterOutput,
   MeterTrack,
   MeterFill,
@@ -583,7 +560,6 @@ export type { NavbarStackProps } from "./components/navbar/NavbarStack.generated
 export type { NavbarRowProps } from "./components/navbar/NavbarRow.generated";
 export {
   default as NumberField,
-  NumberFieldRoot,
   NumberFieldGroup,
   NumberFieldInput,
   NumberFieldIncrementButton,
@@ -636,7 +612,6 @@ export {
 export { default as Select } from "./components/select";
 export {
   default as SearchField,
-  SearchFieldRoot,
   SearchFieldGroup,
   SearchFieldInput,
   SearchFieldSearchIcon,
@@ -734,7 +709,6 @@ export type {
 } from "./components/tag";
 export {
   default as TagGroup,
-  TagGroupRoot,
   TagGroupList,
 } from "./components/tag-group";
 export type {
@@ -754,7 +728,7 @@ export type {
   TabSeparatorProps,
   TabPanelProps,
 } from "./components/tabs";
-export { default as Text, TextRoot } from "./components/text";
+export { default as Text } from "./components/text";
 export type {
   TextProps,
   TextRootProps,
@@ -768,7 +742,6 @@ export type {
 } from "./components/text";
 export {
   default as TextField,
-  TextFieldRoot,
   TextFieldContext,
 } from "./components/text-field";
 export type {
@@ -778,7 +751,7 @@ export type {
   TextFieldRenderProps,
   TextFieldContextValue,
 } from "./components/text-field";
-export { default as TextArea, TextAreaRoot } from "./components/text-area";
+export { default as TextArea } from "./components/text-area";
 export type {
   TextAreaProps,
   TextAreaRootProps,
@@ -787,7 +760,6 @@ export type {
 export { default as Textarea } from "./components/textarea";
 export {
   default as TimeField,
-  TimeFieldRoot,
   TimeFieldGroup,
   TimeFieldInput,
   TimeFieldInputContainer,
@@ -820,7 +792,6 @@ export type {
 } from "./components/size-picker";
 export {
   default as Toolbar,
-  ToolbarRoot,
 } from "./components/toolbar";
 export type {
   ToolbarProps,
@@ -839,7 +810,6 @@ export type {
 } from "./components/theme-color-picker";
 export {
   default as Toast,
-  ToastRoot,
   ToastProvider,
   ToastContent,
   ToastIndicator,
@@ -880,7 +850,6 @@ export type {
 export { default as Toggle } from "./components/toggle";
 export {
   default as Tooltip,
-  TooltipRoot,
   TooltipTrigger,
   TooltipContent,
   TooltipArrow,
