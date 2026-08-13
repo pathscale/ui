@@ -521,3 +521,48 @@ export type {
   FlagProps,
 } from "./components/vocabulary";
 export { FLAVORS, STATES, VARIANTS, SIZES, SPACES } from "./components/vocabulary";
+
+// Restored to the main surface: three were parked by a hand-written list
+// rather than the usage data, and ChatBubble is a forward-looking priority.
+export {
+  default as InputOTP,
+  InputOTPGroup,
+  InputOTPSlot,
+  InputOTPSeparator,
+  REGEXP_ONLY_DIGITS,
+  REGEXP_ONLY_CHARS,
+  REGEXP_ONLY_DIGITS_AND_CHARS,
+} from "./components/input-otp";
+export type {
+  InputOTPProps,
+  InputOTPRootProps,
+  InputOTPGroupProps,
+  InputOTPSlotProps,
+  InputOTPSeparatorProps,
+  InputOTPVariant,
+} from "./components/input-otp";
+export {
+  default as ListBox,
+  ListBoxItem,
+  ListBoxItemIndicator,
+  ListBoxSection,
+} from "./components/list-box";
+export type {
+  ListBoxProps,
+  ListBoxRootProps,
+  ListBoxSelectionMode,
+  ListBoxVariant,
+  ListBoxItemProps,
+  ListBoxItemRootProps,
+  ListBoxItemIndicatorProps,
+  ListBoxItemRenderProps,
+  ListBoxSectionProps,
+  ListBoxSectionRootProps,
+} from "./components/list-box";
+export { default as ColorSwatch } from "./components/color-swatch";
+export type {
+  ColorSwatchProps,
+  ColorSwatchShape,
+  ColorSwatchSize,
+} from "./components/color-swatch";
+export { default as ChatBubble } from "./components/chatbubble";

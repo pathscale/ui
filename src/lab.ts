@@ -47,24 +47,6 @@ export type {
   MenuSectionRootProps,
 } from "./components/menu";
 export {
-  default as ListBox,
-  ListBoxItem,
-  ListBoxItemIndicator,
-  ListBoxSection,
-} from "./components/list-box";
-export type {
-  ListBoxProps,
-  ListBoxRootProps,
-  ListBoxSelectionMode,
-  ListBoxVariant,
-  ListBoxItemProps,
-  ListBoxItemRootProps,
-  ListBoxItemIndicatorProps,
-  ListBoxItemRenderProps,
-  ListBoxSectionProps,
-  ListBoxSectionRootProps,
-} from "./components/list-box";
-export {
   default as Meter,
   MeterOutput,
   MeterTrack,
@@ -86,23 +68,6 @@ export type {
   ProgressCircleSize,
   ProgressCircleColor,
 } from "./components/progress-circle";
-export {
-  default as InputOTP,
-  InputOTPGroup,
-  InputOTPSlot,
-  InputOTPSeparator,
-  REGEXP_ONLY_DIGITS,
-  REGEXP_ONLY_CHARS,
-  REGEXP_ONLY_DIGITS_AND_CHARS,
-} from "./components/input-otp";
-export type {
-  InputOTPProps,
-  InputOTPRootProps,
-  InputOTPGroupProps,
-  InputOTPSlotProps,
-  InputOTPSeparatorProps,
-  InputOTPVariant,
-} from "./components/input-otp";
 export {
   default as Kbd,
   KbdAbbr,
@@ -139,7 +104,6 @@ export type {
   CloseButtonProps,
   CloseButtonVariant,
 } from "./components/close-button";
-export { default as ChatBubble } from "./components/chatbubble";
 export { default as NoiseBackground } from "./components/noise-background";
 export type { NoiseBackgroundProps } from "./components/noise-background";
 export {
@@ -183,12 +147,6 @@ export type {
   ColorSliderProps,
   ColorSliderType,
 } from "./components/color-slider";
-export { default as ColorSwatch } from "./components/color-swatch";
-export type {
-  ColorSwatchProps,
-  ColorSwatchShape,
-  ColorSwatchSize,
-} from "./components/color-swatch";
 export { default as ColorSwatchPicker } from "./components/color-swatch-picker";
 export type { ColorSwatchPickerProps } from "./components/color-swatch-picker";
 export { ColorWheelFlower } from "./components/color-wheel-flower";
