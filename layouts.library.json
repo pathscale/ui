@@ -23,7 +23,7 @@
     "InputOTP", "InputOTPGroup", "InputOTPSeparator", "InputOTPSlot", "Join",
     "Kbd", "KbdAbbr", "KbdContent", "Label", "LanguageSwitcher",
     "Link", "LinkIcon", "ListBox", "ListBoxItem", "ListBoxItemIndicator", "ListBoxSection",
-    "LiveChatBubble", "LiveChatPanel", "Loading", "Menu", "MenuItem", "MenuItemIndicator", "MenuItemSubmenuIndicator", "MenuSection",
+    "LiveChatBubble", "LiveChatPanel", "Menu", "MenuItem", "MenuItemIndicator", "MenuItemSubmenuIndicator", "MenuSection",
     "MetalBorder", "Meter", "MeterFill", "MeterOutput", "MeterTrack",
     "Modal", "ModalBackdrop", "ModalBody", "ModalCloseTrigger", "ModalContent", "ModalFooter", "ModalHeader", "ModalHeading", "ModalIcon", "ModalTrigger",
     "Navbar", "NoiseBackground",
