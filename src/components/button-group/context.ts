@@ -1,10 +1,10 @@
 import { createContext } from "solid-js";
 
-import type { ButtonSize, ButtonVariant } from "../button";
+import type { Size, Variant } from "../vocabulary";
 
 export type ButtonGroupContextValue = {
-  size: () => ButtonSize | undefined;
-  variant: () => ButtonVariant | undefined;
+  size: () => Size | undefined;
+  variant: () => Variant | undefined;
   isDisabled: () => boolean | undefined;
   fullWidth: () => boolean | undefined;
 };

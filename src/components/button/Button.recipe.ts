@@ -1,29 +1,62 @@
 import { recipe } from "../../lib/layouts";
-export const CLASSES = {
-  base: "button",
-  variant: {
-    primary: "button--primary",
-    secondary: "button--secondary",
-    tertiary: "button--tertiary",
-    outline: "button--outline",
-    ghost: "button--ghost",
-    danger: "button--danger",
-    "danger-soft": "button--danger-soft",
+
+/**
+ * Tone picks the accent; variant decides how the accent is used.
+ *
+ * Keeping them orthogonal means 8 tones and 5 variants cost 13 rules rather
+ * than 40 combinations, because the variant rules read `--button-accent`
+ * rather than naming a colour. It also makes combinations expressible that
+ * the old single axis could not say at all, such as a soft warning button.
+ */
+export const button = recipe({
+  component: "button",
+  element: "button",
+  slots: {
+    root: { base: "button" },
+    spinner: { base: "button__spinner" },
+    startIcon: { base: "button__icon button__icon--start" },
+    endIcon: { base: "button__icon button__icon--end" },
   },
-  size: {
-    sm: "button--sm",
-    md: "button--md",
-    lg: "button--lg",
+  props: {
+    variant: {
+      solid: "button--solid",
+      soft: "button--soft",
+      outline: "button--outline",
+      ghost: "button--ghost",
+      plain: "button--plain",
+    },
+    tone: {
+      neutral: "button--tone-neutral",
+      primary: "button--tone-primary",
+      secondary: "button--tone-secondary",
+      accent: "button--tone-accent",
+      success: "button--tone-success",
+      warning: "button--tone-warning",
+      danger: "button--tone-danger",
+      info: "button--tone-info",
+    },
+    size: {
+      xs: "button--xs",
+      sm: "button--sm",
+      md: "button--md",
+      lg: "button--lg",
+      xl: "button--xl",
+    },
+    width: {
+      auto: "",
+      full: "button--width-full",
+      fit: "button--width-fit",
+      screen: "button--width-screen",
+    },
+    radius: {
+      none: "button--radius-none",
+      sm: "button--radius-sm",
+      md: "button--radius-md",
+      lg: "button--radius-lg",
+      full: "button--radius-full",
+    },
+    isIconOnly: { true: "button--icon-only", false: "" },
   },
-  flag: {
-    isIconOnly: "button--icon-only",
-    fullWidth: "button--full-width",
-  },
-  slot: {
-    spinner: "button__spinner",
-    icon: "button__icon",
-    iconStart: "button__icon--start",
-    iconEnd: "button__icon--end",
-  },
-} as const;
-export const componentRecipe = recipe({component:"button",slots:{"button":{},"button-end-icon":{},"button-start-icon":{},"root":{},"spinner":{},},});
+  // `sm` rather than `md`: the fleet passes sm at 349 of 465 sites and md at 25.
+  defaults: { variant: "solid", tone: "neutral", size: "sm", width: "auto", radius: "full" },
+});

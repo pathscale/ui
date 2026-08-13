@@ -147,7 +147,7 @@ export const PWAInstallPrompt: Component<PWAInstallPromptProps> = (props) => {
             </Flex>
           </Card.Body>
           <Card.Footer {...{ class: CLASSES.pwaPrompt.footer }}>
-            <Button variant="primary" {...{ class: CLASSES.pwaPrompt.action }} onClick={handleInstall}>
+            <Button tone="primary" {...{ class: CLASSES.pwaPrompt.action }} onClick={handleInstall}>
               {texts().installButton}
             </Button>
             <Button variant="ghost" {...{ class: CLASSES.pwaPrompt.action }} onClick={handleDismiss}>

@@ -625,7 +625,7 @@ const ToastActionButton: Layout<typeof componentRecipe, ToastActionButtonProps> 
       {...others}
       variant="outline"
       size="sm"
-      {...{ class: twMerge(CLASSES.Action.base, local.class, local.className) }}
+      {...{ class: twMerge(CLASSES.Action.base, local.class as string | undefined) }}
       data-slot="toast-action"
     >
       {props.children}

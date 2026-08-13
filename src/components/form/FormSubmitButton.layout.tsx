@@ -10,7 +10,7 @@ import { componentRecipe } from "./Form.recipe";
 // Types
 // ---------------------------------------------------------------------------
 
-export type FormSubmitButtonProps = Omit<ButtonProps, "type" | "isDisabled" | "isPending"> & {
+export type FormSubmitButtonProps = Omit<ButtonProps, "type" | "isDisabled" | "isLoading"> & {
   /**
    * Escape hatch: explicit form override for Portal / out-of-tree usage.
    * When provided, the component does NOT read from context.
@@ -58,7 +58,7 @@ const FormSubmitButton: Layout<typeof componentRecipe, FormSubmitButtonProps> = 
           {...others}
           type="submit"
           isDisabled={!state().canSubmit}
-          isPending={state().isSubmitting}
+          isLoading={state().isSubmitting}
         >
           {local.children}
         </Button>

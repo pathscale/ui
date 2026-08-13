@@ -1,9 +1,17 @@
 @layer components {
+  /* -----------------------------------------------------------------------
+   * Root
+   *
+   * Two custom properties carry the whole tone x variant cross product:
+   * a tone sets --button-accent (and its readable foreground), and a variant
+   * decides how that accent is spent. 8 tones + 5 variants = 13 rules
+   * instead of 40 combinations.
+   * --------------------------------------------------------------------- */
   .button {
     position: relative;
     isolation: isolate;
     display: inline-flex;
-    height: 2.5rem;
+    height: 2.25rem;
     width: fit-content;
     transform-origin: center;
     align-items: center;
@@ -11,8 +19,7 @@
     gap: 0.5rem;
     white-space: nowrap;
     border-radius: 1.5rem;
-    border: 0;
-    padding-inline: 1rem;
+    padding-inline: 0.75rem;
     font-size: 0.875rem;
     font-weight: 500;
     line-height: 1;
@@ -26,11 +33,15 @@
       box-shadow 100ms ease,
       color 100ms ease,
       opacity 100ms ease;
+
+    --button-accent: var(--color-base-300);
+    --button-accent-fg: var(--color-base-content);
     --button-bg: transparent;
     --button-bg-hover: var(--button-bg);
     --button-bg-pressed: var(--button-bg-hover);
     --button-fg: currentColor;
     --button-border: transparent;
+
     background-color: var(--button-bg);
     border: 1px solid var(--button-border);
     color: var(--button-fg);
@@ -38,7 +49,7 @@
 
   .button:focus-visible,
   .button[data-focus-visible="true"] {
-    outline: 2px solid currentColor;
+    outline: 2px solid var(--button-accent);
     outline-offset: 2px;
   }
 
@@ -48,7 +59,7 @@
     opacity: 0.5;
   }
 
-  .button[data-pending="true"] {
+  .button[data-loading="true"] {
     cursor: progress;
   }
 
@@ -65,6 +76,187 @@
     }
   }
 
+  /* -----------------------------------------------------------------------
+   * Tone — picks the accent
+   * --------------------------------------------------------------------- */
+  .button--tone-neutral {
+    --button-accent: var(--color-base-300);
+    --button-accent-fg: var(--color-base-content);
+  }
+  .button--tone-primary {
+    --button-accent: var(--color-primary);
+    --button-accent-fg: var(--color-primary-content);
+  }
+  .button--tone-secondary {
+    --button-accent: var(--color-secondary);
+    --button-accent-fg: var(--color-secondary-content);
+  }
+  .button--tone-accent {
+    --button-accent: var(--color-accent);
+    --button-accent-fg: var(--color-accent-content);
+  }
+  .button--tone-success {
+    --button-accent: var(--color-success);
+    --button-accent-fg: var(--color-success-content);
+  }
+  .button--tone-warning {
+    --button-accent: var(--color-warning);
+    --button-accent-fg: var(--color-warning-content);
+  }
+  .button--tone-danger {
+    --button-accent: var(--color-error);
+    --button-accent-fg: var(--color-error-content);
+  }
+  .button--tone-info {
+    --button-accent: var(--color-info);
+    --button-accent-fg: var(--color-info-content);
+  }
+
+  /* -----------------------------------------------------------------------
+   * Variant — decides how the accent is spent
+   * --------------------------------------------------------------------- */
+  .button--solid {
+    --button-bg: var(--button-accent);
+    --button-bg-hover: color-mix(in oklab, var(--button-accent), #000 8%);
+    --button-bg-pressed: color-mix(in oklab, var(--button-accent), #000 12%);
+    --button-fg: var(--button-accent-fg);
+    --button-border: transparent;
+  }
+
+  .button--soft {
+    --button-bg: color-mix(in oklab, var(--button-accent), var(--color-base-100) 86%);
+    --button-bg-hover: color-mix(in oklab, var(--button-accent), var(--color-base-100) 80%);
+    --button-bg-pressed: color-mix(in oklab, var(--button-accent), var(--color-base-100) 74%);
+    --button-fg: var(--button-accent);
+    --button-border: transparent;
+  }
+
+  .button--outline {
+    --button-bg: transparent;
+    --button-bg-hover: color-mix(in oklab, var(--button-accent), transparent 88%);
+    --button-bg-pressed: color-mix(in oklab, var(--button-accent), transparent 80%);
+    --button-fg: var(--button-accent);
+    --button-border: var(--button-accent);
+  }
+
+  /* Ghost keeps body text colour: it is chrome, not an accent surface. */
+  .button--ghost {
+    --button-bg: transparent;
+    --button-bg-hover: var(--color-base-200);
+    --button-bg-pressed: var(--color-base-300);
+    --button-fg: var(--color-base-content);
+    --button-border: transparent;
+  }
+
+  .button--plain {
+    --button-bg: transparent;
+    --button-bg-hover: transparent;
+    --button-bg-pressed: transparent;
+    --button-fg: var(--button-accent);
+    --button-border: transparent;
+    height: auto;
+    padding-inline: 0;
+  }
+
+  .button--plain:hover {
+    text-decoration-line: underline;
+    text-underline-offset: 4px;
+  }
+
+  /* -----------------------------------------------------------------------
+   * Size
+   * --------------------------------------------------------------------- */
+  .button--xs {
+    height: 1.75rem;
+    padding-inline: 0.5rem;
+    font-size: 0.75rem;
+  }
+  .button--sm {
+    height: 2.25rem;
+    padding-inline: 0.75rem;
+  }
+  .button--md {
+    height: 2.5rem;
+    padding-inline: 1rem;
+  }
+  .button--lg {
+    height: 2.75rem;
+    padding-inline: 1.125rem;
+    font-size: 1rem;
+  }
+  .button--xl {
+    height: 3rem;
+    padding-inline: 1.375rem;
+    font-size: 1.0625rem;
+  }
+
+  .button--xs:active,
+  .button--sm:active {
+    transform: scale(0.98);
+  }
+  .button--lg:active,
+  .button--xl:active {
+    transform: scale(0.96);
+  }
+
+  /* -----------------------------------------------------------------------
+   * Width — `w-full` is written by hand at 384 sites across 9 of 13 apps
+   * --------------------------------------------------------------------- */
+  .button--width-full {
+    width: 100%;
+  }
+  .button--width-fit {
+    width: fit-content;
+  }
+  .button--width-screen {
+    width: 100vw;
+  }
+
+  /* -----------------------------------------------------------------------
+   * Radius
+   * --------------------------------------------------------------------- */
+  .button--radius-none {
+    border-radius: 0;
+  }
+  .button--radius-sm {
+    border-radius: 0.25rem;
+  }
+  .button--radius-md {
+    border-radius: 0.5rem;
+  }
+  .button--radius-lg {
+    border-radius: 0.75rem;
+  }
+  .button--radius-full {
+    border-radius: 1.5rem;
+  }
+
+  /* -----------------------------------------------------------------------
+   * Icon-only — square, driven off the size scale
+   * --------------------------------------------------------------------- */
+  .button--icon-only {
+    padding-inline: 0;
+    width: 2.25rem;
+  }
+  .button--icon-only.button--xs {
+    width: 1.75rem;
+  }
+  .button--icon-only.button--sm {
+    width: 2.25rem;
+  }
+  .button--icon-only.button--md {
+    width: 2.5rem;
+  }
+  .button--icon-only.button--lg {
+    width: 2.75rem;
+  }
+  .button--icon-only.button--xl {
+    width: 3rem;
+  }
+
+  /* -----------------------------------------------------------------------
+   * Slots
+   * --------------------------------------------------------------------- */
   .button__icon {
     display: inline-flex;
     align-items: center;
@@ -81,98 +273,6 @@
     width: 100%;
     height: 100%;
     pointer-events: none;
-  }
-
-  .button--sm {
-    height: 2.25rem;
-    padding-inline: 0.75rem;
-  }
-
-  .button--md {
-  }
-
-  .button--lg {
-    height: 2.75rem;
-    font-size: 1rem;
-    padding-inline: 1.125rem;
-  }
-
-  .button--sm:active,
-  .button--sm[data-pressed="true"] {
-    transform: scale(0.98);
-  }
-
-  .button--lg:active,
-  .button--lg[data-pressed="true"] {
-    transform: scale(0.96);
-  }
-
-  .button--primary {
-    --button-bg: var(--color-primary);
-    --button-bg-hover: color-mix(in oklab, var(--color-primary), #000 8%);
-    --button-bg-pressed: color-mix(in oklab, var(--color-primary), #000 12%);
-    --button-fg: var(--color-primary-content);
-  }
-
-  .button--secondary {
-    --button-bg: var(--color-base-200);
-    --button-bg-hover: var(--color-base-300);
-    --button-bg-pressed: color-mix(in oklab, var(--color-base-300), #000 10%);
-    --button-fg: var(--color-base-content);
-  }
-
-  .button--tertiary {
-    --button-bg: var(--color-base-100);
-    --button-bg-hover: var(--color-base-200);
-    --button-bg-pressed: var(--color-base-300);
-    --button-fg: var(--color-base-content);
-    --button-border: var(--color-base-300);
-  }
-
-  .button--outline {
-    --button-bg: transparent;
-    --button-bg-hover: color-mix(in oklab, var(--color-base-300), transparent 35%);
-    --button-bg-pressed: color-mix(in oklab, var(--color-base-300), transparent 10%);
-    --button-fg: var(--color-base-content);
-    --button-border: var(--color-base-300);
-  }
-
-  .button--ghost {
-    --button-bg: transparent;
-    --button-bg-hover: var(--color-base-200);
-    --button-bg-pressed: var(--color-base-300);
-    --button-fg: var(--color-base-content);
-  }
-
-  .button--danger {
-    --button-bg: var(--color-error);
-    --button-bg-hover: color-mix(in oklab, var(--color-error), #000 8%);
-    --button-bg-pressed: color-mix(in oklab, var(--color-error), #000 12%);
-    --button-fg: var(--color-error-content);
-  }
-
-  .button--danger-soft {
-    --button-bg: color-mix(in oklab, var(--color-error), var(--color-base-100) 86%);
-    --button-bg-hover: color-mix(in oklab, var(--color-error), var(--color-base-100) 80%);
-    --button-bg-pressed: color-mix(in oklab, var(--color-error), var(--color-base-100) 74%);
-    --button-fg: var(--color-error);
-  }
-
-  .button--icon-only {
-    width: 2.5rem;
-    padding-inline: 0;
-  }
-
-  .button--icon-only.button--sm {
-    width: 2.25rem;
-  }
-
-  .button--icon-only.button--lg {
-    width: 2.75rem;
-  }
-
-  .button--full-width {
-    width: 100%;
   }
 
   .button__spinner {

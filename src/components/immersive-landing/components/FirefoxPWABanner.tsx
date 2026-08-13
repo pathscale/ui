@@ -158,7 +158,7 @@ export const FirefoxPWABanner: Component<FirefoxPWABannerProps> = (props) => {
             </Flex>
           </Card.Body>
           <Card.Footer {...{ class: CLASSES.firefoxBanner.footer }}>
-            <Button variant="primary" {...{ class: CLASSES.firefoxBanner.action }} onClick={handleAction}>
+            <Button tone="primary" {...{ class: CLASSES.firefoxBanner.action }} onClick={handleAction}>
               {texts().installButton}
             </Button>
             <Button variant="ghost" {...{ class: CLASSES.firefoxBanner.action }} onClick={handleDismiss}>

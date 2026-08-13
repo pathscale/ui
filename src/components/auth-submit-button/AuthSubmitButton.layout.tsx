@@ -1,5 +1,6 @@
 import "./AuthSubmitButton.css";
 import type { JSX } from "solid-js";
+import type { Size, Tone, Variant, Width } from "../vocabulary";
 import Button from "../button";
 import type { IComponentBaseProps } from "../types";
 import type { Layout } from "../../lib/layouts";
@@ -8,18 +9,19 @@ import { authSubmitButton } from "./AuthSubmitButton.recipe";
 /* -------------------------------------------------------------------------------------------------
  * Types
  * -----------------------------------------------------------------------------------------------*/
-export type AuthSubmitButtonVariant = "primary" | "secondary" | "ghost" | "danger";
-
 export type AuthSubmitButtonProps = Omit<
   JSX.ButtonHTMLAttributes<HTMLButtonElement>,
-  "children" | "disabled"
+  "children" | "disabled" | "type"
 > &
   IComponentBaseProps & {
     children: JSX.Element;
-    pending?: boolean;
-    disabled?: boolean;
-    variant?: AuthSubmitButtonVariant;
-    fullWidth?: boolean;
+    isLoading?: boolean;
+    isDisabled?: boolean;
+    type?: "button" | "submit" | "reset";
+    variant?: Variant;
+    tone?: Tone;
+    size?: Size;
+    width?: Width;
   };
 
 /* -------------------------------------------------------------------------------------------------
@@ -36,10 +38,12 @@ export const AuthSubmitButtonLayout: Layout<
   <Button
     {...slot.root}
     type={local.type ?? "submit"}
-    variant={local.variant ?? "primary"}
-    fullWidth={local.fullWidth ?? true}
-    isPending={Boolean(local.pending)}
-    isDisabled={Boolean(local.disabled) || Boolean(local.pending)}
+    variant={local.variant ?? "solid"}
+    tone={local.tone ?? "primary"}
+    size={local.size}
+    width={local.width ?? "full"}
+    isLoading={Boolean(local.isLoading)}
+    isDisabled={Boolean(local.isDisabled)}
   >
     {children}
   </Button>

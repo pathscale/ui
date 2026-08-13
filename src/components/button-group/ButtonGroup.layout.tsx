@@ -2,7 +2,7 @@ import "./ButtonGroup.css";
 import { splitProps, type Component, type JSX, type ParentComponent } from "solid-js";
 import { twMerge } from "tailwind-merge";
 
-import type { ButtonSize, ButtonVariant } from "../button";
+import type { Size, Variant } from "../vocabulary";
 import type { IComponentBaseProps } from "../types";
 import { CLASSES } from "./ButtonGroup.recipe";
 import { ButtonGroupContext } from "./context";
@@ -15,8 +15,8 @@ export type ButtonGroupRootProps = Omit<JSX.HTMLAttributes<HTMLDivElement>, "chi
   IComponentBaseProps & {
     children?: JSX.Element;
     orientation?: ButtonGroupOrientation;
-    size?: ButtonSize;
-    variant?: ButtonVariant;
+    size?: Size;
+    variant?: Variant;
     isDisabled?: boolean;
     fullWidth?: boolean;
   };
