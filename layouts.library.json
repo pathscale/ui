@@ -4,8 +4,8 @@
   "output": "dist",
   "exports": [
     "Accordion", "AccordionContent", "AccordionIndicator", "AccordionItem", "AccordionRoot", "AccordionTrigger",
-    "Alert", "AlertContent", "AlertDescription", "AlertIndicator", "AlertRoot", "AlertTitle",
-    "AuthCard", "AuthErrorMessage", "AuthFieldGroup", "AuthFooterLinks", "AuthForm", "AuthPoweredBy", "AuthSubmitButton", "AuthSuccessMessage",
+    "Callout",
+    "AuthCard", "AuthFieldGroup", "AuthFooterLinks", "AuthForm", "AuthMessage", "AuthPoweredBy", "AuthSubmitButton",
     "Avatar", "AvatarFallback", "AvatarImage", "AvatarRoot",
     "Badge", "Breadcrumbs", "BreadcrumbsItem", "BreadcrumbsRoot",
     "Button", "ButtonGroup", "ButtonGroupRoot", "ButtonGroupSeparator",

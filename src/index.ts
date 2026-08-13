@@ -17,22 +17,8 @@ export type {
   AccordionVariant,
   AccordionValue,
 } from "./components/accordion";
-export {
-  default as Alert,
-  AlertRoot,
-  AlertIndicator,
-  AlertContent,
-  AlertTitle,
-  AlertDescription,
-} from "./components/alert";
-export type {
-  AlertStatus,
-  AlertRootProps,
-  AlertIndicatorProps,
-  AlertContentProps,
-  AlertTitleProps,
-  AlertDescriptionProps,
-} from "./components/alert";
+export { Callout } from "./components/callout";
+export type { CalloutProps, CalloutPlacement } from "./components/callout";
 export {
   default as Avatar,
   AvatarRoot,
@@ -349,8 +335,8 @@ export { AuthForm, type AuthFormProps } from "./components/auth-form";
 export { AuthFieldGroup, type AuthFieldGroupProps } from "./components/auth-field-group";
 export { PasswordField, type PasswordFieldProps } from "./components/password-field";
 export { PasswordRequirements, type PasswordRequirementsProps } from "./components/password-requirements";
-export { AuthErrorMessage, type AuthErrorMessageProps } from "./components/auth-error-message";
-export { AuthSuccessMessage, type AuthSuccessMessageProps } from "./components/auth-success-message";
+export { AuthMessage } from "./components/auth-message";
+export type { AuthMessageProps } from "./components/auth-message";
 export { AuthSubmitButton, type AuthSubmitButtonProps } from "./components/auth-submit-button";
 export { AuthFooterLinks, type AuthFooterLinksProps, type AuthFooterLinkItem } from "./components/auth-footer-links";
 export { AuthPoweredBy, type AuthPoweredByProps } from "./components/auth-powered-by";
