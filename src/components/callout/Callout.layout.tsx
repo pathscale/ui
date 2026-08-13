@@ -115,6 +115,7 @@ export const CalloutLayout: Layout<typeof callout, CalloutProps> = () => {
       {...slot.root}
       role={role()}
       aria-live={role() === "alert" ? "assertive" : "polite"}
+      data-flavor={local.flavor ?? "neutral"}
     >
       <Show when={local.icon !== false}>
         <span {...slot.indicator}>

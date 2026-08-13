@@ -65,6 +65,7 @@ export const CardLayout: Layout<typeof card, CardProps> = () => {
       role={local.role ?? (local.isInteractive ? "button" : undefined)}
       tabIndex={local.tabIndex ?? (local.isInteractive ? 0 : undefined)}
       onKeyDown={handleKeyDown}
+      data-flavor={local.flavor ?? "neutral"}
     >
       <Show when={local.header}>
         <CardHeaderLayout>{local.header}</CardHeaderLayout>

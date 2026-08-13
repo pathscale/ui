@@ -297,3 +297,18 @@
     }
   }
 }
+
+@layer components {
+  /* -----------------------------------------------------------------------
+   * Theme-defined flavors
+   *
+   * `flavor` is open: a theme can define `flavor="hip"` and style it here
+   * without a library change. Every component mirrors the raw value to
+   * `data-flavor`, so one selector per flavor covers the whole library:
+   *
+   *   [data-flavor="hip"] { --button-accent: oklch(...); }
+   *
+   * The four built-ins keep their compiled class-table path above; this is
+   * the escape hatch for everything else.
+   * --------------------------------------------------------------------- */
+}

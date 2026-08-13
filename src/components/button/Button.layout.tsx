@@ -54,6 +54,7 @@ export const ButtonLayout: Layout<typeof button, ButtonProps> = () => {
       disabled={isDisabled()}
       aria-disabled={isDisabled() ? "true" : "false"}
       data-loading={local.isLoading ? "true" : "false"}
+      data-flavor={local.flavor ?? "primary"}
     >
       <Show when={local.isLoading}>
         <span {...slot.spinner} aria-hidden="true" />
