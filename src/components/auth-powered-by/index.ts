@@ -1,1 +1,9 @@
-export { default as AuthPoweredBy, type AuthPoweredByProps } from "./AuthPoweredBy";
+export {
+  AuthPoweredByLayout as default,
+  AuthPoweredByLayout as AuthPoweredBy,
+} from "./AuthPoweredBy.generated";
+export type {
+  AuthPoweredByProps,
+  AuthPoweredByAlign,
+  AuthPoweredByVariant,
+} from "./AuthPoweredBy.generated";
