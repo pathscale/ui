@@ -152,13 +152,6 @@ export type {
 } from "./components/color-wheel-flower";
 
 export {
-  default as Description,
-} from "./components/description";
-export type {
-  DescriptionProps,
-  DescriptionRootProps,
-} from "./components/description";
-export {
   default as DateField,
   DateFieldGroup,
   DateFieldInput,
@@ -238,32 +231,7 @@ export type {
   DisclosureBodyProps,
   DisclosureIndicatorProps,
 } from "./components/disclosure";
-export {
-  default as DisclosureGroup,
-  useDisclosureGroupNavigation,
-} from "./components/disclosure-group";
-export type {
-  DisclosureGroupProps,
-  DisclosureGroupRootProps,
-  UseDisclosureGroupNavigationProps,
-  UseDisclosureGroupNavigationReturn,
-} from "./components/disclosure-group";
 export { EmptyState, type EmptyStateProps } from "./components/empty-state";
-export {
-  default as ErrorMessage,
-} from "./components/error-message";
-export type {
-  ErrorMessageProps,
-  ErrorMessageRootProps,
-} from "./components/error-message";
-export {
-  default as FieldError,
-} from "./components/field-error";
-export type {
-  FieldErrorProps,
-  FieldErrorRootProps,
-  FieldErrorRenderProps,
-} from "./components/field-error";
 export { default as FloatingDock } from "./components/floating-dock";
 export type {
   FloatingDockProps,
@@ -306,7 +274,6 @@ export {
 export {
   FormField,
   FormSubmitButton,
-  FieldErrorMessage,
 } from "./components/form";
 export { useDesktop } from "./hooks/layout";
 export type {
@@ -319,7 +286,6 @@ export type {
 } from "./components/form";
 
 export { AuthCard, type AuthCardProps } from "./components/auth-card";
-export { AuthForm, type AuthFormProps } from "./components/auth-form";
 export { AuthFieldGroup, type AuthFieldGroupProps } from "./components/auth-field-group";
 export { PasswordField, type PasswordFieldProps } from "./components/password-field";
 export { PasswordRequirements, type PasswordRequirementsProps } from "./components/password-requirements";
@@ -380,22 +346,6 @@ export type {
   FirefoxPWABannerTexts,
 } from "./components/immersive-landing";
 export { default as Input } from "./components/input";
-export {
-  default as InputGroup,
-  InputGroupInput,
-  InputGroupTextArea,
-  InputGroupPrefix,
-  InputGroupSuffix,
-} from "./components/input-group";
-export type {
-  InputGroupProps,
-  InputGroupRootProps,
-  InputGroupInputProps,
-  InputGroupTextAreaProps,
-  InputGroupPrefixProps,
-  InputGroupSuffixProps,
-  InputGroupVariant,
-} from "./components/input-group";
 export {
   default as InputOTP,
   InputOTPGroup,
@@ -558,23 +508,6 @@ export { default as Navbar } from "./components/navbar";
 export type { NavbarProps } from "./components/navbar";
 export type { NavbarStackProps } from "./components/navbar/NavbarStack.generated";
 export type { NavbarRowProps } from "./components/navbar/NavbarRow.generated";
-export {
-  default as NumberField,
-  NumberFieldGroup,
-  NumberFieldInput,
-  NumberFieldIncrementButton,
-  NumberFieldDecrementButton,
-} from "./components/number-field";
-export type {
-  NumberFieldProps,
-  NumberFieldRootProps,
-  NumberFieldGroupProps,
-  NumberFieldInputProps,
-  NumberFieldIncrementButtonProps,
-  NumberFieldDecrementButtonProps,
-  NumberFieldVariant,
-  NumberFieldRenderProps,
-} from "./components/number-field";
 export { default as NoiseBackground } from "./components/noise-background";
 export type { NoiseBackgroundProps } from "./components/noise-background";
 export { default as Pagination } from "./components/pagination";
@@ -610,23 +543,6 @@ export {
 } from "./components/radio-group";
 
 export { default as Select } from "./components/select";
-export {
-  default as SearchField,
-  SearchFieldGroup,
-  SearchFieldInput,
-  SearchFieldSearchIcon,
-  SearchFieldClearButton,
-} from "./components/search-field";
-export type {
-  SearchFieldProps,
-  SearchFieldRootProps,
-  SearchFieldGroupProps,
-  SearchFieldInputProps,
-  SearchFieldSearchIconProps,
-  SearchFieldClearButtonProps,
-  SearchFieldVariant,
-  SearchFieldRenderProps,
-} from "./components/search-field";
 export { default as ScrollShadow } from "./components/scroll-shadow";
 export type {
   ScrollShadowProps,
@@ -699,24 +615,6 @@ export type {
   UseTableExpansionResult,
   UseAnchoredOverlayPositionOptions,
 } from "./hooks/table";
-export { default as Tag } from "./components/tag";
-export type {
-  TagProps,
-  TagRootProps,
-  TagRemoveButtonProps,
-  TagSize,
-  TagVariant,
-} from "./components/tag";
-export {
-  default as TagGroup,
-  TagGroupList,
-} from "./components/tag-group";
-export type {
-  TagGroupProps,
-  TagGroupRootProps,
-  TagGroupListProps,
-  TagSelectionMode,
-} from "./components/tag-group";
 
 export { default as Tabs } from "./components/tabs";
 export type {
@@ -740,24 +638,12 @@ export type {
   TextLeading,
   TextFamily,
 } from "./components/text";
-export {
-  default as TextField,
-  TextFieldContext,
-} from "./components/text-field";
-export type {
-  TextFieldProps,
-  TextFieldRootProps,
-  TextFieldVariant,
-  TextFieldRenderProps,
-  TextFieldContextValue,
-} from "./components/text-field";
 export { default as TextArea } from "./components/text-area";
 export type {
   TextAreaProps,
   TextAreaRootProps,
   TextAreaVariant,
 } from "./components/text-area";
-export { default as Textarea } from "./components/textarea";
 export {
   default as TimeField,
   TimeFieldGroup,
