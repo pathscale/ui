@@ -684,9 +684,14 @@ export type { SliderProps, SliderSize } from "./components/slider";
 export { default as Skeleton } from "./components/skeleton";
 export { default as Surface } from "./components/surface";
 export type {
+  SurfaceBorder,
+  SurfaceElevation,
+  SurfaceMaterial,
+  SurfacePadding,
   SurfaceVariant,
   SurfaceVariants,
   SurfaceProps,
+  SurfaceRadius,
 } from "./components/surface";
 
 export { default as Table } from "./components/table";
