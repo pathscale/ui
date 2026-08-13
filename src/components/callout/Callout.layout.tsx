@@ -1,7 +1,7 @@
 import "./Callout.css";
 import { Show, type Component, type JSX } from "solid-js";
 import { Dynamic } from "solid-js/web";
-import type { Flavor, State, UIBaseProps, Variant } from "../vocabulary";
+import type { Flavor, UIBaseProps, Variant } from "../vocabulary";
 import type { Layout } from "../../lib/layouts";
 import { callout } from "./Callout.recipe";
 
@@ -13,7 +13,6 @@ export type CalloutPlacement = "inline" | "banner";
 export type CalloutProps = Omit<JSX.HTMLAttributes<HTMLDivElement>, "children" | "title"> &
   UIBaseProps & {
     flavor?: Flavor;
-    state?: State;
     variant?: Variant;
     placement?: CalloutPlacement;
     title?: JSX.Element;
@@ -82,11 +81,11 @@ const DangerIcon: Component = () =>
     </>,
   );
 
-const STATE_ICON: Record<State, Component> = {
+const FLAVOR_ICON: Record<string, Component> = {
   info: InfoIcon,
   success: SuccessIcon,
   warning: WarningIcon,
-  danger: DangerIcon,
+  destructive: DangerIcon,
 };
 
 /**
@@ -96,19 +95,19 @@ const STATE_ICON: Record<State, Component> = {
  * across whatever a screen reader is currently saying. That is right for an
  * error and wrong for "codes copied", which was one of the real call sites.
  */
-/** Only a reported condition can interrupt, and only the urgent ones. */
-const ROLE: Record<State, "alert" | "status"> = {
-  info: "status",
-  success: "status",
-  warning: "alert",
-  danger: "alert",
-};
+/**
+ * Only the urgent flavors interrupt.
+ *
+ * A hardcoded role="alert" is assertive and cuts across whatever a screen
+ * reader is mid-sentence on. Right for an error, wrong for "codes copied".
+ */
+const ASSERTIVE = new Set(["destructive", "warning"]);
 
 /* -------------------------------------------------------------------------------------------------
  * Callout
  * -----------------------------------------------------------------------------------------------*/
 export const CalloutLayout: Layout<typeof callout, CalloutProps> = () => {
-  const role = () => (local.state ? ROLE[local.state] : "status");
+  const role = () => (ASSERTIVE.has(String(local.flavor)) ? "alert" : "status");
 
   return (
     <div
@@ -119,7 +118,7 @@ export const CalloutLayout: Layout<typeof callout, CalloutProps> = () => {
     >
       <Show when={local.icon !== false}>
         <span {...slot.indicator}>
-          <Show when={local.icon} fallback={<Dynamic component={STATE_ICON[local.state ?? "info"]} />}>
+          <Show when={local.icon} fallback={<Dynamic component={FLAVOR_ICON[String(local.flavor)] ?? InfoIcon} />}>
             {local.icon}
           </Show>
         </span>

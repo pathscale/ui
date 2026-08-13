@@ -36,22 +36,29 @@ export type Flavor =
   | "primary"
   | "secondary"
   | "accent"
+  | "destructive"
+  | "success"
+  | "warning"
+  | "info"
   // eslint-disable-next-line @typescript-eslint/ban-types
   | (string & {});
 
 /**
- * A condition being reported. Never a preference.
+ * What is happening to this component right now.
  *
- * The value set is deliberately **disjoint** from `Flavor`, so the two axes
- * can never disagree about a colour. Where both are set, `state` wins: a
- * condition outranks a preference, and a destructive primary button should
- * read as destructive.
+ * Transient, and one at a time. `isDisabled`, `isLoading`, `isInvalid` and
+ * friends were a bag of booleans pretending to be independent dimensions —
+ * nothing stopped `isLoading && isHidden`, which is not a thing a component
+ * can be. A dialog is `loading`, then `hidden`, then it unmounts; that is one
+ * lifecycle, so it is one prop.
  *
- * A danger button is a dangerous action and a danger callout is an error, so
- * it is the same word in both places, and there is no separate colour axis
- * able to contradict it: `<Callout state="success">` cannot be made red.
+ * Closed on purpose. Which conditions a component can be in is the library's
+ * to define; which *looks* exist is the theme's, and that is `Flavor`.
+ *
+ * `hidden` pairs with `keepMounted`: with it, `display: none`; without it,
+ * the content unmounts.
  */
-export type State = "info" | "success" | "warning" | "danger";
+export type State = "default" | "loading" | "disabled" | "invalid" | "hidden";
 
 /** How much emphasis, and what shape. */
 export type Variant = "solid" | "soft" | "outline" | "ghost" | "plain";
@@ -116,24 +123,32 @@ export interface Disclosable {
 }
 
 /**
- * Condition flags. All booleans are `is*`.
+ * Capabilities, not conditions.
  *
- * Deliberately not called `State`: these are interaction conditions, while
- * `State` above is what the thing means. A button can be `state="danger"`
- * and `isDisabled` at once.
+ * What remains after the `is*` audit: these say what a component *can* do,
+ * which is not something `state` can express. `required` and `readonly` are
+ * deliberately absent — they are native HTML attributes and pass straight
+ * through, which is what should have happened instead of inventing
+ * `isRequired` and `isReadOnly`.
  */
-export interface FlagProps {
-  isDisabled?: boolean;
-  isInvalid?: boolean;
-  isRequired?: boolean;
-  isReadOnly?: boolean;
-  isLoading?: boolean;
+export interface CapabilityProps {
+  /** Can be activated by click or keyboard. */
+  isInteractive?: boolean;
+  /** Can be dismissed by the user. */
+  isDismissable?: boolean;
+  /** Keep content in the DOM when `state="hidden"` rather than unmounting. */
+  keepMounted?: boolean;
 }
 
 /** The built-in flavors. A theme may define more; these are the ones the library styles. */
-export const FLAVORS = ["neutral", "primary", "secondary", "accent"] as const;
+export const FLAVORS = [
+  "neutral", "primary", "secondary", "accent",
+  "destructive", "success", "warning", "info",
+] as const;
 
-export const STATES: readonly State[] = ["info", "success", "warning", "danger"] as const;
+export const STATES: readonly State[] = [
+  "default", "loading", "disabled", "invalid", "hidden",
+] as const;
 
 export const VARIANTS: readonly Variant[] = [
   "solid", "soft", "outline", "ghost", "plain",

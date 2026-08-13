@@ -1,7 +1,7 @@
 import "./AuthMessage.css";
 import { Show, type JSX } from "solid-js";
 import Callout from "../callout";
-import type { State, UIBaseProps } from "../vocabulary";
+import type { Flavor, UIBaseProps } from "../vocabulary";
 import type { Layout } from "../../lib/layouts";
 import { authMessage } from "./AuthMessage.recipe";
 
@@ -10,7 +10,7 @@ import { authMessage } from "./AuthMessage.recipe";
  * -----------------------------------------------------------------------------------------------*/
 export type AuthMessageProps = UIBaseProps & {
   message?: JSX.Element | string | null;
-  state?: State;
+  flavor?: Flavor;
 };
 
 /* -------------------------------------------------------------------------------------------------
@@ -23,7 +23,7 @@ export type AuthMessageProps = UIBaseProps & {
  * -----------------------------------------------------------------------------------------------*/
 export const AuthMessageLayout: Layout<typeof authMessage, AuthMessageProps> = () => (
   <Show when={local.message != null && local.message !== ""}>
-    <Callout {...slot.root} state={local.state ?? "danger"}>
+    <Callout {...slot.root} flavor={local.flavor ?? "destructive"}>
       {local.message}
     </Callout>
   </Show>

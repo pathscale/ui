@@ -48,19 +48,19 @@
   }
 
   /* ---------------------------------------------------------------- State */
-  .callout--state-info {
+  .callout--flavor-info {
     --callout-accent: var(--color-info);
     --callout-accent-fg: var(--color-info-content);
   }
-  .callout--state-success {
+  .callout--flavor-success {
     --callout-accent: var(--color-success);
     --callout-accent-fg: var(--color-success-content);
   }
-  .callout--state-warning {
+  .callout--flavor-warning {
     --callout-accent: var(--color-warning);
     --callout-accent-fg: var(--color-warning-content);
   }
-  .callout--state-danger {
+  .callout--flavor-destructive {
     --callout-accent: var(--color-error);
     --callout-accent-fg: var(--color-error-content);
   }
