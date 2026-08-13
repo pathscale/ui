@@ -1,1 +1,5 @@
-export { default as AuthErrorMessage, type AuthErrorMessageProps } from "./AuthErrorMessage";
+export {
+  AuthErrorMessageLayout as default,
+  AuthErrorMessageLayout as AuthErrorMessage,
+} from "./AuthErrorMessage.generated";
+export type { AuthErrorMessageProps } from "./AuthErrorMessage.generated";
