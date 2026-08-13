@@ -16,13 +16,28 @@ import type { JSX } from "solid-js";
  */
 
 /**
- * A styling preference: which palette slot to wear.
+ * A styling preference: a named look, resolved somewhere else.
  *
  * `primary` is not a state — nothing is ever "in the primary state" — it is a
  * choice about prominence and brand. That is why `state="primary"` had no
  * honest call site.
+ *
+ * Deliberately **open**. `color` was the obvious industry name and was
+ * rejected for it: `color` promises a literal, and someone will eventually
+ * write `color="#f00"` and be annoyed. `flavor` promises a name that resolves
+ * elsewhere, so a theme can define `flavor="hip"` and style
+ * `[data-flavor="hip"]` in its own stylesheet, with no library change.
+ *
+ * The built-ins are listed for autocomplete; `(string & {})` keeps that
+ * working while still accepting anything.
  */
-export type Flavor = "neutral" | "primary" | "secondary" | "accent";
+export type Flavor =
+  | "neutral"
+  | "primary"
+  | "secondary"
+  | "accent"
+  // eslint-disable-next-line @typescript-eslint/ban-types
+  | (string & {});
 
 /**
  * A condition being reported. Never a preference.
@@ -115,7 +130,8 @@ export interface FlagProps {
   isLoading?: boolean;
 }
 
-export const FLAVORS: readonly Flavor[] = ["neutral", "primary", "secondary", "accent"] as const;
+/** The built-in flavors. A theme may define more; these are the ones the library styles. */
+export const FLAVORS = ["neutral", "primary", "secondary", "accent"] as const;
 
 export const STATES: readonly State[] = ["info", "success", "warning", "danger"] as const;
 
