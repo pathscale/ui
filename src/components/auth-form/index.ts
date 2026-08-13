@@ -1,1 +1,2 @@
-export { default as AuthForm, type AuthFormProps } from "./AuthForm";
+export { AuthFormLayout as default, AuthFormLayout as AuthForm } from "./AuthForm.generated";
+export type { AuthFormProps } from "./AuthForm.generated";

@@ -5,7 +5,7 @@
   "exports": [
     "Accordion", "AccordionContent", "AccordionIndicator", "AccordionItem", "AccordionRoot", "AccordionTrigger",
     "Alert", "AlertContent", "AlertDescription", "AlertIndicator", "AlertRoot", "AlertTitle",
-    "AuthFieldGroup",
+    "AuthFieldGroup", "AuthForm",
     "Avatar", "AvatarFallback", "AvatarImage", "AvatarRoot",
     "Badge", "Breadcrumbs", "BreadcrumbsItem", "BreadcrumbsRoot",
     "Button", "ButtonGroup", "ButtonGroupRoot", "ButtonGroupSeparator",
