@@ -56,6 +56,36 @@ Layout components require the application compiler before the normal Solid trans
 </Flex>
 ```
 
+Typography presentation belongs on `Text` parameters rather than consumer utility classes:
+
+```tsx
+<Text size="xs" variant="muted" weight="semibold" transform="uppercase" tracking="wide">
+  Appearance
+</Text>
+```
+
+Omitted parameters do not reset inherited font family, weight, transform, tracking, or leading.
+
+Font selection uses semantic roles rather than coupling UI to a particular font package:
+
+```ts
+import "@pathscale/fonts-metroclean";
+```
+
+```css
+:root {
+  --font-display: "metroclean", sans-serif;
+}
+```
+
+```tsx
+<Text family="display">Chuzz</Text>
+```
+
+The available roles are `body`, `heading`, `display`, and `mono`. They resolve through
+`--font-body`, `--font-heading`, `--font-display`, and `--font-mono`, with `--font-sans` as
+the shared fallback. This works with PathScale Fonts and application-owned font faces.
+
 ## Component inventory (by family)
 
 - **Layout/primitives**: Flex, Grid, Join, Surface, Card, GlassPanel, Separator, ScrollShadow, Skeleton, EmptyState, Footer, Header, Navbar, Toolbar, FloatingDock

@@ -5,6 +5,10 @@
       --color-muted,
       color-mix(in oklab, var(--color-base-content) 55%, transparent)
     );
+    --text-color-subtle: var(
+      --color-subtle,
+      color-mix(in oklab, var(--color-base-content) 40%, transparent)
+    );
     --text-color-success: var(--color-success);
     --text-color-warning: var(--color-warning);
     --text-color-danger: var(--color-danger);
@@ -52,6 +56,10 @@
     --text-color: var(--text-color-muted);
   }
 
+  .text[data-variant="subtle"] {
+    --text-color: var(--text-color-subtle);
+  }
+
   .text[data-variant="success"] {
     --text-color: var(--text-color-success);
   }
@@ -62,5 +70,78 @@
 
   .text[data-variant="danger"] {
     --text-color: var(--text-color-danger);
+  }
+
+  .text[data-weight="normal"] {
+    font-weight: 400;
+  }
+
+  .text[data-weight="medium"] {
+    font-weight: 500;
+  }
+
+  .text[data-weight="semibold"] {
+    font-weight: 600;
+  }
+
+  .text[data-weight="bold"] {
+    font-weight: 700;
+  }
+
+  .text[data-transform="none"] {
+    text-transform: none;
+  }
+
+  .text[data-transform="uppercase"] {
+    text-transform: uppercase;
+  }
+
+  .text[data-transform="lowercase"] {
+    text-transform: lowercase;
+  }
+
+  .text[data-transform="capitalize"] {
+    text-transform: capitalize;
+  }
+
+  .text[data-tracking="normal"] {
+    letter-spacing: normal;
+  }
+
+  .text[data-tracking="wide"] {
+    letter-spacing: 0.04em;
+  }
+
+  .text[data-leading="none"] {
+    line-height: 1;
+  }
+
+  .text[data-family="body"] {
+    font-family: var(--font-body, var(--font-sans, inherit));
+  }
+
+  .text[data-family="heading"] {
+    font-family: var(--font-heading, var(--font-sans, inherit));
+  }
+
+  .text[data-family="display"] {
+    font-family: var(
+      --font-display,
+      var(--font-heading, var(--font-sans, inherit))
+    );
+  }
+
+  .text[data-family="mono"] {
+    font-family: var(
+      --font-mono,
+      ui-monospace,
+      SFMono-Regular,
+      Menlo,
+      Monaco,
+      Consolas,
+      "Liberation Mono",
+      "Courier New",
+      monospace
+    );
   }
 }

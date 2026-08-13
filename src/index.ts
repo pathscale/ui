@@ -774,6 +774,11 @@ export type {
   TextRootProps,
   TextSize,
   TextVariant,
+  TextWeight,
+  TextTransform,
+  TextTracking,
+  TextLeading,
+  TextFamily,
 } from "./components/text";
 export {
   default as TextField,
