@@ -27,7 +27,7 @@
     "MetalBorder", "Meter", "MeterFill", "MeterOutput", "MeterRoot", "MeterTrack",
     "Modal", "ModalBackdrop", "ModalBody", "ModalCloseTrigger", "ModalContent", "ModalFooter", "ModalHeader", "ModalHeading", "ModalIcon", "ModalRoot", "ModalTrigger",
     "Navbar", "NoiseBackground", "NumberField", "NumberFieldDecrementButton", "NumberFieldGroup", "NumberFieldIncrementButton", "NumberFieldInput", "NumberFieldRoot",
-    "Pagination", "Popover", "ProgressBar", "ProgressCircle", "Radio", "RadioGroup", "RangeCalendar", "ScrollShadow",
+    "Pagination", "PasswordRequirements", "Popover", "ProgressBar", "ProgressCircle", "Radio", "RadioGroup", "RangeCalendar", "ScrollShadow",
     "SearchField", "SearchFieldClearButton", "SearchFieldGroup", "SearchFieldInput", "SearchFieldRoot", "SearchFieldSearchIcon",
     "Select", "Separator", "SizePicker", "Skeleton", "Slider", "Spinner", "Surface",
     "Table", "TableExpandToggle", "TableInlineConfirm", "TableMobileListView", "TableSortIcon", "TableVirtualSpacerRow",
