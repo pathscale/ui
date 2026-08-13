@@ -2,8 +2,9 @@
   /* -----------------------------------------------------------------------
    * Root
    *
-   * Same shape as Button: the state picks --callout-accent, the variant
-   * decides how that accent is spent. 8 states + 5 variants = 13 rules.
+   * Same shape as Button: flavor or state picks --callout-accent and the
+   * variant decides how it is spent. State is declared second so it wins on
+   * source order — a reported condition outranks a styling preference.
    * --------------------------------------------------------------------- */
   .callout {
     display: flex;
@@ -28,36 +29,38 @@
     color: var(--callout-fg);
   }
 
-  /* ---------------------------------------------------------------- State */
-  .callout--neutral {
+  /* --------------------------------------------------------------- Flavor */
+  .callout--flavor-neutral {
     --callout-accent: var(--color-base-300);
     --callout-accent-fg: var(--color-base-content);
   }
-  .callout--primary {
+  .callout--flavor-primary {
     --callout-accent: var(--color-primary);
     --callout-accent-fg: var(--color-primary-content);
   }
-  .callout--secondary {
+  .callout--flavor-secondary {
     --callout-accent: var(--color-secondary);
     --callout-accent-fg: var(--color-secondary-content);
   }
-  .callout--accent {
+  .callout--flavor-accent {
     --callout-accent: var(--color-accent);
     --callout-accent-fg: var(--color-accent-content);
   }
-  .callout--info {
+
+  /* ---------------------------------------------------------------- State */
+  .callout--state-info {
     --callout-accent: var(--color-info);
     --callout-accent-fg: var(--color-info-content);
   }
-  .callout--success {
+  .callout--state-success {
     --callout-accent: var(--color-success);
     --callout-accent-fg: var(--color-success-content);
   }
-  .callout--warning {
+  .callout--state-warning {
     --callout-accent: var(--color-warning);
     --callout-accent-fg: var(--color-warning-content);
   }
-  .callout--danger {
+  .callout--state-danger {
     --callout-accent: var(--color-error);
     --callout-accent-fg: var(--color-error-content);
   }

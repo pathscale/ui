@@ -1,6 +1,7 @@
 import "./Button.css";
 import { Show, type JSX } from "solid-js";
 import type {
+  Flavor,
   IconSlotProps,
   Radius,
   Size,
@@ -22,6 +23,7 @@ export type ButtonProps = Omit<
   UIBaseProps &
   IconSlotProps & {
     variant?: Variant;
+    flavor?: Flavor;
     state?: State;
     size?: Size;
     width?: Width;

@@ -21,15 +21,17 @@ export const callout = recipe({
     dismiss: { base: "callout__dismiss" },
   },
   props: {
+    flavor: {
+      neutral: "callout--flavor-neutral",
+      primary: "callout--flavor-primary",
+      secondary: "callout--flavor-secondary",
+      accent: "callout--flavor-accent",
+    },
     state: {
-      neutral: "callout--neutral",
-      primary: "callout--primary",
-      secondary: "callout--secondary",
-      accent: "callout--accent",
-      success: "callout--success",
-      warning: "callout--warning",
-      danger: "callout--danger",
-      info: "callout--info",
+      info: "callout--state-info",
+      success: "callout--state-success",
+      warning: "callout--state-warning",
+      danger: "callout--state-danger",
     },
     variant: {
       solid: "callout--solid",
@@ -45,5 +47,5 @@ export const callout = recipe({
       banner: "callout--banner",
     },
   },
-  defaults: { state: "neutral", variant: "soft", placement: "inline" },
+  defaults: { flavor: "neutral", variant: "soft", placement: "inline" },
 });

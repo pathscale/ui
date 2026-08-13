@@ -21,7 +21,7 @@ export type InlineConfirmProps = IComponentBaseProps & {
 const toButtonTone = (variant: InlineConfirmVariant) => {
   if (variant === "danger") return "danger" as const;
   if (variant === "warning") return "warning" as const;
-  return "primary" as const;
+  return undefined;
 };
 
 const InlineConfirm: Layout<typeof componentRecipe, InlineConfirmProps> = () => {

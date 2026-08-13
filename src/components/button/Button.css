@@ -77,23 +77,32 @@
   }
 
   /* -----------------------------------------------------------------------
-   * State — picks the accent
+   * Flavor — a styling preference: which palette slot to wear
    * --------------------------------------------------------------------- */
-  .button--state-neutral {
+  .button--flavor-neutral {
     --button-accent: var(--color-base-300);
     --button-accent-fg: var(--color-base-content);
   }
-  .button--state-primary {
+  .button--flavor-primary {
     --button-accent: var(--color-primary);
     --button-accent-fg: var(--color-primary-content);
   }
-  .button--state-secondary {
+  .button--flavor-secondary {
     --button-accent: var(--color-secondary);
     --button-accent-fg: var(--color-secondary-content);
   }
-  .button--state-accent {
+  .button--flavor-accent {
     --button-accent: var(--color-accent);
     --button-accent-fg: var(--color-accent-content);
+  }
+
+  /* -----------------------------------------------------------------------
+   * State — a reported condition. Declared after flavor so it wins on source
+   * order: a condition outranks a preference.
+   * --------------------------------------------------------------------- */
+  .button--state-info {
+    --button-accent: var(--color-info);
+    --button-accent-fg: var(--color-info-content);
   }
   .button--state-success {
     --button-accent: var(--color-success);
@@ -106,10 +115,6 @@
   .button--state-danger {
     --button-accent: var(--color-error);
     --button-accent-fg: var(--color-error-content);
-  }
-  .button--state-info {
-    --button-accent: var(--color-info);
-    --button-accent-fg: var(--color-info-content);
   }
 
   /* -----------------------------------------------------------------------

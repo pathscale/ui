@@ -517,6 +517,7 @@ export type {
 // The shared parameter vocabulary. A name here means the same thing on every
 // component; see docs/ui-usage.md and UI-2.2-API.md.
 export type {
+  Flavor,
   State,
   Variant,
   Size,
@@ -534,4 +535,4 @@ export type {
   Disclosable,
   FlagProps,
 } from "./components/vocabulary";
-export { STATES, VARIANTS, SIZES, SPACES } from "./components/vocabulary";
+export { FLAVORS, STATES, VARIANTS, SIZES, SPACES } from "./components/vocabulary";

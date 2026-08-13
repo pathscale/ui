@@ -1,12 +1,14 @@
 import { recipe } from "../../lib/layouts";
 
 /**
- * State picks the accent; variant decides how the accent is used.
+ * Flavor or state picks the accent; variant decides how it is spent.
  *
- * Keeping them orthogonal means 8 states and 5 variants cost 13 rules rather
- * than 40 combinations, because the variant rules read `--button-accent`
- * rather than naming a colour. It also makes combinations expressible that
- * the old single axis could not say at all, such as a soft warning button.
+ * Flavor and state hold disjoint values and both write `--button-accent`,
+ * with state declared second so it wins on source order. A condition
+ * outranks a preference, so a destructive primary button reads destructive.
+ *
+ * flavor defaults to primary: <Button> is the call to action, which is what
+ * the fleet's 215 primary call sites were already asking for.
  */
 export const button = recipe({
   component: "button",
@@ -25,15 +27,17 @@ export const button = recipe({
       ghost: "button--ghost",
       plain: "button--plain",
     },
+    flavor: {
+      neutral: "button--flavor-neutral",
+      primary: "button--flavor-primary",
+      secondary: "button--flavor-secondary",
+      accent: "button--flavor-accent",
+    },
     state: {
-      neutral: "button--state-neutral",
-      primary: "button--state-primary",
-      secondary: "button--state-secondary",
-      accent: "button--state-accent",
+      info: "button--state-info",
       success: "button--state-success",
       warning: "button--state-warning",
       danger: "button--state-danger",
-      info: "button--state-info",
     },
     size: {
       xs: "button--xs",
@@ -58,5 +62,5 @@ export const button = recipe({
     isIconOnly: { true: "button--icon-only", false: "" },
   },
   // `sm` rather than `md`: the fleet passes sm at 349 of 465 sites and md at 25.
-  defaults: { variant: "solid", state: "neutral", size: "sm", width: "auto", radius: "full" },
+  defaults: { variant: "solid", flavor: "primary", size: "sm", width: "auto", radius: "full" },
 });
