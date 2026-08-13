@@ -2,6 +2,10 @@ export type SliderInteractionOptions = {
   isDisabled: () => boolean;
   value: () => number;
   valueFromPosition: (clientX: number) => number;
+  /** Called when a drag begins and ends, so geometry can be measured once. */
+  onDragGeometry?: (active: boolean) => void;
+  /** Whether a press landed on the thumb rather than on the bare track. */
+  isThumb?: (target: EventTarget | null) => boolean;
   valueFromKey: (key: string, currentValue: number) => number | undefined;
   onChange: (value: number) => void;
   onChangeEnd: (value: number) => void;
@@ -63,6 +67,7 @@ export const createSliderInteractionHandlers = (
     const activePointerId = pointerId;
     pointerId = undefined;
     pointerChanged = false;
+    options.onDragGeometry?.(false);
     options.onDraggingChange(false);
 
     const target = event.currentTarget;
@@ -92,8 +97,17 @@ export const createSliderInteractionHandlers = (
       pointerId = event.pointerId;
       pointerValue = options.value();
       pointerChanged = false;
+      options.onDragGeometry?.(true);
       options.onDraggingChange(true);
-      emitPointerValue(options.valueFromPosition(event.clientX));
+      /*
+       * Pressing the bare track moves the value under the pointer. Pressing the
+       * thumb does not: taking hold of a knob should not shift what it is
+       * holding, and grabbing it anywhere but dead centre used to nudge the
+       * value before the drag had begun.
+       */
+      if (!options.isThumb?.(event.target)) {
+        emitPointerValue(options.valueFromPosition(event.clientX));
+      }
     },
 
     onPointerMove(event: PointerEvent) {
