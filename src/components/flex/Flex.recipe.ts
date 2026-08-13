@@ -48,6 +48,20 @@ export const CLASSES = {
     lg: "gap-y-6",
     xl: "gap-y-8",
   },
+  paddingInline: {
+    none: "px-0",
+    sm: "px-2",
+    md: "px-4",
+    lg: "px-6",
+    xl: "px-8",
+  },
+  paddingBlock: {
+    none: "py-0",
+    sm: "py-2",
+    md: "py-4",
+    lg: "py-6",
+    xl: "py-8",
+  },
   grow: {
     true: "flex-grow",
     false: "flex-grow-0",
