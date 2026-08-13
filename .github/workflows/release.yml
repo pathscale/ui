@@ -65,13 +65,12 @@ jobs:
           echo "version=$next" >> "$GITHUB_OUTPUT"
           echo "::notice::releasing $current -> $next"
 
-  release:
+  prepare:
     needs: decide
     if: needs.decide.outputs.mode != 'none'
     runs-on: ubicloud-standard-2
     permissions:
-      contents: write # push the bump commit, create the tag and release
-      id-token: write # OIDC trusted publishing + provenance
+      contents: write # push the bump commit
     env:
       VERSION: ${{ needs.decide.outputs.version }}
     steps:
@@ -94,13 +93,6 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 24
-          registry-url: https://registry.npmjs.org
-
-      # Trusted publishing needs npm >= 11.5.1.
-      - name: Ensure npm supports trusted publishing
-        run: |
-          npm install -g npm@latest
-          npm --version
 
       # Commit the bump before publishing, so master always states the version we
       # intend to ship. If a later step fails, the next run sees a version that is
@@ -148,16 +140,63 @@ jobs:
         continue-on-error: true
         run: bun run smoke
 
-      - name: Publish to npm
-        run: npm publish --provenance --access public
+      - name: Pack the verified release
+        run: |
+          mkdir -p release
+          npm pack --pack-destination release
 
-      # Tag only after a successful publish, so tags never point at a version that
-      # is not on npm. Tags had drifted badly before this — newest was v1.1.51
-      # while npm was on 1.2.11.
+      - uses: actions/upload-artifact@v4
+        with:
+          name: npm-package
+          path: release/*.tgz
+          if-no-files-found: error
+
+  publish:
+    needs: [decide, prepare]
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      id-token: write # OIDC trusted publishing + provenance
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: npm-package
+          path: release
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+
+      - name: Require npm with OIDC support
+        run: |
+          npm_version="$(npm --version)"
+          node -e '
+            const [major, minor, patch = 0] = process.argv[1].split(".").map(Number);
+            if (major < 11 || (major === 11 && (minor < 5 || (minor === 5 && patch < 1)))) process.exit(1);
+          ' "$npm_version" || {
+            echo "npm 11.5.1 or newer is required for Trusted Publishing; found $npm_version"
+            exit 1
+          }
+
+      - name: Publish to npm
+        run: npm publish ./release/*.tgz --access public
+
+  # Tag only after a successful publish, so tags never point at a version that
+  # is not on npm. Tags had drifted badly before this — newest was v1.1.51
+  # while npm was on 1.2.11.
+  tag:
+    needs: [decide, publish]
+    runs-on: ubicloud-standard-2
+    permissions:
+      contents: write
+    env:
+      VERSION: ${{ needs.decide.outputs.version }}
+    steps:
       - name: Tag the release
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           gh release create "v$VERSION" \
+            --repo "$GITHUB_REPOSITORY" \
             --title "v$VERSION" \
             --generate-notes

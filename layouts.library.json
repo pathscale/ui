@@ -1,0 +1,42 @@
+{
+  "mode": "source",
+  "source": "src/components",
+  "output": "dist",
+  "exports": [
+    "Accordion", "AccordionContent", "AccordionIndicator", "AccordionItem", "AccordionRoot", "AccordionTrigger",
+    "Alert", "AlertContent", "AlertDescription", "AlertIndicator", "AlertRoot", "AlertTitle",
+    "Avatar", "AvatarFallback", "AvatarImage", "AvatarRoot",
+    "Badge", "Breadcrumbs", "BreadcrumbsItem", "BreadcrumbsRoot",
+    "Button", "ButtonGroup", "ButtonGroupRoot", "ButtonGroupSeparator",
+    "Calendar", "Card", "ChatBubble", "Checkbox", "CheckboxGroup", "Chip", "CloseButton",
+    "ColorArea", "ColorField", "ColorPicker", "ColorSlider", "ColorSwatch", "ColorSwatchPicker", "ColorWheelFlower",
+    "ComboBox", "ComboBoxInput", "ComboBoxInputGroup", "ComboBoxList", "ComboBoxPopover", "ComboBoxRoot", "ComboBoxTrigger",
+    "DateField", "DateFieldGroup", "DateFieldInput", "DateFieldInputContainer", "DateFieldPrefix", "DateFieldRoot", "DateFieldSegment", "DateFieldSuffix",
+    "DatePicker", "DateRangePicker", "Description", "DescriptionRoot", "Disclosure", "DisclosureGroup",
+    "Drawer", "DrawerBackdrop", "DrawerBody", "DrawerClose", "DrawerCloseTrigger", "DrawerContent", "DrawerDialog", "DrawerFooter", "DrawerHandle", "DrawerHeader", "DrawerHeading", "DrawerRoot", "DrawerTrigger",
+    "Dropdown", "EmptyState", "ErrorMessage", "ErrorMessageRoot", "FieldError", "FieldErrorMessage", "FieldErrorRoot",
+    "FieldGroup", "Fieldset", "FieldsetActions", "FieldsetLegend", "FieldsetRoot",
+    "Flex", "FloatingDock", "Footer", "Form", "FormField", "FormRoot", "FormSubmitButton", "FormWithContext",
+    "GlassPanel", "GlowCard", "Grid", "Header", "HeaderRoot", "Icon", "ImmersiveLanding", "Input",
+    "InputGroup", "InputGroupInput", "InputGroupPrefix", "InputGroupRoot", "InputGroupSuffix", "InputGroupTextArea",
+    "InputOTP", "InputOTPGroup", "InputOTPRoot", "InputOTPSeparator", "InputOTPSlot", "Join",
+    "Kbd", "KbdAbbr", "KbdContent", "KbdRoot", "Label", "LabelRoot", "LanguageSwitcher",
+    "Link", "LinkIcon", "LinkRoot", "ListBox", "ListBoxItem", "ListBoxItemIndicator", "ListBoxItemRoot", "ListBoxRoot", "ListBoxSection", "ListBoxSectionRoot",
+    "LiveChatBubble", "LiveChatPanel", "Loading", "Menu", "MenuItem", "MenuItemIndicator", "MenuItemRoot", "MenuItemSubmenuIndicator", "MenuRoot", "MenuSection", "MenuSectionRoot",
+    "MetalBorder", "Meter", "MeterFill", "MeterOutput", "MeterRoot", "MeterTrack",
+    "Modal", "ModalBackdrop", "ModalBody", "ModalCloseTrigger", "ModalContent", "ModalFooter", "ModalHeader", "ModalHeading", "ModalIcon", "ModalRoot", "ModalTrigger",
+    "Navbar", "NoiseBackground", "NumberField", "NumberFieldDecrementButton", "NumberFieldGroup", "NumberFieldIncrementButton", "NumberFieldInput", "NumberFieldRoot",
+    "Pagination", "Popover", "ProgressBar", "ProgressCircle", "Radio", "RadioGroup", "RangeCalendar", "ScrollShadow",
+    "SearchField", "SearchFieldClearButton", "SearchFieldGroup", "SearchFieldInput", "SearchFieldRoot", "SearchFieldSearchIcon",
+    "Select", "Separator", "SizePicker", "Skeleton", "Slider", "Spinner", "Surface",
+    "Table", "TableExpandToggle", "TableInlineConfirm", "TableMobileListView", "TableSortIcon", "TableVirtualSpacerRow",
+    "Tabs", "Tag", "TagGroup", "TagGroupList", "TagGroupRoot", "Text", "TextArea", "TextAreaRoot", "TextField", "TextFieldRoot", "TextRoot", "Textarea", "ThemeColorPicker",
+    "TimeField", "TimeFieldGroup", "TimeFieldInput", "TimeFieldInputContainer", "TimeFieldPrefix", "TimeFieldRoot", "TimeFieldSegment", "TimeFieldSuffix",
+    "Toast", "ToastActionButton", "ToastCloseButton", "ToastContent", "ToastDescription", "ToastIndicator", "ToastProvider", "ToastRoot", "ToastTitle",
+    "Toggle", "Toolbar", "ToolbarRoot", "Tooltip", "TooltipArrow", "TooltipContent", "TooltipRoot", "TooltipTrigger", "VideoPreview"
+  ],
+  "lint": {
+    "baseline": "layouts.lint-baseline.json",
+    "warningsAsErrors": false
+  }
+}

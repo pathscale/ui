@@ -1,8 +1,8 @@
 import { pluginIconify } from "@pathscale/rsbuild-plugin-iconify";
 import { pluginBabel } from "@rsbuild/plugin-babel";
 import { pluginSolid } from "@rsbuild/plugin-solid";
+import { pluginSolidLayoutsLibrary } from "rsbuild-plugin-solid-layouts";
 import { defineConfig } from "@rslib/core";
-import { pluginLayouts } from "./scripts/layouts-plugin";
 
 export default defineConfig({
   source: {
@@ -45,7 +45,7 @@ export default defineConfig({
     ],
   },
   plugins: [
-    pluginLayouts(),
+    pluginSolidLayoutsLibrary(),
     pluginBabel({
       include: /\.(?:jsx|tsx)$/,
     }),

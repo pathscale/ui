@@ -1,3 +1,13 @@
-export { compound, defineComponent, type DefineComponentConfig } from "./component";
-export { recipe, type Recipe, type RecipeConfig, type SlotAttrs } from "./recipe";
-export type { Layout, PropsOf, SlotsOf, StateOf } from "./types";
+export {
+  compound,
+  defineComponent,
+  recipe,
+  type DefineComponentConfig,
+  type Layout,
+  type PropsOf,
+  type Recipe,
+  type RecipeConfig,
+  type SlotAttrs,
+  type SlotsOf,
+  type StateOf,
+} from "solid-layouts";
