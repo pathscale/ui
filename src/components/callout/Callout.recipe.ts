@@ -26,13 +26,12 @@ export const callout = recipe({
       primary: "callout--flavor-primary",
       secondary: "callout--flavor-secondary",
       accent: "callout--flavor-accent",
+      destructive: "callout--flavor-destructive",
+      success: "callout--flavor-success",
+      warning: "callout--flavor-warning",
+      info: "callout--flavor-info",
     },
-    state: {
-      info: "callout--state-info",
-      success: "callout--state-success",
-      warning: "callout--state-warning",
-      danger: "callout--state-danger",
-    },
+
     variant: {
       solid: "callout--solid",
       soft: "callout--soft",

@@ -518,7 +518,7 @@ export type {
   IconSlotProps,
   Controlled,
   Disclosable,
-  FlagProps,
+  CapabilityProps,
 } from "./components/vocabulary";
 export { FLAVORS, STATES, VARIANTS, SIZES, SPACES } from "./components/vocabulary";
 
