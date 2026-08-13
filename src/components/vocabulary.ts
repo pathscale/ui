@@ -58,29 +58,20 @@ export type Flavor =
  * These four form a priority chain — hidden beats disabled beats loading beats
  * default — which is what lets them share one prop.
  *
- * **`invalid` is absent from what a caller may set**, because it is derived
- * from issues: asserting it separately invites `state="invalid"` and an empty
- * `issues` array to disagree, leaving a red field with nothing to explain it.
+ * `invalid` is **derived by default and settable when you need it**, which is
+ * the same controlled/uncontrolled shape as `value` elsewhere in this
+ * vocabulary: leave `state` alone and a field goes invalid because it has
+ * error-severity issues; set it and yours wins.
  *
- * It is still a real rendered state — see `ResolvedState` and `resolveState`,
- * which slot it into the chain below `loading`. A field that is both disabled
- * and carrying an error renders as disabled, because you cannot fix what you
- * cannot edit.
+ * An earlier draft split this into a settable `State` and a rendered
+ * `ResolvedState`. That was two types for one axis — the duplication this
+ * release exists to remove — and it was asymmetric, since `data-state`
+ * reported a value the prop would not accept.
  *
  * `hidden` pairs with `keepMounted`: with it, `display: none`; without it,
  * the content unmounts.
  */
-export type State = "default" | "loading" | "disabled" | "hidden";
-
-/**
- * What the component actually renders as, after resolution.
- *
- * `State` is what a caller may *set*. This is what the component *is*, and it
- * includes `invalid`, which no caller sets because it is derived from issues.
- * Mirrored to `data-state`, so "what state is this input in?" has one answer
- * and it is readable from the DOM.
- */
-export type ResolvedState = State | "invalid";
+export type State = "default" | "loading" | "disabled" | "invalid" | "hidden";
 
 /** How much emphasis, and what shape. */
 export type Variant = "solid" | "soft" | "outline" | "ghost" | "plain";
@@ -263,7 +254,9 @@ export const FLAVORS = [
   "destructive", "success", "warning", "info",
 ] as const;
 
-export const STATES: readonly State[] = ["default", "loading", "disabled", "hidden"] as const;
+export const STATES: readonly State[] = [
+  "default", "loading", "disabled", "invalid", "hidden",
+] as const;
 
 /**
  * Is this field invalid? Derived, never set.
@@ -275,21 +268,18 @@ export const isInvalid = (issues: Issue[] | undefined): boolean =>
   Boolean(issues?.some((i) => i.severity !== "warning"));
 
 /**
- * Resolve what the component renders as.
+ * Resolve what the component renders as, and write it to `data-state`.
  *
- *   hidden > disabled > loading > invalid > default
+ * An explicit `state` always wins — a caller who says `disabled` means it,
+ * even while issues exist, because you cannot fix what you cannot edit. With
+ * nothing set, error-severity issues make it `invalid`.
  *
- * Every input-capable component runs this and writes the answer to
- * `data-state`, so the rendered state is one value rather than a prop plus a
- * separate boolean the caller has to reconcile.
+ * So "what state is an input with invalid input?" has one answer: `invalid`,
+ * on the same prop and readable from `data-state`.
  */
-export const resolveState = (
-  state: State | undefined,
-  issues?: Issue[],
-): ResolvedState => {
-  if (state === "hidden" || state === "disabled" || state === "loading") return state;
-  if (isInvalid(issues)) return "invalid";
-  return "default";
+export const resolveState = (state: State | undefined, issues?: Issue[]): State => {
+  if (state) return state;
+  return isInvalid(issues) ? "invalid" : "default";
 };
 
 export const VARIANTS: readonly Variant[] = [

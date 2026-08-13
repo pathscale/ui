@@ -23,6 +23,29 @@ Each entry is the component's *real current* props with the 2.2 rules applied, s
 <Button flavor="hip">                          // theme-defined, no library change
 ```
 
+### State, and what an invalid input is
+
+```ts
+type State = "default" | "loading" | "disabled" | "invalid" | "hidden";
+```
+
+**An input with invalid input has `state="invalid"`**, and it is readable from `data-state`. One prop, one answer.
+
+`invalid` is *derived by default and settable when you need it* — the same controlled/uncontrolled shape as `value`. Leave `state` alone and the field goes invalid because it has error-severity issues; set it and yours wins.
+
+| `state` set to | Issues | `data-state` | |
+| --- | --- | --- | --- |
+| — | none | `default` | |
+| — | error | **`invalid`** | derived |
+| — | warning only | `default` | a warning does not redden the field |
+| `disabled` | error | `disabled` | you cannot fix what you cannot edit — but the message still shows |
+| `loading` | error | `loading` | revalidating, previous error still visible |
+| `hidden` | error | `hidden` | |
+
+An explicit `state` always wins, because a caller who says `disabled` means it. The states otherwise read as a priority: `hidden` over `disabled` over `loading` over `invalid` over `default`.
+
+`state` is closed and the library owns it — which conditions a component can be in is not a styling question. `flavor` is the open one.
+
 ## Validation
 
 Every component a user can type into, pick from or toggle extends `Validatable<T>`. **19 components** carry it.
