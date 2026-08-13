@@ -55,10 +55,21 @@ export type Flavor =
  * Closed on purpose. Which conditions a component can be in is the library's
  * to define; which *looks* exist is the theme's, and that is `Flavor`.
  *
+ * These four form a priority chain — hidden beats disabled beats loading beats
+ * default — which is what lets them share one prop.
+ *
+ * **`invalid` is deliberately absent.** It fails both tests. It is orthogonal
+ * rather than superseding: a field can be disabled *and* carrying an error
+ * from the last submit, or revalidating *and* still showing the previous one.
+ * And it is *derived* rather than set — a component is invalid because it has
+ * error-severity issues, so making the caller assert it separately invites the
+ * two to disagree. Validity is computed from `issues` and mirrored to
+ * `aria-invalid` and `data-invalid`.
+ *
  * `hidden` pairs with `keepMounted`: with it, `display: none`; without it,
  * the content unmounts.
  */
-export type State = "default" | "loading" | "disabled" | "invalid" | "hidden";
+export type State = "default" | "loading" | "disabled" | "hidden";
 
 /** How much emphasis, and what shape. */
 export type Variant = "solid" | "soft" | "outline" | "ghost" | "plain";
@@ -241,9 +252,16 @@ export const FLAVORS = [
   "destructive", "success", "warning", "info",
 ] as const;
 
-export const STATES: readonly State[] = [
-  "default", "loading", "disabled", "invalid", "hidden",
-] as const;
+export const STATES: readonly State[] = ["default", "loading", "disabled", "hidden"] as const;
+
+/**
+ * Is this field invalid? Derived, never set.
+ *
+ * Warnings deliberately do not count: "weak password" colours the message
+ * without reddening the field or blocking submission.
+ */
+export const isInvalid = (issues: Issue[] | undefined): boolean =>
+  Boolean(issues?.some((i) => i.severity !== "warning"));
 
 export const VARIANTS: readonly Variant[] = [
   "solid", "soft", "outline", "ghost", "plain",
