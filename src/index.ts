@@ -517,6 +517,9 @@ export type {
   UIBaseProps,
   IconSlotProps,
   Controlled,
+  Issue,
+  OpenChangeReason,
+  ChangeReason,
   Disclosable,
   CapabilityProps,
 } from "./components/vocabulary";
