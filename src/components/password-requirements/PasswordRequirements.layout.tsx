@@ -1,6 +1,5 @@
 import "./PasswordRequirements.css";
 import { For, Show, type JSX } from "solid-js";
-import { twMerge } from "tailwind-merge";
 import Icon from "../icon";
 import type { IComponentBaseProps } from "../types";
 import type { PasswordRuleResult } from "../../passwordRules";
@@ -14,7 +13,6 @@ export type PasswordRequirementsProps = Omit<JSX.HTMLAttributes<HTMLDivElement>,
   IComponentBaseProps & {
     title?: JSX.Element;
     results: PasswordRuleResult[];
-    itemClass?: string;
     metIcon?: JSX.Element;
     unmetIcon?: JSX.Element;
   };
@@ -39,7 +37,6 @@ export const PasswordRequirementsLayout: Layout<
         {(rule) => (
           <li
             {...slot.item}
-            {...{ class: twMerge(slot.item.class, local.itemClass) }}
             data-rule={rule.key}
             data-passed={rule.passed ? "true" : "false"}
           >

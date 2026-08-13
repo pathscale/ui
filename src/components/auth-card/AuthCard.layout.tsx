@@ -1,6 +1,5 @@
 import "./AuthCard.css";
 import { Show, type JSX } from "solid-js";
-import { twMerge } from "tailwind-merge";
 import Card from "../card";
 import type { IComponentBaseProps } from "../types";
 import type { Layout } from "../../lib/layouts";
@@ -15,7 +14,6 @@ export type AuthCardProps = IComponentBaseProps & {
   children: JSX.Element;
   footer?: JSX.Element;
   brandingSlot?: JSX.Element;
-  bodyClass?: string;
 };
 
 /* -------------------------------------------------------------------------------------------------
@@ -26,7 +24,7 @@ export type AuthCardProps = IComponentBaseProps & {
  * -----------------------------------------------------------------------------------------------*/
 export const AuthCardLayout: Layout<typeof authCard, AuthCardProps> = () => (
   <Card {...slot.root} variant="shadow">
-    <Card.Body {...slot.body} {...{ class: twMerge(slot.body.class, local.bodyClass) }}>
+    <Card.Body {...slot.body}>
       <Show when={local.title || local.description || local.brandingSlot}>
         <div {...slot.header}>
           <div {...slot.headings}>

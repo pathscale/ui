@@ -15,13 +15,13 @@ export type InlineConfirmProps = IComponentBaseProps & {
   onCancel: () => void;
   loading?: boolean;
   disabled?: boolean;
-  confirmVariant?: InlineConfirmVariant;
+  confirmTone?: InlineConfirmVariant;
 };
 
-const toButtonVariant = (variant: InlineConfirmVariant) => {
-  if (variant === "danger") return "danger";
-  if (variant === "warning") return "secondary";
-  return "primary";
+const toButtonTone = (variant: InlineConfirmVariant) => {
+  if (variant === "danger") return "danger" as const;
+  if (variant === "warning") return "warning" as const;
+  return "primary" as const;
 };
 
 const InlineConfirm: Layout<typeof componentRecipe, InlineConfirmProps> = () => {
@@ -33,7 +33,7 @@ const InlineConfirm: Layout<typeof componentRecipe, InlineConfirmProps> = () => 
     "onCancel",
     "loading",
     "disabled",
-    "confirmVariant",
+    "confirmTone",
     "class",
     "className",
     "dataTheme",
@@ -41,7 +41,7 @@ const InlineConfirm: Layout<typeof componentRecipe, InlineConfirmProps> = () => 
 
   const isBusy = () => Boolean(local.loading);
   const isDisabled = () => Boolean(local.disabled) || isBusy();
-  const confirmVariant = () => toButtonVariant(local.confirmVariant ?? "primary");
+  const confirmTone = () => toButtonTone(local.confirmTone ?? "primary");
 
   return (
     <div
@@ -56,8 +56,8 @@ const InlineConfirm: Layout<typeof componentRecipe, InlineConfirmProps> = () => 
       <div class="inline-flex items-center gap-2" data-slot="table-inline-confirm-actions">
         <Button
           size="sm"
-          variant={confirmVariant()}
-          isPending={isBusy()}
+          tone={confirmTone()}
+          isLoading={isBusy()}
           isDisabled={isDisabled()}
           onClick={local.onConfirm}
           aria-label={local.confirmLabel}
