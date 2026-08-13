@@ -9,7 +9,7 @@ import {
 export type OverlayPlacement = "top" | "bottom" | "left" | "right";
 export type OverlayAlign = "start" | "center" | "end";
 
-type Rect = {
+export type OverlayAnchorRect = {
   top: number;
   left: number;
   width: number;
@@ -21,6 +21,7 @@ type Rect = {
 export interface CreateOverlayPositionOptions {
   open: Accessor<boolean>;
   triggerRef: Accessor<HTMLElement | undefined>;
+  anchorRect?: Accessor<OverlayAnchorRect | undefined>;
   overlayRef: Accessor<HTMLElement | undefined>;
   placement: Accessor<OverlayPlacement>;
   offset: Accessor<number>;
@@ -43,11 +44,11 @@ const clamp = (value: number, min: number, max: number) => {
   return Math.min(Math.max(value, min), max);
 };
 
-const getMainAxisSize = (placement: OverlayPlacement, rect: Rect) =>
+const getMainAxisSize = (placement: OverlayPlacement, rect: OverlayAnchorRect) =>
   placement === "top" || placement === "bottom" ? rect.height : rect.width;
 
 const getAvailableSpace = (
-  rect: Rect,
+  rect: OverlayAnchorRect,
   viewportWidth: number,
   viewportHeight: number,
   padding: number,
@@ -60,8 +61,8 @@ const getAvailableSpace = (
 
 const resolvePlacement = (
   preferred: OverlayPlacement,
-  triggerRect: Rect,
-  overlayRect: Rect,
+  triggerRect: OverlayAnchorRect,
+  overlayRect: OverlayAnchorRect,
   viewportWidth: number,
   viewportHeight: number,
   padding: number,
@@ -97,7 +98,14 @@ const getCrossAxisCoordinate = (
 
 const round = (value: number) => Math.round(value * 100) / 100;
 
-export const createOverlayPosition = (options: CreateOverlayPositionOptions) => {
+export const resolveOverlayAnchorRect = (
+  trigger: Pick<HTMLElement, "getBoundingClientRect"> | undefined,
+  anchorRect: OverlayAnchorRect | undefined,
+) => anchorRect ?? trigger?.getBoundingClientRect();
+
+export const createOverlayPosition = (
+  options: CreateOverlayPositionOptions,
+) => {
   const [style, setStyle] = createSignal<JSX.CSSProperties>({
     visibility: "hidden",
   });
@@ -112,8 +120,9 @@ export const createOverlayPosition = (options: CreateOverlayPositionOptions) => 
     }
 
     const trigger = options.triggerRef();
+    const anchorRect = options.anchorRect?.();
     const overlay = options.overlayRef();
-    if (!trigger || !overlay) return;
+    if ((!trigger && !anchorRect) || !overlay) return;
 
     const viewportPadding = options.viewportPadding?.() ?? 8;
     const align = options.align?.() ?? "center";
@@ -122,7 +131,8 @@ export const createOverlayPosition = (options: CreateOverlayPositionOptions) => 
     let frame = 0;
 
     const update = () => {
-      const triggerRect = trigger.getBoundingClientRect();
+      const triggerRect = resolveOverlayAnchorRect(trigger, options.anchorRect?.());
+      if (!triggerRect) return;
       const overlayRect = overlay.getBoundingClientRect();
       const viewportWidth = window.innerWidth;
       const viewportHeight = window.innerHeight;
@@ -215,7 +225,7 @@ export const createOverlayPosition = (options: CreateOverlayPositionOptions) => 
         ? new ResizeObserver(schedule)
         : undefined;
 
-    resizeObserver?.observe(trigger);
+    if (trigger) resizeObserver?.observe(trigger);
     resizeObserver?.observe(overlay);
 
     onCleanup(() => {

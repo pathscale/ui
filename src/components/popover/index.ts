@@ -16,6 +16,7 @@ export type PopoverContentProps = ComponentProps<typeof PopoverContent>;
 export type PopoverDialogProps = ComponentProps<typeof PopoverDialog>;
 export type PopoverArrowProps = ComponentProps<typeof PopoverArrow>;
 export type PopoverHeadingProps = ComponentProps<typeof PopoverHeading>;
+export type { PopoverAnchor, PopoverAnchorRect } from "./Popover.generated";
 
 export {
   PopoverRoot,
