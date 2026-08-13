@@ -110,16 +110,55 @@ export interface IconSlotProps {
  * pairs for this (`open`/`isOpen`, `onClose`/`onOpenChange`,
  * `closeOnEsc`/`shouldCloseOnEsc`) across ten total call sites.
  */
+/**
+ * Why a value changed, or why a disclosure opened or closed.
+ *
+ * Optional and last, so `onOpenChange={(open) => …}` is unaffected. It exists
+ * because the library already drew this distinction — Drawer shipped
+ * `DrawerCloseReason` — and collapsing `onClose` into `onOpenChange(boolean)`
+ * would have thrown it away. Whether a dialog closed by Escape or by a
+ * backdrop click is exactly what a caller needs to decide whether to warn
+ * about unsaved work.
+ */
+export type OpenChangeReason = "escape" | "backdrop" | "trigger" | "api" | "select" | "submit";
+export type ChangeReason = "input" | "paste" | "clear" | "step" | "select" | "api";
+
+/**
+ * A validation result, not a validation message.
+ *
+ * `passwordRules.ts` had the right idea and the wrong shape: a structured
+ * `key` beside a `message` hardcoded in English inside the library, so every
+ * non-English app either showed English or rebuilt the result. And a single
+ * message cannot say that a password is both too short and missing a digit.
+ *
+ * `code` is stable and translatable; `params` interpolate into it from i18n
+ * context. "password too short" is `{ code: "too_small", params: { minimum: 8 } }`.
+ *
+ * `severity` exists because not every issue blocks submission: "weak" is a
+ * warning, "too short" is an error, and a field can show both.
+ *
+ * Compatible with Standard Schema, which `createForm` already uses through
+ * TanStack Form: its issues carry `message` and `path`, and Zod adds `code`.
+ */
+export interface Issue {
+  code: string;
+  params?: Record<string, unknown>;
+  /** Skips the i18n lookup when supplied. */
+  message?: JSX.Element;
+  severity?: "error" | "warning";
+  path?: (string | number)[];
+}
+
 export interface Controlled<T> {
   value?: T;
   defaultValue?: T;
-  onChange?: (value: T) => void;
+  onChange?: (value: T, reason?: ChangeReason) => void;
 }
 
 export interface Disclosable {
-  isOpen?: boolean;
+  open?: boolean;
   defaultOpen?: boolean;
-  onOpenChange?: (isOpen: boolean) => void;
+  onOpenChange?: (open: boolean, reason?: OpenChangeReason) => void;
 }
 
 /**
