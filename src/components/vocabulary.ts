@@ -58,18 +58,29 @@ export type Flavor =
  * These four form a priority chain — hidden beats disabled beats loading beats
  * default — which is what lets them share one prop.
  *
- * **`invalid` is deliberately absent.** It fails both tests. It is orthogonal
- * rather than superseding: a field can be disabled *and* carrying an error
- * from the last submit, or revalidating *and* still showing the previous one.
- * And it is *derived* rather than set — a component is invalid because it has
- * error-severity issues, so making the caller assert it separately invites the
- * two to disagree. Validity is computed from `issues` and mirrored to
- * `aria-invalid` and `data-invalid`.
+ * **`invalid` is absent from what a caller may set**, because it is derived
+ * from issues: asserting it separately invites `state="invalid"` and an empty
+ * `issues` array to disagree, leaving a red field with nothing to explain it.
+ *
+ * It is still a real rendered state — see `ResolvedState` and `resolveState`,
+ * which slot it into the chain below `loading`. A field that is both disabled
+ * and carrying an error renders as disabled, because you cannot fix what you
+ * cannot edit.
  *
  * `hidden` pairs with `keepMounted`: with it, `display: none`; without it,
  * the content unmounts.
  */
 export type State = "default" | "loading" | "disabled" | "hidden";
+
+/**
+ * What the component actually renders as, after resolution.
+ *
+ * `State` is what a caller may *set*. This is what the component *is*, and it
+ * includes `invalid`, which no caller sets because it is derived from issues.
+ * Mirrored to `data-state`, so "what state is this input in?" has one answer
+ * and it is readable from the DOM.
+ */
+export type ResolvedState = State | "invalid";
 
 /** How much emphasis, and what shape. */
 export type Variant = "solid" | "soft" | "outline" | "ghost" | "plain";
@@ -262,6 +273,24 @@ export const STATES: readonly State[] = ["default", "loading", "disabled", "hidd
  */
 export const isInvalid = (issues: Issue[] | undefined): boolean =>
   Boolean(issues?.some((i) => i.severity !== "warning"));
+
+/**
+ * Resolve what the component renders as.
+ *
+ *   hidden > disabled > loading > invalid > default
+ *
+ * Every input-capable component runs this and writes the answer to
+ * `data-state`, so the rendered state is one value rather than a prop plus a
+ * separate boolean the caller has to reconcile.
+ */
+export const resolveState = (
+  state: State | undefined,
+  issues?: Issue[],
+): ResolvedState => {
+  if (state === "hidden" || state === "disabled" || state === "loading") return state;
+  if (isInvalid(issues)) return "invalid";
+  return "default";
+};
 
 export const VARIANTS: readonly Variant[] = [
   "solid", "soft", "outline", "ghost", "plain",
