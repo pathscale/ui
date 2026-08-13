@@ -16,21 +16,27 @@ import type { JSX } from "solid-js";
  */
 
 /**
- * What is true about this thing.
+ * A styling preference: which palette slot to wear.
  *
- * A danger button is a dangerous action; a danger callout is an error. Same
- * word, same meaning, so there is no second colour axis that could contradict
- * it. Components that report a condition take `state` and nothing else.
+ * `primary` is not a state — nothing is ever "in the primary state" — it is a
+ * choice about prominence and brand. That is why `state="primary"` had no
+ * honest call site.
  */
-export type State =
-  | "neutral"
-  | "primary"
-  | "secondary"
-  | "accent"
-  | "success"
-  | "warning"
-  | "danger"
-  | "info";
+export type Flavor = "neutral" | "primary" | "secondary" | "accent";
+
+/**
+ * A condition being reported. Never a preference.
+ *
+ * The value set is deliberately **disjoint** from `Flavor`, so the two axes
+ * can never disagree about a colour. Where both are set, `state` wins: a
+ * condition outranks a preference, and a destructive primary button should
+ * read as destructive.
+ *
+ * A danger button is a dangerous action and a danger callout is an error, so
+ * it is the same word in both places, and there is no separate colour axis
+ * able to contradict it: `<Callout state="success">` cannot be made red.
+ */
+export type State = "info" | "success" | "warning" | "danger";
 
 /** How much emphasis, and what shape. */
 export type Variant = "solid" | "soft" | "outline" | "ghost" | "plain";
@@ -109,9 +115,9 @@ export interface FlagProps {
   isLoading?: boolean;
 }
 
-export const STATES: readonly State[] = [
-  "neutral", "primary", "secondary", "accent", "success", "warning", "danger", "info",
-] as const;
+export const FLAVORS: readonly Flavor[] = ["neutral", "primary", "secondary", "accent"] as const;
+
+export const STATES: readonly State[] = ["info", "success", "warning", "danger"] as const;
 
 export const VARIANTS: readonly Variant[] = [
   "solid", "soft", "outline", "ghost", "plain",

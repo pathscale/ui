@@ -1,7 +1,7 @@
 import "./Callout.css";
 import { Show, type Component, type JSX } from "solid-js";
 import { Dynamic } from "solid-js/web";
-import type { State, UIBaseProps, Variant } from "../vocabulary";
+import type { Flavor, State, UIBaseProps, Variant } from "../vocabulary";
 import type { Layout } from "../../lib/layouts";
 import { callout } from "./Callout.recipe";
 
@@ -12,6 +12,7 @@ export type CalloutPlacement = "inline" | "banner";
 
 export type CalloutProps = Omit<JSX.HTMLAttributes<HTMLDivElement>, "children" | "title"> &
   UIBaseProps & {
+    flavor?: Flavor;
     state?: State;
     variant?: Variant;
     placement?: CalloutPlacement;
@@ -82,10 +83,6 @@ const DangerIcon: Component = () =>
   );
 
 const STATE_ICON: Record<State, Component> = {
-  neutral: InfoIcon,
-  primary: InfoIcon,
-  secondary: InfoIcon,
-  accent: InfoIcon,
   info: InfoIcon,
   success: SuccessIcon,
   warning: WarningIcon,
@@ -99,11 +96,8 @@ const STATE_ICON: Record<State, Component> = {
  * across whatever a screen reader is currently saying. That is right for an
  * error and wrong for "codes copied", which was one of the real call sites.
  */
+/** Only a reported condition can interrupt, and only the urgent ones. */
 const ROLE: Record<State, "alert" | "status"> = {
-  neutral: "status",
-  primary: "status",
-  secondary: "status",
-  accent: "status",
   info: "status",
   success: "status",
   warning: "alert",
@@ -114,17 +108,17 @@ const ROLE: Record<State, "alert" | "status"> = {
  * Callout
  * -----------------------------------------------------------------------------------------------*/
 export const CalloutLayout: Layout<typeof callout, CalloutProps> = () => {
-  const state = () => local.state ?? "neutral";
+  const role = () => (local.state ? ROLE[local.state] : "status");
 
   return (
     <div
       {...slot.root}
-      role={ROLE[state()]}
-      aria-live={ROLE[state()] === "alert" ? "assertive" : "polite"}
+      role={role()}
+      aria-live={role() === "alert" ? "assertive" : "polite"}
     >
       <Show when={local.icon !== false}>
         <span {...slot.indicator}>
-          <Show when={local.icon} fallback={<Dynamic component={STATE_ICON[state()]} />}>
+          <Show when={local.icon} fallback={<Dynamic component={STATE_ICON[local.state ?? "info"]} />}>
             {local.icon}
           </Show>
         </span>

@@ -1,6 +1,6 @@
 import "./AuthSubmitButton.css";
 import type { JSX } from "solid-js";
-import type { Size, State, Variant, Width } from "../vocabulary";
+import type { Flavor, Size, State, Variant, Width } from "../vocabulary";
 import Button from "../button";
 import type { IComponentBaseProps } from "../types";
 import type { Layout } from "../../lib/layouts";
@@ -19,6 +19,7 @@ export type AuthSubmitButtonProps = Omit<
     isDisabled?: boolean;
     type?: "button" | "submit" | "reset";
     variant?: Variant;
+    flavor?: Flavor;
     state?: State;
     size?: Size;
     width?: Width;
@@ -39,7 +40,7 @@ export const AuthSubmitButtonLayout: Layout<
     {...slot.root}
     type={local.type ?? "submit"}
     variant={local.variant ?? "solid"}
-    state={local.state ?? "primary"}
+    flavor={local.flavor ?? "primary"}
     size={local.size}
     width={local.width ?? "full"}
     isLoading={Boolean(local.isLoading)}
