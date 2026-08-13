@@ -29,6 +29,10 @@ export type FlexProps = IComponentBaseProps &
     gapY?: ResponsiveProp<"none" | "sm" | "md" | "lg" | "xl">;
     paddingInline?: ResponsiveProp<"none" | "sm" | "md" | "lg" | "xl">;
     paddingBlock?: ResponsiveProp<"none" | "sm" | "md" | "lg" | "xl">;
+    width?: ResponsiveProp<"full">;
+    height?: ResponsiveProp<"full">;
+    minWidth?: ResponsiveProp<"zero">;
+    minHeight?: ResponsiveProp<"zero">;
     grow?: ResponsiveProp<boolean>;
     shrink?: ResponsiveProp<boolean>;
     basis?: ResponsiveProp<"none" | "sm" | "md" | "lg" | "xl">;
@@ -45,6 +49,7 @@ export type FlexProps = IComponentBaseProps &
  * gap-y-0 gap-y-2 gap-y-4 gap-y-6 gap-y-8
  * px-0 px-2 px-4 px-6 px-8
  * py-0 py-2 py-4 py-6 py-8
+ * w-full h-full min-w-0 min-h-0
  * flex-grow flex-grow-0
  * flex-shrink flex-shrink-0
  * basis-0 basis-8 basis-16 basis-24 basis-32
@@ -57,6 +62,7 @@ export type FlexProps = IComponentBaseProps &
  * sm:gap-y-0 sm:gap-y-2 sm:gap-y-4 sm:gap-y-6 sm:gap-y-8
  * sm:px-0 sm:px-2 sm:px-4 sm:px-6 sm:px-8
  * sm:py-0 sm:py-2 sm:py-4 sm:py-6 sm:py-8
+ * sm:w-full sm:h-full sm:min-w-0 sm:min-h-0
  * sm:flex-grow sm:flex-grow-0
  * sm:flex-shrink sm:flex-shrink-0
  * sm:basis-0 sm:basis-8 sm:basis-16 sm:basis-24 sm:basis-32
@@ -69,6 +75,7 @@ export type FlexProps = IComponentBaseProps &
  * md:gap-y-0 md:gap-y-2 md:gap-y-4 md:gap-y-6 md:gap-y-8
  * md:px-0 md:px-2 md:px-4 md:px-6 md:px-8
  * md:py-0 md:py-2 md:py-4 md:py-6 md:py-8
+ * md:w-full md:h-full md:min-w-0 md:min-h-0
  * md:flex-grow md:flex-grow-0
  * md:flex-shrink md:flex-shrink-0
  * md:basis-0 md:basis-8 md:basis-16 md:basis-24 md:basis-32
@@ -81,6 +88,7 @@ export type FlexProps = IComponentBaseProps &
  * lg:gap-y-0 lg:gap-y-2 lg:gap-y-4 lg:gap-y-6 lg:gap-y-8
  * lg:px-0 lg:px-2 lg:px-4 lg:px-6 lg:px-8
  * lg:py-0 lg:py-2 lg:py-4 lg:py-6 lg:py-8
+ * lg:w-full lg:h-full lg:min-w-0 lg:min-h-0
  * lg:flex-grow lg:flex-grow-0
  * lg:flex-shrink lg:flex-shrink-0
  * lg:basis-0 lg:basis-8 lg:basis-16 lg:basis-24 lg:basis-32
@@ -93,6 +101,7 @@ export type FlexProps = IComponentBaseProps &
  * xl:gap-y-0 xl:gap-y-2 xl:gap-y-4 xl:gap-y-6 xl:gap-y-8
  * xl:px-0 xl:px-2 xl:px-4 xl:px-6 xl:px-8
  * xl:py-0 xl:py-2 xl:py-4 xl:py-6 xl:py-8
+ * xl:w-full xl:h-full xl:min-w-0 xl:min-h-0
  * xl:flex-grow xl:flex-grow-0
  * xl:flex-shrink xl:flex-shrink-0
  * xl:basis-0 xl:basis-8 xl:basis-16 xl:basis-24 xl:basis-32
@@ -113,6 +122,10 @@ const Flex: Layout<typeof componentRecipe, FlexProps> = () => {
     "gapY",
     "paddingInline",
     "paddingBlock",
+    "width",
+    "height",
+    "minWidth",
+    "minHeight",
     "grow",
     "shrink",
     "basis",
@@ -134,6 +147,10 @@ const Flex: Layout<typeof componentRecipe, FlexProps> = () => {
         mapResponsiveProp(local.gapY, CLASSES.gapY),
         mapResponsiveProp(local.paddingInline, CLASSES.paddingInline),
         mapResponsiveProp(local.paddingBlock, CLASSES.paddingBlock),
+        mapResponsiveProp(local.width, CLASSES.width),
+        mapResponsiveProp(local.height, CLASSES.height),
+        mapResponsiveProp(local.minWidth, CLASSES.minWidth),
+        mapResponsiveProp(local.minHeight, CLASSES.minHeight),
         mapResponsiveProp(local.grow, CLASSES.grow),
         mapResponsiveProp(local.shrink, CLASSES.shrink),
         mapResponsiveProp(local.basis, CLASSES.basis),
