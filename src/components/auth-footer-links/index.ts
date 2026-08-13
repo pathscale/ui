@@ -1,5 +1,9 @@
 export {
-  default as AuthFooterLinks,
-  type AuthFooterLinksProps,
-  type AuthFooterLinkItem,
-} from "./AuthFooterLinks";
+  AuthFooterLinksLayout as default,
+  AuthFooterLinksLayout as AuthFooterLinks,
+} from "./AuthFooterLinks.generated";
+export type {
+  AuthFooterLinksProps,
+  AuthFooterLinkItem,
+  AuthFooterLinksAlign,
+} from "./AuthFooterLinks.generated";

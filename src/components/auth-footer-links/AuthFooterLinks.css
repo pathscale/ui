@@ -1,0 +1,53 @@
+@layer components {
+  .auth-footer-links {
+    display: flex;
+    width: 100%;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.5rem 0.75rem;
+    font-size: 0.875rem;
+    line-height: 1.25rem;
+  }
+
+  .auth-footer-links--left {
+    justify-content: flex-start;
+    text-align: left;
+  }
+
+  .auth-footer-links--center {
+    justify-content: center;
+    text-align: center;
+  }
+
+  .auth-footer-links--right {
+    justify-content: flex-end;
+    text-align: right;
+  }
+
+  .auth-footer-links__link {
+    color: var(--color-primary);
+    text-underline-offset: 4px;
+    transition-property: color, text-decoration-color;
+    transition-duration: 150ms;
+  }
+
+  .auth-footer-links__link:hover {
+    color: var(--color-accent);
+    text-decoration-line: underline;
+  }
+
+  /* Presence-carrying selectors are avoided deliberately: the recipe reports
+     both directions, so `[data-disabled]` alone would also match "false". */
+  .auth-footer-links__link[data-disabled="true"] {
+    color: inherit;
+    opacity: 0.5;
+  }
+
+  a.auth-footer-links__link[data-disabled="true"] {
+    pointer-events: none;
+  }
+
+  button.auth-footer-links__link[data-disabled="true"] {
+    cursor: not-allowed;
+  }
+}
