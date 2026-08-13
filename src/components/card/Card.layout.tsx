@@ -1,169 +1,81 @@
 import "./Card.css";
-import { splitProps, type Component, type JSX, type ParentComponent } from "solid-js";
-import { twMerge } from "tailwind-merge";
-
-import type { IComponentBaseProps } from "../types";
-import { CLASSES } from "./Card.recipe";
+import { Show, type JSX } from "solid-js";
+import type { Flavor, Radius, Space, State, UIBaseProps, Variant } from "../vocabulary";
 import type { Layout } from "../../lib/layouts";
-import { componentRecipe } from "./Card.recipe";
+import { card, cardBody, cardFooter, cardHeader } from "./Card.recipe";
 
-export type CardVariant = "default" | "flat" | "bordered" | "shadow";
+/* -------------------------------------------------------------------------------------------------
+ * Types
+ * -----------------------------------------------------------------------------------------------*/
+export type CardMaterial = "solid" | "glass";
+export type CardElevation = "none" | "sm" | "md" | "lg";
 
-type CardContextlessProps<T extends HTMLElement> = Omit<JSX.HTMLAttributes<T>, "children"> &
-  IComponentBaseProps & {
-    children?: JSX.Element;
+export type CardProps = Omit<JSX.HTMLAttributes<HTMLDivElement>, "children"> &
+  UIBaseProps & {
+    variant?: Variant;
+    material?: CardMaterial;
+    elevation?: CardElevation;
+    flavor?: Flavor;
+    state?: State;
+    padding?: Space;
+    radius?: Radius;
+    /** Replaces isHoverable and isPressable, which had one call site each across 330. */
+    isInteractive?: boolean;
+    header?: JSX.Element;
+    footer?: JSX.Element;
+    children: JSX.Element;
   };
 
-export type CardRootProps = CardContextlessProps<HTMLDivElement> & {
-  variant?: CardVariant;
-  isHoverable?: boolean;
-  isPressable?: boolean;
-};
+export type CardSectionProps = Omit<JSX.HTMLAttributes<HTMLDivElement>, "children"> &
+  UIBaseProps & { children: JSX.Element };
 
-export type CardHeaderProps = CardContextlessProps<HTMLDivElement>;
-export type CardBodyProps = CardContextlessProps<HTMLDivElement>;
-export type CardFooterProps = CardContextlessProps<HTMLDivElement>;
+export const CardHeaderLayout: Layout<typeof cardHeader, CardSectionProps> = () => (
+  <div {...slot.root}>{children}</div>
+);
 
-const invokeEventHandler = (handler: unknown, event: Event) => {
-  if (typeof handler === "function") {
-    (handler as (event: Event) => void)(event);
-    return;
-  }
+export const CardBodyLayout: Layout<typeof cardBody, CardSectionProps> = () => (
+  <div {...slot.root}>{children}</div>
+);
 
-  if (Array.isArray(handler) && typeof handler[0] === "function") {
-    handler[0](handler[1], event);
-  }
-};
+export const CardFooterLayout: Layout<typeof cardFooter, CardSectionProps> = () => (
+  <div {...slot.root}>{children}</div>
+);
 
-const CardRoot: Layout<typeof componentRecipe, CardRootProps> = () => {
-  const [local, others] = splitProps(props, [
-    "children",
-    "class",
-    "className",
-    "dataTheme",
-    "style",
-    "variant",
-    "isHoverable",
-    "isPressable",
-    "onKeyDown",
-    "role",
-    "tabIndex",
-  ]);
-
-  const variant = () => local.variant ?? "default";
-
+/* -------------------------------------------------------------------------------------------------
+ * Card
+ *
+ * `header` and `footer` cover the common case; Card.Header, Card.Body and
+ * Card.Footer remain for anything that needs to interleave.
+ *
+ * An interactive card gets a button role and keyboard activation, because a
+ * div that responds to click and nothing else is unreachable by keyboard.
+ * -----------------------------------------------------------------------------------------------*/
+export const CardLayout: Layout<typeof card, CardProps> = () => {
   const handleKeyDown: JSX.EventHandlerUnion<HTMLDivElement, KeyboardEvent> = (event) => {
-    invokeEventHandler(local.onKeyDown, event);
-    if (event.defaultPrevented || !local.isPressable) return;
-
+    if (!local.isInteractive) return;
     if (event.key !== "Enter" && event.key !== " ") return;
-
     if (event.target !== event.currentTarget) return;
-
     event.preventDefault();
     event.currentTarget.click();
   };
 
   return (
     <div
-      {...others}
-      {...{ class: twMerge(
-        CLASSES.Root.base,
-        CLASSES.Root.variant[variant()],
-        local.isHoverable && CLASSES.Root.flag.isHoverable,
-        local.isPressable && CLASSES.Root.flag.isPressable,
-        local.class,
-        local.className,
-      ) }}
-      data-slot="card"
-      data-variant={variant()}
-      data-hoverable={local.isHoverable ? "true" : "false"}
-      data-pressable={local.isPressable ? "true" : "false"}
-      data-theme={local.dataTheme}
-      style={local.style}
-      role={local.role ?? (local.isPressable ? "button" : undefined)}
-      tabIndex={local.tabIndex ?? (local.isPressable ? 0 : undefined)}
+      {...slot.root}
+      role={local.role ?? (local.isInteractive ? "button" : undefined)}
+      tabIndex={local.tabIndex ?? (local.isInteractive ? 0 : undefined)}
       onKeyDown={handleKeyDown}
     >
-      {local.children}
+      <Show when={local.header}>
+        <CardHeaderLayout>{local.header}</CardHeaderLayout>
+      </Show>
+
+      <CardBodyLayout>{children}</CardBodyLayout>
+
+      <Show when={local.footer}>
+        <CardFooterLayout>{local.footer}</CardFooterLayout>
+      </Show>
     </div>
   );
 };
 
-const CardHeader: Layout<typeof componentRecipe, CardHeaderProps> = () => {
-  const [local, others] = splitProps(props, [
-    "children",
-    "class",
-    "className",
-    "dataTheme",
-    "style",
-  ]);
-
-  return (
-    <div
-      {...others}
-      {...{ class: twMerge(CLASSES.Header.base, local.class, local.className) }}
-      data-slot="card-header"
-      data-theme={local.dataTheme}
-      style={local.style}
-    >
-      {local.children}
-    </div>
-  );
-};
-
-const CardBody: Layout<typeof componentRecipe, CardBodyProps> = () => {
-  const [local, others] = splitProps(props, [
-    "children",
-    "class",
-    "className",
-    "dataTheme",
-    "style",
-  ]);
-
-  return (
-    <div
-      {...others}
-      {...{ class: twMerge(CLASSES.Body.base, local.class, local.className) }}
-      data-slot="card-body"
-      data-theme={local.dataTheme}
-      style={local.style}
-    >
-      {local.children}
-    </div>
-  );
-};
-
-const CardFooter: Layout<typeof componentRecipe, CardFooterProps> = () => {
-  const [local, others] = splitProps(props, [
-    "children",
-    "class",
-    "className",
-    "dataTheme",
-    "style",
-  ]);
-
-  return (
-    <div
-      {...others}
-      {...{ class: twMerge(CLASSES.Footer.base, local.class, local.className) }}
-      data-slot="card-footer"
-      data-theme={local.dataTheme}
-      style={local.style}
-    >
-      {local.children}
-    </div>
-  );
-};
-
-const Card = Object.assign(CardRoot, {
-  Root: CardRoot,
-  Header: CardHeader,
-  Body: CardBody,
-  Content: CardBody,
-  Footer: CardFooter,
-});
-
-export default Card;
-export { Card, CardRoot, CardHeader, CardBody, CardFooter };
-export type { CardRootProps as CardProps };

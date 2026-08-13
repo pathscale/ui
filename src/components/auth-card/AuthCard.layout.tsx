@@ -23,7 +23,7 @@ export type AuthCardProps = IComponentBaseProps & {
  * only a form does not carry a stray flex row that contributes gap.
  * -----------------------------------------------------------------------------------------------*/
 export const AuthCardLayout: Layout<typeof authCard, AuthCardProps> = () => (
-  <Card {...slot.root} variant="shadow">
+  <Card {...slot.root} elevation="md">
     <Card.Body {...slot.body}>
       <Show when={local.title || local.description || local.brandingSlot}>
         <div {...slot.header}>

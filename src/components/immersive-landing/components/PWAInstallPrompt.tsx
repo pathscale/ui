@@ -114,7 +114,7 @@ export const PWAInstallPrompt: Component<PWAInstallPromptProps> = (props) => {
         aria-labelledby="pwa-install-title"
         {...{ class: CLASSES.pwaPrompt.dialog }}
       >
-        <Card variant="shadow" {...{ class: CLASSES.pwaPrompt.card }}>
+        <Card elevation="md" {...{ class: CLASSES.pwaPrompt.card }}>
           <Button
             size="sm"
             variant="ghost"

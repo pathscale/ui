@@ -1,110 +1,201 @@
 @layer components {
+  /* -----------------------------------------------------------------------
+   * Root
+   *
+   * Same accent mechanism as Button and Callout: flavor or state writes
+   * --card-accent, state second so a condition outranks a preference.
+   * --------------------------------------------------------------------- */
   .card {
     position: relative;
     display: flex;
     flex-direction: column;
-    gap: 0.75rem;
-    overflow: hidden;
-    border-radius: var(--card-radius, calc(var(--radius-box, 0.75rem) + var(--card-padding, 1rem)));
-    padding: var(--card-padding, 1rem);
-    color: var(--card-fg, var(--color-base-content));
-    background-color: var(--card-bg, var(--color-base-100));
-    border: 1px solid var(--card-border, transparent);
-    box-shadow:
-      var(
-        --card-shadow,
-        0 8px 24px -18px rgb(0 0 0 / 0.45),
-        0 6px 14px -10px rgb(0 0 0 / 0.28)
-      );
-    transition:
-      background-color 160ms ease,
-      border-color 160ms ease,
-      box-shadow 200ms ease,
-      transform 200ms ease;
-  }
+    min-width: 0;
 
-  .card:focus-visible {
-    outline: 2px solid currentColor;
-    outline-offset: 2px;
-  }
-
-  .card--default {
+    --card-accent: var(--color-base-300);
+    --card-accent-fg: var(--color-base-content);
     --card-bg: var(--color-base-100);
-    --card-border: transparent;
-    --card-shadow:
-      0 8px 24px -18px rgb(0 0 0 / 0.45),
-      0 6px 14px -10px rgb(0 0 0 / 0.28);
-    --card-hover-shadow:
-      0 16px 30px -20px rgb(0 0 0 / 0.5),
-      0 8px 18px -12px rgb(0 0 0 / 0.35);
-  }
-
-  .card--flat {
-    --card-bg: var(--color-base-200);
+    --card-fg: var(--color-base-content);
     --card-border: transparent;
     --card-shadow: none;
-    --card-hover-shadow: none;
+
+    background-color: var(--card-bg);
+    border: 1px solid var(--card-border);
+    color: var(--card-fg);
+    box-shadow: var(--card-shadow);
+    transition:
+      box-shadow 150ms ease,
+      transform 150ms ease,
+      background-color 150ms ease;
   }
 
-  .card--bordered {
+  /* --------------------------------------------------------------- Flavor */
+  .card--flavor-neutral {
+    --card-accent: var(--color-base-300);
+    --card-accent-fg: var(--color-base-content);
+  }
+  .card--flavor-primary {
+    --card-accent: var(--color-primary);
+    --card-accent-fg: var(--color-primary-content);
+  }
+  .card--flavor-secondary {
+    --card-accent: var(--color-secondary);
+    --card-accent-fg: var(--color-secondary-content);
+  }
+  .card--flavor-accent {
+    --card-accent: var(--color-accent);
+    --card-accent-fg: var(--color-accent-content);
+  }
+
+  /* ---------------------------------------------------------------- State */
+  .card--state-info {
+    --card-accent: var(--color-info);
+    --card-accent-fg: var(--color-info-content);
+  }
+  .card--state-success {
+    --card-accent: var(--color-success);
+    --card-accent-fg: var(--color-success-content);
+  }
+  .card--state-warning {
+    --card-accent: var(--color-warning);
+    --card-accent-fg: var(--color-warning-content);
+  }
+  .card--state-danger {
+    --card-accent: var(--color-error);
+    --card-accent-fg: var(--color-error-content);
+  }
+
+  /* -------------------------------------------------------------- Variant */
+  .card--solid {
+    --card-bg: var(--card-accent);
+    --card-fg: var(--card-accent-fg);
+    --card-border: transparent;
+  }
+
+  .card--soft {
+    --card-bg: color-mix(in oklab, var(--card-accent), var(--color-base-100) 86%);
+    --card-border: transparent;
+  }
+
+  /* 62 of the fleet's Card call sites — the old `bordered`. */
+  .card--outline {
     --card-bg: var(--color-base-100);
     --card-border: var(--color-base-300);
-    --card-shadow: none;
-    --card-hover-shadow:
-      0 6px 20px -16px rgb(0 0 0 / 0.4),
-      0 5px 12px -10px rgb(0 0 0 / 0.28);
   }
 
-  .card--shadow {
+  .card--ghost {
+    --card-bg: transparent;
+    --card-border: transparent;
+  }
+
+  /* The old `flat`. */
+  .card--plain {
     --card-bg: var(--color-base-100);
     --card-border: transparent;
-    --card-shadow:
-      0 20px 40px -24px rgb(0 0 0 / 0.55),
-      0 12px 20px -14px rgb(0 0 0 / 0.35);
-    --card-hover-shadow:
-      0 26px 44px -26px rgb(0 0 0 / 0.6),
-      0 14px 24px -15px rgb(0 0 0 / 0.4);
   }
 
-  .card--hoverable,
-  .card--pressable {
+  /* ------------------------------------------------------------- Material */
+  .card--material-solid {
+    backdrop-filter: none;
+  }
+
+  /* Absorbs GlassPanel. The highlight ring was its `highlight` flag. */
+  .card--material-glass {
+    --card-bg: color-mix(in oklab, var(--color-base-100), transparent 45%);
+    --card-border: color-mix(in oklab, var(--color-base-content), transparent 88%);
+    backdrop-filter: blur(var(--card-glass-blur, 12px)) saturate(140%);
+    -webkit-backdrop-filter: blur(var(--card-glass-blur, 12px)) saturate(140%);
+  }
+
+  .card--material-glass::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    pointer-events: none;
+    box-shadow: inset 0 1px 0 0 color-mix(in oklab, #fff, transparent 82%);
+  }
+
+  /* ------------------------------------------------------------ Elevation */
+  .card--elevation-none {
+    --card-shadow: none;
+  }
+  .card--elevation-sm {
+    --card-shadow: 0 1px 2px oklch(0% 0 0 / 0.05), 0 1px 3px oklch(0% 0 0 / 0.1);
+  }
+  .card--elevation-md {
+    --card-shadow: 0 4px 6px -1px oklch(0% 0 0 / 0.1), 0 2px 4px -2px oklch(0% 0 0 / 0.1);
+  }
+  .card--elevation-lg {
+    --card-shadow: 0 10px 15px -3px oklch(0% 0 0 / 0.1), 0 4px 6px -4px oklch(0% 0 0 / 0.1);
+  }
+
+  /* -------------------------------------------------------------- Padding */
+  .card--padding-none .card__body { padding: 0; }
+  .card--padding-xs .card__body { padding: 0.5rem; }
+  .card--padding-sm .card__body { padding: 0.75rem; }
+  .card--padding-md .card__body { padding: 1rem; }
+  .card--padding-lg .card__body { padding: 1.5rem; }
+  .card--padding-xl .card__body { padding: 2rem; }
+
+  .card--padding-none .card__header,
+  .card--padding-none .card__footer { padding: 0; }
+  .card--padding-xs .card__header,
+  .card--padding-xs .card__footer { padding: 0.5rem; }
+  .card--padding-sm .card__header,
+  .card--padding-sm .card__footer { padding: 0.75rem; }
+  .card--padding-md .card__header,
+  .card--padding-md .card__footer { padding: 1rem; }
+  .card--padding-lg .card__header,
+  .card--padding-lg .card__footer { padding: 1.5rem; }
+  .card--padding-xl .card__header,
+  .card--padding-xl .card__footer { padding: 2rem; }
+
+  /* --------------------------------------------------------------- Radius */
+  .card--radius-none { border-radius: 0; }
+  .card--radius-sm { border-radius: 0.25rem; }
+  .card--radius-md { border-radius: 0.5rem; }
+  .card--radius-lg { border-radius: var(--radius-box, 1rem); }
+  .card--radius-full { border-radius: 9999px; }
+
+  /* ---------------------------------------------------------- Interactive */
+  .card--interactive {
     cursor: pointer;
   }
 
-  @media (hover: hover) {
-    .card--hoverable:hover,
-    .card--pressable:hover {
-      box-shadow: var(--card-hover-shadow, var(--card-shadow));
-      transform: translateY(-1px);
-    }
+  .card--interactive:hover {
+    --card-shadow: 0 10px 15px -3px oklch(0% 0 0 / 0.1), 0 4px 6px -4px oklch(0% 0 0 / 0.1);
+    transform: translateY(-1px);
   }
 
-  .card--pressable:active,
-  .card--pressable[data-pressed="true"] {
-    transform: scale(0.99);
+  .card--interactive:active {
+    transform: translateY(0);
   }
 
-  .card__header,
-  .card__body,
-  .card__footer {
-    display: flex;
-    width: 100%;
+  .card--interactive:focus-visible {
+    outline: 2px solid var(--card-accent);
+    outline-offset: 2px;
   }
 
+  /* ---------------------------------------------------------------- Slots */
   .card__header {
-    flex-direction: column;
-    gap: 0.25rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem;
+    border-block-end: 1px solid color-mix(in oklab, var(--color-base-300), transparent 40%);
   }
 
   .card__body {
+    display: flex;
+    min-width: 0;
     flex: 1 1 auto;
     flex-direction: column;
-    gap: 0.5rem;
   }
 
   .card__footer {
+    display: flex;
     align-items: center;
-    flex-wrap: wrap;
     gap: 0.5rem;
+    border-block-start: 1px solid color-mix(in oklab, var(--color-base-300), transparent 40%);
   }
 }

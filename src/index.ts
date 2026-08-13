@@ -50,15 +50,8 @@ export {
   type CalendarDaySelectHandler,
   type CalendarDayHoverHandler,
 } from "./components/calendar";
-export { default as Card } from "./components/card";
-export type {
-  CardVariant,
-  CardProps,
-  CardRootProps,
-  CardHeaderProps,
-  CardBodyProps,
-  CardFooterProps,
-} from "./components/card";
+export { default as Card, Card as CardRoot, CardHeader, CardBody, CardFooter } from "./components/card";
+export type { CardProps, CardSectionProps, CardMaterial, CardElevation } from "./components/card";
 
 export { default as Checkbox } from "./components/checkbox";
 export { default as Chip } from "./components/chip";
@@ -123,9 +116,7 @@ export type {
   FloatingDockDirection,
 } from "./components/floating-dock";
 export { default as Flex } from "./components/flex";
-export { default as GlassPanel } from "./components/glass-panel";
 export { GlowCard, type GlowCardProps } from "./components/glow-card";
-export type { GlassPanelProps } from "./components/glass-panel";
 export { MetalBorder, type MetalBorderProps } from "./components/metal-border";
 export type {
   MetalBorderKind,
@@ -342,12 +333,6 @@ export type {
 export { default as Slider } from "./components/slider";
 export type { SliderProps, SliderSize } from "./components/slider";
 export { default as Skeleton } from "./components/skeleton";
-export { default as Surface } from "./components/surface";
-export type {
-  SurfaceVariant,
-  SurfaceVariants,
-  SurfaceProps,
-} from "./components/surface";
 
 export { default as Table } from "./components/table";
 export {
