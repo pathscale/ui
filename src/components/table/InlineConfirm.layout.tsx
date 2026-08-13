@@ -56,7 +56,7 @@ const InlineConfirm: Layout<typeof componentRecipe, InlineConfirmProps> = () => 
       <div class="inline-flex items-center gap-2" data-slot="table-inline-confirm-actions">
         <Button
           size="sm"
-          tone={confirmTone()}
+          state={confirmTone()}
           isLoading={isBusy()}
           isDisabled={isDisabled()}
           onClick={local.onConfirm}

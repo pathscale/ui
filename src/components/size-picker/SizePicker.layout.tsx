@@ -52,7 +52,7 @@ const SizePicker: Layout<typeof componentRecipe, SizePickerProps> = () => {
           <Button
             type="button"
             size="sm"
-            variant={store().size() === preset ? "solid" : "ghost"} tone={store().size() === preset ? "primary" : "neutral"}
+            variant={store().size() === preset ? "solid" : "ghost"} state={store().size() === preset ? "primary" : "neutral"}
             onClick={() => handleClick(preset)}
             role="radio"
             aria-checked={store().size() === preset}

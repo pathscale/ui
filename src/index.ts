@@ -937,7 +937,7 @@ export type {
 // The shared parameter vocabulary. A name here means the same thing on every
 // component; see docs/ui-usage.md and UI-2.2-API.md.
 export type {
-  Tone,
+  State,
   Variant,
   Size,
   Radius,
@@ -952,6 +952,6 @@ export type {
   IconSlotProps,
   Controlled,
   Disclosable,
-  StateProps,
+  FlagProps,
 } from "./components/vocabulary";
-export { TONES, VARIANTS, SIZES, SPACES } from "./components/vocabulary";
+export { STATES, VARIANTS, SIZES, SPACES } from "./components/vocabulary";
