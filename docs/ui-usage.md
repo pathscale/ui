@@ -14,7 +14,8 @@ examples). For **modifying the library itself**, read
 ## Install & setup
 
 ```sh
-bun add @pathscale/ui        # peer deps: solid-js ^1.9, @solid-primitives/*, @tanstack/solid-form|table, popmotion (optional), @standard-schema/spec (optional)
+bun add @pathscale/ui solid-layouts
+bun add -d rsbuild-plugin-solid-layouts
 ```
 
 ```ts
@@ -24,6 +25,8 @@ import "@pathscale/ui/index.css";                              // tokens + theme
 
 Subpath exports also exist: `./components/*`, `./primitives/*`, `./hooks/*`, `./motion`,
 `./styles/*`.
+
+Layout components require the application compiler before the normal Solid transform. See [Layouts](./layouts.md) for the Rsbuild configuration, exact failure behavior, and porting report.
 
 ## Theming
 
@@ -42,7 +45,7 @@ Subpath exports also exist: `./components/*`, `./primitives/*`, `./hooks/*`, `./
   `variant` (`primary | secondary | tertiary | outline | ghost | danger | danger-soft`)
   and `size` (`sm | md | lg`); `Badge`, `Chip`, `Avatar`, `Spinner`, `Toggle`, `Meter` and
   the progress components take `color`. Read the component's own props before assuming.
-- Both `class` and `className` accepted everywhere; consumer classes win (merged last via twMerge).
+- Both `class` and `className` remain compatibility escape hatches. Prefer semantic component parameters; `solid-layouts-lint --porting --layouts @pathscale/ui` reports overrides that should move into recipes.
 - Controlled/uncontrolled triples: `isOpen/defaultOpen/onOpenChange`, `value/defaultValue/onChange`, `selectedKey/defaultSelectedKey/onSelectionChange`. Event callbacks pass **values, not events**.
 - Compound components: `Modal.Trigger`, `Tabs.List`, `Select.Option`, etc. (`Object.assign` statics; also exported flat: `AccordionRoot`, `AlertTitle`, …). Parts are styleable/testable via `data-slot="..."` and state attrs (`data-open`, `data-selected`, `data-invalid`).
 - No polymorphic `as` prop.

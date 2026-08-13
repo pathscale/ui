@@ -1,5 +1,5 @@
 import { Glob } from "bun";
-import { copyFile, cp, mkdtemp, rm } from "node:fs/promises";
+import { copyFile, cp, mkdtemp, rm, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { basename, dirname, join } from "node:path";
 
@@ -10,6 +10,7 @@ const components = join(temporary, "components");
 try {
   await cp(source, components, { recursive: true });
   await cp("src/lib", join(temporary, "lib"), { recursive: true });
+  await writeFile(join(temporary, "lib/layouts/index.ts"), 'export { recipe } from "solid-layouts/recipe";\n');
   for await (const relative of new Glob("**/*.recipe.ts").scan({ cwd: components })) {
     await copyFile(join(components, relative), join(dirname(join(components, relative)), `${basename(relative, ".recipe.ts")}.classes.ts`));
   }
