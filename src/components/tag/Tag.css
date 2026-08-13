@@ -1,5 +1,5 @@
 @layer components {
-  .tag {
+  .tag:not(.token) {
     --tag-optical-offset: 0.031em;
 
     position: relative;
@@ -23,7 +23,10 @@
     --tag-fg-default: var(--color-default-foreground);
     --tag-bg-default-hover: var(--color-default-hover);
     --tag-bg-surface: var(--color-surface, var(--color-base-200));
-    --tag-fg-surface: var(--color-surface-foreground, var(--color-base-content));
+    --tag-fg-surface: var(
+      --color-surface-foreground,
+      var(--color-base-content)
+    );
     --tag-bg-surface-hover: var(--color-surface-hover, var(--color-base-300));
     --tag-bg-selected: var(--color-accent-soft);
     --tag-fg-selected: var(--color-accent-soft-foreground);
@@ -49,27 +52,32 @@
     height: 0.75rem;
   }
 
-  .tag:is([data-disabled="true"], [aria-disabled="true"]) {
+  .tag:not(.token):is([data-disabled="true"], [aria-disabled="true"]) {
     opacity: 0.5;
     cursor: not-allowed;
   }
 
-  .tag:is(:focus-visible, [data-focus-visible]) {
+  .tag:not(.token):is(:focus-visible, [data-focus-visible]) {
     outline: 2px solid var(--color-accent);
     outline-offset: 2px;
   }
 
-  .tag:is([data-selected="true"], [aria-selected="true"]) {
+  .tag:not(.token):is([data-selected="true"], [aria-selected="true"]) {
     background-color: var(--tag-bg-selected);
     color: var(--tag-fg-selected);
   }
 
   @media (hover: hover) {
-    .tag:is(:hover, [data-hovered="true"]):not([data-selected="true"]):not([data-disabled="true"]) {
+    .tag:not(.token):is(:hover, [data-hovered="true"]):not(
+        [data-selected="true"]
+      ):not([data-disabled="true"]) {
       background-color: var(--tag-bg-hover);
     }
 
-    .tag:is([data-selected="true"], [aria-selected="true"]):is(:hover, [data-hovered="true"]) {
+    .tag:not(.token):is([data-selected="true"], [aria-selected="true"]):is(
+        :hover,
+        [data-hovered="true"]
+      ) {
       background-color: var(--tag-bg-selected-hover);
     }
   }
