@@ -18,6 +18,7 @@ import { CLASSES } from "./Disclosure.recipe";
 import { DisclosureGroupContext, type DisclosureGroupContextValue } from "../disclosure-group/DisclosureGroup.generated";
 import type { Layout } from "../../lib/layouts";
 import { componentRecipe } from "./Disclosure.recipe";
+import { shouldMountDisclosureContent } from "./Disclosure.mounting";
 
 type DisclosureContextValue = {
   isExpanded: () => boolean;
@@ -269,25 +270,23 @@ const DisclosureContent: Layout<typeof componentRecipe, DisclosureContentProps> 
   const expanded = () => ctx.isExpanded();
   const keepMounted = () => local.keepMounted ?? true;
 
-  if (!keepMounted() && !expanded()) {
-    return null;
-  }
-
   return (
-    <div
-      {...others}
-      id={ctx.contentId()}
-      role="region"
-      {...{ class: twMerge(CLASSES.slot.content, local.class, local.className) }}
-      data-slot="disclosure-content"
-      data-expanded={expanded() ? "true" : "false"}
-      data-theme={local.dataTheme}
-      style={local.style}
-      aria-hidden={expanded() ? "false" : "true"}
-      aria-labelledby={ctx.triggerId()}
-    >
-      {local.children}
-    </div>
+    <Show when={shouldMountDisclosureContent(keepMounted(), expanded())}>
+      <div
+        {...others}
+        id={ctx.contentId()}
+        role="region"
+        {...{ class: twMerge(CLASSES.slot.content, local.class, local.className) }}
+        data-slot="disclosure-content"
+        data-expanded={expanded() ? "true" : "false"}
+        data-theme={local.dataTheme}
+        style={local.style}
+        aria-hidden={expanded() ? "false" : "true"}
+        aria-labelledby={ctx.triggerId()}
+      >
+        {local.children}
+      </div>
+    </Show>
   );
 };
 

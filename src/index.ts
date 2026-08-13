@@ -59,6 +59,7 @@ export type {
 } from "./components/breadcrumbs";
 
 export { default as Button } from "./components/button";
+export type { ButtonProps, ButtonVariant, ButtonSize } from "./components/button";
 export {
   default as ButtonGroup,
   ButtonGroupRoot,
@@ -638,6 +639,8 @@ export type {
   PopoverDialogProps,
   PopoverArrowProps,
   PopoverHeadingProps,
+  PopoverAnchor,
+  PopoverAnchorRect,
 } from "./components/popover";
 export { default as Radio } from "./components/radio";
 export {
