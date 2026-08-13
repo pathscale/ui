@@ -933,3 +933,25 @@ export type {
   UseStreamingSubscriptionOptions,
   UseStreamingSubscriptionResult,
 } from "./primitives/streaming";
+
+// The shared parameter vocabulary. A name here means the same thing on every
+// component; see docs/ui-usage.md and UI-2.2-API.md.
+export type {
+  Tone,
+  Variant,
+  Size,
+  Radius,
+  Space,
+  Width,
+  Height,
+  MaxWidth,
+  Align,
+  Justify,
+  Direction,
+  UIBaseProps,
+  IconSlotProps,
+  Controlled,
+  Disclosable,
+  StateProps,
+} from "./components/vocabulary";
+export { TONES, VARIANTS, SIZES, SPACES } from "./components/vocabulary";
