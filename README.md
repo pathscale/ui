@@ -11,21 +11,43 @@ dark themes built in.
 ## Install
 
 ```sh
-bun add @pathscale/ui
+bun add @pathscale/ui solid-layouts
+bun add -d rsbuild-plugin-solid-layouts
 ```
 
 <details>
 <summary>npm · pnpm · yarn</summary>
 
 ```sh
-npm install @pathscale/ui
-pnpm add @pathscale/ui
-yarn add @pathscale/ui
+npm install @pathscale/ui solid-layouts && npm install -D rsbuild-plugin-solid-layouts
+pnpm add @pathscale/ui solid-layouts && pnpm add -D rsbuild-plugin-solid-layouts
+yarn add @pathscale/ui solid-layouts && yarn add -D rsbuild-plugin-solid-layouts
 ```
 
 </details>
 
 ## Setup
+
+`@pathscale/ui` 2.x is a compiled Layout bundle. Configure the application compiler before
+Solid transforms JSX:
+
+```ts
+import { pluginBabel } from "@rsbuild/plugin-babel";
+import { pluginSolid } from "@rsbuild/plugin-solid";
+import { defineConfig } from "@rsbuild/core";
+import { pluginSolidLayoutsApplication } from "rsbuild-plugin-solid-layouts";
+
+export default defineConfig({
+  plugins: [
+    pluginSolidLayoutsApplication({ layouts: ["@pathscale/ui"] }),
+    pluginBabel({ include: /\.(?:jsx|tsx|ts)$/ }),
+    pluginSolid(),
+  ],
+});
+```
+
+The Layout plugin must run before Solid. A missing package, manifest, recipe, compiler, or
+runtime is an error; there is no uncompiled fallback.
 
 Two imports. Everything comes from the root barrel, and **one stylesheet is all you need** —
 `index.css` pulls in the base styles, both themes and the icon set:
@@ -102,7 +124,18 @@ from hooks. Both, with toasts, icons and dates, are covered in
 ## Requirements
 
 - **SolidJS ^1.9**
+- **solid-layouts** runtime
+- **rsbuild-plugin-solid-layouts** application compiler integration
 - **Tailwind v4** — optional, but required for the `@theme` token utilities
+
+## Migrating from 1.x
+
+`1.4.0` is the last pre-Layouts 1.x release. Layout-authored components begin at `2.0.0` and
+require the setup above. Versions `1.5.0` and `1.6.0` were incorrectly published on the 1.x
+line and must not be used.
+
+The complete compiler contract, hard-error behavior, commands, and porting analyzer are
+documented in [docs/layouts.md](docs/layouts.md).
 
 Peers include `@solid-primitives/*`, `@tanstack/solid-form` and `@tanstack/solid-table`.
 Two are optional and only needed for the features they back: `popmotion` (JS animation
