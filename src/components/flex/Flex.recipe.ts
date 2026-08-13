@@ -62,6 +62,18 @@ export const CLASSES = {
     lg: "py-6",
     xl: "py-8",
   },
+  width: {
+    full: "w-full",
+  },
+  height: {
+    full: "h-full",
+  },
+  minWidth: {
+    zero: "min-w-0",
+  },
+  minHeight: {
+    zero: "min-h-0",
+  },
   grow: {
     true: "flex-grow",
     false: "flex-grow-0",
