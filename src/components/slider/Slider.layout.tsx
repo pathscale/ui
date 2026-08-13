@@ -47,6 +47,7 @@ function snapToStep(val: number, min: number, max: number, step: number) {
 
 const Slider: Layout<typeof componentRecipe, SliderProps> = () => {
   let trackRef: HTMLDivElement | undefined;
+  let thumbRef: HTMLDivElement | undefined;
 
   const [local] = splitProps(props, [
     "label",
@@ -93,10 +94,48 @@ const Slider: Layout<typeof componentRecipe, SliderProps> = () => {
     return `calc(${f} * 100% + ${1 - f} * var(--slider-thumb-w) + ${2 - 2 * f} * var(--slider-pad))`;
   };
 
+  /**
+   * How far the thumb's centre is held off each end of the track.
+   *
+   * `thumbLeft` already places the centre on an inset range: it runs from
+   * `0.5 * thumb-w + pad` to `width - 0.5 * thumb-w - pad`, so the thumb stays
+   * on the rail instead of hanging off it. The pointer has to be read against
+   * that same range or the two disagree, worst at the ends, where the knob
+   * stops short of a pointer that has already reached the extreme.
+   *
+   * Derived from layout metrics rather than from the custom properties, because
+   * `getComputedStyle` hands back the specified token for a custom property
+   * (`1.5rem`, or a whole `calc(...)`) rather than a resolved pixel length.
+   * `--slider-pad` is defined as `(slider-h - slider-thumb-h) / 2`, which is
+   * exactly the two offset heights below.
+   */
+  const centreInset = () => {
+    if (!trackRef || !thumbRef) return 0;
+    const pad = Math.max(0, (trackRef.offsetHeight - thumbRef.offsetHeight) / 2);
+    return thumbRef.offsetWidth / 2 + pad;
+  };
+
+  /*
+   * Measured once per drag rather than once per move.
+   *
+   * `getBoundingClientRect` forces a layout flush, and a pointer reports far
+   * more often than a track changes size, so reading it per event costs a flush
+   * per event and can never return anything new.
+   */
+  let dragGeometry: { left: number; usable: number; inset: number } | undefined;
+
+  const measureTrack = () => {
+    if (!trackRef) return undefined;
+    const rect = trackRef.getBoundingClientRect();
+    const inset = centreInset();
+    return { left: rect.left, inset, usable: rect.width - inset * 2 };
+  };
+
   const getValueFromPosition = (clientX: number) => {
     if (!trackRef) return local.value;
-    const rect = trackRef.getBoundingClientRect();
-    const frac = clamp((clientX - rect.left) / rect.width, 0, 1);
+    const geometry = dragGeometry ?? measureTrack();
+    if (!geometry || geometry.usable <= 0) return local.value;
+    const frac = clamp((clientX - geometry.left - geometry.inset) / geometry.usable, 0, 1);
     const raw = min() + frac * (max() - min());
     return snapToStep(raw, min(), max(), step());
   };
@@ -139,6 +178,10 @@ const Slider: Layout<typeof componentRecipe, SliderProps> = () => {
     value: () => local.value,
     valueFromPosition: getValueFromPosition,
     valueFromKey: getValueFromKey,
+    onDragGeometry: (active) => {
+      dragGeometry = active ? measureTrack() : undefined;
+    },
+    isThumb: (target) => Boolean(thumbRef && target === thumbRef),
     onChange: (value) => local.onChange(value),
     onChangeEnd: (value) => local.onChangeEnd?.(value),
     onDraggingChange: setDragging,
@@ -183,6 +226,7 @@ const Slider: Layout<typeof componentRecipe, SliderProps> = () => {
           style={{ width: fillWidth() }}
         />
         <div
+          ref={thumbRef}
           {...{ class: CLASSES.thumb }}
           data-slot="slider-thumb"
           data-dragging={dragging() ? "true" : "false"}
