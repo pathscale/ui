@@ -527,6 +527,7 @@ export type {
   Disclosable,
   CapabilityProps,
 } from "./components/vocabulary";
+export { isInvalid } from "./components/vocabulary";
 export { FLAVORS, STATES, VARIANTS, SIZES, SPACES } from "./components/vocabulary";
 
 // Restored to the main surface: three were parked by a hand-written list
