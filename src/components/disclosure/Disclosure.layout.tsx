@@ -15,7 +15,6 @@ import { twMerge } from "tailwind-merge";
 
 import type { IComponentBaseProps } from "../types";
 import { CLASSES } from "./Disclosure.recipe";
-import { DisclosureGroupContext, type DisclosureGroupContextValue } from "../disclosure-group/DisclosureGroup.generated";
 import type { Layout } from "../../lib/layouts";
 import { componentRecipe } from "./Disclosure.recipe";
 
@@ -77,35 +76,7 @@ export type DisclosureIndicatorProps = Omit<JSX.HTMLAttributes<HTMLSpanElement>,
 
 const normalizeKey = (value: string) => String(value);
 
-const getGroupExpanded = (group: DisclosureGroupContextValue | undefined, id: string) => {
-  if (!group) return false;
-  return group.expandedKeys().has(id);
-};
-
-const updateGroupExpanded = (
-  group: DisclosureGroupContextValue | undefined,
-  id: string,
-  nextOpen: boolean,
-) => {
-  if (!group) return;
-  if (group.isDisabled()) return;
-
-  if (group.allowsMultipleExpanded()) {
-    const next = new Set(group.expandedKeys());
-    if (nextOpen) {
-      next.add(id);
-    } else {
-      next.delete(id);
-    }
-    group.setExpandedKeys(next);
-    return;
-  }
-
-  group.setExpandedKeys(nextOpen ? new Set([id]) : new Set());
-};
-
 const DisclosureRoot: Layout<typeof componentRecipe, DisclosureRootProps> = () => {
-  const group = useContext(DisclosureGroupContext);
   const [local, others] = splitProps(props, [
     "children",
     "class",
@@ -131,15 +102,11 @@ const DisclosureRoot: Layout<typeof componentRecipe, DisclosureRootProps> = () =
     isControlled() ? Boolean(local.isOpen) : internalOpen(),
   );
 
-  const isDisabled = () => Boolean(local.isDisabled) || Boolean(local.disabled) || Boolean(group?.isDisabled());
-  const isExpanded = () => (group ? getGroupExpanded(group, itemId()) : standaloneOpen());
+  const isDisabled = () => Boolean(local.isDisabled) || Boolean(local.disabled);
+  const isExpanded = () => standaloneOpen();
 
   const setOpen = (next: boolean) => {
     if (isDisabled()) return;
-    if (group) {
-      updateGroupExpanded(group, itemId(), next);
-      return;
-    }
 
     if (!isControlled()) {
       setInternalOpen(next);

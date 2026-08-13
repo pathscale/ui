@@ -2,13 +2,12 @@ import "./TextArea.css";
 import { splitProps, type Component, type JSX } from "solid-js";
 import { twMerge } from "tailwind-merge";
 
-import { useTextFieldContext, type TextFieldVariant } from "../text-field";
 import type { IComponentBaseProps } from "../types";
 import { CLASSES } from "./TextArea.recipe";
 import type { Layout } from "../../lib/layouts";
 import { componentRecipe } from "./TextArea.recipe";
 
-export type TextAreaVariant = TextFieldVariant;
+export type TextAreaVariant = "primary" | "secondary";
 
 export type TextAreaRootProps = Omit<JSX.TextareaHTMLAttributes<HTMLTextAreaElement>, "children"> &
   IComponentBaseProps & {
@@ -20,7 +19,6 @@ export type TextAreaRootProps = Omit<JSX.TextareaHTMLAttributes<HTMLTextAreaElem
   };
 
 const TextAreaRoot: Layout<typeof componentRecipe, TextAreaRootProps> = () => {
-  const textFieldContext = useTextFieldContext();
   const [local, others] = splitProps(props, [
     "class",
     "className",
@@ -33,8 +31,8 @@ const TextAreaRoot: Layout<typeof componentRecipe, TextAreaRootProps> = () => {
     "disabled",
   ]);
 
-  const variant = () => local.variant ?? textFieldContext?.variant() ?? "primary";
-  const fullWidth = () => Boolean(local.fullWidth) || Boolean(textFieldContext?.fullWidth());
+  const variant = () => local.variant ?? "primary";
+  const fullWidth = () => Boolean(local.fullWidth);
   const isInvalid = () => Boolean(local.isInvalid);
   const isDisabled = () => Boolean(local.isDisabled) || Boolean(local.disabled);
 

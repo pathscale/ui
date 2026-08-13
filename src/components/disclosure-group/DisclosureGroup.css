@@ -1,9 +1,0 @@
-@layer components {
-  .disclosure-group {
-    width: 100%;
-    contain: layout style;
-    display: flex;
-    flex-direction: column;
-    gap: 0.75rem;
-  }
-}
