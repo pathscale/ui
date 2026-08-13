@@ -149,6 +149,62 @@ export interface Issue {
   path?: (string | number)[];
 }
 
+/**
+ * A rule shown to the user *before* they break it.
+ *
+ * The counterpart to `Issue`, and the same rule at a different moment. "At
+ * least 8 characters" is a constraint while it is unmet and neutral, and an
+ * issue only once the user has been given a fair chance to satisfy it.
+ *
+ * Constraints render live from the first keystroke, because ticking a
+ * requirement off as you type is help, whereas "too short" flashed at you
+ * mid-word is nagging.
+ */
+export interface Constraint {
+  code: string;
+  params?: Record<string, unknown>;
+  label?: JSX.Element;
+  /** Recomputed on every change. */
+  satisfied: boolean;
+}
+
+/**
+ * When issues become visible.
+ *
+ * The default is `touched`, which is the only timing that is not hostile:
+ * say nothing while the user is first typing, surface issues when they leave
+ * the field, and from then on revalidate on every keystroke so they can see
+ * themselves fixing it. Reward early, punish late.
+ *
+ *   change   every keystroke, from the start. Rarely right; nags.
+ *   blur     only on leaving the field. Misses the correction feedback.
+ *   touched  blur, then live once the field has errored once. The default.
+ *   submit   only when the form is submitted.
+ */
+export type ValidateOn = "change" | "blur" | "touched" | "submit";
+
+export type Validate<T> = (value: T) => Issue[] | Promise<Issue[]>;
+
+/**
+ * The validation surface every input-capable component carries.
+ *
+ * `issues` is controlled: a parent form or a server response can put issues on
+ * a field directly, and they merge with whatever `validate` produces. That is
+ * what makes a server-side "these credentials do not match" land in the same
+ * place as a client-side "too short", instead of in a separate banner.
+ */
+export interface Validatable<T> {
+  validate?: Validate<T>;
+  validateOn?: ValidateOn;
+  /** Controlled issues — from a form, or from the server. Merged with `validate`. */
+  issues?: Issue[];
+  /** Live, positive requirements. Shown while unmet rather than after failure. */
+  constraints?: Constraint[];
+  showConstraints?: "always" | "focus" | "unsatisfied" | "never";
+  /** Shorthand for a single issue. Sugar for `issues={[{ code: "custom", message }]}`. */
+  errorMessage?: JSX.Element;
+}
+
 export interface Controlled<T> {
   value?: T;
   defaultValue?: T;
