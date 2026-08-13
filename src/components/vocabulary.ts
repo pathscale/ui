@@ -7,7 +7,7 @@ import type { JSX } from "solid-js";
  * belong in here. Derived from the 2026-08-14 fleet inventory (13 apps, 199
  * components, every call site parsed); see `UI-2.2-API.md`.
  *
- * The split between `Tone` and `Variant` is the point. The old
+ * The split between `State` and `Variant` is the point. The old
  * `ComponentColor` mixed meanings (`primary`, `success`) with a shape
  * (`ghost`), which is why a second axis grew beside it: across the fleet
  * `Button.variant` carried `ghost` 275 times and `primary` 99 times, while
@@ -15,8 +15,14 @@ import type { JSX } from "solid-js";
  * answering two questions.
  */
 
-/** What it means. Never a literal colour — that is what `class` is for. */
-export type Tone =
+/**
+ * What is true about this thing.
+ *
+ * A danger button is a dangerous action; a danger callout is an error. Same
+ * word, same meaning, so there is no second colour axis that could contradict
+ * it. Components that report a condition take `state` and nothing else.
+ */
+export type State =
   | "neutral"
   | "primary"
   | "secondary"
@@ -88,8 +94,14 @@ export interface Disclosable {
   onOpenChange?: (isOpen: boolean) => void;
 }
 
-/** State flags. All booleans are `is*`. */
-export interface StateProps {
+/**
+ * Condition flags. All booleans are `is*`.
+ *
+ * Deliberately not called `State`: these are interaction conditions, while
+ * `State` above is what the thing means. A button can be `state="danger"`
+ * and `isDisabled` at once.
+ */
+export interface FlagProps {
   isDisabled?: boolean;
   isInvalid?: boolean;
   isRequired?: boolean;
@@ -97,7 +109,7 @@ export interface StateProps {
   isLoading?: boolean;
 }
 
-export const TONES: readonly Tone[] = [
+export const STATES: readonly State[] = [
   "neutral", "primary", "secondary", "accent", "success", "warning", "danger", "info",
 ] as const;
 

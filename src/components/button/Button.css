@@ -2,9 +2,9 @@
   /* -----------------------------------------------------------------------
    * Root
    *
-   * Two custom properties carry the whole tone x variant cross product:
-   * a tone sets --button-accent (and its readable foreground), and a variant
-   * decides how that accent is spent. 8 tones + 5 variants = 13 rules
+   * Two custom properties carry the whole state x variant cross product:
+   * a state sets --button-accent (and its readable foreground), and a variant
+   * decides how that accent is spent. 8 states + 5 variants = 13 rules
    * instead of 40 combinations.
    * --------------------------------------------------------------------- */
   .button {
@@ -77,37 +77,37 @@
   }
 
   /* -----------------------------------------------------------------------
-   * Tone — picks the accent
+   * State — picks the accent
    * --------------------------------------------------------------------- */
-  .button--tone-neutral {
+  .button--state-neutral {
     --button-accent: var(--color-base-300);
     --button-accent-fg: var(--color-base-content);
   }
-  .button--tone-primary {
+  .button--state-primary {
     --button-accent: var(--color-primary);
     --button-accent-fg: var(--color-primary-content);
   }
-  .button--tone-secondary {
+  .button--state-secondary {
     --button-accent: var(--color-secondary);
     --button-accent-fg: var(--color-secondary-content);
   }
-  .button--tone-accent {
+  .button--state-accent {
     --button-accent: var(--color-accent);
     --button-accent-fg: var(--color-accent-content);
   }
-  .button--tone-success {
+  .button--state-success {
     --button-accent: var(--color-success);
     --button-accent-fg: var(--color-success-content);
   }
-  .button--tone-warning {
+  .button--state-warning {
     --button-accent: var(--color-warning);
     --button-accent-fg: var(--color-warning-content);
   }
-  .button--tone-danger {
+  .button--state-danger {
     --button-accent: var(--color-error);
     --button-accent-fg: var(--color-error-content);
   }
-  .button--tone-info {
+  .button--state-info {
     --button-accent: var(--color-info);
     --button-accent-fg: var(--color-info-content);
   }

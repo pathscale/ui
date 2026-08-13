@@ -1,9 +1,9 @@
 import { recipe } from "../../lib/layouts";
 
 /**
- * Tone picks the accent; variant decides how the accent is used.
+ * State picks the accent; variant decides how the accent is used.
  *
- * Keeping them orthogonal means 8 tones and 5 variants cost 13 rules rather
+ * Keeping them orthogonal means 8 states and 5 variants cost 13 rules rather
  * than 40 combinations, because the variant rules read `--button-accent`
  * rather than naming a colour. It also makes combinations expressible that
  * the old single axis could not say at all, such as a soft warning button.
@@ -25,15 +25,15 @@ export const button = recipe({
       ghost: "button--ghost",
       plain: "button--plain",
     },
-    tone: {
-      neutral: "button--tone-neutral",
-      primary: "button--tone-primary",
-      secondary: "button--tone-secondary",
-      accent: "button--tone-accent",
-      success: "button--tone-success",
-      warning: "button--tone-warning",
-      danger: "button--tone-danger",
-      info: "button--tone-info",
+    state: {
+      neutral: "button--state-neutral",
+      primary: "button--state-primary",
+      secondary: "button--state-secondary",
+      accent: "button--state-accent",
+      success: "button--state-success",
+      warning: "button--state-warning",
+      danger: "button--state-danger",
+      info: "button--state-info",
     },
     size: {
       xs: "button--xs",
@@ -58,5 +58,5 @@ export const button = recipe({
     isIconOnly: { true: "button--icon-only", false: "" },
   },
   // `sm` rather than `md`: the fleet passes sm at 349 of 465 sites and md at 25.
-  defaults: { variant: "solid", tone: "neutral", size: "sm", width: "auto", radius: "full" },
+  defaults: { variant: "solid", state: "neutral", size: "sm", width: "auto", radius: "full" },
 });

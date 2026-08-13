@@ -4,7 +4,7 @@ import type {
   IconSlotProps,
   Radius,
   Size,
-  Tone,
+  State,
   UIBaseProps,
   Variant,
   Width,
@@ -22,7 +22,7 @@ export type ButtonProps = Omit<
   UIBaseProps &
   IconSlotProps & {
     variant?: Variant;
-    tone?: Tone;
+    state?: State;
     size?: Size;
     width?: Width;
     radius?: Radius;

@@ -258,7 +258,7 @@ export const CookieConsent: Component<CookieConsentProps> = (props) => {
                 {...{ class: CLASSES.cookie.actions }}
               >
                 <Button
-                  tone="primary"
+                  state="primary"
                   size="sm"
                   {...{ class: CLASSES.cookie.actionButton }}
                   onClick={handleAcceptAll}
@@ -354,7 +354,7 @@ export const CookieConsent: Component<CookieConsentProps> = (props) => {
                 {texts().cancel}
               </Button>
               <Button
-                tone="primary"
+                state="primary"
                 size="sm"
                 {...{ class: CLASSES.cookie.saveButton }}
                 onClick={handleManageSave}
