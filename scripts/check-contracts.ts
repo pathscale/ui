@@ -99,6 +99,25 @@ for (const entry of entries) {
   }
 }
 
+const tabsLayout = readFileSync(join(COMPONENTS_DIR, "tabs", "Tabs.layout.tsx"), "utf8");
+const tabsGenerated = readFileSync(join(COMPONENTS_DIR, "tabs", "Tabs.generated.tsx"), "utf8");
+const tabsMeasurement = readFileSync(
+  join(COMPONENTS_DIR, "tabs", "Tabs.measurement.ts"),
+  "utf8",
+);
+if (
+  !tabsLayout.includes("observeTabIndicator(") ||
+  !tabsGenerated.includes("observeTabIndicator(") ||
+  !tabsMeasurement.includes('typeof ResizeObserver === "undefined"')
+) {
+  fail(
+    "tabs",
+    "runtime-compatibility",
+    "ResizeObserver must remain optional in authored and generated Tabs",
+    "Runtime compatibility",
+  );
+}
+
 // --- Report ---
 
 if (violations.length === 0) {

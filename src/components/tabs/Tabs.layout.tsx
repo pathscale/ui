@@ -17,6 +17,7 @@ import { CLASSES } from "./Tabs.recipe";
 import type { Layout } from "../../lib/layouts";
 import { componentRecipe } from "./Tabs.recipe";
 import type { State } from "../vocabulary";
+import { observeTabIndicator } from "./Tabs.measurement";
 
 type TabsOrientation = "horizontal" | "vertical";
 type TabsVariant = "primary" | "secondary";
@@ -53,7 +54,10 @@ const invokeEventHandler = (handler: unknown, event: Event) => {
   }
 };
 
-type TabsRootProps = Omit<JSX.HTMLAttributes<HTMLDivElement>, "onChange"> & {
+type TabsRootProps = Omit<
+  JSX.HTMLAttributes<HTMLDivElement>,
+  "onChange" | "onSelectionChange"
+> & {
   children: JSX.Element;
   orientation?: TabsOrientation;
   variant?: TabsVariant;
@@ -242,12 +246,11 @@ const TabList: Layout<typeof componentRecipe, TabListProps> = () => {
 
   createEffect(() => {
     if (!listRef) return;
-    const observer = new ResizeObserver(() => scheduleMeasure());
-    observer.observe(listRef);
-    for (const tab of ctx.tabs()) {
-      observer.observe(tab.ref);
-    }
-    onCleanup(() => observer.disconnect());
+    const disconnect = observeTabIndicator(
+      [listRef, ...ctx.tabs().map((tab) => tab.ref)],
+      scheduleMeasure,
+    );
+    onCleanup(disconnect);
   });
 
   onMount(() => {

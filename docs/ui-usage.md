@@ -47,7 +47,11 @@ Layout components require the application compiler before the normal Solid trans
   the progress components take `color`. Read the component's own props before assuming.
 - Both `class` and `className` remain compatibility escape hatches. Prefer semantic component parameters; `solid-layouts-lint --porting --layouts @pathscale/ui` reports overrides that should move into recipes.
 - Controlled/uncontrolled triples: `isOpen/defaultOpen/onOpenChange`, `value/defaultValue/onChange`, `selectedKey/defaultSelectedKey/onSelectionChange`. Event callbacks pass **values, not events**.
+- `Slider.onChange` reports continuous values. Optional `Slider.onChangeEnd` reports the final changed value once on pointer release, pointer cancellation, keyboard release, or blur fallback.
+- `Collapsible.Content` retains closed content by default. Set `keepMounted={false}` to mount it only while expanded; the check is reactive, so it mounts and unmounts as the state changes.
+- `Popover` accepts `anchorRect` as a rectangle or rectangle accessor when content must be positioned without a trigger element.
 - Compound components: `Modal.Trigger`, `Tabs.List`, `Select.Option`, etc. (`Object.assign` statics; also exported flat: `AccordionRoot`, `AlertTitle`, …). Parts are styleable/testable via `data-slot="..."` and state attrs (`data-open`, `data-selected`, `data-invalid`).
+- `Tabs` does not require `ResizeObserver`. When it is unavailable, selection and keyboard behavior remain active and the indicator is measured on selection, mount, and window resize.
 - No polymorphic `as` prop.
 
 ```tsx

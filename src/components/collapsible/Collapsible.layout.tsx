@@ -16,6 +16,7 @@ import { twMerge } from "tailwind-merge";
 import type { UIBaseProps, State } from "../vocabulary";
 import { CLASSES } from "./Collapsible.recipe";
 import type { Layout } from "../../lib/layouts";
+import { shouldMountCollapsibleContent } from "./Collapsible.mounting";
 import { componentRecipe } from "./Collapsible.recipe";
 
 type CollapsibleContextValue = {
@@ -231,25 +232,23 @@ const CollapsibleContent: Layout<typeof componentRecipe, CollapsibleContentProps
   const expanded = () => ctx.isExpanded();
   const keepMounted = () => local.keepMounted ?? true;
 
-  if (!keepMounted() && !expanded()) {
-    return null;
-  }
-
   return (
-    <div
-      {...others}
-      id={ctx.contentId()}
-      role="region"
-      {...{ class: twMerge(CLASSES.slot.content, local.class) }}
-      data-slot="collapsible-content"
-      data-expanded={expanded() ? "true" : "false"}
-      data-theme={local.dataTheme}
-      style={local.style}
-      aria-hidden={expanded() ? "false" : "true"}
-      aria-labelledby={ctx.triggerId()}
-    >
-      {local.children}
-    </div>
+    <Show when={shouldMountCollapsibleContent(keepMounted(), expanded())}>
+      <div
+        {...others}
+        id={ctx.contentId()}
+        role="region"
+        {...{ class: twMerge(CLASSES.slot.content, local.class) }}
+        data-slot="collapsible-content"
+        data-expanded={expanded() ? "true" : "false"}
+        data-theme={local.dataTheme}
+        style={local.style}
+        aria-hidden={expanded() ? "false" : "true"}
+        aria-labelledby={ctx.triggerId()}
+      >
+        {local.children}
+      </div>
+    </Show>
   );
 };
 

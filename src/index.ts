@@ -45,6 +45,7 @@ export type { AddressProps, AddressTruncate, TruncateOptions } from "./component
 export { truncateAddress, copyAddress } from "./components/address";
 
 export { default as Button } from "./components/button";
+export type { ButtonProps, ButtonVariant, ButtonSize } from "./components/button";
 export {
   default as Calendar,
   type CalendarProps,
@@ -318,6 +319,8 @@ export type {
   PopoverDialogProps,
   PopoverArrowProps,
   PopoverHeadingProps,
+  PopoverAnchor,
+  PopoverAnchorRect,
 } from "./components/popover";
 export { default as Radio } from "./components/radio";
 export {
