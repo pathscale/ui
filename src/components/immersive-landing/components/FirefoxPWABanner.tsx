@@ -122,7 +122,7 @@ export const FirefoxPWABanner: Component<FirefoxPWABannerProps> = (props) => {
         aria-labelledby="pwa-unsupported-title"
         {...{ class: CLASSES.firefoxBanner.dialog }}
       >
-        <Card variant="shadow" {...{ class: CLASSES.firefoxBanner.card }}>
+        <Card elevation="md" {...{ class: CLASSES.firefoxBanner.card }}>
           <Button
             size="sm"
             variant="ghost"
