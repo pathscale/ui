@@ -8,7 +8,7 @@ import {
   restorePasswordFieldAfterToggle,
   selectPasswordToggleIcon,
   type PasswordToggleSnapshot,
-} from "../../../src/components/password-field/PasswordField";
+} from "../../../src/components/password-field/PasswordField.interactions";
 
 type MockField = {
   value: string;
