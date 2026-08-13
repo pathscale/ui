@@ -504,7 +504,7 @@ export type {
 export type {
   Flavor,
   State,
-  ResolvedState,
+
   Variant,
   Size,
   Radius,
