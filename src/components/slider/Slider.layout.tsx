@@ -12,6 +12,7 @@ import type { IComponentBaseProps } from "../types";
 import { CLASSES } from "./Slider.recipe";
 import type { Layout } from "../../lib/layouts";
 import { componentRecipe } from "./Slider.recipe";
+import { createSliderInteractionHandlers } from "./Slider.interactions";
 
 export type SliderSize = "sm" | "md" | "lg";
 
@@ -19,6 +20,7 @@ type SliderBaseProps = {
   label?: string;
   value: number;
   onChange: (value: number) => void;
+  onChangeEnd?: (value: number) => void;
   min?: number;
   max?: number;
   step?: number;
@@ -51,6 +53,7 @@ const Slider: Layout<typeof componentRecipe, SliderProps> = () => {
     "label",
     "value",
     "onChange",
+    "onChangeEnd",
     "min",
     "max",
     "step",
@@ -100,45 +103,25 @@ const Slider: Layout<typeof componentRecipe, SliderProps> = () => {
     return snapToStep(raw, min(), max(), step());
   };
 
-  const handlePointerDown = (e: PointerEvent) => {
-    if (isDisabled()) return;
-    e.preventDefault();
-    (e.currentTarget as HTMLElement).setPointerCapture(e.pointerId);
-    setDragging(true);
-    const val = getValueFromPosition(e.clientX);
-    if (val !== local.value) local.onChange(val);
-  };
-
-  const handlePointerMove = (e: PointerEvent) => {
-    if (!dragging()) return;
-    const val = getValueFromPosition(e.clientX);
-    if (val !== local.value) local.onChange(val);
-  };
-
-  const handlePointerUp = () => {
-    setDragging(false);
-  };
-
-  const handleKeyDown = (e: KeyboardEvent) => {
-    if (isDisabled()) return;
-    let newVal = local.value;
+  const getValueFromKey = (key: string, currentValue: number) => {
+    let newVal = currentValue;
     const s = step();
     const bigStep = (max() - min()) / 10;
 
-    switch (e.key) {
+    switch (key) {
       case "ArrowRight":
       case "ArrowUp":
-        newVal = clamp(local.value + s, min(), max());
+        newVal = clamp(currentValue + s, min(), max());
         break;
       case "ArrowLeft":
       case "ArrowDown":
-        newVal = clamp(local.value - s, min(), max());
+        newVal = clamp(currentValue - s, min(), max());
         break;
       case "PageUp":
-        newVal = clamp(local.value + bigStep, min(), max());
+        newVal = clamp(currentValue + bigStep, min(), max());
         break;
       case "PageDown":
-        newVal = clamp(local.value - bigStep, min(), max());
+        newVal = clamp(currentValue - bigStep, min(), max());
         break;
       case "Home":
         newVal = min();
@@ -147,12 +130,21 @@ const Slider: Layout<typeof componentRecipe, SliderProps> = () => {
         newVal = max();
         break;
       default:
-        return;
+        return undefined;
     }
 
-    e.preventDefault();
-    if (newVal !== local.value) local.onChange(snapToStep(newVal, min(), max(), s));
+    return snapToStep(newVal, min(), max(), s);
   };
+
+  const interactions = createSliderInteractionHandlers({
+    isDisabled,
+    value: () => local.value,
+    valueFromPosition: getValueFromPosition,
+    valueFromKey: getValueFromKey,
+    onChange: (value) => local.onChange(value),
+    onChangeEnd: (value) => local.onChangeEnd?.(value),
+    onDraggingChange: setDragging,
+  });
 
   const handleFocus = () => setFocusVisible(true);
   const handleBlur = () => setFocusVisible(false);
@@ -183,9 +175,10 @@ const Slider: Layout<typeof componentRecipe, SliderProps> = () => {
         ref={trackRef}
         {...{ class: CLASSES.track }}
         data-slot="slider-track"
-        onPointerDown={handlePointerDown}
-        onPointerMove={handlePointerMove}
-        onPointerUp={handlePointerUp}
+        onPointerDown={interactions.onPointerDown}
+        onPointerMove={interactions.onPointerMove}
+        onPointerUp={interactions.onPointerUp}
+        onPointerCancel={interactions.onPointerCancel}
       >
         <div
           {...{ class: CLASSES.fill }}
@@ -207,9 +200,13 @@ const Slider: Layout<typeof componentRecipe, SliderProps> = () => {
           aria-valuetext={formattedValue()}
           aria-labelledby={local.label ? labelId : undefined}
           aria-disabled={isDisabled() ? "true" : undefined}
-          onKeyDown={handleKeyDown}
+          onKeyDown={interactions.onKeyDown}
+          onKeyUp={interactions.onKeyUp}
           onFocus={handleFocus}
-          onBlur={handleBlur}
+          onBlur={() => {
+            interactions.onBlur();
+            handleBlur();
+          }}
         />
       </div>
     </div>

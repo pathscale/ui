@@ -19,6 +19,7 @@ import { twMerge } from "tailwind-merge";
 import type { IComponentBaseProps } from "../types";
 import {
   createOverlayPosition,
+  type OverlayAnchorRect,
   type OverlayPlacement,
 } from "../_shared/overlayPosition";
 import { CLASSES } from "./Popover.recipe";
@@ -26,6 +27,8 @@ import type { Layout } from "../../lib/layouts";
 import { componentRecipe } from "./Popover.recipe";
 
 export type PopoverPlacement = OverlayPlacement;
+export type PopoverAnchorRect = OverlayAnchorRect;
+export type PopoverAnchor = PopoverAnchorRect | (() => PopoverAnchorRect | undefined);
 
 type PopoverContextValue = {
   isOpen: () => boolean;
@@ -34,6 +37,7 @@ type PopoverContextValue = {
   placement: () => PopoverPlacement;
   setPlacement: (next: PopoverPlacement) => void;
   autoFlip: () => boolean;
+  anchorRect: () => PopoverAnchorRect | undefined;
   triggerRef: () => HTMLElement | undefined;
   setTriggerRef: (el: HTMLElement) => void;
   contentRef: () => HTMLElement | undefined;
@@ -61,6 +65,7 @@ export type PopoverRootProps = IComponentBaseProps &
     placement?: PopoverPlacement;
     autoFlip?: boolean;
     offset?: number;
+    anchorRect?: PopoverAnchor;
     closeOnOutsideClick?: boolean;
     closeOnEscape?: boolean;
     onInteractOutside?: (event: Event) => void;
@@ -79,6 +84,7 @@ const PopoverRoot: Layout<typeof componentRecipe, PopoverRootProps> = () => {
     "placement",
     "autoFlip",
     "offset",
+    "anchorRect",
     "closeOnOutsideClick",
     "closeOnEscape",
     "onInteractOutside",
@@ -108,6 +114,8 @@ const PopoverRoot: Layout<typeof componentRecipe, PopoverRootProps> = () => {
   const placement = () => resolvedPlacement();
   const offset = () => local.offset ?? 8;
   const autoFlip = () => local.autoFlip ?? true;
+  const anchorRect = () =>
+    typeof local.anchorRect === "function" ? local.anchorRect() : local.anchorRect;
 
   onMount(() => {
     const handlePointerDown = (event: PointerEvent) => {
@@ -145,6 +153,7 @@ const PopoverRoot: Layout<typeof componentRecipe, PopoverRootProps> = () => {
     placement,
     setPlacement: setResolvedPlacement,
     autoFlip,
+    anchorRect,
     triggerRef,
     setTriggerRef,
     contentRef,
@@ -249,6 +258,7 @@ const PopoverContent: Layout<typeof componentRecipe, PopoverContentProps> = () =
   const overlayPosition = createOverlayPosition({
     open: ctx.isOpen,
     triggerRef: ctx.triggerRef,
+    anchorRect: ctx.anchorRect,
     overlayRef: ctx.contentRef,
     placement: ctx.preferredPlacement,
     offset: () => local.sideOffset ?? ctx.offset(),
@@ -294,7 +304,7 @@ const PopoverContent: Layout<typeof componentRecipe, PopoverContentProps> = () =
           data-placement={ctx.placement()}
           data-theme={local.dataTheme}
           style={style()}
-          aria-labelledby={ctx.triggerId()}
+          aria-labelledby={ctx.triggerRef() ? ctx.triggerId() : undefined}
           aria-hidden={ctx.isOpen() ? "false" : "true"}
         >
           {local.children}
