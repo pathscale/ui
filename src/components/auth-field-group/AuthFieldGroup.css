@@ -1,0 +1,19 @@
+@layer components {
+  .auth-field-group {
+    display: flex;
+    width: 100%;
+    flex-direction: column;
+  }
+
+  .auth-field-group--sm {
+    gap: 0.75rem;
+  }
+
+  .auth-field-group--md {
+    gap: 1rem;
+  }
+
+  .auth-field-group--lg {
+    gap: 1.5rem;
+  }
+}
