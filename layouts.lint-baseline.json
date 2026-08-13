@@ -1337,8 +1337,6 @@
     "src/components/slider/Slider.layout.tsx:error:slot-unused:declared slot `root` is not rendered by `componentRecipe`",
     "src/components/slider/Slider.layout.tsx:warning:legacy-template:legacy component-shaped Layout keeps presentation in component code",
     "src/components/slider/Slider.layout.tsx:warning:manual-classes:manual class composition belongs in the recipe",
-    "src/components/spinner/Spinner.layout.tsx:error:recipe-export:`./Spinner.recipe` does not export a static recipe named `spinner`",
-    "src/components/spinner/Spinner.recipe.ts:error:recipe-static:recipe `spinner` must use a statically analyzable object literal",
     "src/components/surface/Surface.layout.tsx:error:slot-unused:declared slot `root` is not rendered by `componentRecipe`",
     "src/components/surface/Surface.layout.tsx:warning:legacy-template:legacy component-shaped Layout keeps presentation in component code",
     "src/components/surface/Surface.layout.tsx:warning:manual-classes:manual class composition belongs in the recipe",

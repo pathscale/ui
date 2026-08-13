@@ -1,21 +1,19 @@
 import "./Spinner.css";
 import { createUniqueId, type Component, type JSX } from "solid-js";
-import type { IComponentBaseProps } from "../types";
+import type { Size, State, UIBaseProps } from "../vocabulary";
 import type { Layout } from "../../lib/layouts";
 import { spinner } from "./Spinner.recipe";
 
 /* -------------------------------------------------------------------------------------------------
  * Types
  * -----------------------------------------------------------------------------------------------*/
-export type SpinnerSize = "xs" | "sm" | "md" | "lg" | "xl";
-export type SpinnerColor = "current" | "accent" | "success" | "warning" | "danger";
-export type SpinnerVariant = "spinner" | "dots" | "ring" | "ball" | "bars" | "infinity";
+export type SpinnerShape = "spinner" | "dots" | "ring" | "ball" | "bars" | "infinity";
 
 export type SpinnerProps = Omit<JSX.HTMLAttributes<HTMLSpanElement>, "children"> &
-  IComponentBaseProps & {
-    size?: SpinnerSize;
-    color?: SpinnerColor;
-    variant?: SpinnerVariant;
+  UIBaseProps & {
+    size?: Size;
+    state?: State;
+    shape?: SpinnerShape;
     label?: string;
   };
 
@@ -34,12 +32,12 @@ const SpinnerSVG: Component = () => {
     >
       <defs>
         <linearGradient id={`spinner-grad1-${id}`} x1="50%" x2="50%" y1="5.271%" y2="91.793%">
-          <stop offset="0%" stop-color="currentColor" />
-          <stop offset="100%" stop-color="currentColor" stop-opacity="0.55" />
+          <stop offset="0%" stop-state="currentColor" />
+          <stop offset="100%" stop-state="currentColor" stop-opacity="0.55" />
         </linearGradient>
         <linearGradient id={`spinner-grad2-${id}`} x1="50%" x2="50%" y1="15.24%" y2="87.15%">
-          <stop offset="0%" stop-color="currentColor" stop-opacity="0" />
-          <stop offset="100%" stop-color="currentColor" stop-opacity="0.55" />
+          <stop offset="0%" stop-state="currentColor" stop-opacity="0" />
+          <stop offset="100%" stop-state="currentColor" stop-opacity="0.55" />
         </linearGradient>
       </defs>
       <g fill="none">
@@ -70,6 +68,6 @@ export const SpinnerLayout: Layout<typeof spinner, SpinnerProps> = () => (
     aria-live="polite"
     style={style}
   >
-    {variant === "spinner" ? <SpinnerSVG /> : undefined}
+    {shape === "spinner" ? <SpinnerSVG /> : undefined}
   </span>
 );

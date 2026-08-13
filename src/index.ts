@@ -416,13 +416,7 @@ export type {
   SendMessageResponse,
 } from "./components/live-chat";
 export { default as Spinner } from "./components/spinner";
-export { Spinner as Loading } from "./components/spinner";
-export type {
-  SpinnerProps,
-  SpinnerSize,
-  SpinnerColor,
-  SpinnerVariant,
-} from "./components/spinner";
+export type { SpinnerProps, SpinnerShape } from "./components/spinner";
 export {
   LanguageSwitcher,
   createI18n,
