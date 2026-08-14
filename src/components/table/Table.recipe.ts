@@ -25,4 +25,100 @@ export const CLASSES = {
   loadMore: "table__load-more",
   loadMoreContent: "table__load-more-content",
 } as const;
-export const componentRecipe = recipe({component:"table",slots:{"root":{},"table":{},"table-body":{},"table-cell":{},"table-column":{},"table-column-resizer":{},"table-content":{},"table-expand-toggle":{},"table-expanded-row":{},"table-footer":{},"table-header":{},"table-inline-confirm":{},"table-inline-confirm-actions":{},"table-inline-confirm-prompt":{},"table-load-more":{},"table-load-more-content":{},"table-mobile-list-view":{},"table-mobile-list-view-empty":{},"table-mobile-list-view-item":{},"table-mobile-list-view-list":{},"table-page-size":{},"table-page-size-label":{},"table-resizable-container":{},"table-row":{},"table-scroll-container":{},"table-sort-icon":{},"table-virtual-spacer-row":{},},});
+
+/* One recipe per part, not one shared recipe for the whole compound.
+   The slot checker compares a recipe's declared slots against the `data-slot`
+   values in the file that names it, so a 27-slot recipe shared by 20 files
+   reports 26 unrendered slots in each of them. Declaring only what a part
+   renders is what makes those diagnostics mean something. */
+export const componentRecipe = recipe({
+  component: "table",
+  slots: { root: {}, table: {} },
+});
+export const tableScrollContainerRecipe = recipe({
+  component: "table-scroll-container",
+  slots: { root: {}, "table-scroll-container": {} },
+});
+export const tableContentRecipe = recipe({
+  component: "table-content",
+  slots: { root: {}, "table-content": {} },
+});
+export const tableHeaderRecipe = recipe({
+  component: "table-header",
+  slots: { root: {}, "table-header": {} },
+});
+export const tableColumnRecipe = recipe({
+  component: "table-column",
+  slots: { root: {}, "table-column": {} },
+});
+export const tableBodyRecipe = recipe({
+  component: "table-body",
+  slots: { root: {}, "table-body": {} },
+});
+export const tableRowRecipe = recipe({
+  component: "table-row",
+  slots: { root: {}, "table-row": {} },
+});
+export const tableCellRecipe = recipe({
+  component: "table-cell",
+  slots: { root: {}, "table-cell": {} },
+});
+export const tableExpandedRowRecipe = recipe({
+  component: "table-expanded-row",
+  slots: { root: {}, "table-expanded-row": {} },
+});
+export const tableFooterRecipe = recipe({
+  component: "table-footer",
+  slots: { root: {}, "table-footer": {} },
+});
+export const tablePageSizeRecipe = recipe({
+  component: "table-page-size",
+  slots: { root: {}, "table-page-size": {}, "table-page-size-label": {} },
+});
+export const tableResizableContainerRecipe = recipe({
+  component: "table-resizable-container",
+  slots: { root: {}, "table-resizable-container": {} },
+});
+export const tableColumnResizerRecipe = recipe({
+  component: "table-column-resizer",
+  slots: { root: {}, "table-column-resizer": {} },
+});
+export const tableLoadMoreRecipe = recipe({
+  component: "table-load-more",
+  slots: { root: {}, "table-load-more": {} },
+});
+export const tableLoadMoreContentRecipe = recipe({
+  component: "table-load-more-content",
+  slots: { root: {}, "table-load-more-content": {} },
+});
+export const tableSortIconRecipe = recipe({
+  component: "table-sort-icon",
+  slots: { root: {}, "table-sort-icon": {} },
+});
+export const tableExpandToggleRecipe = recipe({
+  component: "table-expand-toggle",
+  slots: { root: {}, "table-expand-toggle": {} },
+});
+export const tableVirtualSpacerRowRecipe = recipe({
+  component: "table-virtual-spacer-row",
+  slots: { root: {}, "table-virtual-spacer-row": {} },
+});
+export const tableMobileListViewRecipe = recipe({
+  component: "table-mobile-list-view",
+  slots: {
+    root: {},
+    "table-mobile-list-view": {},
+    "table-mobile-list-view-list": {},
+    "table-mobile-list-view-item": {},
+    "table-mobile-list-view-empty": {},
+  },
+});
+export const tableInlineConfirmRecipe = recipe({
+  component: "table-inline-confirm",
+  slots: {
+    root: {},
+    "table-inline-confirm": {},
+    "table-inline-confirm-prompt": {},
+    "table-inline-confirm-actions": {},
+  },
+});

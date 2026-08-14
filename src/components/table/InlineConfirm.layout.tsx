@@ -3,7 +3,7 @@ import { twMerge } from "tailwind-merge";
 import Button from "../button";
 import type { UIBaseProps } from "../vocabulary";
 import type { Layout } from "../../lib/layouts";
-import { componentRecipe } from "./Table.recipe";
+import { tableInlineConfirmRecipe } from "./Table.recipe";
 
 export type InlineConfirmVariant = "primary" | "danger" | "warning";
 
@@ -24,7 +24,7 @@ const toButtonFlavor = (variant: InlineConfirmVariant) => {
   return undefined;
 };
 
-const InlineConfirm: Layout<typeof componentRecipe, InlineConfirmProps> = () => {
+const InlineConfirm: Layout<typeof tableInlineConfirmRecipe, InlineConfirmProps> = () => {
   const [local, rest] = splitProps(props, [
     "prompt",
     "confirmLabel",

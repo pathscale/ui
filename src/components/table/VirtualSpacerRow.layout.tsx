@@ -2,14 +2,14 @@ import { type Component, splitProps } from "solid-js";
 import { twMerge } from "tailwind-merge";
 import type { UIBaseProps } from "../vocabulary";
 import type { Layout } from "../../lib/layouts";
-import { componentRecipe } from "./Table.recipe";
+import { tableVirtualSpacerRowRecipe } from "./Table.recipe";
 
 export type VirtualSpacerRowProps = UIBaseProps & {
   height: number;
   colSpan: number;
 };
 
-const VirtualSpacerRow: Layout<typeof componentRecipe, VirtualSpacerRowProps> = () => {
+const VirtualSpacerRow: Layout<typeof tableVirtualSpacerRowRecipe, VirtualSpacerRowProps> = () => {
   const [local, rest] = splitProps(props, [
     "height",
     "colSpan",

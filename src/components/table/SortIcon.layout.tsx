@@ -3,7 +3,7 @@ import { twMerge } from "tailwind-merge";
 import Icon from "../icon";
 import type { UIBaseProps } from "../vocabulary";
 import type { Layout } from "../../lib/layouts";
-import { componentRecipe } from "./Table.recipe";
+import { tableSortIconRecipe } from "./Table.recipe";
 
 export type SortIconState = "asc" | "desc" | "none";
 
@@ -15,7 +15,7 @@ export type SortIconProps = UIBaseProps & {
   neutralIcon?: JSX.Element;
 };
 
-const SortIcon: Layout<typeof componentRecipe, SortIconProps> = () => {
+const SortIcon: Layout<typeof tableSortIconRecipe, SortIconProps> = () => {
   const [local, rest] = splitProps(props, [
     "state",
     "size",
