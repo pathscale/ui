@@ -103,55 +103,75 @@ Not coupled to `@pathscale/wss-adapter`. The apps that use it pass the state in;
 A realtime call has at least seven independent conditions:
 
 ```
-internet ──> server ──> peer ──> peer mic
-        │            └─────────> peer camera
-        ├──> your mic
-        └──> your camera
+internet --> server --> auth --> media --> peer mic
+        |                             +--> peer camera
+        +--> your mic
+        +--> your camera
 ```
 
-**"Show the worst one" is the wrong answer**, and it is wrong in the way that costs support time. If the internet is down then six of the seven are also down, and reporting "their camera is off" is true, useless, and sends the user to fix the wrong thing.
-
-These are not peers, they are a dependency graph. The useful report is the **root cause**: the deepest failure whose own dependencies are healthy. Everything downstream is a symptom.
+**"Show the worst one" is the wrong answer.** If the internet is down then six of the seven are also down, and reporting "their camera is off" is true, useless, and sends the user to fix the wrong thing. They are a dependency graph, and the useful report is the **root cause**: the deepest failure whose own dependencies are healthy.
 
 ```ts
-type Health = "ok" | "degraded" | "down" | "unknown";
+type Health =
+  | "ok" | "degraded" | "flapping" | "connecting" | "reconnecting" | "down" | "unknown";
+//  down > reconnecting > connecting > flapping > degraded > unknown > ok
+
+type Quality = "good" | "fair" | "poor" | "unknown";   // orthogonal to health
 
 interface StatusItem {
-  id: string;
-  health: Health;
+  id: string; health: Health; quality?: Quality;
   scope?: "local" | "remote";   // only local is actionable by this user
-  dependsOn?: string[];          // internet before server, server before media
-  label?: JSX.Element;
-  detail?: JSX.Element;
-  onRetry?: () => void;
+  dependsOn?: string[];
+  recoverable?: boolean;         // ICE disconnected (may return) vs failed (will not)
+  transitioning?: boolean;       // trying right now
+  everHealthy?: boolean;         // "was I ever connected?"
+  recentChanges?: number;        // flips — flapping is derived from this
+  label?: JSX.Element; detail?: JSX.Element; onRetry?: () => void;
 }
 
-summarizeStatus(items): {
-  health: Health;        // worst present — never looks better than reality
-  cause?: StatusItem;    // the one to actually report
-  failing: StatusItem[]; // the full breakdown, worst first
-  symptoms: StatusItem[];// failures explained by something upstream
-}
+summarizeStatus(items) -> { health, quality, attempting?, flapping,
+                            recovering, cause?, failing[], symptoms[] }
+diffStatus(prev, next, items) -> { degraded[], recovered[], healthChanged, qualityChanged }
 ```
 
-Measured against the seven-condition graph above:
+#### Why each value earns its place
 
-| Scenario | `health` | reported cause | symptoms suppressed |
-| --- | --- | --- | ---: |
-| all good | `ok` | — | 0 |
-| internet down, everything cascades | `down` | **Internet** | 6 |
-| server down | `down` | **Server** | 3 |
-| your camera off | `degraded` | Your camera | 0 |
-| their camera off | `degraded` | Their camera | 0 |
-| your mic down *and* their camera off | `down` | **Your mic** | 0 |
-| peer left | `down` | **Them** | 2 |
-| their mic unknown | `unknown` | Their mic | 0 |
+| Value | Why not just `down` |
+| --- | --- |
+| `connecting` | never worked — be patient |
+| `reconnecting` | worked and just broke — **"was I ever connected?"** |
+| `flapping` | up *right now*, and that means nothing. Commonly overlooked, which is why a chip reads "Connected" while the experience is unusable |
+| `degraded` | works, impaired |
+| `unknown` | genuinely cannot tell |
 
-Two rules do the work. **Worst-wins for `health`**, so the indicator never looks better than reality. **Root-cause for `cause`**, so the sentence beside it is the actionable one. Where two causes tie on health, a `local` one with an `onRetry` wins over a remote one the user can only wait out — which is why "your mic down + their camera off" reports the mic.
+`quality` is a **separate axis** because a call can be `connected` *and* critical at once — folding them forces a choice when both are true.
 
-`degraded` outranks `unknown`: a known impairment beats a shrug. Cycles and dangling `dependsOn` ids are tolerated, so a partial set still produces a sane answer.
+#### Measured
 
-The breakdown is never thrown away — `failing` and `symptoms` are what the expandable diagnostics panel renders, which is the part nofilter.io already built by hand.
+| Scenario | health | quality | cause | suppressed |
+| --- | --- | --- | --- | ---: |
+| internet down, all cascades | `down` | good | **Internet** | 6 |
+| connected, not authenticated | `degraded` | good | **Signed in** | 2 |
+| connected, quality critical | `ok` | **poor** | — | 0 |
+| first ever connect | **`connecting`** | good | Server | 0 |
+| was up, now retrying | **`reconnecting`** | good | Server | 0 |
+| up but flapped 4x | **`flapping`** | **poor** | — | 0 |
+| flapping internet, server+media down | `flapping` | poor | **Internet (flapping)** | 2 |
+| server reconnecting, media down | **`reconnecting`** | good | **Server** | 1 |
+
+That last row is the rule: **`health` is the worst among *causes*, not symptoms.** Media is down because the server is reconnecting, so reporting `down` would bury the fact that something is actively recovering.
+
+#### State, event, transient
+
+| | | Example |
+| --- | --- | --- |
+| **State** | a condition you are *in* | `connected` |
+| **Event** | a transition, at an instant | "became connected" |
+| **Transient** | an event rendered as a state, then gone | `quality-restored` |
+
+Transitions are **emitted**, not just painted, because reconnecting triggers work elsewhere: refetch stale data, resubscribe channels, flush queued writes, re-authenticate. `diffStatus` says which items moved and in which direction, so no consumer has to keep the previous summary and diff it.
+
+`diffStatus` holds no timer — a timer inside a pure function is how a status lies after a tab has been backgrounded for an hour.
 
 ## Validation
 

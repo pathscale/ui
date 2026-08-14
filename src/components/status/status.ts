@@ -23,10 +23,33 @@ import type { JSX } from "solid-js";
  * enough to look fine is not merely "degraded", and the remedy differs: back
  * off rather than retry harder.
  *
- * It ranks between `degraded` and `down`. Worse than degraded, because
- * nothing can be relied on; better than down, because it does work sometimes.
+ * It ranks between `degraded` and `reconnecting`. Worse than degraded, because
+ * nothing can be relied on; better than reconnecting, because it does work
+ * sometimes.
+ *
+ * `reconnecting` is a value for the same reason: it is a condition a user asks
+ * about by name — "was I ever connected?" — and it is not `down`, because down
+ * is over and this is in progress.
+ *
+ * `connecting` and `reconnecting` are separate values because a user reads
+ * them differently: the first says be patient, the second says something that
+ * was working just broke. "Was I ever connected?" is the question, and only
+ * `reconnecting` carries evidence that the answer is yes.
+ *
+ *   down > reconnecting > connecting > flapping > degraded > unknown > ok
+ *
+ * `connecting` outranks `flapping` because a flapping link at least serves
+ * some traffic, and outranks nothing above it because a first attempt is
+ * expected rather than broken.
  */
-export type Health = "ok" | "degraded" | "flapping" | "down" | "unknown";
+export type Health =
+  | "ok"
+  | "degraded"
+  | "flapping"
+  | "connecting"
+  | "reconnecting"
+  | "down"
+  | "unknown";
 
 /**
  * How well it is working, given that it *is* working.
@@ -39,7 +62,15 @@ export type Health = "ok" | "degraded" | "flapping" | "down" | "unknown";
 export type Quality = "good" | "fair" | "poor" | "unknown";
 
 /** Worst first. `degraded` outranks `unknown`: a known impairment beats a shrug. */
-const RANK: Record<Health, number> = { down: 4, flapping: 3, degraded: 2, unknown: 1, ok: 0 };
+const RANK: Record<Health, number> = {
+  down: 6,
+  reconnecting: 5,
+  connecting: 4,
+  flapping: 3,
+  degraded: 2,
+  unknown: 1,
+  ok: 0,
+};
 
 export interface StatusItem {
   id: string;
@@ -94,6 +125,15 @@ export interface StatusItem {
 export const FLAPPING_THRESHOLD = 3;
 
 export interface StatusSummary {
+  /**
+   * The worst health among **causes**, not symptoms.
+   *
+   * Symptoms inherit their severity from what broke them, so counting them
+   * would report the consequence and bury the cause: a server that is
+   * reconnecting takes its media down with it, and "reconnecting" is both
+   * truer and more useful than "down".
+   */
+  health: Health;
   /** Worst quality among items that are otherwise healthy. */
   quality: Quality;
   /**
@@ -107,8 +147,6 @@ export interface StatusSummary {
   flapping: boolean;
   /** True when the only problems can recover on their own — wait, do not retry. */
   recovering: boolean;
-  /** The worst health present. */
-  health: Health;
   /**
    * The item to actually tell the user about: the deepest failure whose own
    * dependencies are healthy. Undefined when everything is `ok`.
@@ -136,11 +174,18 @@ const isUnhealthy = (i: StatusItem) => i.health !== "ok";
 export function summarizeStatus(input: StatusItem[]): StatusSummary {
   // A declared health of `flapping` wins; otherwise enough recent flips is
   // what flapping *means*, so it is derived rather than left to the caller.
-  const items = input.map((i) =>
-    i.health !== "flapping" && (i.recentChanges ?? 0) >= FLAPPING_THRESHOLD
-      ? { ...i, health: "flapping" as const }
-      : i,
-  );
+  const items = input.map((i) => {
+    if (i.health === "flapping" || i.health === "reconnecting" || i.health === "connecting") {
+      return i;
+    }
+    // Enough recent flips is what flapping means, so derive rather than ask.
+    if ((i.recentChanges ?? 0) >= FLAPPING_THRESHOLD) return { ...i, health: "flapping" as const };
+    // Trying, and whether it ever worked is the whole distinction.
+    if (i.transitioning && isUnhealthy(i)) {
+      return { ...i, health: i.everHealthy ? ("reconnecting" as const) : ("connecting" as const) };
+    }
+    return i;
+  });
   const byId = new Map(items.map((i) => [i.id, i]));
   const unhealthy = items.filter(isUnhealthy).sort((a, b) => RANK[b.health] - RANK[a.health]);
 
@@ -196,7 +241,11 @@ export function summarizeStatus(input: StatusItem[]): StatusSummary {
   });
 
   return {
-    health: unhealthy[0].health,
+    // Worst among *causes*, not symptoms. A symptom's severity is inherited
+    // from whatever broke it, so letting "media down" outrank "server
+    // reconnecting" would report the consequence and hide the fact that
+    // something is actively recovering.
+    health: ranked[0]?.health ?? unhealthy[0].health,
     quality: flapping ? "poor" : worstQuality(items.filter((i) => !isUnhealthy(i))),
     attempting: attempting(unhealthy),
     flapping,
