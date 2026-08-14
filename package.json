@@ -146,7 +146,8 @@
     "check": "bun run layouts:generate && bun run scripts/check-contracts.ts",
     "check:package": "bun run scripts/check-package.ts",
     "next-version": "bun run scripts/next-version.ts",
-    "smoke": "bun run scripts/smoke-consumer.ts"
+    "smoke": "bun run scripts/smoke-consumer.ts",
+    "test": "bun test"
   },
   "sideEffects": [
     "**/*.css"

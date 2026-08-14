@@ -20,10 +20,13 @@ bun run format
 
 There is no in-repo playground. It demoed every component against the pre-2.2 API
 and had become 477 typecheck errors of dead demos, so it was deleted rather than
-rewritten: an app that consumes the published package tests the package, and a
-copy of the API living beside the API only ever drifts from it.
+rewritten: a copy of the API living beside the API only ever drifts from it. The
+showcase belongs in [js.software](https://github.com/pathscale/js.software).
 
-Build and point a real consumer at it:
+[`docs/how-to-setup-playground.md`](docs/how-to-setup-playground.md) has two
+recipes, one aliased at `src/` for hot reload and one installed from the tarball.
+
+The quickest check without either:
 
 ```bash
 bun run build

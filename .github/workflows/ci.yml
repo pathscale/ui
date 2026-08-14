@@ -37,3 +37,13 @@ jobs:
 
       - name: Build
         run: bun run build
+
+      - name: Test
+        run: bun test
+
+      # Packs the tarball, installs it into a fresh consumer and builds against
+      # it. The only step that tests the artifact a consumer receives, and the
+      # one that catches a package dist imports but the manifest does not
+      # declare.
+      - name: Consumer Smoke
+        run: bun run smoke
