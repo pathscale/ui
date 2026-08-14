@@ -35,6 +35,7 @@
     "jsx": "preserve",
     "jsxImportSource": "solid-js",
     "verbatimModuleSyntax": true,
+    "ignoreDeprecations": "6.0",
     "baseUrl": "."
   },
   "exclude": [
