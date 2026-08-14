@@ -1,0 +1,67 @@
+@layer components {
+  .address {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.375rem;
+    min-width: 0;
+  }
+
+  /* Hex is compared character by character, and a proportional face makes
+     `1` and `l` the same shape. */
+  .address--mono .address__value {
+    font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, monospace;
+    font-variant-ligatures: none;
+  }
+
+  .address__value {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .address__copy,
+  .address__link {
+    display: inline-flex;
+    align-items: center;
+    flex-shrink: 0;
+    border: 0;
+    background: none;
+    padding: 0;
+    color: var(--color-primary);
+    cursor: pointer;
+    font-size: 0.875em;
+    text-decoration: none;
+  }
+
+  .address__copy:hover,
+  .address__link:hover {
+    text-decoration: underline;
+  }
+
+  .address__copy:disabled {
+    cursor: not-allowed;
+    color: var(--color-base-content);
+    opacity: 0.5;
+  }
+
+  .address__feedback {
+    color: var(--color-success);
+  }
+
+  .address--xs { font-size: 0.75rem; }
+  .address--sm { font-size: 0.8125rem; }
+  .address--md { font-size: 0.875rem; }
+  .address--lg { font-size: 1rem; }
+  .address--xl { font-size: 1.125rem; }
+
+  .address--loading { opacity: 0.6; }
+  .address--error .address__value,
+  .address--invalid .address__value { color: var(--color-error); }
+
+  .address--disabled {
+    opacity: 0.5;
+    pointer-events: none;
+  }
+
+  .address--hidden { display: none; }
+}
