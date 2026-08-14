@@ -3,7 +3,7 @@ import { twMerge } from "tailwind-merge";
 import Icon from "../icon";
 import type { UIBaseProps } from "../vocabulary";
 import type { Layout } from "../../lib/layouts";
-import { componentRecipe } from "./Table.recipe";
+import { tableExpandToggleRecipe } from "./Table.recipe";
 
 export type ExpandToggleProps = Omit<JSX.ButtonHTMLAttributes<HTMLButtonElement>, "onToggle"> &
   UIBaseProps & {
@@ -14,7 +14,7 @@ export type ExpandToggleProps = Omit<JSX.ButtonHTMLAttributes<HTMLButtonElement>
     disabled?: boolean;
   };
 
-const ExpandToggle: Layout<typeof componentRecipe, ExpandToggleProps> = () => {
+const ExpandToggle: Layout<typeof tableExpandToggleRecipe, ExpandToggleProps> = () => {
   const [local, rest] = splitProps(props, [
     "expanded",
     "onToggle",

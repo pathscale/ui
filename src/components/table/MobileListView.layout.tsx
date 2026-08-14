@@ -4,7 +4,7 @@ import { Empty } from "../empty";
 import Icon from "../icon";
 import type { UIBaseProps } from "../vocabulary";
 import type { Layout } from "../../lib/layouts";
-import { componentRecipe } from "./Table.recipe";
+import { tableMobileListViewRecipe } from "./Table.recipe";
 
 export type MobileListViewProps<TRow> = UIBaseProps & {
   rows: TRow[];
@@ -17,7 +17,7 @@ export type MobileListViewProps<TRow> = UIBaseProps & {
   emptyIcon?: string;
 };
 
-const MobileListView: Layout<typeof componentRecipe, MobileListViewProps<unknown>> = () => {
+const MobileListView: Layout<typeof tableMobileListViewRecipe, MobileListViewProps<unknown>> = () => {
   const [local, rest] = splitProps(props, [
     "rows",
     "renderRow",
