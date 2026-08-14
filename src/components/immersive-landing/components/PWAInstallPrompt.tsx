@@ -118,7 +118,7 @@ export const PWAInstallPrompt: Component<PWAInstallPromptProps> = (props) => {
           <Button
             size="sm"
             variant="ghost"
-            isIconOnly
+            width="square"
             {...{ class: CLASSES.pwaPrompt.closeButton }}
             onClick={handleDismiss}
             aria-label={texts().closeLabel}

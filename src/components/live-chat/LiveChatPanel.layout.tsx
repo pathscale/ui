@@ -432,7 +432,7 @@ const LiveChatPanel: Layout<typeof componentRecipe, LiveChatPanelProps> = () => 
           />
           <Button
             onClick={handleSend}
-            isDisabled={!inputValue().trim() || isSending()}
+            state={isSending() ? "loading" : inputValue().trim() ? "default" : "disabled"}
             {...{ class: CLASSES.panel.sendButton }}
             flavor="primary"
           >

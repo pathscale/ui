@@ -115,8 +115,8 @@ export const PasswordFieldLayout: Layout<typeof passwordField, PasswordFieldProp
             type="button"
             variant="ghost"
             size="sm"
-            isIconOnly
-            isDisabled={Boolean(local.disabled)}
+            width="square"
+            state={local.disabled ? "disabled" : "default"}
             onPointerDown={preventPasswordTogglePointerDown}
             onClick={toggleVisibility}
             aria-label={toggleLabel()}

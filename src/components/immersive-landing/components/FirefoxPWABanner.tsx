@@ -126,7 +126,7 @@ export const FirefoxPWABanner: Component<FirefoxPWABannerProps> = (props) => {
           <Button
             size="sm"
             variant="ghost"
-            isIconOnly
+            width="square"
             {...{ class: CLASSES.firefoxBanner.closeButton }}
             onClick={handleDismiss}
             aria-label={texts().closeLabel}
