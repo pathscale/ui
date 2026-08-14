@@ -81,6 +81,22 @@ type AddressProps = Omit<JSX.HTMLAttributes<HTMLSpanElement>, "onCopy"> & UIBase
 };
 ```
 
+### Alert
+
+```ts
+type AlertProps = Omit<JSX.HTMLAttributes<HTMLDivElement>, "children" | "title"> & UIBaseProps & {
+  flavor?: Flavor;
+  variant?: Variant;
+  placement?: AlertPlacement;
+  title?: JSX.Element;
+  /** `false` suppresses the state's default icon. */
+  icon?: JSX.Element | false;
+  onDismiss?: () => void;
+  dismissLabel?: string;
+  children: JSX.Element;
+};
+```
+
 ### AuthCard
 
 ```ts
@@ -163,12 +179,12 @@ type AvatarProps = Omit<JSX.HTMLAttributes<HTMLSpanElement>, "children"> & IComp
 
 _No exported props type._
 
-### Breadcrumbs
+### Breadcrumb
 
-Parts: `BreadcrumbsItem`
+Parts: `BreadcrumbItem`
 
 ```ts
-type BreadcrumbsProps = Omit<JSX.HTMLAttributes<HTMLElement>, "children"> & IComponentBaseProps & {
+type BreadcrumbProps = Omit<JSX.HTMLAttributes<HTMLElement>, "children"> & IComponentBaseProps & {
   children: JSX.Element;
   separator?: JSX.Element;
 };
@@ -196,22 +212,6 @@ type ButtonProps = Omit<JSX.ButtonHTMLAttributes<HTMLButtonElement>, "color" | "
 
 ```ts
 type CalendarProps = Omit<JSX.HTMLAttributes<HTMLDivElement>, "onChange" | "children"> & IComponentBaseProps & CalendarBaseProps;
-```
-
-### Callout
-
-```ts
-type CalloutProps = Omit<JSX.HTMLAttributes<HTMLDivElement>, "children" | "title"> & UIBaseProps & {
-  flavor?: Flavor;
-  variant?: Variant;
-  placement?: CalloutPlacement;
-  title?: JSX.Element;
-  /** `false` suppresses the state's default icon. */
-  icon?: JSX.Element | false;
-  onDismiss?: () => void;
-  dismissLabel?: string;
-  children: JSX.Element;
-};
 ```
 
 ### Card
@@ -263,6 +263,12 @@ type CheckboxProps = Omit<JSX.InputHTMLAttributes<HTMLInputElement>, "type" | "c
 ### Chip
 
 _No exported props type._
+
+### Collapsible
+
+```ts
+type CollapsibleProps = ComponentProps<typeof CollapsibleRoot>;
+```
 
 ### ColorSwatch
 
@@ -331,10 +337,44 @@ type ComposerProps = Omit<JSX.HTMLAttributes<HTMLDivElement>, "onChange" | "onSu
 
 _No exported props type._
 
-### Disclosure
+### Dialog
+
+Parts: `DialogBackdrop` · `DialogBody` · `DialogCloseTrigger` · `DialogContent` · `DialogFooter` · `DialogHeader` · `DialogHeading` · `DialogIcon` · `DialogTrigger`
 
 ```ts
-type DisclosureProps = ComponentProps<typeof DisclosureRoot>;
+type DialogProps = DialogRootProps;
+```
+
+### Dock
+
+```ts
+type DockProps = {
+  items: DockItem[];
+  orientation?: "horizontal" | "vertical";
+  tooltipDirection?: DockDirection;
+  mobilePopupDirection?: DockDirection;
+  /** How to render on mobile: "burger" shows a toggle popup, "dock" shows the full dock bar. @default "burger" */
+  mobileMode?: "burger" | "dock";
+  gap?: number;
+  baseSize?: number;
+  hoverSize?: number;
+  iconSize?: number;
+  hoverIconSize?: number;
+  magnifyRange?: number;
+  magnify?: boolean;
+  nudge?: number;
+  showDesktop?: boolean;
+  showMobile?: boolean;
+  showContainer?: boolean;
+  desktopClass?: string;
+  mobileClass?: string;
+  itemClass?: string;
+  tooltipClass?: string;
+  mobileToggleIcon?: JSX.Element;
+  springMass?: number;
+  springStiffness?: number;
+  springDamping?: number;
+} & IComponentBaseProps;
 ```
 
 ### Drawer
@@ -363,10 +403,10 @@ type DrawerProps = Omit<JSX.HTMLAttributes<HTMLDivElement>, "children"> & ICompo
 
 _No exported props type._
 
-### EmptyState
+### Empty
 
 ```ts
-type EmptyStateProps = Omit<JSX.HTMLAttributes<HTMLDivElement>, "children"> & IComponentBaseProps & {
+type EmptyProps = Omit<JSX.HTMLAttributes<HTMLDivElement>, "children"> & IComponentBaseProps & {
   children: JSX.Element;
 };
 ```
@@ -413,38 +453,6 @@ type FlexProps = IComponentBaseProps & Omit<JSX.HTMLAttributes<HTMLElement>, "re
   shrink?: ResponsiveProp<boolean>;
   basis?: ResponsiveProp<"none" | "sm" | "md" | "lg" | "xl">;
 };
-```
-
-### FloatingDock
-
-```ts
-type FloatingDockProps = {
-  items: FloatingDockItem[];
-  orientation?: "horizontal" | "vertical";
-  tooltipDirection?: FloatingDockDirection;
-  mobilePopupDirection?: FloatingDockDirection;
-  /** How to render on mobile: "burger" shows a toggle popup, "dock" shows the full dock bar. @default "burger" */
-  mobileMode?: "burger" | "dock";
-  gap?: number;
-  baseSize?: number;
-  hoverSize?: number;
-  iconSize?: number;
-  hoverIconSize?: number;
-  magnifyRange?: number;
-  magnify?: boolean;
-  nudge?: number;
-  showDesktop?: boolean;
-  showMobile?: boolean;
-  showContainer?: boolean;
-  desktopClass?: string;
-  mobileClass?: string;
-  itemClass?: string;
-  tooltipClass?: string;
-  mobileToggleIcon?: JSX.Element;
-  springMass?: number;
-  springStiffness?: number;
-  springDamping?: number;
-} & IComponentBaseProps;
 ```
 
 ### Footer
@@ -604,14 +612,6 @@ type MetalBorderProps = IComponentBaseProps & Omit<JSX.HTMLAttributes<HTMLDivEle
 };
 ```
 
-### Modal
-
-Parts: `ModalBackdrop` · `ModalBody` · `ModalCloseTrigger` · `ModalContent` · `ModalFooter` · `ModalHeader` · `ModalHeading` · `ModalIcon` · `ModalTrigger`
-
-```ts
-type ModalProps = ModalRootProps;
-```
-
 ### Navbar
 
 ```ts
@@ -683,17 +683,17 @@ _No exported props type._
 type PopoverProps = ComponentProps<typeof PopoverRoot>;
 ```
 
-### ProgressBar
+### Progress
 
 ```ts
-type ProgressBarProps = IComponentBaseProps & Omit<JSX.HTMLAttributes<HTMLDivElement>, "children"> & {
+type ProgressProps = IComponentBaseProps & Omit<JSX.HTMLAttributes<HTMLDivElement>, "children"> & {
   value?: number;
   minValue?: number;
   maxValue?: number;
   isIndeterminate?: boolean;
   label?: string;
-  size?: ProgressBarSize;
-  color?: ProgressBarColor;
+  size?: ProgressSize;
+  color?: ProgressColor;
   isDisabled?: boolean;
   formatValue?: (value: number) => string;
   showValue?: boolean;
@@ -738,18 +738,18 @@ type RadioGroupProps = Omit<JSX.HTMLAttributes<HTMLDivElement>, "children" | "on
 };
 ```
 
-### ScrollShadow
+### ScrollArea
 
 ```ts
-type ScrollShadowProps = IComponentBaseProps & Omit<JSX.HTMLAttributes<HTMLDivElement>, "size"> & {
+type ScrollAreaProps = IComponentBaseProps & Omit<JSX.HTMLAttributes<HTMLDivElement>, "size"> & {
   size?: number;
   offset?: number;
-  visibility?: ScrollShadowVisibility;
+  visibility?: ScrollAreaVisibility;
   isEnabled?: boolean;
-  orientation?: ScrollShadowOrientation;
-  variant?: ScrollShadowVariant;
+  orientation?: ScrollAreaOrientation;
+  variant?: ScrollAreaVariant;
   hideScrollBar?: boolean;
-  onVisibilityChange?: (visibility: ScrollShadowVisibility) => void;
+  onVisibilityChange?: (visibility: ScrollAreaVisibility) => void;
 };
 ```
 
@@ -805,6 +805,20 @@ type SpinnerProps = Omit<JSX.HTMLAttributes<HTMLSpanElement>, "children"> & UIBa
 
 _No exported props type._
 
+### Switch
+
+```ts
+type SwitchProps = Omit<JSX.InputHTMLAttributes<HTMLInputElement>, "type" | "children" | "color"> & IComponentBaseProps & {
+  defaultChecked?: boolean;
+  children?: JSX.Element;
+  description?: JSX.Element;
+  icon?: JSX.Element;
+  isDisabled?: boolean;
+  color?: ToggleColor;
+  size?: ToggleSize;
+};
+```
+
 ### Table
 
 Parts: `TableExpandToggle` · `TableInlineConfirm` · `TableMobileListView` · `TableSortIcon` · `TableVirtualSpacerRow`
@@ -821,7 +835,7 @@ _No exported props type._
 
 ### Text
 
-Parts: `TextArea`
+Parts: `Textarea`
 
 ```ts
 type TextProps = Omit<JSX.HTMLAttributes<HTMLSpanElement>, "color"> & IComponentBaseProps & {
@@ -836,11 +850,11 @@ type TextProps = Omit<JSX.HTMLAttributes<HTMLSpanElement>, "color"> & IComponent
 };
 ```
 
-### TextArea
+### Textarea
 
 ```ts
-type TextAreaProps = Omit<JSX.TextareaHTMLAttributes<HTMLTextAreaElement>, "children"> & IComponentBaseProps & {
-  variant?: TextAreaVariant;
+type TextareaProps = Omit<JSX.TextareaHTMLAttributes<HTMLTextAreaElement>, "children"> & IComponentBaseProps & {
+  variant?: TextareaVariant;
   fullWidth?: boolean;
   isInvalid?: boolean;
   isDisabled?: boolean;
@@ -870,20 +884,6 @@ type ToastProps = Omit<JSX.HTMLAttributes<HTMLDivElement>, "children" | "title">
   isHidden?: boolean;
   isEntering?: boolean;
   isExiting?: boolean;
-};
-```
-
-### Toggle
-
-```ts
-type ToggleProps = Omit<JSX.InputHTMLAttributes<HTMLInputElement>, "type" | "children" | "color"> & IComponentBaseProps & {
-  defaultChecked?: boolean;
-  children?: JSX.Element;
-  description?: JSX.Element;
-  icon?: JSX.Element;
-  isDisabled?: boolean;
-  color?: ToggleColor;
-  size?: ToggleSize;
 };
 ```
 
@@ -1137,16 +1137,16 @@ type NoiseBackgroundProps = {
 } & IComponentBaseProps;
 ```
 
-### ProgressCircle
+### RadialProgress
 
 ```ts
-type ProgressCircleProps = IComponentBaseProps & Omit<JSX.HTMLAttributes<HTMLSpanElement>, "children"> & {
+type RadialProgressProps = IComponentBaseProps & Omit<JSX.HTMLAttributes<HTMLSpanElement>, "children"> & {
   value?: number;
   minValue?: number;
   maxValue?: number;
   isIndeterminate?: boolean;
-  size?: ProgressCircleSize;
-  color?: ProgressCircleColor;
+  size?: RadialProgressSize;
+  color?: RadialProgressColor;
   isDisabled?: boolean;
   formatValue?: (value: number) => string;
   label?: string;

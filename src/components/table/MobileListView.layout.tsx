@@ -1,6 +1,6 @@
 import { For, Show, type JSX, splitProps } from "solid-js";
 import { twMerge } from "tailwind-merge";
-import { EmptyState } from "../empty-state";
+import { Empty } from "../empty";
 import Icon from "../icon";
 import type { IComponentBaseProps } from "../types";
 import type { Layout } from "../../lib/layouts";
@@ -40,16 +40,16 @@ const MobileListView: Layout<typeof componentRecipe, MobileListViewProps<unknown
     if (local.empty) return local.empty;
     if (!local.emptyTitle) return null;
     return (
-      <EmptyState>
-        <EmptyState.Icon>
+      <Empty>
+        <Empty.Icon>
           <Icon
             name={local.emptyIcon ?? "icon-[mdi--inbox-outline]"}
             width={24}
             height={24}
           />
-        </EmptyState.Icon>
-        <EmptyState.Title>{local.emptyTitle}</EmptyState.Title>
-      </EmptyState>
+        </Empty.Icon>
+        <Empty.Title>{local.emptyTitle}</Empty.Title>
+      </Empty>
     );
   };
 

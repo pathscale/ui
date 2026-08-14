@@ -74,7 +74,7 @@ import { CLASSES } from "../ImmersiveLanding.recipe";
  *
  * Accessibility:
  * - Banner: role="dialog", aria-modal="false"
- * - Modal: role="dialog", aria-modal="true"
+ * - Dialog: role="dialog", aria-modal="true"
  * - All interactive elements are keyboard accessible
  * - Uses semantic HTML and proper ARIA labels
  *

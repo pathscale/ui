@@ -130,7 +130,7 @@ export interface IconSlotProps {
 /**
  * The controlled/uncontrolled triple, in one shape.
  *
- * `onChange` receives the value, not the event. Modal carried three competing
+ * `onChange` receives the value, not the event. Dialog carried three competing
  * pairs for this (`open`/`isOpen`, `onClose`/`onOpenChange`,
  * `closeOnEsc`/`shouldCloseOnEsc`) across ten total call sites.
  */

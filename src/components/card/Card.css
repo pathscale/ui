@@ -2,7 +2,7 @@
   /* -----------------------------------------------------------------------
    * Root
    *
-   * Same accent mechanism as Button and Callout: flavor or state writes
+   * Same accent mechanism as Button and Alert: flavor or state writes
    * --card-accent, state second so a condition outranks a preference.
    * --------------------------------------------------------------------- */
   .card {
