@@ -150,7 +150,7 @@ const table = useTableModel({
 
 - State-slice hooks (all controlled-or-uncontrolled): `useTableSorting`, `useTableSelection`, `useTableFiltering` (per-column popovers + `getColumnFilterProps`), `useTablePagination` (⚠️ `nextPage(max)`/`lastPage(max)` need caller-supplied max page index), `useTableExpansion`.
 - Parts: TableRoot/ScrollContainer/Content/Header/Column/Body/Row/Cell/ExpandedRow/Footer/PageSize/ResizableContainer/ColumnResizer/LoadMore(+Content), plus SortIcon, ExpandToggle, InlineConfirm, MobileListView (responsive card fallback), VirtualSpacerRow.
-- **Virtualization is not built in**: combine `useVirtualRows` (wraps @tanstack/solid-virtual) + `VirtualSpacerRow` yourself. Playground has examples: `playground/src/examples/Table*.tsx`.
+- **Virtualization is not built in**: combine `useVirtualRows` (wraps @tanstack/solid-virtual) + `VirtualSpacerRow` yourself. See the Table section above.
 
 ## Motion
 
@@ -187,21 +187,25 @@ toast.success("Saved"); toast.danger("Failed"); toast.promise(p, {loading, succe
 
 ## Icons
 
-Icons are Iconify classes: `<Icon name="icon-[mdi--close]" />` or bare `class="icon-[lucide--search]"`. In this repo they're baked at build time into `src/styles/icons/generated-icons.css` (only icons actually used get emitted). Consumer apps with Tailwind v4 can use `@plugin "@iconify/tailwind4"` for arbitrary icons (playground does this).
+`Icon` takes one prop, `src`, and which source it is, is the type: a string is a
+preload token (`"lucide--copy"`, or the wrapped `"icon-[lucide--copy]"`), an
+element is inline SVG you own.
+
+```tsx
+<Icon src="lucide--copy" />
+<Icon src={<svg viewBox="0 0 24 24">…</svg>} />
+```
+
+**The library ships no glyphs.** Your app generates the CSS that resolves a
+token, with `@plugin "@iconify/tailwind4"` under Tailwind v4 or
+`@pathscale/rsbuild-plugin-iconify` under rsbuild, scanning your source rather
+than ours. Both sources inherit colour through `currentColor`, so `flavor` works
+the same either way.
 
 ## Dates
 
 Calendar/DatePicker/RangeCalendar/DateRangePicker use the internal engine (native Date + Intl; no date lib). Values are `Date` objects; ranges are `{start: Date, end: Date}`. Controlled via `value/defaultValue/onChange`. `DateField`/`TimeField` are separate segmented text editors, not calendar-backed.
 
-## Playground (fastest way to try things)
-
-```sh
-bun install && cd playground && bun install && cd ..
-bun run playground:dev     # Vite; @pathscale/ui aliased to local src/ — edits hot-reload, no rebuild
-```
-`playground/src/App.tsx` (~7,300 lines) demos every component; examples in `playground/src/examples/` (Form, Motion, Streaming, Table×3). Playground forces `data-theme="dark"` at runtime in `playground/src/index.tsx`.
-
----
 
 ## Mirroring to the public showcase (js.software)
 
