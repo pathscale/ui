@@ -18,7 +18,7 @@ type DatePickerBaseProps = {
   value?: Date;
   defaultValue?: Date;
   onChange?: (value: Date) => void;
-  isOpen?: boolean;
+  open?: boolean;
   defaultOpen?: boolean;
   onOpenChange?: (isOpen: boolean) => void;
   name?: string;
@@ -48,7 +48,7 @@ const DatePicker: Layout<typeof componentRecipe, DatePickerProps> = () => {
     "value",
     "defaultValue",
     "onChange",
-    "isOpen",
+    "open",
     "defaultOpen",
     "onOpenChange",
     "name",
@@ -71,7 +71,7 @@ const DatePicker: Layout<typeof componentRecipe, DatePickerProps> = () => {
   });
 
   const openState = usePickerOpenState({
-    isOpen: () => local.isOpen,
+    isOpen: () => local.open,
     defaultOpen: () => local.defaultOpen,
     onOpenChange: () => local.onOpenChange,
     isDisabled,

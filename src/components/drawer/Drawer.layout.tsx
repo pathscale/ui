@@ -70,7 +70,7 @@ const unlockBodyScroll = () => {
 export type DrawerRootProps = Omit<JSX.HTMLAttributes<HTMLDivElement>, "children"> &
   UIBaseProps & {
     children: JSX.Element;
-    isOpen?: boolean;
+    open?: boolean;
     defaultOpen?: boolean;
     onOpenChange?: (isOpen: boolean) => void;
     placement?: DrawerPlacement;
@@ -173,7 +173,7 @@ const DrawerRoot: Layout<typeof componentRecipe, DrawerRootProps> = () => {
     "class",
     "dataTheme",
     "style",
-    "isOpen",
+    "open",
     "defaultOpen",
     "onOpenChange",
     "placement",
@@ -189,7 +189,7 @@ const DrawerRoot: Layout<typeof componentRecipe, DrawerRootProps> = () => {
 
   const [internalOpen, setInternalOpen] = createSignal(Boolean(local.defaultOpen));
   const [animState, setAnimState] = createSignal<DrawerAnimState>(
-    Boolean(local.isOpen ?? local.defaultOpen) ? "open" : "closed",
+    Boolean(local.open ?? local.defaultOpen) ? "open" : "closed",
   );
 
   const [dialogRef, setDialogRef] = createSignal<HTMLDivElement | undefined>();
@@ -206,8 +206,8 @@ const DrawerRoot: Layout<typeof componentRecipe, DrawerRootProps> = () => {
     boolean | undefined
   >(undefined);
 
-  const isControlled = () => local.isOpen !== undefined;
-  const isOpen = () => (isControlled() ? Boolean(local.isOpen) : internalOpen());
+  const isControlled = () => local.open !== undefined;
+  const isOpen = () => (isControlled() ? Boolean(local.open) : internalOpen());
 
   const placement = () => placementOverride() ?? local.placement ?? "bottom";
   const size = () => local.size ?? "md";

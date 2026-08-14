@@ -21,7 +21,7 @@ type DateRangePickerBaseProps = {
   value?: DateRangeValue;
   defaultValue?: DateRangeValue;
   onChange?: (value: DateRangeValue) => void;
-  isOpen?: boolean;
+  open?: boolean;
   defaultOpen?: boolean;
   onOpenChange?: (isOpen: boolean) => void;
   startName?: string;
@@ -53,7 +53,7 @@ const DateRangePicker: Layout<typeof componentRecipe, DateRangePickerProps> = ()
     "value",
     "defaultValue",
     "onChange",
-    "isOpen",
+    "open",
     "defaultOpen",
     "onOpenChange",
     "startName",
@@ -78,7 +78,7 @@ const DateRangePicker: Layout<typeof componentRecipe, DateRangePickerProps> = ()
   });
 
   const openState = usePickerOpenState({
-    isOpen: () => local.isOpen,
+    isOpen: () => local.open,
     defaultOpen: () => local.defaultOpen,
     onOpenChange: () => local.onOpenChange,
     isDisabled,

@@ -140,7 +140,7 @@ export type SelectRootProps = Omit<JSX.HTMLAttributes<HTMLDivElement>, "onChange
     selectionMode?: SelectSelectionMode;
     placement?: SelectPlacement;
     autoFlip?: boolean;
-    isOpen?: boolean;
+    open?: boolean;
     defaultOpen?: boolean;
     onOpenChange?: (open: boolean) => void;
   };
@@ -164,7 +164,7 @@ const SelectRoot: Layout<typeof componentRecipe, SelectRootProps> = () => {
     "selectionMode",
     "placement",
     "autoFlip",
-    "isOpen",
+    "open",
     "defaultOpen",
     "onOpenChange",
     "ref",
@@ -193,7 +193,7 @@ const SelectRoot: Layout<typeof componentRecipe, SelectRootProps> = () => {
   const [popoverRef, setPopoverRefSignal] = createSignal<HTMLDivElement | undefined>();
   const [rootRef, setRootRefSignal] = createSignal<HTMLDivElement | undefined>();
 
-  const open = () => (local.isOpen !== undefined ? Boolean(local.isOpen) : internalOpen());
+  const open = () => (local.open !== undefined ? Boolean(local.open) : internalOpen());
   const placement = () => local.placement ?? "bottom";
   const autoFlip = () => local.autoFlip ?? true;
 
@@ -269,7 +269,7 @@ const SelectRoot: Layout<typeof componentRecipe, SelectRootProps> = () => {
   const setOpen = (next: boolean, options?: { focusTrigger?: boolean }) => {
     if (next && disabled()) return;
 
-    if (local.isOpen === undefined) {
+    if (local.open === undefined) {
       setInternalOpen(next);
     }
     local.onOpenChange?.(next);

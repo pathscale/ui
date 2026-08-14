@@ -38,7 +38,7 @@ export type CollapsibleRootProps = Omit<JSX.HTMLAttributes<HTMLDivElement>, "chi
   UIBaseProps & {
     children?: JSX.Element;
     id?: string;
-    isOpen?: boolean;
+    open?: boolean;
     defaultOpen?: boolean;
     onOpenChange?: (open: boolean) => void;
     state?: State;
@@ -83,7 +83,7 @@ const CollapsibleRoot: Layout<typeof componentRecipe, CollapsibleRootProps> = ()
     "dataTheme",
     "style",
     "id",
-    "isOpen",
+    "open",
     "defaultOpen",
     "onOpenChange",
     "state",
@@ -96,9 +96,9 @@ const CollapsibleRoot: Layout<typeof componentRecipe, CollapsibleRootProps> = ()
   const contentId = () => `collapsible-content-${itemId()}`;
 
   const [internalOpen, setInternalOpen] = createSignal(Boolean(local.defaultOpen));
-  const isControlled = createMemo(() => local.isOpen !== undefined);
+  const isControlled = createMemo(() => local.open !== undefined);
   const standaloneOpen = createMemo(() =>
-    isControlled() ? Boolean(local.isOpen) : internalOpen(),
+    isControlled() ? Boolean(local.open) : internalOpen(),
   );
 
   const isDisabled = () => Boolean((local.state === "disabled")) || Boolean(local.disabled);
