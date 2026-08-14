@@ -10,7 +10,7 @@
     align-items: center;
     justify-content: center;
     border-radius: var(--radius-field);
-    border: 1px solid color-mix(in oklab, var(--color-base-content) 18%, transparent);
+    border: var(--border, 1px) solid color-mix(in oklab, var(--color-base-content) 18%, transparent);
     background: var(--color-base-100);
     color: var(--color-base-content);
     padding: 0.25rem 0.5rem;
@@ -28,8 +28,8 @@
   }
 
   .language-switcher__trigger:focus-visible {
-    outline: 2px solid color-mix(in oklab, var(--color-primary) 70%, transparent);
-    outline-offset: 2px;
+    outline: var(--focus-ring-width, 2px) solid color-mix(in oklab, var(--color-primary) 70%, transparent);
+    outline-offset: var(--focus-ring-offset, 2px);
   }
 
   .language-switcher__loading-icon {

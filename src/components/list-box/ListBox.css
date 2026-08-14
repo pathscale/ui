@@ -58,8 +58,8 @@
 
   .list-box-item:focus-visible:not(:focus),
   .list-box-item[data-focus-visible="true"] {
-    outline: 2px solid var(--color-accent);
-    outline-offset: 2px;
+    outline: var(--focus-ring-width, 2px) solid var(--color-accent);
+    outline-offset: var(--focus-ring-offset, 2px);
   }
 
   .list-box-item:active,

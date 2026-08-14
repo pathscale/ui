@@ -25,7 +25,7 @@
     --alert-border: transparent;
 
     background-color: var(--alert-bg);
-    border: 1px solid var(--alert-border);
+    border: var(--border, 1px) solid var(--alert-border);
     color: var(--alert-fg);
   }
 
@@ -149,7 +149,7 @@
     height: 1.5rem;
     width: 1.5rem;
     border: 0;
-    border-radius: 9999px;
+    border-radius: var(--radius-pill, 9999px);
     background: transparent;
     color: inherit;
     cursor: pointer;
@@ -163,7 +163,7 @@
   }
 
   .alert__dismiss:focus-visible {
-    outline: 2px solid currentColor;
-    outline-offset: 2px;
+    outline: var(--focus-ring-width, 2px) solid currentColor;
+    outline-offset: var(--focus-ring-offset, 2px);
   }
 }

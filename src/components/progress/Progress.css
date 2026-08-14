@@ -29,7 +29,7 @@
     grid-area: track;
     position: relative;
     overflow: hidden;
-    border-radius: 9999px;
+    border-radius: var(--radius-pill, 9999px);
     background: var(--color-base-200);
     height: 0.5rem;
   }
@@ -39,7 +39,7 @@
     top: 0;
     left: 0;
     height: 100%;
-    border-radius: 9999px;
+    border-radius: var(--radius-pill, 9999px);
     background-color: var(--progress-fill);
     transition: width 300ms var(--ease-out);
   }

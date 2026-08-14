@@ -19,7 +19,7 @@
     --card-shadow: none;
 
     background-color: var(--card-bg);
-    border: var(--border) solid var(--card-border);
+    border: var(--border, 1px) solid var(--card-border);
     color: var(--card-fg);
     box-shadow: var(--card-shadow);
     transition:
@@ -103,17 +103,17 @@
     --card-bg: color-mix(
       in oklab,
       var(--glass-background-color),
-      transparent calc(100% - var(--glass-background-opacity))
+      transparent calc(100% - var(--glass-background-opacity, 55%))
     );
     --card-border: color-mix(
       in oklab,
       var(--glass-border-color),
-      transparent calc(100% - var(--glass-border-opacity))
+      transparent calc(100% - var(--glass-border-opacity, 12%))
     );
-    backdrop-filter: blur(var(--card-glass-blur, var(--glass-blur)))
-      saturate(var(--glass-saturation)) brightness(var(--glass-brightness));
-    -webkit-backdrop-filter: blur(var(--card-glass-blur, var(--glass-blur)))
-      saturate(var(--glass-saturation)) brightness(var(--glass-brightness));
+    backdrop-filter: blur(var(--card-glass-blur, var(--glass-blur, 50px)))
+      saturate(var(--glass-saturation, 1.2)) brightness(var(--glass-brightness, 1));
+    -webkit-backdrop-filter: blur(var(--card-glass-blur, var(--glass-blur, 50px)))
+      saturate(var(--glass-saturation, 1.2)) brightness(var(--glass-brightness, 1));
   }
 
   .card--material-glass::before {
@@ -122,11 +122,11 @@
     inset: 0;
     border-radius: inherit;
     pointer-events: none;
-    box-shadow: inset 0 var(--border) 0 0
+    box-shadow: inset 0 var(--border, 1px) 0 0
       color-mix(
         in oklab,
         var(--glass-highlight-color),
-        transparent calc(100% - var(--glass-highlight-opacity))
+        transparent calc(100% - var(--glass-highlight-opacity, 18%))
       );
   }
 
@@ -135,13 +135,13 @@
     --card-shadow: none;
   }
   .card--elevation-sm {
-    --card-shadow: var(--shadow-sm);
+    --card-shadow: var(--shadow-sm, 0 1px 2px rgb(0 0 0 / 5%), 0 1px 3px rgb(0 0 0 / 10%));
   }
   .card--elevation-md {
-    --card-shadow: var(--shadow-md);
+    --card-shadow: var(--shadow-md, 0 4px 6px -1px rgb(0 0 0 / 10%), 0 2px 4px -2px rgb(0 0 0 / 10%));
   }
   .card--elevation-lg {
-    --card-shadow: var(--shadow-lg);
+    --card-shadow: var(--shadow-lg, 0 10px 15px -3px rgb(0 0 0 / 10%), 0 4px 6px -4px rgb(0 0 0 / 10%));
   }
 
   /* -------------------------------------------------------------- Padding */
@@ -170,7 +170,7 @@
   .card--radius-sm { border-radius: 0.25rem; }
   .card--radius-md { border-radius: 0.5rem; }
   .card--radius-lg { border-radius: var(--radius-box, 1rem); }
-  .card--radius-full { border-radius: var(--radius-pill); }
+  .card--radius-full { border-radius: var(--radius-pill, 9999px); }
 
   /* ---------------------------------------------------------- Interactive */
   .card--interactive {
@@ -178,7 +178,7 @@
   }
 
   .card--interactive:hover {
-    --card-shadow: var(--shadow-lg);
+    --card-shadow: var(--shadow-lg, 0 10px 15px -3px rgb(0 0 0 / 10%), 0 4px 6px -4px rgb(0 0 0 / 10%));
     transform: translateY(-1px);
   }
 
@@ -187,8 +187,8 @@
   }
 
   .card--interactive:focus-visible {
-    outline: var(--focus-ring-width) solid var(--card-accent);
-    outline-offset: var(--focus-ring-offset);
+    outline: var(--focus-ring-width, 2px) solid var(--card-accent);
+    outline-offset: var(--focus-ring-offset, 2px);
   }
 
   /* ---------------------------------------------------------------- Slots */
@@ -197,7 +197,7 @@
     align-items: center;
     justify-content: space-between;
     gap: 0.75rem;
-    border-block-end: var(--border) solid color-mix(in oklab, var(--color-base-300), transparent 40%);
+    border-block-end: var(--border, 1px) solid color-mix(in oklab, var(--color-base-300), transparent 40%);
   }
 
   .card__body {
@@ -211,6 +211,6 @@
     display: flex;
     align-items: center;
     gap: 0.5rem;
-    border-block-start: var(--border) solid color-mix(in oklab, var(--color-base-300), transparent 40%);
+    border-block-start: var(--border, 1px) solid color-mix(in oklab, var(--color-base-300), transparent 40%);
   }
 }

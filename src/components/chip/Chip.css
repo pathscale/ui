@@ -4,8 +4,8 @@
     flex-shrink: 0;
     align-items: center;
     gap: 0.125rem;
-    border-radius: 9999px;
-    border: 1px solid var(--chip-border);
+    border-radius: var(--radius-pill, 9999px);
+    border: var(--border, 1px) solid var(--chip-border);
     font-weight: 500;
     line-height: 1.25;
     white-space: nowrap;
@@ -162,7 +162,7 @@
     height: var(--chip-remove-size);
     padding: 0;
     border: 0;
-    border-radius: 9999px;
+    border-radius: var(--radius-pill, 9999px);
     color: inherit;
     background: transparent;
     cursor: pointer;
@@ -180,7 +180,7 @@
   }
 
   .chip__remove:focus-visible {
-    outline: 2px solid currentColor;
+    outline: var(--focus-ring-width, 2px) solid currentColor;
     outline-offset: 1px;
   }
 

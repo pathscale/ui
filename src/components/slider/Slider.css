@@ -36,7 +36,7 @@
     grid-area: track;
     position: relative;
     height: var(--slider-h);
-    border-radius: 9999px;
+    border-radius: var(--radius-pill, 9999px);
     background-color: var(--slider-track-bg);
     cursor: pointer;
   }
@@ -46,7 +46,7 @@
     left: 0;
     top: 0;
     height: 100%;
-    border-radius: 9999px;
+    border-radius: var(--radius-pill, 9999px);
     pointer-events: none;
     background-color: var(--slider-fill-bg);
   }
@@ -55,7 +55,7 @@
     position: absolute;
     top: 50%;
     z-index: 1;
-    border-radius: 9999px;
+    border-radius: var(--radius-pill, 9999px);
     background-color: var(--slider-thumb-bg);
     cursor: grab;
     width: var(--slider-thumb-w);

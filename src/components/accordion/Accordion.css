@@ -16,7 +16,7 @@
     left: 0;
     height: 1px;
     width: 100%;
-    border-radius: 9999px;
+    border-radius: var(--radius-pill, 9999px);
     background-color: var(--color-base-300);
   }
 
@@ -54,8 +54,8 @@
 
   .accordion__trigger:focus-visible,
   .accordion__trigger[data-focus-visible="true"] {
-    outline: 2px solid var(--color-base-content);
-    outline-offset: 2px;
+    outline: var(--focus-ring-width, 2px) solid var(--color-base-content);
+    outline-offset: var(--focus-ring-offset, 2px);
   }
 
   .accordion__item--disabled .accordion__trigger,

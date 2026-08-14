@@ -50,7 +50,7 @@
   }
 
   .color-swatch--circle {
-    border-radius: 9999px;
+    border-radius: var(--radius-pill, 9999px);
   }
 
   .color-swatch--square {

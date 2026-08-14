@@ -26,7 +26,7 @@
   }
 
   .auth-powered-by--card {
-    border: 1px solid var(--color-base-300);
+    border: var(--border, 1px) solid var(--color-base-300);
     border-radius: 0.375rem;
     padding: 0.25rem 0.625rem;
     font-size: 0.75rem;

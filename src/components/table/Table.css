@@ -88,7 +88,7 @@
 
   @supports (color: color-mix(in lab, red, red)) {
     .table__header {
-      border-bottom: 1px solid color-mix(in oklch, var(--color-base-content) 8%, transparent);
+      border-bottom: var(--border, 1px) solid color-mix(in oklch, var(--color-base-content) 8%, transparent);
     }
   }
 
@@ -124,7 +124,7 @@
 
   @supports (color: color-mix(in lab, red, red)) {
     .table-root--secondary .table__row .table__cell {
-      border-bottom: 1px solid color-mix(in oklch, var(--color-base-content) 5%, transparent);
+      border-bottom: var(--border, 1px) solid color-mix(in oklch, var(--color-base-content) 5%, transparent);
     }
   }
 
@@ -279,7 +279,7 @@
 
   @supports (color: color-mix(in lab, red, red)) {
     .table__cell {
-      border-bottom: 1px solid color-mix(in oklch, var(--color-base-content) 5%, transparent);
+      border-bottom: var(--border, 1px) solid color-mix(in oklch, var(--color-base-content) 5%, transparent);
     }
   }
 
@@ -328,7 +328,7 @@
   .table__page-size-select {
     min-width: 4.5rem;
     border-radius: 0.75rem;
-    border: 1px solid color-mix(in oklch, var(--color-base-content) 10%, transparent);
+    border: var(--border, 1px) solid color-mix(in oklch, var(--color-base-content) 10%, transparent);
     background-color: var(--color-base-100);
     padding-inline: 0.75rem;
     padding-block: 0.5rem;
