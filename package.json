@@ -1,13 +1,13 @@
 {
   "name": "@pathscale/ui",
-  "version": "2.2.2",
+  "version": "2.3.0",
   "author": "pathscale",
   "repository": {
     "type": "git",
     "url": "https://github.com/pathscale/ui"
   },
   "license": "MIT",
-  "description": "Highly opinionated SolidJS component library \u2014 batteries and kitchen sink included, but optimized and shiny.",
+  "description": "Highly opinionated SolidJS component library — batteries and kitchen sink included, but optimized and shiny.",
   "files": [
     "dist"
   ],
