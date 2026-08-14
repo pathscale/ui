@@ -161,10 +161,13 @@ export const App = () => (
 
 // The builder is the primary API, so the smoke exercises it rather than the
 // controlled props: a consumer types this exact shape.
-const grid = createDataGrid();
+type Person = { id: number; firstName: string };
+const grid = createDataGrid<Person>();
 grid.addColumn("id", "ID", "number");
-grid.addRow({ id: 1 });
+grid.addRow({ id: 1, firstName: "John" });
 
+// Typed, because an untyped model would not have caught the generic being
+// erased by the compiler's emitted declaration.
 export const Grid = () => <DataGrid model={grid} borders="rows" />;
 
 // Values must exist, not just types.
