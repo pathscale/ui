@@ -2,7 +2,7 @@
 
 The complete component reference for `@pathscale/ui`. Generated from the built type declarations by `scripts/generate-component-reference.ts`, so it cannot drift from what ships.
 
-**70 components** on the main surface · **24** in `@pathscale/ui/lab`
+**73 components** on the main surface · **24** in `@pathscale/ui/lab`
 
 ---
 
@@ -44,6 +44,40 @@ type AccordionProps = Omit<JSX.HTMLAttributes<HTMLDivElement>, "children"> & ICo
   variant?: AccordionVariant;
   isDisabled?: boolean;
   disabled?: boolean;
+};
+```
+
+### Address
+
+```ts
+type AddressProps = Omit<JSX.HTMLAttributes<HTMLSpanElement>, "onCopy"> & UIBaseProps & {
+  /** The address itself. Always the full value, whatever is displayed. */
+  value: string;
+  /**
+   * A resolved name, shown in place of the hex.
+   *
+   * ENS and its equivalents are what the address *means* to a person, so when
+   * one is known it leads. The hex stays reachable through the title and the
+   * copy, because the name is a lookup that can be wrong and the address
+   * cannot.
+   */
+  name?: JSX.Element;
+  /** Full URL to a block explorer. No link is rendered without one. */
+  explorerUrl?: string;
+  truncate?: AddressTruncate;
+  /** Characters kept at each end when truncating. */
+  lead?: number;
+  tail?: number;
+  size?: Size;
+  state?: State;
+  font?: "mono" | "inherit";
+  /** Copying is on by default: it is the reason most of these are on screen. */
+  copyable?: boolean;
+  /** Fired after a successful copy, with the full value. */
+  onCopy?: (value: string) => void;
+  copyLabel?: JSX.Element;
+  copiedLabel?: JSX.Element;
+  explorerLabel?: JSX.Element;
 };
 ```
 
@@ -103,8 +137,6 @@ type AuthPoweredByProps = IComponentBaseProps & {
 ```ts
 type AuthSubmitButtonProps = Omit<JSX.ButtonHTMLAttributes<HTMLButtonElement>, "children" | "disabled" | "type"> & IComponentBaseProps & {
   children: JSX.Element;
-  isLoading?: boolean;
-  isDisabled?: boolean;
   type?: "button" | "submit" | "reset";
   variant?: Variant;
   flavor?: Flavor;
@@ -147,16 +179,14 @@ type BreadcrumbsProps = Omit<JSX.HTMLAttributes<HTMLElement>, "children"> & ICom
 Parts: `ButtonGroup` · `ButtonGroupSeparator`
 
 ```ts
-type ButtonProps = Omit<JSX.ButtonHTMLAttributes<HTMLButtonElement>, "disabled" | "color" | "type"> & UIBaseProps & IconSlotProps & {
+type ButtonProps = Omit<JSX.ButtonHTMLAttributes<HTMLButtonElement>, "color" | "type"> & UIBaseProps & IconSlotProps & {
   variant?: Variant;
   flavor?: Flavor;
   state?: State;
   size?: Size;
-  width?: Width;
+  /** `square` is icon-only: as wide as it is tall, at whatever size it is. */
+  width?: Width | "square";
   radius?: Radius;
-  isDisabled?: boolean;
-  isLoading?: boolean;
-  isIconOnly?: boolean;
   type?: "button" | "submit" | "reset";
   children?: JSX.Element;
 };
@@ -248,6 +278,52 @@ type ColorSwatchProps = Omit<JSX.ButtonHTMLAttributes<HTMLButtonElement>, "onCha
   isDisabled?: boolean;
   onSelect?: (color: string) => void;
   onChange?: (color: string) => void;
+};
+```
+
+### Composer
+
+```ts
+type ComposerProps = Omit<JSX.HTMLAttributes<HTMLDivElement>, "onChange" | "onSubmit" | "children"> & UIBaseProps & {
+  value?: string;
+  defaultValue?: string;
+  onChange?: (value: string, reason?: ChangeReason) => void;
+  /** Fired with the trimmed message. Not fired while `state` is `loading`. */
+  onSubmit?: (value: string) => void;
+  placeholder?: string;
+  size?: Size;
+  variant?: Variant;
+  radius?: Radius;
+  /** `loading` means a send is in flight: the box stays readable and refuses to send again. */
+  state?: State;
+  /** Server-side or asynchronous problems, rendered under the box. */
+  issues?: Issue[];
+  minRows?: number;
+  maxRows?: number;
+  /**
+   * Enter sends. Set false where a newline is the common case and sending is
+   * an explicit act, which is what long-form editors want.
+   */
+  submitOnEnter?: boolean;
+  /**
+   * Announced whenever the box changes height.
+   *
+   * A chat transcript that pins to the bottom has to know: the composer
+   * growing by a line moves the bottom, and a scroller that finds out by
+   * observing the DOM finds out a frame late and jitters.
+   */
+  onHeightChange?: (height: number) => void;
+  /** Controls before the field: attachments, model pickers, mode switches. */
+  lead?: JSX.Element;
+  /** Controls after the field, before the submit button. */
+  trail?: JSX.Element;
+  submitLabel?: JSX.Element;
+  /** Shown beside the controls. Usually the Enter/Shift+Enter reminder. */
+  hint?: JSX.Element;
+  autofocus?: boolean;
+  name?: string;
+  /** Height of the window, for the ceiling. Injected for runtimes without one. */
+  viewportHeight?: number;
 };
 ```
 
@@ -724,6 +800,10 @@ type SpinnerProps = Omit<JSX.HTMLAttributes<HTMLSpanElement>, "children"> & UIBa
   label?: string;
 };
 ```
+
+### Status
+
+_No exported props type._
 
 ### Table
 
