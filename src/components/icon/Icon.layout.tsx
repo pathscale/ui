@@ -1,39 +1,36 @@
 import "./Icon.css";
-import { createMemo } from "solid-js";
-import { twMerge } from "tailwind-merge";
 import type { Layout } from "../../lib/layouts";
-import type { IComponentBaseProps } from "../types";
-import type { ComponentColor } from "../types";
+import type { Flavor, UIBaseProps } from "../vocabulary";
 import { icon } from "./Icon.recipe";
 
-export type IconProps = IComponentBaseProps & {
+export type IconProps = UIBaseProps & {
   width?: number;
   height?: number;
-  color?: ComponentColor;
+  flavor?: Flavor;
+  /** The icon set's own class, e.g. `icon-[mdi--cog]`. */
   name?: string;
 };
 
-const Icon: Layout<typeof icon, IconProps> = () => {
-  const width = local.width ?? 24;
-  const height = local.height ?? 24;
-
-  const classes = createMemo(() =>
-    twMerge(slot.root.class, local.name, local.class, local.className),
-  );
-
-  return (
-    <span
-      {...slot.root}
-      {...{ class: classes() }}
-      style={{
-        width: `${width}px`,
-        height: `${height}px`,
-        ...(typeof local.style === "object" ? local.style : {}),
-      }}
-      data-theme={local.dataTheme}
-    />
-  );
-};
-
-export const IconLayout = Icon;
-export default Icon;
+/* -------------------------------------------------------------------------------------------------
+ * Icon
+ *
+ * The name is a class rather than a child, because that is how the icon sets
+ * this library ships work: the glyph arrives through CSS. It reaches the
+ * element through the recipe rather than a `twMerge` here, so an icon composes
+ * its classes the same way every other component does.
+ *
+ * Square by default at 24px. Both dimensions are still separate props, because
+ * a few sets ship rectangular glyphs and forcing them square crops them.
+ * -----------------------------------------------------------------------------------------------*/
+export const IconLayout: Layout<typeof icon, IconProps> = () => (
+  <span
+    {...slot.root}
+    style={{
+      width: `${local.width ?? 24}px`,
+      height: `${local.height ?? 24}px`,
+      ...(typeof local.style === "object" ? local.style : {}),
+    }}
+    data-flavor={local.flavor ?? "inherit"}
+    aria-hidden="true"
+  />
+);
