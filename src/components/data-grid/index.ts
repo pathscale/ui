@@ -1,4 +1,3 @@
-export { createDataGrid } from "./createDataGrid";
 export type {
   CreateDataGridOptions,
   DataGridCellContext,
@@ -11,3 +10,11 @@ export type {
   DataGridSort,
   DataGridSortDirection,
 } from "./createDataGrid";
+export { createDataGrid } from "./createDataGrid";
+export type {
+  DataGridBorders,
+  DataGridProps,
+  DataGridSticky,
+  DataGridStriping,
+} from "./DataGrid.generated";
+export { default } from "./DataGrid.generated";

@@ -109,6 +109,57 @@ bun run build:watch
 
 ---
 
+## Option C: a throwaway render check, no installs
+
+When you only need to *look at one component* before believing it works, both
+options above are too much ceremony. This repo already has `@rsbuild/core`,
+`@rsbuild/plugin-babel` and `@rsbuild/plugin-solid` as devDependencies, which is
+everything a page needs. Write three files, look, delete them.
+
+`rsbuild.demo.config.ts`, at the repo root:
+
+```ts
+import { pluginBabel } from "@rsbuild/plugin-babel";
+import { pluginSolid } from "@rsbuild/plugin-solid";
+import { defineConfig } from "@rsbuild/core";
+
+export default defineConfig({
+  root: __dirname,
+  source: { entry: { index: "./.demo/main.tsx" } },
+  html: { template: "./.demo/index.html" },
+  server: { port: 5411 },
+  plugins: [pluginBabel({ include: /\.(?:jsx|tsx)$/ }), pluginSolid()],
+});
+```
+
+`.demo/main.tsx` imports from `../src/index` and renders whatever you are
+checking. Then `./node_modules/.bin/rsbuild dev --config rsbuild.demo.config.ts`.
+
+### The palette will be missing, and that is not a bug
+
+`src/index.css` resolves its colours through Tailwind v4 theme variables:
+`--color-base-100` is `var(--color-white)`, which only exists once Tailwind has
+processed the sheet. A bare rsbuild page runs no Tailwind, so every colour token
+collapses and you get an unreadable dark-on-dark grid while the *structure* is
+perfectly correct.
+
+Declare the handful you need on `:root` in `.demo/index.html` and the check
+becomes about the component's stylesheet instead of about a missing build step:
+
+```css
+:root {
+  --color-base-100: #fff; --color-base-200: #f4f4f5; --color-base-300: #d4d4d8;
+  --color-base-content: #18181b; --color-primary: #2563eb;
+  --color-accent: #2563eb; --color-accent-content: #fff;
+  --padding-xs: .25rem; --padding-sm: .5rem; --padding-md: 1rem;
+}
+```
+
+**Delete the three files when you are done.** A demo that survives is a
+playground, and a playground is a second copy of the API that drifts from it.
+
+---
+
 ## Option B: install the tarball
 
 This is what `scripts/smoke-consumer.ts` automates, and what CI runs.

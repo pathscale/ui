@@ -156,6 +156,9 @@
      * is the behaviour a hardcoded black can only get right in one of them.
      */
     --shade: var(--color-base-content);
+    /* Below hover on purpose: a zebra stripe that matched the hover
+       shade made a hovered stripe indistinguishable from a resting one. */
+    --shade-subtle: 4%;
     --shade-hover: 8%;
     --shade-pressed: 12%;
 
