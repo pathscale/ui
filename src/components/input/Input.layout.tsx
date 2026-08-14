@@ -13,6 +13,7 @@ import { twMerge } from "tailwind-merge";
 import { CLASSES } from "./Input.recipe";
 import type { Layout } from "../../lib/layouts";
 import { componentRecipe } from "./Input.recipe";
+import type { State } from "../vocabulary";
 type InputSize = "sm" | "md" | "lg";
 
 type InputContextValue = {
@@ -30,7 +31,7 @@ type InputRootProps = Omit<JSX.HTMLAttributes<HTMLDivElement>, "children"> & {
   children: JSX.Element;
   size?: InputSize;
   fullWidth?: boolean;
-  isDisabled?: boolean;
+  state?: State;
   isInvalid?: boolean;
   dataTheme?: string;
 };
@@ -41,7 +42,7 @@ const InputRoot: Layout<typeof componentRecipe, InputRootProps> = () => {
     "class",
     "size",
     "fullWidth",
-    "isDisabled",
+    "state",
     "isInvalid",
     "dataTheme",
   ]);
@@ -49,7 +50,7 @@ const InputRoot: Layout<typeof componentRecipe, InputRootProps> = () => {
   const baseId = createUniqueId();
 
   const size = () => local.size ?? "md";
-  const isDisabled = () => Boolean(local.isDisabled);
+  const isDisabled = () => Boolean((local.state === "disabled"));
   const isInvalid = () => Boolean(local.isInvalid);
   const fullWidth = () => Boolean(local.fullWidth);
 
@@ -82,7 +83,7 @@ const InputRoot: Layout<typeof componentRecipe, InputRootProps> = () => {
 
 type InputFieldProps = Omit<JSX.InputHTMLAttributes<HTMLInputElement>, "size" | "children" | "disabled"> & {
   size?: InputSize;
-  isDisabled?: boolean;
+  state?: State;
   disabled?: boolean;
   isInvalid?: boolean;
   fullWidth?: boolean;
@@ -96,7 +97,7 @@ const InputField: Layout<typeof componentRecipe, InputFieldProps> = () => {
   const [local, others] = splitProps(props, [
     "class",
     "size",
-    "isDisabled",
+    "state",
     "disabled",
     "isInvalid",
     "fullWidth",
@@ -108,7 +109,7 @@ const InputField: Layout<typeof componentRecipe, InputFieldProps> = () => {
   ]);
 
   const size = () => local.size ?? ctx?.size() ?? "md";
-  const isDisabled = () => Boolean(local.isDisabled) || Boolean(local.disabled) || Boolean(ctx?.isDisabled());
+  const isDisabled = () => Boolean((local.state === "disabled")) || Boolean(local.disabled) || Boolean(ctx?.isDisabled());
   const isInvalid = () =>
     Boolean(local.isInvalid) || Boolean(local["aria-invalid"]) || Boolean(ctx?.isInvalid());
   const fullWidth = () => Boolean(local.fullWidth) || Boolean(ctx?.fullWidth());
@@ -220,7 +221,7 @@ const InputBase: Layout<typeof componentRecipe, InputProps> = () => {
     "id",
     "size",
     "fullWidth",
-    "isDisabled",
+    "state",
     "disabled",
     "isInvalid",
     "label",
@@ -232,7 +233,7 @@ const InputBase: Layout<typeof componentRecipe, InputProps> = () => {
   ]);
 
   const inputId = () => local.id ?? `${generatedId}-input`;
-  const isDisabled = () => Boolean(local.isDisabled) || Boolean(local.disabled);
+  const isDisabled = () => Boolean((local.state === "disabled")) || Boolean(local.disabled);
   const isInvalid = () =>
     Boolean(local.isInvalid) || Boolean(local["aria-invalid"]) || local.errorMessage != null;
 
@@ -244,7 +245,7 @@ const InputBase: Layout<typeof componentRecipe, InputProps> = () => {
     <InputRoot
       size={local.size}
       fullWidth={local.fullWidth ?? true}
-      isDisabled={isDisabled()}
+      state={isDisabled() ? "disabled" : undefined}
       isInvalid={isInvalid()}
       dataTheme={local.dataTheme}
     >
@@ -256,7 +257,7 @@ const InputBase: Layout<typeof componentRecipe, InputProps> = () => {
           {...fieldProps}
           id={inputId()}
           size={local.size}
-          isDisabled={isDisabled()}
+          state={isDisabled() ? "disabled" : undefined}
           isInvalid={isInvalid()}
           aria-describedby={hasHelper() ? helperId() : undefined}
           {...{ class: local.class }}

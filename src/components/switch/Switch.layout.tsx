@@ -1,7 +1,7 @@
 import "./Switch.css";
 import { Show, createSignal, splitProps, type Component, type JSX } from "solid-js";
 import { twMerge } from "tailwind-merge";
-import type { UIBaseProps, Flavor } from "../vocabulary";
+import type { UIBaseProps, Flavor, State } from "../vocabulary";
 import { CLASSES } from "./Switch.recipe";
 import type { Layout } from "../../lib/layouts";
 import { componentRecipe } from "./Switch.recipe";
@@ -26,7 +26,7 @@ export type ToggleProps = Omit<JSX.InputHTMLAttributes<HTMLInputElement>, "type"
     children?: JSX.Element;
     description?: JSX.Element;
     icon?: JSX.Element;
-    isDisabled?: boolean;
+    state?: State;
     flavor?: Flavor;
     size?: ToggleSize;
   };
@@ -37,7 +37,7 @@ const Switch: Layout<typeof componentRecipe, ToggleProps> = () => {
     "children",
     "description",
     "icon",
-    "isDisabled",
+    "state",
     "flavor",
     "size",
     "checked",
@@ -51,7 +51,7 @@ const Switch: Layout<typeof componentRecipe, ToggleProps> = () => {
 
   const isControlled = () => local.checked !== undefined;
   const isSelected = () => (isControlled() ? Boolean(local.checked) : internalSelected());
-  const isDisabled = () => Boolean(local.isDisabled) || Boolean(local.disabled);
+  const isDisabled = () => Boolean((local.state === "disabled")) || Boolean(local.disabled);
   const color = () => local.flavor ?? "accent";
   const size = () => local.size ?? "md";
   const hasContent = () => local.children != null || local.description != null;

@@ -1,7 +1,7 @@
 import "./ColorArea.css";
 import { createSignal, splitProps, type Component, type JSX } from "solid-js";
 import { twMerge } from "tailwind-merge";
-import type { UIBaseProps } from "../vocabulary";
+import type { UIBaseProps, State } from "../vocabulary";
 import { CLASSES } from "./ColorArea.recipe";
 import type { Layout } from "../../lib/layouts";
 import { componentRecipe } from "./ColorArea.recipe";
@@ -16,7 +16,7 @@ export type ColorAreaProps = Omit<JSX.HTMLAttributes<HTMLDivElement>, "children"
   UIBaseProps & {
     value?: ColorAreaValue;
     onChange?: (value: ColorAreaValue) => void;
-    isDisabled?: boolean;
+    state?: State;
   };
 
 const DEFAULT_VALUE: ColorAreaValue = {
@@ -79,7 +79,7 @@ const ColorArea: Layout<typeof componentRecipe, ColorAreaProps> = () => {
     "class",
     "value",
     "onChange",
-    "isDisabled",
+    "state",
     "dataTheme",
     "style",
     "aria-label",
@@ -91,7 +91,7 @@ const ColorArea: Layout<typeof componentRecipe, ColorAreaProps> = () => {
 
   const isControlled = () => local.value !== undefined;
   const currentValue = () => normalizeValue(local.value ?? internalValue());
-  const isDisabled = () => Boolean(local.isDisabled);
+  const isDisabled = () => Boolean((local.state === "disabled"));
 
   const emitChange = (next: ColorAreaValue) => {
     const normalized = normalizeValue(next);

@@ -11,7 +11,7 @@ import {
 } from "solid-js";
 import { twMerge } from "tailwind-merge";
 
-import type { UIBaseProps } from "../vocabulary";
+import type { UIBaseProps, State } from "../vocabulary";
 import { CLASSES } from "./TimeField.recipe";
 import type { Layout } from "../../lib/layouts";
 import { componentRecipe } from "./TimeField.recipe";
@@ -60,7 +60,7 @@ export type TimeFieldRootProps = Omit<JSX.HTMLAttributes<HTMLDivElement>, "child
     onBlur?: JSX.EventHandlerUnion<HTMLInputElement, FocusEvent>;
     fullWidth?: boolean;
     variant?: TimeFieldVariant;
-    isDisabled?: boolean;
+    state?: State;
     disabled?: boolean;
     isInvalid?: boolean;
     isRequired?: boolean;
@@ -88,7 +88,7 @@ export type TimeFieldSegmentValue = {
   isPlaceholder?: boolean;
   isFocused?: boolean;
   isInvalid?: boolean;
-  isDisabled?: boolean;
+  state?: State;
 };
 
 export type TimeFieldSegmentProps = JSX.HTMLAttributes<HTMLSpanElement> &
@@ -112,7 +112,7 @@ const TimeFieldRoot: Layout<typeof componentRecipe, TimeFieldRootProps> = () => 
     "onBlur",
     "fullWidth",
     "variant",
-    "isDisabled",
+    "state",
     "disabled",
     "isInvalid",
     "isRequired",
@@ -125,7 +125,7 @@ const TimeFieldRoot: Layout<typeof componentRecipe, TimeFieldRootProps> = () => 
   const value = () => (isControlled() ? local.value ?? "" : internalValue());
   const variant = () => local.variant ?? "primary";
   const fullWidth = () => Boolean(local.fullWidth);
-  const isDisabled = () => Boolean(local.isDisabled) || Boolean(local.disabled);
+  const isDisabled = () => Boolean((local.state === "disabled")) || Boolean(local.disabled);
   const isInvalid = () => Boolean(local.isInvalid);
   const isRequired = () => Boolean(local.isRequired) || Boolean(local.required);
 
@@ -295,7 +295,7 @@ const TimeFieldSegment: Layout<typeof componentRecipe, TimeFieldSegmentProps> = 
       data-placeholder={local.segment?.isPlaceholder ? "true" : undefined}
       data-invalid={local.segment?.isInvalid ? "true" : undefined}
       data-focused={local.segment?.isFocused ? "true" : undefined}
-      data-disabled={local.segment?.isDisabled ? "true" : undefined}
+      data-disabled={local.segment?.state === "disabled" ? "true" : undefined}
       data-theme={local.dataTheme}
       style={local.style}
     >

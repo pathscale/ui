@@ -9,7 +9,7 @@ import {
   usePickerOpenState,
 } from "../../hooks/date";
 import Calendar, { type CalendarWeekdayFormat } from "../calendar";
-import type { UIBaseProps } from "../vocabulary";
+import type { UIBaseProps, State } from "../vocabulary";
 import { CLASSES } from "./DatePicker.recipe";
 import type { Layout } from "../../lib/layouts";
 import { componentRecipe } from "./DatePicker.recipe";
@@ -28,7 +28,7 @@ type DatePickerBaseProps = {
   minValue?: Date;
   maxValue?: Date;
   isDateUnavailable?: (date: Date) => boolean;
-  isDisabled?: boolean;
+  state?: State;
   disabled?: boolean;
 };
 
@@ -58,11 +58,11 @@ const DatePicker: Layout<typeof componentRecipe, DatePickerProps> = () => {
     "minValue",
     "maxValue",
     "isDateUnavailable",
-    "isDisabled",
+    "state",
     "disabled",
   ]);
 
-  const isDisabled = createMemo(() => Boolean(local.isDisabled) || Boolean(local.disabled));
+  const isDisabled = createMemo(() => Boolean((local.state === "disabled")) || Boolean(local.disabled));
 
   const selection = useDateSelection({
     value: () => local.value,
@@ -191,7 +191,7 @@ const DatePicker: Layout<typeof componentRecipe, DatePickerProps> = () => {
             minValue={local.minValue}
             maxValue={local.maxValue}
             isDateUnavailable={local.isDateUnavailable}
-            isDisabled={isDisabled()}
+            state={isDisabled() ? "disabled" : undefined}
           />
         </div>
       </Show>

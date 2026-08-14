@@ -1,7 +1,7 @@
 import "./Progress.css";
 import { createMemo, splitProps, type JSX } from "solid-js";
 import { twMerge } from "tailwind-merge";
-import type { UIBaseProps, Flavor } from "../vocabulary";
+import type { UIBaseProps, Flavor, State } from "../vocabulary";
 import { CLASSES } from "./Progress.recipe";
 import type { Layout } from "../../lib/layouts";
 import { componentRecipe } from "./Progress.recipe";
@@ -18,7 +18,7 @@ export type ProgressProps = UIBaseProps &
     label?: string;
     size?: ProgressSize;
     flavor?: Flavor;
-    isDisabled?: boolean;
+    state?: State;
     formatValue?: (value: number) => string;
     showValue?: boolean;
   };
@@ -32,7 +32,7 @@ const Progress: Layout<typeof componentRecipe, ProgressProps> = () => {
     "label",
     "size",
     "flavor",
-    "isDisabled",
+    "state",
     "formatValue",
     "showValue",
     "class",
@@ -66,7 +66,7 @@ const Progress: Layout<typeof componentRecipe, ProgressProps> = () => {
       CLASSES.size[local.size ?? "md"],
       (CLASSES.flavor[(local.flavor ?? "accent") as keyof typeof CLASSES.flavor] ?? `progress--flavor-${local.flavor ?? "accent"}`),
       isIndeterminate() && CLASSES.state.indeterminate,
-      local.isDisabled && CLASSES.state.disabled,
+      (local.state === "disabled") && CLASSES.state.disabled,
       local.class,
     ),
   );
@@ -83,8 +83,8 @@ const Progress: Layout<typeof componentRecipe, ProgressProps> = () => {
       aria-valuemax={max()}
       aria-valuetext={isIndeterminate() ? undefined : valueText()}
       aria-label={local.label}
-      aria-disabled={local.isDisabled ? "true" : undefined}
-      data-disabled={local.isDisabled ? "true" : undefined}
+      aria-disabled={(local.state === "disabled") ? "true" : undefined}
+      data-disabled={(local.state === "disabled") ? "true" : undefined}
     >
       {local.label && <span {...{ class: CLASSES.label }}>{local.label}</span>}
       {shouldShowValue() && <span {...{ class: CLASSES.output }}>{valueText()}</span>}

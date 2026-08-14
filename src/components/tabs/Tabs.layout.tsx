@@ -16,6 +16,7 @@ import { twMerge } from "tailwind-merge";
 import { CLASSES } from "./Tabs.recipe";
 import type { Layout } from "../../lib/layouts";
 import { componentRecipe } from "./Tabs.recipe";
+import type { State } from "../vocabulary";
 
 type TabsOrientation = "horizontal" | "vertical";
 type TabsVariant = "primary" | "secondary";
@@ -284,7 +285,7 @@ const TabList: Layout<typeof componentRecipe, TabListProps> = () => {
 
 type TabProps = Omit<JSX.ButtonHTMLAttributes<HTMLButtonElement>, "id"> & {
   id: TabKey;
-  isDisabled?: boolean;
+  state?: State;
 };
 
 const Tab: Layout<typeof componentRecipe, TabProps> = () => {
@@ -293,7 +294,7 @@ const Tab: Layout<typeof componentRecipe, TabProps> = () => {
     "class",
     "children",
     "id",
-    "isDisabled",
+    "state",
     "onClick",
     "onKeyDown",
   ]);
@@ -309,7 +310,7 @@ const Tab: Layout<typeof componentRecipe, TabProps> = () => {
   }
 
   const isSelected = createMemo(() => ctx.selectedKey() === local.id);
-  const isDisabled = () => Boolean(local.isDisabled);
+  const isDisabled = () => Boolean((local.state === "disabled"));
 
   onMount(() => {
     if (tabRef) {

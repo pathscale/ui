@@ -13,7 +13,7 @@ import {
 } from "solid-js";
 import { twMerge } from "tailwind-merge";
 
-import type { UIBaseProps } from "../vocabulary";
+import type { UIBaseProps, State } from "../vocabulary";
 import { CLASSES } from "./Collapsible.recipe";
 import type { Layout } from "../../lib/layouts";
 import { componentRecipe } from "./Collapsible.recipe";
@@ -41,7 +41,7 @@ export type CollapsibleRootProps = Omit<JSX.HTMLAttributes<HTMLDivElement>, "chi
     isOpen?: boolean;
     defaultOpen?: boolean;
     onOpenChange?: (open: boolean) => void;
-    isDisabled?: boolean;
+    state?: State;
     disabled?: boolean;
   };
 
@@ -86,7 +86,7 @@ const CollapsibleRoot: Layout<typeof componentRecipe, CollapsibleRootProps> = ()
     "isOpen",
     "defaultOpen",
     "onOpenChange",
-    "isDisabled",
+    "state",
     "disabled",
   ]);
 
@@ -101,7 +101,7 @@ const CollapsibleRoot: Layout<typeof componentRecipe, CollapsibleRootProps> = ()
     isControlled() ? Boolean(local.isOpen) : internalOpen(),
   );
 
-  const isDisabled = () => Boolean(local.isDisabled) || Boolean(local.disabled);
+  const isDisabled = () => Boolean((local.state === "disabled")) || Boolean(local.disabled);
   const isExpanded = () => standaloneOpen();
 
   const setOpen = (next: boolean) => {

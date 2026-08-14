@@ -12,7 +12,7 @@ import {
 } from "solid-js";
 import { twMerge } from "tailwind-merge";
 
-import type { UIBaseProps } from "../vocabulary";
+import type { UIBaseProps, State } from "../vocabulary";
 import { ListBoxContext, type ListBoxVariant } from "./context";
 import { CLASSES } from "./ListBox.recipe";
 import type { Layout } from "../../lib/layouts";
@@ -61,7 +61,7 @@ export type ListBoxItemRootProps = Omit<JSX.HTMLAttributes<HTMLDivElement>, "chi
     id?: string | number;
     textValue?: string;
     variant?: ListBoxVariant;
-    isDisabled?: boolean;
+    state?: State;
     disabled?: boolean;
     children?: JSX.Element | ((props: ListBoxItemRenderProps) => JSX.Element);
   };
@@ -83,7 +83,7 @@ const ListBoxItemRoot: Layout<typeof componentRecipe, ListBoxItemRootProps> = ()
     "id",
     "textValue",
     "variant",
-    "isDisabled",
+    "state",
     "disabled",
     "onClick",
     "onKeyDown",
@@ -112,8 +112,8 @@ const ListBoxItemRoot: Layout<typeof componentRecipe, ListBoxItemRootProps> = ()
   const isSelected = () => listBox?.isSelected(key()) ?? false;
   const isFocused = () => listBox?.focusedKey() === key();
   const isDisabled = () =>
-    listBox?.isItemDisabled(key(), Boolean(local.isDisabled) || Boolean(local.disabled)) ??
-    (Boolean(local.isDisabled) || Boolean(local.disabled));
+    listBox?.isItemDisabled(key(), Boolean((local.state === "disabled")) || Boolean(local.disabled)) ??
+    (Boolean((local.state === "disabled")) || Boolean(local.disabled));
 
   const renderState = createMemo<ListBoxItemRenderProps>(() => ({
     isSelected: isSelected(),
@@ -187,7 +187,7 @@ const ListBoxItemRoot: Layout<typeof componentRecipe, ListBoxItemRootProps> = ()
 
     listBox.registerItem({
       key: key(),
-      disabled: Boolean(local.isDisabled) || Boolean(local.disabled),
+      disabled: Boolean((local.state === "disabled")) || Boolean(local.disabled),
       ref: itemRef,
     });
   });

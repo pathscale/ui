@@ -7,7 +7,7 @@ import {
   type ControlledDateRangeValue,
 } from "../../hooks/date";
 import Calendar, { type CalendarWeekdayFormat } from "../calendar";
-import type { UIBaseProps } from "../vocabulary";
+import type { UIBaseProps, State } from "../vocabulary";
 import { CLASSES } from "./RangeCalendar.recipe";
 import type { Layout } from "../../lib/layouts";
 import { componentRecipe } from "./RangeCalendar.recipe";
@@ -24,7 +24,7 @@ type RangeCalendarBaseProps = {
   maxValue?: Date;
   isDateUnavailable?: (date: Date) => boolean;
   showOutsideDays?: boolean;
-  isDisabled?: boolean;
+  state?: State;
   disabled?: boolean;
   onDaySelect?: (date: Date) => void;
   onDayHover?: (date?: Date) => void;
@@ -52,13 +52,13 @@ const RangeCalendar: Layout<typeof componentRecipe, RangeCalendarProps> = () => 
     "maxValue",
     "isDateUnavailable",
     "showOutsideDays",
-    "isDisabled",
+    "state",
     "disabled",
     "onDaySelect",
     "onDayHover",
   ]);
 
-  const isDisabled = createMemo(() => Boolean(local.isDisabled) || Boolean(local.disabled));
+  const isDisabled = createMemo(() => Boolean((local.state === "disabled")) || Boolean(local.disabled));
 
   const rangeSelection = useRangeSelection({
     value: () => local.value,
@@ -108,7 +108,7 @@ const RangeCalendar: Layout<typeof componentRecipe, RangeCalendarProps> = () => 
         maxValue={local.maxValue}
         isDateUnavailable={local.isDateUnavailable}
         showOutsideDays={local.showOutsideDays}
-        isDisabled={isDisabled()}
+        state={isDisabled() ? "disabled" : undefined}
         onDaySelect={handleDaySelect}
         onDayHover={handleDayHover}
       />

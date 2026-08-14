@@ -547,7 +547,7 @@ const ColorWheelFlower: Layout<typeof componentRecipe, ColorWheelFlowerProps> = 
         {...{ class: CLASSES.picker }}
         value={pickerValue()}
         onChange={handlePickerChange}
-        isDisabled={context.disabled()}
+        state={context.disabled() ? "disabled" : undefined}
         aria-label="Flower color palette"
       >
         <For each={colors()}>
@@ -733,7 +733,7 @@ const ColorWheelFlower: Layout<typeof componentRecipe, ColorWheelFlowerProps> = 
                           ? "Reset to neutral"
                           : `Theme color ${item.hex}`
                       }
-                      isDisabled={context.disabled()}
+                      state={context.disabled() ? "disabled" : undefined}
                       onMouseEnter={() => {
                         if (!context.disabled()) {
                           setHoveredIndex(index());

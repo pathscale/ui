@@ -9,7 +9,7 @@ import {
 } from "solid-js";
 import { twMerge } from "tailwind-merge";
 
-import type { UIBaseProps } from "../vocabulary";
+import type { UIBaseProps, State } from "../vocabulary";
 import { CLASSES } from "./Menu.recipe";
 import {
   MenuContext,
@@ -65,7 +65,7 @@ export type MenuRootProps<T = unknown> = Omit<
     disallowEmptySelection?: boolean;
     onSelectionChange?: (keys: Set<string>) => void;
     onAction?: (key: string) => void;
-    isDisabled?: boolean;
+    state?: State;
     disabled?: boolean;
   };
 
@@ -84,7 +84,7 @@ const MenuRoot: Layout<typeof componentRecipe, MenuRootProps> = () => {
     "disallowEmptySelection",
     "onSelectionChange",
     "onAction",
-    "isDisabled",
+    "state",
     "disabled",
     "role",
     "onKeyDown",
@@ -98,7 +98,7 @@ const MenuRoot: Layout<typeof componentRecipe, MenuRootProps> = () => {
 
   const selectionMode = () => local.selectionMode ?? "none";
   const isControlled = () => local.selectedKeys !== undefined;
-  const isDisabled = () => Boolean(local.isDisabled) || Boolean(local.disabled);
+  const isDisabled = () => Boolean((local.state === "disabled")) || Boolean(local.disabled);
   const selectedKeys = createMemo(() =>
     isControlled() ? normalizeKeys(local.selectedKeys) : internalSelectedKeys(),
   );

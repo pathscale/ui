@@ -18,7 +18,7 @@ import {
 } from "solid-js";
 import { twMerge } from "tailwind-merge";
 
-import type { UIBaseProps } from "../vocabulary";
+import type { UIBaseProps, State } from "../vocabulary";
 import { CLASSES } from "./ComboBox.recipe";
 import type { Layout } from "../../lib/layouts";
 import { componentRecipe } from "./ComboBox.recipe";
@@ -149,7 +149,7 @@ export type ComboBoxRootProps<T = ComboBoxItem> = Omit<
     fullWidth?: boolean;
     variant?: ComboBoxVariant;
     menuTrigger?: ComboBoxMenuTrigger;
-    isDisabled?: boolean;
+    state?: State;
     disabled?: boolean;
     isInvalid?: boolean;
     allowsCustomValue?: boolean;
@@ -236,7 +236,7 @@ const ComboBoxRoot: Layout<typeof componentRecipe, ComboBoxRootProps> = () => {
     "fullWidth",
     "variant",
     "menuTrigger",
-    "isDisabled",
+    "state",
     "disabled",
     "isInvalid",
     "allowsCustomValue",
@@ -266,7 +266,7 @@ const ComboBoxRoot: Layout<typeof componentRecipe, ComboBoxRootProps> = () => {
   const variant = () => local.variant ?? "primary";
   const menuTrigger = () => local.menuTrigger ?? "focus";
   const fullWidth = () => Boolean(local.fullWidth);
-  const isDisabled = () => Boolean(local.isDisabled) || Boolean(local.disabled);
+  const isDisabled = () => Boolean((local.state === "disabled")) || Boolean(local.disabled);
   const isInvalid = () => Boolean(local.isInvalid);
   const isRequired = () => Boolean(local.isRequired) || Boolean(local.required);
   const isOpen = () => (local.isOpen !== undefined ? Boolean(local.isOpen) : internalOpen());

@@ -1,7 +1,7 @@
 import "./Pagination.css";
 import { For, splitProps, type JSX } from "solid-js";
 import { twMerge } from "tailwind-merge";
-import type { UIBaseProps } from "../vocabulary";
+import type { UIBaseProps, State } from "../vocabulary";
 import { CLASSES } from "./Pagination.recipe";
 import type { Layout } from "../../lib/layouts";
 import { componentRecipe } from "./Pagination.recipe";
@@ -13,7 +13,7 @@ export type PaginationProps = Omit<JSX.HTMLAttributes<HTMLElement>, "onChange"> 
     page: number;
     total: number;
     onChange: (page: number) => void;
-    isDisabled?: boolean;
+    state?: State;
   };
 
 const clampPage = (page: number, total: number) => {
@@ -45,13 +45,13 @@ const Pagination: Layout<typeof componentRecipe, PaginationProps> = () => {
     "page",
     "total",
     "onChange",
-    "isDisabled",
+    "state",
   ]);
 
   const safeTotal = () => Math.max(1, Math.floor(local.total || 0));
   const currentPage = () => clampPage(local.page, safeTotal());
   const tokens = () => getPaginationTokens(currentPage(), safeTotal());
-  const disabled = () => Boolean(local.isDisabled);
+  const disabled = () => Boolean((local.state === "disabled"));
 
   const handleChange = (nextPage: number) => {
     if (disabled()) return;

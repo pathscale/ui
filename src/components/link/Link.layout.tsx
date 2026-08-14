@@ -2,7 +2,7 @@ import "./Link.css";
 import { splitProps, type Component, type JSX } from "solid-js";
 import { twMerge } from "tailwind-merge";
 
-import type { UIBaseProps } from "../vocabulary";
+import type { UIBaseProps, State } from "../vocabulary";
 import { CLASSES } from "./Link.recipe";
 import type { Layout } from "../../lib/layouts";
 import { componentRecipe } from "./Link.recipe";
@@ -15,7 +15,7 @@ export type LinkRootProps = Omit<JSX.AnchorHTMLAttributes<HTMLAnchorElement>, "c
     variant?: LinkVariant;
     underline?: LinkUnderline;
     isExternal?: boolean;
-    isDisabled?: boolean;
+    state?: State;
   };
 
 export type LinkIconProps = JSX.HTMLAttributes<HTMLSpanElement> & UIBaseProps;
@@ -37,7 +37,7 @@ const LinkRoot: Layout<typeof componentRecipe, LinkRootProps> = () => {
     "variant",
     "underline",
     "isExternal",
-    "isDisabled",
+    "state",
     "target",
     "rel",
     "tabIndex",
@@ -45,7 +45,7 @@ const LinkRoot: Layout<typeof componentRecipe, LinkRootProps> = () => {
 
   const variant = () => local.variant ?? "default";
   const underline = () => local.underline ?? "always";
-  const isDisabled = () => Boolean(local.isDisabled);
+  const isDisabled = () => Boolean((local.state === "disabled"));
   const isExternal = () => Boolean(local.isExternal);
 
   return (

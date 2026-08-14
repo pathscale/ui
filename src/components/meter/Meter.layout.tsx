@@ -10,7 +10,7 @@ import {
 } from "solid-js";
 import { twMerge } from "tailwind-merge";
 
-import type { UIBaseProps, Flavor } from "../vocabulary";
+import type { UIBaseProps, Flavor, State } from "../vocabulary";
 import { CLASSES } from "./Meter.recipe";
 import type { Layout } from "../../lib/layouts";
 import { componentRecipe } from "./Meter.recipe";
@@ -36,7 +36,7 @@ export type MeterRootProps = UIBaseProps &
     lowValue?: number;
     highValue?: number;
     optimumValue?: number;
-    isDisabled?: boolean;
+    state?: State;
     size?: MeterSize;
     flavor?: Flavor;
     formatOptions?: Intl.NumberFormatOptions;
@@ -75,7 +75,7 @@ const MeterRoot: Layout<typeof componentRecipe, MeterRootProps> = () => {
     "lowValue",
     "highValue",
     "optimumValue",
-    "isDisabled",
+    "state",
     "size",
     "flavor",
     "formatOptions",
@@ -110,7 +110,7 @@ const MeterRoot: Layout<typeof componentRecipe, MeterRootProps> = () => {
       minValue: minValue(),
       maxValue: maxValue(),
       percentage: percentage(),
-      isDisabled: Boolean(local.isDisabled),
+      isDisabled: Boolean((local.state === "disabled")),
     };
 
     const valueText = local.formatValue
@@ -128,7 +128,7 @@ const MeterRoot: Layout<typeof componentRecipe, MeterRootProps> = () => {
       CLASSES.base,
       CLASSES.size[local.size ?? "md"],
       (CLASSES.flavor[(local.flavor ?? "accent") as keyof typeof CLASSES.flavor] ?? `meter--flavor-${local.flavor ?? "accent"}`),
-      local.isDisabled && CLASSES.state.disabled,
+      (local.state === "disabled") && CLASSES.state.disabled,
       local.class,
     ),
   );
@@ -142,8 +142,8 @@ const MeterRoot: Layout<typeof componentRecipe, MeterRootProps> = () => {
         aria-valuemax={maxValue()}
         aria-valuenow={state().value}
         aria-valuetext={state().valueText}
-        aria-disabled={local.isDisabled ? "true" : undefined}
-        data-disabled={local.isDisabled ? "true" : undefined}
+        aria-disabled={(local.state === "disabled") ? "true" : undefined}
+        data-disabled={(local.state === "disabled") ? "true" : undefined}
         data-slot="meter"
         data-theme={local.dataTheme}
         data-low-value={local.lowValue}

@@ -10,7 +10,7 @@ import {
   type ControlledDateRangeValue,
 } from "../../hooks/date";
 import Calendar, { type CalendarWeekdayFormat } from "../calendar";
-import type { UIBaseProps } from "../vocabulary";
+import type { UIBaseProps, State } from "../vocabulary";
 import { CLASSES } from "./DateRangePicker.recipe";
 import type { Layout } from "../../lib/layouts";
 import { componentRecipe } from "./DateRangePicker.recipe";
@@ -33,7 +33,7 @@ type DateRangePickerBaseProps = {
   minValue?: Date;
   maxValue?: Date;
   isDateUnavailable?: (date: Date) => boolean;
-  isDisabled?: boolean;
+  state?: State;
   disabled?: boolean;
 };
 
@@ -65,11 +65,11 @@ const DateRangePicker: Layout<typeof componentRecipe, DateRangePickerProps> = ()
     "minValue",
     "maxValue",
     "isDateUnavailable",
-    "isDisabled",
+    "state",
     "disabled",
   ]);
 
-  const isDisabled = createMemo(() => Boolean(local.isDisabled) || Boolean(local.disabled));
+  const isDisabled = createMemo(() => Boolean((local.state === "disabled")) || Boolean(local.disabled));
 
   const rangeSelection = useRangeSelection({
     value: () => local.value,
@@ -241,7 +241,7 @@ const DateRangePicker: Layout<typeof componentRecipe, DateRangePickerProps> = ()
             minValue={local.minValue}
             maxValue={local.maxValue}
             isDateUnavailable={local.isDateUnavailable}
-            isDisabled={isDisabled()}
+            state={isDisabled() ? "disabled" : undefined}
           />
         </div>
       </Show>
