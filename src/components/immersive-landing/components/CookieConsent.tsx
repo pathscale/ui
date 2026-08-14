@@ -305,7 +305,7 @@ export const CookieConsent: Component<CookieConsentProps> = (props) => {
               <Button
                 size="sm"
                 variant="ghost"
-                isIconOnly
+                width="square"
                 onClick={handleManageClose}
                 aria-label={texts().closeLabel}
               >

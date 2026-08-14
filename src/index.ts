@@ -41,6 +41,10 @@ export type {
   BreadcrumbsItemProps,
 } from "./components/breadcrumbs";
 
+export { default as Address } from "./components/address";
+export type { AddressProps, AddressTruncate, TruncateOptions } from "./components/address";
+export { truncateAddress, copyAddress } from "./components/address";
+
 export { default as Button } from "./components/button";
 export {
   default as Calendar,
@@ -55,6 +59,14 @@ export type { CardProps, CardSectionProps, CardMaterial, CardElevation } from ".
 
 export { default as Checkbox } from "./components/checkbox";
 export { default as Chip } from "./components/chip";
+export { default as Composer } from "./components/composer";
+export type { ComposerProps } from "./components/composer";
+export {
+  autosize,
+  boundsFromRows,
+  isSubmittable,
+  shouldSubmit,
+} from "./components/composer";
 export type {
   ChipProps,
   ChipRootProps,

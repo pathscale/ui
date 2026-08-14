@@ -57,8 +57,7 @@ const FormSubmitButton: Layout<typeof componentRecipe, FormSubmitButtonProps> = 
         <Button
           {...others}
           type="submit"
-          isDisabled={!state().canSubmit}
-          isLoading={state().isSubmitting}
+          state={state().isSubmitting ? "loading" : state().canSubmit ? "default" : "disabled"}
         >
           {local.children}
         </Button>

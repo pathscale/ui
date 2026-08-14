@@ -15,8 +15,6 @@ export type AuthSubmitButtonProps = Omit<
 > &
   IComponentBaseProps & {
     children: JSX.Element;
-    isLoading?: boolean;
-    isDisabled?: boolean;
     type?: "button" | "submit" | "reset";
     variant?: Variant;
     flavor?: Flavor;
@@ -43,8 +41,7 @@ export const AuthSubmitButtonLayout: Layout<
     flavor={local.flavor ?? "primary"}
     size={local.size}
     width={local.width ?? "full"}
-    isLoading={Boolean(local.isLoading)}
-    isDisabled={Boolean(local.isDisabled)}
+    state={local.state ?? "default"}
   >
     {children}
   </Button>

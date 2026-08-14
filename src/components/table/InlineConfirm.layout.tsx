@@ -57,8 +57,7 @@ const InlineConfirm: Layout<typeof componentRecipe, InlineConfirmProps> = () => 
         <Button
           size="sm"
           flavor={confirmFlavor()}
-          isLoading={isBusy()}
-          isDisabled={isDisabled()}
+          state={isBusy() ? "loading" : isDisabled() ? "disabled" : "default"}
           onClick={local.onConfirm}
           aria-label={local.confirmLabel}
         >
@@ -67,7 +66,7 @@ const InlineConfirm: Layout<typeof componentRecipe, InlineConfirmProps> = () => 
         <Button
           size="sm"
           variant="ghost"
-          isDisabled={isDisabled()}
+          state={isDisabled() ? "disabled" : "default"}
           onClick={local.onCancel}
           aria-label={local.cancelLabel}
         >
