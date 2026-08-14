@@ -2,12 +2,11 @@ import "./ButtonGroup.css";
 import { splitProps, type Component, type JSX, type ParentComponent } from "solid-js";
 import { twMerge } from "tailwind-merge";
 
-import type { Size, Variant, State } from "../vocabulary";
-import type { UIBaseProps } from "../vocabulary";
 import { CLASSES } from "./ButtonGroup.recipe";
 import { ButtonGroupContext } from "./context";
 import type { Layout } from "../../lib/layouts";
 import { componentRecipe } from "./ButtonGroup.recipe";
+import type { Size, Variant, State, UIBaseProps } from "../vocabulary";
 
 export type ButtonGroupOrientation = "horizontal" | "vertical";
 

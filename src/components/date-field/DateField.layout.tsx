@@ -11,10 +11,11 @@ import {
 } from "solid-js";
 import { twMerge } from "tailwind-merge";
 
-import type { UIBaseProps, State } from "../vocabulary";
+import type { UIBaseProps, State, Issue } from "../vocabulary";
 import { CLASSES } from "./DateField.recipe";
 import type { Layout } from "../../lib/layouts";
 import { componentRecipe } from "./DateField.recipe";
+import { resolveState } from "../vocabulary";
 
 export type DateFieldVariant = "primary" | "secondary";
 
@@ -62,8 +63,7 @@ export type DateFieldRootProps = Omit<JSX.HTMLAttributes<HTMLDivElement>, "child
     variant?: DateFieldVariant;
     state?: State;
     disabled?: boolean;
-    isInvalid?: boolean;
-    isRequired?: boolean;
+    issues?: Issue[];
     required?: boolean;
   };
 
@@ -87,7 +87,7 @@ export type DateFieldSegmentValue = {
   text?: string;
   isPlaceholder?: boolean;
   isFocused?: boolean;
-  isInvalid?: boolean;
+  issues?: Issue[];
   state?: State;
 };
 
@@ -114,9 +114,9 @@ const DateFieldRoot: Layout<typeof componentRecipe, DateFieldRootProps> = () => 
     "variant",
     "state",
     "disabled",
-    "isInvalid",
-    "isRequired",
+    "issues",
     "required",
+    
   ]);
 
   const [internalValue, setInternalValue] = createSignal(local.defaultValue ?? "");
@@ -126,8 +126,8 @@ const DateFieldRoot: Layout<typeof componentRecipe, DateFieldRootProps> = () => 
   const variant = () => local.variant ?? "primary";
   const fullWidth = () => Boolean(local.fullWidth);
   const isDisabled = () => Boolean((local.state === "disabled")) || Boolean(local.disabled);
-  const isInvalid = () => Boolean(local.isInvalid);
-  const isRequired = () => Boolean(local.isRequired) || Boolean(local.required);
+  const isInvalid = () => Boolean((resolveState(local.state, local.issues) === "invalid"));
+  const isRequired = () => Boolean(local.required) || Boolean(local.required);
 
   const setValue = (nextValue: string) => {
     if (!isControlled()) {
@@ -293,7 +293,7 @@ const DateFieldSegment: Layout<typeof componentRecipe, DateFieldSegmentProps> = 
       data-slot="date-input-group-segment"
       data-type={local.segment?.type}
       data-placeholder={local.segment?.isPlaceholder ? "true" : undefined}
-      data-invalid={local.segment?.isInvalid ? "true" : undefined}
+      data-invalid={local.segment?.issues?.length ? "true" : undefined}
       data-focused={local.segment?.isFocused ? "true" : undefined}
       data-disabled={local.segment?.state === "disabled" ? "true" : undefined}
       data-theme={local.dataTheme}

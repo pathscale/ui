@@ -2,10 +2,11 @@ import "./Checkbox.css";
 import { Show, createEffect, createSignal, splitProps, useContext, type Component, type JSX } from "solid-js";
 import { twMerge } from "tailwind-merge";
 import { CheckboxGroupContext } from "../checkbox-group/context";
-import type { UIBaseProps, State } from "../vocabulary";
+import type { UIBaseProps, State, Issue } from "../vocabulary";
 import { CLASSES } from "./Checkbox.recipe";
 import type { Layout } from "../../lib/layouts";
 import { componentRecipe } from "./Checkbox.recipe";
+import { resolveState } from "../vocabulary";
 
 const invokeEventHandler = (handler: unknown, event: Event) => {
   if (typeof handler === "function") {
@@ -26,7 +27,7 @@ export type CheckboxProps = Omit<JSX.InputHTMLAttributes<HTMLInputElement>, "typ
     children?: JSX.Element;
     description?: JSX.Element;
     state?: State;
-    isInvalid?: boolean;
+    issues?: Issue[];
     isIndeterminate?: boolean;
     indeterminate?: boolean;
     variant?: CheckboxVariant;
@@ -41,7 +42,7 @@ const Checkbox: Layout<typeof componentRecipe, CheckboxProps> = () => {
     "children",
     "description",
     "state",
-    "isInvalid",
+    "issues",
     "isIndeterminate",
     "indeterminate",
     "variant",
@@ -69,7 +70,7 @@ const Checkbox: Layout<typeof componentRecipe, CheckboxProps> = () => {
   const isDisabled = () =>
     Boolean((local.state === "disabled")) || Boolean(local.disabled) || Boolean(group?.isDisabled());
   const isInvalid = () =>
-    Boolean(local.isInvalid) || Boolean(local["aria-invalid"]) || Boolean(group?.isInvalid());
+    Boolean((resolveState(local.state, local.issues) === "invalid")) || Boolean(local["aria-invalid"]) || Boolean(group?.isInvalid());
   const isIndeterminate = () => Boolean(local.isIndeterminate) || Boolean(local.indeterminate);
   const variant = () => local.variant ?? group?.variant() ?? "primary";
   const name = () => local.name ?? group?.name();

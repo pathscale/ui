@@ -16,10 +16,11 @@ import {
 } from "solid-js";
 import { twMerge } from "tailwind-merge";
 
-import type { UIBaseProps, State } from "../vocabulary";
+import type { UIBaseProps, State, Issue } from "../vocabulary";
 import { CLASSES } from "./InputOTP.recipe";
 import type { Layout } from "../../lib/layouts";
 import { componentRecipe } from "./InputOTP.recipe";
+import { resolveState } from "../vocabulary";
 
 export type InputOTPVariant = "primary" | "secondary";
 
@@ -72,7 +73,7 @@ export type InputOTPRootProps = Omit<
     autoFocus?: boolean;
     state?: State;
     disabled?: boolean;
-    isInvalid?: boolean;
+    issues?: Issue[];
     inputClassName?: string;
     inputMode?: JSX.InputHTMLAttributes<HTMLInputElement>["inputMode"];
   };
@@ -109,7 +110,7 @@ const InputOTPRoot: Layout<typeof componentRecipe, InputOTPRootProps> = () => {
     "autoFocus",
     "state",
     "disabled",
-    "isInvalid",
+    "issues",
     "inputClassName",
     "inputMode",
     "onMouseDown",
@@ -174,7 +175,7 @@ const InputOTPRoot: Layout<typeof componentRecipe, InputOTPRootProps> = () => {
   const variant = () => local.variant ?? "primary";
   const isDisabled = () => Boolean((local.state === "disabled")) || Boolean(local.disabled);
   const isInvalid = () =>
-    Boolean(local.isInvalid) ||
+    Boolean((resolveState(local.state, local.issues) === "invalid")) ||
     Boolean(local["aria-invalid"]) ||
     local["aria-invalid"] === "true";
 

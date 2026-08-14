@@ -110,7 +110,7 @@ const FormField: Layout<typeof componentRecipe, FormFieldProps> = () => {
               }}
               onBlur={() => field().handleBlur()}
               aria-invalid={Boolean(errorMessage()) ? true : undefined}
-              isInvalid={Boolean(errorMessage())}
+              issues={errorMessage() ? [{ code: "invalid", message: String(errorMessage()) }] : undefined}
             />
 
             <FieldErrorMessage message={errorMessage()} />
