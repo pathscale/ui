@@ -345,6 +345,20 @@ export { default as Slider } from "./components/slider";
 export type { SliderProps, SliderSize } from "./components/slider";
 export { default as Skeleton } from "./components/skeleton";
 
+export { createDataGrid } from "./components/data-grid";
+export type {
+  CreateDataGridOptions,
+  DataGridCellContext,
+  DataGridColumn,
+  DataGridColumnOptions,
+  DataGridDataType,
+  DataGridModel,
+  DataGridRow,
+  DataGridSelectionMode,
+  DataGridSort,
+  DataGridSortDirection,
+} from "./components/data-grid";
+
 export { default as Table } from "./components/table";
 export {
   SortIcon as TableSortIcon,
