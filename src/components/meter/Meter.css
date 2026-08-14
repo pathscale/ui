@@ -54,25 +54,10 @@
     height: 0.75rem;
   }
 
-  .meter--default {
-    --meter-fill: var(--color-base-content);
-  }
 
-  .meter--accent {
-    --meter-fill: var(--color-accent);
-  }
 
-  .meter--success {
-    --meter-fill: var(--color-success);
-  }
 
-  .meter--warning {
-    --meter-fill: var(--color-warning);
-  }
 
-  .meter--danger {
-    --meter-fill: var(--color-danger);
-  }
 
   .meter--disabled,
   .meter[aria-disabled="true"],
@@ -85,5 +70,36 @@
       transition: none;
     }
   }
-}
 
+  .meter--flavor-neutral {
+    --meter-fill: var(--color-base-content);
+  }
+
+  .meter--flavor-primary {
+    --meter-fill: var(--color-primary);
+  }
+
+  .meter--flavor-secondary {
+    --meter-fill: var(--color-secondary);
+  }
+
+  .meter--flavor-accent {
+    --meter-fill: var(--color-accent);
+  }
+
+  .meter--flavor-destructive {
+    --meter-fill: var(--color-danger);
+  }
+
+  .meter--flavor-success {
+    --meter-fill: var(--color-success);
+  }
+
+  .meter--flavor-warning {
+    --meter-fill: var(--color-warning);
+  }
+
+  .meter--flavor-info {
+    --meter-fill: var(--color-info);
+  }
+}

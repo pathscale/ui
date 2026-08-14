@@ -1,7 +1,7 @@
 import "./RadialProgress.css";
 import { createMemo, splitProps, type JSX } from "solid-js";
 import { twMerge } from "tailwind-merge";
-import type { UIBaseProps } from "../vocabulary";
+import type { UIBaseProps, Flavor } from "../vocabulary";
 import { CLASSES } from "./RadialProgress.recipe";
 import type { Layout } from "../../lib/layouts";
 import { componentRecipe } from "./RadialProgress.recipe";
@@ -16,7 +16,7 @@ export type RadialProgressProps = UIBaseProps &
     maxValue?: number;
     isIndeterminate?: boolean;
     size?: RadialProgressSize;
-    color?: RadialProgressColor;
+    flavor?: Flavor;
     isDisabled?: boolean;
     formatValue?: (value: number) => string;
     label?: string;
@@ -34,7 +34,7 @@ const RadialProgress: Layout<typeof componentRecipe, RadialProgressProps> = () =
     "maxValue",
     "isIndeterminate",
     "size",
-    "color",
+    "flavor",
     "isDisabled",
     "formatValue",
     "label",
@@ -69,7 +69,7 @@ const RadialProgress: Layout<typeof componentRecipe, RadialProgressProps> = () =
     twMerge(
       CLASSES.base,
       CLASSES.size[local.size ?? "md"],
-      CLASSES.color[local.color ?? "accent"],
+      (CLASSES.flavor[(local.flavor ?? "accent") as keyof typeof CLASSES.flavor] ?? `radial-progress--flavor-${local.flavor ?? "accent"}`),
       isIndeterminate() && CLASSES.state.indeterminate,
       local.isDisabled && CLASSES.state.disabled,
       local.class,

@@ -14,13 +14,15 @@ export const CLASSES = {
     flat: "chip--flat",
     bordered: "chip--bordered",
   },
-  color: {
-    default: "chip--default",
-    primary: "chip--primary",
-    accent: "chip--accent",
-    success: "chip--success",
-    warning: "chip--warning",
-    danger: "chip--danger",
+  flavor: {
+    neutral: "chip--flavor-neutral",
+    primary: "chip--flavor-primary",
+    secondary: "chip--flavor-secondary",
+    accent: "chip--flavor-accent",
+    destructive: "chip--flavor-destructive",
+    success: "chip--flavor-success",
+    warning: "chip--flavor-warning",
+    info: "chip--flavor-info",
   },
   size: {
     sm: "chip--sm",

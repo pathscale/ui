@@ -14,12 +14,15 @@ export const CLASSES = {
     default: "",
     soft: "avatar--soft",
   },
-  color: {
-    default: "avatar__fallback--default",
-    accent: "avatar__fallback--accent",
-    success: "avatar__fallback--success",
-    warning: "avatar__fallback--warning",
-    danger: "avatar__fallback--danger",
+  flavor: {
+    neutral: "avatar__fallback--flavor-neutral",
+    primary: "avatar__fallback--flavor-primary",
+    secondary: "avatar__fallback--flavor-secondary",
+    accent: "avatar__fallback--flavor-accent",
+    destructive: "avatar__fallback--flavor-destructive",
+    success: "avatar__fallback--flavor-success",
+    warning: "avatar__fallback--flavor-warning",
+    info: "avatar__fallback--flavor-info",
   },
   group: {
     base: "avatar-group",

@@ -18,7 +18,7 @@ const ChatBubbleAvatar: Layout<typeof componentRecipe, ChatBubbleAvatarProps> = 
   return (
     <Avatar
       size={props.size ?? "sm"}
-      color={props.color}
+      flavor={props.flavor}
       variant={props.variant}
       {...{ class: twMerge(CLASSES.slot.avatar, props.class) }}
       dataTheme={props.dataTheme}

@@ -1,7 +1,7 @@
 import "./Switch.css";
 import { Show, createSignal, splitProps, type Component, type JSX } from "solid-js";
 import { twMerge } from "tailwind-merge";
-import type { UIBaseProps } from "../vocabulary";
+import type { UIBaseProps, Flavor } from "../vocabulary";
 import { CLASSES } from "./Switch.recipe";
 import type { Layout } from "../../lib/layouts";
 import { componentRecipe } from "./Switch.recipe";
@@ -27,7 +27,7 @@ export type ToggleProps = Omit<JSX.InputHTMLAttributes<HTMLInputElement>, "type"
     description?: JSX.Element;
     icon?: JSX.Element;
     isDisabled?: boolean;
-    color?: ToggleColor;
+    flavor?: Flavor;
     size?: ToggleSize;
   };
 
@@ -38,7 +38,7 @@ const Switch: Layout<typeof componentRecipe, ToggleProps> = () => {
     "description",
     "icon",
     "isDisabled",
-    "color",
+    "flavor",
     "size",
     "checked",
     "defaultChecked",
@@ -52,7 +52,7 @@ const Switch: Layout<typeof componentRecipe, ToggleProps> = () => {
   const isControlled = () => local.checked !== undefined;
   const isSelected = () => (isControlled() ? Boolean(local.checked) : internalSelected());
   const isDisabled = () => Boolean(local.isDisabled) || Boolean(local.disabled);
-  const color = () => local.color ?? "accent";
+  const color = () => local.flavor ?? "accent";
   const size = () => local.size ?? "md";
   const hasContent = () => local.children != null || local.description != null;
 
@@ -71,7 +71,7 @@ const Switch: Layout<typeof componentRecipe, ToggleProps> = () => {
       {...{ class: twMerge(
         CLASSES.base,
         CLASSES.size[size()],
-        CLASSES.color[color()],
+        (CLASSES.flavor[color() as keyof typeof CLASSES.flavor] ?? `switch--flavor-${color()}`),
         isDisabled() && CLASSES.flag.disabled,
         local.class,
       ) }}

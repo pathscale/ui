@@ -25,7 +25,6 @@ export {
 } from "./components/avatar";
 export type {
   AvatarSize,
-  AvatarColor,
   AvatarVariant,
   AvatarRootProps,
   AvatarImageProps,

@@ -1,7 +1,7 @@
 import "./Progress.css";
 import { createMemo, splitProps, type JSX } from "solid-js";
 import { twMerge } from "tailwind-merge";
-import type { UIBaseProps } from "../vocabulary";
+import type { UIBaseProps, Flavor } from "../vocabulary";
 import { CLASSES } from "./Progress.recipe";
 import type { Layout } from "../../lib/layouts";
 import { componentRecipe } from "./Progress.recipe";
@@ -17,7 +17,7 @@ export type ProgressProps = UIBaseProps &
     isIndeterminate?: boolean;
     label?: string;
     size?: ProgressSize;
-    color?: ProgressColor;
+    flavor?: Flavor;
     isDisabled?: boolean;
     formatValue?: (value: number) => string;
     showValue?: boolean;
@@ -31,7 +31,7 @@ const Progress: Layout<typeof componentRecipe, ProgressProps> = () => {
     "isIndeterminate",
     "label",
     "size",
-    "color",
+    "flavor",
     "isDisabled",
     "formatValue",
     "showValue",
@@ -64,7 +64,7 @@ const Progress: Layout<typeof componentRecipe, ProgressProps> = () => {
     twMerge(
       CLASSES.base,
       CLASSES.size[local.size ?? "md"],
-      CLASSES.color[local.color ?? "accent"],
+      (CLASSES.flavor[(local.flavor ?? "accent") as keyof typeof CLASSES.flavor] ?? `progress--flavor-${local.flavor ?? "accent"}`),
       isIndeterminate() && CLASSES.state.indeterminate,
       local.isDisabled && CLASSES.state.disabled,
       local.class,

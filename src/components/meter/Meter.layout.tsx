@@ -10,7 +10,7 @@ import {
 } from "solid-js";
 import { twMerge } from "tailwind-merge";
 
-import type { UIBaseProps } from "../vocabulary";
+import type { UIBaseProps, Flavor } from "../vocabulary";
 import { CLASSES } from "./Meter.recipe";
 import type { Layout } from "../../lib/layouts";
 import { componentRecipe } from "./Meter.recipe";
@@ -38,7 +38,7 @@ export type MeterRootProps = UIBaseProps &
     optimumValue?: number;
     isDisabled?: boolean;
     size?: MeterSize;
-    color?: MeterColor;
+    flavor?: Flavor;
     formatOptions?: Intl.NumberFormatOptions;
     formatValue?: (value: number, state: Omit<MeterRenderState, "valueText">) => string;
   };
@@ -77,7 +77,7 @@ const MeterRoot: Layout<typeof componentRecipe, MeterRootProps> = () => {
     "optimumValue",
     "isDisabled",
     "size",
-    "color",
+    "flavor",
     "formatOptions",
     "formatValue",
   ]);
@@ -127,7 +127,7 @@ const MeterRoot: Layout<typeof componentRecipe, MeterRootProps> = () => {
     twMerge(
       CLASSES.base,
       CLASSES.size[local.size ?? "md"],
-      CLASSES.color[local.color ?? "accent"],
+      (CLASSES.flavor[(local.flavor ?? "accent") as keyof typeof CLASSES.flavor] ?? `meter--flavor-${local.flavor ?? "accent"}`),
       local.isDisabled && CLASSES.state.disabled,
       local.class,
     ),

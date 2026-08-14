@@ -10,12 +10,15 @@ export const CLASSES = {
     md: "progress--md",
     lg: "progress--lg",
   },
-  color: {
-    default: "progress--default",
-    accent: "progress--accent",
-    success: "progress--success",
-    warning: "progress--warning",
-    danger: "progress--danger",
+  flavor: {
+    neutral: "progress--flavor-neutral",
+    primary: "progress--flavor-primary",
+    secondary: "progress--flavor-secondary",
+    accent: "progress--flavor-accent",
+    destructive: "progress--flavor-destructive",
+    success: "progress--flavor-success",
+    warning: "progress--flavor-warning",
+    info: "progress--flavor-info",
   },
   state: {
     indeterminate: "progress--indeterminate",
