@@ -14,11 +14,11 @@ export const alert = recipe({
   element: "div",
   slots: {
     root: { base: "alert" },
-    indicator: { base: "callout__indicator" },
-    content: { base: "callout__content" },
-    title: { base: "callout__title" },
-    description: { base: "callout__description" },
-    dismiss: { base: "callout__dismiss" },
+    indicator: { base: "alert__indicator" },
+    content: { base: "alert__content" },
+    title: { base: "alert__title" },
+    description: { base: "alert__description" },
+    dismiss: { base: "alert__dismiss" },
   },
   props: {
     flavor: {

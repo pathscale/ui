@@ -10,7 +10,7 @@
   /* -------------------------------------------------------------------------------------------------
    * Item
    * -----------------------------------------------------------------------------------------------*/
-  .breadcrumbs__item {
+  .breadcrumb__item {
     display: flex;
     flex-shrink: 0;
     align-items: center;
@@ -22,7 +22,7 @@
   /* -------------------------------------------------------------------------------------------------
    * Link
    * -----------------------------------------------------------------------------------------------*/
-  .breadcrumbs__link {
+  .breadcrumb__link {
     position: relative;
     padding: 0 0.125rem;
     font-size: 0.875rem;
@@ -32,15 +32,15 @@
     text-decoration: none;
   }
 
-  a.breadcrumbs__link:hover {
+  a.breadcrumb__link:hover {
     text-decoration: underline;
   }
 
-  .breadcrumbs__link[data-current="true"] {
+  .breadcrumb__link[data-current="true"] {
     color: var(--color-base-content);
   }
 
-  a.breadcrumbs__link:focus-visible {
+  a.breadcrumb__link:focus-visible {
     outline: 2px solid var(--color-accent);
     outline-offset: 2px;
     border-radius: var(--radius-field, 0.25rem);
@@ -49,7 +49,7 @@
   /* -------------------------------------------------------------------------------------------------
    * Separator
    * -----------------------------------------------------------------------------------------------*/
-  .breadcrumbs__separator {
+  .breadcrumb__separator {
     display: flex;
     align-items: center;
     justify-content: center;
@@ -57,7 +57,7 @@
     margin: 0 0.125rem;
   }
 
-  [dir="rtl"] .breadcrumbs__separator {
+  [dir="rtl"] .breadcrumb__separator {
     transform: rotate(180deg);
   }
 }

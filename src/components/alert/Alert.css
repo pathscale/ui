@@ -110,7 +110,7 @@
   }
 
   /* ---------------------------------------------------------------- Slots */
-  .callout__indicator {
+  .alert__indicator {
     display: flex;
     flex-shrink: 0;
     align-items: center;
@@ -119,11 +119,11 @@
     color: var(--alert-accent);
   }
 
-  .alert--solid .callout__indicator {
+  .alert--solid .alert__indicator {
     color: currentColor;
   }
 
-  .callout__content {
+  .alert__content {
     display: flex;
     min-width: 0;
     flex: 1 1 0%;
@@ -131,17 +131,17 @@
     gap: 0.125rem;
   }
 
-  .callout__title {
+  .alert__title {
     font-weight: 600;
     line-height: 1.25;
   }
 
-  .callout__description {
+  .alert__description {
     display: block;
     min-width: 0;
   }
 
-  .callout__dismiss {
+  .alert__dismiss {
     display: inline-flex;
     flex-shrink: 0;
     align-items: center;
@@ -157,12 +157,12 @@
     transition: opacity 100ms ease, background-color 100ms ease;
   }
 
-  .callout__dismiss:hover {
+  .alert__dismiss:hover {
     opacity: 1;
     background-color: color-mix(in oklab, currentColor, transparent 88%);
   }
 
-  .callout__dismiss:focus-visible {
+  .alert__dismiss:focus-visible {
     outline: 2px solid currentColor;
     outline-offset: 2px;
   }

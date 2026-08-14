@@ -7,21 +7,21 @@
     --radial-progress-track-stroke: var(--color-base-200);
   }
 
-  .progress-circle__track {
+  .radial-progress__track {
     width: 1.75rem;
     height: 1.75rem;
   }
 
-  .progress-circle__track-circle {
+  .radial-progress__track-circle {
     stroke: var(--radial-progress-track-stroke);
   }
 
-  .progress-circle__indicator {
+  .radial-progress__indicator {
     stroke: var(--radial-progress-stroke);
     transition: stroke-dashoffset 300ms var(--ease-out);
   }
 
-  .radial-progress--indeterminate .progress-circle__track {
+  .radial-progress--indeterminate .radial-progress__track {
     animation: radial-progress-spin 1s linear infinite;
   }
 
@@ -31,12 +31,12 @@
     opacity: 0.6;
   }
 
-  .radial-progress--sm .progress-circle__track {
+  .radial-progress--sm .radial-progress__track {
     width: 1.25rem;
     height: 1.25rem;
   }
 
-  .radial-progress--lg .progress-circle__track {
+  .radial-progress--lg .radial-progress__track {
     width: 2.25rem;
     height: 2.25rem;
   }
@@ -71,11 +71,11 @@
   }
 
   @media (prefers-reduced-motion: reduce) {
-    .progress-circle__indicator {
+    .radial-progress__indicator {
       transition: none;
     }
 
-    .radial-progress--indeterminate .progress-circle__track {
+    .radial-progress--indeterminate .radial-progress__track {
       animation: none;
     }
   }

@@ -9,28 +9,28 @@
     text-align: center;
   }
 
-  .empty-state__icon {
+  .empty__icon {
     display: flex;
     align-items: center;
     justify-content: center;
     color: color-mix(in oklab, var(--color-base-content) 40%, transparent);
   }
 
-  .empty-state__title {
+  .empty__title {
     font-size: 0.875rem;
     font-weight: 600;
     color: var(--color-base-content);
     margin: 0;
   }
 
-  .empty-state__description {
+  .empty__description {
     font-size: 0.875rem;
     color: color-mix(in oklab, var(--color-base-content) 60%, transparent);
     max-width: 24rem;
     margin: 0;
   }
 
-  .empty-state__actions {
+  .empty__actions {
     display: flex;
     align-items: center;
     gap: 0.5rem;

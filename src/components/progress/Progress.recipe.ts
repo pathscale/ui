@@ -1,10 +1,10 @@
 import { recipe } from "../../lib/layouts";
 export const CLASSES = {
   base: "progress",
-  label: "progress-bar__label",
-  output: "progress-bar__output",
-  track: "progress-bar__track",
-  indicator: "progress-bar__indicator",
+  label: "progress__label",
+  output: "progress__output",
+  track: "progress__track",
+  indicator: "progress__indicator",
   size: {
     sm: "progress--sm",
     md: "progress--md",
