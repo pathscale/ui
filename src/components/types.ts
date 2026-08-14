@@ -1,12 +1,5 @@
 import type { JSX } from "solid-js";
 
-export interface IComponentBaseProps {
-  dataTheme?: string;
-  class?: string;
-  className?: string;
-  style?: JSX.CSSProperties;
-}
-
 export type ResponsiveBreakpoints = "base" | "sm" | "md" | "lg" | "xl";
 export type ResponsiveProp<T> = T | Partial<Record<ResponsiveBreakpoints, T>>;
 
