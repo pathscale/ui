@@ -16,8 +16,8 @@
 
   .dialog__trigger:focus-visible,
   .dialog__trigger[data-focus-visible="true"] {
-    outline: 2px solid var(--color-accent);
-    outline-offset: 2px;
+    outline: var(--focus-ring-width, 2px) solid var(--color-accent);
+    outline-offset: var(--focus-ring-offset, 2px);
   }
 
   .dialog__trigger:active,
@@ -204,7 +204,7 @@
     height: 2.5rem;
     align-items: center;
     justify-content: center;
-    border-radius: 9999px;
+    border-radius: var(--radius-pill, 9999px);
     flex-shrink: 0;
     user-select: none;
   }
@@ -249,7 +249,7 @@
     width: 2rem;
     height: 2rem;
     border: 0;
-    border-radius: 9999px;
+    border-radius: var(--radius-pill, 9999px);
     background-color: transparent;
     color: var(--color-foreground, var(--color-base-content));
     cursor: var(--cursor-interactive, pointer);
@@ -271,8 +271,8 @@
 
   .dialog__close-trigger:focus-visible,
   .dialog__close-trigger[data-focus-visible="true"] {
-    outline: 2px solid var(--color-accent);
-    outline-offset: 2px;
+    outline: var(--focus-ring-width, 2px) solid var(--color-accent);
+    outline-offset: var(--focus-ring-offset, 2px);
   }
 
   .dialog__close-trigger-icon {

@@ -27,8 +27,8 @@
 
   .collapsible__trigger:focus-visible,
   .collapsible__trigger[data-focus-visible="true"] {
-    outline: 2px solid var(--color-base-content);
-    outline-offset: 2px;
+    outline: var(--focus-ring-width, 2px) solid var(--color-base-content);
+    outline-offset: var(--focus-ring-offset, 2px);
   }
 
   .collapsible__trigger:disabled,

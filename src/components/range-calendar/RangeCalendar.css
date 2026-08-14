@@ -45,7 +45,7 @@
   }
 
   .range-calendar__calendar .calendar__cell--range-start.calendar__cell--range-end {
-    border-radius: 9999px;
+    border-radius: var(--radius-pill, 9999px);
   }
 }
 

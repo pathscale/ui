@@ -43,14 +43,14 @@
     --button-border: transparent;
 
     background-color: var(--button-bg);
-    border: 1px solid var(--button-border);
+    border: var(--border, 1px) solid var(--button-border);
     color: var(--button-fg);
   }
 
   .button:focus-visible,
   .button[data-focus-visible="true"] {
-    outline: 2px solid var(--button-accent);
-    outline-offset: 2px;
+    outline: var(--focus-ring-width, 2px) solid var(--button-accent);
+    outline-offset: var(--focus-ring-offset, 2px);
   }
 
   .button:disabled,
@@ -139,8 +139,8 @@
    * --------------------------------------------------------------------- */
   .button--solid {
     --button-bg: var(--button-accent);
-    --button-bg-hover: color-mix(in oklab, var(--button-accent), var(--shade) var(--shade-hover));
-    --button-bg-pressed: color-mix(in oklab, var(--button-accent), var(--shade) var(--shade-pressed));
+    --button-bg-hover: color-mix(in oklab, var(--button-accent), var(--shade, var(--color-base-content)) var(--shade-hover, 8%));
+    --button-bg-pressed: color-mix(in oklab, var(--button-accent), var(--shade, var(--color-base-content)) var(--shade-pressed, 12%));
     --button-fg: var(--button-accent-fg);
     --button-border: transparent;
   }
@@ -301,7 +301,7 @@
     display: inline-block;
     width: 1rem;
     height: 1rem;
-    border-radius: 9999px;
+    border-radius: var(--radius-pill, 9999px);
     border: 2px solid currentColor;
     border-right-color: transparent;
     animation: button-spinner 700ms linear infinite;

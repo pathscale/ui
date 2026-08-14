@@ -31,8 +31,8 @@
     flex-shrink: 0;
     align-items: center;
     justify-content: center;
-    border-radius: 9999px;
-    border: 1px solid var(--color-base-300);
+    border-radius: var(--radius-pill, 9999px);
+    border: var(--border, 1px) solid var(--color-base-300);
     background-color: var(--color-base-100);
     box-shadow: 0 1px 0 oklch(100% 0 0 / calc(var(--depth) * 0.1)) inset;
     transition:
@@ -54,7 +54,7 @@
     content: "";
     width: 100%;
     height: 100%;
-    border-radius: 9999px;
+    border-radius: var(--radius-pill, 9999px);
     background-color: var(--color-base-100);
     transform: scale(1);
     transition:

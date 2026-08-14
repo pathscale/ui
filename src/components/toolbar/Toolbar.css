@@ -19,7 +19,7 @@
   }
 
   .toolbar--attached {
-    border-radius: 9999px;
+    border-radius: var(--radius-pill, 9999px);
     background-color: var(--color-surface, var(--color-base-100));
     padding: 0.25rem;
     box-shadow: var(--shadow-overlay, 0 12px 28px color-mix(in oklab, black 12%, transparent));

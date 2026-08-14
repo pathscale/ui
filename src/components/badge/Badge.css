@@ -19,7 +19,7 @@
 
     background-color: var(--badge-bg);
     color: var(--badge-fg);
-    border: 1px solid var(--badge-border);
+    border: var(--border, 1px) solid var(--badge-border);
   }
 
   .badge__label {

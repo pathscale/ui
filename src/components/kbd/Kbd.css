@@ -31,7 +31,7 @@
       --color-muted,
       color-mix(in oklab, var(--color-base-content) 72%, transparent)
     );
-    border: 1px solid
+    border: var(--border, 1px) solid
       color-mix(in oklab, var(--color-base-content) 16%, transparent);
   }
 
@@ -41,7 +41,7 @@
       --color-muted,
       color-mix(in oklab, var(--color-base-content) 72%, transparent)
     );
-    border: 1px solid transparent;
+    border: var(--border, 1px) solid transparent;
   }
 
   .kbd__abbr {

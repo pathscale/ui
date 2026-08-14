@@ -55,7 +55,7 @@
     transform-origin: center;
     align-items: center;
     justify-content: center;
-    border-radius: 9999px;
+    border-radius: var(--radius-pill, 9999px);
     border: 0;
     background-color: transparent;
     color: var(--color-base-content);

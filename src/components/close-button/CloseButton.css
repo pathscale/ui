@@ -34,8 +34,8 @@
 
   .close-button:focus-visible,
   .close-button[data-focus-visible="true"] {
-    outline: 2px solid var(--color-accent);
-    outline-offset: 2px;
+    outline: var(--focus-ring-width, 2px) solid var(--color-accent);
+    outline-offset: var(--focus-ring-offset, 2px);
   }
 
   .close-button:disabled,

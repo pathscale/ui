@@ -30,7 +30,7 @@
     position: absolute;
     width: 1rem;
     height: 1rem;
-    border-radius: 9999px;
+    border-radius: var(--radius-pill, 9999px);
     border: 3px solid #fff;
     box-shadow:
       0 0 0 1px oklch(0% 0 0 / 0.1),

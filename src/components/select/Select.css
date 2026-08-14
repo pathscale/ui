@@ -20,7 +20,7 @@
     justify-content: space-between;
     gap: 0.5rem;
     border-radius: 1rem;
-    border: 1px solid var(--color-field-border, var(--color-base-300));
+    border: var(--border, 1px) solid var(--color-field-border, var(--color-base-300));
     background-color: var(--color-field, var(--color-base-100));
     padding: 0.5rem 0.75rem;
     text-align: left;
@@ -54,8 +54,8 @@
 
   .ui-select__trigger:focus-visible,
   .ui-select__trigger[data-focus-visible="true"] {
-    outline: 2px solid var(--color-accent);
-    outline-offset: 2px;
+    outline: var(--focus-ring-width, 2px) solid var(--color-accent);
+    outline-offset: var(--focus-ring-offset, 2px);
     border-color: var(--color-accent);
     background-color: color-mix(in oklch, var(--color-accent) 8%, var(--color-base-100));
   }
@@ -140,7 +140,7 @@
     overflow-y: auto;
     overscroll-behavior: contain;
     border-radius: 1.5rem;
-    border: 1px solid color-mix(in oklch, var(--color-base-content) 8%, transparent);
+    border: var(--border, 1px) solid color-mix(in oklch, var(--color-base-content) 8%, transparent);
     background-color: var(--color-base-100);
     box-shadow:
       0 20px 32px oklch(0% 0 0 / 0.16),

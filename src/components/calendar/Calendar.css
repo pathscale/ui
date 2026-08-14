@@ -39,7 +39,7 @@
     width: 1.5rem;
     height: 1.5rem;
     border: 0;
-    border-radius: 9999px;
+    border-radius: var(--radius-pill, 9999px);
     background: transparent;
     color: var(--color-accent);
     cursor: var(--cursor-interactive, pointer);
@@ -65,8 +65,8 @@
 
   .calendar__nav-button:focus-visible,
   .calendar__nav-button[data-focus-visible="true"] {
-    outline: 2px solid var(--color-accent);
-    outline-offset: 2px;
+    outline: var(--focus-ring-width, 2px) solid var(--color-accent);
+    outline-offset: var(--focus-ring-offset, 2px);
   }
 
   .calendar__nav-button:disabled,
@@ -127,7 +127,7 @@
     height: 2rem;
     margin: 0 auto;
     border: 0;
-    border-radius: 9999px;
+    border-radius: var(--radius-pill, 9999px);
     background: transparent;
     color: var(--color-base-content);
     cursor: var(--cursor-interactive, pointer);
@@ -151,8 +151,8 @@
   .calendar__cell:focus-visible,
   .calendar__cell--focused,
   .calendar__cell[data-focus-visible="true"] {
-    outline: 2px solid var(--color-accent);
-    outline-offset: 2px;
+    outline: var(--focus-ring-width, 2px) solid var(--color-accent);
+    outline-offset: var(--focus-ring-offset, 2px);
   }
 
   .calendar__cell--today {
@@ -178,7 +178,7 @@
   .calendar__cell--range-end {
     background-color: var(--color-accent);
     color: var(--color-accent-foreground);
-    border-radius: 9999px;
+    border-radius: var(--radius-pill, 9999px);
   }
 
   .calendar__cell--range-start .calendar__day,
@@ -199,7 +199,7 @@
   }
 
   .calendar__cell--range-start.calendar__cell--range-end {
-    border-radius: 9999px;
+    border-radius: var(--radius-pill, 9999px);
   }
 
   .calendar__cell:active:not(:disabled),

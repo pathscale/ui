@@ -103,7 +103,7 @@
   }
 
   .skeleton--circle {
-    border-radius: 9999px;
+    border-radius: var(--radius-pill, 9999px);
     aspect-ratio: 1;
     width: auto;
   }
@@ -138,7 +138,7 @@
   .skeleton--radius-sm { border-radius: 0.25rem; }
   .skeleton--radius-md { border-radius: 0.5rem; }
   .skeleton--radius-lg { border-radius: 0.75rem; }
-  .skeleton--radius-full { border-radius: 9999px; }
+  .skeleton--radius-full { border-radius: var(--radius-pill, 9999px); }
 
   /* -----------------------------------------------------------------------
    * Multi-line text placeholder
