@@ -2,90 +2,60 @@ import {
   Accordion,
   Alert,
   AuthCard,
-  AuthErrorMessage,
   AuthFieldGroup,
   AuthFooterLinks,
-  AuthForm,
   AuthPoweredBy,
   AuthSubmitButton,
-  AuthSuccessMessage,
   Avatar,
   Badge,
-  Breadcrumbs,
+  Breadcrumb,
   Button,
-  ButtonGroup,
   Calendar,
   Card,
   ChatBubble,
   Checkbox,
-  CheckboxGroup,
   Chip,
-  CloseButton,
-  ColorArea,
-  ColorField,
-  ColorPicker,
-  ColorSlider,
   ColorSwatch,
-  ColorSwatchPicker,
-  ComboBox,
-  DateField,
-  DatePicker,
-  DateRangePicker,
   type DateRangeValue,
-  Description,
-  Disclosure,
-  DisclosureGroup,
+  Collapsible,
   Drawer,
   Dropdown,
-  EmptyState,
-  ErrorMessage,
-  FieldError,
+  Empty,
   Fieldset,
   Flex,
-  FloatingDock,
+  Dock,
   Footer,
   Form,
   FormField,
   FormSubmitButton,
-  GlassPanel,
   GlowCard,
   MetalBorder,
   Grid,
   Header,
   Icon,
   Input,
-  InputGroup,
   InputOTP,
-  Kbd,
   Label,
   LanguageSwitcher,
   Link,
   ListBox,
   LiveChatBubble,
-  Menu,
-  Meter,
-  Modal,
+  Dialog,
   Navbar,
-  NoiseBackground,
-  NumberField,
   Pagination,
   PasswordField,
   PasswordRequirements,
   Popover,
-  ProgressBar,
-  ProgressCircle,
+  Progress,
   REGEXP_ONLY_DIGITS,
   Radio,
   RadioGroup,
-  RangeCalendar,
-  ScrollShadow,
-  SearchField,
+  ScrollArea,
   Select,
   Separator,
   Skeleton,
   Slider,
   Spinner,
-  Surface,
   Table,
   TableExpandToggle,
   TableInlineConfirm,
@@ -93,24 +63,40 @@ import {
   TableSortIcon,
   TableVirtualSpacerRow,
   Tabs,
-  Tag,
-  TagGroup,
   Text,
-  TextArea,
-  TextField,
+  Textarea,
   ThemeColorPicker,
-  TimeField,
   Toast,
-  Toggle,
-  Toolbar,
+  Switch,
   Tooltip,
   createForm,
   createI18n,
   evaluatePasswordRules,
   matchPasswordConfirmation,
   toast,
-  useDisclosureGroupNavigation,
 } from "@pathscale/ui";
+import {
+  ButtonGroup,
+  CheckboxGroup,
+  CloseButton,
+  ColorArea,
+  ColorField,
+  ColorPicker,
+  ColorSlider,
+  ColorSwatchPicker,
+  ComboBox,
+  DateField,
+  DatePicker,
+  DateRangePicker,
+  Kbd,
+  Menu,
+  Meter,
+  NoiseBackground,
+  RadialProgress,
+  RangeCalendar,
+  TimeField,
+  Toolbar,
+} from "@pathscale/ui/lab";
 import { For, createEffect, createSignal } from "solid-js";
 import { z } from "zod";
 import glassDemoBackground from "./assets/glass-demo-background.svg";
@@ -417,7 +403,7 @@ export default function App() {
     string[]
   >(["security"]);
   const [showDemoPassword, setShowDemoPassword] = createSignal(false);
-  const [disclosureKeys, setDisclosureKeys] = createSignal<Set<string>>(
+  const [disclosureKeys, setCollapsibleKeys] = createSignal<Set<string>>(
     new Set(["first"]),
   );
   const [emailError, setEmailError] =
@@ -454,7 +440,7 @@ export default function App() {
     createSignal(false);
   const [controlledTextFieldValue, setControlledTextFieldValue] =
     createSignal("Pathscale");
-  const [controlledTextAreaValue, setControlledTextAreaValue] = createSignal(
+  const [controlledTextareaValue, setControlledTextareaValue] = createSignal(
     "Building HeroUI parity components in Solid.",
   );
   const [controlledSearchValue, setControlledSearchValue] =
@@ -489,10 +475,10 @@ export default function App() {
   const [metalBorderClicks, setMetalBorderClicks] = createSignal(0);
   const [controlledTimeValue, setControlledTimeValue] = createSignal("13:30");
   const disclosureItemIds = () => DISCLOSURE_ITEMS.map((item) => item.id);
-  const disclosureNav = useDisclosureGroupNavigation({
+  const disclosureNav = useCollapsibleGroupNavigation({
     expandedKeys: disclosureKeys,
     itemIds: disclosureItemIds,
-    onExpandedChange: setDisclosureKeys,
+    onExpandedChange: setCollapsibleKeys,
     allowsMultipleExpanded: false,
   });
   const languageSwitcherI18n = createI18n({
@@ -1073,10 +1059,10 @@ export default function App() {
 
         <section class="space-y-4 rounded-xl border border-base-300 bg-base-200 p-4">
           <div>
-            <h2 class="text-sm font-semibold">TextField &amp; TextArea</h2>
+            <h2 class="text-sm font-semibold">TextField &amp; Textarea</h2>
             <p class="text-xs opacity-70">
               TextField wrapper with Label/Description/Error composition and
-              TextArea variants.
+              Textarea variants.
             </p>
           </div>
 
@@ -1107,18 +1093,18 @@ export default function App() {
               fullWidth
             >
               <Label htmlFor="text-field-demo-area">Notes</Label>
-              <TextArea
+              <Textarea
                 id="text-field-demo-area"
                 rows={4}
                 fullWidth
                 placeholder="Write implementation details..."
-                value={controlledTextAreaValue()}
+                value={controlledTextareaValue()}
                 onInput={(event) =>
-                  setControlledTextAreaValue(event.currentTarget.value)
+                  setControlledTextareaValue(event.currentTarget.value)
                 }
               />
               <Description>
-                Character count: {controlledTextAreaValue().length}
+                Character count: {controlledTextareaValue().length}
               </Description>
             </TextField>
           </div>
@@ -1159,7 +1145,7 @@ export default function App() {
                 fullWidth
               >
                 <InputGroup.Prefix>#</InputGroup.Prefix>
-                <InputGroup.TextArea
+                <InputGroup.Textarea
                   id="input-group-notes"
                   rows={3}
                   placeholder="Document rollout details..."
@@ -1829,7 +1815,7 @@ export default function App() {
               </TextField>
               <TextField fullWidth>
                 <Label htmlFor="fieldset-bio">Bio</Label>
-                <TextArea
+                <Textarea
                   id="fieldset-bio"
                   rows={3}
                   fullWidth
@@ -1984,7 +1970,7 @@ export default function App() {
 
             <Form class="space-y-3 rounded-xl border border-base-300 bg-base-100 p-4 lg:col-span-2">
               <Label htmlFor="form-basic-notes">Uncontrolled Native Form</Label>
-              <TextArea
+              <Textarea
                 id="form-basic-notes"
                 name="notes"
                 rows={3}
@@ -3081,7 +3067,7 @@ export default function App() {
             </h3>
             <div class="max-w-md rounded-xl border border-base-300 bg-base-100 p-4">
               <div class="flex items-center justify-between gap-3">
-                <h4 class="text-sm font-medium">Modal Header</h4>
+                <h4 class="text-sm font-medium">Dialog Header</h4>
                 <CloseButton endIcon={closeIcon()} />
               </div>
             </div>
@@ -3090,7 +3076,7 @@ export default function App() {
 
         <section class="space-y-4 rounded-xl border border-base-300 bg-base-200 p-4">
           <div>
-            <h2 class="text-sm font-semibold">Modal</h2>
+            <h2 class="text-sm font-semibold">Dialog</h2>
             <p class="text-xs opacity-70">
               HeroUI-style modal with compound slots, focus lock, and dismiss
               behavior.
@@ -3102,19 +3088,19 @@ export default function App() {
               <h3 class="text-xs font-semibold uppercase tracking-wide opacity-70">
                 Basic
               </h3>
-              <Modal>
-                <Modal.Trigger class="rounded-lg border border-base-300 px-3 py-2 text-sm">
+              <Dialog>
+                <Dialog.Trigger class="rounded-lg border border-base-300 px-3 py-2 text-sm">
                   Open basic modal
-                </Modal.Trigger>
-                <Modal.Content>
-                  <Modal.Header>
-                    <Modal.Heading>Basic modal</Modal.Heading>
-                    <Modal.CloseTrigger />
-                  </Modal.Header>
-                  <Modal.Body>
+                </Dialog.Trigger>
+                <Dialog.Content>
+                  <Dialog.Header>
+                    <Dialog.Heading>Basic modal</Dialog.Heading>
+                    <Dialog.CloseTrigger />
+                  </Dialog.Header>
+                  <Dialog.Body>
                     This modal closes on backdrop click and Escape by default.
-                  </Modal.Body>
-                  <Modal.Footer>
+                  </Dialog.Body>
+                  <Dialog.Footer>
                     <Button
                       size="sm"
                       variant="ghost"
@@ -3122,9 +3108,9 @@ export default function App() {
                       Cancel
                     </Button>
                     <Button size="sm">Save</Button>
-                  </Modal.Footer>
-                </Modal.Content>
-              </Modal>
+                  </Dialog.Footer>
+                </Dialog.Content>
+              </Dialog>
             </div>
 
             <div class="space-y-2 rounded-xl border border-base-300 bg-base-100 p-3">
@@ -3137,19 +3123,19 @@ export default function App() {
               >
                 Open controlled modal
               </Button>
-              <Modal
+              <Dialog
                 isOpen={modalOpen()}
                 onOpenChange={setModalOpen}
               >
-                <Modal.Content>
-                  <Modal.Header>
-                    <Modal.Heading>Controlled modal</Modal.Heading>
-                    <Modal.CloseTrigger />
-                  </Modal.Header>
-                  <Modal.Body>
+                <Dialog.Content>
+                  <Dialog.Header>
+                    <Dialog.Heading>Controlled modal</Dialog.Heading>
+                    <Dialog.CloseTrigger />
+                  </Dialog.Header>
+                  <Dialog.Body>
                     Open state is controlled with an external signal.
-                  </Modal.Body>
-                  <Modal.Footer>
+                  </Dialog.Body>
+                  <Dialog.Footer>
                     <Button
                       size="sm"
                       variant="ghost"
@@ -3163,9 +3149,9 @@ export default function App() {
                     >
                       Confirm
                     </Button>
-                  </Modal.Footer>
-                </Modal.Content>
-              </Modal>
+                  </Dialog.Footer>
+                </Dialog.Content>
+              </Dialog>
             </div>
 
             <div class="space-y-2 rounded-xl border border-base-300 bg-base-100 p-3 lg:col-span-2">
@@ -3178,29 +3164,29 @@ export default function App() {
               >
                 Open non-dismissable modal
               </Button>
-              <Modal
+              <Dialog
                 isOpen={nonDismissableModalOpen()}
                 onOpenChange={setNonDismissableModalOpen}
                 isDismissable={false}
               >
-                <Modal.Content>
-                  <Modal.Header>
-                    <Modal.Heading>Non-dismissable modal</Modal.Heading>
-                  </Modal.Header>
-                  <Modal.Body>
+                <Dialog.Content>
+                  <Dialog.Header>
+                    <Dialog.Heading>Non-dismissable modal</Dialog.Heading>
+                  </Dialog.Header>
+                  <Dialog.Body>
                     Backdrop click and Escape are disabled. Use explicit actions
                     to close.
-                  </Modal.Body>
-                  <Modal.Footer>
+                  </Dialog.Body>
+                  <Dialog.Footer>
                     <Button
                       size="sm"
                       onClick={() => setNonDismissableModalOpen(false)}
                     >
                       Acknowledge
                     </Button>
-                  </Modal.Footer>
-                </Modal.Content>
-              </Modal>
+                  </Dialog.Footer>
+                </Dialog.Content>
+              </Dialog>
             </div>
           </div>
         </section>
@@ -3271,7 +3257,7 @@ export default function App() {
             >
               <TagGroup.List
                 items={removableTags()}
-                renderEmptyState={() => (
+                renderEmpty={() => (
                   <span
                     class="text-xs opacity-70"
                     data-slot="description"
@@ -3980,7 +3966,7 @@ export default function App() {
         </section>
         <section class="space-y-4 rounded-xl border border-base-300 bg-base-200 p-4">
           <div>
-            <h2 class="text-sm font-semibold">Toggle</h2>
+            <h2 class="text-sm font-semibold">Switch</h2>
             <p class="text-xs opacity-70">
               HeroUI-style switch with color, size, and state coverage.
             </p>
@@ -3992,12 +3978,12 @@ export default function App() {
               <div class="flex flex-col gap-3">
                 <For each={TOGGLE_COLORS}>
                   {(color) => (
-                    <Toggle
+                    <Switch
                       color={color}
                       defaultChecked
                     >
                       {color}
-                    </Toggle>
+                    </Switch>
                   )}
                 </For>
               </div>
@@ -4008,13 +3994,13 @@ export default function App() {
               <div class="flex flex-col gap-3">
                 <For each={TOGGLE_SIZES}>
                   {(size) => (
-                    <Toggle
+                    <Switch
                       size={size}
                       defaultChecked
                       color="accent"
                     >
                       {size}
-                    </Toggle>
+                    </Switch>
                   )}
                 </For>
               </div>
@@ -4025,15 +4011,15 @@ export default function App() {
             <div class="space-y-3">
               <h3 class="text-xs font-semibold uppercase opacity-70">States</h3>
               <div class="flex flex-col gap-3">
-                <Toggle>Unchecked</Toggle>
-                <Toggle defaultChecked>Checked</Toggle>
-                <Toggle isDisabled>Disabled off</Toggle>
-                <Toggle
+                <Switch>Unchecked</Switch>
+                <Switch defaultChecked>Checked</Switch>
+                <Switch isDisabled>Disabled off</Switch>
+                <Switch
                   isDisabled
                   defaultChecked
                 >
                   Disabled on
-                </Toggle>
+                </Switch>
               </div>
             </div>
 
@@ -4042,19 +4028,19 @@ export default function App() {
                 Controlled + Description
               </h3>
               <div class="flex flex-col gap-3">
-                <Toggle
+                <Switch
                   checked={toggleOn()}
                   onChange={(event) => setToggleOn(event.currentTarget.checked)}
                 >
                   Notifications ({toggleOn() ? "on" : "off"})
-                </Toggle>
-                <Toggle
+                </Switch>
+                <Switch
                   description="We'll send you updates about new features."
                   defaultChecked
                   color="success"
                 >
                   Email updates
-                </Toggle>
+                </Switch>
               </div>
             </div>
           </div>
@@ -4416,7 +4402,7 @@ export default function App() {
                 <TableExpandToggle
                   expanded={tableExpandOpen()}
                   onToggle={() => setTableExpandOpen((open) => !open)}
-                  label="Toggle expanded row"
+                  label="Switch expanded row"
                 />
                 <TableExpandToggle
                   expanded
@@ -4478,16 +4464,16 @@ export default function App() {
                   rows={[]}
                   class="max-w-xl md:hidden"
                   empty={
-                    <EmptyState>
-                      <EmptyState.Icon>
+                    <Empty>
+                      <Empty.Icon>
                         <Icon
                           name="icon-[mdi--inbox-outline]"
                           width={24}
                           height={24}
                         />
-                      </EmptyState.Icon>
-                      <EmptyState.Title>No mobile rows</EmptyState.Title>
-                    </EmptyState>
+                      </Empty.Icon>
+                      <Empty.Title>No mobile rows</Empty.Title>
+                    </Empty>
                   }
                 />
               </div>
@@ -4899,7 +4885,7 @@ export default function App() {
 
         <section class="space-y-4 rounded-xl border border-base-300 bg-base-200 p-4">
           <div>
-            <h2 class="text-sm font-semibold">Disclosure</h2>
+            <h2 class="text-sm font-semibold">Collapsible</h2>
             <p class="text-xs opacity-70">
               Expand/collapse panels with optional grouping behavior.
             </p>
@@ -4907,19 +4893,19 @@ export default function App() {
 
           <div class="space-y-3">
             <h3 class="text-xs font-semibold uppercase opacity-70">Single</h3>
-            <Disclosure defaultOpen>
-              <Disclosure.Heading>
-                <Disclosure.Trigger class="w-full justify-between">
+            <Collapsible defaultOpen>
+              <Collapsible.Heading>
+                <Collapsible.Trigger class="w-full justify-between">
                   Single disclosure
-                  <Disclosure.Indicator />
-                </Disclosure.Trigger>
-              </Disclosure.Heading>
-              <Disclosure.Content>
-                <Disclosure.Body>
+                  <Collapsible.Indicator />
+                </Collapsible.Trigger>
+              </Collapsible.Heading>
+              <Collapsible.Content>
+                <Collapsible.Body>
                   This disclosure manages its own open state.
-                </Disclosure.Body>
-              </Disclosure.Content>
-            </Disclosure>
+                </Collapsible.Body>
+              </Collapsible.Content>
+            </Collapsible>
           </div>
 
           <div class="space-y-3">
@@ -4944,31 +4930,31 @@ export default function App() {
                 Next
               </Button>
             </div>
-            <DisclosureGroup
+            <CollapsibleGroup
               expandedKeys={disclosureKeys()}
-              onExpandedChange={setDisclosureKeys}
+              onExpandedChange={setCollapsibleKeys}
               allowsMultipleExpanded={false}
             >
               {DISCLOSURE_ITEMS.map((item) => (
-                <Disclosure id={item.id}>
-                  <Disclosure.Heading>
-                    <Disclosure.Trigger class="w-full justify-between">
+                <Collapsible id={item.id}>
+                  <Collapsible.Heading>
+                    <Collapsible.Trigger class="w-full justify-between">
                       {item.title}
-                      <Disclosure.Indicator />
-                    </Disclosure.Trigger>
-                  </Disclosure.Heading>
-                  <Disclosure.Content>
-                    <Disclosure.Body>{item.content}</Disclosure.Body>
-                  </Disclosure.Content>
-                </Disclosure>
+                      <Collapsible.Indicator />
+                    </Collapsible.Trigger>
+                  </Collapsible.Heading>
+                  <Collapsible.Content>
+                    <Collapsible.Body>{item.content}</Collapsible.Body>
+                  </Collapsible.Content>
+                </Collapsible>
               ))}
-            </DisclosureGroup>
+            </CollapsibleGroup>
           </div>
         </section>
 
         <section class="space-y-4 rounded-xl border border-base-300 bg-base-200 p-4">
           <div>
-            <h2 class="text-sm font-semibold">ScrollShadow</h2>
+            <h2 class="text-sm font-semibold">ScrollArea</h2>
             <p class="text-xs opacity-70">
               Scroll edge shadows for vertical and horizontal overflow content.
             </p>
@@ -4976,7 +4962,7 @@ export default function App() {
 
           <div class="space-y-3">
             <h3 class="text-xs font-semibold uppercase opacity-70">Vertical</h3>
-            <ScrollShadow class="max-h-48 rounded-lg border border-base-300 bg-base-100 p-4">
+            <ScrollArea class="max-h-48 rounded-lg border border-base-300 bg-base-100 p-4">
               <div class="space-y-3 text-sm">
                 <For each={Array.from({ length: 12 }, (_, index) => index + 1)}>
                   {(item) => (
@@ -4986,14 +4972,14 @@ export default function App() {
                   )}
                 </For>
               </div>
-            </ScrollShadow>
+            </ScrollArea>
           </div>
 
           <div class="space-y-3">
             <h3 class="text-xs font-semibold uppercase opacity-70">
               Horizontal
             </h3>
-            <ScrollShadow
+            <ScrollArea
               class="max-w-full rounded-lg border border-base-300 bg-base-100 p-4"
               orientation="horizontal"
               hideScrollBar
@@ -5007,7 +4993,7 @@ export default function App() {
                   )}
                 </For>
               </div>
-            </ScrollShadow>
+            </ScrollArea>
           </div>
         </section>
 
@@ -5403,7 +5389,7 @@ export default function App() {
 
         <section class="space-y-4 rounded-xl border border-base-300 bg-base-200 p-4">
           <div>
-            <h2 class="text-sm font-semibold">Breadcrumbs</h2>
+            <h2 class="text-sm font-semibold">Breadcrumb</h2>
             <p class="text-xs opacity-70">
               HeroUI-style compound breadcrumbs with separator and current page.
             </p>
@@ -5411,23 +5397,23 @@ export default function App() {
 
           <div class="space-y-3">
             <h3 class="text-xs font-semibold uppercase opacity-70">Default</h3>
-            <Breadcrumbs>
-              <Breadcrumbs.Item href="#">Home</Breadcrumbs.Item>
-              <Breadcrumbs.Item href="#">Products</Breadcrumbs.Item>
-              <Breadcrumbs.Item href="#">Category</Breadcrumbs.Item>
-              <Breadcrumbs.Item isCurrent>Current Page</Breadcrumbs.Item>
-            </Breadcrumbs>
+            <Breadcrumb>
+              <Breadcrumb.Item href="#">Home</Breadcrumb.Item>
+              <Breadcrumb.Item href="#">Products</Breadcrumb.Item>
+              <Breadcrumb.Item href="#">Category</Breadcrumb.Item>
+              <Breadcrumb.Item isCurrent>Current Page</Breadcrumb.Item>
+            </Breadcrumb>
           </div>
 
           <div class="space-y-3">
             <h3 class="text-xs font-semibold uppercase opacity-70">
               Custom Separator
             </h3>
-            <Breadcrumbs separator={<span>/</span>}>
-              <Breadcrumbs.Item href="#">Home</Breadcrumbs.Item>
-              <Breadcrumbs.Item href="#">Docs</Breadcrumbs.Item>
-              <Breadcrumbs.Item isCurrent>API</Breadcrumbs.Item>
-            </Breadcrumbs>
+            <Breadcrumb separator={<span>/</span>}>
+              <Breadcrumb.Item href="#">Home</Breadcrumb.Item>
+              <Breadcrumb.Item href="#">Docs</Breadcrumb.Item>
+              <Breadcrumb.Item isCurrent>API</Breadcrumb.Item>
+            </Breadcrumb>
           </div>
         </section>
 
@@ -5444,7 +5430,7 @@ export default function App() {
             <h3 class="text-xs font-semibold uppercase opacity-70">
               Progress Bar
             </h3>
-            <ProgressBar
+            <Progress
               value={60}
               label="Loading"
               size="md"
@@ -5460,7 +5446,7 @@ export default function App() {
             <div class="grid gap-4">
               <For each={["sm", "md", "lg"] as const}>
                 {(size) => (
-                  <ProgressBar
+                  <Progress
                     value={45}
                     label={size}
                     size={size}
@@ -5483,7 +5469,7 @@ export default function App() {
                 }
               >
                 {(color) => (
-                  <ProgressBar
+                  <Progress
                     value={70}
                     label={color}
                     color={color}
@@ -5498,7 +5484,7 @@ export default function App() {
             <h3 class="text-xs font-semibold uppercase opacity-70">
               Bar Indeterminate
             </h3>
-            <ProgressBar
+            <Progress
               isIndeterminate
               label="Processing"
               color="accent"
@@ -5510,17 +5496,17 @@ export default function App() {
               Progress Circle
             </h3>
             <div class="flex flex-wrap items-center gap-4">
-              <ProgressCircle
+              <RadialProgress
                 value={72}
                 size="lg"
                 color="accent"
               />
-              <ProgressCircle
+              <RadialProgress
                 value={45}
                 size="md"
                 color="success"
               />
-              <ProgressCircle
+              <RadialProgress
                 isIndeterminate
                 size="sm"
                 color="warning"
@@ -5702,7 +5688,7 @@ export default function App() {
               Functional Buttons
             </h3>
             <div class="flex items-end justify-center py-8">
-              <FloatingDock
+              <Dock
                 items={[
                   {
                     title: "Microphone",
@@ -5780,7 +5766,7 @@ export default function App() {
               No Magnification
             </h3>
             <div class="flex items-end justify-center py-8">
-              <FloatingDock
+              <Dock
                 items={[
                   {
                     title: "Bold",
@@ -5844,7 +5830,7 @@ export default function App() {
               menu.
             </p>
             <div class="flex items-end justify-center py-8">
-              <FloatingDock
+              <Dock
                 items={[
                   {
                     title: "Mic",
@@ -6114,7 +6100,7 @@ export default function App() {
                 variant="secondary"
                 onClick={() => setGlassPanelOpen((current) => !current)}
               >
-                Toggle Controlled Panel
+                Switch Controlled Panel
               </Button>
               <span class="text-xs opacity-70">
                 State: {glassPanelOpen() ? "open" : "closed"}
@@ -6463,27 +6449,27 @@ export default function App() {
           <div class="space-y-3">
             <h3 class="text-xs font-semibold uppercase opacity-70">Simple</h3>
             <div class="rounded-lg border border-base-300 bg-base-100">
-              <EmptyState>
-                <EmptyState.Icon>
+              <Empty>
+                <Empty.Icon>
                   <Icon
                     name="icon-[lucide--file-text]"
                     width={48}
                     height={48}
                   />
-                </EmptyState.Icon>
-                <EmptyState.Title>No documents</EmptyState.Title>
-                <EmptyState.Description>
+                </Empty.Icon>
+                <Empty.Title>No documents</Empty.Title>
+                <Empty.Description>
                   Get started by creating a new document.
-                </EmptyState.Description>
-                <EmptyState.Actions>
+                </Empty.Description>
+                <Empty.Actions>
                   <Button
                     size="sm"
                     variant="primary"
                   >
                     New Document
                   </Button>
-                </EmptyState.Actions>
-              </EmptyState>
+                </Empty.Actions>
+              </Empty>
             </div>
           </div>
 
@@ -6492,28 +6478,28 @@ export default function App() {
               Search Results
             </h3>
             <div class="rounded-lg border border-base-300 bg-base-100">
-              <EmptyState>
-                <EmptyState.Icon>
+              <Empty>
+                <Empty.Icon>
                   <Icon
                     name="icon-[lucide--search]"
                     width={48}
                     height={48}
                   />
-                </EmptyState.Icon>
-                <EmptyState.Title>No results found</EmptyState.Title>
-                <EmptyState.Description>
+                </Empty.Icon>
+                <Empty.Title>No results found</Empty.Title>
+                <Empty.Description>
                   Try adjusting your search or filter to find what you're
                   looking for.
-                </EmptyState.Description>
-                <EmptyState.Actions>
+                </Empty.Description>
+                <Empty.Actions>
                   <Button
                     size="sm"
                     variant="secondary"
                   >
                     Clear filters
                   </Button>
-                </EmptyState.Actions>
-              </EmptyState>
+                </Empty.Actions>
+              </Empty>
             </div>
           </div>
         </section>

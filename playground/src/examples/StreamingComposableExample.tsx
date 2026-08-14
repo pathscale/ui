@@ -7,7 +7,7 @@ import {
   type Accessor,
 } from "solid-js";
 import {
-  EmptyState,
+  Empty,
   Icon,
   Table,
   toSortDescriptor,
@@ -682,12 +682,12 @@ export const StreamingComposableExample = () => {
                   fallback={
                     <Table.Row>
                       <Table.Cell colSpan={appendVisibleColumns()} class="py-8 text-center">
-                        <EmptyState>
-                          <EmptyState.Icon>
+                        <Empty>
+                          <Empty.Icon>
                             <Icon name="icon-[lucide--inbox]" width={20} height={20} />
-                          </EmptyState.Icon>
-                          <EmptyState.Title>No stream rows</EmptyState.Title>
-                        </EmptyState>
+                          </Empty.Icon>
+                          <Empty.Title>No stream rows</Empty.Title>
+                        </Empty>
                       </Table.Cell>
                     </Table.Row>
                   }
@@ -823,12 +823,12 @@ export const StreamingComposableExample = () => {
                   fallback={
                     <Table.Row>
                       <Table.Cell colSpan={upsertVisibleColumns()} class="py-8 text-center">
-                        <EmptyState>
-                          <EmptyState.Icon>
+                        <Empty>
+                          <Empty.Icon>
                             <Icon name="icon-[lucide--inbox]" width={20} height={20} />
-                          </EmptyState.Icon>
-                          <EmptyState.Title>No keyed rows</EmptyState.Title>
-                        </EmptyState>
+                          </Empty.Icon>
+                          <Empty.Title>No keyed rows</Empty.Title>
+                        </Empty>
                       </Table.Cell>
                     </Table.Row>
                   }
@@ -964,12 +964,12 @@ export const StreamingComposableExample = () => {
                   fallback={
                     <Table.Row>
                       <Table.Cell colSpan={replaceVisibleColumns()} class="py-8 text-center">
-                        <EmptyState>
-                          <EmptyState.Icon>
+                        <Empty>
+                          <Empty.Icon>
                             <Icon name="icon-[lucide--inbox]" width={20} height={20} />
-                          </EmptyState.Icon>
-                          <EmptyState.Title>No snapshot rows</EmptyState.Title>
-                        </EmptyState>
+                          </Empty.Icon>
+                          <Empty.Title>No snapshot rows</Empty.Title>
+                        </Empty>
                       </Table.Cell>
                     </Table.Row>
                   }

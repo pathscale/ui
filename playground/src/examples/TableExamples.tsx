@@ -433,7 +433,7 @@ const LoadingStateExample = () => {
   );
 };
 
-const EmptyStateExample = () => (
+const EmptyExample = () => (
   <ExampleCard
     title="7. Empty State"
     description="No data case rendered directly in the table body."
@@ -742,7 +742,7 @@ export const TableExamples = () => (
     <ControlledSelectionExample />
     <ManualSortingExample />
     <LoadingStateExample />
-    <EmptyStateExample />
+    <EmptyExample />
     <LoadMoreExample />
     <TanStackIntegrationExample />
     <GapAnalysis />
