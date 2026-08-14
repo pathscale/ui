@@ -7,7 +7,7 @@ import type { Layout } from "../../lib/layouts";
 import { componentRecipe } from "./ImmersiveLanding.recipe";
 
 const ImmersiveLandingPage: Layout<typeof componentRecipe, ImmersiveLandingPageProps> = () => {
-  const [local, others] = splitProps(props, ["id", "children", "class", "className", "style"]);
+  const [local, others] = splitProps(props, ["id", "children", "class", "style"]);
 
   const context = useContext(ImmersiveLandingContext);
 
@@ -19,7 +19,6 @@ const ImmersiveLandingPage: Layout<typeof componentRecipe, ImmersiveLandingPageP
       CLASSES.page.base,
       isActive() ? CLASSES.page.active : CLASSES.page.inactive,
       local.class,
-      local.className,
     );
 
   return (

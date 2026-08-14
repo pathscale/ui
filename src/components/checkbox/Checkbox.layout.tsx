@@ -2,7 +2,7 @@ import "./Checkbox.css";
 import { Show, createEffect, createSignal, splitProps, useContext, type Component, type JSX } from "solid-js";
 import { twMerge } from "tailwind-merge";
 import { CheckboxGroupContext } from "../checkbox-group/context";
-import type { IComponentBaseProps } from "../types";
+import type { UIBaseProps } from "../vocabulary";
 import { CLASSES } from "./Checkbox.recipe";
 import type { Layout } from "../../lib/layouts";
 import { componentRecipe } from "./Checkbox.recipe";
@@ -21,7 +21,7 @@ const invokeEventHandler = (handler: unknown, event: Event) => {
 export type CheckboxVariant = "primary" | "secondary";
 
 export type CheckboxProps = Omit<JSX.InputHTMLAttributes<HTMLInputElement>, "type" | "children"> &
-  IComponentBaseProps & {
+  UIBaseProps & {
     defaultChecked?: boolean;
     children?: JSX.Element;
     description?: JSX.Element;
@@ -38,7 +38,6 @@ const Checkbox: Layout<typeof componentRecipe, CheckboxProps> = () => {
 
   const [local, others] = splitProps(props, [
     "class",
-    "className",
     "children",
     "description",
     "isDisabled",
@@ -103,7 +102,6 @@ const Checkbox: Layout<typeof componentRecipe, CheckboxProps> = () => {
         CLASSES.variant[variant()],
         isDisabled() && CLASSES.flag.disabled,
         local.class,
-        local.className,
       ) }}
       data-theme={local.dataTheme}
       data-slot="checkbox"

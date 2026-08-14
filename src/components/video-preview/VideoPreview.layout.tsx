@@ -1,7 +1,7 @@
 import { type Accessor, type Component, Show, createEffect, onCleanup, splitProps, type JSX } from "solid-js";
 import { twMerge } from "tailwind-merge";
 
-import type { IComponentBaseProps } from "../types";
+import type { UIBaseProps } from "../vocabulary";
 import { CLASSES } from "./VideoPreview.recipe";
 import type { Layout } from "../../lib/layouts";
 import { componentRecipe } from "./VideoPreview.recipe";
@@ -26,7 +26,7 @@ type VideoPreviewBaseProps = {
 };
 
 export type VideoPreviewProps = VideoPreviewBaseProps &
-  IComponentBaseProps &
+  UIBaseProps &
   Omit<JSX.VideoHTMLAttributes<HTMLVideoElement>, keyof VideoPreviewBaseProps>;
 
 export const VideoPreview: Layout<typeof componentRecipe, VideoPreviewProps> = () => {
@@ -36,7 +36,6 @@ export const VideoPreview: Layout<typeof componentRecipe, VideoPreviewProps> = (
     "mirror",
     "dataTheme",
     "class",
-    "className",
     "style",
   ]);
 
@@ -64,7 +63,7 @@ export const VideoPreview: Layout<typeof componentRecipe, VideoPreviewProps> = (
             playsinline
             muted={muted()}
             data-theme={local.dataTheme}
-            {...{ class: twMerge(mirror() && CLASSES.mirror, local.class, local.className) }}
+            {...{ class: twMerge(mirror() && CLASSES.mirror, local.class) }}
             style={local.style}
           />
         );

@@ -2,19 +2,18 @@ import { splitProps, type JSX } from "solid-js";
 import { twMerge } from "tailwind-merge";
 import { clsx } from "clsx";
 
-import type { IComponentBaseProps } from "../types";
+import type { UIBaseProps } from "../vocabulary";
 import "./GlowCard.css";
 import { CLASSES, componentRecipe } from "./GlowCard.recipe";
 import type { Layout } from "../../lib/layouts";
 
-export type GlowCardProps = IComponentBaseProps &
+export type GlowCardProps = UIBaseProps &
   JSX.HTMLAttributes<HTMLDivElement>;
 
 const GlowCard: Layout<typeof componentRecipe, GlowCardProps> = () => {
   const [local, others] = splitProps(props, [
     "children",
     "class",
-    "className",
     "dataTheme",
     "onMouseMove",
     "style",
@@ -38,7 +37,7 @@ const GlowCard: Layout<typeof componentRecipe, GlowCardProps> = () => {
       {...others}
       data-theme={local.dataTheme}
       class={twMerge(
-        clsx(CLASSES.base, CLASSES.isolate, local.class, local.className),
+        clsx(CLASSES.base, CLASSES.isolate, local.class),
       )}
       style={local.style}
       onMouseMove={handleMouseMove}

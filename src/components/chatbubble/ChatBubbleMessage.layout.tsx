@@ -1,12 +1,12 @@
 import { splitProps, type JSX } from "solid-js";
 import { twMerge } from "tailwind-merge";
-import type { IComponentBaseProps } from "../types";
+import type { UIBaseProps } from "../vocabulary";
 import { CLASSES } from "./ChatBubble.recipe";
 import type { Layout } from "../../lib/layouts";
 import { componentRecipe } from "./ChatBubble.recipe";
 
 export type ChatBubbleMessageProps = JSX.HTMLAttributes<HTMLDivElement> &
-  IComponentBaseProps & {
+  UIBaseProps & {
     color?:
       | "neutral"
       | "primary"
@@ -19,7 +19,7 @@ export type ChatBubbleMessageProps = JSX.HTMLAttributes<HTMLDivElement> &
   };
 
 const ChatBubbleMessage: Layout<typeof componentRecipe, ChatBubbleMessageProps> = () => {
-  const [local, others] = splitProps(props, ["color", "class", "className"]);
+  const [local, others] = splitProps(props, ["color", "class"]);
 
   const colorClass = () => {
     if (!local.color) return undefined;
@@ -33,7 +33,6 @@ const ChatBubbleMessage: Layout<typeof componentRecipe, ChatBubbleMessageProps> 
         CLASSES.slot.message,
         colorClass(),
         local.class,
-        local.className,
       )}
     />
   );

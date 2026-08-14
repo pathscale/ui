@@ -2,14 +2,14 @@ import "./Toolbar.css";
 import { splitProps, type Component, type JSX } from "solid-js";
 import { twMerge } from "tailwind-merge";
 
-import type { IComponentBaseProps } from "../types";
+import type { UIBaseProps } from "../vocabulary";
 import { CLASSES } from "./Toolbar.recipe";
 import type { Layout } from "../../lib/layouts";
 import { componentRecipe } from "./Toolbar.recipe";
 
 export type ToolbarOrientation = "horizontal" | "vertical";
 
-export type ToolbarRootProps = IComponentBaseProps &
+export type ToolbarRootProps = UIBaseProps &
   JSX.HTMLAttributes<HTMLDivElement> & {
     orientation?: ToolbarOrientation;
     isAttached?: boolean;
@@ -44,7 +44,6 @@ const ToolbarRoot: Layout<typeof componentRecipe, ToolbarRootProps> = () => {
   const [local, others] = splitProps(props, [
     "children",
     "class",
-    "className",
     "dataTheme",
     "style",
     "orientation",
@@ -118,7 +117,6 @@ const ToolbarRoot: Layout<typeof componentRecipe, ToolbarRootProps> = () => {
           CLASSES.orientation[orientation()],
           local.isAttached && CLASSES.flag.attached,
           local.class,
-          local.className,
         ),
       }}
     >

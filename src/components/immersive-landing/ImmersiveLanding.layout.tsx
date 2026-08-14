@@ -33,7 +33,6 @@ const ImmersiveLanding: Layout<typeof componentRecipe, ImmersiveLandingProps> = 
     "overlay",
     "children",
     "class",
-    "className",
     "style",
     "pwaConfig",
     "cookieConfig",
@@ -76,7 +75,6 @@ const ImmersiveLanding: Layout<typeof componentRecipe, ImmersiveLandingProps> = 
     twMerge(
       CLASSES.landing.base,
       local.class,
-      local.className,
     );
 
   // Render children - if it's a function, call it with context for render props pattern

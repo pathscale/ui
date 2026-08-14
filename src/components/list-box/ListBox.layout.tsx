@@ -9,7 +9,7 @@ import {
 } from "solid-js";
 import { twMerge } from "tailwind-merge";
 
-import type { IComponentBaseProps } from "../types";
+import type { UIBaseProps } from "../vocabulary";
 import { CLASSES } from "./ListBox.recipe";
 import {
   ListBoxContext,
@@ -50,7 +50,7 @@ export type ListBoxRootProps<T = unknown> = Omit<
   JSX.HTMLAttributes<HTMLDivElement>,
   "children" | "onChange"
 > &
-  IComponentBaseProps & {
+  UIBaseProps & {
     children?: JSX.Element | ((item: T) => JSX.Element);
     items?: readonly T[];
     renderEmpty?: () => JSX.Element;
@@ -70,7 +70,6 @@ const ListBoxRoot: Layout<typeof componentRecipe, ListBoxRootProps> = () => {
   const [local, others] = splitProps(props, [
     "children",
     "class",
-    "className",
     "dataTheme",
     "style",
     "items",
@@ -312,7 +311,6 @@ const ListBoxRoot: Layout<typeof componentRecipe, ListBoxRootProps> = () => {
           CLASSES.Root.base,
           CLASSES.Root.variant[variant()],
           local.class,
-          local.className,
         )}
         style={local.style}
         onKeyDown={handleKeyDown}

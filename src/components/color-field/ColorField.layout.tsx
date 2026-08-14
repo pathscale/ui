@@ -2,7 +2,7 @@ import "./ColorField.css";
 import { createEffect, createSignal, splitProps, type Component, type JSX } from "solid-js";
 import { twMerge } from "tailwind-merge";
 import { formatColor, parseColor, type ColorFormat } from "../color-wheel-flower/ColorUtils";
-import type { IComponentBaseProps } from "../types";
+import type { UIBaseProps } from "../vocabulary";
 import { CLASSES } from "./ColorField.recipe";
 import type { Layout } from "../../lib/layouts";
 import { componentRecipe } from "./ColorField.recipe";
@@ -34,7 +34,7 @@ export type ColorFieldProps = Omit<
   JSX.InputHTMLAttributes<HTMLInputElement>,
   "type" | "value" | "defaultValue" | "onChange"
 > &
-  IComponentBaseProps & {
+  UIBaseProps & {
     value?: string;
     defaultValue?: string;
     onChange?: (value: string) => void;
@@ -46,7 +46,6 @@ export type ColorFieldProps = Omit<
 const ColorField: Layout<typeof componentRecipe, ColorFieldProps> = () => {
   const [local, others] = splitProps(props, [
     "class",
-    "className",
     "value",
     "defaultValue",
     "onChange",
@@ -169,7 +168,6 @@ const ColorField: Layout<typeof componentRecipe, ColorFieldProps> = () => {
         local.fullWidth && CLASSES.flag.fullWidth,
         isDisabled() && CLASSES.flag.disabled,
         local.class,
-        local.className,
       ) }}
       data-theme={local.dataTheme}
       data-slot="color-field"

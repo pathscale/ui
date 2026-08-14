@@ -12,7 +12,7 @@ import {
 } from "solid-js";
 import { twMerge } from "tailwind-merge";
 
-import type { IComponentBaseProps } from "../types";
+import type { UIBaseProps } from "../vocabulary";
 import { ListBoxContext, type ListBoxVariant } from "./context";
 import { CLASSES } from "./ListBox.recipe";
 import type { Layout } from "../../lib/layouts";
@@ -57,7 +57,7 @@ type ListBoxItemContextValue = {
 const ListBoxItemContext = createContext<ListBoxItemContextValue>();
 
 export type ListBoxItemRootProps = Omit<JSX.HTMLAttributes<HTMLDivElement>, "children"> &
-  IComponentBaseProps & {
+  UIBaseProps & {
     id?: string | number;
     textValue?: string;
     variant?: ListBoxVariant;
@@ -67,7 +67,7 @@ export type ListBoxItemRootProps = Omit<JSX.HTMLAttributes<HTMLDivElement>, "chi
   };
 
 export type ListBoxItemIndicatorProps = Omit<JSX.HTMLAttributes<HTMLSpanElement>, "children"> &
-  IComponentBaseProps & {
+  UIBaseProps & {
     children?: JSX.Element | ((props: ListBoxItemRenderProps) => JSX.Element);
   };
 
@@ -78,7 +78,6 @@ const ListBoxItemRoot: Layout<typeof componentRecipe, ListBoxItemRootProps> = ()
   const [local, others] = splitProps(props, [
     "children",
     "class",
-    "className",
     "dataTheme",
     "style",
     "id",
@@ -222,7 +221,6 @@ const ListBoxItemRoot: Layout<typeof componentRecipe, ListBoxItemRootProps> = ()
           CLASSES.Item.base,
           CLASSES.Item.variant[variant()],
           local.class,
-          local.className,
         ) }}
         style={local.style}
         onClick={handleClick}
@@ -243,7 +241,6 @@ const ListBoxItemIndicator: Layout<typeof componentRecipe, ListBoxItemIndicatorP
   const [local, others] = splitProps(props, [
     "children",
     "class",
-    "className",
     "dataTheme",
     "style",
   ]);
@@ -262,7 +259,7 @@ const ListBoxItemIndicator: Layout<typeof componentRecipe, ListBoxItemIndicatorP
       data-slot="listbox-item-indicator"
       data-theme={local.dataTheme}
       data-visible={renderState().isSelected ? "true" : undefined}
-      {...{ class: twMerge(CLASSES.ItemIndicator.base, local.class, local.className) }}
+      {...{ class: twMerge(CLASSES.ItemIndicator.base, local.class) }}
       style={local.style}
     >
       {typeof local.children === "function" ? (

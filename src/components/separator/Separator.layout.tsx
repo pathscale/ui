@@ -2,7 +2,7 @@ import "./Separator.css";
 import { splitProps, type Component, type JSX } from "solid-js";
 import { twMerge } from "tailwind-merge";
 
-import type { IComponentBaseProps } from "../types";
+import type { UIBaseProps } from "../vocabulary";
 import { CLASSES } from "./Separator.recipe";
 import type { Layout } from "../../lib/layouts";
 import { componentRecipe } from "./Separator.recipe";
@@ -11,7 +11,7 @@ export type SeparatorOrientation = "horizontal" | "vertical";
 export type SeparatorVariant = "default" | "secondary" | "tertiary";
 
 export type SeparatorProps = Omit<JSX.HTMLAttributes<HTMLDivElement>, "children"> &
-  IComponentBaseProps & {
+  UIBaseProps & {
     orientation?: SeparatorOrientation;
     variant?: SeparatorVariant;
   };
@@ -19,7 +19,6 @@ export type SeparatorProps = Omit<JSX.HTMLAttributes<HTMLDivElement>, "children"
 const Separator: Layout<typeof componentRecipe, SeparatorProps> = () => {
   const [local, others] = splitProps(props, [
     "class",
-    "className",
     "dataTheme",
     "style",
     "orientation",
@@ -43,7 +42,6 @@ const Separator: Layout<typeof componentRecipe, SeparatorProps> = () => {
         CLASSES.orientation[orientation()],
         CLASSES.variant[variant()],
         local.class,
-        local.className,
       )}
       data-theme={local.dataTheme}
       style={local.style}

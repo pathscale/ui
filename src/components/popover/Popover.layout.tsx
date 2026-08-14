@@ -16,7 +16,7 @@ import {
 import { Portal } from "solid-js/web";
 import { twMerge } from "tailwind-merge";
 
-import type { IComponentBaseProps } from "../types";
+import type { UIBaseProps } from "../vocabulary";
 import {
   createOverlayPosition,
   type OverlayPlacement,
@@ -52,7 +52,7 @@ const usePopoverContext = () => {
   return ctx;
 };
 
-export type PopoverRootProps = IComponentBaseProps &
+export type PopoverRootProps = UIBaseProps &
   Omit<JSX.HTMLAttributes<HTMLDivElement>, "children"> & {
     children: JSX.Element;
     isOpen?: boolean;
@@ -70,7 +70,6 @@ const PopoverRoot: Layout<typeof componentRecipe, PopoverRootProps> = () => {
   const [local, others] = splitProps(props, [
     "children",
     "class",
-    "className",
     "dataTheme",
     "style",
     "isOpen",
@@ -159,7 +158,7 @@ const PopoverRoot: Layout<typeof componentRecipe, PopoverRootProps> = () => {
     <PopoverContext.Provider value={ctx}>
       <div
         {...others}
-        {...{ class: twMerge(CLASSES.slot.root, local.class, local.className) }}
+        {...{ class: twMerge(CLASSES.slot.root, local.class) }}
         data-slot="popover-root"
         data-theme={local.dataTheme}
         style={local.style}
@@ -170,7 +169,7 @@ const PopoverRoot: Layout<typeof componentRecipe, PopoverRootProps> = () => {
   );
 };
 
-export type PopoverTriggerProps = IComponentBaseProps &
+export type PopoverTriggerProps = UIBaseProps &
   Omit<JSX.HTMLAttributes<HTMLDivElement>, "children"> & {
     children: JSX.Element;
   };
@@ -179,7 +178,6 @@ const PopoverTrigger: Layout<typeof componentRecipe, PopoverTriggerProps> = () =
   const [local, others] = splitProps(props, [
     "children",
     "class",
-    "className",
     "dataTheme",
     "style",
     "onClick",
@@ -214,7 +212,7 @@ const PopoverTrigger: Layout<typeof componentRecipe, PopoverTriggerProps> = () =
       id={ctx.triggerId()}
       role="button"
       tabIndex={0}
-      {...{ class: twMerge(CLASSES.slot.trigger, local.class, local.className) }}
+      {...{ class: twMerge(CLASSES.slot.trigger, local.class) }}
       data-slot="popover-trigger"
       data-theme={local.dataTheme}
       style={local.style}
@@ -229,7 +227,7 @@ const PopoverTrigger: Layout<typeof componentRecipe, PopoverTriggerProps> = () =
   );
 };
 
-export type PopoverContentProps = IComponentBaseProps &
+export type PopoverContentProps = UIBaseProps &
   Omit<JSX.HTMLAttributes<HTMLDivElement>, "children"> & {
     children: JSX.Element;
     sideOffset?: number;
@@ -239,7 +237,6 @@ const PopoverContent: Layout<typeof componentRecipe, PopoverContentProps> = () =
   const [local, others] = splitProps(props, [
     "children",
     "class",
-    "className",
     "dataTheme",
     "style",
     "sideOffset",
@@ -288,7 +285,7 @@ const PopoverContent: Layout<typeof componentRecipe, PopoverContentProps> = () =
           ref={(el) => ctx.setContentRef(el)}
           id={ctx.contentId()}
           role="dialog"
-          {...{ class: twMerge(CLASSES.base, local.class, local.className) }}
+          {...{ class: twMerge(CLASSES.base, local.class) }}
           data-slot="popover-content"
           data-open={ctx.isOpen() ? "true" : "false"}
           data-placement={ctx.placement()}
@@ -304,7 +301,7 @@ const PopoverContent: Layout<typeof componentRecipe, PopoverContentProps> = () =
   );
 };
 
-export type PopoverDialogProps = IComponentBaseProps &
+export type PopoverDialogProps = UIBaseProps &
   Omit<JSX.HTMLAttributes<HTMLDivElement>, "children"> & {
     children: JSX.Element;
   };
@@ -313,7 +310,6 @@ const PopoverDialog: Layout<typeof componentRecipe, PopoverDialogProps> = () => 
   const [local, others] = splitProps(props, [
     "children",
     "class",
-    "className",
     "dataTheme",
     "style",
   ]);
@@ -321,7 +317,7 @@ const PopoverDialog: Layout<typeof componentRecipe, PopoverDialogProps> = () => 
   return (
     <div
       {...others}
-      {...{ class: twMerge(CLASSES.slot.dialog, local.class, local.className) }}
+      {...{ class: twMerge(CLASSES.slot.dialog, local.class) }}
       data-slot="popover-dialog"
       data-theme={local.dataTheme}
       style={local.style}
@@ -331,7 +327,7 @@ const PopoverDialog: Layout<typeof componentRecipe, PopoverDialogProps> = () => 
   );
 };
 
-export type PopoverArrowProps = IComponentBaseProps &
+export type PopoverArrowProps = UIBaseProps &
   Omit<JSX.HTMLAttributes<HTMLSpanElement>, "children"> & {
     children?: JSX.Element;
   };
@@ -340,7 +336,6 @@ const PopoverArrow: Layout<typeof componentRecipe, PopoverArrowProps> = () => {
   const [local, others] = splitProps(props, [
     "children",
     "class",
-    "className",
     "dataTheme",
     "style",
   ]);
@@ -363,7 +358,7 @@ const PopoverArrow: Layout<typeof componentRecipe, PopoverArrowProps> = () => {
   return (
     <span
       {...others}
-      {...{ class: twMerge(CLASSES.slot.arrow, local.class, local.className) }}
+      {...{ class: twMerge(CLASSES.slot.arrow, local.class) }}
       data-slot="popover-arrow"
       data-placement={ctx.placement()}
       data-theme={local.dataTheme}
@@ -375,7 +370,7 @@ const PopoverArrow: Layout<typeof componentRecipe, PopoverArrowProps> = () => {
   );
 };
 
-export type PopoverHeadingProps = IComponentBaseProps &
+export type PopoverHeadingProps = UIBaseProps &
   Omit<JSX.HTMLAttributes<HTMLHeadingElement>, "children"> & {
     children: JSX.Element;
   };
@@ -384,7 +379,6 @@ const PopoverHeading: Layout<typeof componentRecipe, PopoverHeadingProps> = () =
   const [local, others] = splitProps(props, [
     "children",
     "class",
-    "className",
     "dataTheme",
     "style",
   ]);
@@ -392,7 +386,7 @@ const PopoverHeading: Layout<typeof componentRecipe, PopoverHeadingProps> = () =
   return (
     <h3
       {...others}
-      {...{ class: twMerge(CLASSES.slot.heading, local.class, local.className) }}
+      {...{ class: twMerge(CLASSES.slot.heading, local.class) }}
       data-slot="popover-heading"
       data-theme={local.dataTheme}
       style={local.style}

@@ -10,7 +10,7 @@ import {
   type ControlledDateRangeValue,
 } from "../../hooks/date";
 import Calendar, { type CalendarWeekdayFormat } from "../calendar";
-import type { IComponentBaseProps } from "../types";
+import type { UIBaseProps } from "../vocabulary";
 import { CLASSES } from "./DateRangePicker.recipe";
 import type { Layout } from "../../lib/layouts";
 import { componentRecipe } from "./DateRangePicker.recipe";
@@ -41,13 +41,12 @@ export type DateRangePickerProps = Omit<
   JSX.HTMLAttributes<HTMLDivElement>,
   "onChange" | "children"
 > &
-  IComponentBaseProps &
+  UIBaseProps &
   DateRangePickerBaseProps;
 
 const DateRangePicker: Layout<typeof componentRecipe, DateRangePickerProps> = () => {
   const [local, others] = splitProps(props, [
     "class",
-    "className",
     "dataTheme",
     "style",
     "ref",
@@ -132,7 +131,6 @@ const DateRangePicker: Layout<typeof componentRecipe, DateRangePickerProps> = ()
         openState.isOpen() && CLASSES.Root.flag.open,
         isDisabled() && CLASSES.Root.flag.disabled,
         local.class,
-        local.className,
       ) }}
       data-slot="date-range-picker"
       data-open={openState.isOpen() ? "true" : "false"}

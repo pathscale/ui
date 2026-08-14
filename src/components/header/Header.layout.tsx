@@ -2,18 +2,17 @@ import "./Header.css";
 import { splitProps, type Component, type JSX } from "solid-js";
 import { twMerge } from "tailwind-merge";
 
-import type { IComponentBaseProps } from "../types";
+import type { UIBaseProps } from "../vocabulary";
 import { CLASSES } from "./Header.recipe";
 import type { Layout } from "../../lib/layouts";
 import { componentRecipe } from "./Header.recipe";
 
-export type HeaderRootProps = JSX.HTMLAttributes<HTMLDivElement> & IComponentBaseProps;
+export type HeaderRootProps = JSX.HTMLAttributes<HTMLDivElement> & UIBaseProps;
 
 const HeaderRoot: Layout<typeof componentRecipe, HeaderRootProps> = () => {
   const [local, others] = splitProps(props, [
     "children",
     "class",
-    "className",
     "dataTheme",
     "style",
   ]);
@@ -21,7 +20,7 @@ const HeaderRoot: Layout<typeof componentRecipe, HeaderRootProps> = () => {
   return (
     <div
       {...others}
-      {...{ class: twMerge(CLASSES.base, local.class, local.className) }}
+      {...{ class: twMerge(CLASSES.base, local.class) }}
       data-slot="header"
       data-theme={local.dataTheme}
       style={local.style}

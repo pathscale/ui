@@ -10,7 +10,7 @@ import {
 } from "solid-js";
 import { twMerge } from "tailwind-merge";
 
-import type { IComponentBaseProps } from "../types";
+import type { UIBaseProps } from "../vocabulary";
 import { CLASSES } from "./Meter.recipe";
 import type { Layout } from "../../lib/layouts";
 import { componentRecipe } from "./Meter.recipe";
@@ -27,7 +27,7 @@ export type MeterRenderState = {
   isDisabled: boolean;
 };
 
-export type MeterRootProps = IComponentBaseProps &
+export type MeterRootProps = UIBaseProps &
   Omit<JSX.HTMLAttributes<HTMLDivElement>, "children"> & {
     children?: JSX.Element | ((state: MeterRenderState) => JSX.Element);
     value?: number;
@@ -43,9 +43,9 @@ export type MeterRootProps = IComponentBaseProps &
     formatValue?: (value: number, state: Omit<MeterRenderState, "valueText">) => string;
   };
 
-export type MeterOutputProps = IComponentBaseProps & JSX.HTMLAttributes<HTMLSpanElement>;
-export type MeterTrackProps = IComponentBaseProps & JSX.HTMLAttributes<HTMLDivElement>;
-export type MeterFillProps = IComponentBaseProps & JSX.HTMLAttributes<HTMLDivElement>;
+export type MeterOutputProps = UIBaseProps & JSX.HTMLAttributes<HTMLSpanElement>;
+export type MeterTrackProps = UIBaseProps & JSX.HTMLAttributes<HTMLDivElement>;
+export type MeterFillProps = UIBaseProps & JSX.HTMLAttributes<HTMLDivElement>;
 
 type MeterContextValue = {
   state: Accessor<MeterRenderState>;
@@ -67,7 +67,6 @@ const MeterRoot: Layout<typeof componentRecipe, MeterRootProps> = () => {
   const [local, others] = splitProps(props, [
     "children",
     "class",
-    "className",
     "dataTheme",
     "style",
     "value",
@@ -131,7 +130,6 @@ const MeterRoot: Layout<typeof componentRecipe, MeterRootProps> = () => {
       CLASSES.color[local.color ?? "accent"],
       local.isDisabled && CLASSES.state.disabled,
       local.class,
-      local.className,
     ),
   );
 
@@ -164,7 +162,6 @@ const MeterOutput: Layout<typeof componentRecipe, MeterOutputProps> = () => {
   const [local, others] = splitProps(props, [
     "children",
     "class",
-    "className",
     "dataTheme",
     "style",
   ]);
@@ -176,7 +173,7 @@ const MeterOutput: Layout<typeof componentRecipe, MeterOutputProps> = () => {
       data-slot="meter-output"
       data-theme={local.dataTheme}
       style={local.style}
-      {...{ class: twMerge(CLASSES.output, local.class, local.className) }}
+      {...{ class: twMerge(CLASSES.output, local.class) }}
     >
       {local.children ?? state().valueText}
     </span>
@@ -187,7 +184,6 @@ const MeterTrack: Layout<typeof componentRecipe, MeterTrackProps> = () => {
   const [local, others] = splitProps(props, [
     "children",
     "class",
-    "className",
     "dataTheme",
     "style",
   ]);
@@ -198,7 +194,7 @@ const MeterTrack: Layout<typeof componentRecipe, MeterTrackProps> = () => {
       data-slot="meter-track"
       data-theme={local.dataTheme}
       style={local.style}
-      {...{ class: twMerge(CLASSES.track, local.class, local.className) }}
+      {...{ class: twMerge(CLASSES.track, local.class) }}
     >
       {local.children}
     </div>
@@ -206,7 +202,7 @@ const MeterTrack: Layout<typeof componentRecipe, MeterTrackProps> = () => {
 };
 
 const MeterFill: Layout<typeof componentRecipe, MeterFillProps> = () => {
-  const [local, others] = splitProps(props, ["class", "className", "dataTheme", "style"]);
+  const [local, others] = splitProps(props, ["class", "dataTheme", "style"]);
   const { state } = useMeterContext();
 
   const style = createMemo<JSX.CSSProperties | string>(() => {
@@ -228,7 +224,7 @@ const MeterFill: Layout<typeof componentRecipe, MeterFillProps> = () => {
       data-slot="meter-fill"
       data-theme={local.dataTheme}
       style={style()}
-      {...{ class: twMerge(CLASSES.fill, local.class, local.className) }}
+      {...{ class: twMerge(CLASSES.fill, local.class) }}
     />
   );
 };

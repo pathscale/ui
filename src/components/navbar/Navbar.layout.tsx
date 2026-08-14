@@ -5,30 +5,28 @@ import { twMerge } from "tailwind-merge";
 import NavbarSection from "./NavbarSection.generated";
 import NavbarStack from "./NavbarStack.generated";
 import NavbarRow from "./NavbarRow.generated";
-import type { IComponentBaseProps } from "../types";
+import type { UIBaseProps } from "../vocabulary";
 import { CLASSES } from "./Navbar.recipe";
 import type { Layout } from "../../lib/layouts";
 import { componentRecipe } from "./Navbar.recipe";
 
 export type NavbarProps = JSX.HTMLAttributes<HTMLElement> &
-  IComponentBaseProps & {
+  UIBaseProps & {
     as?: keyof JSX.IntrinsicElements;
     dataTheme?: string;
-    className?: string;
   };
 
 const Navbar: Layout<typeof componentRecipe, NavbarProps> = () => {
   const [local, others] = splitProps(props, [
     "as",
     "class",
-    "className",
     "style",
     "children",
     "dataTheme",
   ]);
 
   const Tag = (local.as || "div") as keyof JSX.IntrinsicElements;
-  const classes = () => twMerge(CLASSES.navbar.base, local.class, local.className);
+  const classes = () => twMerge(CLASSES.navbar.base, local.class);
 
   return (
     <Dynamic

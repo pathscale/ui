@@ -5,13 +5,14 @@ import {
   children as resolveChildren,
 } from "solid-js";
 import { twMerge } from "tailwind-merge";
-import type { IComponentBaseProps, ComponentColor } from "../types";
+import type { UIBaseProps } from "../vocabulary";
+import type { ComponentColor } from "../types";
 import { CLASSES } from "./Navbar.recipe";
 import type { Layout } from "../../lib/layouts";
 import { componentRecipe } from "./Navbar.recipe";
 
 export type NavbarRowProps = JSX.HTMLAttributes<HTMLDivElement> &
-  IComponentBaseProps & {
+  UIBaseProps & {
     bordered?: boolean;
     padded?: boolean;
     color?: ComponentColor;
@@ -24,7 +25,6 @@ const NavbarRow: Layout<typeof componentRecipe, NavbarRowProps> = () => {
     "padded",
     "color",
     "class",
-    "className",
     "style",
     "dataTheme",
   ]);
@@ -41,7 +41,6 @@ const NavbarRow: Layout<typeof componentRecipe, NavbarRowProps> = () => {
       local.padded !== false && CLASSES.row.flag.padded,
       CLASSES.row.color[colorKey()],
       local.class,
-      local.className,
     ),
   );
 

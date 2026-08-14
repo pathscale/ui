@@ -8,14 +8,14 @@ import {
 import { Dynamic } from "solid-js/web";
 import clsx from "clsx";
 import { twMerge } from "tailwind-merge";
-import type { IComponentBaseProps } from "../types";
+import type { UIBaseProps } from "../vocabulary";
 import type { ResponsiveProp } from "../types";
 import { mapResponsiveProp } from "../utils";
 import { CLASSES } from "./Flex.recipe";
 import type { Layout } from "../../lib/layouts";
 import { componentRecipe } from "./Flex.recipe";
 
-export type FlexProps = IComponentBaseProps &
+export type FlexProps = UIBaseProps &
   Omit<JSX.HTMLAttributes<HTMLElement>, "ref"> & {
     as?: keyof JSX.IntrinsicElements;
     direction?: ResponsiveProp<"row" | "col" | "row-reverse" | "col-reverse">;
@@ -111,7 +111,6 @@ const Flex: Layout<typeof componentRecipe, FlexProps> = () => {
   const [local, rest] = splitProps(props, [
     "as",
     "class",
-    "className",
     "children",
     "direction",
     "justify",
@@ -155,7 +154,6 @@ const Flex: Layout<typeof componentRecipe, FlexProps> = () => {
         mapResponsiveProp(local.shrink, CLASSES.shrink),
         mapResponsiveProp(local.basis, CLASSES.basis),
         local.class,
-        local.className,
       ),
     ),
   );

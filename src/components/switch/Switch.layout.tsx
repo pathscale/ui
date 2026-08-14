@@ -1,7 +1,7 @@
 import "./Switch.css";
 import { Show, createSignal, splitProps, type Component, type JSX } from "solid-js";
 import { twMerge } from "tailwind-merge";
-import type { IComponentBaseProps } from "../types";
+import type { UIBaseProps } from "../vocabulary";
 import { CLASSES } from "./Switch.recipe";
 import type { Layout } from "../../lib/layouts";
 import { componentRecipe } from "./Switch.recipe";
@@ -21,7 +21,7 @@ export type ToggleColor = "default" | "accent" | "success" | "warning" | "danger
 export type ToggleSize = "sm" | "md" | "lg";
 
 export type ToggleProps = Omit<JSX.InputHTMLAttributes<HTMLInputElement>, "type" | "children" | "color"> &
-  IComponentBaseProps & {
+  UIBaseProps & {
     defaultChecked?: boolean;
     children?: JSX.Element;
     description?: JSX.Element;
@@ -34,7 +34,6 @@ export type ToggleProps = Omit<JSX.InputHTMLAttributes<HTMLInputElement>, "type"
 const Switch: Layout<typeof componentRecipe, ToggleProps> = () => {
   const [local, others] = splitProps(props, [
     "class",
-    "className",
     "children",
     "description",
     "icon",
@@ -75,7 +74,6 @@ const Switch: Layout<typeof componentRecipe, ToggleProps> = () => {
         CLASSES.color[color()],
         isDisabled() && CLASSES.flag.disabled,
         local.class,
-        local.className,
       ) }}
       data-theme={local.dataTheme}
       data-slot="switch"

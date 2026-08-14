@@ -9,7 +9,7 @@ import {
 } from "solid-js";
 import { twMerge } from "tailwind-merge";
 
-import type { IComponentBaseProps } from "../types";
+import type { UIBaseProps } from "../vocabulary";
 import { CLASSES } from "./Menu.recipe";
 import {
   MenuContext,
@@ -54,7 +54,7 @@ export type MenuRootProps<T = unknown> = Omit<
   JSX.HTMLAttributes<HTMLDivElement>,
   "children" | "onChange"
 > &
-  IComponentBaseProps & {
+  UIBaseProps & {
     children?: JSX.Element | ((item: T) => JSX.Element);
     items?: readonly T[];
     renderEmpty?: () => JSX.Element;
@@ -73,7 +73,6 @@ const MenuRoot: Layout<typeof componentRecipe, MenuRootProps> = () => {
   const [local, others] = splitProps(props, [
     "children",
     "class",
-    "className",
     "dataTheme",
     "style",
     "items",
@@ -304,7 +303,7 @@ const MenuRoot: Layout<typeof componentRecipe, MenuRootProps> = () => {
         data-theme={local.dataTheme}
         data-selection-mode={selectionMode()}
         data-disabled={isDisabled() ? "true" : "false"}
-        {...{ class: twMerge(CLASSES.Root.base, local.class, local.className) }}
+        {...{ class: twMerge(CLASSES.Root.base, local.class) }}
         style={local.style}
         onKeyDown={handleKeyDown}
       >

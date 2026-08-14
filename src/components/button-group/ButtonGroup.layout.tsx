@@ -3,7 +3,7 @@ import { splitProps, type Component, type JSX, type ParentComponent } from "soli
 import { twMerge } from "tailwind-merge";
 
 import type { Size, Variant } from "../vocabulary";
-import type { IComponentBaseProps } from "../types";
+import type { UIBaseProps } from "../vocabulary";
 import { CLASSES } from "./ButtonGroup.recipe";
 import { ButtonGroupContext } from "./context";
 import type { Layout } from "../../lib/layouts";
@@ -12,7 +12,7 @@ import { componentRecipe } from "./ButtonGroup.recipe";
 export type ButtonGroupOrientation = "horizontal" | "vertical";
 
 export type ButtonGroupRootProps = Omit<JSX.HTMLAttributes<HTMLDivElement>, "children"> &
-  IComponentBaseProps & {
+  UIBaseProps & {
     children?: JSX.Element;
     orientation?: ButtonGroupOrientation;
     size?: Size;
@@ -22,13 +22,12 @@ export type ButtonGroupRootProps = Omit<JSX.HTMLAttributes<HTMLDivElement>, "chi
   };
 
 export type ButtonGroupSeparatorProps = Omit<JSX.HTMLAttributes<HTMLSpanElement>, "children"> &
-  IComponentBaseProps;
+  UIBaseProps;
 
 const ButtonGroupRoot: Layout<typeof componentRecipe, ButtonGroupRootProps> = () => {
   const [local, others] = splitProps(props, [
     "children",
     "class",
-    "className",
     "dataTheme",
     "style",
     "orientation",
@@ -57,7 +56,6 @@ const ButtonGroupRoot: Layout<typeof componentRecipe, ButtonGroupRootProps> = ()
           CLASSES.Root.orientation[orientation()],
           local.fullWidth && CLASSES.Root.flag.fullWidth,
           local.class,
-          local.className,
         ) }}
         data-slot="button-group"
         data-orientation={orientation()}
@@ -73,13 +71,13 @@ const ButtonGroupRoot: Layout<typeof componentRecipe, ButtonGroupRootProps> = ()
 };
 
 const ButtonGroupSeparator: Layout<typeof componentRecipe, ButtonGroupSeparatorProps> = () => {
-  const [local, others] = splitProps(props, ["class", "className", "dataTheme", "style"]);
+  const [local, others] = splitProps(props, ["class", "dataTheme", "style"]);
 
   return (
     <span
       {...others}
       aria-hidden="true"
-      {...{ class: twMerge(CLASSES.Separator.base, local.class, local.className) }}
+      {...{ class: twMerge(CLASSES.Separator.base, local.class) }}
       data-slot="button-group-separator"
       data-theme={local.dataTheme}
       style={local.style}

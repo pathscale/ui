@@ -35,7 +35,6 @@ export type FormFieldProps = {
   inputProps?: Omit<InputFieldProps, "name" | "value" | "onInput" | "onBlur" | "aria-invalid" | "isInvalid">;
   /** Container class override. */
   class?: string;
-  className?: string;
   /**
    * Escape hatch: explicit form override for Portal / out-of-tree usage.
    * When provided, the component does NOT read from context.
@@ -66,7 +65,6 @@ const FormField: Layout<typeof componentRecipe, FormFieldProps> = () => {
     "label",
     "inputProps",
     "class",
-    "className",
     "form",
   ]);
 
@@ -90,7 +88,7 @@ const FormField: Layout<typeof componentRecipe, FormFieldProps> = () => {
 
         return (
           <div
-            {...{ class: twMerge("flex flex-col gap-1", local.class, local.className) }}
+            {...{ class: twMerge("flex flex-col gap-1", local.class) }}
             data-slot="form-field"
           >
             <Show when={local.label}>

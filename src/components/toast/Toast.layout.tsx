@@ -18,7 +18,7 @@ import { twMerge } from "tailwind-merge";
 
 import Button, { type ButtonProps } from "../button";
 import CloseButton, { type CloseButtonProps } from "../close-button";
-import type { IComponentBaseProps } from "../types";
+import type { UIBaseProps } from "../vocabulary";
 import { CLASSES } from "./Toast.recipe";
 import type { Layout } from "../../lib/layouts";
 import { componentRecipe } from "./Toast.recipe";
@@ -494,7 +494,7 @@ const DefaultIndicator: Layout<typeof componentRecipe, { variant: ResolvedToastV
 };
 
 export type ToastRootProps = Omit<JSX.HTMLAttributes<HTMLDivElement>, "children" | "title"> &
-  IComponentBaseProps & {
+  UIBaseProps & {
     children?: JSX.Element;
     title?: JSX.Element;
     description?: JSX.Element;
@@ -510,23 +510,23 @@ export type ToastRootProps = Omit<JSX.HTMLAttributes<HTMLDivElement>, "children"
   };
 
 export type ToastContentProps = Omit<JSX.HTMLAttributes<HTMLDivElement>, "children"> &
-  IComponentBaseProps & {
+  UIBaseProps & {
     children?: JSX.Element;
   };
 
 export type ToastIndicatorProps = Omit<JSX.HTMLAttributes<HTMLDivElement>, "children"> &
-  IComponentBaseProps & {
+  UIBaseProps & {
     children?: JSX.Element;
     variant?: ToastVariant;
   };
 
 export type ToastTitleProps = Omit<JSX.HTMLAttributes<HTMLParagraphElement>, "children"> &
-  IComponentBaseProps & {
+  UIBaseProps & {
     children?: JSX.Element;
   };
 
 export type ToastDescriptionProps = Omit<JSX.HTMLAttributes<HTMLParagraphElement>, "children"> &
-  IComponentBaseProps & {
+  UIBaseProps & {
     children?: JSX.Element;
   };
 
@@ -539,12 +539,12 @@ export type ToastCloseButtonProps = Omit<
   Omit<CloseButtonProps, "children" | "startIcon" | "endIcon">;
 
 const ToastContent: Layout<typeof componentRecipe, ToastContentProps> = () => {
-  const [local, others] = splitProps(props, ["children", "class", "className", "dataTheme", "style"]);
+  const [local, others] = splitProps(props, ["children", "class", "dataTheme", "style"]);
 
   return (
     <div
       {...others}
-      {...{ class: twMerge(CLASSES.Content.base, local.class, local.className) }}
+      {...{ class: twMerge(CLASSES.Content.base, local.class) }}
       data-slot="toast-content"
       data-theme={local.dataTheme}
       style={local.style}
@@ -559,7 +559,6 @@ const ToastIndicator: Layout<typeof componentRecipe, ToastIndicatorProps> = () =
   const [local, others] = splitProps(props, [
     "children",
     "class",
-    "className",
     "dataTheme",
     "style",
     "variant",
@@ -570,7 +569,7 @@ const ToastIndicator: Layout<typeof componentRecipe, ToastIndicatorProps> = () =
   return (
     <div
       {...others}
-      {...{ class: twMerge(CLASSES.Indicator.base, local.class, local.className) }}
+      {...{ class: twMerge(CLASSES.Indicator.base, local.class) }}
       data-slot="toast-indicator"
       data-theme={local.dataTheme}
       style={local.style}
@@ -586,12 +585,12 @@ const ToastIndicator: Layout<typeof componentRecipe, ToastIndicatorProps> = () =
 };
 
 const ToastTitle: Layout<typeof componentRecipe, ToastTitleProps> = () => {
-  const [local, others] = splitProps(props, ["children", "class", "className", "dataTheme", "style"]);
+  const [local, others] = splitProps(props, ["children", "class", "dataTheme", "style"]);
 
   return (
     <p
       {...others}
-      {...{ class: twMerge(CLASSES.Title.base, local.class, local.className) }}
+      {...{ class: twMerge(CLASSES.Title.base, local.class) }}
       data-slot="toast-title"
       data-theme={local.dataTheme}
       style={local.style}
@@ -602,12 +601,12 @@ const ToastTitle: Layout<typeof componentRecipe, ToastTitleProps> = () => {
 };
 
 const ToastDescription: Layout<typeof componentRecipe, ToastDescriptionProps> = () => {
-  const [local, others] = splitProps(props, ["children", "class", "className", "dataTheme", "style"]);
+  const [local, others] = splitProps(props, ["children", "class", "dataTheme", "style"]);
 
   return (
     <p
       {...others}
-      {...{ class: twMerge(CLASSES.Description.base, local.class, local.className) }}
+      {...{ class: twMerge(CLASSES.Description.base, local.class) }}
       data-slot="toast-description"
       data-theme={local.dataTheme}
       style={local.style}
@@ -618,7 +617,7 @@ const ToastDescription: Layout<typeof componentRecipe, ToastDescriptionProps> = 
 };
 
 const ToastActionButton: Layout<typeof componentRecipe, ToastActionButtonProps> = () => {
-  const [local, others] = splitProps(props, ["class", "className"]);
+  const [local, others] = splitProps(props, ["class"]);
 
   return (
     <Button
@@ -637,7 +636,6 @@ const ToastCloseButton: Layout<typeof componentRecipe, ToastCloseButtonProps> = 
   const ctx = useToastItemContext();
   const [local, others] = splitProps(props, [
     "class",
-    "className",
     "aria-label",
     "dataTheme",
     "style",
@@ -653,7 +651,7 @@ const ToastCloseButton: Layout<typeof componentRecipe, ToastCloseButtonProps> = 
   return (
     <CloseButton
       {...others}
-      {...{ class: twMerge(CLASSES.Close.base, local.class, local.className) }}
+      {...{ class: twMerge(CLASSES.Close.base, local.class) }}
       aria-label={local["aria-label"] ?? "Dismiss notification"}
       startIcon={<CloseIcon />}
       data-slot="toast-close"
@@ -668,7 +666,6 @@ const ToastRoot: Layout<typeof componentRecipe, ToastRootProps> = () => {
   const [local, others] = splitProps(props, [
     "children",
     "class",
-    "className",
     "dataTheme",
     "style",
     "title",
@@ -710,7 +707,6 @@ const ToastRoot: Layout<typeof componentRecipe, ToastRootProps> = () => {
           local.isEntering && CLASSES.Item.state.entering,
           local.isExiting && CLASSES.Item.state.exiting,
           local.class,
-          local.className,
         ) }}
         role={role()}
         aria-live={ariaLive()}
@@ -760,7 +756,7 @@ export type ToastRenderFn = (
 ) => JSX.Element;
 
 export type ToastProviderProps = Omit<JSX.HTMLAttributes<HTMLDivElement>, "children"> &
-  IComponentBaseProps & {
+  UIBaseProps & {
     children?: JSX.Element;
     placement?: ToastPlacement;
     queue?: ToastQueue<ToastContentValue> | null;
@@ -775,7 +771,6 @@ const ToastProvider: Layout<typeof componentRecipe, ToastProviderProps> = () => 
   const [local, others] = splitProps(props, [
     "children",
     "class",
-    "className",
     "dataTheme",
     "style",
     "ref",
@@ -872,7 +867,6 @@ const ToastProvider: Layout<typeof componentRecipe, ToastProviderProps> = () => 
         CLASSES.Provider.base,
         CLASSES.Provider.placement[placement()],
         local.class,
-        local.className,
       ) }}
       data-slot="toast-region"
       data-placement={placement()}

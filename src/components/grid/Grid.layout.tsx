@@ -7,7 +7,7 @@ import {
 } from "solid-js";
 import { Dynamic } from "solid-js/web";
 import { twMerge } from "tailwind-merge";
-import type { IComponentBaseProps } from "../types";
+import type { UIBaseProps } from "../vocabulary";
 import clsx from "clsx";
 import type { ResponsiveProp } from "../types";
 import { mapResponsiveProp } from "../utils";
@@ -32,7 +32,7 @@ type GridSize =
 type GridGap = "none" | "sm" | "md" | "lg" | "xl";
 type AutoSize = "min" | "max" | "fr";
 
-export type GridProps = IComponentBaseProps &
+export type GridProps = UIBaseProps &
   Omit<JSX.HTMLAttributes<HTMLElement>, "ref"> & {
     as?: keyof JSX.IntrinsicElements;
     cols?: ResponsiveProp<GridSize>;
@@ -92,7 +92,6 @@ const Grid: Layout<typeof componentRecipe, GridProps> = () => {
   const [local, rest] = splitProps(merged, [
     "as",
     "class",
-    "className",
     "children",
     "cols",
     "rows",
@@ -113,7 +112,6 @@ const Grid: Layout<typeof componentRecipe, GridProps> = () => {
     mapResponsiveProp(local.autoCols, CLASSES.autoCols),
     mapResponsiveProp(local.autoRows, CLASSES.autoRows),
     local.class,
-    local.className,
   );
 
   return (

@@ -8,7 +8,7 @@ import {
   type JSX,
 } from "solid-js";
 import { twMerge } from "tailwind-merge";
-import type { IComponentBaseProps } from "../types";
+import type { UIBaseProps } from "../vocabulary";
 import { CLASSES } from "./Slider.recipe";
 import type { Layout } from "../../lib/layouts";
 import { componentRecipe } from "./Slider.recipe";
@@ -27,12 +27,11 @@ type SliderBaseProps = {
   size?: SliderSize;
   dataTheme?: string;
   class?: string;
-  className?: string;
   style?: JSX.CSSProperties;
 };
 
 export type SliderProps = SliderBaseProps &
-  IComponentBaseProps &
+  UIBaseProps &
   Omit<JSX.InputHTMLAttributes<HTMLInputElement>, keyof SliderBaseProps>;
 
 function clamp(val: number, min: number, max: number) {
@@ -59,7 +58,6 @@ const Slider: Layout<typeof componentRecipe, SliderProps> = () => {
     "size",
     "dataTheme",
     "class",
-    "className",
     "style",
   ]);
 
@@ -163,7 +161,6 @@ const Slider: Layout<typeof componentRecipe, SliderProps> = () => {
         CLASSES.base,
         CLASSES.size[size()],
         local.class,
-        local.className,
       ) }}
       data-theme={local.dataTheme}
       data-slot="slider"

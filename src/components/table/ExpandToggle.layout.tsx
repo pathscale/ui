@@ -1,12 +1,12 @@
 import { type Component, type JSX, Show, splitProps } from "solid-js";
 import { twMerge } from "tailwind-merge";
 import Icon from "../icon";
-import type { IComponentBaseProps } from "../types";
+import type { UIBaseProps } from "../vocabulary";
 import type { Layout } from "../../lib/layouts";
 import { componentRecipe } from "./Table.recipe";
 
 export type ExpandToggleProps = Omit<JSX.ButtonHTMLAttributes<HTMLButtonElement>, "onToggle"> &
-  IComponentBaseProps & {
+  UIBaseProps & {
     expanded: boolean;
     onToggle?: () => void;
     size?: number;
@@ -22,7 +22,6 @@ const ExpandToggle: Layout<typeof componentRecipe, ExpandToggleProps> = () => {
     "label",
     "disabled",
     "class",
-    "className",
     "onClick",
     "dataTheme",
   ]);
@@ -51,7 +50,6 @@ const ExpandToggle: Layout<typeof componentRecipe, ExpandToggleProps> = () => {
         "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/60",
         isDisabled() && "cursor-not-allowed opacity-60 hover:bg-base-100",
         local.class,
-        local.className,
       ) }}
       data-theme={local.dataTheme}
       data-slot="table-expand-toggle"

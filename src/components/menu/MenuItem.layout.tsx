@@ -12,7 +12,7 @@ import {
 } from "solid-js";
 import { twMerge } from "tailwind-merge";
 
-import type { IComponentBaseProps } from "../types";
+import type { UIBaseProps } from "../vocabulary";
 import { MenuContext, type MenuItemVariant, type MenuSelectionMode } from "./context";
 import { CLASSES } from "./Menu.recipe";
 import type { Layout } from "../../lib/layouts";
@@ -59,7 +59,7 @@ const extractTextValue = (nodes: unknown[]): string | undefined => {
 };
 
 export type MenuItemRootProps = Omit<JSX.HTMLAttributes<HTMLDivElement>, "children"> &
-  IComponentBaseProps & {
+  UIBaseProps & {
     id?: string | number;
     textValue?: string;
     variant?: MenuItemVariant;
@@ -73,7 +73,7 @@ export type MenuItemRootProps = Omit<JSX.HTMLAttributes<HTMLDivElement>, "childr
 export type MenuItemIndicatorType = "checkmark" | "dot";
 
 export type MenuItemIndicatorProps = Omit<JSX.HTMLAttributes<HTMLSpanElement>, "children"> &
-  IComponentBaseProps & {
+  UIBaseProps & {
     type?: MenuItemIndicatorType;
     children?: JSX.Element | ((props: MenuItemRenderProps) => JSX.Element);
   };
@@ -82,7 +82,7 @@ export type MenuItemSubmenuIndicatorProps = Omit<
   JSX.HTMLAttributes<HTMLSpanElement>,
   "children"
 > &
-  IComponentBaseProps & {
+  UIBaseProps & {
     children?: JSX.Element;
   };
 
@@ -93,7 +93,6 @@ const MenuItemRoot: Layout<typeof componentRecipe, MenuItemRootProps> = () => {
   const [local, others] = splitProps(props, [
     "children",
     "class",
-    "className",
     "dataTheme",
     "style",
     "id",
@@ -256,7 +255,6 @@ const MenuItemRoot: Layout<typeof componentRecipe, MenuItemRootProps> = () => {
           CLASSES.Item.base,
           CLASSES.Item.variant[variant()],
           local.class,
-          local.className,
         ) }}
         style={local.style}
         onClick={handleClick}
@@ -277,7 +275,6 @@ const MenuItemIndicator: Layout<typeof componentRecipe, MenuItemIndicatorProps> 
   const [local, others] = splitProps(props, [
     "children",
     "class",
-    "className",
     "dataTheme",
     "style",
     "type",
@@ -302,7 +299,7 @@ const MenuItemIndicator: Layout<typeof componentRecipe, MenuItemIndicatorProps> 
       data-theme={local.dataTheme}
       data-type={type()}
       data-visible={renderState().isSelected ? "true" : undefined}
-      {...{ class: twMerge(CLASSES.ItemIndicator.base, local.class, local.className) }}
+      {...{ class: twMerge(CLASSES.ItemIndicator.base, local.class) }}
       style={local.style}
     >
       {typeof local.children === "function" ? (
@@ -344,7 +341,7 @@ const MenuItemIndicator: Layout<typeof componentRecipe, MenuItemIndicatorProps> 
 
 const MenuItemSubmenuIndicator: Layout<typeof componentRecipe, MenuItemSubmenuIndicatorProps> = () => {
   const context = useContext(MenuItemStateContext);
-  const [local, others] = splitProps(props, ["children", "class", "className", "dataTheme", "style"]);
+  const [local, others] = splitProps(props, ["children", "class", "dataTheme", "style"]);
 
   if (!context?.renderState().hasSubmenu) {
     return null;
@@ -356,7 +353,7 @@ const MenuItemSubmenuIndicator: Layout<typeof componentRecipe, MenuItemSubmenuIn
       aria-hidden="true"
       data-slot="submenu-indicator"
       data-theme={local.dataTheme}
-      {...{ class: twMerge(CLASSES.ItemIndicator.base, CLASSES.ItemIndicator.submenu, local.class, local.className) }}
+      {...{ class: twMerge(CLASSES.ItemIndicator.base, CLASSES.ItemIndicator.submenu, local.class) }}
       style={local.style}
     >
       {local.children ?? (

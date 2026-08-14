@@ -39,7 +39,6 @@ import { componentRecipe } from "./ColorWheelFlower.recipe";
 
 export interface ColorWheelFlowerProps {
   class?: string;
-  className?: string;
   /** Explicit mode. Omit to follow the root `data-theme` attribute. */
   mode?: ColorWheelFlowerMode;
   /** Exactly 31 literal colors, ordered outer ring, middle ring, inner ring, center. */
@@ -243,7 +242,7 @@ const MAX_WAVE_DISTANCE = MAX_RADIUS * 2;
 const MAX_WAVE_DELAY = 0.12;
 
 const ColorWheelFlower: Layout<typeof componentRecipe, ColorWheelFlowerProps> = () => {
-  const [local] = splitProps(props, ["class", "className", "mode", "palette"]);
+  const [local] = splitProps(props, ["class", "mode", "palette"]);
   const context = useColorPickerContext();
 
   const [selectedIndex, setSelectedIndex] = createSignal<number | null>(null);
@@ -508,7 +507,6 @@ const ColorWheelFlower: Layout<typeof componentRecipe, ColorWheelFlowerProps> = 
           CLASSES.base,
           clsx({ [CLASSES.flag.disabled]: context.disabled() }),
           local.class,
-          local.className,
         ),
       }}
       onMouseMove={handlePointerMove}

@@ -2,7 +2,7 @@ import "./AuthSubmitButton.css";
 import type { JSX } from "solid-js";
 import type { Flavor, Size, State, Variant, Width } from "../vocabulary";
 import Button from "../button";
-import type { IComponentBaseProps } from "../types";
+import type { UIBaseProps } from "../vocabulary";
 import type { Layout } from "../../lib/layouts";
 import { authSubmitButton } from "./AuthSubmitButton.recipe";
 
@@ -13,7 +13,7 @@ export type AuthSubmitButtonProps = Omit<
   JSX.ButtonHTMLAttributes<HTMLButtonElement>,
   "children" | "disabled" | "type"
 > &
-  IComponentBaseProps & {
+  UIBaseProps & {
     children: JSX.Element;
     type?: "button" | "submit" | "reset";
     variant?: Variant;

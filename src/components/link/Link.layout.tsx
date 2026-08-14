@@ -2,7 +2,7 @@ import "./Link.css";
 import { splitProps, type Component, type JSX } from "solid-js";
 import { twMerge } from "tailwind-merge";
 
-import type { IComponentBaseProps } from "../types";
+import type { UIBaseProps } from "../vocabulary";
 import { CLASSES } from "./Link.recipe";
 import type { Layout } from "../../lib/layouts";
 import { componentRecipe } from "./Link.recipe";
@@ -11,14 +11,14 @@ export type LinkVariant = "default";
 export type LinkUnderline = "always" | "hover" | "none";
 
 export type LinkRootProps = Omit<JSX.AnchorHTMLAttributes<HTMLAnchorElement>, "color"> &
-  IComponentBaseProps & {
+  UIBaseProps & {
     variant?: LinkVariant;
     underline?: LinkUnderline;
     isExternal?: boolean;
     isDisabled?: boolean;
   };
 
-export type LinkIconProps = JSX.HTMLAttributes<HTMLSpanElement> & IComponentBaseProps;
+export type LinkIconProps = JSX.HTMLAttributes<HTMLSpanElement> & UIBaseProps;
 
 const ensureExternalRel = (value: string | undefined) => {
   const relTokens = new Set((value ?? "").split(/\s+/).filter(Boolean));
@@ -32,7 +32,6 @@ const LinkRoot: Layout<typeof componentRecipe, LinkRootProps> = () => {
     "children",
     "href",
     "class",
-    "className",
     "dataTheme",
     "style",
     "variant",
@@ -63,7 +62,6 @@ const LinkRoot: Layout<typeof componentRecipe, LinkRootProps> = () => {
         isExternal() && CLASSES.flag.external,
         isDisabled() && CLASSES.flag.disabled,
         local.class,
-        local.className,
       ) }}
       data-slot="link"
       data-theme={local.dataTheme}
@@ -80,7 +78,6 @@ const LinkRoot: Layout<typeof componentRecipe, LinkRootProps> = () => {
 const LinkIcon: Layout<typeof componentRecipe, LinkIconProps> = () => {
   const [local, others] = splitProps(props, [
     "class",
-    "className",
     "children",
     "dataTheme",
     "style",
@@ -91,7 +88,7 @@ const LinkIcon: Layout<typeof componentRecipe, LinkIconProps> = () => {
   return (
     <span
       {...others}
-      {...{ class: twMerge(CLASSES.slot.icon, local.class, local.className) }}
+      {...{ class: twMerge(CLASSES.slot.icon, local.class) }}
       data-slot="link-icon"
       data-default-icon={hasCustomIcon() ? "false" : "true"}
       data-theme={local.dataTheme}

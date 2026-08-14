@@ -1,13 +1,13 @@
 import { type Component, splitProps } from "solid-js";
 import { twMerge } from "tailwind-merge";
 import Button from "../button";
-import type { IComponentBaseProps } from "../types";
+import type { UIBaseProps } from "../vocabulary";
 import type { Layout } from "../../lib/layouts";
 import { componentRecipe } from "./Table.recipe";
 
 export type InlineConfirmVariant = "primary" | "danger" | "warning";
 
-export type InlineConfirmProps = IComponentBaseProps & {
+export type InlineConfirmProps = UIBaseProps & {
   prompt: string;
   confirmLabel: string;
   cancelLabel: string;
@@ -35,7 +35,6 @@ const InlineConfirm: Layout<typeof componentRecipe, InlineConfirmProps> = () => 
     "disabled",
     "confirmFlavor",
     "class",
-    "className",
     "dataTheme",
   ]);
 
@@ -46,7 +45,7 @@ const InlineConfirm: Layout<typeof componentRecipe, InlineConfirmProps> = () => 
   return (
     <div
       {...rest}
-      {...{ class: twMerge("inline-flex flex-wrap items-center gap-2", local.class, local.className) }}
+      {...{ class: twMerge("inline-flex flex-wrap items-center gap-2", local.class) }}
       data-theme={local.dataTheme}
       data-slot="table-inline-confirm"
     >

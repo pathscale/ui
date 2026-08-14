@@ -5,16 +5,15 @@ import {
   children as resolveChildren,
 } from "solid-js";
 import { twMerge } from "tailwind-merge";
-import type { IComponentBaseProps } from "../types";
+import type { UIBaseProps } from "../vocabulary";
 import { CLASSES } from "./Navbar.recipe";
 import type { Layout } from "../../lib/layouts";
 import { componentRecipe } from "./Navbar.recipe";
 
 export type NavbarStackProps = JSX.HTMLAttributes<HTMLDivElement> &
-  IComponentBaseProps & {
+  UIBaseProps & {
     sticky?: boolean;
     container?: boolean;
-    className?: string;
     dataTheme?: string;
   };
 
@@ -24,7 +23,6 @@ const NavbarStack: Layout<typeof componentRecipe, NavbarStackProps> = () => {
     "sticky",
     "container",
     "class",
-    "className",
     "style",
     "dataTheme",
   ]);
@@ -37,7 +35,6 @@ const NavbarStack: Layout<typeof componentRecipe, NavbarStackProps> = () => {
       local.sticky && CLASSES.stack.flag.sticky,
       local.container && CLASSES.stack.flag.container,
       local.class,
-      local.className,
     ),
   );
 

@@ -1,14 +1,14 @@
 import "./LiveChat.css";
 import { type Component, type JSX, createSignal, Show, splitProps } from "solid-js";
 import { twMerge } from "tailwind-merge";
-import type { IComponentBaseProps } from "../types";
+import type { UIBaseProps } from "../vocabulary";
 import LiveChatPanel from "./LiveChatPanel.generated";
 import type { LiveChatPanelProps } from "./LiveChatPanel.generated";
 import { CLASSES } from "./LiveChat.recipe";
 import type { Layout } from "../../lib/layouts";
 import { componentRecipe } from "./LiveChat.recipe";
 
-export interface LiveChatBubbleProps extends IComponentBaseProps {
+export interface LiveChatBubbleProps extends UIBaseProps {
   /**
    * Position of the chat bubble
    * @default "bottom-right"
@@ -70,7 +70,6 @@ const LiveChatBubble: Layout<typeof componentRecipe, LiveChatBubbleProps> = () =
     "onClose",
     "children",
     "class",
-    "className",
     "style",
   ]);
 
@@ -108,7 +107,6 @@ const LiveChatBubble: Layout<typeof componentRecipe, LiveChatBubbleProps> = () =
       CLASSES.bubble.base,
       positionClasses(),
       local.class,
-      local.className,
     );
 
   return (

@@ -13,7 +13,6 @@ type ChipSize = "sm" | "md" | "lg";
 
 interface ChipRootProps extends Omit<JSX.HTMLAttributes<HTMLSpanElement>, "color" | "onRemove"> {
   class?: string;
-  className?: string;
   children?: JSX.Element;
   variant?: ChipVariant;
   color?: ChipColor;
@@ -29,7 +28,6 @@ const ChipRoot: Layout<typeof componentRecipe, ChipRootProps> = () => {
   const [local, others] = splitProps(props, [
     "children",
     "class",
-    "className",
     "variant",
     "color",
     "size",
@@ -52,7 +50,6 @@ const ChipRoot: Layout<typeof componentRecipe, ChipRootProps> = () => {
         CLASSES.color[color],
         CLASSES.size[size],
         local.class,
-        local.className,
       ),
     );
   };

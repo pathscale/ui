@@ -18,7 +18,7 @@ import {
 } from "solid-js";
 import { twMerge } from "tailwind-merge";
 
-import type { IComponentBaseProps } from "../types";
+import type { UIBaseProps } from "../vocabulary";
 import { CLASSES } from "./ComboBox.recipe";
 import type { Layout } from "../../lib/layouts";
 import { componentRecipe } from "./ComboBox.recipe";
@@ -132,7 +132,7 @@ export type ComboBoxRootProps<T = ComboBoxItem> = Omit<
   JSX.HTMLAttributes<HTMLDivElement>,
   "children"
 > &
-  IComponentBaseProps & {
+  UIBaseProps & {
     children?: JSX.Element;
     startIcon?: JSX.Element;
     endIcon?: JSX.Element;
@@ -167,7 +167,7 @@ export type ComboBoxInputGroupProps = Omit<
   JSX.HTMLAttributes<HTMLDivElement>,
   "children"
 > &
-  IComponentBaseProps & {
+  UIBaseProps & {
     children?: JSX.Element;
   };
 
@@ -175,7 +175,7 @@ export type ComboBoxInputProps = Omit<
   JSX.InputHTMLAttributes<HTMLInputElement>,
   "value" | "onInput" | "disabled"
 > &
-  IComponentBaseProps & {
+  UIBaseProps & {
     onInput?: JSX.EventHandlerUnion<HTMLInputElement, InputEvent>;
   };
 
@@ -183,7 +183,7 @@ export type ComboBoxTriggerProps = Omit<
   JSX.ButtonHTMLAttributes<HTMLButtonElement>,
   "type" | "disabled"
 > &
-  IComponentBaseProps & {
+  UIBaseProps & {
     startIcon?: JSX.Element;
     endIcon?: JSX.Element;
   };
@@ -192,7 +192,7 @@ export type ComboBoxPopoverProps = Omit<
   JSX.HTMLAttributes<HTMLDivElement>,
   "children"
 > &
-  IComponentBaseProps & {
+  UIBaseProps & {
     children?: JSX.Element;
   };
 
@@ -209,7 +209,7 @@ export type ComboBoxListProps = Omit<
   JSX.HTMLAttributes<HTMLDivElement>,
   "children"
 > &
-  IComponentBaseProps & {
+  UIBaseProps & {
     children?: JSX.Element | ((item: ComboBoxListRenderItem) => JSX.Element);
     renderEmpty?: () => JSX.Element;
     endIcon?: JSX.Element;
@@ -221,7 +221,6 @@ const ComboBoxRoot: Layout<typeof componentRecipe, ComboBoxRootProps> = () => {
     "startIcon",
     "endIcon",
     "class",
-    "className",
     "dataTheme",
     "style",
     "items",
@@ -513,7 +512,6 @@ const ComboBoxRoot: Layout<typeof componentRecipe, ComboBoxRootProps> = () => {
           CLASSES.Root.variant[variant()],
           fullWidth() && CLASSES.Root.flag.fullWidth,
           local.class,
-          local.className,
         ) }}
         data-slot="combobox"
         data-open={isOpen() ? "true" : "false"}
@@ -555,7 +553,7 @@ const ComboBoxRoot: Layout<typeof componentRecipe, ComboBoxRootProps> = () => {
 
 const ComboBoxInputGroup: Layout<typeof componentRecipe, ComboBoxInputGroupProps> = () => {
   const context = useContext(ComboBoxContext);
-  const [local, others] = splitProps(props, ["children", "class", "className", "dataTheme", "style"]);
+  const [local, others] = splitProps(props, ["children", "class", "dataTheme", "style"]);
 
   return (
     <div
@@ -564,7 +562,6 @@ const ComboBoxInputGroup: Layout<typeof componentRecipe, ComboBoxInputGroupProps
         CLASSES.InputGroup.base,
         context?.fullWidth() && CLASSES.InputGroup.flag.fullWidth,
         local.class,
-        local.className,
       ) }}
       data-slot="combobox-input-group"
       data-disabled={context?.isDisabled() ? "true" : undefined}
@@ -581,7 +578,6 @@ const ComboBoxInput: Layout<typeof componentRecipe, ComboBoxInputProps> = () => 
   const context = useContext(ComboBoxContext);
   const [local, others] = splitProps(props, [
     "class",
-    "className",
     "dataTheme",
     "style",
     "onInput",
@@ -701,7 +697,7 @@ const ComboBoxInput: Layout<typeof componentRecipe, ComboBoxInputProps> = () => 
       aria-activedescendant={activeOptionId()}
       aria-disabled={context?.isDisabled() ? "true" : undefined}
       aria-invalid={context?.isInvalid() ? "true" : undefined}
-      {...{ class: twMerge(CLASSES.Input.base, local.class, local.className) }}
+      {...{ class: twMerge(CLASSES.Input.base, local.class) }}
       data-slot="combobox-input"
       data-theme={local.dataTheme}
       style={local.style}
@@ -721,7 +717,6 @@ const ComboBoxTrigger: Layout<typeof componentRecipe, ComboBoxTriggerProps> = ()
   const [local, others] = splitProps(props, [
     "children",
     "class",
-    "className",
     "dataTheme",
     "style",
     "startIcon",
@@ -739,7 +734,7 @@ const ComboBoxTrigger: Layout<typeof componentRecipe, ComboBoxTriggerProps> = ()
     <button
       {...others}
       type="button"
-      {...{ class: twMerge(CLASSES.Trigger.base, local.class, local.className) }}
+      {...{ class: twMerge(CLASSES.Trigger.base, local.class) }}
       data-slot="combobox-trigger"
       data-open={context?.isOpen() ? "true" : "false"}
       data-theme={local.dataTheme}
@@ -775,12 +770,12 @@ const ComboBoxTrigger: Layout<typeof componentRecipe, ComboBoxTriggerProps> = ()
 
 const ComboBoxPopover: Layout<typeof componentRecipe, ComboBoxPopoverProps> = () => {
   const context = useContext(ComboBoxContext);
-  const [local, others] = splitProps(props, ["children", "class", "className", "dataTheme", "style"]);
+  const [local, others] = splitProps(props, ["children", "class", "dataTheme", "style"]);
 
   return (
     <div
       {...others}
-      {...{ class: twMerge(CLASSES.Popover.base, local.class, local.className) }}
+      {...{ class: twMerge(CLASSES.Popover.base, local.class) }}
       data-slot="combobox-popover"
       data-open={context?.isOpen() ? "true" : "false"}
       data-theme={local.dataTheme}
@@ -796,7 +791,6 @@ const ComboBoxList: Layout<typeof componentRecipe, ComboBoxListProps> = () => {
   const [local, others] = splitProps(props, [
     "children",
     "class",
-    "className",
     "dataTheme",
     "style",
     "renderEmpty",
@@ -810,7 +804,7 @@ const ComboBoxList: Layout<typeof componentRecipe, ComboBoxListProps> = () => {
       {...others}
       id={context?.listBoxId}
       role="listbox"
-      {...{ class: twMerge(CLASSES.List.base, local.class, local.className) }}
+      {...{ class: twMerge(CLASSES.List.base, local.class) }}
       data-slot="combobox-list"
       data-theme={local.dataTheme}
       style={local.style}

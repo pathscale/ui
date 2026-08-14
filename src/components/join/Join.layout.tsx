@@ -6,12 +6,12 @@ import {
 } from "solid-js";
 import { clsx } from "clsx";
 import { twMerge } from "tailwind-merge";
-import type { IComponentBaseProps } from "../types";
+import type { UIBaseProps } from "../vocabulary";
 import { CLASSES } from "./Join.recipe";
 import type { Layout } from "../../lib/layouts";
 import { componentRecipe } from "./Join.recipe";
 
-export type JoinProps = IComponentBaseProps &
+export type JoinProps = UIBaseProps &
   JSX.HTMLAttributes<HTMLDivElement> & {
     responsive?: boolean;
     vertical?: boolean;
@@ -24,7 +24,6 @@ const Join: Layout<typeof componentRecipe, JoinProps> = () => {
     "vertical",
     "horizontal",
     "class",
-    "className",
     "dataTheme",
     "style",
     "children",
@@ -41,7 +40,6 @@ const Join: Layout<typeof componentRecipe, JoinProps> = () => {
         [CLASSES.flag.responsive]: local.responsive,
       }),
       local.class,
-      local.className,
     ),
   );
 

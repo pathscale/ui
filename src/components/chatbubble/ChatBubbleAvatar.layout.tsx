@@ -2,7 +2,7 @@ import type { JSX } from "solid-js";
 import { twMerge } from "tailwind-merge";
 import Avatar from "../avatar";
 import type { AvatarRootProps } from "../avatar";
-import type { IComponentBaseProps } from "../types";
+import type { UIBaseProps } from "../vocabulary";
 import { CLASSES } from "./ChatBubble.recipe";
 import type { Layout } from "../../lib/layouts";
 import { componentRecipe } from "./ChatBubble.recipe";
@@ -12,7 +12,7 @@ export type ChatBubbleAvatarProps = {
   alt?: string;
   fallback?: string;
 } & Omit<AvatarRootProps, "children"> &
-  IComponentBaseProps;
+  UIBaseProps;
 
 const ChatBubbleAvatar: Layout<typeof componentRecipe, ChatBubbleAvatarProps> = () => {
   return (
@@ -20,7 +20,7 @@ const ChatBubbleAvatar: Layout<typeof componentRecipe, ChatBubbleAvatarProps> = 
       size={props.size ?? "sm"}
       color={props.color}
       variant={props.variant}
-      {...{ class: twMerge(CLASSES.slot.avatar, props.class, props.className) }}
+      {...{ class: twMerge(CLASSES.slot.avatar, props.class) }}
       dataTheme={props.dataTheme}
       style={props.style}
     >

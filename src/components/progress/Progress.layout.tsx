@@ -1,7 +1,7 @@
 import "./Progress.css";
 import { createMemo, splitProps, type JSX } from "solid-js";
 import { twMerge } from "tailwind-merge";
-import type { IComponentBaseProps } from "../types";
+import type { UIBaseProps } from "../vocabulary";
 import { CLASSES } from "./Progress.recipe";
 import type { Layout } from "../../lib/layouts";
 import { componentRecipe } from "./Progress.recipe";
@@ -9,7 +9,7 @@ import { componentRecipe } from "./Progress.recipe";
 export type ProgressSize = "sm" | "md" | "lg";
 export type ProgressColor = "default" | "accent" | "success" | "warning" | "danger";
 
-export type ProgressProps = IComponentBaseProps &
+export type ProgressProps = UIBaseProps &
   Omit<JSX.HTMLAttributes<HTMLDivElement>, "children"> & {
     value?: number;
     minValue?: number;
@@ -36,7 +36,6 @@ const Progress: Layout<typeof componentRecipe, ProgressProps> = () => {
     "formatValue",
     "showValue",
     "class",
-    "className",
     "dataTheme",
     "style",
   ]);
@@ -69,7 +68,6 @@ const Progress: Layout<typeof componentRecipe, ProgressProps> = () => {
       isIndeterminate() && CLASSES.state.indeterminate,
       local.isDisabled && CLASSES.state.disabled,
       local.class,
-      local.className,
     ),
   );
 

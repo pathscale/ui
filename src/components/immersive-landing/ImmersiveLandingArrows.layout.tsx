@@ -12,8 +12,7 @@ const ImmersiveLandingArrows: Layout<typeof componentRecipe, ImmersiveLandingArr
     "isFirstPage",
     "isLastPage",
     "class",
-    "className",
-  ]);
+    ]);
 
   const handleNext = () => {
     if (local.onNext) {
@@ -39,7 +38,6 @@ const ImmersiveLandingArrows: Layout<typeof componentRecipe, ImmersiveLandingArr
               CLASSES.arrows.button,
               CLASSES.arrows.prev,
               local.class,
-              local.className,
             ),
           }}
           aria-label="Previous page"
@@ -67,7 +65,6 @@ const ImmersiveLandingArrows: Layout<typeof componentRecipe, ImmersiveLandingArr
               CLASSES.arrows.button,
               CLASSES.arrows.next,
               local.class,
-              local.className,
             ),
           }}
           aria-label="Next page"

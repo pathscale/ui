@@ -2,7 +2,7 @@ import { type Component, For, createMemo, splitProps } from "solid-js";
 import { twMerge } from "tailwind-merge";
 import { clsx } from "clsx";
 import Button from "../button";
-import type { IComponentBaseProps } from "../types";
+import type { UIBaseProps } from "../vocabulary";
 import { createSizeStore, type SizeStore, type SizePreset } from "./sizeStore";
 import { CLASSES } from "./SizePicker.recipe";
 import type { Layout } from "../../lib/layouts";
@@ -10,7 +10,7 @@ import { componentRecipe } from "./SizePicker.recipe";
 
 const PRESETS: SizePreset[] = ["M", "L", "XL"];
 
-export interface SizePickerProps extends IComponentBaseProps {
+export interface SizePickerProps extends UIBaseProps {
   storagePrefix?: string;
   onSizeChange?: (size: SizePreset) => void;
   "aria-label"?: string;
@@ -22,7 +22,6 @@ const SizePicker: Layout<typeof componentRecipe, SizePickerProps> = () => {
     "onSizeChange",
     "aria-label",
     "class",
-    "className",
     "style",
     "dataTheme",
   ]);
@@ -37,7 +36,7 @@ const SizePicker: Layout<typeof componentRecipe, SizePickerProps> = () => {
   };
 
   const classes = () =>
-    twMerge(CLASSES.base, clsx(local.class, local.className));
+    twMerge(CLASSES.base, clsx(local.class));
 
   return (
     <div

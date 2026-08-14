@@ -9,7 +9,7 @@ import {
   usePickerOpenState,
 } from "../../hooks/date";
 import Calendar, { type CalendarWeekdayFormat } from "../calendar";
-import type { IComponentBaseProps } from "../types";
+import type { UIBaseProps } from "../vocabulary";
 import { CLASSES } from "./DatePicker.recipe";
 import type { Layout } from "../../lib/layouts";
 import { componentRecipe } from "./DatePicker.recipe";
@@ -36,13 +36,12 @@ export type DatePickerProps = Omit<
   JSX.HTMLAttributes<HTMLDivElement>,
   "onChange" | "children"
 > &
-  IComponentBaseProps &
+  UIBaseProps &
   DatePickerBaseProps;
 
 const DatePicker: Layout<typeof componentRecipe, DatePickerProps> = () => {
   const [local, others] = splitProps(props, [
     "class",
-    "className",
     "dataTheme",
     "style",
     "ref",
@@ -109,7 +108,6 @@ const DatePicker: Layout<typeof componentRecipe, DatePickerProps> = () => {
         openState.isOpen() && CLASSES.Root.flag.open,
         isDisabled() && CLASSES.Root.flag.disabled,
         local.class,
-        local.className,
       ) }}
       data-slot="date-picker"
       data-open={openState.isOpen() ? "true" : "false"}

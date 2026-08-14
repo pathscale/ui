@@ -2,11 +2,11 @@ import { For, Show, type JSX, splitProps } from "solid-js";
 import { twMerge } from "tailwind-merge";
 import { Empty } from "../empty";
 import Icon from "../icon";
-import type { IComponentBaseProps } from "../types";
+import type { UIBaseProps } from "../vocabulary";
 import type { Layout } from "../../lib/layouts";
 import { componentRecipe } from "./Table.recipe";
 
-export type MobileListViewProps<TRow> = IComponentBaseProps & {
+export type MobileListViewProps<TRow> = UIBaseProps & {
   rows: TRow[];
   renderRow?: (row: TRow, index: number) => JSX.Element;
   empty?: JSX.Element;
@@ -28,7 +28,6 @@ const MobileListView: Layout<typeof componentRecipe, MobileListViewProps<unknown
     "emptyTitle",
     "emptyIcon",
     "class",
-    "className",
     "dataTheme",
   ]);
   const renderRow = (row: unknown, index: number) => {
@@ -56,7 +55,7 @@ const MobileListView: Layout<typeof componentRecipe, MobileListViewProps<unknown
   return (
     <div
       {...rest}
-      {...{ class: twMerge("w-full", local.class, local.className) }}
+      {...{ class: twMerge("w-full", local.class) }}
       data-theme={local.dataTheme}
       data-slot="table-mobile-list-view"
     >

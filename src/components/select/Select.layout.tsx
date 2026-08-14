@@ -19,7 +19,7 @@ import {
   createOverlayPosition,
   type OverlayPlacement,
 } from "../_shared/overlayPosition";
-import type { IComponentBaseProps } from "../types";
+import type { UIBaseProps } from "../vocabulary";
 import { CLASSES } from "./Select.recipe";
 import type { Layout } from "../../lib/layouts";
 import { componentRecipe } from "./Select.recipe";
@@ -124,7 +124,7 @@ const sortOptionsByDomOrder = (options: SelectOptionRecord[]) =>
   });
 
 export type SelectRootProps = Omit<JSX.HTMLAttributes<HTMLDivElement>, "onChange"> &
-  IComponentBaseProps & {
+  UIBaseProps & {
     children: JSX.Element;
     placeholder?: string;
     value?: SelectValueType;
@@ -149,7 +149,6 @@ const SelectRoot: Layout<typeof componentRecipe, SelectRootProps> = () => {
   const [local, others] = splitProps(props, [
     "children",
     "class",
-    "className",
     "dataTheme",
     "placeholder",
     "value",
@@ -425,7 +424,6 @@ const SelectRoot: Layout<typeof componentRecipe, SelectRootProps> = () => {
           CLASSES.variant[variant()],
           fullWidth() && CLASSES.flag.fullWidth,
           local.class,
-          local.className,
         ) }}
         data-theme={local.dataTheme}
         data-slot="ui-select"
@@ -440,7 +438,7 @@ const SelectRoot: Layout<typeof componentRecipe, SelectRootProps> = () => {
 };
 
 export type SelectTriggerProps = JSX.ButtonHTMLAttributes<HTMLButtonElement> &
-  IComponentBaseProps & {
+  UIBaseProps & {
     startIcon?: JSX.Element;
     endIcon?: JSX.Element;
   };
@@ -450,7 +448,6 @@ const SelectTrigger: Layout<typeof componentRecipe, SelectTriggerProps> = () => 
   const [local, others] = splitProps(props, [
     "children",
     "class",
-    "className",
     "dataTheme",
     "disabled",
     "startIcon",
@@ -465,7 +462,7 @@ const SelectTrigger: Layout<typeof componentRecipe, SelectTriggerProps> = () => 
     return (
       <button
         {...others}
-        {...{ class: twMerge(CLASSES.slot.trigger, local.class, local.className) }}
+        {...{ class: twMerge(CLASSES.slot.trigger, local.class) }}
         data-theme={local.dataTheme}
         type={local.type ?? "button"}
       >
@@ -550,7 +547,6 @@ const SelectTrigger: Layout<typeof componentRecipe, SelectTriggerProps> = () => 
         CLASSES.slot.trigger,
         ctx.fullWidth() && CLASSES.slot.triggerFullWidth,
         local.class,
-        local.className,
       ) }}
       data-theme={local.dataTheme}
       data-slot="ui-select-trigger"
@@ -579,14 +575,13 @@ const SelectTrigger: Layout<typeof componentRecipe, SelectTriggerProps> = () => 
 };
 
 export type SelectValueProps = JSX.HTMLAttributes<HTMLSpanElement> &
-  IComponentBaseProps;
+  UIBaseProps;
 
 const SelectValue: Layout<typeof componentRecipe, SelectValueProps> = () => {
   const ctx = useContext(SelectContext);
   const [local, others] = splitProps(props, [
     "children",
     "class",
-    "className",
     "dataTheme",
   ]);
 
@@ -597,7 +592,7 @@ const SelectValue: Layout<typeof componentRecipe, SelectValueProps> = () => {
   return (
     <span
       {...others}
-      {...{ class: twMerge(CLASSES.slot.value, local.class, local.className) }}
+      {...{ class: twMerge(CLASSES.slot.value, local.class) }}
       data-theme={local.dataTheme}
       data-slot="ui-select-value"
       data-placeholder={isPlaceholder() ? "true" : "false"}
@@ -608,7 +603,7 @@ const SelectValue: Layout<typeof componentRecipe, SelectValueProps> = () => {
 };
 
 export type SelectIndicatorProps = JSX.HTMLAttributes<HTMLSpanElement> &
-  IComponentBaseProps & {
+  UIBaseProps & {
     startIcon?: JSX.Element;
     endIcon?: JSX.Element;
   };
@@ -618,7 +613,6 @@ const SelectIndicator: Layout<typeof componentRecipe, SelectIndicatorProps> = ()
   const [local, others] = splitProps(props, [
     "children",
     "class",
-    "className",
     "dataTheme",
     "startIcon",
     "endIcon",
@@ -627,7 +621,7 @@ const SelectIndicator: Layout<typeof componentRecipe, SelectIndicatorProps> = ()
   return (
     <span
       {...others}
-      {...{ class: twMerge(CLASSES.slot.indicator, local.class, local.className) }}
+      {...{ class: twMerge(CLASSES.slot.indicator, local.class) }}
       data-theme={local.dataTheme}
       data-slot="ui-select-indicator"
       data-open={ctx?.open() ? "true" : "false"}
@@ -649,14 +643,13 @@ const SelectIndicator: Layout<typeof componentRecipe, SelectIndicatorProps> = ()
 };
 
 export type SelectPopoverProps = JSX.HTMLAttributes<HTMLDivElement> &
-  IComponentBaseProps;
+  UIBaseProps;
 
 const SelectPopover: Layout<typeof componentRecipe, SelectPopoverProps> = () => {
   const ctx = useContext(SelectContext);
   const [local, others] = splitProps(props, [
     "children",
     "class",
-    "className",
     "dataTheme",
     "style",
     "onPointerDown",
@@ -699,7 +692,7 @@ const SelectPopover: Layout<typeof componentRecipe, SelectPopoverProps> = () => 
       <div
         {...others}
         ref={ctx?.setPopoverRef}
-        {...{ class: twMerge(CLASSES.slot.popover, local.class, local.className) }}
+        {...{ class: twMerge(CLASSES.slot.popover, local.class) }}
         data-theme={local.dataTheme}
         data-slot="ui-select-popover"
         data-open={ctx?.open() ? "true" : "false"}
@@ -717,14 +710,13 @@ const SelectPopover: Layout<typeof componentRecipe, SelectPopoverProps> = () => 
 };
 
 export type SelectListboxProps = JSX.HTMLAttributes<HTMLDivElement> &
-  IComponentBaseProps;
+  UIBaseProps;
 
 const SelectListbox: Layout<typeof componentRecipe, SelectListboxProps> = () => {
   const ctx = useContext(SelectContext);
   const [local, others] = splitProps(props, [
     "children",
     "class",
-    "className",
     "dataTheme",
   ]);
 
@@ -732,7 +724,7 @@ const SelectListbox: Layout<typeof componentRecipe, SelectListboxProps> = () => 
     <div
       {...others}
       id={ctx?.listboxId}
-      {...{ class: twMerge(CLASSES.slot.listbox, local.class, local.className) }}
+      {...{ class: twMerge(CLASSES.slot.listbox, local.class) }}
       data-theme={local.dataTheme}
       data-slot="ui-select-listbox"
       role="listbox"
@@ -745,7 +737,7 @@ const SelectListbox: Layout<typeof componentRecipe, SelectListboxProps> = () => 
 };
 
 export type SelectOptionProps = Omit<JSX.ButtonHTMLAttributes<HTMLButtonElement>, "value"> &
-  IComponentBaseProps & {
+  UIBaseProps & {
     value: SelectKey;
     textValue?: string;
     isDisabled?: boolean;
@@ -758,7 +750,6 @@ const SelectOption: Layout<typeof componentRecipe, SelectOptionProps> = () => {
   const [local, others] = splitProps(props, [
     "children",
     "class",
-    "className",
     "dataTheme",
     "value",
     "textValue",
@@ -777,7 +768,7 @@ const SelectOption: Layout<typeof componentRecipe, SelectOptionProps> = () => {
     return (
       <button
         {...others}
-        {...{ class: twMerge(CLASSES.slot.option, local.class, local.className) }}
+        {...{ class: twMerge(CLASSES.slot.option, local.class) }}
         data-theme={local.dataTheme}
         type={local.type ?? "button"}
       >
@@ -900,7 +891,7 @@ const SelectOption: Layout<typeof componentRecipe, SelectOptionProps> = () => {
       {...others}
       ref={setRef}
       type={local.type ?? "button"}
-      {...{ class: twMerge(CLASSES.slot.option, local.class, local.className) }}
+      {...{ class: twMerge(CLASSES.slot.option, local.class) }}
       data-theme={local.dataTheme}
       data-slot="ui-select-option"
       data-selected={isSelected() ? "true" : "false"}

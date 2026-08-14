@@ -2,7 +2,7 @@ import "./ColorSwatch.css";
 import { splitProps, useContext, type Component, type JSX } from "solid-js";
 import { twMerge } from "tailwind-merge";
 import { ColorSwatchPickerContext } from "../color-swatch-picker/ColorSwatchPicker.generated";
-import type { IComponentBaseProps } from "../types";
+import type { UIBaseProps } from "../vocabulary";
 import { CLASSES } from "./ColorSwatch.recipe";
 import type { Layout } from "../../lib/layouts";
 import { componentRecipe } from "./ColorSwatch.recipe";
@@ -22,7 +22,7 @@ export type ColorSwatchShape = "circle" | "square";
 export type ColorSwatchSize = "xs" | "sm" | "md" | "lg" | "xl";
 
 export type ColorSwatchProps = Omit<JSX.ButtonHTMLAttributes<HTMLButtonElement>, "onChange" | "onSelect"> &
-  IComponentBaseProps & {
+  UIBaseProps & {
     color: string;
     colorName?: string;
     shape?: ColorSwatchShape;
@@ -38,7 +38,6 @@ const ColorSwatch: Layout<typeof componentRecipe, ColorSwatchProps> = () => {
 
   const [local, others] = splitProps(props, [
     "class",
-    "className",
     "color",
     "colorName",
     "shape",
@@ -136,7 +135,6 @@ const ColorSwatch: Layout<typeof componentRecipe, ColorSwatchProps> = () => {
         CLASSES.shape[shape()],
         CLASSES.size[size()],
         local.class,
-        local.className,
       )}
       data-theme={local.dataTheme}
       data-slot="color-swatch"

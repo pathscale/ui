@@ -6,7 +6,6 @@ import { componentRecipe } from "./Form.recipe";
 export type FieldErrorMessageProps = JSX.HTMLAttributes<HTMLParagraphElement> & {
   /** Pre-normalized error string. Renders nothing when undefined or empty. */
   message?: string;
-  className?: string;
 };
 
 /**
@@ -26,7 +25,6 @@ const FieldErrorMessage: Layout<typeof componentRecipe, FieldErrorMessageProps> 
           class: twMerge(
             "text-xs text-error mt-0.5",
             props.class,
-            props.className,
           ),
         }}
         data-slot="field-error-message"

@@ -3,7 +3,7 @@ import { createEffect, createSignal, onCleanup, onMount, splitProps, type JSX } 
 import { twMerge } from "tailwind-merge";
 
 import { prefersReducedMotion } from "../../motion/reduced-motion";
-import type { IComponentBaseProps } from "../types";
+import type { UIBaseProps } from "../vocabulary";
 import { CLASSES, componentRecipe } from "./MetalBorder.recipe";
 import type { Layout } from "../../lib/layouts";
 import {
@@ -28,7 +28,7 @@ export type MetalBorderKind = "pill" | "circle";
 export type MetalBorderTheme = PresetTheme | "auto";
 export type MetalBorderResolvedTheme = PresetTheme;
 
-export type MetalBorderProps = IComponentBaseProps &
+export type MetalBorderProps = UIBaseProps &
   Omit<JSX.HTMLAttributes<HTMLDivElement>, "children"> & {
     children?: JSX.Element;
     preset?: MetalBorderPreset;
@@ -123,7 +123,6 @@ const MetalBorder: Layout<typeof componentRecipe, MetalBorderProps> = () => {
   const [local, others] = splitProps(props, [
     "children",
     "class",
-    "className",
     "contentClass",
     "dataTheme",
     "style",
@@ -349,7 +348,6 @@ const MetalBorder: Layout<typeof componentRecipe, MetalBorderProps> = () => {
         isWebGlUnavailable() && CLASSES.Root.flag.unavailable,
         effectivePaused() && CLASSES.Root.flag.paused,
         local.class,
-        local.className,
       )}
       data-kind={kind()}
       data-preset={preset()}

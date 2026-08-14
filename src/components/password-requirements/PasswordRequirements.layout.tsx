@@ -1,7 +1,7 @@
 import "./PasswordRequirements.css";
 import { For, Show, type JSX } from "solid-js";
 import Icon from "../icon";
-import type { IComponentBaseProps } from "../types";
+import type { UIBaseProps } from "../vocabulary";
 import type { PasswordRuleResult } from "../../passwordRules";
 import type { Layout } from "../../lib/layouts";
 import { passwordRequirements } from "./PasswordRequirements.recipe";
@@ -10,7 +10,7 @@ import { passwordRequirements } from "./PasswordRequirements.recipe";
  * Types
  * -----------------------------------------------------------------------------------------------*/
 export type PasswordRequirementsProps = Omit<JSX.HTMLAttributes<HTMLDivElement>, "children"> &
-  IComponentBaseProps & {
+  UIBaseProps & {
     title?: JSX.Element;
     results: PasswordRuleResult[];
     metIcon?: JSX.Element;

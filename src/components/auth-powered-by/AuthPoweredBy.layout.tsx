@@ -1,6 +1,6 @@
 import "./AuthPoweredBy.css";
 import { Show, type JSX } from "solid-js";
-import type { IComponentBaseProps } from "../types";
+import type { UIBaseProps } from "../vocabulary";
 import type { Layout } from "../../lib/layouts";
 import { authPoweredBy } from "./AuthPoweredBy.recipe";
 
@@ -10,7 +10,7 @@ import { authPoweredBy } from "./AuthPoweredBy.recipe";
 export type AuthPoweredByAlign = "left" | "center" | "right";
 export type AuthPoweredByVariant = "subtle" | "card" | "inline";
 
-export type AuthPoweredByProps = IComponentBaseProps & {
+export type AuthPoweredByProps = UIBaseProps & {
   label?: string;
   logo?: JSX.Element;
   href?: string;

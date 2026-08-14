@@ -12,7 +12,7 @@ import {
 } from "solid-js";
 import { Portal } from "solid-js/web";
 import { twMerge } from "tailwind-merge";
-import type { IComponentBaseProps } from "../types";
+import type { UIBaseProps } from "../vocabulary";
 import {
   focusFirst,
   isSidePlacement,
@@ -68,7 +68,7 @@ const unlockBodyScroll = () => {
 /* --------------------------------- props --------------------------------- */
 
 export type DrawerRootProps = Omit<JSX.HTMLAttributes<HTMLDivElement>, "children"> &
-  IComponentBaseProps & {
+  UIBaseProps & {
     children: JSX.Element;
     isOpen?: boolean;
     defaultOpen?: boolean;
@@ -88,12 +88,12 @@ export type DrawerTriggerProps = Omit<
   JSX.ButtonHTMLAttributes<HTMLButtonElement>,
   "children"
 > &
-  IComponentBaseProps & {
+  UIBaseProps & {
     children: JSX.Element;
   };
 
 export type DrawerBackdropProps = Omit<JSX.HTMLAttributes<HTMLDivElement>, "children"> &
-  IComponentBaseProps & {
+  UIBaseProps & {
     children: JSX.Element;
     variant?: DrawerBackdropVariant;
     /** @deprecated Configure dismissability at Drawer.Root `isDismissable` */
@@ -103,7 +103,7 @@ export type DrawerBackdropProps = Omit<JSX.HTMLAttributes<HTMLDivElement>, "chil
   };
 
 export type DrawerContentProps = Omit<JSX.HTMLAttributes<HTMLDivElement>, "children"> &
-  IComponentBaseProps & {
+  UIBaseProps & {
     children: JSX.Element;
     /** @deprecated Configure placement at Drawer.Root `placement` */
     placement?: DrawerPlacement;
@@ -113,7 +113,7 @@ export type DrawerContentProps = Omit<JSX.HTMLAttributes<HTMLDivElement>, "child
 export type DrawerDialogSide = "left" | "right";
 
 export type DrawerDialogProps = Omit<JSX.HTMLAttributes<HTMLDivElement>, "children"> &
-  IComponentBaseProps & {
+  UIBaseProps & {
     children: JSX.Element;
     side?: DrawerDialogSide;
     width?: string;
@@ -126,34 +126,34 @@ export type DrawerDialogProps = Omit<JSX.HTMLAttributes<HTMLDivElement>, "childr
   };
 
 export type DrawerHeaderProps = Omit<JSX.HTMLAttributes<HTMLDivElement>, "children"> &
-  IComponentBaseProps & {
+  UIBaseProps & {
     children: JSX.Element;
   };
 
 export type DrawerHeadingProps = Omit<JSX.HTMLAttributes<HTMLHeadingElement>, "children"> &
-  IComponentBaseProps & {
+  UIBaseProps & {
     children: JSX.Element;
     id?: string;
   };
 
 export type DrawerBodyProps = Omit<JSX.HTMLAttributes<HTMLDivElement>, "children"> &
-  IComponentBaseProps & {
+  UIBaseProps & {
     children: JSX.Element;
     id?: string;
   };
 
 export type DrawerFooterProps = Omit<JSX.HTMLAttributes<HTMLDivElement>, "children"> &
-  IComponentBaseProps & {
+  UIBaseProps & {
     children: JSX.Element;
   };
 
-export type DrawerHandleProps = JSX.HTMLAttributes<HTMLDivElement> & IComponentBaseProps;
+export type DrawerHandleProps = JSX.HTMLAttributes<HTMLDivElement> & UIBaseProps;
 
 export type DrawerCloseTriggerProps = Omit<
   JSX.ButtonHTMLAttributes<HTMLButtonElement>,
   "children"
 > &
-  IComponentBaseProps & {
+  UIBaseProps & {
     children?: JSX.Element;
     startIcon?: JSX.Element;
     endIcon?: JSX.Element;
@@ -171,7 +171,6 @@ const DrawerRoot: Layout<typeof componentRecipe, DrawerRootProps> = () => {
   const [local, others] = splitProps(props, [
     "children",
     "class",
-    "className",
     "dataTheme",
     "style",
     "isOpen",
@@ -360,7 +359,6 @@ const DrawerRoot: Layout<typeof componentRecipe, DrawerRootProps> = () => {
           animState() === "exiting" && CLASSES.Root.state.exiting,
           animState() === "closed" && CLASSES.Root.state.closed,
           local.class,
-          local.className,
         )}
         data-slot="drawer-root"
         data-open={isVisibleState(animState()) ? "true" : "false"}
@@ -377,7 +375,6 @@ const DrawerTrigger: Layout<typeof componentRecipe, DrawerTriggerProps> = () => 
   const [local, others] = splitProps(props, [
     "children",
     "class",
-    "className",
     "dataTheme",
     "style",
     "onClick",
@@ -394,7 +391,7 @@ const DrawerTrigger: Layout<typeof componentRecipe, DrawerTriggerProps> = () => 
     <button
       {...others}
       type="button"
-      class={twMerge(CLASSES.Trigger.base, local.class, local.className)}
+      class={twMerge(CLASSES.Trigger.base, local.class)}
       data-slot="drawer-trigger"
       data-theme={local.dataTheme}
       style={local.style}
@@ -409,7 +406,6 @@ const DrawerContent: Layout<typeof componentRecipe, DrawerContentProps> = () => 
   const [local, others] = splitProps(props, [
     "children",
     "class",
-    "className",
     "dataTheme",
     "style",
     "placement",
@@ -436,7 +432,6 @@ const DrawerContent: Layout<typeof componentRecipe, DrawerContentProps> = () => 
         ctx.animState() === "entering" && CLASSES.Content.state.entering,
         ctx.animState() === "exiting" && CLASSES.Content.state.exiting,
         local.class,
-        local.className,
       )}
       data-slot="drawer-content"
       data-placement={placement()}
@@ -455,7 +450,6 @@ const DrawerBackdrop: Layout<typeof componentRecipe, DrawerBackdropProps> = () =
   const [local, others] = splitProps(props, [
     "children",
     "class",
-    "className",
     "dataTheme",
     "style",
     "variant",
@@ -499,7 +493,6 @@ const DrawerBackdrop: Layout<typeof componentRecipe, DrawerBackdropProps> = () =
             ctx.animState() === "entering" && CLASSES.Backdrop.state.entering,
             ctx.animState() === "exiting" && CLASSES.Backdrop.state.exiting,
             local.class,
-            local.className,
           )}
           data-slot="drawer-backdrop"
           data-entering={ctx.animState() === "entering" ? "true" : undefined}
@@ -523,7 +516,6 @@ const DrawerDialog: Layout<typeof componentRecipe, DrawerDialogProps> = () => {
   const [local, others] = splitProps(props, [
     "children",
     "class",
-    "className",
     "dataTheme",
     "style",
     "side",
@@ -585,7 +577,6 @@ const DrawerDialog: Layout<typeof componentRecipe, DrawerDialogProps> = () => {
         hasCustomSize() ? "drawer__dialog--custom-size" : undefined,
         hasCustomPadding() ? "drawer__dialog--custom-padding" : undefined,
         local.class,
-        local.className,
       )}
       data-slot="drawer-dialog"
       data-placement={placement()}
@@ -602,7 +593,6 @@ const DrawerHeader: Layout<typeof componentRecipe, DrawerHeaderProps> = () => {
   const [local, others] = splitProps(props, [
     "children",
     "class",
-    "className",
     "dataTheme",
     "style",
   ]);
@@ -610,7 +600,7 @@ const DrawerHeader: Layout<typeof componentRecipe, DrawerHeaderProps> = () => {
   return (
     <div
       {...others}
-      class={twMerge(CLASSES.Header.base, local.class, local.className)}
+      class={twMerge(CLASSES.Header.base, local.class)}
       data-slot="drawer-header"
       data-theme={local.dataTheme}
       style={local.style}
@@ -624,7 +614,6 @@ const DrawerHeading: Layout<typeof componentRecipe, DrawerHeadingProps> = () => 
   const [local, others] = splitProps(props, [
     "children",
     "class",
-    "className",
     "dataTheme",
     "style",
     "id",
@@ -645,7 +634,7 @@ const DrawerHeading: Layout<typeof componentRecipe, DrawerHeadingProps> = () => 
     <h2
       {...others}
       id={headingId()}
-      class={twMerge(CLASSES.Heading.base, local.class, local.className)}
+      class={twMerge(CLASSES.Heading.base, local.class)}
       data-slot="drawer-heading"
       data-theme={local.dataTheme}
       style={local.style}
@@ -659,7 +648,6 @@ const DrawerBody: Layout<typeof componentRecipe, DrawerBodyProps> = () => {
   const [local, others] = splitProps(props, [
     "children",
     "class",
-    "className",
     "dataTheme",
     "style",
     "id",
@@ -680,7 +668,7 @@ const DrawerBody: Layout<typeof componentRecipe, DrawerBodyProps> = () => {
     <div
       {...others}
       id={bodyId()}
-      class={twMerge(CLASSES.Body.base, local.class, local.className)}
+      class={twMerge(CLASSES.Body.base, local.class)}
       data-slot="drawer-body"
       data-theme={local.dataTheme}
       style={local.style}
@@ -694,7 +682,6 @@ const DrawerFooter: Layout<typeof componentRecipe, DrawerFooterProps> = () => {
   const [local, others] = splitProps(props, [
     "children",
     "class",
-    "className",
     "dataTheme",
     "style",
   ]);
@@ -702,7 +689,7 @@ const DrawerFooter: Layout<typeof componentRecipe, DrawerFooterProps> = () => {
   return (
     <div
       {...others}
-      class={twMerge(CLASSES.Footer.base, local.class, local.className)}
+      class={twMerge(CLASSES.Footer.base, local.class)}
       data-slot="drawer-footer"
       data-theme={local.dataTheme}
       style={local.style}
@@ -713,13 +700,13 @@ const DrawerFooter: Layout<typeof componentRecipe, DrawerFooterProps> = () => {
 };
 
 const DrawerHandle: Layout<typeof componentRecipe, DrawerHandleProps> = () => {
-  const [local, others] = splitProps(props, ["class", "className", "dataTheme", "style"]);
+  const [local, others] = splitProps(props, ["class", "dataTheme", "style"]);
 
   return (
     <div
       {...others}
       aria-hidden="true"
-      class={twMerge(CLASSES.Handle.base, local.class, local.className)}
+      class={twMerge(CLASSES.Handle.base, local.class)}
       data-slot="drawer-handle"
       data-theme={local.dataTheme}
       style={local.style}
@@ -733,7 +720,6 @@ const DrawerCloseTrigger: Layout<typeof componentRecipe, DrawerCloseTriggerProps
   const [local, others] = splitProps(props, [
     "children",
     "class",
-    "className",
     "dataTheme",
     "style",
     "startIcon",
@@ -754,7 +740,7 @@ const DrawerCloseTrigger: Layout<typeof componentRecipe, DrawerCloseTriggerProps
       {...others}
       type="button"
       aria-label={local["aria-label"] ?? "Close"}
-      class={twMerge(CLASSES.CloseTrigger.base, local.class, local.className)}
+      class={twMerge(CLASSES.CloseTrigger.base, local.class)}
       data-slot="drawer-close-trigger"
       data-theme={local.dataTheme}
       style={local.style}

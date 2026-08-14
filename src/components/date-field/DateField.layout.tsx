@@ -11,7 +11,7 @@ import {
 } from "solid-js";
 import { twMerge } from "tailwind-merge";
 
-import type { IComponentBaseProps } from "../types";
+import type { UIBaseProps } from "../vocabulary";
 import { CLASSES } from "./DateField.recipe";
 import type { Layout } from "../../lib/layouts";
 import { componentRecipe } from "./DateField.recipe";
@@ -51,7 +51,7 @@ export type DateFieldRenderProps = {
 };
 
 export type DateFieldRootProps = Omit<JSX.HTMLAttributes<HTMLDivElement>, "children" | "onChange" | "onBlur"> &
-  IComponentBaseProps & {
+  UIBaseProps & {
     children?: JSX.Element | ((props: DateFieldRenderProps) => JSX.Element);
     name?: string;
     value?: string;
@@ -68,7 +68,7 @@ export type DateFieldRootProps = Omit<JSX.HTMLAttributes<HTMLDivElement>, "child
   };
 
 export type DateFieldGroupProps = Omit<JSX.HTMLAttributes<HTMLDivElement>, "children"> &
-  IComponentBaseProps & {
+  UIBaseProps & {
     children?: JSX.Element | ((props: DateFieldRenderProps) => JSX.Element);
   };
 
@@ -76,11 +76,11 @@ export type DateFieldInputProps = Omit<
   JSX.InputHTMLAttributes<HTMLInputElement>,
   "value" | "onInput" | "type"
 > &
-  IComponentBaseProps & {
+  UIBaseProps & {
     onInput?: JSX.EventHandlerUnion<HTMLInputElement, InputEvent>;
   };
 
-export type DateFieldInputContainerProps = JSX.HTMLAttributes<HTMLDivElement> & IComponentBaseProps;
+export type DateFieldInputContainerProps = JSX.HTMLAttributes<HTMLDivElement> & UIBaseProps;
 
 export type DateFieldSegmentValue = {
   type?: string;
@@ -92,18 +92,17 @@ export type DateFieldSegmentValue = {
 };
 
 export type DateFieldSegmentProps = JSX.HTMLAttributes<HTMLSpanElement> &
-  IComponentBaseProps & {
+  UIBaseProps & {
     segment?: DateFieldSegmentValue;
   };
 
-export type DateFieldPrefixProps = JSX.HTMLAttributes<HTMLDivElement> & IComponentBaseProps;
-export type DateFieldSuffixProps = JSX.HTMLAttributes<HTMLDivElement> & IComponentBaseProps;
+export type DateFieldPrefixProps = JSX.HTMLAttributes<HTMLDivElement> & UIBaseProps;
+export type DateFieldSuffixProps = JSX.HTMLAttributes<HTMLDivElement> & UIBaseProps;
 
 const DateFieldRoot: Layout<typeof componentRecipe, DateFieldRootProps> = () => {
   const [local, others] = splitProps(props, [
     "children",
     "class",
-    "className",
     "dataTheme",
     "style",
     "name",
@@ -165,7 +164,6 @@ const DateFieldRoot: Layout<typeof componentRecipe, DateFieldRootProps> = () => 
           CLASSES.Root.variant[variant()],
           fullWidth() && CLASSES.Root.flag.fullWidth,
           local.class,
-          local.className,
         ) }}
         data-slot="date-field"
         data-invalid={isInvalid() ? "true" : undefined}
@@ -192,7 +190,7 @@ const DateFieldRoot: Layout<typeof componentRecipe, DateFieldRootProps> = () => 
 
 const DateFieldGroup: Layout<typeof componentRecipe, DateFieldGroupProps> = () => {
   const context = useContext(DateFieldContext);
-  const [local, others] = splitProps(props, ["children", "class", "className", "dataTheme", "style"]);
+  const [local, others] = splitProps(props, ["children", "class", "dataTheme", "style"]);
 
   const renderProps = () => ({
     value: context?.value() ?? "",
@@ -209,7 +207,6 @@ const DateFieldGroup: Layout<typeof componentRecipe, DateFieldGroupProps> = () =
         CLASSES.Group.variant[context?.variant() ?? "primary"],
         context?.fullWidth() && CLASSES.Group.flag.fullWidth,
         local.class,
-        local.className,
       ) }}
       data-slot="date-input-group"
       data-invalid={context?.isInvalid() ? "true" : undefined}
@@ -226,7 +223,6 @@ const DateFieldInput: Layout<typeof componentRecipe, DateFieldInputProps> = () =
   const context = useContext(DateFieldContext);
   const [local, others] = splitProps(props, [
     "class",
-    "className",
     "dataTheme",
     "style",
     "onInput",
@@ -249,7 +245,7 @@ const DateFieldInput: Layout<typeof componentRecipe, DateFieldInputProps> = () =
     <input
       {...others}
       type="date"
-      {...{ class: twMerge(CLASSES.Input.base, local.class, local.className) }}
+      {...{ class: twMerge(CLASSES.Input.base, local.class) }}
       data-slot="date-input-group-input"
       data-theme={local.dataTheme}
       style={local.style}
@@ -266,12 +262,12 @@ const DateFieldInput: Layout<typeof componentRecipe, DateFieldInputProps> = () =
 };
 
 const DateFieldInputContainer: Layout<typeof componentRecipe, DateFieldInputContainerProps> = () => {
-  const [local, others] = splitProps(props, ["children", "class", "className", "dataTheme", "style"]);
+  const [local, others] = splitProps(props, ["children", "class", "dataTheme", "style"]);
 
   return (
     <div
       {...others}
-      {...{ class: twMerge(CLASSES.InputContainer.base, local.class, local.className) }}
+      {...{ class: twMerge(CLASSES.InputContainer.base, local.class) }}
       data-slot="date-input-group-input-container"
       data-theme={local.dataTheme}
       style={local.style}
@@ -285,7 +281,6 @@ const DateFieldSegment: Layout<typeof componentRecipe, DateFieldSegmentProps> = 
   const [local, others] = splitProps(props, [
     "children",
     "class",
-    "className",
     "dataTheme",
     "style",
     "segment",
@@ -294,7 +289,7 @@ const DateFieldSegment: Layout<typeof componentRecipe, DateFieldSegmentProps> = 
   return (
     <span
       {...others}
-      {...{ class: twMerge(CLASSES.Segment.base, local.class, local.className) }}
+      {...{ class: twMerge(CLASSES.Segment.base, local.class) }}
       data-slot="date-input-group-segment"
       data-type={local.segment?.type}
       data-placeholder={local.segment?.isPlaceholder ? "true" : undefined}
@@ -310,12 +305,12 @@ const DateFieldSegment: Layout<typeof componentRecipe, DateFieldSegmentProps> = 
 };
 
 const DateFieldPrefix: Layout<typeof componentRecipe, DateFieldPrefixProps> = () => {
-  const [local, others] = splitProps(props, ["children", "class", "className", "dataTheme", "style"]);
+  const [local, others] = splitProps(props, ["children", "class", "dataTheme", "style"]);
 
   return (
     <div
       {...others}
-      {...{ class: twMerge(CLASSES.Prefix.base, local.class, local.className) }}
+      {...{ class: twMerge(CLASSES.Prefix.base, local.class) }}
       data-slot="date-input-group-prefix"
       data-theme={local.dataTheme}
       style={local.style}
@@ -326,12 +321,12 @@ const DateFieldPrefix: Layout<typeof componentRecipe, DateFieldPrefixProps> = ()
 };
 
 const DateFieldSuffix: Layout<typeof componentRecipe, DateFieldSuffixProps> = () => {
-  const [local, others] = splitProps(props, ["children", "class", "className", "dataTheme", "style"]);
+  const [local, others] = splitProps(props, ["children", "class", "dataTheme", "style"]);
 
   return (
     <div
       {...others}
-      {...{ class: twMerge(CLASSES.Suffix.base, local.class, local.className) }}
+      {...{ class: twMerge(CLASSES.Suffix.base, local.class) }}
       data-slot="date-input-group-suffix"
       data-theme={local.dataTheme}
       style={local.style}

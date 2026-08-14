@@ -16,7 +16,7 @@ import {
 } from "solid-js";
 import { twMerge } from "tailwind-merge";
 
-import type { IComponentBaseProps } from "../types";
+import type { UIBaseProps } from "../vocabulary";
 import { CLASSES } from "./InputOTP.recipe";
 import type { Layout } from "../../lib/layouts";
 import { componentRecipe } from "./InputOTP.recipe";
@@ -59,7 +59,7 @@ export type InputOTPRootProps = Omit<
   JSX.HTMLAttributes<HTMLDivElement>,
   "children" | "onChange" | "onInput"
 > &
-  IComponentBaseProps & {
+  UIBaseProps & {
     children?: JSX.Element;
     value?: string;
     defaultValue?: string;
@@ -78,17 +78,17 @@ export type InputOTPRootProps = Omit<
   };
 
 export type InputOTPGroupProps = Omit<JSX.HTMLAttributes<HTMLDivElement>, "children"> &
-  IComponentBaseProps & {
+  UIBaseProps & {
     children?: JSX.Element;
   };
 
 export type InputOTPSlotProps = Omit<JSX.HTMLAttributes<HTMLDivElement>, "children"> &
-  IComponentBaseProps & {
+  UIBaseProps & {
     index: number;
   };
 
 export type InputOTPSeparatorProps = Omit<JSX.HTMLAttributes<HTMLDivElement>, "children"> &
-  IComponentBaseProps & {
+  UIBaseProps & {
     children?: JSX.Element;
   };
 
@@ -96,7 +96,6 @@ const InputOTPRoot: Layout<typeof componentRecipe, InputOTPRootProps> = () => {
   const [local, others] = splitProps(props, [
     "children",
     "class",
-    "className",
     "dataTheme",
     "style",
     "value",
@@ -335,7 +334,6 @@ const InputOTPRoot: Layout<typeof componentRecipe, InputOTPRootProps> = () => {
           CLASSES.Root.base,
           CLASSES.Root.variant[variant()],
           local.class,
-          local.className,
         ) }}
         data-slot="input-otp"
         data-disabled={isDisabled() ? "true" : undefined}
@@ -381,12 +379,12 @@ const InputOTPRoot: Layout<typeof componentRecipe, InputOTPRootProps> = () => {
 };
 
 const InputOTPGroup: Layout<typeof componentRecipe, InputOTPGroupProps> = () => {
-  const [local, others] = splitProps(props, ["children", "class", "className", "dataTheme", "style"]);
+  const [local, others] = splitProps(props, ["children", "class", "dataTheme", "style"]);
 
   return (
     <div
       {...others}
-      {...{ class: twMerge(CLASSES.Group.base, local.class, local.className) }}
+      {...{ class: twMerge(CLASSES.Group.base, local.class) }}
       data-slot="input-otp-group"
       data-theme={local.dataTheme}
       style={local.style}
@@ -402,7 +400,6 @@ const InputOTPSlot: Layout<typeof componentRecipe, InputOTPSlotProps> = () => {
   const [local, others] = splitProps(props, [
     "index",
     "class",
-    "className",
     "dataTheme",
     "style",
     "onMouseDown",
@@ -426,7 +423,7 @@ const InputOTPSlot: Layout<typeof componentRecipe, InputOTPSlotProps> = () => {
   return (
     <div
       {...others}
-      {...{ class: twMerge(CLASSES.Slot.base, local.class, local.className) }}
+      {...{ class: twMerge(CLASSES.Slot.base, local.class) }}
       data-slot="input-otp-slot"
       data-active={isActive() ? "true" : undefined}
       data-filled={char().length > 0 ? "true" : undefined}
@@ -449,12 +446,12 @@ const InputOTPSlot: Layout<typeof componentRecipe, InputOTPSlotProps> = () => {
 };
 
 const InputOTPSeparator: Layout<typeof componentRecipe, InputOTPSeparatorProps> = () => {
-  const [local, others] = splitProps(props, ["children", "class", "className", "dataTheme", "style"]);
+  const [local, others] = splitProps(props, ["children", "class", "dataTheme", "style"]);
 
   return (
     <div
       {...others}
-      {...{ class: twMerge(CLASSES.Separator.base, local.class, local.className) }}
+      {...{ class: twMerge(CLASSES.Separator.base, local.class) }}
       data-slot="input-otp-separator"
       data-theme={local.dataTheme}
       style={local.style}

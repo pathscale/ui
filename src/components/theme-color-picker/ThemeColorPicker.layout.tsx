@@ -6,7 +6,7 @@ import { ColorPickerContext, ColorWheelFlower } from "../color-wheel-flower";
 import { createColorFromHsl, parseColor } from "../color-wheel-flower/ColorUtils";
 import Button from "../button";
 import Icon from "../icon";
-import type { IComponentBaseProps } from "../types";
+import type { UIBaseProps } from "../vocabulary";
 import {
   createOverlayPosition,
   type OverlayPlacement,
@@ -19,7 +19,7 @@ import { componentRecipe } from "./ThemeColorPicker.recipe";
 export type ThemeColorPickerAlign = "start" | "end";
 export type ThemeColorPickerPlacement = OverlayPlacement;
 
-export interface ThemeColorPickerProps extends IComponentBaseProps {
+export interface ThemeColorPickerProps extends UIBaseProps {
   /**
    * Prefix for localStorage keys (e.g., "myapp" becomes "myapp_theme_color")
    * @default "theme"
@@ -80,7 +80,6 @@ const ThemeColorPicker: Layout<typeof componentRecipe, ThemeColorPickerProps> = 
     "autoFlip",
     "children",
     "class",
-    "className",
     "style",
     "dataTheme",
   ]);
@@ -176,7 +175,7 @@ const ThemeColorPicker: Layout<typeof componentRecipe, ThemeColorPickerProps> = 
     onFormatChange: () => {},
   });
 
-  const classes = () => twMerge(CLASSES.base, local.class, local.className);
+  const classes = () => twMerge(CLASSES.base, local.class);
 
   const popoverClasses = () => CLASSES.popover;
 

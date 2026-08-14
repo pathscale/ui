@@ -9,7 +9,7 @@ import {
   type ParentComponent,
 } from "solid-js";
 import { twMerge } from "tailwind-merge";
-import type { IComponentBaseProps } from "../types";
+import type { UIBaseProps } from "../vocabulary";
 import { CLASSES } from "./Breadcrumb.recipe";
 import type { Layout } from "../../lib/layouts";
 import { componentRecipe } from "./Breadcrumb.recipe";
@@ -33,13 +33,13 @@ const useBreadcrumbContext = () => {
  * Types
  * -----------------------------------------------------------------------------------------------*/
 export type BreadcrumbRootProps = Omit<JSX.HTMLAttributes<HTMLElement>, "children"> &
-  IComponentBaseProps & {
+  UIBaseProps & {
     children: JSX.Element;
     separator?: JSX.Element;
   };
 
 export type BreadcrumbItemProps = Omit<JSX.HTMLAttributes<HTMLLIElement>, "children"> &
-  IComponentBaseProps & {
+  UIBaseProps & {
     children: JSX.Element;
     href?: string;
     isCurrent?: boolean;
@@ -75,7 +75,6 @@ const BreadcrumbRoot: Layout<typeof componentRecipe, BreadcrumbRootProps> = () =
   const [local, others] = splitProps(props, [
     "children",
     "class",
-    "className",
     "separator",
     "dataTheme",
     "style",
@@ -90,7 +89,7 @@ const BreadcrumbRoot: Layout<typeof componentRecipe, BreadcrumbRootProps> = () =
       <nav
         {...others}
         aria-label="Breadcrumb"
-        {...{ class: twMerge(CLASSES.Root.base, local.class, local.className) }}
+        {...{ class: twMerge(CLASSES.Root.base, local.class) }}
         data-slot="breadcrumb"
         data-theme={local.dataTheme}
         style={local.style}
@@ -110,7 +109,6 @@ const BreadcrumbItem: Layout<typeof componentRecipe, BreadcrumbItemProps> = () =
   const [local, others] = splitProps(props, [
     "children",
     "class",
-    "className",
     "href",
     "isCurrent",
     "dataTheme",
@@ -122,7 +120,7 @@ const BreadcrumbItem: Layout<typeof componentRecipe, BreadcrumbItemProps> = () =
   return (
     <li
       {...others}
-      {...{ class: twMerge(ITEM_CLASS, local.class, local.className) }}
+      {...{ class: twMerge(ITEM_CLASS, local.class) }}
       data-slot="breadcrumb-item"
       data-theme={local.dataTheme}
       style={local.style}
