@@ -139,8 +139,8 @@
    * --------------------------------------------------------------------- */
   .button--solid {
     --button-bg: var(--button-accent);
-    --button-bg-hover: color-mix(in oklab, var(--button-accent), #000 8%);
-    --button-bg-pressed: color-mix(in oklab, var(--button-accent), #000 12%);
+    --button-bg-hover: color-mix(in oklab, var(--button-accent), var(--shade) var(--shade-hover));
+    --button-bg-pressed: color-mix(in oklab, var(--button-accent), var(--shade) var(--shade-pressed));
     --button-fg: var(--button-accent-fg);
     --button-border: transparent;
   }

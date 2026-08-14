@@ -19,7 +19,7 @@
     --card-shadow: none;
 
     background-color: var(--card-bg);
-    border: 1px solid var(--card-border);
+    border: var(--border) solid var(--card-border);
     color: var(--card-fg);
     box-shadow: var(--card-shadow);
     transition:
@@ -100,10 +100,20 @@
 
   /* Absorbs GlassPanel. The highlight ring was its `highlight` flag. */
   .card--material-glass {
-    --card-bg: color-mix(in oklab, var(--color-base-100), transparent 45%);
-    --card-border: color-mix(in oklab, var(--color-base-content), transparent 88%);
-    backdrop-filter: blur(var(--card-glass-blur, 12px)) saturate(140%);
-    -webkit-backdrop-filter: blur(var(--card-glass-blur, 12px)) saturate(140%);
+    --card-bg: color-mix(
+      in oklab,
+      var(--glass-background-color),
+      transparent calc(100% - var(--glass-background-opacity))
+    );
+    --card-border: color-mix(
+      in oklab,
+      var(--glass-border-color),
+      transparent calc(100% - var(--glass-border-opacity))
+    );
+    backdrop-filter: blur(var(--card-glass-blur, var(--glass-blur)))
+      saturate(var(--glass-saturation)) brightness(var(--glass-brightness));
+    -webkit-backdrop-filter: blur(var(--card-glass-blur, var(--glass-blur)))
+      saturate(var(--glass-saturation)) brightness(var(--glass-brightness));
   }
 
   .card--material-glass::before {
@@ -112,7 +122,12 @@
     inset: 0;
     border-radius: inherit;
     pointer-events: none;
-    box-shadow: inset 0 1px 0 0 color-mix(in oklab, #fff, transparent 82%);
+    box-shadow: inset 0 var(--border) 0 0
+      color-mix(
+        in oklab,
+        var(--glass-highlight-color),
+        transparent calc(100% - var(--glass-highlight-opacity))
+      );
   }
 
   /* ------------------------------------------------------------ Elevation */
@@ -120,13 +135,13 @@
     --card-shadow: none;
   }
   .card--elevation-sm {
-    --card-shadow: 0 1px 2px oklch(0% 0 0 / 0.05), 0 1px 3px oklch(0% 0 0 / 0.1);
+    --card-shadow: var(--shadow-sm);
   }
   .card--elevation-md {
-    --card-shadow: 0 4px 6px -1px oklch(0% 0 0 / 0.1), 0 2px 4px -2px oklch(0% 0 0 / 0.1);
+    --card-shadow: var(--shadow-md);
   }
   .card--elevation-lg {
-    --card-shadow: 0 10px 15px -3px oklch(0% 0 0 / 0.1), 0 4px 6px -4px oklch(0% 0 0 / 0.1);
+    --card-shadow: var(--shadow-lg);
   }
 
   /* -------------------------------------------------------------- Padding */
@@ -155,7 +170,7 @@
   .card--radius-sm { border-radius: 0.25rem; }
   .card--radius-md { border-radius: 0.5rem; }
   .card--radius-lg { border-radius: var(--radius-box, 1rem); }
-  .card--radius-full { border-radius: 9999px; }
+  .card--radius-full { border-radius: var(--radius-pill); }
 
   /* ---------------------------------------------------------- Interactive */
   .card--interactive {
@@ -163,7 +178,7 @@
   }
 
   .card--interactive:hover {
-    --card-shadow: 0 10px 15px -3px oklch(0% 0 0 / 0.1), 0 4px 6px -4px oklch(0% 0 0 / 0.1);
+    --card-shadow: var(--shadow-lg);
     transform: translateY(-1px);
   }
 
@@ -172,8 +187,8 @@
   }
 
   .card--interactive:focus-visible {
-    outline: 2px solid var(--card-accent);
-    outline-offset: 2px;
+    outline: var(--focus-ring-width) solid var(--card-accent);
+    outline-offset: var(--focus-ring-offset);
   }
 
   /* ---------------------------------------------------------------- Slots */
@@ -182,7 +197,7 @@
     align-items: center;
     justify-content: space-between;
     gap: 0.75rem;
-    border-block-end: 1px solid color-mix(in oklab, var(--color-base-300), transparent 40%);
+    border-block-end: var(--border) solid color-mix(in oklab, var(--color-base-300), transparent 40%);
   }
 
   .card__body {
@@ -196,6 +211,6 @@
     display: flex;
     align-items: center;
     gap: 0.5rem;
-    border-block-start: 1px solid color-mix(in oklab, var(--color-base-300), transparent 40%);
+    border-block-start: var(--border) solid color-mix(in oklab, var(--color-base-300), transparent 40%);
   }
 }
