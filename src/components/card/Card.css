@@ -135,13 +135,13 @@
     --card-shadow: none;
   }
   .card--elevation-sm {
-    --card-shadow: var(--shadow-sm, 0 1px 2px rgb(0 0 0 / 5%), 0 1px 3px rgb(0 0 0 / 10%));
+    --card-shadow: var(--shadow-sm, 0 1px 2px rgb(var(--shadow-color, 0 0 0) / 5%), 0 1px 3px rgb(var(--shadow-color, 0 0 0) / 10%));
   }
   .card--elevation-md {
-    --card-shadow: var(--shadow-md, 0 4px 6px -1px rgb(0 0 0 / 10%), 0 2px 4px -2px rgb(0 0 0 / 10%));
+    --card-shadow: var(--shadow-md, 0 4px 6px -1px rgb(var(--shadow-color, 0 0 0) / 10%), 0 2px 4px -2px rgb(var(--shadow-color, 0 0 0) / 10%));
   }
   .card--elevation-lg {
-    --card-shadow: var(--shadow-lg, 0 10px 15px -3px rgb(0 0 0 / 10%), 0 4px 6px -4px rgb(0 0 0 / 10%));
+    --card-shadow: var(--shadow-lg, 0 10px 15px -3px rgb(var(--shadow-color, 0 0 0) / 10%), 0 4px 6px -4px rgb(var(--shadow-color, 0 0 0) / 10%));
   }
 
   /* -------------------------------------------------------------- Padding */
@@ -178,7 +178,7 @@
   }
 
   .card--interactive:hover {
-    --card-shadow: var(--shadow-lg, 0 10px 15px -3px rgb(0 0 0 / 10%), 0 4px 6px -4px rgb(0 0 0 / 10%));
+    --card-shadow: var(--shadow-lg, 0 10px 15px -3px rgb(var(--shadow-color, 0 0 0) / 10%), 0 4px 6px -4px rgb(var(--shadow-color, 0 0 0) / 10%));
     transform: translateY(-1px);
   }
 

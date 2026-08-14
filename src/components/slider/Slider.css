@@ -62,9 +62,9 @@
     height: var(--slider-thumb-h);
     transform: translate(-50%, -50%);
     box-shadow:
-      0 0 5px 0 oklch(0% 0 0 / 0.02),
-      0 2px 10px 0 oklch(0% 0 0 / 0.06),
-      0 0 1px 0 oklch(0% 0 0 / 0.3);
+      0 0 5px 0 rgb(var(--shadow-color, 0 0 0) / 2%),
+      0 2px 10px 0 rgb(var(--shadow-color, 0 0 0) / 6%),
+      0 0 1px 0 rgb(var(--shadow-color, 0 0 0) / 30%);
     transition:
       transform 250ms ease,
       box-shadow 150ms ease;
@@ -78,8 +78,8 @@
   .slider__thumb[data-focus-visible="true"] {
     box-shadow:
       0 0 0 3px color-mix(in oklab, var(--color-accent) 22%, transparent),
-      0 0 5px 0 oklch(0% 0 0 / 0.02),
-      0 2px 10px 0 oklch(0% 0 0 / 0.06);
+      0 0 5px 0 rgb(var(--shadow-color, 0 0 0) / 2%),
+      0 2px 10px 0 rgb(var(--shadow-color, 0 0 0) / 6%);
   }
 
   .slider__thumb[data-disabled="true"] {
