@@ -19,6 +19,16 @@ import type { JSX } from "solid-js";
 
 export type Health = "ok" | "degraded" | "down" | "unknown";
 
+/**
+ * How well it is working, given that it *is* working.
+ *
+ * Orthogonal to `Health` on purpose. nofilter.io proves the need: a call can
+ * be `connected` and simultaneously "Quality critical", which is why its chip
+ * ends up concatenating two sentences with a separator. Folding quality into
+ * health would force a choice between "up" and "bad" when both are true.
+ */
+export type Quality = "good" | "fair" | "poor" | "unknown";
+
 /** Worst first. `degraded` outranks `unknown`: a known impairment beats a shrug. */
 const RANK: Record<Health, number> = { down: 3, degraded: 2, unknown: 1, ok: 0 };
 
@@ -36,9 +46,28 @@ export interface StatusItem {
   detail?: JSX.Element;
   /** Present when the user can do something about it. */
   onRetry?: () => void;
+
+  /** Working, but how well. Independent of `health`. */
+  quality?: Quality;
+
+  /**
+   * Can this recover on its own?
+   *
+   * ICE distinguishes `disconnected` — dropped, may come back — from `failed`,
+   * which will not. That difference decides whether the UI shows a spinner or
+   * a retry button, and collapsing both to `down` loses it.
+   */
+  recoverable?: boolean;
+
+  /** Mid-transition: connecting, checking, reconnecting. Drives the pulse. */
+  transitioning?: boolean;
 }
 
 export interface StatusSummary {
+  /** Worst quality among items that are otherwise healthy. */
+  quality: Quality;
+  /** True when the only problems can recover on their own — wait, do not retry. */
+  recovering: boolean;
   /** The worst health present. */
   health: Health;
   /**
@@ -69,7 +98,23 @@ export function summarizeStatus(items: StatusItem[]): StatusSummary {
   const byId = new Map(items.map((i) => [i.id, i]));
   const unhealthy = items.filter(isUnhealthy).sort((a, b) => RANK[b.health] - RANK[a.health]);
 
-  if (unhealthy.length === 0) return { health: "ok", failing: [], symptoms: [] };
+  const worstQuality = (list: StatusItem[]): Quality => {
+    const rank: Record<Quality, number> = { poor: 3, fair: 2, unknown: 1, good: 0 };
+    return list.reduce<Quality>(
+      (worst, i) => (i.quality && rank[i.quality] > rank[worst] ? i.quality : worst),
+      "good",
+    );
+  };
+
+  if (unhealthy.length === 0) {
+    return {
+      health: "ok",
+      quality: worstQuality(items),
+      recovering: false,
+      failing: [],
+      symptoms: [],
+    };
+  }
 
   const explainedByUpstream = (item: StatusItem, seen = new Set<string>()): boolean => {
     if (seen.has(item.id)) return false; // cycle: treat as its own cause
@@ -94,6 +139,11 @@ export function summarizeStatus(items: StatusItem[]): StatusSummary {
 
   return {
     health: unhealthy[0].health,
+    quality: worstQuality(items.filter((i) => !isUnhealthy(i))),
+    // Only claim recovery when every failure can recover and something is trying.
+    recovering:
+      unhealthy.every((i) => i.recoverable !== false) &&
+      unhealthy.some((i) => i.transitioning || i.recoverable),
     cause: ranked[0],
     failing: unhealthy,
     symptoms,
