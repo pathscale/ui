@@ -19,5 +19,5 @@
     }
   },
   "include": ["src/**/*.ts", "src/**/*.tsx"],
-  "exclude": ["node_modules", "playground", "dist", "src/**/*.layout.tsx"]
+  "exclude": ["node_modules", "dist", "src/**/*.layout.tsx"]
 }
