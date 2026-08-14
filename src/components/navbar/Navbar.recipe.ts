@@ -25,16 +25,19 @@ export const CLASSES = {
       bordered: "navbar__row--bordered",
       padded: "navbar__row--padded",
     },
-    color: {
+    flavor: {
+      neutral: "navbar__row--flavor-neutral",
+      primary: "navbar__row--flavor-primary",
+      secondary: "navbar__row--flavor-secondary",
+      accent: "navbar__row--flavor-accent",
+      destructive: "navbar__row--flavor-destructive",
+      success: "navbar__row--flavor-success",
+      warning: "navbar__row--flavor-warning",
+      info: "navbar__row--flavor-info",
+    },
+    variant: {
+      solid: "",
       ghost: "navbar__row--ghost",
-      neutral: "navbar__row--neutral",
-      primary: "navbar__row--primary",
-      secondary: "navbar__row--secondary",
-      accent: "navbar__row--accent",
-      info: "navbar__row--info",
-      success: "navbar__row--success",
-      warning: "navbar__row--warning",
-      error: "navbar__row--error",
     },
   },
 } as const;

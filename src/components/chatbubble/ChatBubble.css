@@ -122,43 +122,43 @@
     transform: rotateY(180deg);
   }
 
-  .chatbubble__message--neutral {
+  .chatbubble__message--flavor-neutral {
     background-color: var(--color-base-300);
     color: var(--color-base-content);
   }
 
-  .chatbubble__message--primary {
+  .chatbubble__message--flavor-primary {
     background-color: var(--color-primary);
     color: var(--color-primary-content);
   }
 
-  .chatbubble__message--secondary {
+  .chatbubble__message--flavor-secondary {
     background-color: var(--color-secondary);
     color: var(--color-secondary-content);
   }
 
-  .chatbubble__message--accent {
+  .chatbubble__message--flavor-accent {
     background-color: var(--color-accent);
     color: var(--color-accent-content);
   }
 
-  .chatbubble__message--info {
-    background-color: var(--color-info);
-    color: var(--color-info-content);
+  .chatbubble__message--flavor-destructive {
+    background-color: var(--color-error);
+    color: var(--color-error-content);
   }
 
-  .chatbubble__message--success {
+  .chatbubble__message--flavor-success {
     background-color: var(--color-success);
     color: var(--color-success-content);
   }
 
-  .chatbubble__message--warning {
+  .chatbubble__message--flavor-warning {
     background-color: var(--color-warning);
     color: var(--color-warning-content);
   }
 
-  .chatbubble__message--error {
-    background-color: var(--color-error);
-    color: var(--color-error-content);
+  .chatbubble__message--flavor-info {
+    background-color: var(--color-info);
+    color: var(--color-info-content);
   }
 }
