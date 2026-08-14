@@ -68,43 +68,43 @@
     color: var(--color-base-content);
   }
 
-  .navbar__row--neutral {
+  .navbar__row--flavor-neutral {
     background-color: var(--color-neutral);
     color: var(--color-neutral-content);
   }
 
-  .navbar__row--primary {
+  .navbar__row--flavor-primary {
     background-color: var(--color-primary);
     color: var(--color-primary-content);
   }
 
-  .navbar__row--secondary {
+  .navbar__row--flavor-secondary {
     background-color: var(--color-secondary);
     color: var(--color-secondary-content);
   }
 
-  .navbar__row--accent {
+  .navbar__row--flavor-accent {
     background-color: var(--color-accent);
     color: var(--color-accent-content);
   }
 
-  .navbar__row--info {
-    background-color: var(--color-info);
-    color: var(--color-info-content);
+  .navbar__row--flavor-destructive {
+    background-color: var(--color-error);
+    color: var(--color-error-foreground);
   }
 
-  .navbar__row--success {
+  .navbar__row--flavor-success {
     background-color: var(--color-success);
     color: var(--color-success-foreground);
   }
 
-  .navbar__row--warning {
+  .navbar__row--flavor-warning {
     background-color: var(--color-warning);
     color: var(--color-warning-foreground);
   }
 
-  .navbar__row--error {
-    background-color: var(--color-error);
-    color: var(--color-error-foreground);
+  .navbar__row--flavor-info {
+    background-color: var(--color-info);
+    color: var(--color-info-content);
   }
 }

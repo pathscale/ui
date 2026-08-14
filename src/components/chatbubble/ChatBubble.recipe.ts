@@ -12,15 +12,15 @@ export const CLASSES = {
     message: "chatbubble__message",
     time: "chatbubble__time",
   },
-  color: {
-    neutral: "chatbubble__message--neutral",
-    primary: "chatbubble__message--primary",
-    secondary: "chatbubble__message--secondary",
-    accent: "chatbubble__message--accent",
-    info: "chatbubble__message--info",
-    success: "chatbubble__message--success",
-    warning: "chatbubble__message--warning",
-    error: "chatbubble__message--error",
+  flavor: {
+    neutral: "chatbubble__message--flavor-neutral",
+    primary: "chatbubble__message--flavor-primary",
+    secondary: "chatbubble__message--flavor-secondary",
+    accent: "chatbubble__message--flavor-accent",
+    destructive: "chatbubble__message--flavor-destructive",
+    success: "chatbubble__message--flavor-success",
+    warning: "chatbubble__message--flavor-warning",
+    info: "chatbubble__message--flavor-info",
   },
 } as const;
 export const componentRecipe = recipe({component:"chatbubble",slots:{"root":{},},});
