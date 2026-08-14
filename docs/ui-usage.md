@@ -94,7 +94,7 @@ the shared fallback. This works with PathScale Fonts and application-owned font 
 - **Dates**: Calendar, RangeCalendar, DatePicker, DateRangePicker (internal date engine); DateField, TimeField (separate segmented editors)
 - **Color**: ColorPicker, ColorArea, ColorSlider, ColorSwatch(+Picker), ColorWheelFlower, ThemeColorPicker
 - **Overlays**: Modal, Drawer, Popover, Dropdown, Menu, Toast, Disclosure(+Group), Accordion
-- **Data**: Table (headless compound + hooks), plus primitives `useVirtualRows`, `useStreamingBuffer`, `useStreamingSubscription`
+- **Data**: DataGrid (assembled, `createDataGrid` model), Table (headless compound + hooks), plus primitives `useVirtualRows`, `useStreamingBuffer`, `useStreamingSubscription`
 - **Auth kit**: AuthForm, AuthCard, AuthFieldGroup, AuthSubmitButton, AuthFooterLinks, AuthPoweredBy, AuthErrorMessage, AuthSuccessMessage — Layouts composing Button/Card/fields. Their spacing, alignment and tone are recipe parameters (`gap`, `align`, `variant`), so a consumer asks for the presentation it wants rather than restating utility classes. AuthCard exposes `header`, `headings`, `title`, `description`, `branding`, `body` and `footer` as `data-slot` targets.
 - **Visual FX**: MetalBorder (WebGL liquid-metal border; presets `chromatic|silver|gold`, `kind="pill"|"circle"`, `glow`, `strength` 0-100, `theme="dark"|"light"|"auto"`), GlowCard (mouse-tracking glow), NoiseBackground (animated gradient blobs), ImmersiveLanding (full mini-app w/ PWA widgets), VideoPreview, LiveChat, ChatBubble, LanguageSwitcher
 
@@ -130,6 +130,68 @@ const form = createForm({
 - Inside a `<Form>`: `useField(name)` → `{value, error, touched, invalid, handleChange, handleBlur}`. **Errors are touch-gated** — `error()` is `undefined` until the field blurs. `FormSubmitButton` disables on `!canSubmit` (not touch-gated), so the button can be disabled with no visible error.
 - Escape hatch: `form._tsForm` is the raw TanStack form API (typed `any` on purpose).
 - Schema validation runs on change+blur+submit; blur errors clear immediately on change once valid.
+
+## DataGrid (assembled)
+
+Reach for this first. `Table` below is the headless path, fifteen parts you
+assemble yourself; `DataGrid` is one tag over a model that owns the state.
+
+```tsx
+import { createDataGrid, DataGrid } from "@pathscale/ui";
+
+const grid = createDataGrid({ pageSize: 10, selection: "multiple" });
+grid.addColumn("id", "ID", "number");
+grid.addColumn("firstName", "First Name", "string", { searchable: true });
+grid.addColumn("status", "Status", "custom", {
+  render: ({ value }) => <Chip flavor="success">{String(value)}</Chip>,
+});
+grid.addRow({ id: 1, firstName: "John", status: "active" });
+
+<DataGrid model={grid} borders="rows" striping="rows" interactive />
+```
+
+**`model` is the only required prop.** There is no `sortable`, `searchable`,
+`checkable`, `pagination` or `expandable` flag: each of those is already a fact
+about the model, and a second copy on the tag could disagree with the thing
+beside it. A column sorts because it was added sortable; the grid pages because
+it was given a `pageSize`; it selects because it was given a `selection` mode.
+
+What is left on the tag is presentation: `borders` (`none|rows|cols|both`),
+`striping`, `sticky` (`none|header|columns|both`), `interactive`, `size`,
+`width`, `flavor`, `caption`, `empty`, `renderExpanded`. `onSortChange`,
+`onPageChange` and `onSelectionChange` are mirrors for an app keeping state in a
+URL; the model stays the source, so read the URL and call `grid.setSort()`.
+
+Model API: `addColumn(name, label, dataType?, options?)`, `addRow(row, index?)`,
+`deleteRow`, `setRows`, `toggleColumn`, `sortByColumn`, `setSort`,
+`searchColumn`, `resetFilters`, `filterRows`, `switchPage`, `setPageSize`,
+`toggleCheck`, `toggleCheckAll`, `setGroupBy`, `groups(name)`. Accessors:
+`columns`, `visibleColumns`, `columnsByName`, `rows`, `filteredRows`,
+`sortedRows`, `pageRows`, `sort`, `queries`, `page`, `pageSize`, `pageCount`,
+`total`, `selectedIds`, `selectedRows`, `groupBy`, `groupedRows`.
+
+### Porting from vue3-ui's DataGrid
+
+The verbs and their positional shapes carry over, so
+`grid.addColumn("id", "ID", "number")` moves unchanged. Five differences:
+
+| vue3 | here | why |
+| --- | --- | --- |
+| `caption` on a column | `label` | `caption` collides with `<caption>` |
+| `dataType: string` | closed union | a typo used to typecheck and render nothing |
+| `sortByColumn(col, ascendant)` | `sortByColumn(col, direction?)` | `true` meaning "ascending" is what 2.2 removed |
+| `switchPage()` reading a field | `switchPage(page)` | explicit |
+| `getColumns()` | `visibleColumns()` | it always returned only the visible ones |
+
+And one behavioural difference worth knowing: in vue3, `searchColumn`,
+`sortByColumn` and `switchPage` each rewrote the same `rows` array from
+`originalRows`, so any two of them composed by destroying each other — paging
+after a search silently restored the rows the search removed. Here `rows` is the
+source and the rest is derived, so a search survives a page change and searches
+accumulate across columns instead of replacing the last one. `resetFilters()`
+clears them all.
+
+Drag reordering is not ported. Cell editing is deferred.
 
 ## Table (headless assembly)
 
