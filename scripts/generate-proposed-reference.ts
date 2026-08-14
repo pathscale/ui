@@ -496,7 +496,7 @@ L.push("**`Address` means the on-chain one.** A postal address form has zero cal
 L.push("");
 L.push("### What is deliberately *not* a component");
 L.push("");
-L.push("`EmailInput`, `UrlInput`, `PhoneInput`. `type=\"email\"` appears in 5 repos and nobody has ever wrapped it, which matches shadcn, daisyUI and Radix — all of which leave it as `<Input type=\"email\">`. What was actually missing is the validation, and 2.2 already has the slot for it: **`type` drives a default `validate` and the `Issue` codes that go with it** — `invalid_email`, `invalid_url`, `invalid_tel` — stable, translatable, and still overridable by passing your own `validate`.");
+L.push("`EmailInput`, `UrlInput`, `PhoneInput`. `type=\"email\"` appears in 5 repos and nobody has ever wrapped it, which matches shadcn, daisyUI and Radix, all of which leave it as `<Input type=\"email\">`. What was actually missing is the validation, and 2.2 already has the slot for it: **`type` drives a default `validate` and the `Issue` codes that go with it** (`invalid_email`, `invalid_url`, `invalid_tel`): stable, translatable, and still overridable by passing your own `validate`.");
 L.push("");
 L.push("### One place we do not take the industry's word");
 L.push("");
