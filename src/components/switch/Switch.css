@@ -13,7 +13,7 @@
     --switch-control-bg-hover: color-mix(in oklab, var(--switch-control-bg), transparent 20%);
     --switch-control-bg-pressed: var(--switch-control-bg-hover);
     --switch-control-bg-checked: var(--color-accent);
-    --switch-control-bg-checked-hover: color-mix(in oklab, var(--switch-control-bg-checked), #000 8%);
+    --switch-control-bg-checked-hover: color-mix(in oklab, var(--switch-control-bg-checked), var(--shade) var(--shade-hover));
     --switch-control-border: color-mix(in oklab, var(--color-base-content) 24%, transparent);
     --switch-control-border-checked: color-mix(
       in oklab,
@@ -186,35 +186,35 @@
 
   .switch--default {
     --switch-control-bg-checked: var(--color-default-foreground);
-    --switch-control-bg-checked-hover: color-mix(in oklab, var(--switch-control-bg-checked), #000 8%);
+    --switch-control-bg-checked-hover: color-mix(in oklab, var(--switch-control-bg-checked), var(--shade) var(--shade-hover));
   }
 
   /* ── Color: accent (default) ── */
 
   .switch--accent {
     --switch-control-bg-checked: var(--color-accent);
-    --switch-control-bg-checked-hover: color-mix(in oklab, var(--switch-control-bg-checked), #000 8%);
+    --switch-control-bg-checked-hover: color-mix(in oklab, var(--switch-control-bg-checked), var(--shade) var(--shade-hover));
   }
 
   /* ── Color: success ── */
 
   .switch--success {
     --switch-control-bg-checked: var(--color-success);
-    --switch-control-bg-checked-hover: color-mix(in oklab, var(--switch-control-bg-checked), #000 8%);
+    --switch-control-bg-checked-hover: color-mix(in oklab, var(--switch-control-bg-checked), var(--shade) var(--shade-hover));
   }
 
   /* ── Color: warning ── */
 
   .switch--warning {
     --switch-control-bg-checked: var(--color-warning);
-    --switch-control-bg-checked-hover: color-mix(in oklab, var(--switch-control-bg-checked), #000 8%);
+    --switch-control-bg-checked-hover: color-mix(in oklab, var(--switch-control-bg-checked), var(--shade) var(--shade-hover));
   }
 
   /* ── Color: danger ── */
 
   .switch--danger {
     --switch-control-bg-checked: var(--color-danger);
-    --switch-control-bg-checked-hover: color-mix(in oklab, var(--switch-control-bg-checked), #000 8%);
+    --switch-control-bg-checked-hover: color-mix(in oklab, var(--switch-control-bg-checked), var(--shade) var(--shade-hover));
   }
 
   /* ── Disabled state ── */

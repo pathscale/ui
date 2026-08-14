@@ -132,6 +132,35 @@
     --glass-brightness: 1;
     --glass-shadow-depth: 0 8px 32px rgb(0 0 0 / 10%);
     --glass-fallback-background-opacity: 78%;
+
+    /* ------------------------------------------------------------ Elevation
+     * One scale, spent by every raised surface. Components pick a step; they
+     * do not pick a colour or an alpha, because a shadow that reads correctly
+     * on white does not read correctly on near-black and the component has no
+     * way to know which it is sitting on.
+     */
+    --shadow-color: 0 0 0;
+    --shadow-sm: 0 1px 2px rgb(var(--shadow-color) / 5%), 0 1px 3px rgb(var(--shadow-color) / 10%);
+    --shadow-md: 0 4px 6px -1px rgb(var(--shadow-color) / 10%), 0 2px 4px -2px rgb(var(--shadow-color) / 10%);
+    --shadow-lg: 0 10px 15px -3px rgb(var(--shadow-color) / 10%), 0 4px 6px -4px rgb(var(--shadow-color) / 10%);
+    --shadow-xl: 0 20px 25px -5px rgb(var(--shadow-color) / 10%), 0 8px 10px -6px rgb(var(--shadow-color) / 10%);
+
+    /* --------------------------------------------------------- Focus ring */
+    --focus-ring-width: 2px;
+    --focus-ring-offset: 2px;
+    --focus-ring-color: var(--color-accent);
+
+    /* ----------------------------------------------------------- Shading
+     * The direction a surface moves when hovered or pressed. Mixing toward
+     * base-content darkens on a light theme and lightens on a dark one, which
+     * is the behaviour a hardcoded black can only get right in one of them.
+     */
+    --shade: var(--color-base-content);
+    --shade-hover: 8%;
+    --shade-pressed: 12%;
+
+    /* -------------------------------------------------------------- Radius */
+    --radius-pill: 9999px;
   }
 }
 

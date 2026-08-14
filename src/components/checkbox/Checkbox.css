@@ -126,7 +126,7 @@
 
     .checkbox:hover .checkbox__control::before,
     .checkbox[data-hovered="true"] .checkbox__control::before {
-      background-color: color-mix(in oklab, var(--color-accent), #000 8%);
+      background-color: color-mix(in oklab, var(--color-accent), var(--shade) var(--shade-hover));
     }
   }
 
