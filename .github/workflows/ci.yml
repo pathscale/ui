@@ -38,8 +38,11 @@ jobs:
       - name: Build
         run: bun run build
 
+      # `bun run test`, not bare `bun test`: the script passes
+      # --conditions=browser, without which Bun resolves Solid's inert server
+      # build and every reactive assertion reads back empty.
       - name: Test
-        run: bun test
+        run: bun run test
 
       # Fails when docs/api-contract.md and the shipped types disagree, in
       # either direction. Never runs with --write: regenerating the document on
