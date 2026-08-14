@@ -11,21 +11,21 @@
     --progress-fill: var(--color-accent);
   }
 
-  .progress-bar__label {
+  .progress__label {
     grid-area: label;
     width: fit-content;
     font-size: 0.875rem;
     font-weight: 500;
   }
 
-  .progress-bar__output {
+  .progress__output {
     grid-area: output;
     font-size: 0.875rem;
     font-weight: 500;
     font-variant-numeric: tabular-nums;
   }
 
-  .progress-bar__track {
+  .progress__track {
     grid-area: track;
     position: relative;
     overflow: hidden;
@@ -34,7 +34,7 @@
     height: 0.5rem;
   }
 
-  .progress-bar__indicator {
+  .progress__indicator {
     position: absolute;
     top: 0;
     left: 0;
@@ -44,7 +44,7 @@
     transition: width 300ms var(--ease-out);
   }
 
-  .progress--indeterminate .progress-bar__indicator {
+  .progress--indeterminate .progress__indicator {
     width: 40%;
     animation: progress-indeterminate 1.5s cubic-bezier(0.65, 0, 0.35, 1) infinite;
   }
@@ -55,11 +55,11 @@
     opacity: 0.6;
   }
 
-  .progress--sm .progress-bar__track {
+  .progress--sm .progress__track {
     height: 0.25rem;
   }
 
-  .progress--lg .progress-bar__track {
+  .progress--lg .progress__track {
     height: 0.75rem;
   }
 
@@ -93,11 +93,11 @@
   }
 
   @media (prefers-reduced-motion: reduce) {
-    .progress-bar__indicator {
+    .progress__indicator {
       transition: none;
     }
 
-    .progress--indeterminate .progress-bar__indicator {
+    .progress--indeterminate .progress__indicator {
       animation: none;
     }
   }

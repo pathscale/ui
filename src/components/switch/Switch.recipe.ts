@@ -2,12 +2,12 @@ import { recipe } from "../../lib/layouts";
 export const CLASSES = {
   base: "switch",
   slot: {
-    input: "toggle__input",
-    control: "toggle__control",
-    thumb: "toggle__thumb",
-    icon: "toggle__icon",
-    content: "toggle__content",
-    description: "toggle__description",
+    input: "switch__input",
+    control: "switch__control",
+    thumb: "switch__thumb",
+    icon: "switch__icon",
+    content: "switch__content",
+    description: "switch__description",
   },
   color: {
     default: "switch--default",

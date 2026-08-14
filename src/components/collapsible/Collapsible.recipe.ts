@@ -2,12 +2,12 @@ import { recipe } from "../../lib/layouts";
 export const CLASSES = {
   base: "collapsible",
   slot: {
-    heading: "disclosure__heading",
-    trigger: "disclosure__trigger",
-    indicator: "disclosure__indicator",
-    content: "disclosure__content",
-    body: "disclosure__body",
-    bodyInner: "disclosure__body-inner",
+    heading: "collapsible__heading",
+    trigger: "collapsible__trigger",
+    indicator: "collapsible__indicator",
+    content: "collapsible__content",
+    body: "collapsible__body",
+    bodyInner: "collapsible__body-inner",
   },
   flag: {
     expanded: "collapsible--expanded",

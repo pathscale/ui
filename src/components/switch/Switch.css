@@ -22,7 +22,7 @@
     );
   }
 
-  .toggle__input {
+  .switch__input {
     position: absolute;
     width: 1px;
     height: 1px;
@@ -34,7 +34,7 @@
     clip-path: inset(50%);
   }
 
-  .toggle__control {
+  .switch__control {
     position: relative;
     display: flex;
     flex-shrink: 0;
@@ -51,7 +51,7 @@
       box-shadow 150ms ease;
   }
 
-  .toggle__thumb {
+  .switch__thumb {
     display: flex;
     align-items: center;
     justify-content: center;
@@ -69,7 +69,7 @@
       background-color 200ms ease;
   }
 
-  .toggle__icon {
+  .switch__icon {
     display: flex;
     width: 100%;
     height: 100%;
@@ -77,13 +77,13 @@
     justify-content: center;
   }
 
-  .toggle__content {
+  .switch__content {
     display: flex;
     flex-direction: column;
     gap: 0;
   }
 
-  .toggle__description {
+  .switch__description {
     color: color-mix(in oklab, var(--color-base-content) 62%, transparent);
     font-size: 0.75rem;
     line-height: 1rem;
@@ -91,36 +91,36 @@
 
   /* ── Focus state ── */
 
-  .switch:focus-within .toggle__control,
-  .toggle__input:focus-visible + .toggle__control,
-  .switch[data-focus-visible="true"] .toggle__control {
+  .switch:focus-within .switch__control,
+  .switch__input:focus-visible + .switch__control,
+  .switch[data-focus-visible="true"] .switch__control {
     box-shadow: 0 0 0 3px color-mix(in oklab, var(--switch-control-bg-checked) 22%, transparent);
   }
 
   /* ── Hover state ── */
 
   @media (hover: hover) {
-    .switch:hover .toggle__control,
-    .switch[data-hovered="true"] .toggle__control {
+    .switch:hover .switch__control,
+    .switch[data-hovered="true"] .switch__control {
       background-color: var(--switch-control-bg-hover);
     }
   }
 
   /* ── Pressed state ── */
 
-  .switch:active .toggle__control,
-  .switch[data-pressed="true"] .toggle__control {
+  .switch:active .switch__control,
+  .switch[data-pressed="true"] .switch__control {
     background-color: var(--switch-control-bg-pressed);
   }
 
   /* ── Checked state ── */
 
-  .switch[data-selected="true"] .toggle__control {
+  .switch[data-selected="true"] .switch__control {
     background-color: var(--switch-control-bg-checked);
     border-color: var(--switch-control-border-checked);
   }
 
-  .switch[data-selected="true"] .toggle__thumb {
+  .switch[data-selected="true"] .switch__thumb {
     margin-inline-start: calc(100% - 1.5rem);
     box-shadow:
       0 0 5px 0 oklch(0% 0 0 / 0.02),
@@ -131,32 +131,32 @@
   /* ── Checked + Hover ── */
 
   @media (hover: hover) {
-    .switch[data-selected="true"]:hover .toggle__control,
-    .switch[data-selected="true"][data-hovered="true"] .toggle__control {
+    .switch[data-selected="true"]:hover .switch__control,
+    .switch[data-selected="true"][data-hovered="true"] .switch__control {
       background-color: var(--switch-control-bg-checked-hover);
     }
   }
 
   /* ── Checked + Pressed ── */
 
-  .switch[data-selected="true"]:active .toggle__control,
-  .switch[data-selected="true"][data-pressed="true"] .toggle__control {
+  .switch[data-selected="true"]:active .switch__control,
+  .switch[data-selected="true"][data-pressed="true"] .switch__control {
     background-color: var(--switch-control-bg-checked-hover);
   }
 
   /* ── Size: sm ── */
 
-  .switch--sm .toggle__control {
+  .switch--sm .switch__control {
     height: 1rem;
     width: 2rem;
   }
 
-  .switch--sm .toggle__thumb {
+  .switch--sm .switch__thumb {
     height: 0.75rem;
     width: 1.03125rem;
   }
 
-  .switch--sm[data-selected="true"] .toggle__thumb {
+  .switch--sm[data-selected="true"] .switch__thumb {
     margin-inline-start: calc(100% - 1.15625rem);
   }
 
@@ -168,17 +168,17 @@
 
   /* ── Size: lg ── */
 
-  .switch--lg .toggle__control {
+  .switch--lg .switch__control {
     height: 1.5rem;
     width: 3rem;
   }
 
-  .switch--lg .toggle__thumb {
+  .switch--lg .switch__thumb {
     height: 1.25rem;
     width: 1.71875rem;
   }
 
-  .switch--lg[data-selected="true"] .toggle__thumb {
+  .switch--lg[data-selected="true"] .switch__thumb {
     margin-inline-start: calc(100% - 1.84375rem);
   }
 
@@ -225,13 +225,13 @@
     opacity: 0.55;
   }
 
-  .switch--disabled .toggle__thumb,
-  .switch[data-disabled="true"] .toggle__thumb {
+  .switch--disabled .switch__thumb,
+  .switch[data-disabled="true"] .switch__thumb {
     background-color: color-mix(in oklab, var(--color-default-foreground) 20%, transparent);
   }
 
-  .switch--disabled[data-selected="true"] .toggle__thumb,
-  .switch[data-disabled="true"][data-selected="true"] .toggle__thumb {
+  .switch--disabled[data-selected="true"] .switch__thumb,
+  .switch[data-disabled="true"][data-selected="true"] .switch__thumb {
     opacity: 0.4;
   }
 }

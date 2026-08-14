@@ -1,9 +1,9 @@
 import { recipe } from "../../lib/layouts";
 export const CLASSES = {
   base: "radial-progress",
-  svg: "progress-circle__track",
-  trackCircle: "progress-circle__track-circle",
-  indicator: "progress-circle__indicator",
+  svg: "radial-progress__track",
+  trackCircle: "radial-progress__track-circle",
+  indicator: "radial-progress__indicator",
   size: {
     sm: "radial-progress--sm",
     md: "radial-progress--md",

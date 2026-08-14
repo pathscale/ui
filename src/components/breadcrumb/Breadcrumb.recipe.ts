@@ -13,11 +13,11 @@ export const CLASSES = {
     base: "breadcrumb",
   },
   Item: {
-    // breadcrumbs__item is on the <li>; breadcrumbs__link is on the <a>/<span> inside;
-    // breadcrumbs__separator is on the inner <span>, only rendered when isCurrent is false.
+    // breadcrumb__item is on the <li>; breadcrumb__link is on the <a>/<span> inside;
+    // breadcrumb__separator is on the inner <span>, only rendered when isCurrent is false.
     // We list it here unconditionally because the safelist is a UNION of "could appear",
     // and over-including is safe (purges less aggressively) while under-including breaks UI.
-    base: ["breadcrumbs__item", "breadcrumbs__link", "breadcrumbs__separator"],
+    base: ["breadcrumb__item", "breadcrumb__link", "breadcrumb__separator"],
   },
 } as const;
 export const componentRecipe = recipe({component:"breadcrumb",slots:{"breadcrumb":{},"breadcrumb-item":{},"breadcrumb-link":{},"breadcrumb-separator":{},"root":{},},});
