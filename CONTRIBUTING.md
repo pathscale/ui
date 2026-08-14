@@ -16,17 +16,19 @@ bun run lint
 bun run format
 ```
 
-### Playground — hot-test without rebuilding
+### Trying a change
 
-The fastest way to try a change. Run from the repository root:
+There is no in-repo playground. It demoed every component against the pre-2.2 API
+and had become 477 typecheck errors of dead demos, so it was deleted rather than
+rewritten: an app that consumes the published package tests the package, and a
+copy of the API living beside the API only ever drifts from it.
+
+Build and point a real consumer at it:
 
 ```bash
-bun run playground:dev
+bun run build
+bun run smoke        # scripts/smoke-consumer.ts, imports the built artifact
 ```
-
-The playground aliases `@pathscale/ui` to local `src/` via Vite, so edits under `src/` and
-`src/styles/` refresh immediately — no rebuild, no relink. `playground/src/App.tsx` demos
-every component, with longer examples in `playground/src/examples/`.
 
 ## Commit Convention
 
