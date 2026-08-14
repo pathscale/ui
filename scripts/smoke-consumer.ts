@@ -113,27 +113,33 @@ writeFileSync(
   `import {
   Button,
   Card,
+  Dialog,
   Flex,
-  Modal,
+  Icon,
   Select,
   Table,
   Toast,
   toast,
   createForm,
   useTableModel,
-  type ComponentColor,
-  type ComponentSize,
+  type Flavor,
+  type Size,
+  type State,
 } from "${pkgJson.name}";
 import { runMotion } from "${pkgJson.name}/motion";
 
-const color: ComponentColor = "primary";
-const size: ComponentSize = "md";
+// The three axes, exercised as a consumer would: flavor is what it is, state is
+// what is happening to it, size is scale. No booleans.
+const flavor: Flavor = "primary";
+const size: Size = "md";
+const state: State = "loading";
 
 export const App = () => (
   <Flex direction="col" gap="sm">
-    <Button color={color} size={size} isDisabled={false}>
+    <Button flavor={flavor} size={size} state={state}>
       Save
     </Button>
+    <Icon src="lucide--check" flavor="success" />
     <Card>
       <Card.Body>body</Card.Body>
     </Card>
@@ -141,26 +147,27 @@ export const App = () => (
 );
 
 // Values must exist, not just types.
-export const used = [Modal, Select, Table, Toast, toast, createForm, useTableModel, runMotion];
+export const used = [Dialog, Select, Table, Toast, toast, createForm, useTableModel, runMotion];
 `,
 );
 
 // Runtime load: proves the ESM actually resolves and the barrel is populated.
 writeFileSync(
   join(fixture, "src/load.mjs"),
-  `const mod = await import("${pkgJson.name}");
-const expected = ["Button", "Flex", "Card", "Modal", "toast", "createForm", "useTableModel"];
-const missing = expected.filter((k) => mod[k] === undefined);
-if (missing.length) {
-  console.error("missing exports from the root barrel: " + missing.join(", "));
-  process.exit(1);
-}
-const motion = await import("${pkgJson.name}/motion");
-if (typeof motion.runMotion !== "function") {
-  console.error("./motion did not export runMotion");
-  process.exit(1);
-}
-console.log("runtime load ok — " + Object.keys(mod).length + " root exports");
+  `// Named imports, so the bundler errors if the barrel is missing any of them.
+import {
+  Button,
+  Card,
+  Dialog,
+  Flex,
+  Icon,
+  toast,
+  createForm,
+  useTableModel,
+} from "${pkgJson.name}";
+import { runMotion } from "${pkgJson.name}/motion";
+
+export const used = [Button, Card, Dialog, Flex, Icon, toast, createForm, useTableModel, runMotion];
 `,
 );
 
@@ -195,7 +202,18 @@ step("install the tarball into a fresh consumer", () => run("bun install", fixtu
 step("typecheck with moduleResolution: bundler", () =>
   run("./node_modules/.bin/tsc --noEmit", fixture),
 );
-step("import the package at runtime", () => run("bun src/load.mjs", fixture));
+/*
+ * Bundled, not executed. This package is a browser build: every compiled Layout
+ * calls template() and delegateEvents() at module scope, so importing it in a
+ * bare Node or Bun process throws before any component renders, and running it
+ * would only prove that a DOM shim was installed. Bundling for the browser is
+ * what a real consumer's build does, and it fails on exactly the two things
+ * this step exists to catch: a package the tarball imports but does not
+ * declare, and a named export the barrel does not have.
+ */
+step("bundle the package as a browser consumer would", () =>
+  run("./node_modules/.bin/tsc --noEmit && bun build --target=browser --outdir=.smoke-out src/load.mjs", fixture),
+);
 
 // ------------------------------------------------------------------ cleanup
 
