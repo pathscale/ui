@@ -18,10 +18,11 @@ import {
 } from "solid-js";
 import { twMerge } from "tailwind-merge";
 
-import type { UIBaseProps, State } from "../vocabulary";
+import type { UIBaseProps, State, Issue } from "../vocabulary";
 import { CLASSES } from "./ComboBox.recipe";
 import type { Layout } from "../../lib/layouts";
 import { componentRecipe } from "./ComboBox.recipe";
+import { resolveState } from "../vocabulary";
 
 export type ComboBoxVariant = "primary" | "secondary";
 export type ComboBoxMenuTrigger = "focus" | "input" | "manual";
@@ -151,11 +152,10 @@ export type ComboBoxRootProps<T = ComboBoxItem> = Omit<
     menuTrigger?: ComboBoxMenuTrigger;
     state?: State;
     disabled?: boolean;
-    isInvalid?: boolean;
+    issues?: Issue[];
     allowsCustomValue?: boolean;
     placeholder?: string;
     name?: string;
-    isRequired?: boolean;
     required?: boolean;
     defaultFilter?: (textValue: string, inputValue: string) => boolean;
     itemKey?: (item: T, index: number) => ComboBoxKey;
@@ -238,12 +238,12 @@ const ComboBoxRoot: Layout<typeof componentRecipe, ComboBoxRootProps> = () => {
     "menuTrigger",
     "state",
     "disabled",
-    "isInvalid",
+    "issues",
     "allowsCustomValue",
     "placeholder",
     "name",
-    "isRequired",
     "required",
+    
     "defaultFilter",
     "itemKey",
     "itemTextValue",
@@ -267,8 +267,8 @@ const ComboBoxRoot: Layout<typeof componentRecipe, ComboBoxRootProps> = () => {
   const menuTrigger = () => local.menuTrigger ?? "focus";
   const fullWidth = () => Boolean(local.fullWidth);
   const isDisabled = () => Boolean((local.state === "disabled")) || Boolean(local.disabled);
-  const isInvalid = () => Boolean(local.isInvalid);
-  const isRequired = () => Boolean(local.isRequired) || Boolean(local.required);
+  const isInvalid = () => Boolean((resolveState(local.state, local.issues) === "invalid"));
+  const isRequired = () => Boolean(local.required) || Boolean(local.required);
   const isOpen = () => (local.isOpen !== undefined ? Boolean(local.isOpen) : internalOpen());
   const selectedKey = createMemo(() =>
     local.selectedKey !== undefined ? normalizeKey(local.selectedKey) : internalSelectedKey(),

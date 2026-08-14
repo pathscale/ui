@@ -3,11 +3,12 @@ import { createSignal, splitProps, type Component, type JSX } from "solid-js";
 import { twMerge } from "tailwind-merge";
 
 import type { CheckboxVariant } from "../checkbox";
-import type { UIBaseProps, State } from "../vocabulary";
+import type { UIBaseProps, State, Issue } from "../vocabulary";
 import { CLASSES } from "./CheckboxGroup.recipe";
 import { CheckboxGroupContext, type CheckboxGroupContextValue } from "./context";
 import type { Layout } from "../../lib/layouts";
 import { componentRecipe } from "./CheckboxGroup.recipe";
+import { resolveState } from "../vocabulary";
 
 export type CheckboxGroupVariant = CheckboxVariant;
 
@@ -20,7 +21,7 @@ export type CheckboxGroupProps = Omit<JSX.HTMLAttributes<HTMLDivElement>, "child
     name?: string;
     state?: State;
     disabled?: boolean;
-    isInvalid?: boolean;
+    issues?: Issue[];
     variant?: CheckboxGroupVariant;
   };
 
@@ -36,7 +37,7 @@ const CheckboxGroup: Layout<typeof componentRecipe, CheckboxGroupProps> = () => 
     "name",
     "state",
     "disabled",
-    "isInvalid",
+    "issues",
     "variant",
     "role",
   ]);
@@ -47,7 +48,7 @@ const CheckboxGroup: Layout<typeof componentRecipe, CheckboxGroupProps> = () => 
   const selectedValues = () => (isControlled() ? local.value ?? [] : internalValue());
   const variant = () => local.variant ?? "primary";
   const isDisabled = () => Boolean((local.state === "disabled")) || Boolean(local.disabled);
-  const isInvalid = () => Boolean(local.isInvalid);
+  const isInvalid = () => Boolean((resolveState(local.state, local.issues) === "invalid"));
 
   const handleToggle = (optionValue: string, checked: boolean) => {
     const currentValues = selectedValues();

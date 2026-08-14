@@ -2,10 +2,11 @@ import "./Radio.css";
 import { Show, splitProps, useContext, type Component, type JSX } from "solid-js";
 import { twMerge } from "tailwind-merge";
 import { RadioGroupContext } from "../radio-group/context";
-import type { UIBaseProps, State } from "../vocabulary";
+import type { UIBaseProps, State, Issue } from "../vocabulary";
 import { CLASSES } from "./Radio.recipe";
 import type { Layout } from "../../lib/layouts";
 import { componentRecipe } from "./Radio.recipe";
+import { resolveState } from "../vocabulary";
 
 const invokeEventHandler = (handler: unknown, event: Event) => {
   if (typeof handler === "function") {
@@ -24,7 +25,7 @@ export type RadioProps = Omit<JSX.InputHTMLAttributes<HTMLInputElement>, "type" 
     description?: JSX.Element;
     indicator?: JSX.Element;
     state?: State;
-    isInvalid?: boolean;
+    issues?: Issue[];
   };
 
 const Radio: Layout<typeof componentRecipe, RadioProps> = () => {
@@ -35,7 +36,7 @@ const Radio: Layout<typeof componentRecipe, RadioProps> = () => {
     "description",
     "indicator",
     "state",
-    "isInvalid",
+    "issues",
     "disabled",
     "checked",
     "value",
@@ -51,7 +52,7 @@ const Radio: Layout<typeof componentRecipe, RadioProps> = () => {
   const isDisabled = () =>
     Boolean((local.state === "disabled")) || Boolean(local.disabled) || Boolean(group?.isDisabled());
   const isInvalid = () =>
-    Boolean(local.isInvalid) || Boolean(local["aria-invalid"]) || Boolean(group?.isInvalid());
+    Boolean((resolveState(local.state, local.issues) === "invalid")) || Boolean(local["aria-invalid"]) || Boolean(group?.isInvalid());
   const name = () => local.name ?? group?.name();
   const ariaInvalid = () => local["aria-invalid"] ?? (isInvalid() ? true : undefined);
 

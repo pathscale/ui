@@ -18,7 +18,7 @@ import { twMerge } from "tailwind-merge";
 
 import Button, { type ButtonProps } from "../button";
 import CloseButton, { type CloseButtonProps } from "../close-button";
-import type { UIBaseProps } from "../vocabulary";
+import type { UIBaseProps, State } from "../vocabulary";
 import { CLASSES } from "./Toast.recipe";
 import type { Layout } from "../../lib/layouts";
 import { componentRecipe } from "./Toast.recipe";
@@ -108,7 +108,7 @@ export interface ToastContentValue {
   description?: JSX.Element;
   variant?: ToastVariant;
   actionProps?: ToastActionProps;
-  isLoading?: boolean;
+  state?: State;
 }
 
 export interface ToastQueueAddOptions {
@@ -474,7 +474,7 @@ const CloseIcon = () => (
 );
 
 const DefaultIndicator: Layout<typeof componentRecipe, { variant: ResolvedToastVariant; isLoading: boolean }> = () => {
-  if (props.isLoading) {
+  if ((props.state === "loading")) {
     return <span {...{ class: CLASSES.Spinner.base }} aria-hidden="true" />;
   }
 
@@ -501,7 +501,7 @@ export type ToastRootProps = Omit<JSX.HTMLAttributes<HTMLDivElement>, "children"
     variant?: ToastVariant;
     indicator?: JSX.Element;
     actionProps?: ToastActionProps;
-    isLoading?: boolean;
+    state?: State;
     onClose?: () => void;
     isFrontmost?: boolean;
     isHidden?: boolean;
@@ -673,7 +673,7 @@ const ToastRoot: Layout<typeof componentRecipe, ToastRootProps> = () => {
     "variant",
     "indicator",
     "actionProps",
-    "isLoading",
+    "state",
     "onClose",
     "isFrontmost",
     "isHidden",
@@ -682,7 +682,7 @@ const ToastRoot: Layout<typeof componentRecipe, ToastRootProps> = () => {
   ]);
 
   const variant = createMemo(() => normalizeVariant(local.variant));
-  const isLoading = createMemo(() => Boolean(local.isLoading));
+  const isLoading = createMemo(() => Boolean((local.state === "loading")));
   const isFrontmost = createMemo(() => local.isFrontmost ?? true);
   const isHidden = createMemo(() => local.isHidden ?? false);
 
@@ -922,7 +922,7 @@ const ToastProvider: Layout<typeof componentRecipe, ToastProviderProps> = () => 
                       variant={queuedToast.content.variant}
                       indicator={queuedToast.content.indicator}
                       actionProps={queuedToast.content.actionProps}
-                      isLoading={queuedToast.content.isLoading}
+                      state={queuedToast.content.state}
                       onClose={dismiss}
                       isFrontmost={isFrontmost()}
                       isHidden={hidden()}
@@ -947,7 +947,7 @@ export interface HeroUIToastOptions {
   indicator?: JSX.Element;
   variant?: ToastVariant;
   actionProps?: ToastActionProps;
-  isLoading?: boolean;
+  state?: State;
   timeout?: number;
   onClose?: () => void;
 }
@@ -986,7 +986,7 @@ const createToastFunction = (queue: ToastQueue<ToastContentValue>): ToastFunctio
         indicator: options?.indicator,
         variant: options?.variant ?? "default",
         actionProps: options?.actionProps,
-        isLoading: options?.isLoading,
+        state: options?.state,
       },
       {
         timeout,
@@ -1011,7 +1011,7 @@ const createToastFunction = (queue: ToastQueue<ToastContentValue>): ToastFunctio
       {
         title: options.loading,
         variant: "default",
-        isLoading: true,
+        state: "loading",
       },
       {
         timeout: 0,

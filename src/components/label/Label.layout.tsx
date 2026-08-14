@@ -2,18 +2,19 @@ import "./Label.css";
 import { splitProps, type Component, type JSX } from "solid-js";
 import { twMerge } from "tailwind-merge";
 
-import type { UIBaseProps, State } from "../vocabulary";
+import type { UIBaseProps, State, Issue } from "../vocabulary";
 import { CLASSES } from "./Label.recipe";
 import type { Layout } from "../../lib/layouts";
 import { componentRecipe } from "./Label.recipe";
+import { resolveState } from "../vocabulary";
 
 export type LabelRootProps = Omit<JSX.LabelHTMLAttributes<HTMLLabelElement>, "for"> &
   UIBaseProps & {
     for?: string;
     htmlFor?: string;
-    isRequired?: boolean;
+    required?: boolean;
     state?: State;
-    isInvalid?: boolean;
+    issues?: Issue[];
   };
 
 const LabelRoot: Layout<typeof componentRecipe, LabelRootProps> = () => {
@@ -24,9 +25,9 @@ const LabelRoot: Layout<typeof componentRecipe, LabelRootProps> = () => {
     "style",
     "for",
     "htmlFor",
-    "isRequired",
+    "required",
     "state",
-    "isInvalid",
+    "issues",
   ]);
 
   return (
@@ -35,19 +36,19 @@ const LabelRoot: Layout<typeof componentRecipe, LabelRootProps> = () => {
       for={local.for ?? local.htmlFor}
       class={twMerge(
         CLASSES.base,
-        local.isRequired && CLASSES.flag.required,
+        local.required && CLASSES.flag.required,
         (local.state === "disabled") && CLASSES.flag.disabled,
-        local.isInvalid && CLASSES.flag.invalid,
+        (resolveState(local.state, local.issues) === "invalid") && CLASSES.flag.invalid,
         local.class,
       )}
       data-slot="label"
-      data-required={local.isRequired ? "true" : undefined}
+      data-required={local.required ? "true" : undefined}
       data-disabled={(local.state === "disabled") ? "true" : undefined}
-      data-invalid={local.isInvalid ? "true" : undefined}
+      data-invalid={(resolveState(local.state, local.issues) === "invalid") ? "true" : undefined}
       data-theme={local.dataTheme}
       style={local.style}
       aria-disabled={(local.state === "disabled") ? "true" : undefined}
-      aria-invalid={local.isInvalid ? "true" : undefined}
+      aria-invalid={(resolveState(local.state, local.issues) === "invalid") ? "true" : undefined}
     >
       {local.children}
     </label>

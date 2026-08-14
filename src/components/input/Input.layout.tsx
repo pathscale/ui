@@ -13,7 +13,8 @@ import { twMerge } from "tailwind-merge";
 import { CLASSES } from "./Input.recipe";
 import type { Layout } from "../../lib/layouts";
 import { componentRecipe } from "./Input.recipe";
-import type { State } from "../vocabulary";
+import type { State, Issue } from "../vocabulary";
+import { resolveState } from "../vocabulary";
 type InputSize = "sm" | "md" | "lg";
 
 type InputContextValue = {
@@ -32,7 +33,7 @@ type InputRootProps = Omit<JSX.HTMLAttributes<HTMLDivElement>, "children"> & {
   size?: InputSize;
   fullWidth?: boolean;
   state?: State;
-  isInvalid?: boolean;
+  issues?: Issue[];
   dataTheme?: string;
 };
 
@@ -43,7 +44,7 @@ const InputRoot: Layout<typeof componentRecipe, InputRootProps> = () => {
     "size",
     "fullWidth",
     "state",
-    "isInvalid",
+    "issues",
     "dataTheme",
   ]);
 
@@ -51,7 +52,7 @@ const InputRoot: Layout<typeof componentRecipe, InputRootProps> = () => {
 
   const size = () => local.size ?? "md";
   const isDisabled = () => Boolean((local.state === "disabled"));
-  const isInvalid = () => Boolean(local.isInvalid);
+  const isInvalid = () => Boolean((resolveState(local.state, local.issues) === "invalid"));
   const fullWidth = () => Boolean(local.fullWidth);
 
   return (
@@ -85,7 +86,7 @@ type InputFieldProps = Omit<JSX.InputHTMLAttributes<HTMLInputElement>, "size" | 
   size?: InputSize;
   state?: State;
   disabled?: boolean;
-  isInvalid?: boolean;
+  issues?: Issue[];
   fullWidth?: boolean;
   startIcon?: JSX.Element;
   endIcon?: JSX.Element;
@@ -99,7 +100,7 @@ const InputField: Layout<typeof componentRecipe, InputFieldProps> = () => {
     "size",
     "state",
     "disabled",
-    "isInvalid",
+    "issues",
     "fullWidth",
     "startIcon",
     "endIcon",
@@ -111,7 +112,7 @@ const InputField: Layout<typeof componentRecipe, InputFieldProps> = () => {
   const size = () => local.size ?? ctx?.size() ?? "md";
   const isDisabled = () => Boolean((local.state === "disabled")) || Boolean(local.disabled) || Boolean(ctx?.isDisabled());
   const isInvalid = () =>
-    Boolean(local.isInvalid) || Boolean(local["aria-invalid"]) || Boolean(ctx?.isInvalid());
+    Boolean((resolveState(local.state, local.issues) === "invalid")) || Boolean(local["aria-invalid"]) || Boolean(ctx?.isInvalid());
   const fullWidth = () => Boolean(local.fullWidth) || Boolean(ctx?.fullWidth());
   const inputId = () => local.id ?? ctx?.fieldId();
   const ariaInvalid = () => local["aria-invalid"] ?? (isInvalid() ? true : undefined);
@@ -223,7 +224,7 @@ const InputBase: Layout<typeof componentRecipe, InputProps> = () => {
     "fullWidth",
     "state",
     "disabled",
-    "isInvalid",
+    "issues",
     "label",
     "helperText",
     "errorMessage",
@@ -235,7 +236,7 @@ const InputBase: Layout<typeof componentRecipe, InputProps> = () => {
   const inputId = () => local.id ?? `${generatedId}-input`;
   const isDisabled = () => Boolean((local.state === "disabled")) || Boolean(local.disabled);
   const isInvalid = () =>
-    Boolean(local.isInvalid) || Boolean(local["aria-invalid"]) || local.errorMessage != null;
+    Boolean((resolveState(local.state, local.issues) === "invalid")) || Boolean(local["aria-invalid"]) || local.errorMessage != null;
 
   const helperContent = () => local.errorMessage ?? local.helperText;
   const hasHelper = () => helperContent() != null;
@@ -246,7 +247,7 @@ const InputBase: Layout<typeof componentRecipe, InputProps> = () => {
       size={local.size}
       fullWidth={local.fullWidth ?? true}
       state={isDisabled() ? "disabled" : undefined}
-      isInvalid={isInvalid()}
+      issues={local.issues}
       dataTheme={local.dataTheme}
     >
       <>
@@ -258,7 +259,7 @@ const InputBase: Layout<typeof componentRecipe, InputProps> = () => {
           id={inputId()}
           size={local.size}
           state={isDisabled() ? "disabled" : undefined}
-          isInvalid={isInvalid()}
+          issues={local.issues}
           aria-describedby={hasHelper() ? helperId() : undefined}
           {...{ class: local.class }}
           dataTheme={local.dataTheme}
