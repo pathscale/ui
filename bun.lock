@@ -40,10 +40,10 @@
         "postcss": "^8.5.15",
         "postcss-cli": "^11.0.1",
         "postcss-selector-parser": "^7.1.1",
-        "rsbuild-plugin-solid-layouts": "^0.1.2",
+        "rsbuild-plugin-solid-layouts": "^0.1.4",
         "solid-js": "^1.9.14",
-        "solid-layouts": "^0.1.2",
-        "solid-layouts-oxc": "^0.1.2",
+        "solid-layouts": "^0.1.3",
+        "solid-layouts-oxc": "^0.1.7",
         "svgo": "^3.3.3",
         "typescript": "^6.0.3",
       },
@@ -63,7 +63,7 @@
         "@tanstack/solid-table": "^8.0.0",
         "popmotion": "^11.0.5",
         "solid-js": "^1.9",
-        "solid-layouts": "^0.1.2",
+        "solid-layouts": "^0.1.3",
       },
       "optionalPeers": [
         "@standard-schema/spec",
@@ -630,7 +630,7 @@
 
     "rsbuild-plugin-dts": ["rsbuild-plugin-dts@0.22.0", "", { "dependencies": { "@ast-grep/napi": "0.37.0" }, "peerDependencies": { "@microsoft/api-extractor": "^7", "@rsbuild/core": "^1.0.0 || ^2.0.0-0", "@typescript/native-preview": "7.x", "typescript": "^5 || ^6" }, "optionalPeers": ["@microsoft/api-extractor", "@typescript/native-preview", "typescript"] }, "sha512-Oyiu5oJDHWOnBv7yRr8eAGfoEddwxfPqUbAX6HvcJxrnR/h6Zd0VgTBWVTgqALYhLcL2ZdyZ2vwnqfhan4krwA=="],
 
-    "rsbuild-plugin-solid-layouts": ["rsbuild-plugin-solid-layouts@0.1.2", "", { "dependencies": { "solid-layouts-oxc": "0.1.2" }, "peerDependencies": { "@rsbuild/core": ">=1.3.0" } }, "sha512-UlYqXNLo2ETd8NTS31NuzmzKgZYB8bKg/D3nUiJlG5MnxSFu50Erw0SBX8OtvwPCEGmV10ql3uC/O8Jso00mjw=="],
+    "rsbuild-plugin-solid-layouts": ["rsbuild-plugin-solid-layouts@0.1.4", "", { "dependencies": { "solid-layouts-oxc": "0.1.7" }, "peerDependencies": { "@rsbuild/core": ">=1.3.0" } }, "sha512-6FgOrK2e9u8Bueb26AUVUAw5eE4zLMis8eA6dtF0tl+vByZEksQIUtkEHvNO17ki8sodoyOrMt+M1HFivNEZUg=="],
 
     "sax": ["sax@1.6.0", "", {}, "sha512-6R3J5M4AcbtLUdZmRv2SygeVaM7IhrLXu9BmnOGmmACak8fiUtOsYNWUS4uK7upbmHIBbLBeFeI//477BKLBzA=="],
 
@@ -644,9 +644,9 @@
 
     "solid-js": ["solid-js@1.9.14", "", { "dependencies": { "csstype": "^3.1.0", "seroval": "~1.5.4", "seroval-plugins": "~1.5.4" } }, "sha512-sAEXC0Kk0S1EDg+8ysEWJDbYhA3RRoEjwuySUGlKIemeo0I5YZfOyumNjNs9Sv3y2nmhD+0rW66ag2HsMuQiGQ=="],
 
-    "solid-layouts": ["solid-layouts@0.1.2", "", { "peerDependencies": { "solid-js": "^1.9.14" } }, "sha512-0RHmvB/8B9SsqgiZRgqFP3naa0BcWzY34JKMp30FTyA6BeD0/sgmSvaNciEYq0/Jcn2i1zK+LLbz5/leqEVncg=="],
+    "solid-layouts": ["solid-layouts@0.1.3", "", { "peerDependencies": { "solid-js": "^1.9.14" } }, "sha512-SDlahgR/wbVA7x6M7Vgm1XqIShJ/1JeN0Kvbf4TZqj3CAZDjaTugkoJBogfg14+/Kfnh0BZ+86QFwjcXzMrpXA=="],
 
-    "solid-layouts-oxc": ["solid-layouts-oxc@0.1.2", "", { "bin": { "solid-layouts-library": "bin/solid-layouts-library.js", "solid-layouts-application": "bin/solid-layouts-application.js", "solid-layouts-lint": "bin/solid-layouts-lint.js" } }, "sha512-WQqr5Ap28icOwMqBA6kuHFCeulpNPn26eV6DHfn3L4QRy98d7peJBO9iqwm8Mnm8PtMzh8FJPlUJ+xiVDjmUYw=="],
+    "solid-layouts-oxc": ["solid-layouts-oxc@0.1.7", "", { "bin": { "solid-layouts-library": "bin/solid-layouts-library.js", "solid-layouts-application": "bin/solid-layouts-application.js", "solid-layouts-lint": "bin/solid-layouts-lint.js" } }, "sha512-1rVht4oKW6SnW8uHjXBVWUb3jr8GwuUH+23T3UCvqj+HaWfBlWtgseefTMWf9qlAVDjX5BGE2V/kNV4gHxcGpg=="],
 
     "solid-refresh": ["solid-refresh@0.7.8", "", { "dependencies": { "@babel/generator": "^7.29.1", "@babel/types": "^7.29.0" }, "peerDependencies": { "solid-js": "^1.3" } }, "sha512-iG442T3HXJp5jEebCy8okETrWnmX7CnxNOKrJQVeufh6WXSn+xtLXaptUXXMHTWcRqTJOJwQ8UwzxrRtVFSIzA=="],
 
