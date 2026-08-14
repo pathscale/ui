@@ -1,10 +1,26 @@
 @layer components {
+  /*
+   * One custom property carries the flavour, and the base rule spends it.
+   * `inherit` is the default and resolves to `currentColor`, so an icon inside
+   * something that has already chosen a colour keeps that colour.
+   */
   .icon {
+    --icon-accent: currentColor;
+
     display: inline-flex;
     align-items: center;
     justify-content: center;
     flex-shrink: 0;
     line-height: 1;
+    color: var(--icon-accent);
   }
-}
 
+  .icon--flavor-neutral { --icon-accent: var(--color-base-content); }
+  .icon--flavor-primary { --icon-accent: var(--color-primary); }
+  .icon--flavor-secondary { --icon-accent: var(--color-secondary); }
+  .icon--flavor-accent { --icon-accent: var(--color-accent); }
+  .icon--flavor-destructive { --icon-accent: var(--color-error); }
+  .icon--flavor-success { --icon-accent: var(--color-success); }
+  .icon--flavor-warning { --icon-accent: var(--color-warning); }
+  .icon--flavor-info { --icon-accent: var(--color-info); }
+}
