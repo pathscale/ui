@@ -1,0 +1,595 @@
+import "./Dock.css";
+import {
+  type JSX,
+  type Component,
+  For,
+  Show,
+  createSignal,
+  onCleanup,
+  onMount,
+  splitProps,
+} from "solid-js";
+import { Portal } from "solid-js/web";
+import { twMerge } from "tailwind-merge";
+
+import type { IComponentBaseProps } from "../types";
+import { CLASSES } from "./Dock.recipe";
+import type { Layout } from "../../lib/layouts";
+import { componentRecipe } from "./Dock.recipe";
+
+/* ------------------------------------------------------------------ */
+/*  Types                                                             */
+/* ------------------------------------------------------------------ */
+
+export type DockItem = {
+  title: string;
+  icon: JSX.Element;
+  href?: string;
+  onClick?: (e: MouseEvent) => void;
+};
+
+export type DockDirection = "top" | "bottom" | "left" | "right";
+
+export type DockProps = {
+  items: DockItem[];
+  orientation?: "horizontal" | "vertical";
+  tooltipDirection?: DockDirection;
+  mobilePopupDirection?: DockDirection;
+  /** How to render on mobile: "burger" shows a toggle popup, "dock" shows the full dock bar. @default "burger" */
+  mobileMode?: "burger" | "dock";
+  gap?: number;
+  baseSize?: number;
+  hoverSize?: number;
+  iconSize?: number;
+  hoverIconSize?: number;
+  magnifyRange?: number;
+  magnify?: boolean;
+  nudge?: number;
+  showDesktop?: boolean;
+  showMobile?: boolean;
+  showContainer?: boolean;
+  desktopClass?: string;
+  mobileClass?: string;
+  itemClass?: string;
+  tooltipClass?: string;
+  mobileToggleIcon?: JSX.Element;
+  springMass?: number;
+  springStiffness?: number;
+  springDamping?: number;
+} & IComponentBaseProps;
+
+/* ------------------------------------------------------------------ */
+/*  Resolved config                                                   */
+/* ------------------------------------------------------------------ */
+
+type ResolvedConfig = {
+  baseSize: number;
+  hoverSize: number;
+  iconSize: number;
+  hoverIconSize: number;
+  magnifyRange: number;
+  magnify: boolean;
+  nudge: number;
+  gap: number;
+  tooltipDir: DockDirection;
+  springOpts: { mass: number; stiffness: number; damping: number };
+  orientation: "horizontal" | "vertical";
+  itemClass?: string;
+  tooltipClass?: string;
+};
+
+/* ------------------------------------------------------------------ */
+/*  Spring                                                            */
+/* ------------------------------------------------------------------ */
+
+const prefersReducedMotion =
+  typeof window !== "undefined" &&
+  window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+function createSpring(
+  initial: number,
+  opts: { mass?: number; stiffness?: number; damping?: number } = {},
+) {
+  const mass = opts.mass ?? 1;
+  const stiffness = opts.stiffness ?? 150;
+  const damping = opts.damping ?? 12;
+  let current = initial;
+  let velocity = 0;
+  let target = initial;
+  return {
+    set(v: number) { target = v; },
+    get() { return current; },
+    settled() { return current === target && velocity === 0; },
+    step(dt: number) {
+      if (prefersReducedMotion) { current = target; velocity = 0; return; }
+      const substeps = Math.ceil(dt / 0.004);
+      const subDt = dt / substeps;
+      for (let i = 0; i < substeps; i++) {
+        const force = -stiffness * (current - target);
+        const accel = (force - damping * velocity) / mass;
+        velocity += accel * subDt;
+        current += velocity * subDt;
+      }
+      if (Math.abs(current - target) < 0.01 && Math.abs(velocity) < 0.01) {
+        current = target; velocity = 0;
+      }
+    },
+  };
+}
+
+type Spring = ReturnType<typeof createSpring>;
+
+function mapRange(value: number, inMin: number, inMax: number, outMin: number, outMax: number): number {
+  const t = Math.max(0, Math.min(1, (value - inMin) / (inMax - inMin)));
+  return outMin + t * (outMax - outMin);
+}
+
+/* ------------------------------------------------------------------ */
+/*  Item springs                                                      */
+/* ------------------------------------------------------------------ */
+
+type ItemSprings = {
+  sScale: Spring;
+  sIconScale: Spring;
+  sNudge: Spring;
+  wrapRef?: HTMLDivElement;
+  iconRef?: HTMLDivElement;
+};
+
+/* ------------------------------------------------------------------ */
+/*  DockItem                                                          */
+/* ------------------------------------------------------------------ */
+
+const TOOLTIP_OFFSET = 8;
+
+function computeTooltipPos(rect: DOMRect, dir: DockDirection): { top: string; left: string } {
+  const cx = rect.left + rect.width / 2;
+  const cy = rect.top + rect.height / 2;
+  switch (dir) {
+    case "top": return { left: `${cx}px`, top: `${rect.top - TOOLTIP_OFFSET}px` };
+    case "bottom": return { left: `${cx}px`, top: `${rect.bottom + TOOLTIP_OFFSET}px` };
+    case "left": return { left: `${rect.left - TOOLTIP_OFFSET}px`, top: `${cy}px` };
+    case "right": return { left: `${rect.right + TOOLTIP_OFFSET}px`, top: `${cy}px` };
+  }
+}
+
+const TOOLTIP_TRANSFORM: Record<DockDirection, string> = {
+  top: "translate(-50%, -100%)",
+  bottom: "translate(-50%, 0)",
+  left: "translate(-100%, -50%)",
+  right: "translate(0, -50%)",
+};
+
+const DockItem: Layout<typeof componentRecipe, {
+  item: DockItem;
+  cfg: ResolvedConfig;
+  registerRefs: (wrap: HTMLDivElement, icon: HTMLDivElement) => void;
+}> = () => {
+  let wrapRef: HTMLDivElement | undefined;
+  let iconRef: HTMLDivElement | undefined;
+
+  const [hovered, setHovered] = createSignal(false);
+  const [tooltipStyle, setTooltipStyle] = createSignal<{ top: string; left: string }>({ top: "0", left: "0" });
+  const cfg = props.cfg;
+
+  onMount(() => {
+    if (wrapRef && iconRef) props.registerRefs(wrapRef, iconRef);
+  });
+
+  const handleMouseEnter = () => {
+    if (wrapRef) {
+      setTooltipStyle(computeTooltipPos(wrapRef.getBoundingClientRect(), cfg.tooltipDir));
+    }
+    setHovered(true);
+  };
+
+  const handleClick = (e: MouseEvent) => {
+    if (props.item.onClick) { e.preventDefault(); props.item.onClick(e); }
+  };
+
+  const inner = (
+    <div
+      ref={wrapRef}
+      onMouseEnter={handleMouseEnter}
+      onMouseLeave={() => setHovered(false)}
+      {...{ class: twMerge(CLASSES.item, cfg.itemClass) }}
+      style={{ width: `${cfg.baseSize}px`, height: `${cfg.baseSize}px` }}
+    >
+      <Show when={hovered()}>
+        <Portal>
+          <div
+            {...{ class: twMerge(CLASSES.tooltip, cfg.tooltipClass) }}
+            style={{
+              top: tooltipStyle().top,
+              left: tooltipStyle().left,
+              transform: TOOLTIP_TRANSFORM[cfg.tooltipDir],
+            }}
+          >
+            {props.item.title}
+          </div>
+        </Portal>
+      </Show>
+      <div ref={iconRef} {...{ class: CLASSES.icon }}>
+        {props.item.icon}
+      </div>
+    </div>
+  );
+
+  return (
+    <Show
+      when={props.item.onClick}
+      fallback={
+        <Show when={props.item.href} fallback={inner}>
+          <a href={props.item.href} aria-label={props.item.title}>{inner}</a>
+        </Show>
+      }
+    >
+      <button
+        type="button"
+        onClick={handleClick}
+        aria-label={props.item.title}
+        {...{ class: CLASSES.buttonReset }}
+      >
+        {inner}
+      </button>
+    </Show>
+  );
+};
+
+/* ------------------------------------------------------------------ */
+/*  Desktop dock                                                      */
+/* ------------------------------------------------------------------ */
+
+const DockDesktop: Layout<typeof componentRecipe, {
+  items: DockItem[];
+  class?: string;
+  cfg: ResolvedConfig;
+  showContainer: boolean;
+}> = () => {
+  const [mousePos, setMousePos] = createSignal(Infinity);
+  const isH = () => props.cfg.orientation === "horizontal";
+  const cfg = props.cfg;
+
+  const itemSprings: ItemSprings[] = [];
+  let bgRef: HTMLDivElement | undefined;
+
+  let rafId: number | undefined;
+  let prevTime = 0;
+  let lastMousePos = Infinity;
+  let loopRunning = false;
+  let anchorCenters: number[] = [];
+
+  const captureAnchors = () => {
+    anchorCenters = [];
+    for (let i = 0; i < itemSprings.length; i++) {
+      const wrap = itemSprings[i].wrapRef;
+      if (wrap) {
+        const b = wrap.getBoundingClientRect();
+        anchorCenters[i] = isH() ? b.x + b.width / 2 : b.y + b.height / 2;
+      }
+    }
+  };
+
+  const startLoop = () => {
+    if (loopRunning || !cfg.magnify) return;
+    loopRunning = true;
+    prevTime = 0;
+    rafId = requestAnimationFrame(tick);
+  };
+
+  const stopLoop = () => {
+    if (rafId !== undefined) cancelAnimationFrame(rafId);
+    rafId = undefined;
+    loopRunning = false;
+  };
+
+  const tick = (time: number) => {
+    const dt = prevTime ? Math.min((time - prevTime) / 1000, 0.05) : 1 / 60;
+    prevTime = time;
+
+    const mp = mousePos();
+
+    if (mp !== lastMousePos) {
+      lastMousePos = mp;
+
+      for (let i = 0; i < itemSprings.length; i++) {
+        const s = itemSprings[i];
+        if (!s.wrapRef || anchorCenters[i] === undefined) continue;
+        const dist = mp - anchorCenters[i];
+        const absDist = Math.abs(dist);
+
+        // Scale targets
+        const ts = mp === Infinity ? cfg.baseSize : mapRange(absDist, 0, cfg.magnifyRange, cfg.hoverSize, cfg.baseSize);
+        const ti = mp === Infinity ? cfg.iconSize : mapRange(absDist, 0, cfg.magnifyRange, cfg.hoverIconSize, cfg.iconSize);
+        s.sScale.set(ts);
+        s.sIconScale.set(ti);
+
+        // Nudge: items push away from cursor (like macOS dock)
+        if (mp === Infinity || absDist > cfg.magnifyRange) {
+          s.sNudge.set(0);
+        } else {
+          const scale = mapRange(absDist, 0, cfg.magnifyRange, cfg.hoverSize / cfg.baseSize, 1);
+          const nudgeAmount = (-dist / cfg.magnifyRange) * cfg.nudge * scale;
+          s.sNudge.set(nudgeAmount);
+        }
+      }
+    }
+
+    // Step all springs
+    let allSettled = true;
+    for (let i = 0; i < itemSprings.length; i++) {
+      const s = itemSprings[i];
+      s.sScale.step(dt); s.sIconScale.step(dt); s.sNudge.step(dt);
+      if (allSettled && !(s.sScale.settled() && s.sIconScale.settled() && s.sNudge.settled())) {
+        allSettled = false;
+      }
+    }
+
+    // Write transforms
+    const maxScale = cfg.hoverSize / cfg.baseSize;
+    const maxIconScale = cfg.hoverIconSize / cfg.iconSize;
+    for (let i = 0; i < itemSprings.length; i++) {
+      const s = itemSprings[i];
+      if (s.wrapRef) {
+        const scale = Math.max(0.8, Math.min(s.sScale.get() / cfg.baseSize, maxScale));
+        const nudge = s.sNudge.get();
+        if (isH()) {
+          s.wrapRef.style.transform = `translateX(${nudge}px) scale(${scale})`;
+        } else {
+          s.wrapRef.style.transform = `translateY(${nudge}px) scale(${scale})`;
+        }
+      }
+      if (s.iconRef) {
+        const iconScale = Math.max(0.8, Math.min(s.sIconScale.get() / cfg.iconSize, maxIconScale));
+        s.iconRef.style.transform = `scale(${iconScale})`;
+      }
+    }
+
+    // Expand background to cover magnified items
+    if (bgRef && props.showContainer) {
+      let minEdge = Infinity;
+      let maxEdge = -Infinity;
+      for (let i = 0; i < itemSprings.length; i++) {
+        const s = itemSprings[i];
+        if (!s.wrapRef) continue;
+        const scale = s.sScale.get() / cfg.baseSize;
+        const nudge = s.sNudge.get();
+        const halfScaled = (cfg.baseSize * scale) / 2;
+        const center = anchorCenters[i] + nudge;
+        minEdge = Math.min(minEdge, center - halfScaled);
+        maxEdge = Math.max(maxEdge, center + halfScaled);
+      }
+      if (isH() && minEdge !== Infinity) {
+        const barRect = bgRef.parentElement?.getBoundingClientRect();
+        if (barRect) {
+          const pad = 16;
+          bgRef.style.left = `${minEdge - barRect.left - pad}px`;
+          bgRef.style.right = `${barRect.right - maxEdge - pad}px`;
+        }
+      }
+    }
+
+    if (allSettled) { stopLoop(); return; }
+    rafId = requestAnimationFrame(tick);
+  };
+
+  onCleanup(() => { stopLoop(); });
+
+  return (
+    <div
+      role="toolbar"
+      aria-label="Actions"
+      onMouseEnter={captureAnchors}
+      onMouseMove={(e) => { setMousePos(isH() ? e.clientX : e.clientY); startLoop(); }}
+      onMouseLeave={() => { setMousePos(Infinity); startLoop(); }}
+      {...{ class: twMerge(
+        CLASSES.bar,
+        isH() ? CLASSES.barOrientation.horizontal : CLASSES.barOrientation.vertical,
+        props.class,
+      ) }}
+      style={{
+        gap: `${cfg.gap}px`,
+        padding: props.showContainer ? (isH() ? "0.5rem 1rem" : "1rem 0.5rem") : undefined,
+        ...(isH() ? { height: `${cfg.baseSize + 16}px` } : { width: `${cfg.baseSize + 16}px` }),
+      }}
+    >
+      <Show when={props.showContainer}>
+        <div ref={bgRef} {...{ class: CLASSES.bg }} />
+      </Show>
+      <For each={props.items}>
+        {(item, idx) => {
+          const springs: ItemSprings = {
+            sScale: createSpring(cfg.baseSize, cfg.springOpts),
+            sIconScale: createSpring(cfg.iconSize, cfg.springOpts),
+            sNudge: createSpring(0, cfg.springOpts),
+          };
+          itemSprings[idx()] = springs;
+
+          return (
+            <DockItem
+              item={item}
+              cfg={cfg}
+              registerRefs={(wrap, icon) => {
+                springs.wrapRef = wrap;
+                springs.iconRef = icon;
+              }}
+            />
+          );
+        }}
+      </For>
+    </div>
+  );
+};
+
+/* ------------------------------------------------------------------ */
+/*  Mobile dock                                                       */
+/* ------------------------------------------------------------------ */
+
+const DockMobile: Layout<typeof componentRecipe, {
+  items: DockItem[];
+  class?: string;
+  toggleIcon?: JSX.Element;
+  popupDirection: DockDirection;
+  cfg: ResolvedConfig;
+}> = () => {
+  const [open, setOpen] = createSignal(false);
+
+  const handleItemClick = (item: DockItem, e: MouseEvent) => {
+    if (item.onClick) { e.preventDefault(); item.onClick(e); }
+    setOpen(false);
+  };
+
+  return (
+    <div {...{ class: twMerge(CLASSES.mobile, props.class) }}>
+      <Show when={open()}>
+        <div
+          {...{ class: twMerge(
+            CLASSES.mobilePopup,
+            CLASSES.mobilePopupDirection[props.popupDirection],
+          ) }}
+        >
+          <For each={props.items}>
+            {(item, idx) => (
+              <div
+                {...{ class: CLASSES.mobileItem }}
+                style={{
+                  "animation-delay": `${(props.items.length - 1 - idx()) * 0.05}s`,
+                }}
+              >
+                <Show
+                  when={item.onClick}
+                  fallback={
+                    <Show
+                      when={item.href}
+                      fallback={
+                        <div
+                          {...{ class: CLASSES.item }}
+                          style={{ width: `${props.cfg.baseSize}px`, height: `${props.cfg.baseSize}px` }}
+                          title={item.title}
+                        >
+                          {item.icon}
+                        </div>
+                      }
+                    >
+                      <a
+                        href={item.href}
+                        {...{ class: CLASSES.item }}
+                        style={{ width: `${props.cfg.baseSize}px`, height: `${props.cfg.baseSize}px` }}
+                        title={item.title}
+                      >
+                        {item.icon}
+                      </a>
+                    </Show>
+                  }
+                >
+                  <button
+                    type="button"
+                    onClick={(e) => handleItemClick(item, e)}
+                    {...{ class: CLASSES.mobileToggle }}
+                    style={{ width: `${props.cfg.baseSize}px`, height: `${props.cfg.baseSize}px` }}
+                    title={item.title}
+                  >
+                    {item.icon}
+                  </button>
+                </Show>
+              </div>
+            )}
+          </For>
+        </div>
+      </Show>
+      <button
+        type="button"
+        onClick={() => setOpen(!open())}
+        {...{ class: CLASSES.mobileToggle }}
+        style={{ width: `${props.cfg.baseSize}px`, height: `${props.cfg.baseSize}px` }}
+      >
+        {props.toggleIcon ?? (
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            {...{ class: CLASSES.menuIcon }}
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <path d="M4 6h16" /><path d="M4 12h16" /><path d="M4 18h16" />
+          </svg>
+        )}
+      </button>
+    </div>
+  );
+};
+
+/* ------------------------------------------------------------------ */
+/*  Main                                                              */
+/* ------------------------------------------------------------------ */
+
+const Dock: Layout<typeof componentRecipe, DockProps> = () => {
+  const [local, others] = splitProps(rawProps, [
+    "items", "orientation", "tooltipDirection", "mobilePopupDirection", "mobileMode", "gap",
+    "baseSize", "hoverSize", "iconSize", "hoverIconSize", "magnifyRange",
+    "magnify", "nudge", "showDesktop", "showMobile", "showContainer",
+    "desktopClass", "mobileClass", "itemClass", "tooltipClass", "mobileToggleIcon",
+    "springMass", "springStiffness", "springDamping",
+    "class", "className", "dataTheme", "style",
+  ]);
+
+  const cfg = (): ResolvedConfig => ({
+    baseSize: local.baseSize ?? 40,
+    hoverSize: local.hoverSize ?? 64,
+    iconSize: local.iconSize ?? 20,
+    hoverIconSize: local.hoverIconSize ?? 20,
+    magnifyRange: local.magnifyRange ?? 110,
+    // Default OFF — Liquid Glass dock is calm; hover scale/expand opt-in via prop.
+    magnify: local.magnify === true,
+    nudge: local.nudge ?? 20,
+    gap: local.gap ?? 8,
+    tooltipDir: local.tooltipDirection ?? "top",
+    orientation: local.orientation ?? "horizontal",
+    itemClass: local.itemClass,
+    tooltipClass: local.tooltipClass,
+    springOpts: {
+      mass: local.springMass ?? 0.1,
+      stiffness: local.springStiffness ?? 170,
+      damping: local.springDamping ?? 12,
+    },
+  });
+
+  return (
+    <div {...{ class: CLASSES.base }} data-theme={local.dataTheme} style={local.style} {...others}>
+      <Show when={local.showDesktop !== false}>
+        <DockDesktop
+          items={local.items}
+          {...{ class: twMerge(local.class, local.className, local.desktopClass) }}
+          cfg={cfg()}
+          showContainer={local.showContainer !== false}
+        />
+      </Show>
+      <Show when={local.showMobile !== false}>
+        <Show
+          when={local.mobileMode !== "dock"}
+          fallback={
+            <DockDesktop
+              items={local.items}
+              {...{ class: twMerge(CLASSES.barMobileDock, local.mobileClass) }}
+              cfg={cfg()}
+              showContainer={local.showContainer !== false}
+            />
+          }
+        >
+          <DockMobile
+            items={local.items}
+            {...{ class: local.mobileClass }}
+            toggleIcon={local.mobileToggleIcon}
+            popupDirection={local.mobilePopupDirection ?? "top"}
+            cfg={cfg()}
+          />
+        </Show>
+      </Show>
+    </div>
+  );
+};
+
+export default Dock;

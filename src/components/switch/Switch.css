@@ -1,0 +1,237 @@
+@layer components {
+  .switch {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.75rem;
+    color: var(--color-base-content);
+    cursor: pointer;
+    user-select: none;
+    -webkit-tap-highlight-color: transparent;
+
+    --switch-control-bg: var(--color-default);
+    --switch-control-bg-hover: color-mix(in oklab, var(--switch-control-bg), transparent 20%);
+    --switch-control-bg-pressed: var(--switch-control-bg-hover);
+    --switch-control-bg-checked: var(--color-accent);
+    --switch-control-bg-checked-hover: color-mix(in oklab, var(--switch-control-bg-checked), #000 8%);
+    --switch-control-border: color-mix(in oklab, var(--color-base-content) 24%, transparent);
+    --switch-control-border-checked: color-mix(
+      in oklab,
+      var(--switch-control-bg-checked) 74%,
+      var(--color-base-content)
+    );
+  }
+
+  .toggle__input {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    margin: -1px;
+    border: 0;
+    padding: 0;
+    overflow: hidden;
+    white-space: nowrap;
+    clip-path: inset(50%);
+  }
+
+  .toggle__control {
+    position: relative;
+    display: flex;
+    flex-shrink: 0;
+    align-items: center;
+    overflow: hidden;
+    border-radius: 9999px;
+    height: 1.25rem;
+    width: 2.5rem;
+    border: 1px solid var(--switch-control-border);
+    background-color: var(--switch-control-bg);
+    transition:
+      background-color 250ms ease,
+      border-color 250ms ease,
+      box-shadow 150ms ease;
+  }
+
+  .toggle__thumb {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 9999px;
+    background-color: white;
+    margin-inline-start: 0.125rem;
+    height: 1rem;
+    width: 1.375rem;
+    box-shadow:
+      0 0 5px 0 oklch(0% 0 0 / 0.02),
+      0 2px 10px 0 oklch(0% 0 0 / 0.06),
+      0 0 1px 0 oklch(0% 0 0 / 0.3);
+    transition:
+      margin 300ms ease,
+      background-color 200ms ease;
+  }
+
+  .toggle__icon {
+    display: flex;
+    width: 100%;
+    height: 100%;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .toggle__content {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+  }
+
+  .toggle__description {
+    color: color-mix(in oklab, var(--color-base-content) 62%, transparent);
+    font-size: 0.75rem;
+    line-height: 1rem;
+  }
+
+  /* ── Focus state ── */
+
+  .switch:focus-within .toggle__control,
+  .toggle__input:focus-visible + .toggle__control,
+  .switch[data-focus-visible="true"] .toggle__control {
+    box-shadow: 0 0 0 3px color-mix(in oklab, var(--switch-control-bg-checked) 22%, transparent);
+  }
+
+  /* ── Hover state ── */
+
+  @media (hover: hover) {
+    .switch:hover .toggle__control,
+    .switch[data-hovered="true"] .toggle__control {
+      background-color: var(--switch-control-bg-hover);
+    }
+  }
+
+  /* ── Pressed state ── */
+
+  .switch:active .toggle__control,
+  .switch[data-pressed="true"] .toggle__control {
+    background-color: var(--switch-control-bg-pressed);
+  }
+
+  /* ── Checked state ── */
+
+  .switch[data-selected="true"] .toggle__control {
+    background-color: var(--switch-control-bg-checked);
+    border-color: var(--switch-control-border-checked);
+  }
+
+  .switch[data-selected="true"] .toggle__thumb {
+    margin-inline-start: calc(100% - 1.5rem);
+    box-shadow:
+      0 0 5px 0 oklch(0% 0 0 / 0.02),
+      0 2px 10px 0 oklch(0% 0 0 / 0.06),
+      0 0 1px 0 oklch(0% 0 0 / 0.3);
+  }
+
+  /* ── Checked + Hover ── */
+
+  @media (hover: hover) {
+    .switch[data-selected="true"]:hover .toggle__control,
+    .switch[data-selected="true"][data-hovered="true"] .toggle__control {
+      background-color: var(--switch-control-bg-checked-hover);
+    }
+  }
+
+  /* ── Checked + Pressed ── */
+
+  .switch[data-selected="true"]:active .toggle__control,
+  .switch[data-selected="true"][data-pressed="true"] .toggle__control {
+    background-color: var(--switch-control-bg-checked-hover);
+  }
+
+  /* ── Size: sm ── */
+
+  .switch--sm .toggle__control {
+    height: 1rem;
+    width: 2rem;
+  }
+
+  .switch--sm .toggle__thumb {
+    height: 0.75rem;
+    width: 1.03125rem;
+  }
+
+  .switch--sm[data-selected="true"] .toggle__thumb {
+    margin-inline-start: calc(100% - 1.15625rem);
+  }
+
+  /* ── Size: md (default) ── */
+
+  .switch--md {
+    /* Default size */
+  }
+
+  /* ── Size: lg ── */
+
+  .switch--lg .toggle__control {
+    height: 1.5rem;
+    width: 3rem;
+  }
+
+  .switch--lg .toggle__thumb {
+    height: 1.25rem;
+    width: 1.71875rem;
+  }
+
+  .switch--lg[data-selected="true"] .toggle__thumb {
+    margin-inline-start: calc(100% - 1.84375rem);
+  }
+
+  /* ── Color: default ── */
+
+  .switch--default {
+    --switch-control-bg-checked: var(--color-default-foreground);
+    --switch-control-bg-checked-hover: color-mix(in oklab, var(--switch-control-bg-checked), #000 8%);
+  }
+
+  /* ── Color: accent (default) ── */
+
+  .switch--accent {
+    --switch-control-bg-checked: var(--color-accent);
+    --switch-control-bg-checked-hover: color-mix(in oklab, var(--switch-control-bg-checked), #000 8%);
+  }
+
+  /* ── Color: success ── */
+
+  .switch--success {
+    --switch-control-bg-checked: var(--color-success);
+    --switch-control-bg-checked-hover: color-mix(in oklab, var(--switch-control-bg-checked), #000 8%);
+  }
+
+  /* ── Color: warning ── */
+
+  .switch--warning {
+    --switch-control-bg-checked: var(--color-warning);
+    --switch-control-bg-checked-hover: color-mix(in oklab, var(--switch-control-bg-checked), #000 8%);
+  }
+
+  /* ── Color: danger ── */
+
+  .switch--danger {
+    --switch-control-bg-checked: var(--color-danger);
+    --switch-control-bg-checked-hover: color-mix(in oklab, var(--switch-control-bg-checked), #000 8%);
+  }
+
+  /* ── Disabled state ── */
+
+  .switch--disabled,
+  .switch[data-disabled="true"] {
+    cursor: not-allowed;
+    opacity: 0.55;
+  }
+
+  .switch--disabled .toggle__thumb,
+  .switch[data-disabled="true"] .toggle__thumb {
+    background-color: color-mix(in oklab, var(--color-default-foreground) 20%, transparent);
+  }
+
+  .switch--disabled[data-selected="true"] .toggle__thumb,
+  .switch[data-disabled="true"][data-selected="true"] .toggle__thumb {
+    opacity: 0.4;
+  }
+}

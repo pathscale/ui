@@ -1,0 +1,93 @@
+@layer components {
+  .scroll-area {
+    position: relative;
+    --scroll-area-size: 40px;
+  }
+
+  .scroll-area--vertical {
+    overflow-y: auto;
+  }
+
+  .scroll-area--horizontal {
+    overflow-x: auto;
+  }
+
+  .scroll-area--fade.scroll-area--vertical[data-top-scroll="true"] {
+    --scroll-linear-gradient:
+      0deg,
+      #000 calc(100% - var(--scroll-area-size)),
+      transparent;
+
+    mask-image: linear-gradient(var(--scroll-linear-gradient));
+    -webkit-mask-image: linear-gradient(var(--scroll-linear-gradient));
+  }
+
+  .scroll-area--fade.scroll-area--vertical[data-bottom-scroll="true"] {
+    --scroll-linear-gradient:
+      180deg,
+      #000 calc(100% - var(--scroll-area-size)),
+      transparent;
+
+    mask-image: linear-gradient(var(--scroll-linear-gradient));
+    -webkit-mask-image: linear-gradient(var(--scroll-linear-gradient));
+  }
+
+  .scroll-area--fade.scroll-area--vertical[data-top-bottom-scroll="true"] {
+    --scroll-linear-gradient:
+      #000,
+      #000,
+      transparent 0,
+      #000 var(--scroll-area-size),
+      #000 calc(100% - var(--scroll-area-size)),
+      transparent;
+
+    mask-image: linear-gradient(var(--scroll-linear-gradient));
+    -webkit-mask-image: linear-gradient(var(--scroll-linear-gradient));
+  }
+
+  .scroll-area--fade.scroll-area--horizontal[data-left-scroll="true"] {
+    --scroll-linear-gradient:
+      270deg,
+      #000 calc(100% - var(--scroll-area-size)),
+      transparent;
+
+    mask-image: linear-gradient(var(--scroll-linear-gradient));
+    -webkit-mask-image: linear-gradient(var(--scroll-linear-gradient));
+  }
+
+  .scroll-area--fade.scroll-area--horizontal[data-right-scroll="true"] {
+    --scroll-linear-gradient:
+      90deg,
+      #000 calc(100% - var(--scroll-area-size)),
+      transparent;
+
+    mask-image: linear-gradient(var(--scroll-linear-gradient));
+    -webkit-mask-image: linear-gradient(var(--scroll-linear-gradient));
+  }
+
+  .scroll-area--fade.scroll-area--horizontal[data-left-right-scroll="true"] {
+    --scroll-linear-gradient:
+      to right,
+      #000,
+      #000,
+      transparent 0,
+      #000 var(--scroll-area-size),
+      #000 calc(100% - var(--scroll-area-size)),
+      transparent;
+
+    mask-image: linear-gradient(var(--scroll-linear-gradient));
+    -webkit-mask-image: linear-gradient(var(--scroll-linear-gradient));
+  }
+
+  .scroll-area--hide-scrollbar {
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+  }
+
+  .scroll-area--hide-scrollbar::-webkit-scrollbar {
+    display: none;
+    width: 0;
+    height: 0;
+  }
+}
+

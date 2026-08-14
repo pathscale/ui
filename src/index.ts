@@ -16,8 +16,8 @@ export type {
   AccordionVariant,
   AccordionValue,
 } from "./components/accordion";
-export { Callout } from "./components/callout";
-export type { CalloutProps, CalloutPlacement } from "./components/callout";
+export { Alert } from "./components/alert";
+export type { AlertProps, AlertPlacement } from "./components/alert";
 export {
   default as Avatar,
   AvatarImage,
@@ -33,13 +33,13 @@ export type {
 } from "./components/avatar";
 export { default as Badge } from "./components/badge";
 export {
-  Breadcrumbs,
-  BreadcrumbsItem,
-} from "./components/breadcrumbs";
+  Breadcrumb,
+  BreadcrumbItem,
+} from "./components/breadcrumb";
 export type {
-  BreadcrumbsRootProps,
-  BreadcrumbsItemProps,
-} from "./components/breadcrumbs";
+  BreadcrumbRootProps,
+  BreadcrumbItemProps,
+} from "./components/breadcrumb";
 
 export { default as Address } from "./components/address";
 export type { AddressProps, AddressTruncate, TruncateOptions } from "./components/address";
@@ -110,23 +110,23 @@ export type {
   DrawerCloseProps,
 } from "./components/drawer";
 export { default as Dropdown } from "./components/dropdown";
-export { default as Disclosure } from "./components/disclosure";
+export { default as Collapsible } from "./components/collapsible";
 export type {
-  DisclosureProps,
-  DisclosureRootProps,
-  DisclosureHeadingProps,
-  DisclosureTriggerProps,
-  DisclosureContentProps,
-  DisclosureBodyProps,
-  DisclosureIndicatorProps,
-} from "./components/disclosure";
-export { EmptyState, type EmptyStateProps } from "./components/empty-state";
-export { default as FloatingDock } from "./components/floating-dock";
+  CollapsibleProps,
+  CollapsibleRootProps,
+  CollapsibleHeadingProps,
+  CollapsibleTriggerProps,
+  CollapsibleContentProps,
+  CollapsibleBodyProps,
+  CollapsibleIndicatorProps,
+} from "./components/collapsible";
+export { Empty, type EmptyProps } from "./components/empty";
+export { default as Dock } from "./components/dock";
 export type {
-  FloatingDockProps,
-  FloatingDockItem,
-  FloatingDockDirection,
-} from "./components/floating-dock";
+  DockProps,
+  DockItem,
+  DockDirection,
+} from "./components/dock";
 export { default as Flex } from "./components/flex";
 export { GlowCard, type GlowCardProps } from "./components/glow-card";
 export { MetalBorder, type MetalBorderProps } from "./components/metal-border";
@@ -269,47 +269,47 @@ export type {
   Language,
 } from "./components/language-switcher";
 export {
-  default as Modal,
-  ModalTrigger,
-  ModalBackdrop,
-  ModalContent,
-  ModalHeader,
-  ModalHeading,
-  ModalIcon,
-  ModalBody,
-  ModalFooter,
-  ModalCloseTrigger,
-} from "./components/modal";
+  default as Dialog,
+  DialogTrigger,
+  DialogBackdrop,
+  DialogContent,
+  DialogHeader,
+  DialogHeading,
+  DialogIcon,
+  DialogBody,
+  DialogFooter,
+  DialogCloseTrigger,
+} from "./components/dialog";
 export type {
-  ModalProps,
   DialogProps,
-  ModalPlacement,
-  ModalSize,
-  ModalBackdropVariant,
-  ModalScrollBehavior,
-  ModalRootProps,
-  ModalTriggerProps,
-  ModalBackdropProps,
-  ModalContentProps,
-  ModalHeaderProps,
-  ModalHeadingProps,
-  ModalIconProps,
-  ModalBodyProps,
-  ModalFooterProps,
-  ModalCloseTriggerProps,
-} from "./components/modal";
+  DialogPanelProps,
+  DialogPlacement,
+  DialogSize,
+  DialogBackdropVariant,
+  DialogScrollBehavior,
+  DialogRootProps,
+  DialogTriggerProps,
+  DialogBackdropProps,
+  DialogContentProps,
+  DialogHeaderProps,
+  DialogHeadingProps,
+  DialogIconProps,
+  DialogBodyProps,
+  DialogFooterProps,
+  DialogCloseTriggerProps,
+} from "./components/dialog";
 export { default as Navbar } from "./components/navbar";
 export type { NavbarProps } from "./components/navbar";
 export type { NavbarStackProps } from "./components/navbar/NavbarStack.generated";
 export type { NavbarRowProps } from "./components/navbar/NavbarRow.generated";
 export { default as Pagination } from "./components/pagination";
 export type { PaginationProps } from "./components/pagination";
-export { default as ProgressBar } from "./components/progress-bar";
+export { default as Progress } from "./components/progress";
 export type {
-  ProgressBarProps,
-  ProgressBarSize,
-  ProgressBarColor,
-} from "./components/progress-bar";
+  ProgressProps,
+  ProgressSize,
+  ProgressColor,
+} from "./components/progress";
 export { default as Popover } from "./components/popover";
 export type {
   PopoverProps,
@@ -329,13 +329,13 @@ export {
 } from "./components/radio-group";
 
 export { default as Select } from "./components/select";
-export { default as ScrollShadow } from "./components/scroll-shadow";
+export { default as ScrollArea } from "./components/scroll-area";
 export type {
-  ScrollShadowProps,
-  ScrollShadowVisibility,
-  ScrollShadowOrientation,
-  ScrollShadowVariant,
-} from "./components/scroll-shadow";
+  ScrollAreaProps,
+  ScrollAreaVisibility,
+  ScrollAreaOrientation,
+  ScrollAreaVariant,
+} from "./components/scroll-area";
 export { default as Separator } from "./components/separator";
 export type {
   SeparatorProps,
@@ -418,12 +418,12 @@ export type {
   TextLeading,
   TextFamily,
 } from "./components/text";
-export { default as TextArea } from "./components/text-area";
+export { default as Textarea } from "./components/textarea";
 export type {
-  TextAreaProps,
-  TextAreaRootProps,
-  TextAreaVariant,
-} from "./components/text-area";
+  TextareaProps,
+  TextareaRootProps,
+  TextareaVariant,
+} from "./components/textarea";
 export {
   ThemeColorPicker,
   createHueShiftStore,
@@ -473,7 +473,7 @@ export type {
   ToastPromiseOptions,
   ToastFunction,
 } from "./components/toast";
-export { default as Toggle } from "./components/toggle";
+export { default as Switch } from "./components/switch";
 export {
   default as Tooltip,
   TooltipTrigger,

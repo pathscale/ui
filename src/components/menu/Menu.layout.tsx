@@ -57,7 +57,7 @@ export type MenuRootProps<T = unknown> = Omit<
   IComponentBaseProps & {
     children?: JSX.Element | ((item: T) => JSX.Element);
     items?: readonly T[];
-    renderEmptyState?: () => JSX.Element;
+    renderEmpty?: () => JSX.Element;
     selectionMode?: MenuSelectionMode;
     selectedKeys?: Iterable<string | number>;
     defaultSelectedKeys?: Iterable<string | number>;
@@ -77,7 +77,7 @@ const MenuRoot: Layout<typeof componentRecipe, MenuRootProps> = () => {
     "dataTheme",
     "style",
     "items",
-    "renderEmptyState",
+    "renderEmpty",
     "selectionMode",
     "selectedKeys",
     "defaultSelectedKeys",
@@ -263,7 +263,7 @@ const MenuRoot: Layout<typeof componentRecipe, MenuRootProps> = () => {
 
     if (local.items) {
       if (local.items.length === 0) {
-        return local.renderEmptyState?.() ?? null;
+        return local.renderEmpty?.() ?? null;
       }
 
       if (isItemRenderer) {

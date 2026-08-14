@@ -53,7 +53,7 @@ export type ListBoxRootProps<T = unknown> = Omit<
   IComponentBaseProps & {
     children?: JSX.Element | ((item: T) => JSX.Element);
     items?: readonly T[];
-    renderEmptyState?: () => JSX.Element;
+    renderEmpty?: () => JSX.Element;
     variant?: ListBoxVariant;
     selectionMode?: ListBoxSelectionMode;
     selectedKeys?: Iterable<string | number>;
@@ -74,7 +74,7 @@ const ListBoxRoot: Layout<typeof componentRecipe, ListBoxRootProps> = () => {
     "dataTheme",
     "style",
     "items",
-    "renderEmptyState",
+    "renderEmpty",
     "variant",
     "selectionMode",
     "selectedKeys",
@@ -265,7 +265,7 @@ const ListBoxRoot: Layout<typeof componentRecipe, ListBoxRootProps> = () => {
 
     if (local.items) {
       if (local.items.length === 0) {
-        return local.renderEmptyState?.() ?? null;
+        return local.renderEmpty?.() ?? null;
       }
 
       if (isItemRenderer) {

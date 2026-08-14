@@ -62,12 +62,12 @@ export type {
   MeterColor,
   MeterRenderState,
 } from "./components/meter";
-export { default as ProgressCircle } from "./components/progress-circle";
+export { default as RadialProgress } from "./components/radial-progress";
 export type {
-  ProgressCircleProps,
-  ProgressCircleSize,
-  ProgressCircleColor,
-} from "./components/progress-circle";
+  RadialProgressProps,
+  RadialProgressSize,
+  RadialProgressColor,
+} from "./components/radial-progress";
 export {
   default as Kbd,
   KbdAbbr,

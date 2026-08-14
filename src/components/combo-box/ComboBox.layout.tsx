@@ -211,7 +211,7 @@ export type ComboBoxListProps = Omit<
 > &
   IComponentBaseProps & {
     children?: JSX.Element | ((item: ComboBoxListRenderItem) => JSX.Element);
-    renderEmptyState?: () => JSX.Element;
+    renderEmpty?: () => JSX.Element;
     endIcon?: JSX.Element;
   };
 
@@ -799,7 +799,7 @@ const ComboBoxList: Layout<typeof componentRecipe, ComboBoxListProps> = () => {
     "className",
     "dataTheme",
     "style",
-    "renderEmptyState",
+    "renderEmpty",
     "endIcon",
   ]);
 
@@ -818,7 +818,7 @@ const ComboBoxList: Layout<typeof componentRecipe, ComboBoxListProps> = () => {
       <Show
         when={items().length > 0}
         fallback={
-          local.renderEmptyState?.() ?? (
+          local.renderEmpty?.() ?? (
             <div {...{ class: CLASSES.List.empty }} data-slot="combobox-empty-state">
               No matching options
             </div>
