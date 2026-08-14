@@ -7,7 +7,7 @@
     "url": "https://github.com/pathscale/ui"
   },
   "license": "MIT",
-  "description": "Highly opinionated SolidJS component library — batteries and kitchen sink included, but optimized and shiny.",
+  "description": "Highly opinionated SolidJS component library \u2014 batteries and kitchen sink included, but optimized and shiny.",
   "files": [
     "dist"
   ],
@@ -147,7 +147,7 @@
     "check:package": "bun run scripts/check-package.ts",
     "next-version": "bun run scripts/next-version.ts",
     "smoke": "bun run scripts/smoke-consumer.ts",
-    "test": "bun test",
+    "test": "bun test --conditions=browser",
     "check:api": "bun run scripts/check-api-contract.ts"
   },
   "sideEffects": [
