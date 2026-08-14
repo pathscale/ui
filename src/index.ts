@@ -577,3 +577,8 @@ export type {
   ColorSwatchSize,
 } from "./components/color-swatch";
 export { default as ChatBubble } from "./components/chatbubble";
+
+// Aggregate status: combining many conditions into one indicator without
+// losing the one that matters. See docs/proposed-2.2-reference.md.
+export { summarizeStatus } from "./components/status";
+export type { Health, StatusItem, StatusSummary } from "./components/status";
