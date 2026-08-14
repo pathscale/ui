@@ -55,8 +55,19 @@ export type Flavor =
  * Closed on purpose. Which conditions a component can be in is the library's
  * to define; which *looks* exist is the theme's, and that is `Flavor`.
  *
- * These four form a priority chain — hidden beats disabled beats loading beats
+ * They form a priority chain — hidden, disabled, loading, error, invalid,
  * default — which is what lets them share one prop.
+ *
+ * `error` and `invalid` are different failures and both are needed.
+ * `invalid` means the value broke a rule we know about and the user can fix
+ * it. `error` means something we do not understand went wrong: the options
+ * never loaded, the stream dropped, the submit handler threw. The case that
+ * forces the distinction is async validation that cannot reach the server —
+ * the value is not invalid, its validity is *unknown*, and showing it red
+ * saying "too short" would be a lie.
+ *
+ * `error` beats `invalid` for the same reason: if the validator could not
+ * run, whatever `issues` still holds is stale and must not be trusted.
  *
  * `invalid` is **derived by default and settable when you need it**, which is
  * the same controlled/uncontrolled shape as `value` elsewhere in this
@@ -71,7 +82,7 @@ export type Flavor =
  * `hidden` pairs with `keepMounted`: with it, `display: none`; without it,
  * the content unmounts.
  */
-export type State = "default" | "loading" | "disabled" | "invalid" | "hidden";
+export type State = "default" | "loading" | "error" | "invalid" | "disabled" | "hidden";
 
 /** How much emphasis, and what shape. */
 export type Variant = "solid" | "soft" | "outline" | "ghost" | "plain";
@@ -133,6 +144,15 @@ export interface IconSlotProps {
  * backdrop click is exactly what a caller needs to decide whether to warn
  * about unsaved work.
  */
+/**
+ * Something went wrong that is not the user's fault.
+ *
+ * Distinct from validation on purpose: `onChange` carries a value the user
+ * chose, this carries a thing that was thrown. A caller wants to retry, log or
+ * surface a toast, none of which is what you do with a validation issue.
+ */
+export type ErrorHandler = (error: unknown, context?: { retry?: () => void }) => void;
+
 export type OpenChangeReason = "escape" | "backdrop" | "trigger" | "api" | "select" | "submit";
 export type ChangeReason = "input" | "paste" | "clear" | "step" | "select" | "api";
 
@@ -255,7 +275,7 @@ export const FLAVORS = [
 ] as const;
 
 export const STATES: readonly State[] = [
-  "default", "loading", "disabled", "invalid", "hidden",
+  "default", "loading", "error", "invalid", "disabled", "hidden",
 ] as const;
 
 /**
@@ -281,6 +301,11 @@ export const resolveState = (state: State | undefined, issues?: Issue[]): State 
   if (state) return state;
   return isInvalid(issues) ? "invalid" : "default";
 };
+
+/** Components that do async work expose this alongside `state="error"`. */
+export interface Failable {
+  onError?: ErrorHandler;
+}
 
 export const VARIANTS: readonly Variant[] = [
   "solid", "soft", "outline", "ghost", "plain",

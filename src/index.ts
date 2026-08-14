@@ -519,6 +519,8 @@ export type {
   IconSlotProps,
   Controlled,
   Issue,
+  ErrorHandler,
+  Failable,
   Constraint,
   Validate,
   ValidateOn,

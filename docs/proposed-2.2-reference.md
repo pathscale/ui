@@ -26,7 +26,7 @@ Each entry is the component's *real current* props with the 2.2 rules applied, s
 ### State, and what an invalid input is
 
 ```ts
-type State = "default" | "loading" | "disabled" | "invalid" | "hidden";
+type State = "default" | "loading" | "error" | "invalid" | "disabled" | "hidden";
 ```
 
 **An input with invalid input has `state="invalid"`**, and it is readable from `data-state`. One prop, one answer.
@@ -42,7 +42,23 @@ type State = "default" | "loading" | "disabled" | "invalid" | "hidden";
 | `loading` | error | `loading` | revalidating, previous error still visible |
 | `hidden` | error | `hidden` | |
 
-An explicit `state` always wins, because a caller who says `disabled` means it. The states otherwise read as a priority: `hidden` over `disabled` over `loading` over `invalid` over `default`.
+An explicit `state` always wins, because a caller who says `disabled` means it. The states otherwise read as a priority: `hidden` over `disabled` over `loading` over `error` over `invalid` over `default`.
+
+### `error` is not `invalid`
+
+| | `invalid` | `error` |
+| --- | --- | --- |
+| Means | the value broke a rule | something we do not understand went wrong |
+| Whose fault | the user's | ours |
+| Fixable by editing | yes | no |
+| Carries | `Issue[]` — a code and params | a thrown thing |
+| Event | `onChange` | **`onError(error, { retry })`** |
+
+The case that forces the distinction is **async validation that cannot reach the server**. The value is not invalid — its validity is *unknown*. Rendering it red and saying "too short" is a lie, and the user will keep editing a field that was fine.
+
+`error` beats `invalid` in the chain for the same reason: if the validator could not run, whatever `issues` still holds is stale and must not be trusted.
+
+Any component doing async work — `Select` loading options, `ChatThread` streaming, `AuthFlow` submitting — extends `Failable` and gets `onError`. Retry belongs there too, because retrying is the response to an exception and is meaningless for a validation issue.
 
 `state` is closed and the library owns it — which conditions a component can be in is not a styling question. `flavor` is the open one.
 
