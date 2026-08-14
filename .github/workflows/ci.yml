@@ -41,6 +41,12 @@ jobs:
       - name: Test
         run: bun test
 
+      # Fails when docs/api-contract.md and the shipped types disagree, in
+      # either direction. Never runs with --write: regenerating the document on
+      # every build is what made the last one unable to disagree with the code.
+      - name: API Contract
+        run: bun run check:api
+
       # Packs the tarball, installs it into a fresh consumer and builds against
       # it. The only step that tests the artifact a consumer receives, and the
       # one that catches a package dist imports but the manifest does not
