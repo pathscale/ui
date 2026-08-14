@@ -102,8 +102,6 @@
     "typescript": "^6.0.3"
   },
   "dependencies": {
-    "@iconify/tailwind4": "^1.2.3",
-    "@pathscale/rsbuild-plugin-iconify": "^1.0.4",
     "@tanstack/solid-virtual": "^3.13.27",
     "tailwind-merge": "^3.6.0"
   },

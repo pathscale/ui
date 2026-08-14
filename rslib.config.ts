@@ -1,4 +1,3 @@
-import { pluginIconify } from "@pathscale/rsbuild-plugin-iconify";
 import { pluginBabel } from "@rsbuild/plugin-babel";
 import { pluginSolid } from "@rsbuild/plugin-solid";
 import { pluginSolidLayoutsLibrary } from "rsbuild-plugin-solid-layouts";
@@ -50,11 +49,5 @@ export default defineConfig({
       include: /\.(?:jsx|tsx)$/,
     }),
     pluginSolid(),
-    pluginIconify({
-      targetDir: "src/styles/icons",
-      includeSets: ["mdi-light", "material-symbols"],
-      forceIncludeSets: false,
-      maxIconsPerSet: 1000,
-    }),
   ],
 });
