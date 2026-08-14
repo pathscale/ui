@@ -136,7 +136,7 @@
   "scripts": {
     "build": "bun run check && rslib build && bun run postbuild:manifest",
     "layouts:generate": "solid-layouts-library",
-    "postbuild:manifest": "bun run scripts/generate-purge-manifest.ts && bun run docs:components",
+    "postbuild:manifest": "bun run scripts/generate-purge-manifest.ts",
     "build:watch": "rslib build --watch",
     "dev": "rslib dev",
     "preview": "rslib preview",
@@ -151,8 +151,7 @@
     "smoke": "bun run scripts/smoke-consumer.ts",
     "playground:dev": "cd playground && bun run dev",
     "playground:build": "cd playground && bun run build",
-    "playground:preview": "cd playground && bun run preview",
-    "docs:components": "bun run scripts/generate-component-reference.ts"
+    "playground:preview": "cd playground && bun run preview"
   },
   "sideEffects": [
     "**/*.css"
