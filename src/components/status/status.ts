@@ -149,3 +149,61 @@ export function summarizeStatus(items: StatusItem[]): StatusSummary {
     symptoms,
   };
 }
+
+/* -------------------------------------------------------------------------------------------------
+ * Transitions
+ *
+ * `connected` is a state — you are in it for hours. "Became connected" is an
+ * event — it happens at an instant. Both are real and they are not the same
+ * thing, and the confusion between them is why `quality-restored` feels odd:
+ * it is an event wearing a state's clothes. It is the *transition* into better
+ * quality, rendered for a few seconds and then gone.
+ *
+ * Transitions have to be emitted rather than merely rendered, because
+ * reconnecting commonly triggers work elsewhere: refetch what went stale,
+ * resubscribe channels, flush queued writes, re-authenticate, resync. An
+ * indicator that only paints a colour leaves every app to diff the state
+ * itself, which is where missed resubscribes come from.
+ * -----------------------------------------------------------------------------------------------*/
+
+export interface StatusTransition {
+  previous: StatusSummary;
+  current: StatusSummary;
+  /** Items that just became unhealthy. */
+  degraded: StatusItem[];
+  /** Items that just became healthy — what "reconnected" is made of. */
+  recovered: StatusItem[];
+  /** Overall health changed direction. */
+  healthChanged: boolean;
+  /** Quality moved while health stayed put — nofilter's `quality-restored`/`unstable`. */
+  qualityChanged: boolean;
+}
+
+const QUALITY_RANK: Record<Quality, number> = { poor: 3, fair: 2, unknown: 1, good: 0 };
+
+/**
+ * Diff two summaries into the transition between them.
+ *
+ * Pure, so the caller owns when to run it and how long to show anything. A
+ * transient like "quality restored" is `qualityChanged` plus an improvement,
+ * displayed for a while by whoever is rendering — the model does not hold a
+ * timer, because a timer in a pure function is how you get a status that lies
+ * after a tab has been backgrounded.
+ */
+export function diffStatus(
+  previous: StatusSummary,
+  current: StatusSummary,
+  items: { previous: StatusItem[]; current: StatusItem[] },
+): StatusTransition {
+  const wasUnhealthy = new Set(items.previous.filter(isUnhealthy).map((i) => i.id));
+  const isNowUnhealthy = new Set(items.current.filter(isUnhealthy).map((i) => i.id));
+
+  return {
+    previous,
+    current,
+    degraded: items.current.filter((i) => isNowUnhealthy.has(i.id) && !wasUnhealthy.has(i.id)),
+    recovered: items.current.filter((i) => !isNowUnhealthy.has(i.id) && wasUnhealthy.has(i.id)),
+    healthChanged: previous.health !== current.health,
+    qualityChanged: QUALITY_RANK[previous.quality] !== QUALITY_RANK[current.quality],
+  };
+}

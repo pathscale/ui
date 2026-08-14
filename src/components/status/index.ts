@@ -1,2 +1,2 @@
-export { summarizeStatus } from "./status";
-export type { Health, StatusItem, StatusSummary } from "./status";
+export { summarizeStatus, diffStatus } from "./status";
+export type { Health, Quality, StatusItem, StatusSummary, StatusTransition } from "./status";
