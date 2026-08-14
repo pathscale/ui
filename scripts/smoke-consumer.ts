@@ -19,7 +19,14 @@
  *      SMOKE_TARBALL=/path/to/pkg.tgz bun run smoke   # test a specific tarball
  */
 import { execSync } from "node:child_process";
-import { existsSync, mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from "node:fs";
+import {
+  existsSync,
+  mkdirSync,
+  mkdtempSync,
+  readFileSync,
+  rmSync,
+  writeFileSync,
+} from "node:fs";
 import { tmpdir } from "node:os";
 import { join, resolve } from "node:path";
 
@@ -62,7 +69,9 @@ mkdirSync(join(fixture, "src"), { recursive: true });
 // manifest so this cannot drift from what we declare.
 const optional = new Set(Object.keys(pkgJson.peerDependenciesMeta ?? {}));
 const peers = Object.fromEntries(
-  Object.entries(pkgJson.peerDependencies ?? {}).filter(([name]) => !optional.has(name)),
+  Object.entries(pkgJson.peerDependencies ?? {}).filter(
+    ([name]) => !optional.has(name),
+  ),
 );
 
 writeFileSync(
@@ -73,7 +82,9 @@ writeFileSync(
       private: true,
       type: "module",
       dependencies: { ...peers, [pkgJson.name]: `file:${tarball}` },
-      devDependencies: { typescript: pkgJson.devDependencies?.typescript ?? "^5" },
+      devDependencies: {
+        typescript: pkgJson.devDependencies?.typescript ?? "^5",
+      },
     },
     null,
     2,
@@ -117,9 +128,11 @@ writeFileSync(
   Flex,
   Icon,
   Select,
+  DataGrid,
   Table,
   Toast,
   toast,
+  createDataGrid,
   createForm,
   useTableModel,
   type Flavor,
@@ -146,6 +159,14 @@ export const App = () => (
   </Flex>
 );
 
+// The builder is the primary API, so the smoke exercises it rather than the
+// controlled props: a consumer types this exact shape.
+const grid = createDataGrid();
+grid.addColumn("id", "ID", "number");
+grid.addRow({ id: 1 });
+
+export const Grid = () => <DataGrid model={grid} borders="rows" />;
+
 // Values must exist, not just types.
 export const used = [Dialog, Select, Table, Toast, toast, createForm, useTableModel, runMotion];
 `,
@@ -162,12 +183,13 @@ import {
   Flex,
   Icon,
   toast,
+  createDataGrid,
   createForm,
   useTableModel,
 } from "${pkgJson.name}";
 import { runMotion } from "${pkgJson.name}/motion";
 
-export const used = [Button, Card, Dialog, Flex, Icon, toast, createForm, useTableModel, runMotion];
+export const used = [Button, Card, Dialog, Flex, Icon, toast, createDataGrid, createForm, useTableModel, runMotion];
 `,
 );
 
@@ -182,9 +204,14 @@ const step = (label: string, fn: () => string) => {
     if (tail) console.log(`    ${tail}`);
   } catch (err: unknown) {
     failed = true;
-    const e = err as { stdout?: Buffer | string; stderr?: Buffer | string; message?: string };
+    const e = err as {
+      stdout?: Buffer | string;
+      stderr?: Buffer | string;
+      message?: string;
+    };
     console.error(`✖ ${label}`);
-    const detail = String(e.stdout ?? "") + String(e.stderr ?? "") || e.message || "";
+    const detail =
+      String(e.stdout ?? "") + String(e.stderr ?? "") || e.message || "";
     console.error(
       detail
         .trim()
@@ -196,9 +223,13 @@ const step = (label: string, fn: () => string) => {
   }
 };
 
-console.log(`consumer smoke test\n  tarball: ${tarball}\n  fixture: ${fixture}\n`);
+console.log(
+  `consumer smoke test\n  tarball: ${tarball}\n  fixture: ${fixture}\n`,
+);
 
-step("install the tarball into a fresh consumer", () => run("bun install", fixture));
+step("install the tarball into a fresh consumer", () =>
+  run("bun install", fixture),
+);
 step("typecheck with moduleResolution: bundler", () =>
   run("./node_modules/.bin/tsc --noEmit", fixture),
 );
@@ -212,7 +243,10 @@ step("typecheck with moduleResolution: bundler", () =>
  * declare, and a named export the barrel does not have.
  */
 step("bundle the package as a browser consumer would", () =>
-  run("./node_modules/.bin/tsc --noEmit && bun build --target=browser --outdir=.smoke-out src/load.mjs", fixture),
+  run(
+    "./node_modules/.bin/tsc --noEmit && bun build --target=browser --outdir=.smoke-out src/load.mjs",
+    fixture,
+  ),
 );
 
 // ------------------------------------------------------------------ cleanup

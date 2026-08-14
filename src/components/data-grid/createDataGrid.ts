@@ -1,4 +1,10 @@
-import { type Accessor, createMemo, createSignal, getOwner, type JSX } from "solid-js";
+import {
+  type Accessor,
+  createMemo,
+  createSignal,
+  getOwner,
+  type JSX,
+} from "solid-js";
 import { createStore, produce } from "solid-js/store";
 
 /**
@@ -31,7 +37,12 @@ import { createStore, produce } from "solid-js/store";
  * - `deleteRow(index)` indexes the source rows, not what is on screen.
  */
 
-export type DataGridDataType = "string" | "number" | "boolean" | "date" | "custom";
+export type DataGridDataType =
+  | "string"
+  | "number"
+  | "boolean"
+  | "date"
+  | "custom";
 
 export type DataGridRow = Record<string, unknown>;
 
@@ -69,9 +80,8 @@ export type DataGridColumn<Row extends DataGridRow = DataGridRow> = {
   compare?: (a: unknown, b: unknown) => number;
 };
 
-export type DataGridColumnOptions<Row extends DataGridRow = DataGridRow> = Partial<
-  Omit<DataGridColumn<Row>, "name" | "label" | "dataType">
->;
+export type DataGridColumnOptions<Row extends DataGridRow = DataGridRow> =
+  Partial<Omit<DataGridColumn<Row>, "name" | "label" | "dataType">>;
 
 export type CreateDataGridOptions<Row extends DataGridRow = DataGridRow> = {
   columns?: readonly DataGridColumn<Row>[];
@@ -154,9 +164,14 @@ export type DataGridModel<Row extends DataGridRow = DataGridRow> = {
    none, and Solid warns rather than failing, so the grid would keep working
    while logging on every import. Falling back to the raw thunk keeps it quiet
    and correct; only the caching is lost. */
-const derive = <T,>(fn: () => T): Accessor<T> => (getOwner() ? createMemo(fn) : fn);
+const derive = <T>(fn: () => T): Accessor<T> =>
+  getOwner() ? createMemo(fn) : fn;
 
-const compareValues = (a: unknown, b: unknown, dataType: DataGridDataType): number => {
+const compareValues = (
+  a: unknown,
+  b: unknown,
+  dataType: DataGridDataType,
+): number => {
   if (a === b) return 0;
   if (a === null || a === undefined) return -1;
   if (b === null || b === undefined) return 1;
@@ -164,7 +179,10 @@ const compareValues = (a: unknown, b: unknown, dataType: DataGridDataType): numb
   if (dataType === "number") return Number(a) - Number(b);
   if (dataType === "boolean") return Number(Boolean(a)) - Number(Boolean(b));
   if (dataType === "date") {
-    return new Date(a as string | number | Date).getTime() - new Date(b as string).getTime();
+    return (
+      new Date(a as string | number | Date).getTime() -
+      new Date(b as string).getTime()
+    );
   }
   return String(a).localeCompare(String(b));
 };
@@ -182,19 +200,27 @@ export function createDataGrid<Row extends DataGridRow = DataGridRow>(
     searchable: options.searchable ?? false,
   };
 
-  const [columnStore, setColumnStore] = createStore<{ items: DataGridColumn<Row>[] }>({
+  const [columnStore, setColumnStore] = createStore<{
+    items: DataGridColumn<Row>[];
+  }>({
     items: [...(options.columns ?? [])],
   });
   const [rowStore, setRowStore] = createStore<{ items: Row[] }>({
     items: [...(options.rows ?? [])],
   });
 
-  const [sort, setSort] = createSignal<DataGridSort | null>(options.sort ?? null);
+  const [sort, writeSort] = createSignal<DataGridSort | null>(
+    options.sort ?? null,
+  );
   const [queries, setQueries] = createSignal<Record<string, string>>({});
   const [page, setPage] = createSignal(0);
   const [pageSize, setPageSize] = createSignal(options.pageSize ?? 0);
-  const [selectedIds, setSelectedIds] = createSignal<ReadonlySet<string>>(new Set<string>());
-  const [groupBy, setGroupBy] = createSignal<string | null>(options.groupBy ?? null);
+  const [selectedIds, setSelectedIds] = createSignal<ReadonlySet<string>>(
+    new Set<string>(),
+  );
+  const [groupBy, setGroupBy] = createSignal<string | null>(
+    options.groupBy ?? null,
+  );
 
   const selectionMode = () => options.selection ?? "none";
 
@@ -218,15 +244,21 @@ export function createDataGrid<Row extends DataGridRow = DataGridRow>(
     idByRow().get(row) ?? identify(row, index);
 
   const columns = derive(() => columnStore.items);
-  const visibleColumns = derive(() => columnStore.items.filter((column) => column.visible));
+  const visibleColumns = derive(() =>
+    columnStore.items.filter((column) => column.visible),
+  );
   const columnsByName = derive(() =>
-    Object.fromEntries(columnStore.items.map((column) => [column.name, column])),
+    Object.fromEntries(
+      columnStore.items.map((column) => [column.name, column]),
+    ),
   );
 
   const rows = derive(() => rowStore.items);
 
   const filteredRows = derive(() => {
-    const active = Object.entries(queries()).filter(([, query]) => query.length > 0);
+    const active = Object.entries(queries()).filter(
+      ([, query]) => query.length > 0,
+    );
     if (active.length === 0) return rowStore.items;
     return rowStore.items.filter((row) =>
       active.every(([name, query]) => matches(row[name], query)),
@@ -236,11 +268,14 @@ export function createDataGrid<Row extends DataGridRow = DataGridRow>(
   const sortedRows = derive(() => {
     const descriptor = sort();
     if (!descriptor) return filteredRows();
-    const column = columnStore.items.find((item) => item.name === descriptor.column);
+    const column = columnStore.items.find(
+      (item) => item.name === descriptor.column,
+    );
     if (!column) return filteredRows();
     const sign = descriptor.direction === "ascending" ? 1 : -1;
     const compare =
-      column.compare ?? ((a: unknown, b: unknown) => compareValues(a, b, column.dataType));
+      column.compare ??
+      ((a: unknown, b: unknown) => compareValues(a, b, column.dataType));
     /* Copy first: `filteredRows` may be the store's own array when nothing is
        filtered, and sorting in place would mutate it outside a setter. */
     return [...filteredRows()].sort(
@@ -278,7 +313,10 @@ export function createDataGrid<Row extends DataGridRow = DataGridRow>(
       if (bucket) bucket.push(row);
       else buckets.set(value, [row]);
     }
-    return [...buckets].map(([value, groupRows]) => ({ value, rows: groupRows }));
+    return [...buckets].map(([value, groupRows]) => ({
+      value,
+      rows: groupRows,
+    }));
   });
 
   return {
@@ -300,7 +338,9 @@ export function createDataGrid<Row extends DataGridRow = DataGridRow>(
     },
 
     removeColumn(name) {
-      setColumnStore("items", (items) => items.filter((column) => column.name !== name));
+      setColumnStore("items", (items) =>
+        items.filter((column) => column.name !== name),
+      );
     },
 
     addRow(row, index) {
@@ -347,22 +387,35 @@ export function createDataGrid<Row extends DataGridRow = DataGridRow>(
     rowId,
 
     sort,
-    setSort,
+
+    /* Re-sorting returns the reader to the first page. The total has not
+       changed, so the page still exists, but "sort by age" means "show me the
+       youngest" and leaving them on page three shows them the middle. */
+    setSort(next) {
+      writeSort(next);
+      setPage(0);
+    },
 
     sortByColumn(name, direction) {
       const current = sort();
+      const apply = (next: DataGridSort | null) => {
+        writeSort(next);
+        setPage(0);
+      };
       if (direction) {
-        setSort({ column: name, direction });
+        apply({ column: name, direction });
         return;
       }
       /* No direction given: cycle ascending -> descending -> unsorted, so the
          same header click can put the grid back the way it was found. */
       if (!current || current.column !== name) {
-        setSort({ column: name, direction: "ascending" });
+        apply({ column: name, direction: "ascending" });
         return;
       }
-      setSort(
-        current.direction === "ascending" ? { column: name, direction: "descending" } : null,
+      apply(
+        current.direction === "ascending"
+          ? { column: name, direction: "descending" }
+          : null,
       );
     },
 
@@ -426,7 +479,9 @@ export function createDataGrid<Row extends DataGridRow = DataGridRow>(
       /* Every row the reader can currently see, not every row in the grid: a
          "select all" that quietly takes filtered-out rows with it is how you
          delete records nobody looked at. */
-      setSelectedIds(new Set(pageRows().map((row, index) => rowId(row, index))));
+      setSelectedIds(
+        new Set(pageRows().map((row, index) => rowId(row, index))),
+      );
     },
 
     groupBy,

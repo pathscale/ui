@@ -1,0 +1,238 @@
+/* ==========================================================================
+   DataGrid — the assembled grid over Table's parts.
+
+   Every value here points at a theme token with a fallback. A theme the
+   library does not ship matches neither theme block, and an undefined custom
+   property does not fall back to its initial value: CSS drops the whole
+   declaration. An untokened border would not be thinner, it would be absent.
+   ========================================================================== */
+
+@layer components {
+  .data-grid {
+    --data-grid-line: color-mix(
+      in oklch,
+      var(--color-base-content, currentColor) 10%,
+      transparent
+    );
+  }
+
+  /* --------------------------------------------------------------------------
+     Toolbar — one search field per searchable column.
+     -------------------------------------------------------------------------- */
+  .data-grid__toolbar {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--padding-sm, 0.5rem);
+    padding: var(--padding-sm, 0.5rem);
+  }
+
+  .data-grid__search {
+    display: inline-flex;
+    align-items: center;
+    min-width: 0;
+  }
+
+  /* Visually hidden, deliberately not Tailwind's `sr-only`. That utility only
+     exists if the consuming app's Tailwind scan emitted it, and this library
+     ships BEM, so in a non-Tailwind app the label rendered as visible text
+     beside its own placeholder. */
+  .data-grid__search-label {
+    position: absolute;
+    inline-size: 1px;
+    block-size: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+    border-width: 0;
+  }
+
+  .data-grid__search-input {
+    inline-size: 100%;
+    min-inline-size: 0;
+    padding-block: var(--padding-xs, 0.25rem);
+    padding-inline: var(--padding-sm, 0.5rem);
+    border: var(--border, 1px) solid var(--data-grid-line);
+    border-radius: var(--radius-field, 0.25rem);
+    background-color: var(--color-base-100, transparent);
+    color: var(--color-base-content, currentColor);
+  }
+
+  .data-grid__search-input:focus-visible {
+    outline: var(--focus-ring-width, 2px) solid
+      var(--focus-ring-color, var(--color-primary, currentColor));
+    outline-offset: var(--focus-ring-offset, 2px);
+  }
+
+  /* --------------------------------------------------------------------------
+     Header
+     -------------------------------------------------------------------------- */
+  .data-grid__header-button {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--padding-xs, 0.25rem);
+  }
+
+  .data-grid__cell[data-align="center"] {
+    text-align: center;
+  }
+
+  .data-grid__cell[data-align="end"] {
+    text-align: end;
+  }
+
+  /* --------------------------------------------------------------------------
+     Borders — `borders`, not `grid`. A prop named `grid` sitting beside
+     `model={grid}` reads like the model was passed twice.
+     -------------------------------------------------------------------------- */
+  .data-grid--borders-rows .table__row:not(:last-child) .table__cell,
+  .data-grid--borders-both .table__row:not(:last-child) .table__cell {
+    border-bottom: var(--border, 1px) solid var(--data-grid-line);
+  }
+
+  .data-grid--borders-cols .table__cell:not(:last-child),
+  .data-grid--borders-cols .table__column:not(:last-child),
+  .data-grid--borders-both .table__cell:not(:last-child),
+  .data-grid--borders-both .table__column:not(:last-child) {
+    border-inline-end: var(--border, 1px) solid var(--data-grid-line);
+  }
+
+  /* --------------------------------------------------------------------------
+     Striping
+     -------------------------------------------------------------------------- */
+  .data-grid--striping-rows .table__body .table__row:nth-child(even),
+  .data-grid--striping-cols .table__cell:nth-child(even) {
+    background-color: color-mix(
+      in oklch,
+      var(--shade, var(--color-base-content, currentColor))
+        var(--shade-subtle, 4%),
+      transparent
+    );
+  }
+
+  /* --------------------------------------------------------------------------
+     Interactive rows
+     -------------------------------------------------------------------------- */
+  .data-grid--interactive .table__body .table__row:hover {
+    background-color: color-mix(
+      in oklch,
+      var(--shade, var(--color-base-content, currentColor))
+        var(--shade-hover, 8%),
+      transparent
+    );
+  }
+
+  .data-grid .table__row[data-selected="true"] {
+    background-color: color-mix(
+      in oklch,
+      var(--color-primary, currentColor) 12%,
+      transparent
+    );
+  }
+
+  /* --------------------------------------------------------------------------
+     Sticky — a sticky cell needs a background of its own, or the rows it is
+     meant to float above show through it.
+     -------------------------------------------------------------------------- */
+  .data-grid--sticky-header .table__header .table__column,
+  .data-grid--sticky-both .table__header .table__column {
+    position: sticky;
+    inset-block-start: 0;
+    z-index: 2;
+    background-color: var(--color-base-200, var(--color-base-100, transparent));
+  }
+
+  .data-grid--sticky-columns .table__cell[data-sticky="true"],
+  .data-grid--sticky-columns .table__column[data-sticky="true"],
+  .data-grid--sticky-both .table__cell[data-sticky="true"],
+  .data-grid--sticky-both .table__column[data-sticky="true"] {
+    position: sticky;
+    inset-inline-start: 0;
+    z-index: 1;
+    background-color: var(--color-base-100, transparent);
+  }
+
+  .data-grid--sticky-both .table__header .table__column[data-sticky="true"] {
+    z-index: 3;
+    /* Header first. Without this the sticky-column rule below repaints the
+       corner cell as a body cell and it reads as a hole in the header. */
+    background-color: var(--color-base-200, var(--color-base-100, transparent));
+  }
+
+  /* --------------------------------------------------------------------------
+     Density
+     -------------------------------------------------------------------------- */
+  .data-grid--size-xs .table__cell,
+  .data-grid--size-xs .table__column {
+    padding-block: var(--padding-xs, 0.25rem);
+    font-size: var(--text-xs, 0.75rem);
+  }
+
+  .data-grid--size-sm .table__cell,
+  .data-grid--size-sm .table__column {
+    padding-block: var(--padding-xs, 0.25rem);
+    font-size: var(--text-sm, 0.875rem);
+  }
+
+  .data-grid--size-lg .table__cell,
+  .data-grid--size-lg .table__column {
+    padding-block: var(--padding-md, 1rem);
+    font-size: var(--text-lg, 1.125rem);
+  }
+
+  .data-grid--size-xl .table__cell,
+  .data-grid--size-xl .table__column {
+    padding-block: var(--padding-lg, 1.5rem);
+    font-size: var(--text-xl, 1.25rem);
+  }
+
+  /* --------------------------------------------------------------------------
+     Selection column and empty state
+     -------------------------------------------------------------------------- */
+  .data-grid__select-cell {
+    inline-size: 1px;
+    white-space: nowrap;
+  }
+
+  .data-grid__group-row {
+    font-weight: 600;
+    background-color: color-mix(
+      in oklch,
+      var(--shade, var(--color-base-content, currentColor))
+        var(--shade-pressed, 12%),
+      transparent
+    );
+  }
+
+  .data-grid__empty {
+    text-align: center;
+    padding-block: var(--padding-lg, 1.5rem);
+    color: color-mix(
+      in oklch,
+      var(--color-base-content, currentColor) 60%,
+      transparent
+    );
+  }
+
+  /* --------------------------------------------------------------------------
+     Pagination
+     -------------------------------------------------------------------------- */
+  .data-grid__pagination {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: var(--padding-sm, 0.5rem);
+    padding: var(--padding-sm, 0.5rem);
+  }
+
+  .data-grid__page-status {
+    margin-inline-end: auto;
+    font-size: var(--text-sm, 0.875rem);
+    color: color-mix(
+      in oklch,
+      var(--color-base-content, currentColor) 70%,
+      transparent
+    );
+  }
+}

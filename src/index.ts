@@ -345,7 +345,13 @@ export { default as Slider } from "./components/slider";
 export type { SliderProps, SliderSize } from "./components/slider";
 export { default as Skeleton } from "./components/skeleton";
 
-export { createDataGrid } from "./components/data-grid";
+export { createDataGrid, default as DataGrid } from "./components/data-grid";
+export type {
+  DataGridBorders,
+  DataGridProps,
+  DataGridSticky,
+  DataGridStriping,
+} from "./components/data-grid";
 export type {
   CreateDataGridOptions,
   DataGridCellContext,

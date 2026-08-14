@@ -52,6 +52,7 @@
     "ComboBoxTrigger",
     "Composer",
     "CookieConsent",
+    "DataGrid",
     "DateField",
     "DateFieldGroup",
     "DateFieldInput",
