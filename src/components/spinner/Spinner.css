@@ -52,24 +52,43 @@
   /* -------------------------------------------------------------------------------------------------
    * Color variants
    * -----------------------------------------------------------------------------------------------*/
-  .spinner--current {
+  /* `--flavor-` to match every other component, and the full set: the recipe
+     named six classes this file never defined, so half the values a caller
+     could pass rendered unflavoured. */
+  .spinner--flavor-current {
     color: currentColor;
   }
 
-  .spinner--accent {
-    color: var(--color-accent);
+  .spinner--flavor-neutral {
+    color: var(--color-neutral, currentColor);
   }
 
-  .spinner--success {
-    color: var(--color-success);
+  .spinner--flavor-primary {
+    color: var(--color-primary, currentColor);
   }
 
-  .spinner--warning {
-    color: var(--color-warning);
+  .spinner--flavor-secondary {
+    color: var(--color-secondary, currentColor);
   }
 
-  .spinner--danger {
-    color: var(--color-error);
+  .spinner--flavor-accent {
+    color: var(--color-accent, currentColor);
+  }
+
+  .spinner--flavor-info {
+    color: var(--color-info, currentColor);
+  }
+
+  .spinner--flavor-success {
+    color: var(--color-success, currentColor);
+  }
+
+  .spinner--flavor-warning {
+    color: var(--color-warning, currentColor);
+  }
+
+  .spinner--flavor-destructive {
+    color: var(--color-error, currentColor);
   }
 
   /* -------------------------------------------------------------------------------------------------

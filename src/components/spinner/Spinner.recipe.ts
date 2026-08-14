@@ -18,15 +18,19 @@ export const spinner = recipe({
       lg: "spinner--lg",
       xl: "spinner--xl",
     },
-    state: {
-      neutral: "spinner--neutral",
-      primary: "spinner--primary",
-      secondary: "spinner--secondary",
-      accent: "spinner--accent",
-      success: "spinner--success",
-      warning: "spinner--warning",
-      danger: "spinner--danger",
-      info: "spinner--info",
+    /* `flavor`, not `state`. These are colours, and nothing is ever "in the
+       primary state" - which is why the old axis could not typecheck: its
+       values were not members of `State`, including its own default. */
+    flavor: {
+      current: "spinner--flavor-current",
+      neutral: "spinner--flavor-neutral",
+      primary: "spinner--flavor-primary",
+      secondary: "spinner--flavor-secondary",
+      accent: "spinner--flavor-accent",
+      success: "spinner--flavor-success",
+      warning: "spinner--flavor-warning",
+      destructive: "spinner--flavor-destructive",
+      info: "spinner--flavor-info",
     },
     shape: {
       spinner: "spinner--spinner",
@@ -38,5 +42,5 @@ export const spinner = recipe({
     },
     label: {},
   },
-  defaults: { size: "md", state: "neutral", shape: "spinner", label: "Loading" },
+  defaults: { size: "md", flavor: "current", shape: "spinner", label: "Loading" },
 });
