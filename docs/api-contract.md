@@ -606,7 +606,7 @@ HTML attributes and `UIBaseProps`; that is an assertion, not a gap.
 
 ### Spinner
 
-`label shape size state`
+`flavor label shape size`
 
 ### Switch
 
