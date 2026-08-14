@@ -144,7 +144,7 @@ export type ComboBoxRootProps<T = ComboBoxItem> = Omit<
     inputValue?: string;
     defaultInputValue?: string;
     onInputChange?: (value: string) => void;
-    isOpen?: boolean;
+    open?: boolean;
     defaultOpen?: boolean;
     onOpenChange?: (open: boolean) => void;
     fullWidth?: boolean;
@@ -230,7 +230,7 @@ const ComboBoxRoot: Layout<typeof componentRecipe, ComboBoxRootProps> = () => {
     "inputValue",
     "defaultInputValue",
     "onInputChange",
-    "isOpen",
+    "open",
     "defaultOpen",
     "onOpenChange",
     "fullWidth",
@@ -269,7 +269,7 @@ const ComboBoxRoot: Layout<typeof componentRecipe, ComboBoxRootProps> = () => {
   const isDisabled = () => Boolean((local.state === "disabled")) || Boolean(local.disabled);
   const isInvalid = () => Boolean((resolveState(local.state, local.issues) === "invalid"));
   const isRequired = () => Boolean(local.required) || Boolean(local.required);
-  const isOpen = () => (local.isOpen !== undefined ? Boolean(local.isOpen) : internalOpen());
+  const isOpen = () => (local.open !== undefined ? Boolean(local.open) : internalOpen());
   const selectedKey = createMemo(() =>
     local.selectedKey !== undefined ? normalizeKey(local.selectedKey) : internalSelectedKey(),
   );
@@ -335,7 +335,7 @@ const ComboBoxRoot: Layout<typeof componentRecipe, ComboBoxRootProps> = () => {
   const setOpen = (next: boolean, options?: { focusInput?: boolean }) => {
     if (next && isDisabled()) return;
 
-    if (local.isOpen === undefined) {
+    if (local.open === undefined) {
       setInternalOpen(next);
     }
 

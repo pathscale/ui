@@ -67,7 +67,7 @@ export type TooltipRootProps = UIBaseProps & {
   showArrow?: boolean;
   delay?: number;
   closeDelay?: number;
-  isOpen?: boolean;
+  open?: boolean;
   defaultOpen?: boolean;
   onOpenChange?: (isOpen: boolean) => void;
 };
@@ -105,7 +105,7 @@ const TooltipRoot: Layout<typeof componentRecipe, TooltipRootProps> = () => {
     "showArrow",
     "delay",
     "closeDelay",
-    "isOpen",
+    "open",
     "defaultOpen",
     "onOpenChange",
     "dataTheme",
@@ -123,9 +123,9 @@ const TooltipRoot: Layout<typeof componentRecipe, TooltipRootProps> = () => {
   let delayTimer: ReturnType<typeof setTimeout> | undefined;
   let closeTimer: ReturnType<typeof setTimeout> | undefined;
 
-  const isControlled = () => local.isOpen !== undefined;
+  const isControlled = () => local.open !== undefined;
   const isOpen = () =>
-    isControlled() ? Boolean(local.isOpen) : internalOpen();
+    isControlled() ? Boolean(local.open) : internalOpen();
 
   const setIsOpen = (v: boolean) => {
     if (!isControlled()) setInternalOpen(v);

@@ -155,7 +155,7 @@ const focusFirstElement = (container: HTMLElement) => {
 export type DialogRootProps = Omit<JSX.HTMLAttributes<HTMLDivElement>, "children"> &
   UIBaseProps & {
     children: JSX.Element;
-    isOpen?: boolean;
+    open?: boolean;
     defaultOpen?: boolean;
     onOpenChange?: (isOpen: boolean) => void;
     isDismissable?: boolean;
@@ -228,7 +228,7 @@ const DialogRoot: Layout<typeof componentRecipe, DialogRootProps> = () => {
     "dataTheme",
     "style",
     "ref",
-    "isOpen",
+    "open",
     "defaultOpen",
     "onOpenChange",
     "isDismissable",
@@ -242,14 +242,14 @@ const DialogRoot: Layout<typeof componentRecipe, DialogRootProps> = () => {
 
   const [internalOpen, setInternalOpen] = createSignal(Boolean(local.defaultOpen));
   const [animState, setAnimState] = createSignal<DialogAnimState>(
-    Boolean(local.isOpen ?? local.defaultOpen) ? "open" : "closed",
+    Boolean(local.open ?? local.defaultOpen) ? "open" : "closed",
   );
   const [contentRef, setContentRef] = createSignal<HTMLDivElement | undefined>(undefined);
   const [labelledBy, setLabelledBy] = createSignal<string | undefined>(undefined);
   const [describedBy, setDescribedBy] = createSignal<string | undefined>(undefined);
 
-  const isControlled = () => local.isOpen !== undefined;
-  const isOpen = () => (isControlled() ? Boolean(local.isOpen) : internalOpen());
+  const isControlled = () => local.open !== undefined;
+  const isOpen = () => (isControlled() ? Boolean(local.open) : internalOpen());
 
   const setIsOpen = (next: boolean) => {
     if (isOpen() === next) return;

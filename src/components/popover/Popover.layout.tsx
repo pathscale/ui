@@ -55,7 +55,7 @@ const usePopoverContext = () => {
 export type PopoverRootProps = UIBaseProps &
   Omit<JSX.HTMLAttributes<HTMLDivElement>, "children"> & {
     children: JSX.Element;
-    isOpen?: boolean;
+    open?: boolean;
     defaultOpen?: boolean;
     onOpenChange?: (open: boolean) => void;
     placement?: PopoverPlacement;
@@ -72,7 +72,7 @@ const PopoverRoot: Layout<typeof componentRecipe, PopoverRootProps> = () => {
     "class",
     "dataTheme",
     "style",
-    "isOpen",
+    "open",
     "defaultOpen",
     "onOpenChange",
     "placement",
@@ -92,8 +92,8 @@ const PopoverRoot: Layout<typeof componentRecipe, PopoverRootProps> = () => {
     local.placement ?? "bottom",
   );
 
-  const isControlled = createMemo(() => local.isOpen !== undefined);
-  const isOpen = createMemo(() => (isControlled() ? Boolean(local.isOpen) : internalOpen()));
+  const isControlled = createMemo(() => local.open !== undefined);
+  const isOpen = createMemo(() => (isControlled() ? Boolean(local.open) : internalOpen()));
 
   const setIsOpen = (next: boolean, options?: { focusTrigger?: boolean }) => {
     if (!isControlled()) setInternalOpen(next);
