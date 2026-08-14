@@ -511,10 +511,11 @@ _No exported props type._
 ### Icon
 
 ```ts
-type IconProps = IComponentBaseProps & {
+type IconProps = UIBaseProps & {
   width?: number;
   height?: number;
-  color?: ComponentColor;
+  flavor?: Flavor;
+  /** The icon set's own class, e.g. `icon-[mdi--cog]`. */
   name?: string;
 };
 ```

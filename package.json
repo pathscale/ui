@@ -152,8 +152,7 @@
     "playground:dev": "cd playground && bun run dev",
     "playground:build": "cd playground && bun run build",
     "playground:preview": "cd playground && bun run preview",
-    "docs:components": "bun run scripts/generate-component-reference.ts",
-    "docs:proposed": "bun run scripts/generate-proposed-reference.ts"
+    "docs:components": "bun run scripts/generate-component-reference.ts"
   },
   "sideEffects": [
     "**/*.css"
