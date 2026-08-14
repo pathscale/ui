@@ -147,7 +147,8 @@
     "check:package": "bun run scripts/check-package.ts",
     "next-version": "bun run scripts/next-version.ts",
     "smoke": "bun run scripts/smoke-consumer.ts",
-    "test": "bun test"
+    "test": "bun test",
+    "check:api": "bun run scripts/check-api-contract.ts"
   },
   "sideEffects": [
     "**/*.css"
