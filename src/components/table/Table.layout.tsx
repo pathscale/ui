@@ -1,7 +1,7 @@
 import "./Table.css";
 import { type Accessor, type Component, type JSX, splitProps, createContext, useContext } from "solid-js";
 import { twMerge } from "tailwind-merge";
-import type { IComponentBaseProps } from "../types";
+import type { UIBaseProps } from "../vocabulary";
 import { CLASSES } from "./Table.recipe";
 import type { Layout } from "../../lib/layouts";
 import { componentRecipe } from "./Table.recipe";
@@ -73,7 +73,7 @@ const invokeEventHandler = (handler: unknown, event: Event) => {
  * Table Root
  * -----------------------------------------------------------------------------------------------*/
 export type TableRootProps = JSX.HTMLAttributes<HTMLDivElement> &
-  IComponentBaseProps & {
+  UIBaseProps & {
     variant?: TableVariant;
   };
 
@@ -82,7 +82,6 @@ const TableRoot: Layout<typeof componentRecipe, TableRootProps> = () => {
     "children",
     "variant",
     "class",
-    "className",
     "dataTheme",
   ]);
 
@@ -95,7 +94,6 @@ const TableRoot: Layout<typeof componentRecipe, TableRootProps> = () => {
           CLASSES.root.base,
           CLASSES.root.variant[variant()],
           local.class,
-          local.className,
         ) }}
         data-theme={local.dataTheme}
         data-slot="table"
@@ -112,19 +110,18 @@ const TableRoot: Layout<typeof componentRecipe, TableRootProps> = () => {
  * Table Scroll Container
  * -----------------------------------------------------------------------------------------------*/
 export type TableScrollContainerProps = JSX.HTMLAttributes<HTMLDivElement> &
-  IComponentBaseProps;
+  UIBaseProps;
 
 const TableScrollContainer: Layout<typeof componentRecipe, TableScrollContainerProps> = () => {
   const [local, rest] = splitProps(props, [
     "children",
     "class",
-    "className",
     "dataTheme",
   ]);
 
   return (
     <div
-      {...{ class: twMerge(CLASSES.scroll, local.class, local.className) }}
+      {...{ class: twMerge(CLASSES.scroll, local.class) }}
       data-theme={local.dataTheme}
       data-slot="table-scroll-container"
       {...rest}
@@ -138,7 +135,7 @@ const TableScrollContainer: Layout<typeof componentRecipe, TableScrollContainerP
  * Table Content (<table>)
  * -----------------------------------------------------------------------------------------------*/
 export type TableContentProps = JSX.HTMLAttributes<HTMLTableElement> &
-  IComponentBaseProps & {
+  UIBaseProps & {
     sortDescriptor?: TableSortDescriptor;
     onSortChange?: (descriptor: TableSortDescriptor) => void;
   };
@@ -147,7 +144,6 @@ const TableContent: Layout<typeof componentRecipe, TableContentProps> = () => {
   const [local, rest] = splitProps(props, [
     "children",
     "class",
-    "className",
     "dataTheme",
     "sortDescriptor",
     "onSortChange",
@@ -161,7 +157,7 @@ const TableContent: Layout<typeof componentRecipe, TableContentProps> = () => {
       }}
     >
       <table
-        {...{ class: twMerge(CLASSES.content, local.class, local.className) }}
+        {...{ class: twMerge(CLASSES.content, local.class) }}
         data-theme={local.dataTheme}
         data-slot="table-content"
         data-sort-column={local.sortDescriptor?.column}
@@ -178,19 +174,18 @@ const TableContent: Layout<typeof componentRecipe, TableContentProps> = () => {
  * Table Header (<thead>)
  * -----------------------------------------------------------------------------------------------*/
 export type TableHeaderProps = JSX.HTMLAttributes<HTMLTableSectionElement> &
-  IComponentBaseProps;
+  UIBaseProps;
 
 const TableHeader: Layout<typeof componentRecipe, TableHeaderProps> = () => {
   const [local, rest] = splitProps(props, [
     "children",
     "class",
-    "className",
     "dataTheme",
   ]);
 
   return (
     <thead
-      {...{ class: twMerge(CLASSES.header, local.class, local.className) }}
+      {...{ class: twMerge(CLASSES.header, local.class) }}
       data-theme={local.dataTheme}
       data-slot="table-header"
       {...rest}
@@ -204,7 +199,7 @@ const TableHeader: Layout<typeof componentRecipe, TableHeaderProps> = () => {
  * Table Column (<th>)
  * -----------------------------------------------------------------------------------------------*/
 export type TableColumnProps = Omit<JSX.ThHTMLAttributes<HTMLTableCellElement>, "id" | "children"> &
-  IComponentBaseProps & {
+  UIBaseProps & {
     id: string;
     allowsSorting?: boolean;
     children?: TableColumnChildren;
@@ -217,7 +212,6 @@ const TableColumn: Layout<typeof componentRecipe, TableColumnProps> = () => {
     "allowsSorting",
     "children",
     "class",
-    "className",
     "dataTheme",
     "onClick",
     "onKeyDown",
@@ -266,7 +260,7 @@ const TableColumn: Layout<typeof componentRecipe, TableColumnProps> = () => {
 
   return (
     <th
-      {...{ class: twMerge(CLASSES.column, local.class, local.className) }}
+      {...{ class: twMerge(CLASSES.column, local.class) }}
       data-theme={local.dataTheme}
       data-slot="table-column"
       data-column-id={local.id}
@@ -287,19 +281,18 @@ const TableColumn: Layout<typeof componentRecipe, TableColumnProps> = () => {
  * Table Body (<tbody>)
  * -----------------------------------------------------------------------------------------------*/
 export type TableBodyProps = JSX.HTMLAttributes<HTMLTableSectionElement> &
-  IComponentBaseProps;
+  UIBaseProps;
 
 const TableBody: Layout<typeof componentRecipe, TableBodyProps> = () => {
   const [local, rest] = splitProps(props, [
     "children",
     "class",
-    "className",
     "dataTheme",
   ]);
 
   return (
     <tbody
-      {...{ class: twMerge(CLASSES.body, local.class, local.className) }}
+      {...{ class: twMerge(CLASSES.body, local.class) }}
       data-theme={local.dataTheme}
       data-slot="table-body"
       {...rest}
@@ -313,19 +306,18 @@ const TableBody: Layout<typeof componentRecipe, TableBodyProps> = () => {
  * Table Row (<tr>)
  * -----------------------------------------------------------------------------------------------*/
 export type TableRowProps = JSX.HTMLAttributes<HTMLTableRowElement> &
-  IComponentBaseProps;
+  UIBaseProps;
 
 const TableRow: Layout<typeof componentRecipe, TableRowProps> = () => {
   const [local, rest] = splitProps(props, [
     "children",
     "class",
-    "className",
     "dataTheme",
   ]);
 
   return (
     <tr
-      {...{ class: twMerge(CLASSES.row, local.class, local.className) }}
+      {...{ class: twMerge(CLASSES.row, local.class) }}
       data-theme={local.dataTheme}
       data-slot="table-row"
       {...rest}
@@ -339,19 +331,18 @@ const TableRow: Layout<typeof componentRecipe, TableRowProps> = () => {
  * Table Cell (<td>)
  * -----------------------------------------------------------------------------------------------*/
 export type TableCellProps = JSX.TdHTMLAttributes<HTMLTableCellElement> &
-  IComponentBaseProps;
+  UIBaseProps;
 
 const TableCell: Layout<typeof componentRecipe, TableCellProps> = () => {
   const [local, rest] = splitProps(props, [
     "children",
     "class",
-    "className",
     "dataTheme",
   ]);
 
   return (
     <td
-      {...{ class: twMerge(CLASSES.cell, local.class, local.className) }}
+      {...{ class: twMerge(CLASSES.cell, local.class) }}
       data-theme={local.dataTheme}
       data-slot="table-cell"
       {...rest}
@@ -365,7 +356,7 @@ const TableCell: Layout<typeof componentRecipe, TableCellProps> = () => {
  * Table Expanded Row
  * -----------------------------------------------------------------------------------------------*/
 export type TableExpandedRowProps = JSX.HTMLAttributes<HTMLTableRowElement> &
-  IComponentBaseProps & {
+  UIBaseProps & {
     colSpan: number;
     cellClass?: string;
     cellClassName?: string;
@@ -376,7 +367,6 @@ const TableExpandedRow: Layout<typeof componentRecipe, TableExpandedRowProps> = 
   const [local, rest] = splitProps(props, [
     "children",
     "class",
-    "className",
     "dataTheme",
     "colSpan",
     "cellClass",
@@ -386,7 +376,7 @@ const TableExpandedRow: Layout<typeof componentRecipe, TableExpandedRowProps> = 
 
   return (
     <TableRow
-      {...{ class: twMerge(CLASSES.expandedRow, local.class, local.className) }}
+      {...{ class: twMerge(CLASSES.expandedRow, local.class) }}
       data-theme={local.dataTheme}
       data-slot="table-expanded-row"
       {...rest}
@@ -406,19 +396,18 @@ const TableExpandedRow: Layout<typeof componentRecipe, TableExpandedRowProps> = 
  * Table Footer (div outside <table>)
  * -----------------------------------------------------------------------------------------------*/
 export type TableFooterProps = JSX.HTMLAttributes<HTMLDivElement> &
-  IComponentBaseProps;
+  UIBaseProps;
 
 const TableFooter: Layout<typeof componentRecipe, TableFooterProps> = () => {
   const [local, rest] = splitProps(props, [
     "children",
     "class",
-    "className",
     "dataTheme",
   ]);
 
   return (
     <div
-      {...{ class: twMerge(CLASSES.footer, local.class, local.className) }}
+      {...{ class: twMerge(CLASSES.footer, local.class) }}
       data-theme={local.dataTheme}
       data-slot="table-footer"
       {...rest}
@@ -435,7 +424,7 @@ export type TablePageSizeProps = Omit<
   JSX.SelectHTMLAttributes<HTMLSelectElement>,
   "onChange"
 > &
-  IComponentBaseProps & {
+  UIBaseProps & {
     value: number;
     options: readonly number[];
     onChange: (value: number) => void;
@@ -447,7 +436,6 @@ export type TablePageSizeProps = Omit<
 const TablePageSize: Layout<typeof componentRecipe, TablePageSizeProps> = () => {
   const [local, rest] = splitProps(props, [
     "class",
-    "className",
     "dataTheme",
     "value",
     "options",
@@ -459,7 +447,7 @@ const TablePageSize: Layout<typeof componentRecipe, TablePageSizeProps> = () => 
 
   return (
     <label
-      {...{ class: twMerge(CLASSES.pageSize, local.class, local.className) }}
+      {...{ class: twMerge(CLASSES.pageSize, local.class) }}
       data-theme={local.dataTheme}
       data-slot="table-page-size"
     >
@@ -488,19 +476,18 @@ const TablePageSize: Layout<typeof componentRecipe, TablePageSizeProps> = () => 
  * Table Resizable Container
  * -----------------------------------------------------------------------------------------------*/
 export type TableResizableContainerProps = JSX.HTMLAttributes<HTMLDivElement> &
-  IComponentBaseProps;
+  UIBaseProps;
 
 const TableResizableContainer: Layout<typeof componentRecipe, TableResizableContainerProps> = () => {
   const [local, rest] = splitProps(props, [
     "children",
     "class",
-    "className",
     "dataTheme",
   ]);
 
   return (
     <div
-      {...{ class: twMerge(CLASSES.resizableContainer, local.class, local.className) }}
+      {...{ class: twMerge(CLASSES.resizableContainer, local.class) }}
       data-theme={local.dataTheme}
       data-slot="table-resizable-container"
       {...rest}
@@ -514,13 +501,12 @@ const TableResizableContainer: Layout<typeof componentRecipe, TableResizableCont
  * Table Column Resizer
  * -----------------------------------------------------------------------------------------------*/
 export type TableColumnResizerProps = JSX.HTMLAttributes<HTMLDivElement> &
-  IComponentBaseProps;
+  UIBaseProps;
 
 const TableColumnResizer: Layout<typeof componentRecipe, TableColumnResizerProps> = () => {
   const [local, rest] = splitProps(props, [
     "children",
     "class",
-    "className",
     "dataTheme",
     "role",
     "aria-orientation",
@@ -530,7 +516,7 @@ const TableColumnResizer: Layout<typeof componentRecipe, TableColumnResizerProps
     <div
       role={local.role ?? "separator"}
       aria-orientation={local["aria-orientation"] ?? "vertical"}
-      {...{ class: twMerge(CLASSES.columnResizer, local.class, local.className) }}
+      {...{ class: twMerge(CLASSES.columnResizer, local.class) }}
       data-theme={local.dataTheme}
       data-slot="table-column-resizer"
       {...rest}
@@ -544,19 +530,18 @@ const TableColumnResizer: Layout<typeof componentRecipe, TableColumnResizerProps
  * Table Load More Row
  * -----------------------------------------------------------------------------------------------*/
 export type TableLoadMoreProps = JSX.HTMLAttributes<HTMLTableRowElement> &
-  IComponentBaseProps;
+  UIBaseProps;
 
 const TableLoadMore: Layout<typeof componentRecipe, TableLoadMoreProps> = () => {
   const [local, rest] = splitProps(props, [
     "children",
     "class",
-    "className",
     "dataTheme",
   ]);
 
   return (
     <tr
-      {...{ class: twMerge(CLASSES.loadMore, local.class, local.className) }}
+      {...{ class: twMerge(CLASSES.loadMore, local.class) }}
       data-theme={local.dataTheme}
       data-slot="table-load-more"
       {...rest}
@@ -570,19 +555,18 @@ const TableLoadMore: Layout<typeof componentRecipe, TableLoadMoreProps> = () => 
  * Table Load More Content
  * -----------------------------------------------------------------------------------------------*/
 export type TableLoadMoreContentProps = JSX.HTMLAttributes<HTMLDivElement> &
-  IComponentBaseProps;
+  UIBaseProps;
 
 const TableLoadMoreContent: Layout<typeof componentRecipe, TableLoadMoreContentProps> = () => {
   const [local, rest] = splitProps(props, [
     "children",
     "class",
-    "className",
     "dataTheme",
   ]);
 
   return (
     <div
-      {...{ class: twMerge(CLASSES.loadMoreContent, local.class, local.className) }}
+      {...{ class: twMerge(CLASSES.loadMoreContent, local.class) }}
       data-theme={local.dataTheme}
       data-slot="table-load-more-content"
       {...rest}

@@ -7,7 +7,7 @@ import {
   type ControlledDateRangeValue,
 } from "../../hooks/date";
 import Calendar, { type CalendarWeekdayFormat } from "../calendar";
-import type { IComponentBaseProps } from "../types";
+import type { UIBaseProps } from "../vocabulary";
 import { CLASSES } from "./RangeCalendar.recipe";
 import type { Layout } from "../../lib/layouts";
 import { componentRecipe } from "./RangeCalendar.recipe";
@@ -34,13 +34,12 @@ export type RangeCalendarProps = Omit<
   JSX.HTMLAttributes<HTMLDivElement>,
   "onChange" | "children"
 > &
-  IComponentBaseProps &
+  UIBaseProps &
   RangeCalendarBaseProps;
 
 const RangeCalendar: Layout<typeof componentRecipe, RangeCalendarProps> = () => {
   const [local, others] = splitProps(props, [
     "class",
-    "className",
     "dataTheme",
     "style",
     "ref",
@@ -93,7 +92,6 @@ const RangeCalendar: Layout<typeof componentRecipe, RangeCalendarProps> = () => 
           CLASSES.Root.base,
           isDisabled() && CLASSES.Root.flag.disabled,
           local.class,
-          local.className,
         ),
       }}
     >

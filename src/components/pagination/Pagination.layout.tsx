@@ -1,7 +1,7 @@
 import "./Pagination.css";
 import { For, splitProps, type JSX } from "solid-js";
 import { twMerge } from "tailwind-merge";
-import type { IComponentBaseProps } from "../types";
+import type { UIBaseProps } from "../vocabulary";
 import { CLASSES } from "./Pagination.recipe";
 import type { Layout } from "../../lib/layouts";
 import { componentRecipe } from "./Pagination.recipe";
@@ -9,7 +9,7 @@ import { componentRecipe } from "./Pagination.recipe";
 type PaginationToken = number | "ellipsis-left" | "ellipsis-right";
 
 export type PaginationProps = Omit<JSX.HTMLAttributes<HTMLElement>, "onChange"> &
-  IComponentBaseProps & {
+  UIBaseProps & {
     page: number;
     total: number;
     onChange: (page: number) => void;
@@ -41,7 +41,6 @@ const getPaginationTokens = (page: number, total: number): PaginationToken[] => 
 const Pagination: Layout<typeof componentRecipe, PaginationProps> = () => {
   const [local, others] = splitProps(props, [
     "class",
-    "className",
     "dataTheme",
     "page",
     "total",
@@ -66,7 +65,7 @@ const Pagination: Layout<typeof componentRecipe, PaginationProps> = () => {
       {...others}
       aria-label="pagination"
       role="navigation"
-      {...{ class: twMerge(CLASSES.base, local.class, local.className) }}
+      {...{ class: twMerge(CLASSES.base, local.class) }}
       data-theme={local.dataTheme}
       data-slot="pagination"
     >

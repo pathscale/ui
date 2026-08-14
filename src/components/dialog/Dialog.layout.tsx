@@ -15,7 +15,7 @@ import {
 import { Portal } from "solid-js/web";
 import { twMerge } from "tailwind-merge";
 
-import type { IComponentBaseProps } from "../types";
+import type { UIBaseProps } from "../vocabulary";
 import { CLASSES } from "./Dialog.recipe";
 import type { Layout } from "../../lib/layouts";
 import { componentRecipe } from "./Dialog.recipe";
@@ -153,7 +153,7 @@ const focusFirstElement = (container: HTMLElement) => {
 };
 
 export type DialogRootProps = Omit<JSX.HTMLAttributes<HTMLDivElement>, "children"> &
-  IComponentBaseProps & {
+  UIBaseProps & {
     children: JSX.Element;
     isOpen?: boolean;
     defaultOpen?: boolean;
@@ -168,12 +168,12 @@ export type DialogRootProps = Omit<JSX.HTMLAttributes<HTMLDivElement>, "children
   };
 
 export type DialogTriggerProps = Omit<JSX.ButtonHTMLAttributes<HTMLButtonElement>, "children"> &
-  IComponentBaseProps & {
+  UIBaseProps & {
     children: JSX.Element;
   };
 
 export type DialogBackdropProps = Omit<JSX.HTMLAttributes<HTMLDivElement>, "children"> &
-  IComponentBaseProps & {
+  UIBaseProps & {
     children: JSX.Element;
     variant?: DialogBackdropVariant;
     isDismissable?: boolean;
@@ -181,7 +181,7 @@ export type DialogBackdropProps = Omit<JSX.HTMLAttributes<HTMLDivElement>, "chil
   };
 
 export type DialogContentProps = Omit<JSX.HTMLAttributes<HTMLDivElement>, "children"> &
-  IComponentBaseProps & {
+  UIBaseProps & {
     children: JSX.Element;
     placement?: DialogPlacement;
     size?: DialogSize;
@@ -192,32 +192,32 @@ export type DialogContentProps = Omit<JSX.HTMLAttributes<HTMLDivElement>, "child
   };
 
 export type DialogHeaderProps = Omit<JSX.HTMLAttributes<HTMLDivElement>, "children"> &
-  IComponentBaseProps & {
+  UIBaseProps & {
     children: JSX.Element;
   };
 
 export type DialogHeadingProps = Omit<JSX.HTMLAttributes<HTMLHeadingElement>, "children"> &
-  IComponentBaseProps & {
+  UIBaseProps & {
     children: JSX.Element;
   };
 
 export type DialogBodyProps = Omit<JSX.HTMLAttributes<HTMLDivElement>, "children"> &
-  IComponentBaseProps & {
+  UIBaseProps & {
     children: JSX.Element;
   };
 
 export type DialogFooterProps = Omit<JSX.HTMLAttributes<HTMLDivElement>, "children"> &
-  IComponentBaseProps & {
+  UIBaseProps & {
     children: JSX.Element;
   };
 
 export type DialogIconProps = Omit<JSX.HTMLAttributes<HTMLDivElement>, "children"> &
-  IComponentBaseProps & {
+  UIBaseProps & {
     children: JSX.Element;
   };
 
 export type DialogCloseTriggerProps = Omit<JSX.ButtonHTMLAttributes<HTMLButtonElement>, "children"> &
-  IComponentBaseProps & {
+  UIBaseProps & {
     children?: JSX.Element;
   };
 
@@ -225,7 +225,6 @@ const DialogRoot: Layout<typeof componentRecipe, DialogRootProps> = () => {
   const [local, others] = splitProps(props, [
     "children",
     "class",
-    "className",
     "dataTheme",
     "style",
     "ref",
@@ -396,7 +395,6 @@ const DialogRoot: Layout<typeof componentRecipe, DialogRootProps> = () => {
           CLASSES.Root.base,
           isVisibleState(animState()) && CLASSES.Root.flag.open,
           local.class,
-          local.className,
         ) }}
         data-slot="dialog-root"
         data-open={isVisibleState(animState()) ? "true" : "false"}
@@ -413,7 +411,6 @@ const DialogTrigger: Layout<typeof componentRecipe, DialogTriggerProps> = () => 
   const [local, others] = splitProps(props, [
     "children",
     "class",
-    "className",
     "dataTheme",
     "style",
     "type",
@@ -433,7 +430,7 @@ const DialogTrigger: Layout<typeof componentRecipe, DialogTriggerProps> = () => 
     <button
       {...others}
       type={local.type ?? "button"}
-      {...{ class: twMerge(CLASSES.Trigger.base, local.class, local.className) }}
+      {...{ class: twMerge(CLASSES.Trigger.base, local.class) }}
       data-slot="dialog-trigger"
       data-theme={local.dataTheme}
       style={local.style}
@@ -448,7 +445,6 @@ const DialogBackdrop: Layout<typeof componentRecipe, DialogBackdropProps> = () =
   const [local, others] = splitProps(props, [
     "children",
     "class",
-    "className",
     "dataTheme",
     "style",
     "variant",
@@ -488,7 +484,6 @@ const DialogBackdrop: Layout<typeof componentRecipe, DialogBackdropProps> = () =
         isEntering() && CLASSES.Backdrop.state.entering,
         isExiting() && CLASSES.Backdrop.state.exiting,
         local.class,
-        local.className,
       ) }}
       data-slot="dialog-backdrop"
       data-entering={isEntering() ? "true" : undefined}
@@ -506,7 +501,6 @@ const DialogContent: Layout<typeof componentRecipe, DialogContentProps> = () => 
   const [local, others] = splitProps(props, [
     "children",
     "class",
-    "className",
     "dataTheme",
     "style",
     "ref",
@@ -578,7 +572,6 @@ const DialogContent: Layout<typeof componentRecipe, DialogContentProps> = () => 
                 isEntering() && CLASSES.Content.state.entering,
                 isExiting() && CLASSES.Content.state.exiting,
                 local.class,
-                local.className,
               ) }}
               data-slot="dialog-content"
               data-placement={placement()}
@@ -602,7 +595,6 @@ const DialogHeader: Layout<typeof componentRecipe, DialogHeaderProps> = () => {
   const [local, others] = splitProps(props, [
     "children",
     "class",
-    "className",
     "dataTheme",
     "style",
   ]);
@@ -610,7 +602,7 @@ const DialogHeader: Layout<typeof componentRecipe, DialogHeaderProps> = () => {
   return (
     <div
       {...others}
-      {...{ class: twMerge(CLASSES.Header.base, local.class, local.className) }}
+      {...{ class: twMerge(CLASSES.Header.base, local.class) }}
       data-slot="dialog-header"
       data-theme={local.dataTheme}
       style={local.style}
@@ -624,7 +616,6 @@ const DialogHeading: Layout<typeof componentRecipe, DialogHeadingProps> = () => 
   const [local, others] = splitProps(props, [
     "children",
     "class",
-    "className",
     "dataTheme",
     "style",
     "id",
@@ -649,7 +640,7 @@ const DialogHeading: Layout<typeof componentRecipe, DialogHeadingProps> = () => 
     <h2
       {...others}
       id={headingId()}
-      {...{ class: twMerge(CLASSES.Heading.base, local.class, local.className) }}
+      {...{ class: twMerge(CLASSES.Heading.base, local.class) }}
       data-slot="dialog-heading"
       data-theme={local.dataTheme}
       style={local.style}
@@ -663,7 +654,6 @@ const DialogIcon: Layout<typeof componentRecipe, DialogIconProps> = () => {
   const [local, others] = splitProps(props, [
     "children",
     "class",
-    "className",
     "dataTheme",
     "style",
   ]);
@@ -671,7 +661,7 @@ const DialogIcon: Layout<typeof componentRecipe, DialogIconProps> = () => {
   return (
     <div
       {...others}
-      {...{ class: twMerge(CLASSES.Icon.base, local.class, local.className) }}
+      {...{ class: twMerge(CLASSES.Icon.base, local.class) }}
       data-slot="dialog-icon"
       data-theme={local.dataTheme}
       style={local.style}
@@ -685,7 +675,6 @@ const DialogBody: Layout<typeof componentRecipe, DialogBodyProps> = () => {
   const [local, others] = splitProps(props, [
     "children",
     "class",
-    "className",
     "dataTheme",
     "style",
     "id",
@@ -714,7 +703,6 @@ const DialogBody: Layout<typeof componentRecipe, DialogBodyProps> = () => {
         CLASSES.Body.base,
         CLASSES.Body.scroll[context.scrollBehavior()],
         local.class,
-        local.className,
       ) }}
       data-slot="dialog-body"
       data-scroll={context.scrollBehavior()}
@@ -730,7 +718,6 @@ const DialogFooter: Layout<typeof componentRecipe, DialogFooterProps> = () => {
   const [local, others] = splitProps(props, [
     "children",
     "class",
-    "className",
     "dataTheme",
     "style",
   ]);
@@ -738,7 +725,7 @@ const DialogFooter: Layout<typeof componentRecipe, DialogFooterProps> = () => {
   return (
     <div
       {...others}
-      {...{ class: twMerge(CLASSES.Footer.base, local.class, local.className) }}
+      {...{ class: twMerge(CLASSES.Footer.base, local.class) }}
       data-slot="dialog-footer"
       data-theme={local.dataTheme}
       style={local.style}
@@ -752,7 +739,6 @@ const DialogCloseTrigger: Layout<typeof componentRecipe, DialogCloseTriggerProps
   const [local, others] = splitProps(props, [
     "children",
     "class",
-    "className",
     "dataTheme",
     "style",
     "type",
@@ -774,7 +760,7 @@ const DialogCloseTrigger: Layout<typeof componentRecipe, DialogCloseTriggerProps
       {...others}
       type={local.type ?? "button"}
       aria-label={local["aria-label"] ?? "Close dialog"}
-      {...{ class: twMerge(CLASSES.CloseTrigger.base, local.class, local.className) }}
+      {...{ class: twMerge(CLASSES.CloseTrigger.base, local.class) }}
       data-slot="dialog-close-trigger"
       data-theme={local.dataTheme}
       style={local.style}

@@ -33,14 +33,12 @@ type InputRootProps = Omit<JSX.HTMLAttributes<HTMLDivElement>, "children"> & {
   isDisabled?: boolean;
   isInvalid?: boolean;
   dataTheme?: string;
-  className?: string;
 };
 
 const InputRoot: Layout<typeof componentRecipe, InputRootProps> = () => {
   const [local, others] = splitProps(props, [
     "children",
     "class",
-    "className",
     "size",
     "fullWidth",
     "isDisabled",
@@ -72,7 +70,6 @@ const InputRoot: Layout<typeof componentRecipe, InputRootProps> = () => {
           CLASSES.base,
           fullWidth() && CLASSES.flag.fullWidthRoot,
           local.class,
-          local.className,
         ) }}
         data-theme={local.dataTheme}
         data-slot="input-root"
@@ -92,14 +89,12 @@ type InputFieldProps = Omit<JSX.InputHTMLAttributes<HTMLInputElement>, "size" | 
   startIcon?: JSX.Element;
   endIcon?: JSX.Element;
   dataTheme?: string;
-  className?: string;
 };
 
 const InputField: Layout<typeof componentRecipe, InputFieldProps> = () => {
   const ctx = useContext(InputContext);
   const [local, others] = splitProps(props, [
     "class",
-    "className",
     "size",
     "isDisabled",
     "disabled",
@@ -128,7 +123,6 @@ const InputField: Layout<typeof componentRecipe, InputFieldProps> = () => {
       isDisabled() && CLASSES.flag.disabled,
       isInvalid() && CLASSES.flag.invalid,
       local.class,
-      local.className,
     );
 
   return (
@@ -169,18 +163,17 @@ const InputField: Layout<typeof componentRecipe, InputFieldProps> = () => {
 };
 
 type InputLabelProps = JSX.LabelHTMLAttributes<HTMLLabelElement> & {
-  className?: string;
 };
 
 const InputLabel: Layout<typeof componentRecipe, InputLabelProps> = () => {
   const ctx = useContext(InputContext);
-  const [local, others] = splitProps(props, ["class", "className", "for", "children"]);
+  const [local, others] = splitProps(props, ["class", "for", "children"]);
 
   return (
     <label
       {...others}
       for={local.for ?? ctx?.fieldId()}
-      {...{ class: twMerge(CLASSES.slot.label, local.class, local.className) }}
+      {...{ class: twMerge(CLASSES.slot.label, local.class) }}
       data-slot="input-label"
     >
       {local.children}
@@ -190,12 +183,11 @@ const InputLabel: Layout<typeof componentRecipe, InputLabelProps> = () => {
 
 type InputHelperProps = JSX.HTMLAttributes<HTMLParagraphElement> & {
   invalid?: boolean;
-  className?: string;
 };
 
 const InputHelper: Layout<typeof componentRecipe, InputHelperProps> = () => {
   const ctx = useContext(InputContext);
-  const [local, others] = splitProps(props, ["class", "className", "invalid", "id", "children"]);
+  const [local, others] = splitProps(props, ["class", "invalid", "id", "children"]);
 
   const invalid = () => Boolean(local.invalid) || Boolean(ctx?.isInvalid());
 
@@ -207,7 +199,6 @@ const InputHelper: Layout<typeof componentRecipe, InputHelperProps> = () => {
         CLASSES.slot.helper,
         invalid() && CLASSES.flag.helperInvalid,
         local.class,
-        local.className,
       ) }}
       data-slot="input-helper"
     >
@@ -236,7 +227,6 @@ const InputBase: Layout<typeof componentRecipe, InputProps> = () => {
     "helperText",
     "errorMessage",
     "class",
-    "className",
     "aria-invalid",
     "dataTheme",
   ]);
@@ -270,7 +260,6 @@ const InputBase: Layout<typeof componentRecipe, InputProps> = () => {
           isInvalid={isInvalid()}
           aria-describedby={hasHelper() ? helperId() : undefined}
           {...{ class: local.class }}
-          className={local.className}
           dataTheme={local.dataTheme}
         />
         <Show when={hasHelper()}>

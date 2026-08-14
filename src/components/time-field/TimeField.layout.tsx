@@ -11,7 +11,7 @@ import {
 } from "solid-js";
 import { twMerge } from "tailwind-merge";
 
-import type { IComponentBaseProps } from "../types";
+import type { UIBaseProps } from "../vocabulary";
 import { CLASSES } from "./TimeField.recipe";
 import type { Layout } from "../../lib/layouts";
 import { componentRecipe } from "./TimeField.recipe";
@@ -51,7 +51,7 @@ export type TimeFieldRenderProps = {
 };
 
 export type TimeFieldRootProps = Omit<JSX.HTMLAttributes<HTMLDivElement>, "children" | "onChange" | "onBlur"> &
-  IComponentBaseProps & {
+  UIBaseProps & {
     children?: JSX.Element | ((props: TimeFieldRenderProps) => JSX.Element);
     name?: string;
     value?: string;
@@ -68,7 +68,7 @@ export type TimeFieldRootProps = Omit<JSX.HTMLAttributes<HTMLDivElement>, "child
   };
 
 export type TimeFieldGroupProps = Omit<JSX.HTMLAttributes<HTMLDivElement>, "children"> &
-  IComponentBaseProps & {
+  UIBaseProps & {
     children?: JSX.Element | ((props: TimeFieldRenderProps) => JSX.Element);
   };
 
@@ -76,11 +76,11 @@ export type TimeFieldInputProps = Omit<
   JSX.InputHTMLAttributes<HTMLInputElement>,
   "value" | "onInput" | "type"
 > &
-  IComponentBaseProps & {
+  UIBaseProps & {
     onInput?: JSX.EventHandlerUnion<HTMLInputElement, InputEvent>;
   };
 
-export type TimeFieldInputContainerProps = JSX.HTMLAttributes<HTMLDivElement> & IComponentBaseProps;
+export type TimeFieldInputContainerProps = JSX.HTMLAttributes<HTMLDivElement> & UIBaseProps;
 
 export type TimeFieldSegmentValue = {
   type?: string;
@@ -92,18 +92,17 @@ export type TimeFieldSegmentValue = {
 };
 
 export type TimeFieldSegmentProps = JSX.HTMLAttributes<HTMLSpanElement> &
-  IComponentBaseProps & {
+  UIBaseProps & {
     segment?: TimeFieldSegmentValue;
   };
 
-export type TimeFieldPrefixProps = JSX.HTMLAttributes<HTMLDivElement> & IComponentBaseProps;
-export type TimeFieldSuffixProps = JSX.HTMLAttributes<HTMLDivElement> & IComponentBaseProps;
+export type TimeFieldPrefixProps = JSX.HTMLAttributes<HTMLDivElement> & UIBaseProps;
+export type TimeFieldSuffixProps = JSX.HTMLAttributes<HTMLDivElement> & UIBaseProps;
 
 const TimeFieldRoot: Layout<typeof componentRecipe, TimeFieldRootProps> = () => {
   const [local, others] = splitProps(props, [
     "children",
     "class",
-    "className",
     "dataTheme",
     "style",
     "name",
@@ -165,7 +164,6 @@ const TimeFieldRoot: Layout<typeof componentRecipe, TimeFieldRootProps> = () => 
           CLASSES.Root.variant[variant()],
           fullWidth() && CLASSES.Root.flag.fullWidth,
           local.class,
-          local.className,
         ) }}
         data-slot="time-field"
         data-invalid={isInvalid() ? "true" : undefined}
@@ -192,7 +190,7 @@ const TimeFieldRoot: Layout<typeof componentRecipe, TimeFieldRootProps> = () => 
 
 const TimeFieldGroup: Layout<typeof componentRecipe, TimeFieldGroupProps> = () => {
   const context = useContext(TimeFieldContext);
-  const [local, others] = splitProps(props, ["children", "class", "className", "dataTheme", "style"]);
+  const [local, others] = splitProps(props, ["children", "class", "dataTheme", "style"]);
 
   const renderProps = () => ({
     value: context?.value() ?? "",
@@ -209,7 +207,6 @@ const TimeFieldGroup: Layout<typeof componentRecipe, TimeFieldGroupProps> = () =
         CLASSES.Group.variant[context?.variant() ?? "primary"],
         context?.fullWidth() && CLASSES.Group.flag.fullWidth,
         local.class,
-        local.className,
       ) }}
       data-slot="date-input-group"
       data-invalid={context?.isInvalid() ? "true" : undefined}
@@ -226,7 +223,6 @@ const TimeFieldInput: Layout<typeof componentRecipe, TimeFieldInputProps> = () =
   const context = useContext(TimeFieldContext);
   const [local, others] = splitProps(props, [
     "class",
-    "className",
     "dataTheme",
     "style",
     "onInput",
@@ -249,7 +245,7 @@ const TimeFieldInput: Layout<typeof componentRecipe, TimeFieldInputProps> = () =
     <input
       {...others}
       type="time"
-      {...{ class: twMerge(CLASSES.Input.base, local.class, local.className) }}
+      {...{ class: twMerge(CLASSES.Input.base, local.class) }}
       data-slot="date-input-group-input"
       data-theme={local.dataTheme}
       style={local.style}
@@ -266,12 +262,12 @@ const TimeFieldInput: Layout<typeof componentRecipe, TimeFieldInputProps> = () =
 };
 
 const TimeFieldInputContainer: Layout<typeof componentRecipe, TimeFieldInputContainerProps> = () => {
-  const [local, others] = splitProps(props, ["children", "class", "className", "dataTheme", "style"]);
+  const [local, others] = splitProps(props, ["children", "class", "dataTheme", "style"]);
 
   return (
     <div
       {...others}
-      {...{ class: twMerge(CLASSES.InputContainer.base, local.class, local.className) }}
+      {...{ class: twMerge(CLASSES.InputContainer.base, local.class) }}
       data-slot="date-input-group-input-container"
       data-theme={local.dataTheme}
       style={local.style}
@@ -285,7 +281,6 @@ const TimeFieldSegment: Layout<typeof componentRecipe, TimeFieldSegmentProps> = 
   const [local, others] = splitProps(props, [
     "children",
     "class",
-    "className",
     "dataTheme",
     "style",
     "segment",
@@ -294,7 +289,7 @@ const TimeFieldSegment: Layout<typeof componentRecipe, TimeFieldSegmentProps> = 
   return (
     <span
       {...others}
-      {...{ class: twMerge(CLASSES.Segment.base, local.class, local.className) }}
+      {...{ class: twMerge(CLASSES.Segment.base, local.class) }}
       data-slot="date-input-group-segment"
       data-type={local.segment?.type}
       data-placeholder={local.segment?.isPlaceholder ? "true" : undefined}
@@ -310,12 +305,12 @@ const TimeFieldSegment: Layout<typeof componentRecipe, TimeFieldSegmentProps> = 
 };
 
 const TimeFieldPrefix: Layout<typeof componentRecipe, TimeFieldPrefixProps> = () => {
-  const [local, others] = splitProps(props, ["children", "class", "className", "dataTheme", "style"]);
+  const [local, others] = splitProps(props, ["children", "class", "dataTheme", "style"]);
 
   return (
     <div
       {...others}
-      {...{ class: twMerge(CLASSES.Prefix.base, local.class, local.className) }}
+      {...{ class: twMerge(CLASSES.Prefix.base, local.class) }}
       data-slot="date-input-group-prefix"
       data-theme={local.dataTheme}
       style={local.style}
@@ -326,12 +321,12 @@ const TimeFieldPrefix: Layout<typeof componentRecipe, TimeFieldPrefixProps> = ()
 };
 
 const TimeFieldSuffix: Layout<typeof componentRecipe, TimeFieldSuffixProps> = () => {
-  const [local, others] = splitProps(props, ["children", "class", "className", "dataTheme", "style"]);
+  const [local, others] = splitProps(props, ["children", "class", "dataTheme", "style"]);
 
   return (
     <div
       {...others}
-      {...{ class: twMerge(CLASSES.Suffix.base, local.class, local.className) }}
+      {...{ class: twMerge(CLASSES.Suffix.base, local.class) }}
       data-slot="date-input-group-suffix"
       data-theme={local.dataTheme}
       style={local.style}

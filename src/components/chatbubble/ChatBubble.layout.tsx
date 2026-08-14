@@ -2,7 +2,7 @@ import "./ChatBubble.css";
 import { createMemo, type JSX, splitProps } from "solid-js";
 import { twMerge } from "tailwind-merge";
 
-import type { IComponentBaseProps } from "../types";
+import type { UIBaseProps } from "../vocabulary";
 import ChatBubbleHeader from "./ChatBubbleHeader.generated";
 import ChatBubbleTime from "./ChatBubbleTime.generated";
 import ChatBubbleAvatar from "./ChatBubbleAvatar.generated";
@@ -12,7 +12,7 @@ import { CLASSES } from "./ChatBubble.recipe";
 import type { Layout } from "../../lib/layouts";
 import { componentRecipe } from "./ChatBubble.recipe";
 
-export type ChatBubbleProps = IComponentBaseProps &
+export type ChatBubbleProps = UIBaseProps &
   JSX.HTMLAttributes<HTMLDivElement> & {
     end?: boolean;
   };
@@ -22,7 +22,6 @@ const ChatBubble: Layout<typeof componentRecipe, ChatBubbleProps> = () => {
     "end",
     "dataTheme",
     "class",
-    "className",
     "style",
   ]);
 
@@ -31,7 +30,6 @@ const ChatBubble: Layout<typeof componentRecipe, ChatBubbleProps> = () => {
       CLASSES.base,
       local.end ? CLASSES.align.end : CLASSES.align.start,
       local.class,
-      local.className,
     ),
   );
 

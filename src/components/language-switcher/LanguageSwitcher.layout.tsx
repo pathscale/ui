@@ -3,13 +3,13 @@ import { type Component, For, Show, splitProps } from "solid-js";
 import { twMerge } from "tailwind-merge";
 import Dropdown, { type DropdownAlign } from "../dropdown";
 import Icon from "../icon";
-import type { IComponentBaseProps } from "../types";
+import type { UIBaseProps } from "../vocabulary";
 import type { I18nStore } from "./createI18n";
 import { CLASSES } from "./LanguageSwitcher.recipe";
 import type { Layout } from "../../lib/layouts";
 import { componentRecipe } from "./LanguageSwitcher.recipe";
 
-export interface LanguageSwitcherProps extends IComponentBaseProps {
+export interface LanguageSwitcherProps extends UIBaseProps {
   /**
    * The i18n store to use for language state
    */
@@ -45,7 +45,6 @@ const LanguageSwitcher: Layout<typeof componentRecipe, LanguageSwitcherProps> = 
   const [local, others] = splitProps(props, [
     "i18n",
     "class",
-    "className",
     "style",
     "aria-label",
     "currentLanguageLabel",
@@ -63,7 +62,7 @@ const LanguageSwitcher: Layout<typeof componentRecipe, LanguageSwitcherProps> = 
     local.onLanguageChange?.(lang);
   };
 
-  const classes = () => twMerge(CLASSES.base, local.class, local.className);
+  const classes = () => twMerge(CLASSES.base, local.class);
 
   return (
     <Dropdown.Root

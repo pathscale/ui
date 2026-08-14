@@ -2,18 +2,17 @@ import "./Form.css";
 import { splitProps, type Component, type JSX } from "solid-js";
 import { twMerge } from "tailwind-merge";
 
-import type { IComponentBaseProps } from "../types";
+import type { UIBaseProps } from "../vocabulary";
 import { CLASSES } from "./Form.recipe";
 import { FormContext, type AnyFormApi } from "../../hooks/form/FormContext";
 import type { Layout } from "../../lib/layouts";
 import { componentRecipe } from "./Form.recipe";
 
-export type FormRootProps = JSX.FormHTMLAttributes<HTMLFormElement> & IComponentBaseProps;
+export type FormRootProps = JSX.FormHTMLAttributes<HTMLFormElement> & UIBaseProps;
 
 const FormRoot: Layout<typeof componentRecipe, FormRootProps> = () => {
   const [local, others] = splitProps(props, [
     "class",
-    "className",
     "dataTheme",
     "style",
   ]);
@@ -21,7 +20,7 @@ const FormRoot: Layout<typeof componentRecipe, FormRootProps> = () => {
   return (
     <form
       {...others}
-      {...{ class: twMerge(CLASSES.base, local.class, local.className) }}
+      {...{ class: twMerge(CLASSES.base, local.class) }}
       data-slot="form"
       data-theme={local.dataTheme}
       style={local.style}
@@ -30,7 +29,7 @@ const FormRoot: Layout<typeof componentRecipe, FormRootProps> = () => {
 };
 
 export type FormWithContextProps = Omit<JSX.FormHTMLAttributes<HTMLFormElement>, "onSubmit"> &
-  IComponentBaseProps & {
+  UIBaseProps & {
     /**
      * The form API returned by `createForm()`.
      * Providing this prop switches the component into context-providing mode:
@@ -49,7 +48,6 @@ const FormWithContext: Layout<typeof componentRecipe, FormWithContextProps> = ()
   const [local, others] = splitProps(props, [
     "form",
     "class",
-    "className",
     "dataTheme",
     "style",
     "onSubmit",
@@ -70,7 +68,7 @@ const FormWithContext: Layout<typeof componentRecipe, FormWithContextProps> = ()
       <form
         {...others}
         onSubmit={handleSubmit}
-        {...{ class: twMerge(CLASSES.base, local.class, local.className) }}
+        {...{ class: twMerge(CLASSES.base, local.class) }}
         data-slot="form"
         data-theme={local.dataTheme}
         style={local.style}

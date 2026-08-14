@@ -3,7 +3,7 @@ import { createSignal, type JSX } from "solid-js";
 import Button from "../button";
 import Icon from "../icon";
 import Input from "../input";
-import type { IComponentBaseProps } from "../types";
+import type { UIBaseProps } from "../vocabulary";
 import type { Layout } from "../../lib/layouts";
 import { passwordField } from "./PasswordField.recipe";
 import {
@@ -17,7 +17,7 @@ import {
 /* -------------------------------------------------------------------------------------------------
  * Types
  * -----------------------------------------------------------------------------------------------*/
-export type PasswordFieldProps = IComponentBaseProps & {
+export type PasswordFieldProps = UIBaseProps & {
   id?: string;
   name?: string;
   label?: JSX.Element;

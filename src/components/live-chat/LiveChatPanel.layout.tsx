@@ -12,13 +12,13 @@ import {
 import { twMerge } from "tailwind-merge";
 import Button from "../button";
 import Input from "../input";
-import type { IComponentBaseProps } from "../types";
+import type { UIBaseProps } from "../vocabulary";
 import type { ChatMessage, SendMessagePayload, SendMessageResponse } from "./types";
 import { CLASSES } from "./LiveChat.recipe";
 import type { Layout } from "../../lib/layouts";
 import { componentRecipe } from "./LiveChat.recipe";
 
-export interface LiveChatPanelProps extends IComponentBaseProps {
+export interface LiveChatPanelProps extends UIBaseProps {
   /**
    * Callback when the panel close button is clicked
    */
@@ -162,7 +162,6 @@ const LiveChatPanel: Layout<typeof componentRecipe, LiveChatPanelProps> = () => 
     "autoScrollBehavior",
     "stickToBottomThreshold",
     "class",
-    "className",
     "style",
   ]);
 
@@ -312,7 +311,7 @@ const LiveChatPanel: Layout<typeof componentRecipe, LiveChatPanelProps> = () => 
     }
   };
 
-  const classes = () => twMerge(CLASSES.panel.base, local.class, local.className);
+  const classes = () => twMerge(CLASSES.panel.base, local.class);
 
   return (
     <div {...others} {...{ class: classes() }} style={local.style}>

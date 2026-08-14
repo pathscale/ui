@@ -24,7 +24,7 @@ import {
   useDateSelection,
   type CalendarSelectionMode,
 } from "../../hooks/date";
-import type { IComponentBaseProps } from "../types";
+import type { UIBaseProps } from "../vocabulary";
 import { CLASSES } from "./Calendar.recipe";
 import type { Layout } from "../../lib/layouts";
 import { componentRecipe } from "./Calendar.recipe";
@@ -58,13 +58,12 @@ export type CalendarProps = Omit<
   JSX.HTMLAttributes<HTMLDivElement>,
   "onChange" | "children"
 > &
-  IComponentBaseProps &
+  UIBaseProps &
   CalendarBaseProps;
 
 const Calendar: Layout<typeof componentRecipe, CalendarProps> = () => {
   const [local, others] = splitProps(props, [
     "class",
-    "className",
     "dataTheme",
     "style",
     "ref",
@@ -281,7 +280,6 @@ const Calendar: Layout<typeof componentRecipe, CalendarProps> = () => {
         CLASSES.Root.base,
         isCalendarDisabled() && CLASSES.Root.flag.disabled,
         local.class,
-        local.className,
       ) }}
       data-slot="calendar"
       data-selection-mode={selectionMode()}

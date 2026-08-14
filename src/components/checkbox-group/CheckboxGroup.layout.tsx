@@ -3,7 +3,7 @@ import { createSignal, splitProps, type Component, type JSX } from "solid-js";
 import { twMerge } from "tailwind-merge";
 
 import type { CheckboxVariant } from "../checkbox";
-import type { IComponentBaseProps } from "../types";
+import type { UIBaseProps } from "../vocabulary";
 import { CLASSES } from "./CheckboxGroup.recipe";
 import { CheckboxGroupContext, type CheckboxGroupContextValue } from "./context";
 import type { Layout } from "../../lib/layouts";
@@ -12,7 +12,7 @@ import { componentRecipe } from "./CheckboxGroup.recipe";
 export type CheckboxGroupVariant = CheckboxVariant;
 
 export type CheckboxGroupProps = Omit<JSX.HTMLAttributes<HTMLDivElement>, "children" | "onChange"> &
-  IComponentBaseProps & {
+  UIBaseProps & {
     children?: JSX.Element | ((values: string[]) => JSX.Element);
     value?: string[];
     defaultValue?: string[];
@@ -28,7 +28,6 @@ const CheckboxGroup: Layout<typeof componentRecipe, CheckboxGroupProps> = () => 
   const [local, others] = splitProps(props, [
     "children",
     "class",
-    "className",
     "dataTheme",
     "style",
     "value",
@@ -94,7 +93,6 @@ const CheckboxGroup: Layout<typeof componentRecipe, CheckboxGroupProps> = () => 
           isDisabled() && CLASSES.flag.disabled,
           isInvalid() && CLASSES.flag.invalid,
           local.class,
-          local.className,
         )}
         data-theme={local.dataTheme}
         style={local.style}

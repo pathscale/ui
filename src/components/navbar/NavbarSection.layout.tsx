@@ -7,7 +7,6 @@ import { componentRecipe } from "./Navbar.recipe";
 export type NavbarSectionProps = JSX.HTMLAttributes<HTMLDivElement> & {
   section: "start" | "center" | "end";
   dataTheme?: string;
-  className?: string;
 };
 
 const NavbarSection: Layout<typeof componentRecipe, NavbarSectionProps> = () => {
@@ -16,7 +15,6 @@ const NavbarSection: Layout<typeof componentRecipe, NavbarSectionProps> = () => 
     "section",
     "dataTheme",
     "class",
-    "className",
     "style",
   ]);
 
@@ -25,7 +23,6 @@ const NavbarSection: Layout<typeof componentRecipe, NavbarSectionProps> = () => 
       CLASSES.section.base,
       CLASSES.section.variant[local.section],
       local.class,
-      local.className,
     );
 
   return (

@@ -1,7 +1,7 @@
 import "./ScrollArea.css";
 import { createEffect, createMemo, splitProps, type JSX } from "solid-js";
 import { twMerge } from "tailwind-merge";
-import type { IComponentBaseProps } from "../types";
+import type { UIBaseProps } from "../vocabulary";
 import { CLASSES } from "./ScrollArea.recipe";
 import {
   applyControlledScrollAreaVisibility,
@@ -23,7 +23,7 @@ export type ScrollAreaVisibility =
 export type ScrollAreaOrientation = "vertical" | "horizontal";
 export type ScrollAreaVariant = "fade";
 
-export type ScrollAreaProps = IComponentBaseProps &
+export type ScrollAreaProps = UIBaseProps &
   Omit<JSX.HTMLAttributes<HTMLDivElement>, "size"> & {
     size?: number;
     offset?: number;
@@ -39,7 +39,6 @@ const ScrollArea: Layout<typeof componentRecipe, ScrollAreaProps> = () => {
   const [local, others] = splitProps(props, [
     "children",
     "class",
-    "className",
     "dataTheme",
     "style",
     "size",
@@ -95,7 +94,6 @@ const ScrollArea: Layout<typeof componentRecipe, ScrollAreaProps> = () => {
       CLASSES.variant[variant()],
       local.hideScrollBar && CLASSES.flag.hideScrollBar,
       local.class,
-      local.className,
     ),
   );
 

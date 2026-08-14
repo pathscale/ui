@@ -17,7 +17,7 @@ import {
   createOverlayPosition,
   type OverlayPlacement,
 } from "../_shared/overlayPosition";
-import type { IComponentBaseProps } from "../types";
+import type { UIBaseProps } from "../vocabulary";
 import { CLASSES } from "./Tooltip.recipe";
 import type { Layout } from "../../lib/layouts";
 import { componentRecipe } from "./Tooltip.recipe";
@@ -59,7 +59,7 @@ const useTooltipContext = () => {
  * -----------------------------------------------------------------------------------------------*/
 export type TooltipPlacement = OverlayPlacement;
 
-export type TooltipRootProps = IComponentBaseProps & {
+export type TooltipRootProps = UIBaseProps & {
   children: JSX.Element;
   placement?: TooltipPlacement;
   autoFlip?: boolean;
@@ -76,7 +76,7 @@ export type TooltipTriggerProps = Omit<
   JSX.HTMLAttributes<HTMLDivElement>,
   "children"
 > &
-  IComponentBaseProps & {
+  UIBaseProps & {
     children: JSX.Element;
   };
 
@@ -84,12 +84,12 @@ export type TooltipContentProps = Omit<
   JSX.HTMLAttributes<HTMLDivElement>,
   "children"
 > &
-  IComponentBaseProps & {
+  UIBaseProps & {
     children: JSX.Element;
   };
 
 export type TooltipArrowProps = JSX.HTMLAttributes<HTMLSpanElement> &
-  IComponentBaseProps & {
+  UIBaseProps & {
     children?: JSX.Element;
   };
 
@@ -110,7 +110,6 @@ const TooltipRoot: Layout<typeof componentRecipe, TooltipRootProps> = () => {
     "onOpenChange",
     "dataTheme",
     "class",
-    "className",
     "style",
   ]);
 
@@ -171,7 +170,7 @@ const TooltipRoot: Layout<typeof componentRecipe, TooltipRootProps> = () => {
   return (
     <TooltipContext.Provider value={ctx}>
       <span
-        {...{ class: twMerge(CLASSES.base, local.class, local.className) }}
+        {...{ class: twMerge(CLASSES.base, local.class) }}
         data-slot="tooltip-root"
         data-theme={local.dataTheme}
         style={local.style}
@@ -189,7 +188,6 @@ const TooltipTrigger: Layout<typeof componentRecipe, TooltipTriggerProps> = () =
   const [local, others] = splitProps(props, [
     "children",
     "class",
-    "className",
     "dataTheme",
     "style",
     "onMouseEnter",
@@ -233,7 +231,7 @@ const TooltipTrigger: Layout<typeof componentRecipe, TooltipTriggerProps> = () =
       {...others}
       ref={(el) => ctx.setTriggerRef(el)}
       {...{
-        class: twMerge(CLASSES.slot.trigger, local.class, local.className),
+        class: twMerge(CLASSES.slot.trigger, local.class),
       }}
       data-slot="tooltip-trigger"
       data-theme={local.dataTheme}
@@ -255,7 +253,6 @@ const TooltipContent: Layout<typeof componentRecipe, TooltipContentProps> = () =
   const [local, others] = splitProps(props, [
     "children",
     "class",
-    "className",
     "dataTheme",
     "style",
     "onMouseEnter",
@@ -319,7 +316,7 @@ const TooltipContent: Layout<typeof componentRecipe, TooltipContentProps> = () =
           ref={(el) => ctx.setContentRef(el)}
           role="tooltip"
           {...{
-            class: twMerge(CLASSES.slot.content, local.class, local.className),
+            class: twMerge(CLASSES.slot.content, local.class),
           }}
           data-slot="tooltip-content"
           data-placement={ctx.placement()}
@@ -343,7 +340,6 @@ const TooltipArrow: Layout<typeof componentRecipe, TooltipArrowProps> = () => {
   const [local, others] = splitProps(props, [
     "children",
     "class",
-    "className",
     "dataTheme",
     "style",
   ]);
@@ -369,7 +365,7 @@ const TooltipArrow: Layout<typeof componentRecipe, TooltipArrowProps> = () => {
   return (
     <span
       {...others}
-      {...{ class: twMerge(CLASSES.slot.arrow, local.class, local.className) }}
+      {...{ class: twMerge(CLASSES.slot.arrow, local.class) }}
       data-slot="tooltip-arrow"
       data-placement={ctx.placement()}
       data-theme={local.dataTheme}

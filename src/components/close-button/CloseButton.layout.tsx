@@ -2,7 +2,7 @@ import "./CloseButton.css";
 import { splitProps, type Component, type JSX } from "solid-js";
 import { twMerge } from "tailwind-merge";
 
-import type { IComponentBaseProps } from "../types";
+import type { UIBaseProps } from "../vocabulary";
 import { CLASSES } from "./CloseButton.recipe";
 import type { Layout } from "../../lib/layouts";
 import { componentRecipe } from "./CloseButton.recipe";
@@ -10,20 +10,18 @@ import { componentRecipe } from "./CloseButton.recipe";
 export type CloseButtonVariant = "default";
 
 export type CloseButtonProps = Omit<JSX.ButtonHTMLAttributes<HTMLButtonElement>, "disabled"> &
-  IComponentBaseProps & {
+  UIBaseProps & {
     variant?: CloseButtonVariant;
     isDisabled?: boolean;
     isPending?: boolean;
     startIcon?: JSX.Element;
     endIcon?: JSX.Element;
-    className?: string;
   };
 
 const CloseButton: Layout<typeof componentRecipe, CloseButtonProps> = () => {
   const [local, others] = splitProps(props, [
     "children",
     "class",
-    "className",
     "variant",
     "isDisabled",
     "isPending",
@@ -47,7 +45,6 @@ const CloseButton: Layout<typeof componentRecipe, CloseButtonProps> = () => {
         CLASSES.base,
         CLASSES.variant[variant()],
         local.class,
-        local.className,
       ) }}
       data-slot="close-button"
       data-pending={local.isPending ? "true" : "false"}

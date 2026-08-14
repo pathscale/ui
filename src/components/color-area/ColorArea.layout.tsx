@@ -1,7 +1,7 @@
 import "./ColorArea.css";
 import { createSignal, splitProps, type Component, type JSX } from "solid-js";
 import { twMerge } from "tailwind-merge";
-import type { IComponentBaseProps } from "../types";
+import type { UIBaseProps } from "../vocabulary";
 import { CLASSES } from "./ColorArea.recipe";
 import type { Layout } from "../../lib/layouts";
 import { componentRecipe } from "./ColorArea.recipe";
@@ -13,7 +13,7 @@ export type ColorAreaValue = {
 };
 
 export type ColorAreaProps = Omit<JSX.HTMLAttributes<HTMLDivElement>, "children" | "onChange"> &
-  IComponentBaseProps & {
+  UIBaseProps & {
     value?: ColorAreaValue;
     onChange?: (value: ColorAreaValue) => void;
     isDisabled?: boolean;
@@ -77,7 +77,6 @@ const hsvToRgb = (h: number, s: number, v: number) => {
 const ColorArea: Layout<typeof componentRecipe, ColorAreaProps> = () => {
   const [local, others] = splitProps(props, [
     "class",
-    "className",
     "value",
     "onChange",
     "isDisabled",
@@ -184,7 +183,7 @@ const ColorArea: Layout<typeof componentRecipe, ColorAreaProps> = () => {
     <div
       {...others}
       ref={areaRef}
-      {...{ class: twMerge(CLASSES.base, local.class, local.className) }}
+      {...{ class: twMerge(CLASSES.base, local.class) }}
       data-theme={local.dataTheme}
       data-slot="color-area"
       data-disabled={isDisabled() ? "true" : "false"}

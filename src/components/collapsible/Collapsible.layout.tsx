@@ -13,7 +13,7 @@ import {
 } from "solid-js";
 import { twMerge } from "tailwind-merge";
 
-import type { IComponentBaseProps } from "../types";
+import type { UIBaseProps } from "../vocabulary";
 import { CLASSES } from "./Collapsible.recipe";
 import type { Layout } from "../../lib/layouts";
 import { componentRecipe } from "./Collapsible.recipe";
@@ -35,7 +35,7 @@ const useCollapsibleContext = () => {
 };
 
 export type CollapsibleRootProps = Omit<JSX.HTMLAttributes<HTMLDivElement>, "children"> &
-  IComponentBaseProps & {
+  UIBaseProps & {
     children?: JSX.Element;
     id?: string;
     isOpen?: boolean;
@@ -46,7 +46,7 @@ export type CollapsibleRootProps = Omit<JSX.HTMLAttributes<HTMLDivElement>, "chi
   };
 
 export type CollapsibleHeadingProps = Omit<JSX.HTMLAttributes<HTMLHeadingElement>, "children"> &
-  IComponentBaseProps & {
+  UIBaseProps & {
     children?: JSX.Element;
   };
 
@@ -54,23 +54,23 @@ export type CollapsibleTriggerProps = Omit<
   JSX.ButtonHTMLAttributes<HTMLButtonElement>,
   "children" | "disabled"
 > &
-  IComponentBaseProps & {
+  UIBaseProps & {
     children?: JSX.Element;
   };
 
 export type CollapsibleContentProps = Omit<JSX.HTMLAttributes<HTMLDivElement>, "children"> &
-  IComponentBaseProps & {
+  UIBaseProps & {
     children?: JSX.Element;
     keepMounted?: boolean;
   };
 
 export type CollapsibleBodyProps = Omit<JSX.HTMLAttributes<HTMLDivElement>, "children"> &
-  IComponentBaseProps & {
+  UIBaseProps & {
     children?: JSX.Element;
   };
 
 export type CollapsibleIndicatorProps = Omit<JSX.HTMLAttributes<HTMLSpanElement>, "children"> &
-  IComponentBaseProps & {
+  UIBaseProps & {
     children?: JSX.Element;
   };
 
@@ -80,7 +80,6 @@ const CollapsibleRoot: Layout<typeof componentRecipe, CollapsibleRootProps> = ()
   const [local, others] = splitProps(props, [
     "children",
     "class",
-    "className",
     "dataTheme",
     "style",
     "id",
@@ -135,7 +134,6 @@ const CollapsibleRoot: Layout<typeof componentRecipe, CollapsibleRootProps> = ()
           isExpanded() && CLASSES.flag.expanded,
           isDisabled() && CLASSES.flag.disabled,
           local.class,
-          local.className,
         ) }}
         data-slot="collapsible"
         data-expanded={isExpanded() ? "true" : "false"}
@@ -153,7 +151,6 @@ const CollapsibleHeading: Layout<typeof componentRecipe, CollapsibleHeadingProps
   const [local, others] = splitProps(props, [
     "children",
     "class",
-    "className",
     "dataTheme",
     "style",
   ]);
@@ -161,7 +158,7 @@ const CollapsibleHeading: Layout<typeof componentRecipe, CollapsibleHeadingProps
   return (
     <h3
       {...others}
-      {...{ class: twMerge(CLASSES.slot.heading, local.class, local.className) }}
+      {...{ class: twMerge(CLASSES.slot.heading, local.class) }}
       data-slot="collapsible-heading"
       data-theme={local.dataTheme}
       style={local.style}
@@ -176,7 +173,6 @@ const CollapsibleTrigger: Layout<typeof componentRecipe, CollapsibleTriggerProps
   const [local, others] = splitProps(props, [
     "children",
     "class",
-    "className",
     "dataTheme",
     "style",
     "onClick",
@@ -205,7 +201,7 @@ const CollapsibleTrigger: Layout<typeof componentRecipe, CollapsibleTriggerProps
       {...others}
       id={ctx.triggerId()}
       type={local.type ?? "button"}
-      {...{ class: twMerge(CLASSES.slot.trigger, local.class, local.className) }}
+      {...{ class: twMerge(CLASSES.slot.trigger, local.class) }}
       data-slot="collapsible-trigger"
       data-expanded={ctx.isExpanded() ? "true" : "false"}
       data-theme={local.dataTheme}
@@ -227,7 +223,6 @@ const CollapsibleContent: Layout<typeof componentRecipe, CollapsibleContentProps
   const [local, others] = splitProps(props, [
     "children",
     "class",
-    "className",
     "dataTheme",
     "style",
     "keepMounted",
@@ -245,7 +240,7 @@ const CollapsibleContent: Layout<typeof componentRecipe, CollapsibleContentProps
       {...others}
       id={ctx.contentId()}
       role="region"
-      {...{ class: twMerge(CLASSES.slot.content, local.class, local.className) }}
+      {...{ class: twMerge(CLASSES.slot.content, local.class) }}
       data-slot="collapsible-content"
       data-expanded={expanded() ? "true" : "false"}
       data-theme={local.dataTheme}
@@ -262,7 +257,6 @@ const CollapsibleBody: Layout<typeof componentRecipe, CollapsibleBodyProps> = ()
   const [local, others] = splitProps(props, [
     "children",
     "class",
-    "className",
     "dataTheme",
     "style",
   ]);
@@ -270,7 +264,7 @@ const CollapsibleBody: Layout<typeof componentRecipe, CollapsibleBodyProps> = ()
   return (
     <div
       {...others}
-      {...{ class: twMerge(CLASSES.slot.body, local.class, local.className) }}
+      {...{ class: twMerge(CLASSES.slot.body, local.class) }}
       data-slot="collapsible-body"
       data-theme={local.dataTheme}
       style={local.style}
@@ -287,7 +281,6 @@ const CollapsibleIndicator: Layout<typeof componentRecipe, CollapsibleIndicatorP
   const [local, others] = splitProps(props, [
     "children",
     "class",
-    "className",
     "dataTheme",
     "style",
   ]);
@@ -296,7 +289,7 @@ const CollapsibleIndicator: Layout<typeof componentRecipe, CollapsibleIndicatorP
     <span
       {...others}
       aria-hidden="true"
-      {...{ class: twMerge(CLASSES.slot.indicator, local.class, local.className) }}
+      {...{ class: twMerge(CLASSES.slot.indicator, local.class) }}
       data-slot="collapsible-indicator"
       data-expanded={ctx.isExpanded() ? "true" : "false"}
       data-theme={local.dataTheme}

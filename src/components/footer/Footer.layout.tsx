@@ -1,13 +1,13 @@
 import "./footer.css";
 import { type JSX, type ParentComponent, splitProps } from "solid-js";
 import { twMerge } from "tailwind-merge";
-import type { IComponentBaseProps } from "../types";
+import type { UIBaseProps } from "../vocabulary";
 import { FooterTitle } from "./FooterTitle.generated";
 import { CLASSES } from "./Footer.recipe";
 import type { Layout } from "../../lib/layouts";
 import { componentRecipe } from "./Footer.recipe";
 
-export type FooterProps = IComponentBaseProps & {
+export type FooterProps = UIBaseProps & {
   children?: JSX.Element;
   center?: boolean;
   horizontal?: boolean;
@@ -18,7 +18,6 @@ const Footer: Layout<typeof componentRecipe, FooterProps> = () => {
   const [local, others] = splitProps(props, [
     "children",
     "class",
-    "className",
     "dataTheme",
     "center",
     "horizontal",
@@ -32,7 +31,6 @@ const Footer: Layout<typeof componentRecipe, FooterProps> = () => {
       local.horizontal && CLASSES.flag.horizontal,
       local.vertical && CLASSES.flag.vertical,
       local.class,
-      local.className,
     );
 
   return (

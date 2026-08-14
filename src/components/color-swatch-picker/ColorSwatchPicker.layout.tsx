@@ -9,7 +9,7 @@ import {
   type JSX,
 } from "solid-js";
 import { twMerge } from "tailwind-merge";
-import type { IComponentBaseProps } from "../types";
+import type { UIBaseProps } from "../vocabulary";
 import { CLASSES } from "./ColorSwatchPicker.recipe";
 import type { Layout } from "../../lib/layouts";
 import { componentRecipe } from "./ColorSwatchPicker.recipe";
@@ -34,7 +34,7 @@ export type ColorSwatchPickerContextValue = {
 export const ColorSwatchPickerContext = createContext<ColorSwatchPickerContextValue>();
 
 export type ColorSwatchPickerProps = Omit<JSX.HTMLAttributes<HTMLDivElement>, "onChange"> &
-  IComponentBaseProps & {
+  UIBaseProps & {
     children: JSX.Element;
     value?: string;
     defaultValue?: string;
@@ -45,7 +45,6 @@ export type ColorSwatchPickerProps = Omit<JSX.HTMLAttributes<HTMLDivElement>, "o
 const ColorSwatchPicker: Layout<typeof componentRecipe, ColorSwatchPickerProps> = () => {
   const [local, others] = splitProps(props, [
     "class",
-    "className",
     "children",
     "value",
     "defaultValue",
@@ -150,7 +149,7 @@ const ColorSwatchPicker: Layout<typeof componentRecipe, ColorSwatchPickerProps> 
       <div
         {...others}
         ref={rootRef}
-        {...{ class: twMerge(CLASSES.base, local.class, local.className) }}
+        {...{ class: twMerge(CLASSES.base, local.class) }}
         data-theme={local.dataTheme}
         data-slot="color-swatch-picker"
         data-disabled={isDisabled() ? "true" : "false"}

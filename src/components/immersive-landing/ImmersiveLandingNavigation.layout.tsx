@@ -15,7 +15,6 @@ const ImmersiveLandingNavigation: Layout<typeof componentRecipe, ImmersiveLandin
     "isFirstPage",
     "isLastPage",
     "class",
-    "className",
     "style",
   ]);
 
@@ -28,7 +27,7 @@ const ImmersiveLandingNavigation: Layout<typeof componentRecipe, ImmersiveLandin
   return (
     <nav
       {...{
-        class: twMerge(CLASSES.navigation.base, local.class, local.className),
+        class: twMerge(CLASSES.navigation.base, local.class),
       }}
       aria-label="Page navigation"
       style={{ bottom: "calc(0.75rem + env(safe-area-inset-bottom))", ...local.style }}

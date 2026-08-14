@@ -1,13 +1,13 @@
 import { type Component, type JSX, Show, splitProps } from "solid-js";
 import { twMerge } from "tailwind-merge";
 import Icon from "../icon";
-import type { IComponentBaseProps } from "../types";
+import type { UIBaseProps } from "../vocabulary";
 import type { Layout } from "../../lib/layouts";
 import { componentRecipe } from "./Table.recipe";
 
 export type SortIconState = "asc" | "desc" | "none";
 
-export type SortIconProps = IComponentBaseProps & {
+export type SortIconProps = UIBaseProps & {
   state: SortIconState;
   size?: number;
   ascIcon?: JSX.Element;
@@ -23,7 +23,6 @@ const SortIcon: Layout<typeof componentRecipe, SortIconProps> = () => {
     "descIcon",
     "neutralIcon",
     "class",
-    "className",
     "dataTheme",
   ]);
 
@@ -42,7 +41,7 @@ const SortIcon: Layout<typeof componentRecipe, SortIconProps> = () => {
   return (
     <span
       {...rest}
-      {...{ class: twMerge("inline-flex shrink-0 items-center justify-center", local.class, local.className) }}
+      {...{ class: twMerge("inline-flex shrink-0 items-center justify-center", local.class) }}
       data-theme={local.dataTheme}
       data-slot="table-sort-icon"
       data-state={local.state}

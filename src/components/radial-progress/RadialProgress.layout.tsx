@@ -1,7 +1,7 @@
 import "./RadialProgress.css";
 import { createMemo, splitProps, type JSX } from "solid-js";
 import { twMerge } from "tailwind-merge";
-import type { IComponentBaseProps } from "../types";
+import type { UIBaseProps } from "../vocabulary";
 import { CLASSES } from "./RadialProgress.recipe";
 import type { Layout } from "../../lib/layouts";
 import { componentRecipe } from "./RadialProgress.recipe";
@@ -9,7 +9,7 @@ import { componentRecipe } from "./RadialProgress.recipe";
 export type RadialProgressSize = "sm" | "md" | "lg";
 export type RadialProgressColor = "default" | "accent" | "success" | "warning" | "danger";
 
-export type RadialProgressProps = IComponentBaseProps &
+export type RadialProgressProps = UIBaseProps &
   Omit<JSX.HTMLAttributes<HTMLSpanElement>, "children"> & {
     value?: number;
     minValue?: number;
@@ -39,7 +39,6 @@ const RadialProgress: Layout<typeof componentRecipe, RadialProgressProps> = () =
     "formatValue",
     "label",
     "class",
-    "className",
     "dataTheme",
     "style",
   ]);
@@ -74,7 +73,6 @@ const RadialProgress: Layout<typeof componentRecipe, RadialProgressProps> = () =
       isIndeterminate() && CLASSES.state.indeterminate,
       local.isDisabled && CLASSES.state.disabled,
       local.class,
-      local.className,
     ),
   );
 

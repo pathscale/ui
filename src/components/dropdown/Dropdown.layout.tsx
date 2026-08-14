@@ -86,7 +86,6 @@ type DropdownRootProps = Omit<JSX.HTMLAttributes<HTMLDivElement>, "onChange"> & 
   autoFlip?: boolean;
   disabled?: boolean;
   dataTheme?: string;
-  className?: string;
 };
 
 const DropdownRoot: Layout<typeof componentRecipe, DropdownRootProps> = () => {
@@ -100,7 +99,6 @@ const DropdownRoot: Layout<typeof componentRecipe, DropdownRootProps> = () => {
     "autoFlip",
     "disabled",
     "dataTheme",
-    "className",
     "ref",
   ]);
 
@@ -275,7 +273,7 @@ const DropdownRoot: Layout<typeof componentRecipe, DropdownRootProps> = () => {
       <div
         {...others}
         ref={setRootRef}
-        {...{ class: twMerge(CLASSES.base, local.class, local.className) }}
+        {...{ class: twMerge(CLASSES.base, local.class) }}
         data-theme={local.dataTheme}
         data-slot="dropdown"
         data-open={open() ? "true" : "false"}

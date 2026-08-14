@@ -1,7 +1,7 @@
 import "./ColorSlider.css";
 import { createEffect, createMemo, createSignal, splitProps, type Component, type JSX } from "solid-js";
 import { twMerge } from "tailwind-merge";
-import type { IComponentBaseProps } from "../types";
+import type { UIBaseProps } from "../vocabulary";
 import { CLASSES } from "./ColorSlider.recipe";
 import type { Layout } from "../../lib/layouts";
 import { componentRecipe } from "./ColorSlider.recipe";
@@ -9,7 +9,7 @@ import { componentRecipe } from "./ColorSlider.recipe";
 export type ColorSliderType = "hue" | "alpha";
 
 export type ColorSliderProps = Omit<JSX.HTMLAttributes<HTMLDivElement>, "children" | "onChange"> &
-  IComponentBaseProps & {
+  UIBaseProps & {
     value?: number;
     defaultValue?: number;
     onChange?: (value: number) => void;
@@ -47,7 +47,6 @@ const fromPercent = (type: ColorSliderType, percent: number) => {
 const ColorSlider: Layout<typeof componentRecipe, ColorSliderProps> = () => {
   const [local, others] = splitProps(props, [
     "class",
-    "className",
     "value",
     "defaultValue",
     "onChange",
@@ -193,7 +192,6 @@ const ColorSlider: Layout<typeof componentRecipe, ColorSliderProps> = () => {
         sliderType() === "alpha" && CLASSES.flag.alpha,
         isDragging() && CLASSES.flag.dragging,
         local.class,
-        local.className,
       ) }}
       data-theme={local.dataTheme}
       data-slot="color-slider"

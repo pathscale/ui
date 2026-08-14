@@ -11,7 +11,7 @@ import {
   type ParentComponent,
 } from "solid-js";
 import { twMerge } from "tailwind-merge";
-import type { IComponentBaseProps } from "../types";
+import type { UIBaseProps } from "../vocabulary";
 import { CLASSES } from "./Avatar.recipe";
 import type { Layout } from "../../lib/layouts";
 import { componentRecipe } from "./Avatar.recipe";
@@ -43,7 +43,7 @@ const useAvatarContext = () => {
  * Types
  * -----------------------------------------------------------------------------------------------*/
 export type AvatarRootProps = Omit<JSX.HTMLAttributes<HTMLSpanElement>, "children"> &
-  IComponentBaseProps & {
+  UIBaseProps & {
     children: JSX.Element;
     size?: AvatarSize;
     color?: AvatarColor;
@@ -51,10 +51,10 @@ export type AvatarRootProps = Omit<JSX.HTMLAttributes<HTMLSpanElement>, "childre
   };
 
 export type AvatarImageProps = Omit<JSX.ImgHTMLAttributes<HTMLImageElement>, "children"> &
-  IComponentBaseProps;
+  UIBaseProps;
 
 export type AvatarFallbackProps = Omit<JSX.HTMLAttributes<HTMLSpanElement>, "children"> &
-  IComponentBaseProps & {
+  UIBaseProps & {
     children?: JSX.Element;
     delayMs?: number;
   };
@@ -66,7 +66,6 @@ const AvatarRoot: Layout<typeof componentRecipe, AvatarRootProps> = () => {
   const [local, others] = splitProps(props, [
     "children",
     "class",
-    "className",
     "size",
     "color",
     "variant",
@@ -96,7 +95,6 @@ const AvatarRoot: Layout<typeof componentRecipe, AvatarRootProps> = () => {
           CLASSES.size[size()],
           CLASSES.variant[variant()],
           local.class,
-          local.className,
         ) }}
         data-slot="avatar-root"
         data-theme={local.dataTheme}
@@ -114,7 +112,6 @@ const AvatarRoot: Layout<typeof componentRecipe, AvatarRootProps> = () => {
 const AvatarImage: Layout<typeof componentRecipe, AvatarImageProps> = () => {
   const [local, others] = splitProps(props, [
     "class",
-    "className",
     "dataTheme",
     "style",
     "src",
@@ -140,7 +137,7 @@ const AvatarImage: Layout<typeof componentRecipe, AvatarImageProps> = () => {
       {...others}
       src={local.src}
       alt={local.alt}
-      {...{ class: twMerge(CLASSES.slot.image, local.class, local.className) }}
+      {...{ class: twMerge(CLASSES.slot.image, local.class) }}
       data-slot="avatar-image"
       style={local.style}
       onLoad={handleLoad}
@@ -156,7 +153,6 @@ const AvatarFallback: Layout<typeof componentRecipe, AvatarFallbackProps> = () =
   const [local, others] = splitProps(props, [
     "children",
     "class",
-    "className",
     "dataTheme",
     "style",
     "delayMs",
@@ -180,7 +176,6 @@ const AvatarFallback: Layout<typeof componentRecipe, AvatarFallbackProps> = () =
           CLASSES.slot.fallback,
           CLASSES.color[ctx.color()],
           local.class,
-          local.className,
         ) }}
         data-slot="avatar-fallback"
         data-theme={local.dataTheme}

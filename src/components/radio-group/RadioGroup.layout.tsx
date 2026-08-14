@@ -2,7 +2,7 @@ import "./RadioGroup.css";
 import { Show, createSignal, createUniqueId, splitProps, type Component, type JSX } from "solid-js";
 import { twMerge } from "tailwind-merge";
 import { RadioGroupContext, type RadioGroupContextValue } from "./context";
-import type { IComponentBaseProps } from "../types";
+import type { UIBaseProps } from "../vocabulary";
 import { CLASSES } from "./RadioGroup.recipe";
 import type { Layout } from "../../lib/layouts";
 import { componentRecipe } from "./RadioGroup.recipe";
@@ -11,7 +11,7 @@ export type RadioGroupOrientation = "vertical" | "horizontal";
 export type RadioGroupVariant = "primary" | "secondary";
 
 export type RadioGroupProps = Omit<JSX.HTMLAttributes<HTMLDivElement>, "children" | "onChange"> &
-  IComponentBaseProps & {
+  UIBaseProps & {
     children: JSX.Element;
     value?: string;
     defaultValue?: string;
@@ -31,7 +31,6 @@ const RadioGroup: Layout<typeof componentRecipe, RadioGroupProps> = () => {
   const [local, others] = splitProps(props, [
     "children",
     "class",
-    "className",
     "value",
     "defaultValue",
     "onChange",
@@ -114,7 +113,6 @@ const RadioGroup: Layout<typeof componentRecipe, RadioGroupProps> = () => {
           isDisabled() && CLASSES.flag.disabled,
           isInvalid() && CLASSES.flag.invalid,
           local.class,
-          local.className,
         ) }}
       >
         <Show when={local.label}>

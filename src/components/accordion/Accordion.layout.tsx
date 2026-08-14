@@ -13,7 +13,7 @@ import {
 } from "solid-js";
 import { twMerge } from "tailwind-merge";
 
-import type { IComponentBaseProps } from "../types";
+import type { UIBaseProps } from "../vocabulary";
 import { CLASSES } from "./Accordion.recipe";
 import type { Layout } from "../../lib/layouts";
 import { componentRecipe } from "./Accordion.recipe";
@@ -71,7 +71,7 @@ type AccordionItemContextValue = {
 const AccordionItemContext = createContext<AccordionItemContextValue>();
 
 export type AccordionRootProps = Omit<JSX.HTMLAttributes<HTMLDivElement>, "children"> &
-  IComponentBaseProps & {
+  UIBaseProps & {
     children?: JSX.Element;
     selectionMode?: AccordionSelectionMode;
     value?: AccordionValue;
@@ -84,7 +84,7 @@ export type AccordionRootProps = Omit<JSX.HTMLAttributes<HTMLDivElement>, "child
   };
 
 export type AccordionItemProps = Omit<JSX.HTMLAttributes<HTMLDivElement>, "children"> &
-  IComponentBaseProps & {
+  UIBaseProps & {
     value?: string;
     children?: JSX.Element;
     isDisabled?: boolean;
@@ -95,20 +95,20 @@ export type AccordionTriggerProps = Omit<
   JSX.ButtonHTMLAttributes<HTMLButtonElement>,
   "children" | "disabled"
 > &
-  IComponentBaseProps & {
+  UIBaseProps & {
     children?: JSX.Element;
     showIndicator?: boolean;
     indicator?: JSX.Element;
   };
 
 export type AccordionContentProps = Omit<JSX.HTMLAttributes<HTMLDivElement>, "children"> &
-  IComponentBaseProps & {
+  UIBaseProps & {
     children?: JSX.Element;
     keepMounted?: boolean;
   };
 
 export type AccordionIndicatorProps = Omit<JSX.HTMLAttributes<HTMLSpanElement>, "children"> &
-  IComponentBaseProps & {
+  UIBaseProps & {
     children?: JSX.Element;
   };
 
@@ -116,7 +116,6 @@ const AccordionRoot: Layout<typeof componentRecipe, AccordionRootProps> = () => 
   const [local, others] = splitProps(props, [
     "children",
     "class",
-    "className",
     "dataTheme",
     "style",
     "selectionMode",
@@ -249,7 +248,6 @@ const AccordionRoot: Layout<typeof componentRecipe, AccordionRootProps> = () => 
           CLASSES.Root.base,
           CLASSES.Root.variant[variant()],
           local.class,
-          local.className,
         ) }}
         data-slot="accordion"
         data-selection-mode={selectionMode()}
@@ -272,7 +270,6 @@ const AccordionItem: Layout<typeof componentRecipe, AccordionItemProps> = () => 
     "value",
     "children",
     "class",
-    "className",
     "dataTheme",
     "style",
     "isDisabled",
@@ -315,7 +312,6 @@ const AccordionItem: Layout<typeof componentRecipe, AccordionItemProps> = () => 
           isDisabled() && CLASSES.Item.flag.disabled,
           accordion?.hideSeparator() && CLASSES.Item.flag.hideSeparator,
           local.class,
-          local.className,
         ) }}
         data-slot="accordion-item"
         data-expanded={isExpanded() ? "true" : "false"}
@@ -336,7 +332,6 @@ const AccordionTrigger: Layout<typeof componentRecipe, AccordionTriggerProps> = 
   const [local, others] = splitProps(props, [
     "children",
     "class",
-    "className",
     "dataTheme",
     "style",
     "onClick",
@@ -372,7 +367,7 @@ const AccordionTrigger: Layout<typeof componentRecipe, AccordionTriggerProps> = 
       {...others}
       id={item?.triggerId()}
       type={local.type ?? "button"}
-      {...{ class: twMerge(CLASSES.Trigger.base, local.class, local.className) }}
+      {...{ class: twMerge(CLASSES.Trigger.base, local.class) }}
       data-slot="accordion-trigger"
       data-expanded={item?.isExpanded() ? "true" : "false"}
       data-theme={local.dataTheme}
@@ -397,7 +392,6 @@ const AccordionContent: Layout<typeof componentRecipe, AccordionContentProps> = 
   const [local, others] = splitProps(props, [
     "children",
     "class",
-    "className",
     "dataTheme",
     "style",
     "keepMounted",
@@ -419,7 +413,6 @@ const AccordionContent: Layout<typeof componentRecipe, AccordionContentProps> = 
         CLASSES.Content.base,
         expanded() && CLASSES.Content.flag.expanded,
         local.class,
-        local.className,
       ) }}
       data-slot="accordion-content"
       data-expanded={expanded() ? "true" : "false"}
@@ -442,7 +435,6 @@ const AccordionIndicator: Layout<typeof componentRecipe, AccordionIndicatorProps
   const [local, others] = splitProps(props, [
     "children",
     "class",
-    "className",
     "dataTheme",
     "style",
   ]);
@@ -457,7 +449,6 @@ const AccordionIndicator: Layout<typeof componentRecipe, AccordionIndicatorProps
         CLASSES.Indicator.base,
         expanded() && CLASSES.Indicator.flag.expanded,
         local.class,
-        local.className,
       ) }}
       data-slot="accordion-indicator"
       data-expanded={expanded() ? "true" : "false"}

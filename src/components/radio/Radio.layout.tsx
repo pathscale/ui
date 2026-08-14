@@ -2,7 +2,7 @@ import "./Radio.css";
 import { Show, splitProps, useContext, type Component, type JSX } from "solid-js";
 import { twMerge } from "tailwind-merge";
 import { RadioGroupContext } from "../radio-group/context";
-import type { IComponentBaseProps } from "../types";
+import type { UIBaseProps } from "../vocabulary";
 import { CLASSES } from "./Radio.recipe";
 import type { Layout } from "../../lib/layouts";
 import { componentRecipe } from "./Radio.recipe";
@@ -19,7 +19,7 @@ const invokeEventHandler = (handler: unknown, event: Event) => {
 };
 
 export type RadioProps = Omit<JSX.InputHTMLAttributes<HTMLInputElement>, "type" | "children"> &
-  IComponentBaseProps & {
+  UIBaseProps & {
     children?: JSX.Element;
     description?: JSX.Element;
     indicator?: JSX.Element;
@@ -31,7 +31,6 @@ const Radio: Layout<typeof componentRecipe, RadioProps> = () => {
   const group = useContext(RadioGroupContext);
   const [local, others] = splitProps(props, [
     "class",
-    "className",
     "children",
     "description",
     "indicator",
@@ -69,7 +68,7 @@ const Radio: Layout<typeof componentRecipe, RadioProps> = () => {
 
   return (
     <label
-      {...{ class: twMerge(CLASSES.base, isDisabled() && CLASSES.flag.disabled, local.class, local.className) }}
+      {...{ class: twMerge(CLASSES.base, isDisabled() && CLASSES.flag.disabled, local.class) }}
       data-theme={local.dataTheme}
       data-slot="radio"
       data-selected={isSelected() ? "true" : "false"}

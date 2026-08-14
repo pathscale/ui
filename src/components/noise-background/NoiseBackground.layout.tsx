@@ -2,7 +2,7 @@ import "./NoiseBackground.css";
 import { type JSX, onCleanup, onMount, splitProps } from "solid-js";
 import { twMerge } from "tailwind-merge";
 
-import type { IComponentBaseProps } from "../types";
+import type { UIBaseProps } from "../vocabulary";
 import { CLASSES } from "./NoiseBackground.recipe";
 import type { Layout } from "../../lib/layouts";
 import { componentRecipe } from "./NoiseBackground.recipe";
@@ -31,7 +31,7 @@ export type NoiseBackgroundProps = {
   noiseSrc?: string;
   /** Show the static noise texture overlay. @default false */
   showNoise?: boolean;
-} & IComponentBaseProps;
+} & UIBaseProps;
 
 /* ------------------------------------------------------------------ */
 /*  Damped spring (matches motion/react useSpring stiffness/damping)  */
@@ -59,7 +59,6 @@ const NoiseBackground: Layout<typeof componentRecipe, NoiseBackgroundProps> = ()
   const [local, others] = splitProps(rawProps, [
     "children",
     "class",
-    "className",
     "containerClass",
     "gradientColors",
     "noiseIntensity",
@@ -213,7 +212,7 @@ const NoiseBackground: Layout<typeof componentRecipe, NoiseBackgroundProps> = ()
     );
 
   const contentClasses = () =>
-    twMerge(CLASSES.slot.content, local.class, local.className);
+    twMerge(CLASSES.slot.content, local.class);
 
   return (
     <div

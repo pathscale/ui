@@ -12,7 +12,7 @@ import {
 import { Portal } from "solid-js/web";
 import { twMerge } from "tailwind-merge";
 
-import type { IComponentBaseProps } from "../types";
+import type { UIBaseProps } from "../vocabulary";
 import { CLASSES } from "./Dock.recipe";
 import type { Layout } from "../../lib/layouts";
 import { componentRecipe } from "./Dock.recipe";
@@ -56,7 +56,7 @@ export type DockProps = {
   springMass?: number;
   springStiffness?: number;
   springDamping?: number;
-} & IComponentBaseProps;
+} & UIBaseProps;
 
 /* ------------------------------------------------------------------ */
 /*  Resolved config                                                   */
@@ -533,7 +533,7 @@ const Dock: Layout<typeof componentRecipe, DockProps> = () => {
     "magnify", "nudge", "showDesktop", "showMobile", "showContainer",
     "desktopClass", "mobileClass", "itemClass", "tooltipClass", "mobileToggleIcon",
     "springMass", "springStiffness", "springDamping",
-    "class", "className", "dataTheme", "style",
+    "class", "dataTheme", "style",
   ]);
 
   const cfg = (): ResolvedConfig => ({
@@ -562,7 +562,7 @@ const Dock: Layout<typeof componentRecipe, DockProps> = () => {
       <Show when={local.showDesktop !== false}>
         <DockDesktop
           items={local.items}
-          {...{ class: twMerge(local.class, local.className, local.desktopClass) }}
+          {...{ class: twMerge(local.class, local.desktopClass) }}
           cfg={cfg()}
           showContainer={local.showContainer !== false}
         />

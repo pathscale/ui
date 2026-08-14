@@ -1,14 +1,14 @@
 import "./AuthCard.css";
 import { Show, type JSX } from "solid-js";
 import Card from "../card";
-import type { IComponentBaseProps } from "../types";
+import type { UIBaseProps } from "../vocabulary";
 import type { Layout } from "../../lib/layouts";
 import { authCard } from "./AuthCard.recipe";
 
 /* -------------------------------------------------------------------------------------------------
  * Types
  * -----------------------------------------------------------------------------------------------*/
-export type AuthCardProps = IComponentBaseProps & {
+export type AuthCardProps = UIBaseProps & {
   title?: JSX.Element;
   description?: JSX.Element;
   children: JSX.Element;

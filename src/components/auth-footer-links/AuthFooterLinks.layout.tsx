@@ -1,6 +1,6 @@
 import "./AuthFooterLinks.css";
 import { For, type JSX } from "solid-js";
-import type { IComponentBaseProps } from "../types";
+import type { UIBaseProps } from "../vocabulary";
 import type { Layout } from "../../lib/layouts";
 import { authFooterLinks } from "./AuthFooterLinks.recipe";
 
@@ -18,7 +18,7 @@ export type AuthFooterLinkItem = {
 export type AuthFooterLinksAlign = "left" | "center" | "right";
 
 export type AuthFooterLinksProps = Omit<JSX.HTMLAttributes<HTMLDivElement>, "children"> &
-  IComponentBaseProps & {
+  UIBaseProps & {
     items: AuthFooterLinkItem[];
     align?: AuthFooterLinksAlign;
   };

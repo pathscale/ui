@@ -2,7 +2,7 @@ import "./Text.css";
 import { splitProps, type Component, type JSX } from "solid-js";
 import { twMerge } from "tailwind-merge";
 
-import type { IComponentBaseProps } from "../types";
+import type { UIBaseProps } from "../vocabulary";
 import { CLASSES } from "./Text.recipe";
 import type { Layout } from "../../lib/layouts";
 import { componentRecipe } from "./Text.recipe";
@@ -16,7 +16,7 @@ export type TextLeading = "normal" | "none";
 export type TextFamily = "body" | "heading" | "display" | "mono";
 
 export type TextRootProps = Omit<JSX.HTMLAttributes<HTMLSpanElement>, "color"> &
-  IComponentBaseProps & {
+  UIBaseProps & {
     size?: TextSize;
     variant?: TextVariant;
     weight?: TextWeight;
@@ -31,7 +31,6 @@ const TextRoot: Layout<typeof componentRecipe, TextRootProps> = () => {
   const [local, others] = splitProps(props, [
     "children",
     "class",
-    "className",
     "dataTheme",
     "style",
     "size",
@@ -49,7 +48,7 @@ const TextRoot: Layout<typeof componentRecipe, TextRootProps> = () => {
   return (
     <span
       {...others}
-      {...{ class: twMerge(CLASSES.base, local.class, local.className) }}
+      {...{ class: twMerge(CLASSES.base, local.class) }}
       data-slot="text"
       data-size={size()}
       data-variant={variant()}

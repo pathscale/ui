@@ -15,7 +15,7 @@ import ColorArea, { type ColorAreaProps, type ColorAreaValue } from "../color-ar
 import ColorField, { type ColorFieldProps } from "../color-field";
 import ColorSlider, { type ColorSliderProps, type ColorSliderType } from "../color-slider";
 import { formatColor, parseColor, rgbToHex } from "../color-wheel-flower/ColorUtils";
-import type { IComponentBaseProps } from "../types";
+import type { UIBaseProps } from "../vocabulary";
 import { CLASSES } from "./ColorPicker.recipe";
 import type { Layout } from "../../lib/layouts";
 import { componentRecipe } from "./ColorPicker.recipe";
@@ -168,13 +168,13 @@ export type ColorPickerAreaProps = Omit<ColorAreaProps, "value" | "onChange" | "
 
 const ColorPickerArea: Layout<typeof componentRecipe, ColorPickerAreaProps> = () => {
   const ctx = useContext(ColorPickerContext);
-  const [local, others] = splitProps(props, ["class", "className", "onChange", "dataTheme"]);
+  const [local, others] = splitProps(props, ["class", "onChange", "dataTheme"]);
 
   if (!ctx) {
     return (
       <ColorArea
         {...others}
-        {...{ class: twMerge(CLASSES.slot.area, local.class, local.className) }}
+        {...{ class: twMerge(CLASSES.slot.area, local.class) }}
         dataTheme={local.dataTheme}
         onChange={local.onChange}
       />
@@ -191,7 +191,7 @@ const ColorPickerArea: Layout<typeof componentRecipe, ColorPickerAreaProps> = ()
       {...others}
       value={ctx.value().hsv}
       isDisabled={ctx.isDisabled()}
-      {...{ class: twMerge(CLASSES.slot.area, local.class, local.className) }}
+      {...{ class: twMerge(CLASSES.slot.area, local.class) }}
       dataTheme={local.dataTheme}
       onChange={handleChange}
     />
@@ -206,7 +206,6 @@ const ColorPickerSlider: Layout<typeof componentRecipe, ColorPickerSliderProps> 
   const ctx = useContext(ColorPickerContext);
   const [local, others] = splitProps(props, [
     "class",
-    "className",
     "onChange",
     "type",
     "style",
@@ -220,7 +219,7 @@ const ColorPickerSlider: Layout<typeof componentRecipe, ColorPickerSliderProps> 
       <ColorSlider
         {...others}
         type={sliderType()}
-        {...{ class: twMerge(CLASSES.slot.slider, local.class, local.className) }}
+        {...{ class: twMerge(CLASSES.slot.slider, local.class) }}
         dataTheme={local.dataTheme}
         style={local.style}
         onChange={local.onChange}
@@ -256,7 +255,7 @@ const ColorPickerSlider: Layout<typeof componentRecipe, ColorPickerSliderProps> 
       type={sliderType()}
       value={value()}
       isDisabled={ctx.isDisabled()}
-      {...{ class: twMerge(CLASSES.slot.slider, local.class, local.className) }}
+      {...{ class: twMerge(CLASSES.slot.slider, local.class) }}
       dataTheme={local.dataTheme}
       style={sliderStyle()}
       onChange={handleChange}
@@ -272,7 +271,6 @@ const ColorPickerField: Layout<typeof componentRecipe, ColorPickerFieldProps> = 
   const ctx = useContext(ColorPickerContext);
   const [local, others] = splitProps(props, [
     "class",
-    "className",
     "onChange",
     "fullWidth",
     "format",
@@ -283,7 +281,7 @@ const ColorPickerField: Layout<typeof componentRecipe, ColorPickerFieldProps> = 
     return (
       <ColorField
         {...others}
-        {...{ class: twMerge(CLASSES.slot.field, local.class, local.className) }}
+        {...{ class: twMerge(CLASSES.slot.field, local.class) }}
         dataTheme={local.dataTheme}
         format={local.format}
         fullWidth={local.fullWidth ?? true}
@@ -302,7 +300,7 @@ const ColorPickerField: Layout<typeof componentRecipe, ColorPickerFieldProps> = 
       {...others}
       value={ctx.value().hex}
       isDisabled={ctx.isDisabled()}
-      {...{ class: twMerge(CLASSES.slot.field, local.class, local.className) }}
+      {...{ class: twMerge(CLASSES.slot.field, local.class) }}
       dataTheme={local.dataTheme}
       format={local.format}
       fullWidth={local.fullWidth ?? true}
@@ -312,7 +310,7 @@ const ColorPickerField: Layout<typeof componentRecipe, ColorPickerFieldProps> = 
 };
 
 export type ColorPickerProps = Omit<JSX.HTMLAttributes<HTMLDivElement>, "children" | "onChange"> &
-  IComponentBaseProps & {
+  UIBaseProps & {
     children?: JSX.Element;
     value?: string;
     defaultValue?: string;
@@ -323,7 +321,6 @@ export type ColorPickerProps = Omit<JSX.HTMLAttributes<HTMLDivElement>, "childre
 const ColorPickerRoot: Layout<typeof componentRecipe, ColorPickerProps> = () => {
   const [local, others] = splitProps(props, [
     "class",
-    "className",
     "children",
     "value",
     "defaultValue",
@@ -411,7 +408,7 @@ const ColorPickerRoot: Layout<typeof componentRecipe, ColorPickerProps> = () => 
     <ColorPickerContext.Provider value={context()}>
       <div
         {...others}
-        {...{ class: twMerge(CLASSES.base, local.class, local.className) }}
+        {...{ class: twMerge(CLASSES.base, local.class) }}
         data-theme={local.dataTheme}
         data-slot="color-picker"
         data-disabled={local.isDisabled ? "true" : "false"}
