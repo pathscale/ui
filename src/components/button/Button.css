@@ -256,24 +256,17 @@
   /* -----------------------------------------------------------------------
    * Icon-only — square, driven off the size scale
    * --------------------------------------------------------------------- */
+  /*
+   * Square means as wide as it is tall, so it is expressed that way. It used to
+   * be a hardcoded width per size, which is only square while nobody restyles
+   * the height: chuzz themes its buttons down to 1.125rem and got a 36 by 18
+   * "square" that overlapped the text beside it. aspect-ratio follows whatever
+   * height the button ends up with, including one an app sets itself.
+   */
   .button--width-square {
     padding-inline: 0;
-    width: 2.25rem;
-  }
-  .button--width-square.button--xs {
-    width: 1.75rem;
-  }
-  .button--width-square.button--sm {
-    width: 2.25rem;
-  }
-  .button--width-square.button--md {
-    width: 2.5rem;
-  }
-  .button--width-square.button--lg {
-    width: 2.75rem;
-  }
-  .button--width-square.button--xl {
-    width: 3rem;
+    width: auto;
+    aspect-ratio: 1;
   }
 
   /* -----------------------------------------------------------------------
