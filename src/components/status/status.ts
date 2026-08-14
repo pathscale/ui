@@ -17,7 +17,16 @@ import type { JSX } from "solid-js";
  * dependencies are all healthy. Everything downstream of it is a symptom.
  */
 
-export type Health = "ok" | "degraded" | "down" | "unknown";
+/**
+ * `flapping` earns a value rather than a boolean because it is a condition
+ * people name and treat specifically — a link that keeps returning just long
+ * enough to look fine is not merely "degraded", and the remedy differs: back
+ * off rather than retry harder.
+ *
+ * It ranks between `degraded` and `down`. Worse than degraded, because
+ * nothing can be relied on; better than down, because it does work sometimes.
+ */
+export type Health = "ok" | "degraded" | "flapping" | "down" | "unknown";
 
 /**
  * How well it is working, given that it *is* working.
@@ -30,7 +39,7 @@ export type Health = "ok" | "degraded" | "down" | "unknown";
 export type Quality = "good" | "fair" | "poor" | "unknown";
 
 /** Worst first. `degraded` outranks `unknown`: a known impairment beats a shrug. */
-const RANK: Record<Health, number> = { down: 3, degraded: 2, unknown: 1, ok: 0 };
+const RANK: Record<Health, number> = { down: 4, flapping: 3, degraded: 2, unknown: 1, ok: 0 };
 
 export interface StatusItem {
   id: string;
@@ -124,7 +133,14 @@ const isUnhealthy = (i: StatusItem) => i.health !== "ok";
  * Cycles and unknown ids are tolerated — a dependency that is not in the list
  * counts as healthy, so a partial set still produces a sane answer.
  */
-export function summarizeStatus(items: StatusItem[]): StatusSummary {
+export function summarizeStatus(input: StatusItem[]): StatusSummary {
+  // A declared health of `flapping` wins; otherwise enough recent flips is
+  // what flapping *means*, so it is derived rather than left to the caller.
+  const items = input.map((i) =>
+    i.health !== "flapping" && (i.recentChanges ?? 0) >= FLAPPING_THRESHOLD
+      ? { ...i, health: "flapping" as const }
+      : i,
+  );
   const byId = new Map(items.map((i) => [i.id, i]));
   const unhealthy = items.filter(isUnhealthy).sort((a, b) => RANK[b.health] - RANK[a.health]);
 
@@ -136,7 +152,7 @@ export function summarizeStatus(items: StatusItem[]): StatusSummary {
     );
   };
 
-  const flapping = items.some((i) => (i.recentChanges ?? 0) >= FLAPPING_THRESHOLD);
+  const flapping = items.some((i) => i.health === "flapping");
 
   const attempting = (list: StatusItem[]): StatusSummary["attempting"] => {
     const trying = list.find((i) => i.transitioning);
