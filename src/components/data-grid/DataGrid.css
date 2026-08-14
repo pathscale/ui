@@ -98,6 +98,15 @@
     border-inline-end: var(--border, 1px) solid var(--data-grid-line);
   }
 
+  /* Table draws a divider on every header cell with `.table__column::after`,
+     unconditionally. Inside a DataGrid that made `borders` a lie: `none` and
+     `rows` still showed vertical rules in the header, so the header disagreed
+     with the body directly under it. The axis decides now. */
+  .data-grid--borders-none .table__column::after,
+  .data-grid--borders-rows .table__column::after {
+    display: none;
+  }
+
   /* --------------------------------------------------------------------------
      Striping
      -------------------------------------------------------------------------- */
