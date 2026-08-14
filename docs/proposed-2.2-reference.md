@@ -62,6 +62,42 @@ Any component doing async work — `Select` loading options, `ChatThread` stream
 
 `state` is closed and the library owns it — which conditions a component can be in is not a styling question. `flavor` is the open one.
 
+### Status and connection
+
+Nothing in the library today. Four apps hand-write `ConnectionStatus`, and agencyzero writes three variants of the dot alone (`StatusDot`, `AgentStateDot`, `ItemMarker`). Two levels, both missing.
+
+```ts
+// The primitive. daisyUI calls this Status.
+type StatusProps = {
+  status: string;            // open, like flavor — mirrored to data-status
+  label?: JSX.Element;       // from i18n context when omitted
+  showLabel?: boolean;
+  size?: Size;
+  flavor?: Flavor;
+  pulse?: boolean;           // activity, e.g. connecting
+};
+
+// The complex component.
+type ConnectionStatusProps = Failable & {
+  connection: "connecting" | "connected" | "disconnected" | "error";
+  service?: string;
+  url?: string;
+  diagnostics?: DiagnosticRow[];
+  onReconnect?: () => void | Promise<void>;
+  showDiagnostics?: boolean;
+};
+```
+
+`status` is **open**, for the same reason `flavor` is: agencyzero alone has three unrelated domains — agent state, project status, tab status — and a closed union would have served none of them. It is mirrored to `data-status` so a theme or an app styles its own values.
+
+**`connection` is not `state`.** This is the distinction that matters here and it generalises. `state` is what is happening to *this component*; `connection` is what is happening to the *thing it reports on*. A `ConnectionStatus` can be `state="loading"` while it fetches diagnostics **and** `connection="disconnected"` at the same time — the component is busy, the connection is down, and those are different facts.
+
+The same split applies to every component whose purpose is to display someone else's condition: `Progress` has `value`, `Empty` has its emptiness, `ConnectionStatus` has `connection`. None of them put the subject on `state`.
+
+`onReconnect` and `Failable`'s `onError(error, { retry })` are deliberately separate: reconnecting is a user action on the subject, retrying is a response to the component's own failure.
+
+Not coupled to `@pathscale/wss-adapter`. The apps that use it pass the state in; the library does not learn a transport.
+
 ## Validation
 
 Every component a user can type into, pick from or toggle extends `Validatable<T>`. **19 components** carry it.
