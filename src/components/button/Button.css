@@ -59,7 +59,7 @@
     opacity: 0.5;
   }
 
-  .button[data-loading="true"] {
+  .button[data-state="loading"] {
     cursor: progress;
   }
 
@@ -96,25 +96,46 @@
     --button-accent-fg: var(--color-accent-content);
   }
 
-  /* -----------------------------------------------------------------------
-   * State — a reported condition. Declared after flavor so it wins on source
-   * order: a condition outranks a preference.
-   * --------------------------------------------------------------------- */
-  .button--state-info {
-    --button-accent: var(--color-info);
-    --button-accent-fg: var(--color-info-content);
+  .button--flavor-destructive {
+    --button-accent: var(--color-error);
+    --button-accent-fg: var(--color-error-content);
   }
-  .button--state-success {
+  .button--flavor-success {
     --button-accent: var(--color-success);
     --button-accent-fg: var(--color-success-content);
   }
-  .button--state-warning {
+  .button--flavor-warning {
     --button-accent: var(--color-warning);
     --button-accent-fg: var(--color-warning-content);
   }
-  .button--state-danger {
+  .button--flavor-info {
+    --button-accent: var(--color-info);
+    --button-accent-fg: var(--color-info-content);
+  }
+
+  /* -----------------------------------------------------------------------
+   * State — what is happening now. Declared after flavor so it wins on source
+   * order: a condition outranks a preference.
+   *
+   * State does not repaint the button. `success` and `warning` are flavors —
+   * what this button *is* — and were briefly listed here, which made a warning
+   * button unable to also be loading. What state changes is behaviour and
+   * affordance.
+   * --------------------------------------------------------------------- */
+  .button--state-loading {
+    cursor: progress;
+  }
+  .button--state-error,
+  .button--state-invalid {
     --button-accent: var(--color-error);
     --button-accent-fg: var(--color-error-content);
+  }
+  .button--state-disabled {
+    cursor: not-allowed;
+    opacity: 0.55;
+  }
+  .button--state-hidden {
+    display: none;
   }
 
   /* -----------------------------------------------------------------------
@@ -239,23 +260,23 @@
   /* -----------------------------------------------------------------------
    * Icon-only — square, driven off the size scale
    * --------------------------------------------------------------------- */
-  .button--icon-only {
+  .button--width-square {
     padding-inline: 0;
     width: 2.25rem;
   }
-  .button--icon-only.button--xs {
+  .button--width-square.button--xs {
     width: 1.75rem;
   }
-  .button--icon-only.button--sm {
+  .button--width-square.button--sm {
     width: 2.25rem;
   }
-  .button--icon-only.button--md {
+  .button--width-square.button--md {
     width: 2.5rem;
   }
-  .button--icon-only.button--lg {
+  .button--width-square.button--lg {
     width: 2.75rem;
   }
-  .button--icon-only.button--xl {
+  .button--width-square.button--xl {
     width: 3rem;
   }
 
