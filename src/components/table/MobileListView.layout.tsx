@@ -43,7 +43,7 @@ const MobileListView: Layout<typeof componentRecipe, MobileListViewProps<unknown
       <Empty>
         <Empty.Icon>
           <Icon
-            name={local.emptyIcon ?? "icon-[mdi--inbox-outline]"}
+            src={local.emptyIcon ?? "icon-[mdi--inbox-outline]"}
             width={24}
             height={24}
           />

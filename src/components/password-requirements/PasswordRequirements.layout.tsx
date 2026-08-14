@@ -47,7 +47,7 @@ export const PasswordRequirementsLayout: Layout<
                   <Icon
                     width={14}
                     height={14}
-                    name={rule.passed ? "icon-[lucide--check]" : "icon-[lucide--minus]"}
+                    src={rule.passed ? "icon-[lucide--check]" : "icon-[lucide--minus]"}
                   />
                 }
               >

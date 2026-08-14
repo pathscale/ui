@@ -63,7 +63,7 @@ export const PasswordFieldLayout: Layout<typeof passwordField, PasswordFieldProp
       <Icon
         width={16}
         height={16}
-        name={isVisible() ? "icon-[lucide--eye-off]" : "icon-[lucide--eye]"}
+        src={isVisible() ? "icon-[lucide--eye-off]" : "icon-[lucide--eye]"}
       />,
     );
 

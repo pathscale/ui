@@ -211,7 +211,7 @@ const ThemeColorPicker: Layout<typeof componentRecipe, ThemeColorPickerProps> = 
         >
           {local.children ?? (
             <Icon
-              name="icon-[mdi--palette]"
+              src="icon-[mdi--palette]"
               width={16}
               height={16}
               {...{ class: store.themeColor() !== null ? CLASSES.iconActive : undefined }}

@@ -15,6 +15,26 @@
     color: var(--icon-accent);
   }
 
+  /*
+   * The placeholder. It fills the box and paints nothing on its own: the mark
+   * arrives either as the application's generated `icon-[...]` rule, which masks
+   * and paints `background-color: currentColor`, or as an inline SVG child.
+   * Either way the glyph inherits `color` from the root, which is the whole
+   * reason the flavour lives one level up.
+   */
+  .icon__glyph {
+    display: block;
+    width: 100%;
+    height: 100%;
+  }
+
+  .icon__glyph > svg {
+    display: block;
+    width: 100%;
+    height: 100%;
+    fill: currentColor;
+  }
+
   .icon--flavor-neutral { --icon-accent: var(--color-base-content); }
   .icon--flavor-primary { --icon-accent: var(--color-primary); }
   .icon--flavor-secondary { --icon-accent: var(--color-secondary); }

@@ -1,25 +1,23 @@
 import { recipe } from "../../lib/layouts";
 
 /**
- * An icon takes its colour from a flavour like everything else.
+ * An icon, from either source, with the glyph itself left to the application.
  *
- * It declared `color` and never read it, so the prop typechecked and did
- * nothing: an icon asked for `color="danger"` came out the colour of its
- * parent's text. The flavour writes `--icon-accent` and the base rule spends
- * it, which is the same mechanism Button uses.
- *
- * `inherit` is the default and stays the common case. Most icons sit inside
- * something that has already chosen a colour, and an icon that ignored that
- * would be the wrong kind of opinionated.
+ * The library ships the box and the colour and nothing else. `glyph` is a
+ * placeholder slot: it carries a stable class to style against, and the class
+ * that actually paints the mark is added at the call boundary, either from the
+ * token the consuming app's iconify build emitted or from the SVG the caller
+ * handed in. Nothing here bakes a glyph into the package, which is why there is
+ * no icon set in this recipe and no icon data in the shipped CSS.
  */
 export const icon = recipe({
   component: "icon",
   element: "span",
-  slots: { root: { base: "icon" } },
+  slots: {
+    root: { base: "icon" },
+    glyph: { base: "icon__glyph" },
+  },
   props: {
-    name: {},
-    width: {},
-    height: {},
     flavor: {
       inherit: "",
       neutral: "icon--flavor-neutral",

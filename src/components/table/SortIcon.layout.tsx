@@ -48,7 +48,7 @@ const SortIcon: Layout<typeof componentRecipe, SortIconProps> = () => {
       data-state={local.state}
       aria-hidden="true"
     >
-      <Show when={customIcon()} fallback={<Icon name={iconName()} width={iconSize()} height={iconSize()} />}>
+      <Show when={customIcon()} fallback={<Icon src={iconName()} width={iconSize()} height={iconSize()} />}>
         {customIcon()}
       </Show>
     </span>
