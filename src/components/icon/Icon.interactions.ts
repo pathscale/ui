@@ -25,5 +25,8 @@ export function normalizeToken(token: string): string {
  */
 export function preloadClasses(token: string): string {
   const name = normalizeToken(token);
-  return name ? `icon-[${name}] iconify` : "";
+  /* Never empty: this becomes a classList key, and toggling "" throws
+     InvalidCharacterError. A bare `iconify` paints nothing, which is the same
+     empty box an unknown token already gives. */
+  return name ? `icon-[${name}] iconify` : "iconify";
 }

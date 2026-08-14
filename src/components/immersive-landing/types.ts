@@ -1,5 +1,5 @@
 import type { JSX, Accessor } from "solid-js";
-import type { IComponentBaseProps } from "../types";
+import type { UIBaseProps } from "../vocabulary";
 
 export interface UseImmersiveLandingOptions {
   pages: readonly string[];
@@ -39,7 +39,7 @@ export interface ImmersiveLandingContextValue {
   appVersion?: string;
 }
 
-export interface ImmersiveLandingProps extends IComponentBaseProps {
+export interface ImmersiveLandingProps extends UIBaseProps {
   pages: readonly string[];
   initialPage?: string;
   currentPage?: Accessor<string>;
@@ -60,19 +60,19 @@ export interface ImmersiveLandingProps extends IComponentBaseProps {
   showFirefoxBanner?: boolean;
 }
 
-export interface ImmersiveLandingPageProps extends IComponentBaseProps {
+export interface ImmersiveLandingPageProps extends UIBaseProps {
   id: string;
   children: JSX.Element;
 }
 
-export interface ImmersiveLandingArrowsProps extends IComponentBaseProps {
+export interface ImmersiveLandingArrowsProps extends UIBaseProps {
   onPrev: () => void;
   onNext: () => void;
   isFirstPage: boolean;
   isLastPage: boolean;
 }
 
-export interface ImmersiveLandingNavigationProps extends IComponentBaseProps {
+export interface ImmersiveLandingNavigationProps extends UIBaseProps {
   pages: readonly string[];
   currentPageIndex: number;
   onPageDotClick: (pageId: string) => void;
