@@ -61,11 +61,41 @@ export interface StatusItem {
 
   /** Mid-transition: connecting, checking, reconnecting. Drives the pulse. */
   transitioning?: boolean;
+
+  /**
+   * Has this ever been healthy in this session?
+   *
+   * The difference between "Connecting" and "Reconnecting", which the user
+   * reads very differently: the first says be patient, the second says
+   * something that was working just broke. Same spinner, different sentence.
+   */
+  everHealthy?: boolean;
+
+  /**
+   * How many times this has flipped recently.
+   *
+   * Flapping is worse than being cleanly down: the connection keeps coming
+   * back just long enough for the app to re-run its reconnect work, and a
+   * chip that says "connected" between flaps is lying about the experience.
+   */
+  recentChanges?: number;
 }
+
+/** Flips within the window above which a connection is treated as unstable. */
+export const FLAPPING_THRESHOLD = 3;
 
 export interface StatusSummary {
   /** Worst quality among items that are otherwise healthy. */
   quality: Quality;
+  /**
+   * What to call the attempt in progress, if any.
+   *
+   * `connecting` has never worked; `reconnecting` did and stopped. Answers
+   * "was I ever connected?", which is the question behind the spinner.
+   */
+  attempting?: "connecting" | "reconnecting";
+  /** Flipping repeatedly. Not the same as down, and worse to live with. */
+  flapping: boolean;
   /** True when the only problems can recover on their own — wait, do not retry. */
   recovering: boolean;
   /** The worst health present. */
@@ -106,10 +136,22 @@ export function summarizeStatus(items: StatusItem[]): StatusSummary {
     );
   };
 
+  const flapping = items.some((i) => (i.recentChanges ?? 0) >= FLAPPING_THRESHOLD);
+
+  const attempting = (list: StatusItem[]): StatusSummary["attempting"] => {
+    const trying = list.find((i) => i.transitioning);
+    if (!trying) return undefined;
+    return trying.everHealthy ? "reconnecting" : "connecting";
+  };
+
   if (unhealthy.length === 0) {
     return {
       health: "ok",
-      quality: worstQuality(items),
+      // A connection that keeps dropping is not a good one, whatever it says
+      // between flaps.
+      quality: flapping ? "poor" : worstQuality(items),
+      attempting: attempting(items),
+      flapping,
       recovering: false,
       failing: [],
       symptoms: [],
@@ -139,7 +181,9 @@ export function summarizeStatus(items: StatusItem[]): StatusSummary {
 
   return {
     health: unhealthy[0].health,
-    quality: worstQuality(items.filter((i) => !isUnhealthy(i))),
+    quality: flapping ? "poor" : worstQuality(items.filter((i) => !isUnhealthy(i))),
+    attempting: attempting(unhealthy),
+    flapping,
     // Only claim recovery when every failure can recover and something is trying.
     recovering:
       unhealthy.every((i) => i.recoverable !== false) &&
