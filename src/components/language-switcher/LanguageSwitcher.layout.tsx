@@ -81,7 +81,7 @@ const LanguageSwitcher: Layout<typeof componentRecipe, LanguageSwitcherProps> = 
           when={!local.i18n.isLoading}
           fallback={
             <Icon
-              name="icon-[mdi--loading]"
+              src="icon-[mdi--loading]"
               {...{ class: CLASSES.loadingIcon }}
               width={16}
               height={16}

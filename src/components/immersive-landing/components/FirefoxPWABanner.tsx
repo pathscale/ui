@@ -131,7 +131,7 @@ export const FirefoxPWABanner: Component<FirefoxPWABannerProps> = (props) => {
             onClick={handleDismiss}
             aria-label={texts().closeLabel}
           >
-            <Icon name="icon-[mdi--close]" width={16} height={16} />
+            <Icon src="icon-[mdi--close]" width={16} height={16} />
           </Button>
 
           <Card.Body {...{ class: CLASSES.firefoxBanner.body }}>
@@ -139,7 +139,7 @@ export const FirefoxPWABanner: Component<FirefoxPWABannerProps> = (props) => {
               <div {...{ class: CLASSES.firefoxBanner.iconWrap }}>
                 <Show when={browser() === "firefox"}>
                   <Icon
-                    name="icon-[mdi--firefox]"
+                    src="icon-[mdi--firefox]"
                     width={40}
                     height={40}
                     {...{ class: CLASSES.firefoxBanner.browserIcon }}

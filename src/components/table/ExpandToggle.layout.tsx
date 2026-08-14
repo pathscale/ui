@@ -63,9 +63,9 @@ const ExpandToggle: Layout<typeof componentRecipe, ExpandToggleProps> = () => {
     >
       <Show
         when={local.expanded}
-        fallback={<Icon name="icon-[lucide--chevron-right]" width={iconSize()} height={iconSize()} aria-hidden="true" />}
+        fallback={<Icon src="icon-[lucide--chevron-right]" width={iconSize()} height={iconSize()} aria-hidden="true" />}
       >
-        <Icon name="icon-[lucide--chevron-down]" width={iconSize()} height={iconSize()} aria-hidden="true" />
+        <Icon src="icon-[lucide--chevron-down]" width={iconSize()} height={iconSize()} aria-hidden="true" />
       </Show>
     </button>
   );
