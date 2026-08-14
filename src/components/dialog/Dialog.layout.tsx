@@ -561,7 +561,7 @@ const DialogContent: Layout<typeof componentRecipe, DialogContentProps> = () => 
                 }
               }}
               role={local.role ?? "dialog"}
-              aria-dialog="true"
+              aria-modal="true"
               aria-labelledby={local["aria-labelledby"] ?? context.labelledBy()}
               aria-describedby={local["aria-describedby"] ?? context.describedBy()}
               tabIndex={local.tabIndex ?? -1}
