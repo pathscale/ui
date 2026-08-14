@@ -31,7 +31,7 @@
     user-select: none;
     outline: none;
     box-shadow:
-      0 1px 2px oklch(0% 0 0 / 0.06),
+      0 1px 2px rgb(var(--shadow-color, 0 0 0) / 6%),
       0 1px 0 oklch(100% 0 0 / 0.04) inset;
     transition:
       background-color 150ms ease,
@@ -143,8 +143,8 @@
     border: var(--border, 1px) solid color-mix(in oklch, var(--color-base-content) 8%, transparent);
     background-color: var(--color-base-100);
     box-shadow:
-      0 20px 32px oklch(0% 0 0 / 0.16),
-      0 8px 18px oklch(0% 0 0 / 0.1);
+      0 20px 32px rgb(var(--shadow-color, 0 0 0) / 16%),
+      0 8px 18px rgb(var(--shadow-color, 0 0 0) / 10%);
     visibility: hidden;
     opacity: 0;
     transform: translateY(-4px) scale(0.98);

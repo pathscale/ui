@@ -96,32 +96,32 @@
     border-radius: var(--radius-pill, 9999px) !important;
     background: var(--color-swatch-current) !important;
     transform: none !important;
-    box-shadow: 0 2px 8px rgb(0 0 0 / 25%) !important;
+    box-shadow: 0 2px 8px rgb(var(--shadow-color, 0 0 0) / 25%) !important;
     transition: box-shadow 200ms ease-out, opacity 140ms ease-out !important;
   }
 
   .color-wheel-flower__swatch:hover:not([data-disabled="true"]) {
     transform: none !important;
-    box-shadow: 0 3px 10px rgb(0 0 0 / 25%) !important;
+    box-shadow: 0 3px 10px rgb(var(--shadow-color, 0 0 0) / 25%) !important;
   }
 
   .color-wheel-flower__swatch[data-selected="true"] {
     box-shadow:
       0 0 0 2px rgb(255 255 255 / 55%),
-      0 3px 10px rgb(0 0 0 / 25%) !important;
+      0 3px 10px rgb(var(--shadow-color, 0 0 0) / 25%) !important;
   }
 
   .color-wheel-flower__swatch:focus-visible,
   .color-wheel-flower__swatch[data-focus-visible="true"] {
     box-shadow:
       0 0 0 2px rgb(255 255 255 / 50%),
-      0 3px 10px rgb(0 0 0 / 25%) !important;
+      0 3px 10px rgb(var(--shadow-color, 0 0 0) / 25%) !important;
   }
 
   .color-wheel-flower__swatch--center {
     box-shadow:
-      inset 0 0 0 1px rgb(0 0 0 / 30%),
-      0 2px 8px rgb(0 0 0 / 25%) !important;
+      inset 0 0 0 1px rgb(var(--shadow-color, 0 0 0) / 30%),
+      0 2px 8px rgb(var(--shadow-color, 0 0 0) / 25%) !important;
   }
 
   .color-wheel-flower__highlight {

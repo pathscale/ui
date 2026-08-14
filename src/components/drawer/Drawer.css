@@ -57,11 +57,11 @@
   }
 
   .drawer__backdrop--opaque {
-    background-color: oklch(0% 0 0 / 40%);
+    background-color: color-mix(in oklab, rgb(var(--shadow-color, 0 0 0)) 40%, transparent);
   }
 
   .drawer__backdrop--blur {
-    background-color: oklch(0% 0 0 / 40%);
+    background-color: color-mix(in oklab, rgb(var(--shadow-color, 0 0 0)) 40%, transparent);
     backdrop-filter: blur(12px);
   }
 
@@ -155,8 +155,8 @@
     pointer-events: auto;
     outline: none;
     box-shadow:
-      0 10px 15px -3px oklch(0% 0 0 / 0.1),
-      0 4px 6px -4px oklch(0% 0 0 / 0.1);
+      0 10px 15px -3px rgb(var(--shadow-color, 0 0 0) / 10%),
+      0 4px 6px -4px rgb(var(--shadow-color, 0 0 0) / 10%);
 
     --drawer-enter-duration: 250ms;
     --drawer-exit-duration: 200ms;

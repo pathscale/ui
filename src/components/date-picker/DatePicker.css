@@ -104,7 +104,7 @@
     overflow: hidden auto;
     border-radius: calc(var(--radius, 0.75rem) * 1.75);
     background-color: var(--color-overlay, var(--color-base-100));
-    box-shadow: var(--shadow-overlay, 0 24px 48px color-mix(in oklab, black 20%, transparent));
+    box-shadow: var(--shadow-overlay, 0 24px 48px color-mix(in oklab, rgb(var(--shadow-color, 0 0 0)) 20%, transparent));
     padding: 0.75rem;
     opacity: 0;
     transform: translateY(-0.25rem) scale(0.98);

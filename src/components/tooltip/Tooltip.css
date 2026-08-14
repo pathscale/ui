@@ -40,8 +40,8 @@
     pointer-events: none;
     background-color: var(--color-neutral);
     color: var(--color-neutral-content);
-    box-shadow: 0 4px 6px -1px oklch(0% 0 0 / 0.1), 0 2px 4px -2px
-      oklch(0% 0 0 / 0.1);
+    box-shadow: 0 4px 6px -1px rgb(var(--shadow-color, 0 0 0) / 10%), 0 2px 4px -2px
+      rgb(var(--shadow-color, 0 0 0) / 10%);
 
     opacity: 0;
     overflow: visible;
