@@ -63,25 +63,10 @@
     height: 0.75rem;
   }
 
-  .progress--default {
-    --progress-fill: var(--color-base-content);
-  }
 
-  .progress--accent {
-    --progress-fill: var(--color-accent);
-  }
 
-  .progress--success {
-    --progress-fill: var(--color-success);
-  }
 
-  .progress--warning {
-    --progress-fill: var(--color-warning);
-  }
 
-  .progress--danger {
-    --progress-fill: var(--color-danger);
-  }
 
   @keyframes progress-indeterminate {
     0% {
@@ -100,5 +85,37 @@
     .progress--indeterminate .progress__indicator {
       animation: none;
     }
+  }
+
+  .progress--flavor-neutral {
+    --progress-fill: var(--color-base-content);
+  }
+
+  .progress--flavor-primary {
+    --progress-fill: var(--color-primary);
+  }
+
+  .progress--flavor-secondary {
+    --progress-fill: var(--color-secondary);
+  }
+
+  .progress--flavor-accent {
+    --progress-fill: var(--color-accent);
+  }
+
+  .progress--flavor-destructive {
+    --progress-fill: var(--color-danger);
+  }
+
+  .progress--flavor-success {
+    --progress-fill: var(--color-success);
+  }
+
+  .progress--flavor-warning {
+    --progress-fill: var(--color-warning);
+  }
+
+  .progress--flavor-info {
+    --progress-fill: var(--color-info);
   }
 }

@@ -9,12 +9,15 @@ export const CLASSES = {
     md: "meter--md",
     lg: "meter--lg",
   },
-  color: {
-    default: "meter--default",
-    accent: "meter--accent",
-    success: "meter--success",
-    warning: "meter--warning",
-    danger: "meter--danger",
+  flavor: {
+    neutral: "meter--flavor-neutral",
+    primary: "meter--flavor-primary",
+    secondary: "meter--flavor-secondary",
+    accent: "meter--flavor-accent",
+    destructive: "meter--flavor-destructive",
+    success: "meter--flavor-success",
+    warning: "meter--flavor-warning",
+    info: "meter--flavor-info",
   },
   state: {
     disabled: "meter--disabled",

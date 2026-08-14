@@ -11,7 +11,7 @@ import {
   type ParentComponent,
 } from "solid-js";
 import { twMerge } from "tailwind-merge";
-import type { UIBaseProps } from "../vocabulary";
+import type { UIBaseProps, Flavor } from "../vocabulary";
 import { CLASSES } from "./Avatar.recipe";
 import type { Layout } from "../../lib/layouts";
 import { componentRecipe } from "./Avatar.recipe";
@@ -20,12 +20,11 @@ import { componentRecipe } from "./Avatar.recipe";
  * Avatar Context
  * -----------------------------------------------------------------------------------------------*/
 export type AvatarSize = "sm" | "md" | "lg";
-export type AvatarColor = "default" | "accent" | "success" | "warning" | "danger";
 export type AvatarVariant = "default" | "soft";
 
 type AvatarContextValue = {
   size: () => AvatarSize;
-  color: () => AvatarColor;
+  flavor: () => Flavor;
   variant: () => AvatarVariant;
   imageLoaded: () => boolean;
   setImageLoaded: (v: boolean) => void;
@@ -46,7 +45,7 @@ export type AvatarRootProps = Omit<JSX.HTMLAttributes<HTMLSpanElement>, "childre
   UIBaseProps & {
     children: JSX.Element;
     size?: AvatarSize;
-    color?: AvatarColor;
+    flavor?: Flavor;
     variant?: AvatarVariant;
   };
 
@@ -67,7 +66,7 @@ const AvatarRoot: Layout<typeof componentRecipe, AvatarRootProps> = () => {
     "children",
     "class",
     "size",
-    "color",
+    "flavor",
     "variant",
     "dataTheme",
     "style",
@@ -75,12 +74,12 @@ const AvatarRoot: Layout<typeof componentRecipe, AvatarRootProps> = () => {
 
   const [imageLoaded, setImageLoaded] = createSignal(false);
   const size = () => local.size ?? "md";
-  const color = () => local.color ?? "default";
+  const flavor = () => local.flavor ?? "neutral";
   const variant = () => local.variant ?? "default";
 
   const ctx: AvatarContextValue = {
     size,
-    color,
+    flavor,
     variant,
     imageLoaded,
     setImageLoaded,
@@ -174,7 +173,7 @@ const AvatarFallback: Layout<typeof componentRecipe, AvatarFallbackProps> = () =
         {...others}
         {...{ class: twMerge(
           CLASSES.slot.fallback,
-          CLASSES.color[ctx.color()],
+          (CLASSES.flavor[ctx.flavor() as keyof typeof CLASSES.flavor] ?? `avatar__fallback--flavor-${ctx.flavor()}`),
           local.class,
         ) }}
         data-slot="avatar-fallback"

@@ -9,12 +9,15 @@ export const CLASSES = {
     content: "switch__content",
     description: "switch__description",
   },
-  color: {
-    default: "switch--default",
-    accent: "switch--accent",
-    success: "switch--success",
-    warning: "switch--warning",
-    danger: "switch--danger",
+  flavor: {
+    neutral: "switch--flavor-neutral",
+    primary: "switch--flavor-primary",
+    secondary: "switch--flavor-secondary",
+    accent: "switch--flavor-accent",
+    destructive: "switch--flavor-destructive",
+    success: "switch--flavor-success",
+    warning: "switch--flavor-warning",
+    info: "switch--flavor-info",
   },
   size: {
     sm: "switch--sm",

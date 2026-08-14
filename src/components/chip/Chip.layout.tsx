@@ -5,6 +5,7 @@ import { twMerge } from "tailwind-merge";
 import "./Chip.css";
 import { CLASSES } from "./Chip.recipe";
 import type { Layout } from "../../lib/layouts";
+import type { Flavor } from "../vocabulary";
 import { componentRecipe } from "./Chip.recipe";
 
 type ChipVariant = "solid" | "flat" | "bordered";
@@ -15,7 +16,7 @@ interface ChipRootProps extends Omit<JSX.HTMLAttributes<HTMLSpanElement>, "color
   class?: string;
   children?: JSX.Element;
   variant?: ChipVariant;
-  color?: ChipColor;
+  flavor?: Flavor;
   size?: ChipSize;
   startIcon?: JSX.Element;
   endIcon?: JSX.Element;
@@ -29,7 +30,7 @@ const ChipRoot: Layout<typeof componentRecipe, ChipRootProps> = () => {
     "children",
     "class",
     "variant",
-    "color",
+    "flavor",
     "size",
     "startIcon",
     "endIcon",
@@ -40,14 +41,14 @@ const ChipRoot: Layout<typeof componentRecipe, ChipRootProps> = () => {
 
   const classes = () => {
     const variant = local.variant ?? "solid";
-    const color = local.color ?? "default";
+    const color = local.flavor ?? "default";
     const size = local.size ?? "md";
 
     return twMerge(
       clsx(
         CLASSES.base,
         CLASSES.variant[variant],
-        CLASSES.color[color],
+        (CLASSES.flavor[color as keyof typeof CLASSES.flavor] ?? `chip--flavor-${color}`),
         CLASSES.size[size],
         local.class,
       ),

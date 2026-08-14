@@ -70,25 +70,10 @@
   /* -------------------------------------------------------------------------------------------------
    * Fallback color modifiers
    * -----------------------------------------------------------------------------------------------*/
-  .avatar__fallback--default {
-    color: var(--color-base-content);
-  }
 
-  .avatar__fallback--accent {
-    color: var(--color-accent);
-  }
 
-  .avatar__fallback--success {
-    color: var(--color-success);
-  }
 
-  .avatar__fallback--warning {
-    color: var(--color-warning);
-  }
 
-  .avatar__fallback--danger {
-    color: var(--color-error);
-  }
 
   /* -------------------------------------------------------------------------------------------------
    * Variant: soft
@@ -120,5 +105,37 @@
   .avatar--soft .avatar__fallback--default {
     background-color: var(--color-base-200);
     color: var(--color-base-content);
+  }
+
+  .avatar__fallback--flavor-neutral {
+    color: var(--color-base-content);
+  }
+
+  .avatar__fallback--flavor-primary {
+    color: var(--color-primary);
+  }
+
+  .avatar__fallback--flavor-secondary {
+    color: var(--color-secondary);
+  }
+
+  .avatar__fallback--flavor-accent {
+    color: var(--color-accent);
+  }
+
+  .avatar__fallback--flavor-destructive {
+    color: var(--color-error);
+  }
+
+  .avatar__fallback--flavor-success {
+    color: var(--color-success);
+  }
+
+  .avatar__fallback--flavor-warning {
+    color: var(--color-warning);
+  }
+
+  .avatar__fallback--flavor-info {
+    color: var(--color-info);
   }
 }

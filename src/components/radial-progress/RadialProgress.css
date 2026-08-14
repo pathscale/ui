@@ -41,25 +41,10 @@
     height: 2.25rem;
   }
 
-  .radial-progress--default {
-    --radial-progress-stroke: var(--color-base-content);
-  }
 
-  .radial-progress--accent {
-    --radial-progress-stroke: var(--color-accent);
-  }
 
-  .radial-progress--success {
-    --radial-progress-stroke: var(--color-success);
-  }
 
-  .radial-progress--warning {
-    --radial-progress-stroke: var(--color-warning);
-  }
 
-  .radial-progress--danger {
-    --radial-progress-stroke: var(--color-danger);
-  }
 
   @keyframes radial-progress-spin {
     from {
@@ -78,5 +63,37 @@
     .radial-progress--indeterminate .radial-progress__track {
       animation: none;
     }
+  }
+
+  .radial-progress--flavor-neutral {
+    --radial-progress-stroke: var(--color-base-content);
+  }
+
+  .radial-progress--flavor-primary {
+    --radial-progress-stroke: var(--color-primary);
+  }
+
+  .radial-progress--flavor-secondary {
+    --radial-progress-stroke: var(--color-secondary);
+  }
+
+  .radial-progress--flavor-accent {
+    --radial-progress-stroke: var(--color-accent);
+  }
+
+  .radial-progress--flavor-destructive {
+    --radial-progress-stroke: var(--color-danger);
+  }
+
+  .radial-progress--flavor-success {
+    --radial-progress-stroke: var(--color-success);
+  }
+
+  .radial-progress--flavor-warning {
+    --radial-progress-stroke: var(--color-warning);
+  }
+
+  .radial-progress--flavor-info {
+    --radial-progress-stroke: var(--color-info);
   }
 }

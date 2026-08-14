@@ -9,12 +9,15 @@ export const CLASSES = {
     md: "radial-progress--md",
     lg: "radial-progress--lg",
   },
-  color: {
-    default: "radial-progress--default",
-    accent: "radial-progress--accent",
-    success: "radial-progress--success",
-    warning: "radial-progress--warning",
-    danger: "radial-progress--danger",
+  flavor: {
+    neutral: "radial-progress--flavor-neutral",
+    primary: "radial-progress--flavor-primary",
+    secondary: "radial-progress--flavor-secondary",
+    accent: "radial-progress--flavor-accent",
+    destructive: "radial-progress--flavor-destructive",
+    success: "radial-progress--flavor-success",
+    warning: "radial-progress--flavor-warning",
+    info: "radial-progress--flavor-info",
   },
   state: {
     indeterminate: "radial-progress--indeterminate",

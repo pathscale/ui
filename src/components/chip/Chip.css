@@ -72,59 +72,11 @@
     --chip-border: var(--chip-bordered-border);
   }
 
-  .chip--default {
-    --chip-solid-bg: var(--color-default);
-    --chip-solid-fg: var(--color-default-foreground);
-    --chip-flat-bg: color-mix(in oklab, var(--color-default) 18%, transparent);
-    --chip-flat-fg: var(--color-default-foreground);
-    --chip-bordered-fg: var(--color-default-foreground);
-    --chip-bordered-border: color-mix(in oklab, var(--color-default) 44%, transparent);
-  }
 
-  .chip--primary {
-    --chip-solid-bg: var(--color-primary);
-    --chip-solid-fg: var(--color-primary-content);
-    --chip-flat-bg: color-mix(in oklab, var(--color-primary) 18%, transparent);
-    --chip-flat-fg: var(--color-primary);
-    --chip-bordered-fg: var(--color-primary);
-    --chip-bordered-border: color-mix(in oklab, var(--color-primary) 50%, transparent);
-  }
 
-  .chip--accent {
-    --chip-solid-bg: var(--color-accent);
-    --chip-solid-fg: var(--color-accent-content);
-    --chip-flat-bg: var(--color-accent-soft);
-    --chip-flat-fg: var(--color-accent-soft-foreground);
-    --chip-bordered-fg: var(--color-accent);
-    --chip-bordered-border: color-mix(in oklab, var(--color-accent) 52%, transparent);
-  }
 
-  .chip--success {
-    --chip-solid-bg: var(--color-success);
-    --chip-solid-fg: var(--color-success-content);
-    --chip-flat-bg: var(--color-success-soft);
-    --chip-flat-fg: var(--color-success-soft-foreground);
-    --chip-bordered-fg: var(--color-success);
-    --chip-bordered-border: color-mix(in oklab, var(--color-success) 52%, transparent);
-  }
 
-  .chip--warning {
-    --chip-solid-bg: var(--color-warning);
-    --chip-solid-fg: var(--color-warning-content);
-    --chip-flat-bg: var(--color-warning-soft);
-    --chip-flat-fg: var(--color-warning-soft-foreground);
-    --chip-bordered-fg: var(--color-warning);
-    --chip-bordered-border: color-mix(in oklab, var(--color-warning) 52%, transparent);
-  }
 
-  .chip--danger {
-    --chip-solid-bg: var(--color-danger);
-    --chip-solid-fg: var(--color-danger-foreground);
-    --chip-flat-bg: var(--color-danger-soft);
-    --chip-flat-fg: var(--color-danger-soft-foreground);
-    --chip-bordered-fg: var(--color-danger);
-    --chip-bordered-border: color-mix(in oklab, var(--color-danger) 52%, transparent);
-  }
 
   .chip__label {
     padding-inline: 0.125rem;
@@ -193,5 +145,77 @@
   .chip__remove:disabled {
     cursor: not-allowed;
     opacity: 0.55;
+  }
+
+  .chip--flavor-neutral {
+    --chip-solid-bg: var(--color-default);
+    --chip-solid-fg: var(--color-default-foreground);
+    --chip-flat-bg: color-mix(in oklab, var(--color-default) 18%, transparent);
+    --chip-flat-fg: var(--color-default-foreground);
+    --chip-bordered-fg: var(--color-default-foreground);
+    --chip-bordered-border: color-mix(in oklab, var(--color-default) 44%, transparent);
+  }
+
+  .chip--flavor-primary {
+    --chip-solid-bg: var(--color-primary);
+    --chip-solid-fg: var(--color-primary-content);
+    --chip-flat-bg: color-mix(in oklab, var(--color-primary) 18%, transparent);
+    --chip-flat-fg: var(--color-primary);
+    --chip-bordered-fg: var(--color-primary);
+    --chip-bordered-border: color-mix(in oklab, var(--color-primary) 50%, transparent);
+  }
+
+  .chip--flavor-secondary {
+    --chip-solid-bg: var(--color-secondary);
+    --chip-solid-fg: var(--color-secondary-content, var(--color-secondary-foreground));
+    --chip-flat-bg: var(--color-secondary-soft, color-mix(in oklab, var(--color-secondary) 18%, transparent));
+    --chip-flat-fg: var(--color-secondary-soft-foreground, var(--color-secondary));
+    --chip-bordered-fg: var(--color-secondary);
+    --chip-bordered-border: color-mix(in oklab, var(--color-secondary) 52%, transparent);
+  }
+
+  .chip--flavor-accent {
+    --chip-solid-bg: var(--color-accent);
+    --chip-solid-fg: var(--color-accent-content);
+    --chip-flat-bg: var(--color-accent-soft);
+    --chip-flat-fg: var(--color-accent-soft-foreground);
+    --chip-bordered-fg: var(--color-accent);
+    --chip-bordered-border: color-mix(in oklab, var(--color-accent) 52%, transparent);
+  }
+
+  .chip--flavor-destructive {
+    --chip-solid-bg: var(--color-danger);
+    --chip-solid-fg: var(--color-danger-foreground);
+    --chip-flat-bg: var(--color-danger-soft);
+    --chip-flat-fg: var(--color-danger-soft-foreground);
+    --chip-bordered-fg: var(--color-danger);
+    --chip-bordered-border: color-mix(in oklab, var(--color-danger) 52%, transparent);
+  }
+
+  .chip--flavor-success {
+    --chip-solid-bg: var(--color-success);
+    --chip-solid-fg: var(--color-success-content);
+    --chip-flat-bg: var(--color-success-soft);
+    --chip-flat-fg: var(--color-success-soft-foreground);
+    --chip-bordered-fg: var(--color-success);
+    --chip-bordered-border: color-mix(in oklab, var(--color-success) 52%, transparent);
+  }
+
+  .chip--flavor-warning {
+    --chip-solid-bg: var(--color-warning);
+    --chip-solid-fg: var(--color-warning-content);
+    --chip-flat-bg: var(--color-warning-soft);
+    --chip-flat-fg: var(--color-warning-soft-foreground);
+    --chip-bordered-fg: var(--color-warning);
+    --chip-bordered-border: color-mix(in oklab, var(--color-warning) 52%, transparent);
+  }
+
+  .chip--flavor-info {
+    --chip-solid-bg: var(--color-info);
+    --chip-solid-fg: var(--color-info-content, var(--color-info-foreground));
+    --chip-flat-bg: var(--color-info-soft, color-mix(in oklab, var(--color-info) 18%, transparent));
+    --chip-flat-fg: var(--color-info-soft-foreground, var(--color-info));
+    --chip-bordered-fg: var(--color-info);
+    --chip-bordered-border: color-mix(in oklab, var(--color-info) 52%, transparent);
   }
 }

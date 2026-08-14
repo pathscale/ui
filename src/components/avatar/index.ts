@@ -4,7 +4,6 @@ export {
   AvatarImage,
   AvatarFallback,
   type AvatarSize,
-  type AvatarColor,
   type AvatarVariant,
   type AvatarRootProps,
   type AvatarImageProps,
