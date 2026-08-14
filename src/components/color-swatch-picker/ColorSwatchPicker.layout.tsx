@@ -9,7 +9,7 @@ import {
   type JSX,
 } from "solid-js";
 import { twMerge } from "tailwind-merge";
-import type { UIBaseProps } from "../vocabulary";
+import type { UIBaseProps, State } from "../vocabulary";
 import { CLASSES } from "./ColorSwatchPicker.recipe";
 import type { Layout } from "../../lib/layouts";
 import { componentRecipe } from "./ColorSwatchPicker.recipe";
@@ -39,7 +39,7 @@ export type ColorSwatchPickerProps = Omit<JSX.HTMLAttributes<HTMLDivElement>, "o
     value?: string;
     defaultValue?: string;
     onChange?: (value: string) => void;
-    isDisabled?: boolean;
+    state?: State;
   };
 
 const ColorSwatchPicker: Layout<typeof componentRecipe, ColorSwatchPickerProps> = () => {
@@ -49,7 +49,7 @@ const ColorSwatchPicker: Layout<typeof componentRecipe, ColorSwatchPickerProps> 
     "value",
     "defaultValue",
     "onChange",
-    "isDisabled",
+    "state",
     "dataTheme",
     "role",
     "onKeyDown",
@@ -60,7 +60,7 @@ const ColorSwatchPicker: Layout<typeof componentRecipe, ColorSwatchPickerProps> 
 
   const isControlled = () => local.value !== undefined;
   const currentValue = () => (isControlled() ? local.value : internalValue());
-  const isDisabled = () => Boolean(local.isDisabled);
+  const isDisabled = () => Boolean((local.state === "disabled"));
 
   const setValue = (next: string) => {
     if (isDisabled()) return;

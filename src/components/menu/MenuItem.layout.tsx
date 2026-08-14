@@ -12,7 +12,7 @@ import {
 } from "solid-js";
 import { twMerge } from "tailwind-merge";
 
-import type { UIBaseProps } from "../vocabulary";
+import type { UIBaseProps, State } from "../vocabulary";
 import { MenuContext, type MenuItemVariant, type MenuSelectionMode } from "./context";
 import { CLASSES } from "./Menu.recipe";
 import type { Layout } from "../../lib/layouts";
@@ -63,7 +63,7 @@ export type MenuItemRootProps = Omit<JSX.HTMLAttributes<HTMLDivElement>, "childr
     id?: string | number;
     textValue?: string;
     variant?: MenuItemVariant;
-    isDisabled?: boolean;
+    state?: State;
     disabled?: boolean;
     hasSubmenu?: boolean;
     onAction?: (key: string) => void;
@@ -98,7 +98,7 @@ const MenuItemRoot: Layout<typeof componentRecipe, MenuItemRootProps> = () => {
     "id",
     "textValue",
     "variant",
-    "isDisabled",
+    "state",
     "disabled",
     "hasSubmenu",
     "onAction",
@@ -129,8 +129,8 @@ const MenuItemRoot: Layout<typeof componentRecipe, MenuItemRootProps> = () => {
   const isSelected = () => menu?.isSelected(key()) ?? false;
   const isFocused = () => menu?.focusedKey() === key();
   const isDisabled = () =>
-    menu?.isItemDisabled(key(), Boolean(local.isDisabled) || Boolean(local.disabled)) ??
-    (Boolean(local.isDisabled) || Boolean(local.disabled));
+    menu?.isItemDisabled(key(), Boolean((local.state === "disabled")) || Boolean(local.disabled)) ??
+    (Boolean((local.state === "disabled")) || Boolean(local.disabled));
 
   const renderState = createMemo<MenuItemRenderProps>(() => ({
     isSelected: isSelected(),
@@ -218,7 +218,7 @@ const MenuItemRoot: Layout<typeof componentRecipe, MenuItemRootProps> = () => {
 
     menu.registerItem({
       key: key(),
-      disabled: Boolean(local.isDisabled) || Boolean(local.disabled),
+      disabled: Boolean((local.state === "disabled")) || Boolean(local.disabled),
       ref: itemRef,
     });
   });

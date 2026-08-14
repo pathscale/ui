@@ -1,7 +1,7 @@
 import "./ColorSlider.css";
 import { createEffect, createMemo, createSignal, splitProps, type Component, type JSX } from "solid-js";
 import { twMerge } from "tailwind-merge";
-import type { UIBaseProps } from "../vocabulary";
+import type { UIBaseProps, State } from "../vocabulary";
 import { CLASSES } from "./ColorSlider.recipe";
 import type { Layout } from "../../lib/layouts";
 import { componentRecipe } from "./ColorSlider.recipe";
@@ -14,7 +14,7 @@ export type ColorSliderProps = Omit<JSX.HTMLAttributes<HTMLDivElement>, "childre
     defaultValue?: number;
     onChange?: (value: number) => void;
     type?: ColorSliderType;
-    isDisabled?: boolean;
+    state?: State;
   };
 
 const clamp = (value: number, min: number, max: number) => Math.min(max, Math.max(min, value));
@@ -51,14 +51,14 @@ const ColorSlider: Layout<typeof componentRecipe, ColorSliderProps> = () => {
     "defaultValue",
     "onChange",
     "type",
-    "isDisabled",
+    "state",
     "style",
     "dataTheme",
     "aria-label",
   ]);
 
   const sliderType = () => local.type ?? "hue";
-  const isDisabled = () => Boolean(local.isDisabled);
+  const isDisabled = () => Boolean((local.state === "disabled"));
 
   const initialValue = () => {
     const fallback = sliderType() === "alpha" ? 1 : 0;

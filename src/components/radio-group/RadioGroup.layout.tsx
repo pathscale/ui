@@ -2,7 +2,7 @@ import "./RadioGroup.css";
 import { Show, createSignal, createUniqueId, splitProps, type Component, type JSX } from "solid-js";
 import { twMerge } from "tailwind-merge";
 import { RadioGroupContext, type RadioGroupContextValue } from "./context";
-import type { UIBaseProps } from "../vocabulary";
+import type { UIBaseProps, State } from "../vocabulary";
 import { CLASSES } from "./RadioGroup.recipe";
 import type { Layout } from "../../lib/layouts";
 import { componentRecipe } from "./RadioGroup.recipe";
@@ -17,7 +17,7 @@ export type RadioGroupProps = Omit<JSX.HTMLAttributes<HTMLDivElement>, "children
     defaultValue?: string;
     onChange?: (value: string) => void;
     name?: string;
-    isDisabled?: boolean;
+    state?: State;
     disabled?: boolean;
     isInvalid?: boolean;
     orientation?: RadioGroupOrientation;
@@ -35,7 +35,7 @@ const RadioGroup: Layout<typeof componentRecipe, RadioGroupProps> = () => {
     "defaultValue",
     "onChange",
     "name",
-    "isDisabled",
+    "state",
     "disabled",
     "isInvalid",
     "orientation",
@@ -60,7 +60,7 @@ const RadioGroup: Layout<typeof componentRecipe, RadioGroupProps> = () => {
   const variant = () => local.variant ?? "primary";
   const isControlled = () => local.value !== undefined;
   const selectedValue = () => (isControlled() ? local.value : internalValue());
-  const isDisabled = () => Boolean(local.isDisabled) || Boolean(local.disabled);
+  const isDisabled = () => Boolean((local.state === "disabled")) || Boolean(local.disabled);
   const isInvalid = () => Boolean(local.isInvalid);
   const name = () => local.name ?? generatedName;
 

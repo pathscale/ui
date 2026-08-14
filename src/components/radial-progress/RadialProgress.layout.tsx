@@ -1,7 +1,7 @@
 import "./RadialProgress.css";
 import { createMemo, splitProps, type JSX } from "solid-js";
 import { twMerge } from "tailwind-merge";
-import type { UIBaseProps, Flavor } from "../vocabulary";
+import type { UIBaseProps, Flavor, State } from "../vocabulary";
 import { CLASSES } from "./RadialProgress.recipe";
 import type { Layout } from "../../lib/layouts";
 import { componentRecipe } from "./RadialProgress.recipe";
@@ -17,7 +17,7 @@ export type RadialProgressProps = UIBaseProps &
     isIndeterminate?: boolean;
     size?: RadialProgressSize;
     flavor?: Flavor;
-    isDisabled?: boolean;
+    state?: State;
     formatValue?: (value: number) => string;
     label?: string;
   };
@@ -35,7 +35,7 @@ const RadialProgress: Layout<typeof componentRecipe, RadialProgressProps> = () =
     "isIndeterminate",
     "size",
     "flavor",
-    "isDisabled",
+    "state",
     "formatValue",
     "label",
     "class",
@@ -71,7 +71,7 @@ const RadialProgress: Layout<typeof componentRecipe, RadialProgressProps> = () =
       CLASSES.size[local.size ?? "md"],
       (CLASSES.flavor[(local.flavor ?? "accent") as keyof typeof CLASSES.flavor] ?? `radial-progress--flavor-${local.flavor ?? "accent"}`),
       isIndeterminate() && CLASSES.state.indeterminate,
-      local.isDisabled && CLASSES.state.disabled,
+      (local.state === "disabled") && CLASSES.state.disabled,
       local.class,
     ),
   );
@@ -88,8 +88,8 @@ const RadialProgress: Layout<typeof componentRecipe, RadialProgressProps> = () =
       aria-valuemax={max()}
       aria-valuetext={isIndeterminate() ? undefined : valueText()}
       aria-label={local.label}
-      aria-disabled={local.isDisabled ? "true" : undefined}
-      data-disabled={local.isDisabled ? "true" : undefined}
+      aria-disabled={(local.state === "disabled") ? "true" : undefined}
+      data-disabled={(local.state === "disabled") ? "true" : undefined}
     >
       <svg
         {...{ class: CLASSES.svg }}

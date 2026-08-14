@@ -2,7 +2,7 @@ import "./Checkbox.css";
 import { Show, createEffect, createSignal, splitProps, useContext, type Component, type JSX } from "solid-js";
 import { twMerge } from "tailwind-merge";
 import { CheckboxGroupContext } from "../checkbox-group/context";
-import type { UIBaseProps } from "../vocabulary";
+import type { UIBaseProps, State } from "../vocabulary";
 import { CLASSES } from "./Checkbox.recipe";
 import type { Layout } from "../../lib/layouts";
 import { componentRecipe } from "./Checkbox.recipe";
@@ -25,7 +25,7 @@ export type CheckboxProps = Omit<JSX.InputHTMLAttributes<HTMLInputElement>, "typ
     defaultChecked?: boolean;
     children?: JSX.Element;
     description?: JSX.Element;
-    isDisabled?: boolean;
+    state?: State;
     isInvalid?: boolean;
     isIndeterminate?: boolean;
     indeterminate?: boolean;
@@ -40,7 +40,7 @@ const Checkbox: Layout<typeof componentRecipe, CheckboxProps> = () => {
     "class",
     "children",
     "description",
-    "isDisabled",
+    "state",
     "isInvalid",
     "isIndeterminate",
     "indeterminate",
@@ -67,7 +67,7 @@ const Checkbox: Layout<typeof componentRecipe, CheckboxProps> = () => {
       ? Boolean(local.checked)
       : internalSelected();
   const isDisabled = () =>
-    Boolean(local.isDisabled) || Boolean(local.disabled) || Boolean(group?.isDisabled());
+    Boolean((local.state === "disabled")) || Boolean(local.disabled) || Boolean(group?.isDisabled());
   const isInvalid = () =>
     Boolean(local.isInvalid) || Boolean(local["aria-invalid"]) || Boolean(group?.isInvalid());
   const isIndeterminate = () => Boolean(local.isIndeterminate) || Boolean(local.indeterminate);

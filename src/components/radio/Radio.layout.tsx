@@ -2,7 +2,7 @@ import "./Radio.css";
 import { Show, splitProps, useContext, type Component, type JSX } from "solid-js";
 import { twMerge } from "tailwind-merge";
 import { RadioGroupContext } from "../radio-group/context";
-import type { UIBaseProps } from "../vocabulary";
+import type { UIBaseProps, State } from "../vocabulary";
 import { CLASSES } from "./Radio.recipe";
 import type { Layout } from "../../lib/layouts";
 import { componentRecipe } from "./Radio.recipe";
@@ -23,7 +23,7 @@ export type RadioProps = Omit<JSX.InputHTMLAttributes<HTMLInputElement>, "type" 
     children?: JSX.Element;
     description?: JSX.Element;
     indicator?: JSX.Element;
-    isDisabled?: boolean;
+    state?: State;
     isInvalid?: boolean;
   };
 
@@ -34,7 +34,7 @@ const Radio: Layout<typeof componentRecipe, RadioProps> = () => {
     "children",
     "description",
     "indicator",
-    "isDisabled",
+    "state",
     "isInvalid",
     "disabled",
     "checked",
@@ -49,7 +49,7 @@ const Radio: Layout<typeof componentRecipe, RadioProps> = () => {
   const isGrouped = () => Boolean(group && value() !== undefined);
   const isSelected = () => (isGrouped() ? group?.value() === value() : Boolean(local.checked));
   const isDisabled = () =>
-    Boolean(local.isDisabled) || Boolean(local.disabled) || Boolean(group?.isDisabled());
+    Boolean((local.state === "disabled")) || Boolean(local.disabled) || Boolean(group?.isDisabled());
   const isInvalid = () =>
     Boolean(local.isInvalid) || Boolean(local["aria-invalid"]) || Boolean(group?.isInvalid());
   const name = () => local.name ?? group?.name();

@@ -19,7 +19,7 @@ import {
   createOverlayPosition,
   type OverlayPlacement,
 } from "../_shared/overlayPosition";
-import type { UIBaseProps } from "../vocabulary";
+import type { UIBaseProps, State } from "../vocabulary";
 import { CLASSES } from "./Select.recipe";
 import type { Layout } from "../../lib/layouts";
 import { componentRecipe } from "./Select.recipe";
@@ -133,7 +133,7 @@ export type SelectRootProps = Omit<JSX.HTMLAttributes<HTMLDivElement>, "onChange
     defaultSelectedKeys?: Iterable<SelectKey>;
     onChange?: (value: string | string[] | null) => void;
     onSelectionChange?: (keys: Set<string>) => void;
-    isDisabled?: boolean;
+    state?: State;
     disabled?: boolean;
     fullWidth?: boolean;
     variant?: SelectVariant;
@@ -157,7 +157,7 @@ const SelectRoot: Layout<typeof componentRecipe, SelectRootProps> = () => {
     "defaultSelectedKeys",
     "onChange",
     "onSelectionChange",
-    "isDisabled",
+    "state",
     "disabled",
     "fullWidth",
     "variant",
@@ -177,7 +177,7 @@ const SelectRoot: Layout<typeof componentRecipe, SelectRootProps> = () => {
   const selectionMode = () => local.selectionMode ?? "single";
   const variant = () => local.variant ?? "primary";
   const fullWidth = () => Boolean(local.fullWidth);
-  const disabled = () => Boolean(local.isDisabled) || Boolean(local.disabled);
+  const disabled = () => Boolean((local.state === "disabled")) || Boolean(local.disabled);
 
   const initialSelected = normalizeSelection(
     selectionMode(),
@@ -740,7 +740,7 @@ export type SelectOptionProps = Omit<JSX.ButtonHTMLAttributes<HTMLButtonElement>
   UIBaseProps & {
     value: SelectKey;
     textValue?: string;
-    isDisabled?: boolean;
+    state?: State;
     startIcon?: JSX.Element;
     endIcon?: JSX.Element;
   };
@@ -753,7 +753,7 @@ const SelectOption: Layout<typeof componentRecipe, SelectOptionProps> = () => {
     "dataTheme",
     "value",
     "textValue",
-    "isDisabled",
+    "state",
     "disabled",
     "startIcon",
     "endIcon",
@@ -790,7 +790,7 @@ const SelectOption: Layout<typeof componentRecipe, SelectOptionProps> = () => {
   }
 
   const key = () => String(local.value);
-  const isDisabled = () => Boolean(local.isDisabled) || Boolean(local.disabled) || ctx.disabled();
+  const isDisabled = () => Boolean((local.state === "disabled")) || Boolean(local.disabled) || ctx.disabled();
   const isSelected = () => ctx.isSelected(key());
   const isFocused = () => ctx.focusedKey() === key();
   let optionRef: HTMLButtonElement | undefined;

@@ -2,7 +2,7 @@ import "./Textarea.css";
 import { splitProps, type Component, type JSX } from "solid-js";
 import { twMerge } from "tailwind-merge";
 
-import type { UIBaseProps } from "../vocabulary";
+import type { UIBaseProps, State } from "../vocabulary";
 import { CLASSES } from "./Textarea.recipe";
 import type { Layout } from "../../lib/layouts";
 import { componentRecipe } from "./Textarea.recipe";
@@ -14,7 +14,7 @@ export type TextareaRootProps = Omit<JSX.TextareaHTMLAttributes<HTMLTextAreaElem
     variant?: TextareaVariant;
     fullWidth?: boolean;
     isInvalid?: boolean;
-    isDisabled?: boolean;
+    state?: State;
     disabled?: boolean;
   };
 
@@ -26,14 +26,14 @@ const TextareaRoot: Layout<typeof componentRecipe, TextareaRootProps> = () => {
     "variant",
     "fullWidth",
     "isInvalid",
-    "isDisabled",
+    "state",
     "disabled",
   ]);
 
   const variant = () => local.variant ?? "primary";
   const fullWidth = () => Boolean(local.fullWidth);
   const isInvalid = () => Boolean(local.isInvalid);
-  const isDisabled = () => Boolean(local.isDisabled) || Boolean(local.disabled);
+  const isDisabled = () => Boolean((local.state === "disabled")) || Boolean(local.disabled);
 
   return (
     <textarea

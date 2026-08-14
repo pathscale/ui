@@ -2,7 +2,7 @@ import "./Label.css";
 import { splitProps, type Component, type JSX } from "solid-js";
 import { twMerge } from "tailwind-merge";
 
-import type { UIBaseProps } from "../vocabulary";
+import type { UIBaseProps, State } from "../vocabulary";
 import { CLASSES } from "./Label.recipe";
 import type { Layout } from "../../lib/layouts";
 import { componentRecipe } from "./Label.recipe";
@@ -12,7 +12,7 @@ export type LabelRootProps = Omit<JSX.LabelHTMLAttributes<HTMLLabelElement>, "fo
     for?: string;
     htmlFor?: string;
     isRequired?: boolean;
-    isDisabled?: boolean;
+    state?: State;
     isInvalid?: boolean;
   };
 
@@ -25,7 +25,7 @@ const LabelRoot: Layout<typeof componentRecipe, LabelRootProps> = () => {
     "for",
     "htmlFor",
     "isRequired",
-    "isDisabled",
+    "state",
     "isInvalid",
   ]);
 
@@ -36,17 +36,17 @@ const LabelRoot: Layout<typeof componentRecipe, LabelRootProps> = () => {
       class={twMerge(
         CLASSES.base,
         local.isRequired && CLASSES.flag.required,
-        local.isDisabled && CLASSES.flag.disabled,
+        (local.state === "disabled") && CLASSES.flag.disabled,
         local.isInvalid && CLASSES.flag.invalid,
         local.class,
       )}
       data-slot="label"
       data-required={local.isRequired ? "true" : undefined}
-      data-disabled={local.isDisabled ? "true" : undefined}
+      data-disabled={(local.state === "disabled") ? "true" : undefined}
       data-invalid={local.isInvalid ? "true" : undefined}
       data-theme={local.dataTheme}
       style={local.style}
-      aria-disabled={local.isDisabled ? "true" : undefined}
+      aria-disabled={(local.state === "disabled") ? "true" : undefined}
       aria-invalid={local.isInvalid ? "true" : undefined}
     >
       {local.children}

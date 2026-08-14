@@ -13,7 +13,7 @@ import {
 } from "solid-js";
 import { twMerge } from "tailwind-merge";
 
-import type { UIBaseProps } from "../vocabulary";
+import type { UIBaseProps, State } from "../vocabulary";
 import { CLASSES } from "./Accordion.recipe";
 import type { Layout } from "../../lib/layouts";
 import { componentRecipe } from "./Accordion.recipe";
@@ -79,7 +79,7 @@ export type AccordionRootProps = Omit<JSX.HTMLAttributes<HTMLDivElement>, "child
     onValueChange?: (value: string[]) => void;
     hideSeparator?: boolean;
     variant?: AccordionVariant;
-    isDisabled?: boolean;
+    state?: State;
     disabled?: boolean;
   };
 
@@ -87,7 +87,7 @@ export type AccordionItemProps = Omit<JSX.HTMLAttributes<HTMLDivElement>, "child
   UIBaseProps & {
     value?: string;
     children?: JSX.Element;
-    isDisabled?: boolean;
+    state?: State;
     disabled?: boolean;
   };
 
@@ -124,7 +124,7 @@ const AccordionRoot: Layout<typeof componentRecipe, AccordionRootProps> = () => 
     "onValueChange",
     "hideSeparator",
     "variant",
-    "isDisabled",
+    "state",
     "disabled",
     "ref",
   ]);
@@ -132,7 +132,7 @@ const AccordionRoot: Layout<typeof componentRecipe, AccordionRootProps> = () => 
   const selectionMode = () => local.selectionMode ?? "single";
   const variant = () => local.variant ?? "default";
   const hideSeparator = () => Boolean(local.hideSeparator);
-  const isDisabled = () => Boolean(local.isDisabled) || Boolean(local.disabled);
+  const isDisabled = () => Boolean((local.state === "disabled")) || Boolean(local.disabled);
 
   const [internalValue, setInternalValue] = createSignal<string[]>(
     normalizeAccordionValue(local.defaultValue, selectionMode()),
@@ -272,7 +272,7 @@ const AccordionItem: Layout<typeof componentRecipe, AccordionItemProps> = () => 
     "class",
     "dataTheme",
     "style",
-    "isDisabled",
+    "state",
     "disabled",
   ]);
 
@@ -284,7 +284,7 @@ const AccordionItem: Layout<typeof componentRecipe, AccordionItemProps> = () => 
   const isExpanded = () =>
     accordion?.isItemExpanded(itemValue()) ?? false;
   const isDisabled = () =>
-    Boolean(local.isDisabled) ||
+    Boolean((local.state === "disabled")) ||
     Boolean(local.disabled) ||
     Boolean(accordion?.isDisabled());
 

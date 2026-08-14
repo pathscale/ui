@@ -2,7 +2,7 @@ import "./ButtonGroup.css";
 import { splitProps, type Component, type JSX, type ParentComponent } from "solid-js";
 import { twMerge } from "tailwind-merge";
 
-import type { Size, Variant } from "../vocabulary";
+import type { Size, Variant, State } from "../vocabulary";
 import type { UIBaseProps } from "../vocabulary";
 import { CLASSES } from "./ButtonGroup.recipe";
 import { ButtonGroupContext } from "./context";
@@ -17,7 +17,7 @@ export type ButtonGroupRootProps = Omit<JSX.HTMLAttributes<HTMLDivElement>, "chi
     orientation?: ButtonGroupOrientation;
     size?: Size;
     variant?: Variant;
-    isDisabled?: boolean;
+    state?: State;
     fullWidth?: boolean;
   };
 
@@ -33,7 +33,7 @@ const ButtonGroupRoot: Layout<typeof componentRecipe, ButtonGroupRootProps> = ()
     "orientation",
     "size",
     "variant",
-    "isDisabled",
+    "state",
     "fullWidth",
     "role",
   ]);
@@ -45,7 +45,7 @@ const ButtonGroupRoot: Layout<typeof componentRecipe, ButtonGroupRootProps> = ()
       value={{
         size: () => local.size,
         variant: () => local.variant,
-        isDisabled: () => local.isDisabled,
+        isDisabled: () => (local.state === "disabled"),
         fullWidth: () => local.fullWidth,
       }}
     >
@@ -62,7 +62,7 @@ const ButtonGroupRoot: Layout<typeof componentRecipe, ButtonGroupRootProps> = ()
         data-theme={local.dataTheme}
         style={local.style}
         role={local.role ?? "group"}
-        aria-disabled={local.isDisabled ? "true" : undefined}
+        aria-disabled={(local.state === "disabled") ? "true" : undefined}
       >
         {local.children}
       </div>

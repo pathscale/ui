@@ -2,7 +2,7 @@ import "./CloseButton.css";
 import { splitProps, type Component, type JSX } from "solid-js";
 import { twMerge } from "tailwind-merge";
 
-import type { UIBaseProps } from "../vocabulary";
+import type { UIBaseProps, State } from "../vocabulary";
 import { CLASSES } from "./CloseButton.recipe";
 import type { Layout } from "../../lib/layouts";
 import { componentRecipe } from "./CloseButton.recipe";
@@ -12,7 +12,7 @@ export type CloseButtonVariant = "default";
 export type CloseButtonProps = Omit<JSX.ButtonHTMLAttributes<HTMLButtonElement>, "disabled"> &
   UIBaseProps & {
     variant?: CloseButtonVariant;
-    isDisabled?: boolean;
+    state?: State;
     isPending?: boolean;
     startIcon?: JSX.Element;
     endIcon?: JSX.Element;
@@ -23,7 +23,7 @@ const CloseButton: Layout<typeof componentRecipe, CloseButtonProps> = () => {
     "children",
     "class",
     "variant",
-    "isDisabled",
+    "state",
     "isPending",
     "startIcon",
     "endIcon",
@@ -34,7 +34,7 @@ const CloseButton: Layout<typeof componentRecipe, CloseButtonProps> = () => {
   ]);
 
   const variant = () => local.variant ?? "default";
-  const disabled = () => Boolean(local.isDisabled) || Boolean(local.isPending);
+  const disabled = () => Boolean((local.state === "disabled")) || Boolean(local.isPending);
 
   return (
     <button

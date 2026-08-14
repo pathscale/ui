@@ -2,7 +2,7 @@ import "./ColorSwatch.css";
 import { splitProps, useContext, type Component, type JSX } from "solid-js";
 import { twMerge } from "tailwind-merge";
 import { ColorSwatchPickerContext } from "../color-swatch-picker/ColorSwatchPicker.generated";
-import type { UIBaseProps } from "../vocabulary";
+import type { UIBaseProps, State } from "../vocabulary";
 import { CLASSES } from "./ColorSwatch.recipe";
 import type { Layout } from "../../lib/layouts";
 import { componentRecipe } from "./ColorSwatch.recipe";
@@ -28,7 +28,7 @@ export type ColorSwatchProps = Omit<JSX.ButtonHTMLAttributes<HTMLButtonElement>,
     shape?: ColorSwatchShape;
     size?: ColorSwatchSize;
     isSelected?: boolean;
-    isDisabled?: boolean;
+    state?: State;
     onSelect?: (color: string) => void;
     onChange?: (color: string) => void;
   };
@@ -43,7 +43,7 @@ const ColorSwatch: Layout<typeof componentRecipe, ColorSwatchProps> = () => {
     "shape",
     "size",
     "isSelected",
-    "isDisabled",
+    "state",
     "disabled",
     "onSelect",
     "onChange",
@@ -62,7 +62,7 @@ const ColorSwatch: Layout<typeof componentRecipe, ColorSwatchProps> = () => {
   const size = () => local.size ?? "md";
 
   const isDisabled = () => {
-    const localDisabled = Boolean(local.isDisabled) || Boolean(local.disabled);
+    const localDisabled = Boolean((local.state === "disabled")) || Boolean(local.disabled);
     const pickerDisabled = picker ? picker.isDisabled() : false;
     return localDisabled || pickerDisabled;
   };

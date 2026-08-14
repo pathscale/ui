@@ -24,7 +24,7 @@ import {
   useDateSelection,
   type CalendarSelectionMode,
 } from "../../hooks/date";
-import type { UIBaseProps } from "../vocabulary";
+import type { UIBaseProps, State } from "../vocabulary";
 import { CLASSES } from "./Calendar.recipe";
 import type { Layout } from "../../lib/layouts";
 import { componentRecipe } from "./Calendar.recipe";
@@ -50,7 +50,7 @@ type CalendarBaseProps = {
   locale?: string;
   weekdayFormat?: CalendarWeekdayFormat;
   showOutsideDays?: boolean;
-  isDisabled?: boolean;
+  state?: State;
   disabled?: boolean;
 };
 
@@ -82,7 +82,7 @@ const Calendar: Layout<typeof componentRecipe, CalendarProps> = () => {
     "locale",
     "weekdayFormat",
     "showOutsideDays",
-    "isDisabled",
+    "state",
     "disabled",
   ]);
 
@@ -125,7 +125,7 @@ const Calendar: Layout<typeof componentRecipe, CalendarProps> = () => {
   );
   const showOutsideDays = createMemo(() => local.showOutsideDays ?? true);
   const isCalendarDisabled = createMemo(
-    () => Boolean(local.isDisabled) || Boolean(local.disabled),
+    () => Boolean((local.state === "disabled")) || Boolean(local.disabled),
   );
 
   const isDateUnavailable = (date: Date) => Boolean(local.isDateUnavailable?.(date));

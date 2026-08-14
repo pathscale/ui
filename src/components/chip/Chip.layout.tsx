@@ -5,7 +5,7 @@ import { twMerge } from "tailwind-merge";
 import "./Chip.css";
 import { CLASSES } from "./Chip.recipe";
 import type { Layout } from "../../lib/layouts";
-import type { Flavor } from "../vocabulary";
+import type { Flavor, State } from "../vocabulary";
 import { componentRecipe } from "./Chip.recipe";
 
 type ChipVariant = "solid" | "flat" | "bordered";
@@ -22,7 +22,7 @@ interface ChipRootProps extends Omit<JSX.HTMLAttributes<HTMLSpanElement>, "color
   endIcon?: JSX.Element;
   onRemove?: () => void;
   removeButtonLabel?: string;
-  isDisabled?: boolean;
+  state?: State;
 }
 
 const ChipRoot: Layout<typeof componentRecipe, ChipRootProps> = () => {
@@ -36,7 +36,7 @@ const ChipRoot: Layout<typeof componentRecipe, ChipRootProps> = () => {
     "endIcon",
     "onRemove",
     "removeButtonLabel",
-    "isDisabled",
+    "state",
   ]);
 
   const classes = () => {
@@ -73,7 +73,7 @@ const ChipRoot: Layout<typeof componentRecipe, ChipRootProps> = () => {
       {...others}
       {...{ class: classes() }}
       data-slot="chip"
-      data-disabled={local.isDisabled ? "true" : "false"}
+      data-disabled={(local.state === "disabled") ? "true" : "false"}
       data-removable={local.onRemove ? "true" : "false"}
     >
       <Show when={local.startIcon}>
@@ -89,7 +89,7 @@ const ChipRoot: Layout<typeof componentRecipe, ChipRootProps> = () => {
           data-slot="chip-remove"
           aria-label={local.removeButtonLabel ?? "Remove"}
           onClick={handleRemove}
-          disabled={Boolean(local.isDisabled)}
+          disabled={Boolean((local.state === "disabled"))}
         >
           <Show when={local.endIcon}>
             <span {...{ class: CLASSES.slot.removeIcon }} data-slot="chip-remove-icon">

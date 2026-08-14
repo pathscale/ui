@@ -2,7 +2,7 @@ import "./ColorField.css";
 import { createEffect, createSignal, splitProps, type Component, type JSX } from "solid-js";
 import { twMerge } from "tailwind-merge";
 import { formatColor, parseColor, type ColorFormat } from "../color-wheel-flower/ColorUtils";
-import type { UIBaseProps } from "../vocabulary";
+import type { UIBaseProps, State } from "../vocabulary";
 import { CLASSES } from "./ColorField.recipe";
 import type { Layout } from "../../lib/layouts";
 import { componentRecipe } from "./ColorField.recipe";
@@ -38,7 +38,7 @@ export type ColorFieldProps = Omit<
     value?: string;
     defaultValue?: string;
     onChange?: (value: string) => void;
-    isDisabled?: boolean;
+    state?: State;
     format?: ColorFieldFormat;
     fullWidth?: boolean;
   };
@@ -49,7 +49,7 @@ const ColorField: Layout<typeof componentRecipe, ColorFieldProps> = () => {
     "value",
     "defaultValue",
     "onChange",
-    "isDisabled",
+    "state",
     "disabled",
     "format",
     "fullWidth",
@@ -61,7 +61,7 @@ const ColorField: Layout<typeof componentRecipe, ColorFieldProps> = () => {
   ]);
 
   const format = () => local.format ?? "hex";
-  const isDisabled = () => Boolean(local.isDisabled) || Boolean(local.disabled);
+  const isDisabled = () => Boolean((local.state === "disabled")) || Boolean(local.disabled);
 
   const initialValue = () => {
     const seed = local.value ?? local.defaultValue ?? FALLBACK_COLOR;
