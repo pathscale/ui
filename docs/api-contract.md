@@ -106,7 +106,7 @@ HTML attributes and `UIBaseProps`; that is an assertion, not a gap.
 
 ### Calendar
 
-``
+`defaultValue disabled isDateUnavailable locale maxValue minValue onChange onDayHover onDaySelect rangeEnd rangePreview rangeStart selectionMode showOutsideDays state value weekdayFormat`
 
 ### Card
 
@@ -246,11 +246,11 @@ HTML attributes and `UIBaseProps`; that is an assertion, not a gap.
 
 ### DatePicker
 
-``
+`defaultOpen defaultValue disabled isDateUnavailable locale maxValue minValue name onChange onOpenChange open placeholder state value weekdayFormat`
 
 ### DateRangePicker
 
-``
+`defaultOpen defaultValue disabled endName endPlaceholder isDateUnavailable locale maxValue minValue onChange onOpenChange open startName startPlaceholder state value weekdayFormat`
 
 ### Dialog
 
@@ -390,7 +390,7 @@ HTML attributes and `UIBaseProps`; that is an assertion, not a gap.
 
 ### FormSubmitButton
 
-`form`
+`children flavor form radius size state variant width`
 
 ### GlowCard
 
@@ -578,7 +578,7 @@ HTML attributes and `UIBaseProps`; that is an assertion, not a gap.
 
 ### RangeCalendar
 
-``
+`defaultValue disabled isDateUnavailable locale maxValue minValue onChange onDayHover onDaySelect showOutsideDays state value weekdayFormat`
 
 ### ScrollArea
 
@@ -602,7 +602,7 @@ HTML attributes and `UIBaseProps`; that is an assertion, not a gap.
 
 ### Slider
 
-``
+`class dataTheme disabled formatValue label max min onChange onChangeEnd size step style value`
 
 ### Spinner
 
@@ -686,11 +686,11 @@ HTML attributes and `UIBaseProps`; that is an assertion, not a gap.
 
 ### ToastActionButton
 
-``
+`children flavor radius state type width`
 
 ### ToastCloseButton
 
-``
+`isPending state variant`
 
 ### ToastContent
 
@@ -734,4 +734,4 @@ HTML attributes and `UIBaseProps`; that is an assertion, not a gap.
 
 ### VideoPreview
 
-``
+`mirror muted stream`
