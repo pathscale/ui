@@ -554,7 +554,7 @@ HTML attributes and `UIBaseProps`; that is an assertion, not a gap.
 
 ### Popover
 
-`autoFlip children closeOnEscape closeOnOutsideClick defaultOpen offset onInteractOutside onOpenChange open placement`
+`anchorRect autoFlip children closeOnEscape closeOnOutsideClick defaultOpen offset onInteractOutside onOpenChange open placement`
 
 ### Progress
 
