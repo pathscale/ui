@@ -94,7 +94,7 @@ HTML attributes and `UIBaseProps`; that is an assertion, not a gap.
 
 ### Button
 
-`children flavor radius size state type variant width`
+`children flavor href radius rel size state target type variant width`
 
 ### ButtonGroup
 
@@ -390,7 +390,7 @@ HTML attributes and `UIBaseProps`; that is an assertion, not a gap.
 
 ### FormSubmitButton
 
-`children flavor form radius size state variant width`
+`children flavor form href radius rel size state target variant width`
 
 ### GlowCard
 
@@ -686,7 +686,7 @@ HTML attributes and `UIBaseProps`; that is an assertion, not a gap.
 
 ### ToastActionButton
 
-`children flavor radius state type width`
+`children flavor href radius rel state target type width`
 
 ### ToastCloseButton
 
