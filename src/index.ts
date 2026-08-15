@@ -616,3 +616,15 @@ export { default as ChatBubble } from "./components/chatbubble";
 // losing the one that matters. See docs/proposed-2.2-reference.md.
 export { summarizeStatus, diffStatus } from "./components/status";
 export type { Health, Quality, StatusItem, StatusSummary, StatusTransition } from "./components/status";
+
+// Glass, as three numbers instead of thirty-one. `material="glass"` is styled
+// by a family of `--glass-*` custom properties; six are colours the theme
+// declares and the rest derive from blur, refraction and depth.
+export {
+  GLASS_DEFAULTS,
+  GLASS_LIMITS,
+  applyGlassTokens,
+  glassTokensToCss,
+  resolveGlassTokens,
+} from "./styles/glass";
+export type { GlassMode, GlassTuning } from "./styles/glass";
