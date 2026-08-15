@@ -84,45 +84,122 @@ function exportedComponents(): Set<string> {
 }
 
 /**
- * `export type XProps = … { a?: T; b?: U }`, braces balanced, comments ignored.
+ * Names carried by everything, so naming them again says nothing.
  *
- * Follows one level of aliasing: several components export `XProps` as an alias
- * for `XRootProps`, and reading only the alias yields an empty prop list, which
- * would have recorded 98 components as having no API at all.
+ * `UIBaseProps` and the `JSX.*` attribute bags are what "an empty list" already
+ * asserts, and the generic wrappers are not types to look up.
  */
-function propsOf(text: string, typeName: string, alias = 0): string[] | null {
+const IMPLICIT = new Set(["UIBaseProps"]);
+const NOT_A_LOOKUP = /^(?:JSX\b|Omit<|Pick<|Partial<|Required<|Readonly<|Exclude<|Record<|Component<)/;
+
+/** The right-hand side of a declaration, from `=` (or `extends`) to its end. */
+function declarationBody(text: string, typeName: string): string | null {
   let start = text.indexOf(`export type ${typeName} =`);
   let from = start === -1 ? -1 : text.indexOf("=", start) + 1;
+  let isInterface = false;
   if (start === -1) {
-    // `interface X extends Y { … }` and the non-exported `type X = …` form.
-    const decl = new RegExp(`(?:export\\s+)?(?:interface|type)\\s+${typeName}\\b`).exec(text);
+    /*
+     * `interface X extends Y { … }` and the non-exported `type X = …` form.
+     *
+     * Anchored to the start of a line, because `import { type ButtonProps }`
+     * also contains the words `type ButtonProps`. Matching that read the rest
+     * of the importing file as if it were Button's declaration, which handed
+     * Button its neighbour's props and lost its own.
+     */
+    const decl = new RegExp(
+      `^\\s*(?:export\\s+)?(?:declare\\s+)?(?:interface|type)\\s+${typeName}\\b`,
+      "m",
+    ).exec(text);
     if (!decl) return null;
-    start = decl.index;
+    isInterface = decl[0].includes("interface");
     from = decl.index + decl[0].length;
   }
-  let i = from;
   let depth = 0;
-  let body = "";
-  for (; i < text.length; i++) {
+  let rhs = "";
+  for (let i = from; i < text.length; i++) {
     const ch = text[i];
     if (ch === "{") depth++;
-    if (depth > 0) body += ch;
+    rhs += ch;
     if (ch === "}") {
       depth--;
-      if (depth === 0) break;
+      if (depth < 0) return null;
+      if (depth === 0 && isInterface) break;
     }
     if (depth === 0 && ch === ";") break;
   }
-  if (!body) {
-    if (alias > 2) return [];
-    const aliased = new RegExp(`export type ${typeName} =\\s*([A-Za-z_$][\\w$]*)\\s*;`).exec(text);
-    return aliased ? propsOf(text, aliased[1], alias + 1) : [];
-  }
-  const stripped = body.replace(/\/\*[\s\S]*?\*\//g, "").replace(/\/\/[^\n]*/g, "");
+  return rhs;
+}
+
+/**
+ * The prop names a type declares, following intersections and aliases.
+ *
+ * Reading only the inline `{ … }` is what made this gate lie. Most of the date
+ * components and Slider are written as `Omit<JSX.…> & UIBaseProps & XBaseProps`
+ * with no literal of their own, so the brace scan found nothing, the bare-alias
+ * fallback did not match an intersection either, and the contract recorded them
+ * as having no API. `bun run check:api` then passed, because the extractor and
+ * the document agreed on nothing: 26 of 180 components asserted they add no
+ * props, and six of those declare between 17 and 25.
+ *
+ * So an intersection is now walked member by member. Bare names are looked up,
+ * in this file first and then across the build; `Omit<…>` and friends are not
+ * names to look up, and `UIBaseProps` and the `JSX.*` bags are what the empty
+ * list already asserts.
+ */
+function propsOf(
+  text: string,
+  typeName: string,
+  files: string[] = [],
+  seen = new Set<string>(),
+): string[] | null {
+  if (seen.has(typeName)) return [];
+  seen.add(typeName);
+
+  const rhs = declarationBody(text, typeName);
+  if (rhs === null) return null;
+
+  const stripped = rhs.replace(/\/\*[\s\S]*?\*\//g, "").replace(/\/\/[^\n]*/g, "");
   const names = new Set<string>();
-  for (const m of stripped.matchAll(/(?:^|[{;\n])\s*(?:readonly\s+)?["']?([A-Za-z_$][\w$-]*)["']?\??\s*:/g)) {
+
+  // Own members: every `key:` at any depth of this declaration's own literals.
+  for (const m of stripped.matchAll(
+    /(?:^|[{;\n])\s*(?:readonly\s+)?["']?([A-Za-z_$][\w$-]*)["']?\??\s*:/g,
+  )) {
     names.add(m[1]);
   }
+
+  // Referenced members: the parts of the intersection that are types elsewhere.
+  const outsideLiterals = stripped.replace(/\{[\s\S]*?\}/g, " ");
+  for (const member of outsideLiterals.split("&")) {
+    const part = member.trim();
+    if (!part) continue;
+    /*
+     * `Omit<CloseButtonProps, "children" | "startIcon">` is a lookup with
+     * subtraction. Only when the inner type is one of ours: `Omit<JSX.…>` is
+     * still the HTML bag an empty list already asserts.
+     */
+    const omit = /^Omit<\s*([A-Za-z_$][\w$]*)\s*,([\s\S]*)>\s*;?$/.exec(part);
+    if (omit && !IMPLICIT.has(omit[1])) {
+      const removed = new Set([...omit[2].matchAll(/["']([^"']+)["']/g)].map((m) => m[1]));
+      for (const source of [text, ...files]) {
+        const inherited = propsOf(source, omit[1], files, new Set(seen));
+        if (inherited === null) continue;
+        for (const prop of inherited) if (!removed.has(prop)) names.add(prop);
+        break;
+      }
+      continue;
+    }
+    if (NOT_A_LOOKUP.test(part)) continue;
+    const name = /^([A-Za-z_$][\w$]*)\s*;?$/.exec(part)?.[1];
+    if (!name || IMPLICIT.has(name)) continue;
+    for (const source of [text, ...files]) {
+      const inherited = propsOf(source, name, files, seen);
+      if (inherited === null) continue;
+      for (const prop of inherited) names.add(prop);
+      break;
+    }
+  }
+
   return [...names].sort();
 }
 
@@ -176,7 +253,7 @@ function readBuiltApi(): Api {
     if (origin) candidates.push(`${origin}Props`, `${origin}RootProps`);
     for (const candidate of candidates) {
       for (const text of files) {
-        const r = propsOf(text, candidate);
+        const r = propsOf(text, candidate, files);
         if (r === null) continue;
         found = true;
         props = r;
