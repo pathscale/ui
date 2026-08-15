@@ -105,6 +105,13 @@ function declarationBody(text: string, typeName: string): string | null {
      * also contains the words `type ButtonProps`. Matching that read the rest
      * of the importing file as if it were Button's declaration, which handed
      * Button its neighbour's props and lost its own.
+     *
+     * The anchor is not what saves it, though. The unbalanced `}` that such a
+     * match runs into is, via the `depth < 0` bail below. Measured by removing
+     * each in turn against `tests/api-contract.test.ts`: dropping the anchor
+     * alone changes nothing, dropping the bail alone brings the bug back. Both
+     * stay, because the anchor stops the match being wrong at all, and the bail
+     * only catches the one shape a wrong match happens to produce.
      */
     const decl = new RegExp(
       `^\\s*(?:export\\s+)?(?:declare\\s+)?(?:interface|type)\\s+${typeName}\\b`,
@@ -335,6 +342,18 @@ function render(api: Api): string {
   return lines.join("\n");
 }
 
+/*
+ * Exported so `tests/api-contract.test.ts` can hold the extractor itself to
+ * account. The comparison below is only as good as what these two return, and
+ * when the extractor went blind the check stayed green: it compared nothing
+ * against nothing and reported agreement.
+ */
+export { readBuiltApi, readDocumentedApi };
+export type { Api };
+
+if (import.meta.main) run();
+
+function run() {
 const built = readBuiltApi();
 
 if (WRITE) {
@@ -396,3 +415,4 @@ if (problems.length) {
 }
 
 console.log(`✅ ${DOC} matches the build across ${built.size} components.`);
+}
