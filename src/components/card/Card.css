@@ -98,16 +98,26 @@
     backdrop-filter: none;
   }
 
-  /* Absorbs GlassPanel. The highlight ring was its `highlight` flag. */
+  /* Absorbs GlassPanel. The highlight ring was its `highlight` flag.
+
+     Every `--glass-*` read below carries a fallback, and that is load-bearing
+     rather than tidy. An undefined custom property does not fall back to its
+     initial value: CSS drops the whole declaration. Three of these were read
+     bare, so a theme that defined twenty-eight of the thirty-one glass tokens
+     got a card with no background at all rather than a plainer one, and the
+     only themes that defined all thirty-one were the two shipped here. Both
+     use `white` for the three colours, so that is what the fallbacks say.
+
+     `src/styles/glass.ts` derives the other twenty-five from three numbers. */
   .card--material-glass {
     --card-bg: color-mix(
       in oklab,
-      var(--glass-background-color),
+      var(--glass-background-color, white),
       transparent calc(100% - var(--glass-background-opacity, 55%))
     );
     --card-border: color-mix(
       in oklab,
-      var(--glass-border-color),
+      var(--glass-border-color, white),
       transparent calc(100% - var(--glass-border-opacity, 12%))
     );
     backdrop-filter: blur(var(--card-glass-blur, var(--glass-blur, 50px)))
@@ -125,7 +135,7 @@
     box-shadow: inset 0 var(--border, 1px) 0 0
       color-mix(
         in oklab,
-        var(--glass-highlight-color),
+        var(--glass-highlight-color, white),
         transparent calc(100% - var(--glass-highlight-opacity, 18%))
       );
   }
