@@ -230,9 +230,14 @@ const ListBoxItemRoot: Layout<typeof componentRecipe, ListBoxItemRootProps> = ()
         onFocus={handleFocus}
         onBlur={handleBlur}
       >
+        {/*
+          2.0's `JSX.Element` no longer admits a function, so the non-render-prop
+          branch has to say it is one of the other members rather than leaving
+          the union to be inferred.
+        */}
         {typeof props.children === "function"
           ? (props.children as (props: ListBoxItemRenderProps) => JSX.Element)(renderState())
-          : props.children}
+          : (props.children as JSX.Element)}
       </div>
     </ListBoxItemContext>
   );

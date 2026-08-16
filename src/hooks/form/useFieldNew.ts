@@ -40,7 +40,7 @@ export type UseFieldResult = {
  *   value={String(email.value() ?? "")}
  *   onInput={(e) => email.handleChange(e.currentTarget.value)}
  *   onBlur={email.handleBlur}
- *   aria-invalid={email.invalid()}
+ *   aria-invalid={email.invalid() ? "true" : "false"}
  * />
  * ```
  */

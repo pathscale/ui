@@ -143,7 +143,7 @@ const InputField: Layout<typeof componentRecipe, InputFieldProps> = () => {
         {...{ class: CLASSES.slot.field }}
         disabled={isDisabled()}
         aria-disabled={isDisabled() ? "true" : "false"}
-        aria-invalid={ariaInvalid()}
+        aria-invalid={ariaInvalid() ? "true" : "false"}
         data-slot="input-field"
       />
       <Show when={props.endIcon}>

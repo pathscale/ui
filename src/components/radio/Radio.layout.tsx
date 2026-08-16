@@ -88,7 +88,7 @@ const Radio: Layout<typeof componentRecipe, RadioProps> = () => {
         disabled={isDisabled()}
         {...{ class: CLASSES.slot.input }}
         data-slot="radio-input"
-        aria-invalid={ariaInvalid()}
+        aria-invalid={ariaInvalid() ? "true" : "false"}
         onChange={handleChange}
       />
 

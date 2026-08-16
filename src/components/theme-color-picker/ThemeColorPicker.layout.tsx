@@ -207,7 +207,7 @@ const ThemeColorPicker: Layout<typeof componentRecipe, ThemeColorPickerProps> = 
           variant="ghost"
           onClick={() => setIsOpen(!isOpen())}
           aria-label={local["aria-label"] ?? "Change theme color"}
-          aria-expanded={isOpen()}
+          aria-expanded={isOpen() ? "true" : "false"}
         >
           {props.children ?? (
             <Icon

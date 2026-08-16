@@ -22,7 +22,13 @@ type MenuItemContextValue = {
 
 /* A default rather than an empty context; see ListBoxItem for why. */
 const MenuItemStateContext = createContext<MenuItemContextValue>({
-  renderState: () => ({ isSelected: false, isFocused: false, isDisabled: false }),
+  renderState: () => ({
+    isSelected: false,
+    isFocused: false,
+    isDisabled: false,
+    hasSubmenu: false,
+    selectionMode: "none",
+  }),
 });
 
 const invokeEventHandler = (handler: unknown, event: Event) => {
@@ -256,9 +262,14 @@ const MenuItemRoot: Layout<typeof componentRecipe, MenuItemRootProps> = () => {
         onFocus={handleFocus}
         onBlur={handleBlur}
       >
+        {/*
+          2.0's `JSX.Element` no longer admits a function, so the non-render-prop
+          branch has to say it is one of the other members rather than leaving
+          the union to be inferred.
+        */}
         {typeof props.children === "function"
           ? (props.children as (props: MenuItemRenderProps) => JSX.Element)(renderState())
-          : props.children}
+          : (props.children as JSX.Element)}
       </div>
     </MenuItemStateContext>
   );

@@ -1,5 +1,5 @@
 import "./Grid.css";
-import {omit, mergeProps, children as resolveChildren} from "solid-js";
+import {omit, merge, children as resolveChildren} from "solid-js";
 import { Dynamic, type JSX} from "@solidjs/web";
 import { twMerge } from "../../lib/twMerge";
 import type { UIBaseProps } from "../vocabulary";
@@ -83,7 +83,10 @@ export type GridProps = UIBaseProps &
  */
 
 const Grid: Layout<typeof componentRecipe, GridProps> = () => {
-  const merged = mergeProps({ as: "div" }, props);
+  // `mergeProps` is `merge` in 2.0. The ordering is unchanged, but `undefined`
+  // from a later source now overrides an earlier value instead of being skipped,
+  // which does not bite here because the only default is a literal.
+  const merged = merge({ as: "div" }, props);
   const rest = omit(
     merged,
     "as",

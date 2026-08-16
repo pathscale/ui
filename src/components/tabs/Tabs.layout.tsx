@@ -373,7 +373,7 @@ const Tab: Layout<typeof componentRecipe, TabProps> = () => {
       data-disabled={isDisabled() ? "true" : "false"}
       aria-selected={isSelected() ? "true" : "false"}
       aria-controls={ctx.getPanelId(props.id)}
-      aria-disabled={isDisabled()}
+      aria-disabled={isDisabled() ? "true" : "false"}
       disabled={isDisabled()}
       tabindex={isSelected() ? 0 : -1}
       onKeyDown={handleKeyDown}

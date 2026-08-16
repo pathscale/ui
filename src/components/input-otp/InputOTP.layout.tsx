@@ -62,7 +62,7 @@ export type InputOTPRootProps = Omit<
     disabled?: boolean;
     issues?: Issue[];
     inputClassName?: string;
-    inputMode?: JSX.InputHTMLAttributes<HTMLInputElement>["inputMode"];
+    inputmode?: JSX.InputHTMLAttributes<HTMLInputElement>["inputmode"];
   };
 
 export type InputOTPGroupProps = Omit<JSX.HTMLAttributes<HTMLDivElement>, "children"> &
@@ -100,7 +100,7 @@ const InputOTPRoot: Layout<typeof componentRecipe, InputOTPRootProps> = () => {
     "disabled",
     "issues",
     "inputClassName",
-    "inputMode",
+    "inputmode",
     "onMouseDown",
     "onFocusOut",
     "aria-invalid",
@@ -337,7 +337,7 @@ const InputOTPRoot: Layout<typeof componentRecipe, InputOTPRootProps> = () => {
           {...{ class: twMerge(CLASSES.Input.base, props.inputClassName) }}
           data-slot="input-otp-input"
           type="text"
-          inputMode={props.inputMode}
+          inputmode={props.inputmode}
           pattern={props.pattern}
           maxLength={maxLength()}
           value={value()}
