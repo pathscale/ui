@@ -152,7 +152,7 @@ export type {
   FieldsetActionsProps,
 } from "./components/fieldset";
 // ---------------------------------------------------------------------------
-// Form components and hooks (TanStack-based API)
+// Form components and hooks
 // ---------------------------------------------------------------------------
 export {
   default as Form,
@@ -389,34 +389,8 @@ export type {
   InlineConfirmProps as TableInlineConfirmProps,
   InlineConfirmVariant as TableInlineConfirmVariant,
 } from "./components/table";
-export {
-  useTableModel,
-  useTableSorting,
-  useTablePagination,
-  useTableFiltering,
-  useTableSelection,
-  useTableExpansion,
-  toSortDescriptor,
-  toSortingState,
-  useAnchoredOverlayPosition,
-} from "./hooks/table";
-export type {
-  UseTableModelOptions,
-  UseTableSortingOptions,
-  UseTableSortingResult,
-  HookSortDirection,
-  HookSortDescriptor,
-  UseTablePaginationOptions,
-  UseTablePaginationResult,
-  UseTableFilteringOptions,
-  UseTableFilteringResult,
-  UseTableSelectionOptions,
-  UseTableSelectionResult,
-  TableSelectionState,
-  UseTableExpansionOptions,
-  UseTableExpansionResult,
-  UseAnchoredOverlayPositionOptions,
-} from "./hooks/table";
+export { useAnchoredOverlayPosition } from "./hooks/table";
+export type { UseAnchoredOverlayPositionOptions } from "./hooks/table";
 
 export { default as Tabs } from "./components/tabs";
 export type {
@@ -513,12 +487,6 @@ export type {
 // Motion
 export * from "./motion";
 
-export { useVirtualRows } from "./primitives/virtualizer";
-export type {
-  UseVirtualRowsOptions,
-  UseVirtualRowsResult,
-  VirtualRowsRange,
-} from "./primitives/virtualizer";
 export {
   useStreamingBuffer,
   useStreamingSubscription,

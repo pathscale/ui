@@ -57,7 +57,7 @@ const FormWithContext: Layout<typeof componentRecipe, FormWithContextProps> = ()
   const handleSubmit: JSX.EventHandlerUnion<HTMLFormElement, SubmitEvent> = (e) => {
     e.preventDefault();
     e.stopPropagation();
-    local.form._tsForm.handleSubmit();
+    void local.form.submit();
     if (typeof local.onSubmit === "function") {
       local.onSubmit(e);
     }

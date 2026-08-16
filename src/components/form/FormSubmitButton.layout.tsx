@@ -45,24 +45,18 @@ const FormSubmitButton: Layout<typeof componentRecipe, FormSubmitButtonProps> = 
   };
 
   const form = resolveForm();
-  const tsForm = form._tsForm;
 
+  // `<tsForm.Subscribe>` was a render prop whose only job was to deliver two
+  // booleans. Both are accessors on the form now, so the component reads them
+  // directly and Solid tracks them the same way.
   return (
-    <tsForm.Subscribe
-      selector={(s: { canSubmit: boolean; isSubmitting: boolean }) => ({
-        canSubmit: s.canSubmit,
-        isSubmitting: s.isSubmitting,
-      })}
-      children={(state: () => { canSubmit: boolean; isSubmitting: boolean }) => (
-        <Button
-          {...others}
-          type="submit"
-          state={state().isSubmitting ? "loading" : state().canSubmit ? "default" : "disabled"}
-        >
-          {local.children}
-        </Button>
-      )}
-    />
+    <Button
+      {...others}
+      type="submit"
+      state={form.isSubmitting() ? "loading" : form.isValid() ? "default" : "disabled"}
+    >
+      {local.children}
+    </Button>
   );
 };
 

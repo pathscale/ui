@@ -5,9 +5,8 @@ import type { FormApi } from "./createForm";
 // Context
 // ---------------------------------------------------------------------------
 
-// We use `any` here because the form's generic parameters are deeply nested
-// TanStack types — the context just needs to hold the opaque FormApi wrapper.
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
+// The context holds a form whose value type the provider knows and the
+// consumer does not, so the stored type erases it.
 export type AnyFormApi = FormApi<any>;
 
 export const FormContext = createContext<AnyFormApi | null>(null);
@@ -26,7 +25,7 @@ export const FormContext = createContext<AnyFormApi | null>(null);
  * @example
  * // Inside a component rendered as a child of <Form form={form}>
  * const form = useFormContext();
- * const tsForm = form._tsForm;
+ * const value = form.getFieldValue("email");
  */
 export const useFormContext = (): AnyFormApi => {
   const ctx = useContext(FormContext);

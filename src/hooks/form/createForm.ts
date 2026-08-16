@@ -1,11 +1,9 @@
-import { createForm as createTSForm } from "@tanstack/solid-form";
+import { createStore, produce } from "solid-js/store";
 import type { StandardSchemaV1 } from "@standard-schema/spec";
+import { getFirstFieldError } from "./getFirstFieldError";
 
-// ---------------------------------------------------------------------------
-// Public types
-// ---------------------------------------------------------------------------
-
-type AnyValues = Record<string, unknown>;
+// biome-ignore lint/suspicious/noExplicitAny: a form's values are the caller's shape
+type AnyValues = Record<string, any>;
 
 export type AsyncValidatorFn<TValues extends AnyValues> = (context: {
   value: TValues;
@@ -20,8 +18,7 @@ export type CreateFormOptions<TValues extends AnyValues = AnyValues> = {
 
   /**
    * Any Standard Schema-compatible schema (Zod, Valibot, Arktype, ...).
-   * Applied as `validators.onChange`, `validators.onBlur` and
-   * `validators.onSubmit`.
+   * Runs on change, on blur and on submit.
    */
   schema?: StandardSchemaV1<TValues>;
 
@@ -40,189 +37,197 @@ export type CreateFormOptions<TValues extends AnyValues = AnyValues> = {
   onSubmit?: (value: TValues) => void | Promise<void>;
 };
 
+/** What a field tracks besides its value. */
+type FieldMeta = {
+  isTouched: boolean;
+  errors: string[];
+};
+
 /**
  * The form API returned by `createForm`.
  *
- * Consumers should use `<Form form={api}>` to wire it into the component tree.
- * For advanced use, access the raw TanStack Form instance via `api._tsForm`.
+ * Consumers should use `<Form form={api}>` to wire it into the component tree,
+ * and read individual fields with `useField(name)`.
  */
 export type FormApi<TValues extends AnyValues = AnyValues> = {
-  /**
-   * Raw TanStack Form instance. Intended as an escape hatch for cases not
-   * covered by the library's abstractions (custom field rendering, `<form.Subscribe>`, etc.).
-   * Prefixed with `_` to signal that it's an internal detail.
-   *
-   * TanStack Form's type has 12 generic parameters — we intentionally erase
-   * them here to keep the public API simple. Use `form._tsForm` to access the
-   * full typed instance in advanced scenarios.
-   */
-  // biome-ignore lint/suspicious/noExplicitAny: TanStack Form has 12 generic params; erased for public API simplicity
-  _tsForm: any;
+  /** Every field's current value. */
+  values: () => TValues;
+  /** One field's current value. */
+  getFieldValue: (name: string) => unknown;
+  /** One field's touched flag and errors. */
+  getFieldMeta: (name: string) => FieldMeta;
+  /** Write a value and re-run the synchronous schema. */
+  setFieldValue: (name: string, value: unknown) => void;
+  /** Mark touched and validate, which is what a blur means. */
+  validateField: (name: string, cause: "change" | "blur") => void | Promise<void>;
+  /** Validate everything, run async validators, then `onSubmit` if clean. */
+  submit: () => Promise<void>;
+  /** True while `submit()` is awaiting. */
+  isSubmitting: () => boolean;
+  /** True when no field holds an error. */
+  isValid: () => boolean;
   /** Phantom field: preserves TValues for type inference in consuming hooks. */
   _values?: TValues;
 };
 
-// ---------------------------------------------------------------------------
-// Internal validation logic
-// ---------------------------------------------------------------------------
-
-type ValidationCause = "change" | "blur" | "submit" | "mount" | "server";
-
-type ValidationLogicProps = {
-  // biome-ignore lint/suspicious/noExplicitAny: TanStack Form validator map shape is internal
-  validators?: any;
-  // biome-ignore lint/suspicious/noExplicitAny: TanStack Form API type is intentionally erased in wrapper
-  form: any;
-  event: {
-    type: ValidationCause;
-    async: boolean;
-  };
-  runValidation: (props: {
-    validators: Array<
-      | {
-          // biome-ignore lint/suspicious/noExplicitAny: validator function types are internal
-          fn: any;
-          cause: ValidationCause;
-        }
-      | undefined
-    >;
-    // biome-ignore lint/suspicious/noExplicitAny: TanStack Form API type is intentionally erased in wrapper
-    form: any;
-  }) => void;
-};
-
-const createValidationLogic = (props: ValidationLogicProps) => {
-  if (!props.validators) {
-    return props.runValidation({
-      validators: [],
-      form: props.form,
-    });
+/**
+ * Read a Standard Schema's issues into a per-field error map.
+ *
+ * The spec puts the field on `issue.path`, which is a list of keys or of
+ * `{ key }` segments depending on the library. Only the first segment is used:
+ * this form is flat, and a nested path would key an error to a field name that
+ * does not exist rather than to its parent.
+ */
+const issuesToErrors = (issues: readonly StandardSchemaV1.Issue[]): Record<string, string[]> => {
+  const errors: Record<string, string[]> = {};
+  for (const issue of issues) {
+    const head = issue.path?.[0];
+    const name =
+      typeof head === "object" && head !== null && "key" in head ? String(head.key) : String(head ?? "");
+    if (!name) continue;
+    (errors[name] ??= []).push(issue.message);
   }
-
-  const isAsync = props.event.async;
-
-  const onMountValidator = isAsync
-    ? undefined
-    : ({ fn: props.validators.onMount, cause: "mount" as const });
-
-  const onChangeValidator = {
-    fn: isAsync ? props.validators.onChangeAsync : props.validators.onChange,
-    cause: "change" as const,
-  };
-
-  const onBlurValidator = {
-    fn: isAsync ? props.validators.onBlurAsync : props.validators.onBlur,
-    cause: "blur" as const,
-  };
-
-  const onSubmitValidator = {
-    fn: isAsync ? props.validators.onSubmitAsync : props.validators.onSubmit,
-    cause: "submit" as const,
-  };
-
-  const onServerValidator = isAsync
-    ? undefined
-    : ({
-        fn: () => undefined,
-        cause: "server" as const,
-      });
-
-  switch (props.event.type) {
-    case "mount": {
-      return props.runValidation({
-        validators: [onMountValidator],
-        form: props.form,
-      });
-    }
-    case "submit": {
-      return props.runValidation({
-        validators: [
-          onChangeValidator,
-          onBlurValidator,
-          onSubmitValidator,
-          onServerValidator,
-        ],
-        form: props.form,
-      });
-    }
-    case "server": {
-      return props.runValidation({
-        validators: [],
-        form: props.form,
-      });
-    }
-    case "blur": {
-      return props.runValidation({
-        validators: [onBlurValidator, onServerValidator],
-        form: props.form,
-      });
-    }
-    case "change": {
-      // Re-run blur validators on each change so blur-origin errors are cleared
-      // immediately when the value becomes valid again.
-      return props.runValidation({
-        validators: [onChangeValidator, onBlurValidator, onServerValidator],
-        form: props.form,
-      });
-    }
-    default: {
-      throw new Error(`Unknown validation event type: ${props.event.type}`);
-    }
-  }
+  return errors;
 };
-
-// ---------------------------------------------------------------------------
-// Factory
-// ---------------------------------------------------------------------------
 
 /**
- * Creates a new form instance backed by TanStack Form.
+ * A form, without TanStack.
  *
- * ```tsx
- * const form = createForm({
- *   defaultValues: { email: "", password: "" },
- *   schema: loginSchema,          // Zod or Valibot — both work
- *   onSubmit: async (values) => { await login(values); },
- * });
+ * The engine is deliberately small because the field components already carry
+ * the hard parts: `Input`, `Select`, `Checkbox` and the rest own their own
+ * presentation, `state="invalid"` and error slot. What was missing is
+ * bookkeeping — values, touched, errors, and when to run the schema — and that
+ * is what this is.
  *
- * return (
- *   <Form form={form}>
- *     <FormField name="email" label="Email" />
- *     <FormField name="password" label="Password" inputProps={{ type: "password" }} />
- *     <FormSubmitButton>Log in</FormSubmitButton>
- *   </Form>
- * );
- * ```
+ * `@tanstack/solid-form` used to supply it, through a `_tsForm` escape hatch
+ * that leaked its twelve erased generics into this library's public type. It
+ * also peer-pinned Solid 1, which made it one of three packages standing
+ * between this library and Solid 2.
+ *
+ * Validation runs on change and on blur, and errors are only *shown* once a
+ * field is touched — the display gate lives in `useField`, so a submit can
+ * surface every error at once by touching every field.
  */
 export const createForm = <TValues extends AnyValues = AnyValues>(
   options: CreateFormOptions<TValues>,
 ): FormApi<TValues> => {
-  const hasSchema = Boolean(options.schema);
-  const hasAsyncValidators = Boolean(options.asyncValidators);
+  const [values, setValues] = createStore<TValues>({ ...options.defaultValues });
+  const [meta, setMeta] = createStore<Record<string, FieldMeta>>({});
+  const [status, setStatus] = createStore({ isSubmitting: false });
 
-  // biome-ignore lint/suspicious/noExplicitAny: TanStack Form generics are erased at our wrapper boundary
-  const tsForm: any = createTSForm(() => ({
-    defaultValues: options.defaultValues as Record<string, unknown>,
+  const metaFor = (name: string): FieldMeta => meta[name] ?? { isTouched: false, errors: [] };
 
-    validators: hasSchema || hasAsyncValidators
-      ? {
-          // biome-ignore lint/suspicious/noExplicitAny: Standard Schema bridges Zod/Valibot/etc.
-          onChange: options.schema as any,
-          // biome-ignore lint/suspicious/noExplicitAny: Standard Schema bridges Zod/Valibot/etc.
-          onBlur: options.schema as any,
-          // biome-ignore lint/suspicious/noExplicitAny: Standard Schema bridges Zod/Valibot/etc.
-          onSubmit: options.schema as any,
-          onBlurAsync: options.asyncValidators?.onBlur as any,
-          onSubmitAsync: options.asyncValidators?.onSubmit as any,
+  /** Run the schema and replace every field's errors with its verdict. */
+  const runSchema = (): boolean => {
+    const schema = options.schema;
+    if (!schema) return true;
+    const result = schema["~standard"].validate(values as TValues);
+    // A Standard Schema may validate asynchronously. The synchronous callers
+    // here (change, blur) cannot wait for one, and treating a pending result as
+    // "no errors" would clear real ones, so it is left to `submit()`.
+    if (result instanceof Promise) return true;
+    const errors = result.issues ? issuesToErrors(result.issues) : {};
+    setMeta(
+      produce((draft) => {
+        const names = new Set([...Object.keys(draft), ...Object.keys(errors)]);
+        for (const name of names) {
+          draft[name] = { isTouched: draft[name]?.isTouched ?? false, errors: errors[name] ?? [] };
         }
-      : undefined,
+      }),
+    );
+    return !result.issues?.length;
+  };
 
-    validationLogic: createValidationLogic,
+  const setFieldValue = (name: string, value: unknown): void => {
+    // Cast at the boundary: the store is typed by the caller's values, and a
+    // field name is a string the caller chose, so this is the one place the two
+    // cannot be related without making `name` a keyof and losing dotted paths.
+    (setValues as unknown as (fn: (draft: AnyValues) => void) => void)(
+      produce((draft: AnyValues) => {
+        draft[name] = value;
+      }),
+    );
+    runSchema();
+  };
 
-    onSubmit: async ({ value }: { value: unknown }) => {
-      await options.onSubmit?.(value as TValues);
-    },
-  }));
+  const validateField = (name: string, cause: "change" | "blur"): void => {
+    if (cause === "blur") {
+      setMeta(
+        produce((draft) => {
+          draft[name] = { isTouched: true, errors: draft[name]?.errors ?? [] };
+        }),
+      );
+    }
+    runSchema();
+  };
 
-  return { _tsForm: tsForm };
+  const submit = async (): Promise<void> => {
+    // Touch everything first: an untouched field hides its error, and a submit
+    // that silently does nothing because of an error you cannot see is the
+    // worst version of this.
+    setMeta(
+      produce((draft) => {
+        for (const name of Object.keys(values as AnyValues)) {
+          draft[name] = { isTouched: true, errors: draft[name]?.errors ?? [] };
+        }
+      }),
+    );
+
+    let ok = runSchema();
+
+    // An async schema is resolved here, where there is somewhere to await it.
+    const schema = options.schema;
+    if (schema) {
+      const result = schema["~standard"].validate(values as TValues);
+      if (result instanceof Promise) {
+        const resolved = await result;
+        const errors = resolved.issues ? issuesToErrors(resolved.issues) : {};
+        setMeta(
+          produce((draft) => {
+            for (const name of new Set([...Object.keys(draft), ...Object.keys(errors)])) {
+              draft[name] = { isTouched: true, errors: errors[name] ?? [] };
+            }
+          }),
+        );
+        ok = !resolved.issues?.length;
+      }
+    }
+
+    if (!ok) return;
+
+    setStatus("isSubmitting", true);
+    try {
+      const async = options.asyncValidators?.onSubmit;
+      if (async) {
+        const serverErrors = await async({ value: values as TValues });
+        if (serverErrors && Object.keys(serverErrors).length > 0) {
+          setMeta(
+            produce((draft) => {
+              for (const [name, message] of Object.entries(serverErrors)) {
+                if (!message) continue;
+                draft[name] = { isTouched: true, errors: [String(message)] };
+              }
+            }),
+          );
+          return;
+        }
+      }
+      await options.onSubmit?.(values as TValues);
+    } finally {
+      setStatus("isSubmitting", false);
+    }
+  };
+
+  return {
+    values: () => values as TValues,
+    getFieldValue: (name) => (values as AnyValues)[name],
+    getFieldMeta: metaFor,
+    setFieldValue,
+    validateField,
+    submit,
+    isSubmitting: () => status.isSubmitting,
+    isValid: () => Object.values(meta).every((m) => (m?.errors.length ?? 0) === 0),
+  };
 };
+
+export { getFirstFieldError };

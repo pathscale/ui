@@ -1,6 +1,5 @@
 import { Show, splitProps, type Component, type JSX } from "solid-js";
 import { twMerge } from "tailwind-merge";
-import type { FieldApi } from "@tanstack/solid-form";
 
 import Input from "../input";
 import type { InputFieldProps } from "../input";
@@ -75,49 +74,37 @@ const FormField: Layout<typeof componentRecipe, FormFieldProps> = () => {
   };
 
   const form = resolveForm();
-  const tsForm = form._tsForm;
+
+  // Read straight off the form rather than through a render-prop child. The
+  // engine is ours now, so field state is just three accessors, and a wrapper
+  // component that exists only to hand them down would be a layer with no job.
+  const meta = () => form.getFieldMeta(local.name);
+  const errorMessage = () =>
+    meta().isTouched ? getFirstFieldError(meta().errors) : undefined;
 
   return (
-    <tsForm.Field
-      name={local.name as never}
-      children={(field: () => FieldApi<any, any, any, any, any, any, any, any, any, any, any, any, any, any, any, any, any, any, any, any, any, any, any>) => {
-        const errorMessage = () =>
-          field().state.meta.isTouched
-            ? getFirstFieldError((field().state.meta.errors ?? []) as unknown[])
-            : undefined;
+    <div {...{ class: twMerge("flex flex-col gap-1", local.class) }} data-slot="form-field">
+      <Show when={local.label}>
+        <Label for={local.name} data-invalid={errorMessage() ? "true" : undefined}>
+          {local.label}
+        </Label>
+      </Show>
 
-        return (
-          <div
-            {...{ class: twMerge("flex flex-col gap-1", local.class) }}
-            data-slot="form-field"
-          >
-            <Show when={local.label}>
-              <Label
-                for={local.name}
-                data-invalid={Boolean(errorMessage()) ? "true" : undefined}
-              >
-                {local.label}
-              </Label>
-            </Show>
+      <Input.Field
+        {...local.inputProps}
+        id={local.name}
+        name={local.name}
+        value={String(form.getFieldValue(local.name) ?? "")}
+        onInput={(e: InputEvent & { currentTarget: HTMLInputElement }) => {
+          form.setFieldValue(local.name, e.currentTarget.value);
+        }}
+        onBlur={() => form.validateField(local.name, "blur")}
+        aria-invalid={errorMessage() ? true : undefined}
+        issues={errorMessage() ? [{ code: "invalid", message: String(errorMessage()) }] : undefined}
+      />
 
-            <Input.Field
-              {...local.inputProps}
-              id={local.name}
-              name={local.name}
-              value={String(field().state.value ?? "")}
-              onInput={(e: InputEvent & { currentTarget: HTMLInputElement }) => {
-                field().handleChange(e.currentTarget.value as never);
-              }}
-              onBlur={() => field().handleBlur()}
-              aria-invalid={Boolean(errorMessage()) ? true : undefined}
-              issues={errorMessage() ? [{ code: "invalid", message: String(errorMessage()) }] : undefined}
-            />
-
-            <FieldErrorMessage message={errorMessage()} />
-          </div>
-        );
-      }}
-    />
+      <FieldErrorMessage message={errorMessage()} />
+    </div>
   );
 };
 
