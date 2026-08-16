@@ -203,6 +203,10 @@ export function createHueShiftStore(storagePrefix: string): HueShiftStore {
   // compute overload, which types the accessor as `never`.
   const initialThemeColor: string | null = getInitial();
   const [themeColor, setThemeColorInternal] = createSignal<string | null>(initialThemeColor);
+  // Read through a plain function so the accessor is not narrowed by whatever
+  // control flow encloses a call site. Inside the MutationObserver callback
+  // below, TypeScript narrowed the captured accessor itself to `never`.
+  const readThemeColor = (): string | null => themeColor();
 
   createEffect(() => {
     const color = themeColor();
@@ -231,7 +235,7 @@ export function createHueShiftStore(storagePrefix: string): HueShiftStore {
           mutation.attributeName === "data-theme"
         ) {
           requestAnimationFrame(() => {
-            const color = themeColor();
+            const color = readThemeColor();
             if (color !== null) {
               applyThemeColor(color);
             }

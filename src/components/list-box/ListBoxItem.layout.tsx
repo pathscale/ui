@@ -44,7 +44,18 @@ type ListBoxItemContextValue = {
   renderState: () => ListBoxItemRenderProps;
 };
 
-const ListBoxItemContext = createContext<ListBoxItemContextValue>();
+/*
+ * A default, not an empty context.
+ *
+ * Solid 2's `useContext` throws when the resolved value is `undefined`, where
+ * 1.9 returned it, so a context with no default turns every standalone use of
+ * an indicator into a crash at render. The reader already had this exact
+ * fallback inline; it lives here now, where one declaration answers for every
+ * reader instead of each one repeating it.
+ */
+const ListBoxItemContext = createContext<ListBoxItemContextValue>({
+  renderState: () => ({ isSelected: false, isFocused: false, isDisabled: false }),
+});
 
 export type ListBoxItemRootProps = Omit<JSX.HTMLAttributes<HTMLDivElement>, "children"> &
   UIBaseProps & {

@@ -1,6 +1,11 @@
 {
   "compilerOptions": {
     "target": "ESNext",
+    // Stated rather than inherited. Without `lib`, `target: ESNext` gives no DOM
+    // types; Solid 1 happened to pull them in through `solid-js/web`, and Solid 2
+    // does not, which left `requestAnimationFrame` resolving to `never` and
+    // poisoning every expression inside its callback.
+    "lib": ["ESNext", "DOM", "DOM.Iterable"],
     "module": "ESNext",
     "moduleResolution": "bundler",
     "allowSyntheticDefaultImports": true,

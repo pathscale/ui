@@ -20,7 +20,10 @@ type MenuItemContextValue = {
   renderState: () => MenuItemRenderProps;
 };
 
-const MenuItemStateContext = createContext<MenuItemContextValue>();
+/* A default rather than an empty context; see ListBoxItem for why. */
+const MenuItemStateContext = createContext<MenuItemContextValue>({
+  renderState: () => ({ isSelected: false, isFocused: false, isDisabled: false }),
+});
 
 const invokeEventHandler = (handler: unknown, event: Event) => {
   if (typeof handler === "function") {
