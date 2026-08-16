@@ -9,7 +9,7 @@ import TableRow from "./TableRow.generated";
 
 export type TableExpandedRowProps = JSX.HTMLAttributes<HTMLTableRowElement> &
   UIBaseProps & {
-    colSpan: number;
+    colspan: number;
     cellClass?: string;
     cellClassName?: string;
     cellDataTheme?: string;
@@ -24,7 +24,7 @@ const TableExpandedRow: Layout<
     "children",
     "class",
     "dataTheme",
-    "colSpan",
+    "colspan",
     "cellClass",
     "cellClassName",
     "cellDataTheme",
@@ -38,7 +38,7 @@ const TableExpandedRow: Layout<
       {...rest}
     >
       <TableCell
-        colSpan={props.colSpan}
+        colspan={props.colspan}
         {...{
           class: twMerge(
             CLASSES.expandedCell,

@@ -243,7 +243,7 @@ const DataGrid: Layout<typeof componentRecipe, DataGridProps> = () => {
                       {...{ class: CLASSES.groupRow }}
                       data-slot="data-grid-group-row"
                     >
-                      <TableCell colSpan={span()}>
+                      <TableCell colspan={span()}>
                         {formatCell(group.value)}
                       </TableCell>
                     </TableRow>
@@ -281,7 +281,7 @@ const DataGrid: Layout<typeof componentRecipe, DataGridProps> = () => {
                         </TableRow>
                         <Show when={props.renderExpanded}>
                           <TableRow>
-                            <TableCell colSpan={span()}>
+                            <TableCell colspan={span()}>
                               {props.renderExpanded?.(row)}
                             </TableCell>
                           </TableRow>
@@ -296,7 +296,7 @@ const DataGrid: Layout<typeof componentRecipe, DataGridProps> = () => {
             <Show when={props.model.pageRows().length === 0}>
               <TableRow>
                 <TableCell
-                  colSpan={span()}
+                  colspan={span()}
                   {...{ class: CLASSES.empty }}
                   data-slot="data-grid-empty"
                 >

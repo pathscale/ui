@@ -1,6 +1,6 @@
 import "./Skeleton.css";
 import type { JSX } from "@solidjs/web";
-import {Index, Show} from "solid-js";
+import {For, Show} from "solid-js";
 import type { Radius, Size, UIBaseProps, Width } from "../vocabulary";
 import type { Layout } from "../../lib/layouts";
 import { skeleton } from "./Skeleton.recipe";
@@ -44,14 +44,19 @@ export const SkeletonLayout: Layout<typeof skeleton, SkeletonProps> = () => (
     aria-hidden="true"
   >
     <Show when={local.lines && local.lines > 1}>
-      <Index each={Array.from({ length: local.lines ?? 0 })}>
+      {/*
+        `For keyed={false}` is 2.0's `Index`: the row identity is its position,
+        which is right here because the items are placeholders with no identity
+        of their own. The index arrives as an accessor rather than a number.
+      */}
+      <For each={Array.from({ length: local.lines ?? 0 })} keyed={false}>
         {(_, index) => (
           <span
             {...slot.line}
-            data-last={index === (local.lines ?? 0) - 1 ? "true" : "false"}
+            data-last={index() === (local.lines ?? 0) - 1 ? "true" : "false"}
           />
         )}
-      </Index>
+      </For>
     </Show>
   </div>
 );
