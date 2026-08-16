@@ -104,9 +104,12 @@ const ColorSlider: Layout<typeof componentRecipe, ColorSliderProps> = () => {
   };
 
   const updateFromPointer = (clientX: number) => {
-    if (!sliderRef || isDisabled()) return;
+    // Bound to a const so the guard narrows: TypeScript will not carry a
+    // narrowing on a captured `let` across the closure boundary.
+    const node = sliderRef;
+    if (!node || isDisabled()) return;
 
-    const rect = sliderRef.getBoundingClientRect();
+    const rect = node.getBoundingClientRect();
     if (rect.width <= 0) return;
 
     const percent = ((clientX - rect.left) / rect.width) * 100;

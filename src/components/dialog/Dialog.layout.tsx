@@ -607,7 +607,10 @@ const DialogHeading: Layout<typeof componentRecipe, DialogHeadingProps> = () => 
 
   const context = useModalContext();
   const uniqueId = createUniqueId();
-  const headingId = () => props.id ?? `dialog-heading-${uniqueId}`;
+  // `props.id` is `string | false | undefined` in 2.0, where `false` means
+  // "remove the attribute". Only a real string can name an element for
+  // `aria-labelledby`, so a `false` falls through to the generated id.
+  const headingId = () => (typeof props.id === "string" ? props.id : undefined) ?? `dialog-heading-${uniqueId}`;
 
   createEffect(() => {
     const id = headingId();
@@ -655,7 +658,7 @@ const DialogBody: Layout<typeof componentRecipe, DialogBodyProps> = () => {
 
   const context = useModalContext();
   const uniqueId = createUniqueId();
-  const bodyId = () => props.id ?? `dialog-body-${uniqueId}`;
+  const bodyId = () => (typeof props.id === "string" ? props.id : undefined) ?? `dialog-body-${uniqueId}`;
 
   createEffect(() => {
     const id = bodyId();

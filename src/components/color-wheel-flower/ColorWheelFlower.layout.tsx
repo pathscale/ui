@@ -406,9 +406,11 @@ const ColorWheelFlower: Layout<typeof componentRecipe, ColorWheelFlowerProps> = 
   });
 
   const handlePointerMove = (event: MouseEvent) => {
-    if (!containerRef) return;
+    // Bound to a const so the guard narrows across the closure boundary.
+    const node = containerRef;
+    if (!node) return;
 
-    const rect = containerRef.getBoundingClientRect();
+    const rect = node.getBoundingClientRect();
     const x = event.clientX - rect.left - rect.width / 2;
     const y = event.clientY - rect.top - rect.height / 2;
 
@@ -466,13 +468,15 @@ const ColorWheelFlower: Layout<typeof componentRecipe, ColorWheelFlowerProps> = 
   });
 
   createEffect(() => {
-    if (!outerRingRef) return;
+    // Bound to a const so the guard narrows across the closure boundary.
+    const node = outerRingRef;
+    if (!node) return;
 
     const target = outerRingTarget();
     outerRingControl?.stop();
     outerRingControl = runMotion(
-      outerRingRef,
-      readMotionState(outerRingRef),
+      node,
+      readMotionState(node),
       target,
       ringTransition,
     );
