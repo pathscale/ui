@@ -540,6 +540,7 @@ export type {
   State,
 
   Variant,
+  Material,
   Size,
   Radius,
   Space,

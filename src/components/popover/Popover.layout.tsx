@@ -16,7 +16,8 @@ import {
 import { Portal } from "solid-js/web";
 import { twMerge } from "tailwind-merge";
 
-import type { UIBaseProps } from "../vocabulary";
+import "../_shared/material.css";
+import type { Material, UIBaseProps } from "../vocabulary";
 import {
   createOverlayPosition,
   type OverlayAnchorRect,
@@ -240,6 +241,8 @@ export type PopoverContentProps = UIBaseProps &
   Omit<JSX.HTMLAttributes<HTMLDivElement>, "children"> & {
     children: JSX.Element;
     sideOffset?: number;
+    /** What the panel is made of. `solid` by default. */
+    material?: Material;
   };
 
 const PopoverContent: Layout<typeof componentRecipe, PopoverContentProps> = () => {
@@ -249,6 +252,7 @@ const PopoverContent: Layout<typeof componentRecipe, PopoverContentProps> = () =
     "dataTheme",
     "style",
     "sideOffset",
+    "material",
   ]);
 
   const ctx = usePopoverContext();
@@ -297,6 +301,7 @@ const PopoverContent: Layout<typeof componentRecipe, PopoverContentProps> = () =
           role="dialog"
           {...{ class: twMerge(CLASSES.base, local.class) }}
           data-slot="popover-content"
+          data-material={local.material ?? "solid"}
           data-open={ctx.isOpen() ? "true" : "false"}
           data-placement={ctx.placement()}
           data-theme={local.dataTheme}

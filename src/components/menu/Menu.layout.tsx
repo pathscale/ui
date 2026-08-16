@@ -9,7 +9,8 @@ import {
 } from "solid-js";
 import { twMerge } from "tailwind-merge";
 
-import type { UIBaseProps, State } from "../vocabulary";
+import "../_shared/material.css";
+import type { Material, State, UIBaseProps } from "../vocabulary";
 import { CLASSES } from "./Menu.recipe";
 import {
   MenuContext,
@@ -67,6 +68,8 @@ export type MenuRootProps<T = unknown> = Omit<
     onAction?: (key: string) => void;
     state?: State;
     disabled?: boolean;
+    /** What the surface is made of. `solid` by default. */
+    material?: Material;
   };
 
 const MenuRoot: Layout<typeof componentRecipe, MenuRootProps> = () => {
@@ -84,6 +87,7 @@ const MenuRoot: Layout<typeof componentRecipe, MenuRootProps> = () => {
     "disallowEmptySelection",
     "onSelectionChange",
     "onAction",
+    "material",
     "state",
     "disabled",
     "role",
@@ -300,6 +304,7 @@ const MenuRoot: Layout<typeof componentRecipe, MenuRootProps> = () => {
         role={local.role ?? "menu"}
         aria-disabled={isDisabled() ? "true" : undefined}
         data-slot="menu"
+        data-material={local.material ?? "solid"}
         data-theme={local.dataTheme}
         data-selection-mode={selectionMode()}
         data-disabled={isDisabled() ? "true" : "false"}

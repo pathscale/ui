@@ -15,7 +15,8 @@ import {
 import { Portal } from "solid-js/web";
 import { twMerge } from "tailwind-merge";
 
-import type { UIBaseProps } from "../vocabulary";
+import "../_shared/material.css";
+import type { Material, UIBaseProps } from "../vocabulary";
 import { CLASSES } from "./Dialog.recipe";
 import type { Layout } from "../../lib/layouts";
 import { componentRecipe } from "./Dialog.recipe";
@@ -189,6 +190,14 @@ export type DialogContentProps = Omit<JSX.HTMLAttributes<HTMLDivElement>, "child
     scrollBehavior?: DialogScrollBehavior;
     isDismissable?: boolean;
     shouldCloseOnBackdropClick?: boolean;
+    /**
+     * What the panel is made of. `solid` by default.
+     *
+     * `glass` pairs naturally with `backdrop="transparent"`: the point of a
+     * glass dialog is seeing the page through it, and an opaque backdrop is
+     * exactly the thing that would hide it.
+     */
+    material?: Material;
   };
 
 export type DialogHeaderProps = Omit<JSX.HTMLAttributes<HTMLDivElement>, "children"> &
@@ -242,7 +251,7 @@ const DialogRoot: Layout<typeof componentRecipe, DialogRootProps> = () => {
 
   const [internalOpen, setInternalOpen] = createSignal(Boolean(local.defaultOpen));
   const [animState, setAnimState] = createSignal<DialogAnimState>(
-    Boolean(local.open ?? local.defaultOpen) ? "open" : "closed",
+    local.open ?? local.defaultOpen ? "open" : "closed",
   );
   const [contentRef, setContentRef] = createSignal<HTMLDivElement | undefined>(undefined);
   const [labelledBy, setLabelledBy] = createSignal<string | undefined>(undefined);
@@ -510,6 +519,7 @@ const DialogContent: Layout<typeof componentRecipe, DialogContentProps> = () => 
     "scrollBehavior",
     "isDismissable",
     "shouldCloseOnBackdropClick",
+    "material",
     "role",
     "tabIndex",
     "aria-labelledby",
@@ -574,6 +584,7 @@ const DialogContent: Layout<typeof componentRecipe, DialogContentProps> = () => 
                 local.class,
               ) }}
               data-slot="dialog-content"
+              data-material={local.material ?? "solid"}
               data-placement={placement()}
               data-size={size()}
               data-scroll={scrollBehavior()}

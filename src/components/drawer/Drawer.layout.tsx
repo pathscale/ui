@@ -12,7 +12,8 @@ import {
 } from "solid-js";
 import { Portal } from "solid-js/web";
 import { twMerge } from "tailwind-merge";
-import type { UIBaseProps } from "../vocabulary";
+import "../_shared/material.css";
+import type { Material, UIBaseProps } from "../vocabulary";
 import {
   focusFirst,
   isSidePlacement,
@@ -108,6 +109,8 @@ export type DrawerContentProps = Omit<JSX.HTMLAttributes<HTMLDivElement>, "child
     /** @deprecated Configure placement at Drawer.Root `placement` */
     placement?: DrawerPlacement;
     scrollBehavior?: DrawerScrollBehavior;
+    /** What the panel is made of. `solid` by default. */
+    material?: Material;
   };
 
 export type DrawerDialogSide = "left" | "right";
@@ -189,7 +192,7 @@ const DrawerRoot: Layout<typeof componentRecipe, DrawerRootProps> = () => {
 
   const [internalOpen, setInternalOpen] = createSignal(Boolean(local.defaultOpen));
   const [animState, setAnimState] = createSignal<DrawerAnimState>(
-    Boolean(local.open ?? local.defaultOpen) ? "open" : "closed",
+    local.open ?? local.defaultOpen ? "open" : "closed",
   );
 
   const [dialogRef, setDialogRef] = createSignal<HTMLDivElement | undefined>();
@@ -410,6 +413,7 @@ const DrawerContent: Layout<typeof componentRecipe, DrawerContentProps> = () => 
     "style",
     "placement",
     "scrollBehavior",
+    "material",
   ]);
 
   const ctx = useDrawerContext();
@@ -434,6 +438,7 @@ const DrawerContent: Layout<typeof componentRecipe, DrawerContentProps> = () => 
         local.class,
       )}
       data-slot="drawer-content"
+      data-material={local.material ?? "solid"}
       data-placement={placement()}
       data-scroll={scrollBehavior()}
       data-entering={ctx.animState() === "entering" ? "true" : undefined}

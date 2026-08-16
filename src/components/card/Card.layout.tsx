@@ -1,19 +1,25 @@
+import "../_shared/material.css";
 import "./Card.css";
 import { Show, type JSX } from "solid-js";
-import type { Flavor, Radius, Space, State, UIBaseProps, Variant } from "../vocabulary";
+import type { Flavor, Material, Radius, Space, State, UIBaseProps, Variant } from "../vocabulary";
 import type { Layout } from "../../lib/layouts";
 import { card, cardBody, cardFooter, cardHeader } from "./Card.recipe";
 
 /* -------------------------------------------------------------------------------------------------
  * Types
  * -----------------------------------------------------------------------------------------------*/
-export type CardMaterial = "solid" | "glass";
+/**
+ * @deprecated Use `Material` from the shared vocabulary. Kept as an alias
+ * because it is exported publicly and removing it would break call sites; it
+ * has always had exactly these two members.
+ */
+export type CardMaterial = Material;
 export type CardElevation = "none" | "sm" | "md" | "lg";
 
 export type CardProps = Omit<JSX.HTMLAttributes<HTMLDivElement>, "children"> &
   UIBaseProps & {
     variant?: Variant;
-    material?: CardMaterial;
+    material?: Material;
     elevation?: CardElevation;
     flavor?: Flavor;
     state?: State;
@@ -66,6 +72,7 @@ export const CardLayout: Layout<typeof card, CardProps> = () => {
       tabIndex={local.tabIndex ?? (local.isInteractive ? 0 : undefined)}
       onKeyDown={handleKeyDown}
       data-flavor={local.flavor ?? "neutral"}
+      data-material={local.material ?? "solid"}
     >
       <Show when={local.header}>
         <CardHeaderLayout>{local.header}</CardHeaderLayout>

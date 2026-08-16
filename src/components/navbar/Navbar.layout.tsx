@@ -5,7 +5,8 @@ import { twMerge } from "tailwind-merge";
 import NavbarSection from "./NavbarSection.generated";
 import NavbarStack from "./NavbarStack.generated";
 import NavbarRow from "./NavbarRow.generated";
-import type { UIBaseProps } from "../vocabulary";
+import "../_shared/material.css";
+import type { Material, UIBaseProps } from "../vocabulary";
 import { CLASSES } from "./Navbar.recipe";
 import type { Layout } from "../../lib/layouts";
 import { componentRecipe } from "./Navbar.recipe";
@@ -14,6 +15,8 @@ export type NavbarProps = JSX.HTMLAttributes<HTMLElement> &
   UIBaseProps & {
     as?: keyof JSX.IntrinsicElements;
     dataTheme?: string;
+    /** What the bar is made of. `solid` by default. */
+    material?: Material;
   };
 
 const Navbar: Layout<typeof componentRecipe, NavbarProps> = () => {
@@ -23,6 +26,7 @@ const Navbar: Layout<typeof componentRecipe, NavbarProps> = () => {
     "style",
     "children",
     "dataTheme",
+    "material",
   ]);
 
   const Tag = (local.as || "div") as keyof JSX.IntrinsicElements;
@@ -35,6 +39,7 @@ const Navbar: Layout<typeof componentRecipe, NavbarProps> = () => {
       aria-label="Navbar"
       {...others}
       data-theme={local.dataTheme}
+      data-material={local.material ?? "solid"}
       {...{ class: classes() }}
       style={local.style}
     >
