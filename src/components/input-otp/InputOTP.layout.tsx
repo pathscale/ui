@@ -1,6 +1,6 @@
 import "./InputOTP.css";
 import type { JSX } from "@solidjs/web";
-import {For, Show, createContext, createEffect, createMemo, createSignal, onSettled, omit, useContext, type Accessor, type Component, type ParentComponent} from "solid-js";
+import {For, Show, createContext, createMemo, createSignal, createTrackedEffect, onSettled, omit, useContext, type Accessor, type Component, type ParentComponent} from "solid-js";
 import { twMerge } from "../../lib/twMerge";
 
 import type { UIBaseProps, State, Issue } from "../vocabulary";
@@ -266,14 +266,14 @@ const InputOTPRoot: Layout<typeof componentRecipe, InputOTPRootProps> = () => {
     }
   };
 
-  createEffect(() => {
+  createTrackedEffect(() => {
     const current = value();
     if (current.length > maxLength()) {
       setValue(current.slice(0, maxLength()));
     }
   });
 
-  createEffect(() => {
+  createTrackedEffect(() => {
     if (props.value !== undefined) return;
 
     const normalized = sanitizeValue(internalValue());
@@ -282,7 +282,7 @@ const InputOTPRoot: Layout<typeof componentRecipe, InputOTPRootProps> = () => {
     }
   });
 
-  createEffect(() => {
+  createTrackedEffect(() => {
     if (!isFocused()) return;
 
     const active = clamp(activeIndex(), 0, maxLength());

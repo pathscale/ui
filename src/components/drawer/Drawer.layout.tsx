@@ -1,5 +1,5 @@
 import "./Drawer.css";
-import {Show, createEffect, createSignal, createUniqueId, onCleanup, omit, type Component, type ParentComponent} from "solid-js";
+import {Show, createSignal, createTrackedEffect, createUniqueId, onCleanup, omit, type Component, type ParentComponent} from "solid-js";
 import { Portal, type JSX} from "@solidjs/web";
 import { twMerge } from "../../lib/twMerge";
 import "../_shared/material.css";
@@ -229,7 +229,7 @@ const DrawerRoot: Layout<typeof componentRecipe, DrawerRootProps> = () => {
 
   let exitTimer: ReturnType<typeof setTimeout> | undefined;
 
-  createEffect(() => {
+  createTrackedEffect(() => {
     const open = isOpen();
     const state = animState();
 
@@ -258,7 +258,7 @@ const DrawerRoot: Layout<typeof componentRecipe, DrawerRootProps> = () => {
   });
 
   let hasScrollLock = false;
-  createEffect(() => {
+  createTrackedEffect(() => {
     const visible = isVisibleState(animState());
     if (visible && !hasScrollLock) {
       lockBodyScroll();
@@ -274,7 +274,7 @@ const DrawerRoot: Layout<typeof componentRecipe, DrawerRootProps> = () => {
   });
 
   let restoreFocusTarget: HTMLElement | null = null;
-  createEffect(() => {
+  createTrackedEffect(() => {
     const state = animState();
     const dialog = dialogRef();
     if (!isVisibleState(state) || !dialog) return;
@@ -305,10 +305,10 @@ const DrawerRoot: Layout<typeof componentRecipe, DrawerRootProps> = () => {
     };
 
     document.addEventListener("keydown", onKeyDown);
-    onCleanup(() => document.removeEventListener("keydown", onKeyDown));
+    return () => document.removeEventListener("keydown", onKeyDown);
   });
 
-  createEffect(() => {
+  createTrackedEffect(() => {
     if (animState() !== "closed" || !restoreFocusEnabled()) return;
     if (!restoreFocusTarget) return;
     queueMicrotask(() => {
@@ -406,10 +406,10 @@ const DrawerContent: Layout<typeof componentRecipe, DrawerContentProps> = () => 
   const placement = () => props.placement ?? ctx.placement();
   const scrollBehavior = () => props.scrollBehavior ?? ctx.scrollBehavior();
 
-  createEffect(() => {
+  createTrackedEffect(() => {
     if (props.placement === undefined) return;
     ctx.setPlacementOverride(props.placement);
-    onCleanup(() => ctx.setPlacementOverride(undefined));
+    return () => ctx.setPlacementOverride(undefined);
   });
 
   return (
@@ -453,18 +453,16 @@ const DrawerBackdrop: Layout<typeof componentRecipe, DrawerBackdropProps> = () =
   const ctx = useDrawerContext();
   const variant = () => props.variant ?? ctx.backdrop();
 
-  createEffect(() => {
-    if (props.isDismissable !== undefined) {
-      ctx.setBackdropDismissableOverride(props.isDismissable);
-      onCleanup(() => ctx.setBackdropDismissableOverride(undefined));
-    }
+  createTrackedEffect(() => {
+    if (props.isDismissable === undefined) return;
+    ctx.setBackdropDismissableOverride(props.isDismissable);
+    return () => ctx.setBackdropDismissableOverride(undefined);
   });
 
-  createEffect(() => {
-    if (props.shouldCloseOnBackdropClick !== undefined) {
-      ctx.setBackdropCloseOnClickOverride(props.shouldCloseOnBackdropClick);
-      onCleanup(() => ctx.setBackdropCloseOnClickOverride(undefined));
-    }
+  createTrackedEffect(() => {
+    if (props.shouldCloseOnBackdropClick === undefined) return;
+    ctx.setBackdropCloseOnClickOverride(props.shouldCloseOnBackdropClick);
+    return () => ctx.setBackdropCloseOnClickOverride(undefined);
   });
 
   const handleClick: JSX.EventHandlerUnion<HTMLDivElement, MouseEvent> = (event) => {
@@ -604,12 +602,12 @@ const DrawerHeading: Layout<typeof componentRecipe, DrawerHeadingProps> = () => 
   const uid = createUniqueId();
   const headingId = () => props.id ?? `drawer-heading-${uid}`;
 
-  createEffect(() => {
+  createTrackedEffect(() => {
     const id = headingId();
     ctx.setLabelledBy(id);
-    onCleanup(() => {
+    return () => {
       if (ctx.labelledBy() === id) ctx.setLabelledBy(undefined);
-    });
+    };
   });
 
   return (
@@ -632,12 +630,12 @@ const DrawerBody: Layout<typeof componentRecipe, DrawerBodyProps> = () => {
   const uid = createUniqueId();
   const bodyId = () => props.id ?? `drawer-body-${uid}`;
 
-  createEffect(() => {
+  createTrackedEffect(() => {
     const id = bodyId();
     ctx.setDescribedBy(id);
-    onCleanup(() => {
+    return () => {
       if (ctx.describedBy() === id) ctx.setDescribedBy(undefined);
-    });
+    };
   });
 
   return (

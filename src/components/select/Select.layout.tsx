@@ -1,5 +1,5 @@
 import "./Select.css";
-import {createContext, createEffect, createMemo, createSignal, createUniqueId, onCleanup, onSettled, omit, useContext, type Accessor, type Component} from "solid-js";
+import {createContext, createMemo, createSignal, createTrackedEffect, createUniqueId, onCleanup, onSettled, omit, useContext, type Accessor, type Component} from "solid-js";
 import { Portal, type JSX} from "@solidjs/web";
 import { twMerge } from "../../lib/twMerge";
 import {
@@ -332,7 +332,7 @@ const SelectRoot: Layout<typeof componentRecipe, SelectRootProps> = () => {
     }
   };
 
-  createEffect(() => {
+  createTrackedEffect(() => {
     if (!open()) return;
     const request = focusRequest();
     if (!request) return;
@@ -340,7 +340,7 @@ const SelectRoot: Layout<typeof componentRecipe, SelectRootProps> = () => {
     setFocusRequest(null);
   });
 
-  createEffect(() => {
+  createTrackedEffect(() => {
     const currentFocused = focusedKey();
     const currentOptions = options();
 
@@ -783,7 +783,7 @@ const SelectOption: Layout<typeof componentRecipe, SelectOptionProps> = () => {
     }
   };
 
-  createEffect(() => {
+  createTrackedEffect(() => {
     if (!optionRef) return;
     ctx.registerOption({
       key: key(),

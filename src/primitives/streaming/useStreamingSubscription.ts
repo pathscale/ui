@@ -1,4 +1,4 @@
-import { createEffect, createSignal, onCleanup, type Accessor } from "solid-js";
+import {createSignal, createTrackedEffect, onCleanup, type Accessor} from "solid-js";
 
 type MaybeAccessor<T> = T | Accessor<T>;
 
@@ -161,7 +161,7 @@ export const useStreamingSubscription = <TEvent>(
     }
   };
 
-  createEffect(() => {
+  createTrackedEffect(() => {
     const shouldEnable = resolveOption(options.enabled ?? true);
 
     if (!shouldEnable) {

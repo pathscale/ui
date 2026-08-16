@@ -1,4 +1,4 @@
-import { createSignal, createEffect, onSettled, onCleanup } from "solid-js";
+import {createSignal, createTrackedEffect, onSettled, onCleanup} from "solid-js";
 import type { UseImmersiveLandingOptions, UseImmersiveLandingReturn } from "./types";
 
 export function useImmersiveLanding(options: UseImmersiveLandingOptions): UseImmersiveLandingReturn {
@@ -25,7 +25,7 @@ export function useImmersiveLanding(options: UseImmersiveLandingOptions): UseImm
   // In controlled mode, animate transitions triggered by external page changes (e.g. browser back/forward)
   if (isControlled) {
     let prevPage = controlledPage!();
-    createEffect(() => {
+    createTrackedEffect(() => {
       const next = controlledPage!();
       if (next !== prevPage && !isTransitioning()) {
         const fromIndex = pages.indexOf(prevPage);

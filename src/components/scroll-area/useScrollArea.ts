@@ -1,4 +1,4 @@
-import { createEffect, onCleanup, type Accessor } from "solid-js";
+import {createTrackedEffect, type Accessor} from "solid-js";
 import type {
   ScrollAreaOrientation,
   ScrollAreaVisibility,
@@ -102,7 +102,7 @@ const applyAutoVisibilityDataAttributes = (
 };
 
 export const useScrollArea = (props: UseScrollAreaProps): void => {
-  createEffect(() => {
+  createTrackedEffect(() => {
     const el = props.containerRef();
     const isEnabled = props.isEnabled();
     const visibility = props.visibility();
@@ -173,12 +173,12 @@ export const useScrollArea = (props: UseScrollAreaProps): void => {
 
     resizeObserver?.observe(el);
 
-    onCleanup(() => {
+    return () => {
       el.removeEventListener("scroll", checkOverflow);
       resizeObserver?.disconnect();
       if (rafId !== null) cancelAnimationFrame(rafId);
       prevState = null;
-    });
+    };
   });
 };
 

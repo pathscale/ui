@@ -1,4 +1,4 @@
-import {createEffect, createContext, createMemo, createUniqueId, onCleanup, omit, useContext, type Component, type ParentComponent} from "solid-js";
+import {createContext, createMemo, createTrackedEffect, createUniqueId, onCleanup, omit, useContext, type Component, type ParentComponent} from "solid-js";
 import type { JSX } from "@solidjs/web";
 import { twMerge } from "../../lib/twMerge";
 
@@ -184,7 +184,7 @@ const ListBoxItemRoot: Layout<typeof componentRecipe, ListBoxItemRootProps> = ()
     }
   };
 
-  createEffect(() => {
+  createTrackedEffect(() => {
     if (!listBox || !itemRef) return;
 
     listBox.registerItem({

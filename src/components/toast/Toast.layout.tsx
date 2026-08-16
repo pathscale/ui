@@ -1,6 +1,6 @@
 import "./Toast.css";
 import type { JSX } from "@solidjs/web";
-import {For, Show, createContext, createEffect, createMemo, createSignal, onCleanup, omit, useContext, type Accessor, type Component, type ParentComponent} from "solid-js";
+import {For, Show, createContext, createMemo, createSignal, createTrackedEffect, omit, useContext, type Accessor, type Component, type ParentComponent} from "solid-js";
 import { twMerge } from "../../lib/twMerge";
 
 import Button, { type ButtonProps } from "../button";
@@ -787,7 +787,7 @@ const ToastProvider: Layout<typeof componentRecipe, ToastProviderProps> = () => 
     itemRefs.set(key, node);
   };
 
-  createEffect(() => {
+  createTrackedEffect(() => {
     const frontmostToast = toasts()[0];
     const frontmostNode = frontmostToast ? itemRefs.get(frontmostToast.key) : undefined;
 
@@ -808,9 +808,9 @@ const ToastProvider: Layout<typeof componentRecipe, ToastProviderProps> = () => 
     });
 
     resizeObserver.observe(frontmostNode);
-    onCleanup(() => {
+    return () => {
       resizeObserver.disconnect();
-    });
+    };
   });
 
   const widthValue = createMemo(() => {

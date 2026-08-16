@@ -1,6 +1,6 @@
 import "./ColorWheelFlower.css";
 import type { JSX } from "@solidjs/web";
-import {For, createEffect, createMemo, createSignal, onCleanup, omit} from "solid-js";
+import {For, createMemo, createSignal, createTrackedEffect, onCleanup, omit} from "solid-js";
 import { clsx } from "clsx";
 import { twMerge } from "../../lib/twMerge";
 import ColorSwatch from "../color-swatch";
@@ -391,7 +391,7 @@ const ColorWheelFlower: Layout<typeof componentRecipe, ColorWheelFlowerProps> = 
     });
   };
 
-  createEffect(() => {
+  createTrackedEffect(() => {
     const selected = selectedIndex();
     const current = context.color();
 
@@ -467,7 +467,7 @@ const ColorWheelFlower: Layout<typeof componentRecipe, ColorWheelFlowerProps> = 
     return `0 0 10px rgba(255,255,255,0.16), 0 0 20px ${toRgba(color, 0.35)}`;
   });
 
-  createEffect(() => {
+  createTrackedEffect(() => {
     // Bound to a const so the guard narrows across the closure boundary.
     const node = outerRingRef;
     if (!node) return;
@@ -672,7 +672,7 @@ const ColorWheelFlower: Layout<typeof componentRecipe, ColorWheelFlowerProps> = 
               };
             };
 
-            createEffect(() => {
+            createTrackedEffect(() => {
               if (!motionRef) return;
 
               const target = dotTarget();

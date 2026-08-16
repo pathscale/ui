@@ -1,4 +1,4 @@
-import {type Component, Show, For, createSignal, createMemo, createEffect, onCleanup, omit} from "solid-js";
+import {type Component, Show, For, createSignal, createMemo, createTrackedEffect, omit} from "solid-js";
 import { Portal, type JSX} from "@solidjs/web";
 import { twMerge } from "../../lib/twMerge";
 import type { ColorValue, ColorPickerContextType, ColorFormat } from "../color-wheel-flower";
@@ -135,7 +135,7 @@ const ThemeColorPicker: Layout<typeof componentRecipe, ThemeColorPickerProps> = 
     props.onColorChange?.(null, 0);
   };
 
-  createEffect(() => {
+  createTrackedEffect(() => {
     if (!isOpen()) return;
 
     const handleClickOutside = (e: MouseEvent) => {
@@ -149,10 +149,10 @@ const ThemeColorPicker: Layout<typeof componentRecipe, ThemeColorPickerProps> = 
       document.addEventListener("click", handleClickOutside);
     }, 0);
 
-    onCleanup(() => {
+    return () => {
       clearTimeout(timer);
       document.removeEventListener("click", handleClickOutside);
-    });
+    };
   });
 
   const handleKeyDown = (e: KeyboardEvent) => {
@@ -161,11 +161,11 @@ const ThemeColorPicker: Layout<typeof componentRecipe, ThemeColorPickerProps> = 
     }
   };
 
-  createEffect(() => {
+  createTrackedEffect(() => {
     const timer = setTimeout(() => {
       setFeatureAvailable(true);
     }, 0);
-    onCleanup(() => clearTimeout(timer));
+    return () => clearTimeout(timer);
   });
 
   const contextValue = (): ColorPickerContextType => ({

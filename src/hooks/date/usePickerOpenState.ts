@@ -1,4 +1,4 @@
-import { createEffect, createMemo, createSignal, onCleanup, onSettled, type Accessor } from "solid-js";
+import {createMemo, createSignal, createTrackedEffect, onCleanup, onSettled, type Accessor} from "solid-js";
 
 type PickerOpenStateOptions = {
   isOpen: Accessor<boolean | undefined>;
@@ -63,7 +63,7 @@ export const usePickerOpenState = (options: PickerOpenStateOptions) => {
     });
   });
 
-  createEffect(() => {
+  createTrackedEffect(() => {
     if (!options.isDisabled()) return;
     if (!isOpen()) return;
 

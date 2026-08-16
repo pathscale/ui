@@ -1,4 +1,4 @@
-import { createSignal, createEffect } from "solid-js";
+import {createSignal, createTrackedEffect} from "solid-js";
 
 export type SizePreset = "M" | "L" | "XL";
 
@@ -30,7 +30,7 @@ export function createSizeStore(storagePrefix: string): SizeStore {
 
   const [size, setSizeInternal] = createSignal<SizePreset>(getInitial());
 
-  createEffect(() => {
+  createTrackedEffect(() => {
     const s = size();
     if (typeof window === "undefined") return;
     localStorage.setItem(STORAGE_KEY, s);

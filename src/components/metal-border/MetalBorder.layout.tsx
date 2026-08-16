@@ -1,6 +1,6 @@
 import "./MetalBorder.css";
 import type { JSX } from "@solidjs/web";
-import {createEffect, createSignal, onCleanup, onSettled, omit} from "solid-js";
+import {createSignal, createTrackedEffect, onCleanup, onSettled, omit} from "solid-js";
 import { twMerge } from "../../lib/twMerge";
 
 import { prefersReducedMotion } from "../../motion/reduced-motion";
@@ -297,7 +297,7 @@ const MetalBorder: Layout<typeof componentRecipe, MetalBorderProps> = () => {
     }
   });
 
-  createEffect(() => {
+  createTrackedEffect(() => {
     syncResolvedTheme();
     if (!instance) return;
     updateInstance(instance, {
@@ -307,12 +307,12 @@ const MetalBorder: Layout<typeof componentRecipe, MetalBorderProps> = () => {
     if (glowHandles) glowMap.set(instance, { handles: glowHandles, theme: resolvedTheme() });
   });
 
-  createEffect(() => {
+  createTrackedEffect(() => {
     if (!instance) return;
     updateInstance(instance, { opacityMul: strength() });
   });
 
-  createEffect(() => {
+  createTrackedEffect(() => {
     if (!instance) return;
     updateInstance(instance, {
       kind: kind(),
@@ -329,12 +329,12 @@ const MetalBorder: Layout<typeof componentRecipe, MetalBorderProps> = () => {
     }
   });
 
-  createEffect(() => {
+  createTrackedEffect(() => {
     if (!instance) return;
     updateInstance(instance, { paused: effectivePaused() });
   });
 
-  createEffect(() => {
+  createTrackedEffect(() => {
     if (!instance) return;
     if (glow()) attachGlow();
     else if (glowHandles) detachGlow();

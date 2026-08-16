@@ -1,6 +1,6 @@
 import "./ColorSlider.css";
 import type { JSX } from "@solidjs/web";
-import {createEffect, createMemo, createSignal, omit, type Component} from "solid-js";
+import {createMemo, createSignal, createTrackedEffect, omit, type Component} from "solid-js";
 import { twMerge } from "../../lib/twMerge";
 import type { UIBaseProps, State } from "../vocabulary";
 import { CLASSES } from "./ColorSlider.recipe";
@@ -73,7 +73,7 @@ const ColorSlider: Layout<typeof componentRecipe, ColorSliderProps> = () => {
 
   const isControlled = () => props.value !== undefined;
 
-  createEffect(() => {
+  createTrackedEffect(() => {
     const nextType = sliderType();
     const nextValue = props.value;
 

@@ -1,6 +1,6 @@
 import "./ScrollArea.css";
 import type { JSX } from "@solidjs/web";
-import {createEffect, createMemo, omit} from "solid-js";
+import {createMemo, createTrackedEffect, omit} from "solid-js";
 import { twMerge } from "../../lib/twMerge";
 import type { UIBaseProps } from "../vocabulary";
 import { CLASSES } from "./ScrollArea.recipe";
@@ -72,7 +72,7 @@ const ScrollArea: Layout<typeof componentRecipe, ScrollAreaProps> = () => {
     onVisibilityChange: () => props.onVisibilityChange,
   });
 
-  createEffect(() => {
+  createTrackedEffect(() => {
     const el = containerRef;
 
     if (!el) return;

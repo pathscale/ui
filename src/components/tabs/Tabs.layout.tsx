@@ -1,6 +1,6 @@
 import "./Tabs.css";
 import type { JSX } from "@solidjs/web";
-import {createContext, createEffect, createMemo, createSignal, createUniqueId, onCleanup, onSettled, omit, useContext, type Accessor} from "solid-js";
+import {createContext, createMemo, createSignal, createTrackedEffect, createUniqueId, onCleanup, onSettled, omit, useContext, type Accessor} from "solid-js";
 import { twMerge } from "../../lib/twMerge";
 import { CLASSES } from "./Tabs.recipe";
 import type { Layout } from "../../lib/layouts";
@@ -228,19 +228,19 @@ const TabList: Layout<typeof componentRecipe, TabListProps> = () => {
     });
   };
 
-  createEffect(() => {
+  createTrackedEffect(() => {
     ctx.selectedKey();
     ctx.tabs();
     scheduleMeasure();
   });
 
-  createEffect(() => {
+  createTrackedEffect(() => {
     if (!listRef) return;
     const disconnect = observeTabIndicator(
       [listRef, ...ctx.tabs().map((tab) => tab.ref)],
       scheduleMeasure,
     );
-    onCleanup(disconnect);
+    return disconnect;
   });
 
   onSettled(() => {

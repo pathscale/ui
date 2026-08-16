@@ -1,6 +1,6 @@
 import "./DateRangePicker.css";
 import type { JSX } from "@solidjs/web";
-import {Show, createEffect, createMemo, createUniqueId, omit} from "solid-js";
+import {Show, createMemo, createTrackedEffect, createUniqueId, omit} from "solid-js";
 import { twMerge } from "../../lib/twMerge";
 
 import {
@@ -86,7 +86,7 @@ const DateRangePicker: Layout<typeof componentRecipe, DateRangePickerProps> = ()
     isDisabled,
   });
 
-  createEffect(() => {
+  createTrackedEffect(() => {
     if (openState.isOpen()) return;
     rangeSelection.clearPendingSelection();
   });

@@ -1,5 +1,5 @@
 import "./Dropdown.css";
-import {Show, createContext, createEffect, createSignal, createUniqueId, onCleanup, onSettled, omit, useContext, type Accessor} from "solid-js";
+import {Show, createContext, createSignal, createTrackedEffect, createUniqueId, onCleanup, onSettled, omit, useContext, type Accessor} from "solid-js";
 import { Portal, type JSX} from "@solidjs/web";
 import { twMerge } from "../../lib/twMerge";
 import {
@@ -193,7 +193,7 @@ const DropdownRoot: Layout<typeof componentRecipe, DropdownRootProps> = () => {
     }
   };
 
-  createEffect(() => {
+  createTrackedEffect(() => {
     if (!open()) return;
     const request = focusRequest();
     if (!request) return;
@@ -201,7 +201,7 @@ const DropdownRoot: Layout<typeof componentRecipe, DropdownRootProps> = () => {
     setFocusRequest(null);
   });
 
-  createEffect(() => {
+  createTrackedEffect(() => {
     const list = items();
     const currentFocused = focusedKey();
 

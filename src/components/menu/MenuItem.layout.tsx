@@ -1,4 +1,4 @@
-import {createContext, createEffect, createMemo, createUniqueId, onCleanup, omit, useContext, type Component, type ParentComponent} from "solid-js";
+import {createContext, createMemo, createTrackedEffect, createUniqueId, onCleanup, omit, useContext, type Component, type ParentComponent} from "solid-js";
 import type { JSX } from "@solidjs/web";
 import { twMerge } from "../../lib/twMerge";
 
@@ -213,7 +213,7 @@ const MenuItemRoot: Layout<typeof componentRecipe, MenuItemRootProps> = () => {
     }
   };
 
-  createEffect(() => {
+  createTrackedEffect(() => {
     if (!menu || !itemRef) return;
 
     menu.registerItem({

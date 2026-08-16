@@ -1,6 +1,6 @@
 import "./Checkbox.css";
 import type { JSX } from "@solidjs/web";
-import {Show, createEffect, createSignal, omit, useContext, type Component} from "solid-js";
+import {Show, createSignal, createTrackedEffect, omit, useContext, type Component} from "solid-js";
 import { twMerge } from "../../lib/twMerge";
 import { CheckboxGroupContext } from "../checkbox-group/context";
 import type { UIBaseProps, State, Issue } from "../vocabulary";
@@ -78,7 +78,7 @@ const Checkbox: Layout<typeof componentRecipe, CheckboxProps> = () => {
   const name = () => props.name ?? group?.name();
   const hasContent = () => props.children != null || props.description != null;
 
-  createEffect(() => {
+  createTrackedEffect(() => {
     if (!inputRef) return;
     inputRef.indeterminate = isIndeterminate();
   });

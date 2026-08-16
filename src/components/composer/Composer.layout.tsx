@@ -1,6 +1,6 @@
 import "./Composer.css";
 import type { JSX } from "@solidjs/web";
-import {For, Show, createEffect, createSignal, onSettled} from "solid-js";
+import {For, Show, createSignal, createTrackedEffect, onSettled} from "solid-js";
 import type { Layout } from "../../lib/layouts";
 import type {
   ChangeReason,
@@ -105,7 +105,7 @@ export const ComposerLayout: Layout<typeof composer, ComposerProps> = () => {
 
   // A controlled value can change without an input event — a draft restored on
   // returning to a tab. Measure that the same way as text typed into the field.
-  createEffect(() => {
+  createTrackedEffect(() => {
     value();
     measure();
   });

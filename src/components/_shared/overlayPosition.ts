@@ -1,4 +1,4 @@
-import {createEffect, createSignal, onCleanup, type Accessor} from "solid-js";
+import {createSignal, createTrackedEffect, type Accessor} from "solid-js";
 import type { JSX } from "@solidjs/web";
 
 export type OverlayPlacement = "top" | "bottom" | "left" | "right";
@@ -107,7 +107,7 @@ export const createOverlayPosition = (
   const [resolvedPlacement, setResolvedPlacement] =
     createSignal<OverlayPlacement>(options.placement());
 
-  createEffect(() => {
+  createTrackedEffect(() => {
     if (!options.open()) {
       setResolvedPlacement(options.placement());
       setStyle({ visibility: "hidden" });
@@ -223,12 +223,12 @@ export const createOverlayPosition = (
     if (trigger) resizeObserver?.observe(trigger);
     resizeObserver?.observe(overlay);
 
-    onCleanup(() => {
+    return () => {
       cancelAnimationFrame(frame);
       window.removeEventListener("resize", schedule);
       window.removeEventListener("scroll", schedule, true);
       resizeObserver?.disconnect();
-    });
+    };
   });
 
   return {

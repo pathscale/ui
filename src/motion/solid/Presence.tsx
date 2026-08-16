@@ -1,4 +1,4 @@
-import {Show, createEffect, createSignal, onCleanup, untrack} from "solid-js";
+import {Show, createSignal, createTrackedEffect, onCleanup, untrack} from "solid-js";
 import type { JSX } from "@solidjs/web";
 import { prefersReducedMotion } from "../reduced-motion";
 import { nextPresenceState, type PresenceState } from "./presenceState";
@@ -52,11 +52,11 @@ export const Presence = (props: PresenceProps) => {
     );
   };
 
-  // Drive state from the `when` prop. createEffect (not memo) because we
+  // Drive state from the `when` prop. An effect (not a memo) because we
   // perform side effects (setState, timers). untrack the state read so the
   // effect only re-runs when `props.when` changes — preventing the self-
   // triggered "potential infinite loop" Solid warns about.
-  createEffect(() => {
+  createTrackedEffect(() => {
     const when = props.when;
     untrack(() => {
       const next = nextPresenceState(state(), when);

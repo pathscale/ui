@@ -1,4 +1,4 @@
-import { createSignal, createEffect } from "solid-js";
+import {createSignal, createTrackedEffect} from "solid-js";
 
 // CSP detection: Test if inline styles are allowed
 let cspAllowsInlineStyles: boolean | null = null;
@@ -228,7 +228,7 @@ export function createHueShiftStore(storagePrefix: string): HueShiftStore {
     if (color !== null) applyThemeColor(color);
   };
 
-  createEffect(() => {
+  createTrackedEffect(() => {
     const color = themeColor();
     if (typeof window === "undefined") return;
 

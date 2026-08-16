@@ -1,4 +1,4 @@
-import {createEffect, createSignal, onCleanup, type Accessor} from "solid-js";
+import {createSignal, createTrackedEffect, type Accessor} from "solid-js";
 import type { JSX } from "@solidjs/web";
 
 export interface UseAnchoredOverlayPositionOptions {
@@ -79,7 +79,7 @@ export const useAnchoredOverlayPosition = (
     });
   };
 
-  createEffect(() => {
+  createTrackedEffect(() => {
     if (!options.isOpen()) return;
 
     requestAnimationFrame(() => {
@@ -91,10 +91,10 @@ export const useAnchoredOverlayPosition = (
     window.addEventListener("resize", onViewportChange);
     window.addEventListener("scroll", onViewportChange, true);
 
-    onCleanup(() => {
+    return () => {
       window.removeEventListener("resize", onViewportChange);
       window.removeEventListener("scroll", onViewportChange, true);
-    });
+    };
   });
 
   return {

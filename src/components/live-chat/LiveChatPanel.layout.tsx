@@ -1,6 +1,6 @@
 import "./LiveChat.css";
 import type { JSX } from "@solidjs/web";
-import {type Component, createSignal, createEffect, onCleanup, For, Show, omit} from "solid-js";
+import {type Component, createSignal, createTrackedEffect, onCleanup, For, Show, omit} from "solid-js";
 import { twMerge } from "../../lib/twMerge";
 import Button from "../button";
 import Input from "../input";
@@ -169,7 +169,7 @@ const LiveChatPanel: Layout<typeof componentRecipe, LiveChatPanelProps> = () => 
   let scrollRafNestedId: number | undefined;
 
   // Initialize with mock data or provided messages
-  createEffect(() => {
+  createTrackedEffect(() => {
     if (props.mockMode) {
       setInternalMessages(getMockMessages());
     } else if (props.messages) {
@@ -178,7 +178,7 @@ const LiveChatPanel: Layout<typeof componentRecipe, LiveChatPanelProps> = () => 
   });
 
   // Update messages when prop changes (for real-time updates)
-  createEffect(() => {
+  createTrackedEffect(() => {
     if (!props.mockMode && props.messages) {
       setInternalMessages(props.messages);
     }
@@ -229,7 +229,7 @@ const LiveChatPanel: Layout<typeof componentRecipe, LiveChatPanelProps> = () => 
     });
   };
 
-  createEffect(() => {
+  createTrackedEffect(() => {
     const messages = internalMessages();
     const nextMessageCount = messages.length;
     const nextLastMessageId = messages[messages.length - 1]?.messageId;

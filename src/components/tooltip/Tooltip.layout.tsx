@@ -1,5 +1,5 @@
 import "./Tooltip.css";
-import {createContext, createEffect, createSignal, onCleanup, omit, useContext, Show, type Component, type ParentComponent} from "solid-js";
+import {createContext, createSignal, createTrackedEffect, onCleanup, omit, useContext, Show, type Component, type ParentComponent} from "solid-js";
 import { Portal, type JSX} from "@solidjs/web";
 import { twMerge } from "../../lib/twMerge";
 import {
@@ -262,7 +262,7 @@ const TooltipContent: Layout<typeof componentRecipe, TooltipContentProps> = () =
     align: () => "center",
   });
 
-  createEffect(() => {
+  createTrackedEffect(() => {
     ctx.setPlacement(overlayPosition.placement());
   });
 

@@ -1,5 +1,5 @@
 import "./Dialog.css";
-import {Show, createContext, createEffect, createSignal, createUniqueId, onCleanup, omit, useContext, type Component, type ParentComponent} from "solid-js";
+import {Show, createContext, createSignal, createTrackedEffect, createUniqueId, onCleanup, omit, useContext, type Component, type ParentComponent} from "solid-js";
 import { Portal, type JSX} from "@solidjs/web";
 import { twMerge } from "../../lib/twMerge";
 
@@ -261,7 +261,7 @@ const DialogRoot: Layout<typeof componentRecipe, DialogRootProps> = () => {
 
   let exitTimer: ReturnType<typeof setTimeout> | undefined;
 
-  createEffect(() => {
+  createTrackedEffect(() => {
     const open = isOpen();
     const state = animState();
 
@@ -293,7 +293,7 @@ const DialogRoot: Layout<typeof componentRecipe, DialogRootProps> = () => {
   });
 
   let hasScrollLock = false;
-  createEffect(() => {
+  createTrackedEffect(() => {
     const shouldLock = isVisibleState(animState());
     if (shouldLock && !hasScrollLock) {
       lockBodyScroll();
@@ -312,7 +312,7 @@ const DialogRoot: Layout<typeof componentRecipe, DialogRootProps> = () => {
   });
 
   let restoreFocusTarget: HTMLElement | null = null;
-  createEffect(() => {
+  createTrackedEffect(() => {
     const state = animState();
     const content = contentRef();
     if (!isVisibleState(state) || !content) return;
@@ -346,12 +346,12 @@ const DialogRoot: Layout<typeof componentRecipe, DialogRootProps> = () => {
 
     document.addEventListener("keydown", handleDocumentKeyDown);
 
-    onCleanup(() => {
+    return () => {
       document.removeEventListener("keydown", handleDocumentKeyDown);
-    });
+    };
   });
 
-  createEffect(() => {
+  createTrackedEffect(() => {
     if (animState() !== "closed") return;
     if (!restoreFocusTarget) return;
 
@@ -612,15 +612,15 @@ const DialogHeading: Layout<typeof componentRecipe, DialogHeadingProps> = () => 
   // `aria-labelledby`, so a `false` falls through to the generated id.
   const headingId = () => (typeof props.id === "string" ? props.id : undefined) ?? `dialog-heading-${uniqueId}`;
 
-  createEffect(() => {
+  createTrackedEffect(() => {
     const id = headingId();
     context.setLabelledBy(id);
 
-    onCleanup(() => {
+    return () => {
       if (context.labelledBy() === id) {
         context.setLabelledBy(undefined);
       }
-    });
+    };
   });
 
   return (
@@ -660,15 +660,15 @@ const DialogBody: Layout<typeof componentRecipe, DialogBodyProps> = () => {
   const uniqueId = createUniqueId();
   const bodyId = () => (typeof props.id === "string" ? props.id : undefined) ?? `dialog-body-${uniqueId}`;
 
-  createEffect(() => {
+  createTrackedEffect(() => {
     const id = bodyId();
     context.setDescribedBy(id);
 
-    onCleanup(() => {
+    return () => {
       if (context.describedBy() === id) {
         context.setDescribedBy(undefined);
       }
-    });
+    };
   });
 
   return (

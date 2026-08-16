@@ -1,6 +1,6 @@
 import "./ComboBox.css";
 import type { JSX } from "@solidjs/web";
-import {For, Show, createContext, createEffect, createMemo, createSignal, createUniqueId, onCleanup, onSettled, omit, useContext, type Accessor, type Component, type ParentComponent} from "solid-js";
+import {For, Show, createContext, createMemo, createSignal, createTrackedEffect, createUniqueId, onCleanup, onSettled, omit, useContext, type Accessor, type Component, type ParentComponent} from "solid-js";
 import { twMerge } from "../../lib/twMerge";
 
 import type { UIBaseProps, State, Issue } from "../vocabulary";
@@ -402,7 +402,7 @@ const ComboBoxRoot: Layout<typeof componentRecipe, ComboBoxRootProps> = () => {
 
   const getOptionId = (key: string) => `${listBoxId}-${toOptionKey(key, 0)}`;
 
-  createEffect(() => {
+  createTrackedEffect(() => {
     if (props.inputValue !== undefined) return;
 
     const selected = selectedItem();
@@ -413,7 +413,7 @@ const ComboBoxRoot: Layout<typeof componentRecipe, ComboBoxRootProps> = () => {
     }
   });
 
-  createEffect(() => {
+  createTrackedEffect(() => {
     if (!isOpen()) return;
 
     const enabledItems = getEnabledItems();

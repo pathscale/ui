@@ -1,5 +1,5 @@
 import "./Popover.css";
-import {Show, createEffect, createContext, createMemo, createSignal, onCleanup, onSettled, omit, useContext, type Component, type ParentComponent} from "solid-js";
+import {Show, createContext, createMemo, createSignal, createTrackedEffect, onCleanup, onSettled, omit, useContext, type Component, type ParentComponent} from "solid-js";
 import { Portal, type JSX} from "@solidjs/web";
 import { twMerge } from "../../lib/twMerge";
 
@@ -241,7 +241,7 @@ const PopoverContent: Layout<typeof componentRecipe, PopoverContentProps> = () =
     align: () => "center",
   });
 
-  createEffect(() => {
+  createTrackedEffect(() => {
     ctx.setPlacement(overlayPosition.placement());
   });
 

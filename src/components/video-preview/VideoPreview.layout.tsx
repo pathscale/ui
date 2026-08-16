@@ -1,4 +1,4 @@
-import {type Accessor, type Component, Show, createEffect, onCleanup, omit} from "solid-js";
+import {type Accessor, type Component, Show, createTrackedEffect, onCleanup, omit} from "solid-js";
 import type { JSX } from "@solidjs/web";
 import { twMerge } from "../../lib/twMerge";
 
@@ -41,7 +41,7 @@ export const VideoPreview: Layout<typeof componentRecipe, VideoPreviewProps> = (
       {(stream) => {
         let videoRef!: HTMLVideoElement;
 
-        createEffect(() => {
+        createTrackedEffect(() => {
           videoRef.srcObject = stream();
         });
 

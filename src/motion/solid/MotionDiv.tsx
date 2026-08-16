@@ -1,4 +1,4 @@
-import {type Component, createEffect, createSignal, onCleanup, omit} from "solid-js";
+import {type Component, createSignal, createTrackedEffect, onCleanup, omit} from "solid-js";
 import type { JSX } from "@solidjs/web";
 import { runMotion } from "../engine";
 import type { MotionState, MotionTransition } from "../types";
@@ -71,7 +71,7 @@ export const MotionDiv: Component<MotionDivProps> = (props) => {
     );
   };
 
-  createEffect(() => {
+  createTrackedEffect(() => {
     const target = elementRef();
     if (!target) return;
 

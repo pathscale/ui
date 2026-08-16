@@ -1,6 +1,6 @@
 import "./Calendar.css";
 import type { JSX } from "@solidjs/web";
-import {For, Show, createEffect, createMemo, createUniqueId, omit} from "solid-js";
+import {For, Show, createMemo, createTrackedEffect, createUniqueId, omit} from "solid-js";
 import { twMerge } from "../../lib/twMerge";
 
 import {
@@ -143,7 +143,7 @@ const Calendar: Layout<typeof componentRecipe, CalendarProps> = () => {
     isDateDisabled,
   });
 
-  createEffect(() => {
+  createTrackedEffect(() => {
     navigation.syncFocusedDate(focusReferenceDate());
   });
 
