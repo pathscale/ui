@@ -118,6 +118,33 @@ if (
   );
 }
 
+// --- Stale generated output ---
+//
+// `*.generated.tsx` is gitignored and written by `layouts:generate`, which only
+// ever adds. Deleting a component therefore leaves its generated file behind,
+// still importing the `.recipe` and `.layout` that went with it, and every
+// build from then on fails inside a file nobody can see in `git status`.
+//
+// That is exactly how 2.5.0 shipped: twenty-two deleted components left
+// twenty-two orphans, `bun run check` reported them as "missing index.ts
+// barrel export" for components that no longer exist, and `bun run build` died
+// generating declarations. Caught here it names the real problem and the fix.
+for (const entry of readdirSync(COMPONENTS_DIR, { withFileTypes: true })) {
+  if (!entry.isDirectory()) continue;
+  const dir = join(COMPONENTS_DIR, entry.name);
+  for (const file of readdirSync(dir)) {
+    if (!file.endsWith(".generated.tsx")) continue;
+    const authored = join(dir, file.replace(/\.generated\.tsx$/, ".layout.tsx"));
+    if (existsSync(authored)) continue;
+    fail(
+      entry.name,
+      "stale-generated",
+      `${join(dir, file)} has no .layout.tsx source; delete it (it is gitignored build output from a component that was removed)`,
+      "Structure",
+    );
+  }
+}
+
 // --- Report ---
 
 if (violations.length === 0) {
