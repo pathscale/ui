@@ -101,7 +101,7 @@ writeFileSync(
         module: "ESNext",
         moduleResolution: "bundler",
         jsx: "preserve",
-        jsxImportSource: "solid-js",
+        jsxImportSource: "@solidjs/web",
         strict: true,
         noEmit: true,
         // true, matching every consumer app in this org. With false, the CSS
@@ -134,7 +134,6 @@ writeFileSync(
   toast,
   createDataGrid,
   createForm,
-  useTableModel,
   type Flavor,
   type Size,
   type State,
@@ -171,7 +170,7 @@ grid.addRow({ id: 1, firstName: "John" });
 export const Grid = () => <DataGrid model={grid} borders="rows" />;
 
 // Values must exist, not just types.
-export const used = [Dialog, Select, Table, Toast, toast, createForm, useTableModel, runMotion];
+export const used = [Dialog, Select, Table, Toast, toast, createForm, runMotion];
 `,
 );
 
@@ -188,11 +187,10 @@ import {
   toast,
   createDataGrid,
   createForm,
-  useTableModel,
 } from "${pkgJson.name}";
 import { runMotion } from "${pkgJson.name}/motion";
 
-export const used = [Button, Card, Dialog, Flex, Icon, toast, createDataGrid, createForm, useTableModel, runMotion];
+export const used = [Button, Card, Dialog, Flex, Icon, toast, createDataGrid, createForm, runMotion];
 `,
 );
 
