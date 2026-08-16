@@ -1,4 +1,4 @@
-import { createStore } from "solid-js";
+import { createStore, flush } from "solid-js";
 import type { StandardSchemaV1 } from "@standard-schema/spec";
 import { getFirstFieldError } from "./getFirstFieldError";
 
@@ -131,6 +131,9 @@ export const createForm = <TValues extends AnyValues = AnyValues>(
         };
       }
     });
+    // `isValid()` reads this store, and a caller asking right after a change
+    // expects the answer to describe the change it just made.
+    flush();
   };
 
   /** Run the schema synchronously. Returns false when it found problems. */
@@ -153,6 +156,10 @@ export const createForm = <TValues extends AnyValues = AnyValues>(
     (setValues as unknown as (fn: (draft: AnyValues) => void) => void)((draft) => {
       draft[name] = value;
     });
+    // Solid 2 batches writes and flushes on a microtask, so the schema would
+    // otherwise validate the value from before this call. The form's whole job
+    // is to answer "is this valid now", which means now rather than next tick.
+    flush();
     runSchema();
   };
 
@@ -161,6 +168,7 @@ export const createForm = <TValues extends AnyValues = AnyValues>(
       setMeta((draft) => {
         draft[name] = { isTouched: true, errors: draft[name]?.errors ?? [] };
       });
+      flush();
     }
     runSchema();
   };
@@ -174,6 +182,7 @@ export const createForm = <TValues extends AnyValues = AnyValues>(
         draft[name] = { isTouched: true, errors: draft[name]?.errors ?? [] };
       }
     });
+    flush();
 
     let ok = runSchema();
 
