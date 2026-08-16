@@ -162,6 +162,7 @@ import — the published size is the whole library, not what ships to your users
 | **[Live showcase](https://js.software)** | every component, rendered and interactive |
 | **[Usage reference](https://github.com/pathscale/ui/blob/master/docs/ui-usage.md)** | theming, conventions, forms, table, toast, icons, dates |
 | **[Contributing](https://github.com/pathscale/ui/blob/master/CONTRIBUTING.md)** | local setup, component checklist, proposal template |
+| **[Releasing](https://github.com/pathscale/ui/blob/master/docs/releasing.md)** | how a push to master becomes an npm version, and the gates it passes |
 
 ## License
 
