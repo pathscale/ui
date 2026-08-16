@@ -146,7 +146,7 @@ Everything is available from the root barrel. These exist when you want to be na
 
 ```ts
 import { Button } from "@pathscale/ui/components/button";
-import { useVirtualRows } from "@pathscale/ui/primitives/virtualizer";
+import { useAnchoredOverlayPosition } from "@pathscale/ui/hooks/table";
 import { runMotion, enablePopmotion } from "@pathscale/ui/motion";
 ```
 
