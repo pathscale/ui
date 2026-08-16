@@ -1,6 +1,6 @@
 import "./ComboBox.css";
 import type { JSX } from "@solidjs/web";
-import {For, Show, createContext, createMemo, createSignal, createTrackedEffect, createUniqueId, onCleanup, onSettled, omit, useContext, type Accessor, type Component, type ParentComponent} from "solid-js";
+import {For, Show, createContext, createMemo, createSignal, createTrackedEffect, createUniqueId, onSettled, omit, useContext, type Accessor, type Component, type ParentComponent} from "solid-js";
 import { twMerge } from "../../lib/twMerge";
 
 import type { UIBaseProps, State, Issue } from "../vocabulary";
@@ -440,9 +440,9 @@ const ComboBoxRoot: Layout<typeof componentRecipe, ComboBoxRootProps> = () => {
 
     document.addEventListener("pointerdown", handlePointerDown);
 
-    onCleanup(() => {
+    return () => {
       document.removeEventListener("pointerdown", handlePointerDown);
-    });
+    };
   });
 
   const hiddenValue = createMemo(() => {

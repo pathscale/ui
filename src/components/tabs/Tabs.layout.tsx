@@ -246,12 +246,12 @@ const TabList: Layout<typeof componentRecipe, TabListProps> = () => {
   onSettled(() => {
     scheduleMeasure();
     window.addEventListener("resize", scheduleMeasure);
-    onCleanup(() => {
+    return () => {
       window.removeEventListener("resize", scheduleMeasure);
       if (rafId !== undefined) {
         cancelAnimationFrame(rafId);
       }
-    });
+    };
   });
 
   return (

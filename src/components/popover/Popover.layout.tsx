@@ -1,5 +1,5 @@
 import "./Popover.css";
-import {Show, createContext, createMemo, createSignal, createTrackedEffect, onCleanup, onSettled, omit, useContext, type Component, type ParentComponent} from "solid-js";
+import {Show, createContext, createMemo, createSignal, createTrackedEffect, onSettled, omit, useContext, type Component, type ParentComponent} from "solid-js";
 import { Portal, type JSX} from "@solidjs/web";
 import { twMerge } from "../../lib/twMerge";
 
@@ -128,10 +128,10 @@ const PopoverRoot: Layout<typeof componentRecipe, PopoverRootProps> = () => {
     document.addEventListener("pointerdown", handlePointerDown);
     document.addEventListener("keydown", handleKeyDown);
 
-    onCleanup(() => {
+    return () => {
       document.removeEventListener("pointerdown", handlePointerDown);
       document.removeEventListener("keydown", handleKeyDown);
-    });
+    };
   });
 
   const ctx: PopoverContextValue = {

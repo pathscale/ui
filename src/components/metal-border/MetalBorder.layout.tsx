@@ -240,7 +240,7 @@ const MetalBorder: Layout<typeof componentRecipe, MetalBorderProps> = () => {
       });
     }
 
-    onCleanup(() => {
+    const cleanup = () => {
       resizeObserver?.disconnect();
       intersectionObserver?.disconnect();
       mutationObserver?.disconnect();
@@ -249,9 +249,9 @@ const MetalBorder: Layout<typeof componentRecipe, MetalBorderProps> = () => {
       detachGlow();
       if (instance) destroyInstance(instance);
       instance = null;
-    });
+    };
 
-    if (!canvasRef || !hostRef) return;
+    if (!canvasRef || !hostRef) return cleanup;
 
     try {
       instance = createInstance({
@@ -268,7 +268,7 @@ const MetalBorder: Layout<typeof componentRecipe, MetalBorderProps> = () => {
       setIsWebGlUnavailable(false);
     } catch {
       setIsWebGlUnavailable(true);
-      return;
+      return cleanup;
     }
 
     if (glow()) attachGlow();
@@ -295,6 +295,8 @@ const MetalBorder: Layout<typeof componentRecipe, MetalBorderProps> = () => {
       );
       intersectionObserver.observe(hostRef);
     }
+
+    return cleanup;
   });
 
   createTrackedEffect(() => {

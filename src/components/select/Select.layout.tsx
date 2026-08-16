@@ -366,9 +366,9 @@ const SelectRoot: Layout<typeof componentRecipe, SelectRootProps> = () => {
     };
 
     document.addEventListener("pointerdown", handlePointerDown);
-    onCleanup(() => {
+    return () => {
       document.removeEventListener("pointerdown", handlePointerDown);
-    });
+    };
   });
 
   return (

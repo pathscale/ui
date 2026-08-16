@@ -182,12 +182,12 @@ export function useImmersiveLanding(options: UseImmersiveLandingOptions): UseImm
     window.addEventListener("touchend", handleTouchEnd, { passive: true });
     window.addEventListener("keydown", handleKeyDown);
 
-    onCleanup(() => {
+    return () => {
       window.removeEventListener("wheel", handleWheel);
       window.removeEventListener("touchstart", handleTouchStart);
       window.removeEventListener("touchend", handleTouchEnd);
       window.removeEventListener("keydown", handleKeyDown);
-    });
+    };
   });
 
   return {

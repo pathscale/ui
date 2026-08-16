@@ -1,4 +1,4 @@
-import {createMemo, createSignal, createTrackedEffect, onCleanup, onSettled, type Accessor} from "solid-js";
+import {createMemo, createSignal, createTrackedEffect, onSettled, type Accessor} from "solid-js";
 
 type PickerOpenStateOptions = {
   isOpen: Accessor<boolean | undefined>;
@@ -57,10 +57,10 @@ export const usePickerOpenState = (options: PickerOpenStateOptions) => {
     document.addEventListener("pointerdown", handlePointerDown);
     document.addEventListener("keydown", handleGlobalKeyDown);
 
-    onCleanup(() => {
+    return () => {
       document.removeEventListener("pointerdown", handlePointerDown);
       document.removeEventListener("keydown", handleGlobalKeyDown);
-    });
+    };
   });
 
   createTrackedEffect(() => {

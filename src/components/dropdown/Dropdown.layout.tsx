@@ -229,9 +229,9 @@ const DropdownRoot: Layout<typeof componentRecipe, DropdownRootProps> = () => {
     };
 
     document.addEventListener("pointerdown", handlePointerDown);
-    onCleanup(() => {
+    return () => {
       document.removeEventListener("pointerdown", handlePointerDown);
-    });
+    };
   });
 
   return (
