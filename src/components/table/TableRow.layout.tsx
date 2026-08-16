@@ -1,5 +1,6 @@
-import { type JSX, splitProps } from "solid-js";
-import { twMerge } from "tailwind-merge";
+import {omit} from "solid-js";
+import type { JSX } from "@solidjs/web";
+import { twMerge } from "../../lib/twMerge";
 import type { Layout } from "../../lib/layouts";
 import type { UIBaseProps } from "../vocabulary";
 import { CLASSES, tableRowRecipe } from "./Table.recipe";
@@ -8,16 +9,16 @@ export type TableRowProps = JSX.HTMLAttributes<HTMLTableRowElement> &
   UIBaseProps;
 
 const TableRow: Layout<typeof tableRowRecipe, TableRowProps> = () => {
-  const [local, rest] = splitProps(props, ["children", "class", "dataTheme"]);
+  const rest = omit(props, "children", "class", "dataTheme");
 
   return (
     <tr
-      {...{ class: twMerge(CLASSES.row, local.class) }}
-      data-theme={local.dataTheme}
+      {...{ class: twMerge(CLASSES.row, props.class) }}
+      data-theme={props.dataTheme}
       data-slot="table-row"
       {...rest}
     >
-      {local.children}
+      {props.children}
     </tr>
   );
 };

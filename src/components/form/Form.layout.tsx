@@ -1,6 +1,7 @@
 import "./Form.css";
-import { splitProps, type Component, type JSX } from "solid-js";
-import { twMerge } from "tailwind-merge";
+import type { JSX } from "@solidjs/web";
+import {omit, type Component} from "solid-js";
+import { twMerge } from "../../lib/twMerge";
 
 import type { UIBaseProps } from "../vocabulary";
 import { CLASSES } from "./Form.recipe";
@@ -11,19 +12,15 @@ import { componentRecipe } from "./Form.recipe";
 export type FormRootProps = JSX.FormHTMLAttributes<HTMLFormElement> & UIBaseProps;
 
 const FormRoot: Layout<typeof componentRecipe, FormRootProps> = () => {
-  const [local, others] = splitProps(props, [
-    "class",
-    "dataTheme",
-    "style",
-  ]);
+  const others = omit(props, "class", "dataTheme", "style");
 
   return (
     <form
       {...others}
-      {...{ class: twMerge(CLASSES.base, local.class) }}
+      {...{ class: twMerge(CLASSES.base, props.class) }}
       data-slot="form"
-      data-theme={local.dataTheme}
-      style={local.style}
+      data-theme={props.dataTheme}
+      style={props.style}
     />
   );
 };
@@ -45,37 +42,30 @@ export type FormWithContextProps = Omit<JSX.FormHTMLAttributes<HTMLFormElement>,
   };
 
 const FormWithContext: Layout<typeof componentRecipe, FormWithContextProps> = () => {
-  const [local, others] = splitProps(props, [
-    "form",
-    "class",
-    "dataTheme",
-    "style",
-    "onSubmit",
-    "children",
-  ]);
+  const others = omit(props, "form", "class", "dataTheme", "style", "onSubmit", "children");
 
   const handleSubmit: JSX.EventHandlerUnion<HTMLFormElement, SubmitEvent> = (e) => {
     e.preventDefault();
     e.stopPropagation();
-    local.form._tsForm.handleSubmit();
-    if (typeof local.onSubmit === "function") {
-      local.onSubmit(e);
+    void props.form.submit();
+    if (typeof props.onSubmit === "function") {
+      props.onSubmit(e);
     }
   };
 
   return (
-    <FormContext.Provider value={local.form}>
+    <FormContext value={props.form}>
       <form
         {...others}
         onSubmit={handleSubmit}
-        {...{ class: twMerge(CLASSES.base, local.class) }}
+        {...{ class: twMerge(CLASSES.base, props.class) }}
         data-slot="form"
-        data-theme={local.dataTheme}
-        style={local.style}
+        data-theme={props.dataTheme}
+        style={props.style}
       >
-        {local.children}
+        {props.children}
       </form>
-    </FormContext.Provider>
+    </FormContext>
   );
 };
 

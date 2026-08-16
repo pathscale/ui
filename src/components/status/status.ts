@@ -1,4 +1,4 @@
-import type { JSX } from "solid-js";
+import type { JSX } from "@solidjs/web";
 
 /**
  * Aggregate status: combining many conditions into one indicator without

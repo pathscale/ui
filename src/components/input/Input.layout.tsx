@@ -1,15 +1,7 @@
 import "./Input.css";
-import {
-  Show,
-  createContext,
-  createUniqueId,
-  splitProps,
-  useContext,
-  type Accessor,
-  type Component,
-  type JSX,
-} from "solid-js";
-import { twMerge } from "tailwind-merge";
+import type { JSX } from "@solidjs/web";
+import {Show, createContext, createUniqueId, omit, useContext, type Accessor, type Component} from "solid-js";
+import { twMerge } from "../../lib/twMerge";
 import { CLASSES } from "./Input.recipe";
 import type { Layout } from "../../lib/layouts";
 import { componentRecipe } from "./Input.recipe";
@@ -38,7 +30,8 @@ type InputRootProps = Omit<JSX.HTMLAttributes<HTMLDivElement>, "children"> & {
 };
 
 const InputRoot: Layout<typeof componentRecipe, InputRootProps> = () => {
-  const [local, others] = splitProps(props, [
+  const others = omit(
+    props,
     "children",
     "class",
     "size",
@@ -46,17 +39,17 @@ const InputRoot: Layout<typeof componentRecipe, InputRootProps> = () => {
     "state",
     "issues",
     "dataTheme",
-  ]);
+  );
 
   const baseId = createUniqueId();
 
-  const size = () => local.size ?? "md";
-  const isDisabled = () => Boolean((local.state === "disabled"));
-  const isInvalid = () => Boolean((resolveState(local.state, local.issues) === "invalid"));
-  const fullWidth = () => Boolean(local.fullWidth);
+  const size = () => props.size ?? "md";
+  const isDisabled = () => Boolean((props.state === "disabled"));
+  const isInvalid = () => Boolean((resolveState(props.state, props.issues) === "invalid"));
+  const fullWidth = () => Boolean(props.fullWidth);
 
   return (
-    <InputContext.Provider
+    <InputContext
       value={{
         fieldId: () => `${baseId}-field`,
         helperId: () => `${baseId}-helper`,
@@ -71,14 +64,14 @@ const InputRoot: Layout<typeof componentRecipe, InputRootProps> = () => {
         {...{ class: twMerge(
           CLASSES.base,
           fullWidth() && CLASSES.flag.fullWidthRoot,
-          local.class,
+          props.class,
         ) }}
-        data-theme={local.dataTheme}
+        data-theme={props.dataTheme}
         data-slot="input-root"
       >
-        {local.children}
+        {props.children}
       </div>
-    </InputContext.Provider>
+    </InputContext>
   );
 };
 
@@ -95,7 +88,8 @@ type InputFieldProps = Omit<JSX.InputHTMLAttributes<HTMLInputElement>, "size" | 
 
 const InputField: Layout<typeof componentRecipe, InputFieldProps> = () => {
   const ctx = useContext(InputContext);
-  const [local, others] = splitProps(props, [
+  const others = omit(
+    props,
     "class",
     "size",
     "state",
@@ -107,14 +101,14 @@ const InputField: Layout<typeof componentRecipe, InputFieldProps> = () => {
     "dataTheme",
     "id",
     "aria-invalid",
-  ]);
+  );
 
-  const size = () => local.size ?? ctx?.size() ?? "md";
-  const isDisabled = () => Boolean((local.state === "disabled")) || Boolean(local.disabled) || Boolean(ctx?.isDisabled());
+  const size = () => props.size ?? ctx?.size() ?? "md";
+  const isDisabled = () => Boolean((props.state === "disabled")) || Boolean(props.disabled) || Boolean(ctx?.isDisabled());
   const isInvalid = () =>
-    Boolean((resolveState(local.state, local.issues) === "invalid")) || Boolean(local["aria-invalid"]) || Boolean(ctx?.isInvalid());
-  const fullWidth = () => Boolean(local.fullWidth) || Boolean(ctx?.fullWidth());
-  const inputId = () => local.id ?? ctx?.fieldId();
+    Boolean((resolveState(props.state, props.issues) === "invalid")) || Boolean(local["aria-invalid"]) || Boolean(ctx?.isInvalid());
+  const fullWidth = () => Boolean(props.fullWidth) || Boolean(ctx?.fullWidth());
+  const inputId = () => props.id ?? ctx?.fieldId();
   const ariaInvalid = () => local["aria-invalid"] ?? (isInvalid() ? true : undefined);
 
   const controlClasses = () =>
@@ -124,23 +118,23 @@ const InputField: Layout<typeof componentRecipe, InputFieldProps> = () => {
       fullWidth() && CLASSES.flag.fullWidthControl,
       isDisabled() && CLASSES.flag.disabled,
       isInvalid() && CLASSES.flag.invalid,
-      local.class,
+      props.class,
     );
 
   return (
     <div
       {...{ class: controlClasses() }}
-      data-theme={local.dataTheme}
+      data-theme={props.dataTheme}
       data-slot="input-control"
       data-disabled={isDisabled() ? "true" : "false"}
       data-invalid={isInvalid() ? "true" : "false"}
     >
-      <Show when={local.startIcon}>
+      <Show when={props.startIcon}>
         <span
           {...{ class: twMerge(CLASSES.slot.icon, CLASSES.slot.iconStart) }}
           data-slot="input-start-icon"
         >
-          {local.startIcon}
+          {props.startIcon}
         </span>
       </Show>
       <input
@@ -149,15 +143,15 @@ const InputField: Layout<typeof componentRecipe, InputFieldProps> = () => {
         {...{ class: CLASSES.slot.field }}
         disabled={isDisabled()}
         aria-disabled={isDisabled() ? "true" : "false"}
-        aria-invalid={ariaInvalid()}
+        aria-invalid={ariaInvalid() ? "true" : "false"}
         data-slot="input-field"
       />
-      <Show when={local.endIcon}>
+      <Show when={props.endIcon}>
         <span
           {...{ class: twMerge(CLASSES.slot.icon, CLASSES.slot.iconEnd) }}
           data-slot="input-end-icon"
         >
-          {local.endIcon}
+          {props.endIcon}
         </span>
       </Show>
     </div>
@@ -169,16 +163,16 @@ type InputLabelProps = JSX.LabelHTMLAttributes<HTMLLabelElement> & {
 
 const InputLabel: Layout<typeof componentRecipe, InputLabelProps> = () => {
   const ctx = useContext(InputContext);
-  const [local, others] = splitProps(props, ["class", "for", "children"]);
+  const others = omit(props, "class", "for", "children");
 
   return (
     <label
       {...others}
-      for={local.for ?? ctx?.fieldId()}
-      {...{ class: twMerge(CLASSES.slot.label, local.class) }}
+      for={props.for ?? ctx?.fieldId()}
+      {...{ class: twMerge(CLASSES.slot.label, props.class) }}
       data-slot="input-label"
     >
-      {local.children}
+      {props.children}
     </label>
   );
 };
@@ -189,22 +183,22 @@ type InputHelperProps = JSX.HTMLAttributes<HTMLParagraphElement> & {
 
 const InputHelper: Layout<typeof componentRecipe, InputHelperProps> = () => {
   const ctx = useContext(InputContext);
-  const [local, others] = splitProps(props, ["class", "invalid", "id", "children"]);
+  const others = omit(props, "class", "invalid", "id", "children");
 
-  const invalid = () => Boolean(local.invalid) || Boolean(ctx?.isInvalid());
+  const invalid = () => Boolean(props.invalid) || Boolean(ctx?.isInvalid());
 
   return (
     <p
       {...others}
-      id={local.id ?? ctx?.helperId()}
+      id={props.id ?? ctx?.helperId()}
       {...{ class: twMerge(
         CLASSES.slot.helper,
         invalid() && CLASSES.flag.helperInvalid,
-        local.class,
+        props.class,
       ) }}
       data-slot="input-helper"
     >
-      {local.children}
+      {props.children}
     </p>
   );
 };
@@ -218,7 +212,8 @@ type InputProps = Omit<InputFieldProps, "id" | "aria-describedby"> & {
 
 const InputBase: Layout<typeof componentRecipe, InputProps> = () => {
   const generatedId = createUniqueId();
-  const [local, fieldProps] = splitProps(props, [
+  const fieldProps = omit(
+    props,
     "id",
     "size",
     "fullWidth",
@@ -231,38 +226,38 @@ const InputBase: Layout<typeof componentRecipe, InputProps> = () => {
     "class",
     "aria-invalid",
     "dataTheme",
-  ]);
+  );
 
-  const inputId = () => local.id ?? `${generatedId}-input`;
-  const isDisabled = () => Boolean((local.state === "disabled")) || Boolean(local.disabled);
+  const inputId = () => props.id ?? `${generatedId}-input`;
+  const isDisabled = () => Boolean((props.state === "disabled")) || Boolean(props.disabled);
   const isInvalid = () =>
-    Boolean((resolveState(local.state, local.issues) === "invalid")) || Boolean(local["aria-invalid"]) || local.errorMessage != null;
+    Boolean((resolveState(props.state, props.issues) === "invalid")) || Boolean(local["aria-invalid"]) || props.errorMessage != null;
 
-  const helperContent = () => local.errorMessage ?? local.helperText;
+  const helperContent = () => props.errorMessage ?? props.helperText;
   const hasHelper = () => helperContent() != null;
   const helperId = () => `${inputId()}-helper`;
 
   return (
     <InputRoot
-      size={local.size}
-      fullWidth={local.fullWidth ?? true}
+      size={props.size}
+      fullWidth={props.fullWidth ?? true}
       state={isDisabled() ? "disabled" : undefined}
-      issues={local.issues}
-      dataTheme={local.dataTheme}
+      issues={props.issues}
+      dataTheme={props.dataTheme}
     >
       <>
-        <Show when={local.label}>
-          <InputLabel>{local.label}</InputLabel>
+        <Show when={props.label}>
+          <InputLabel>{props.label}</InputLabel>
         </Show>
         <InputField
           {...fieldProps}
           id={inputId()}
-          size={local.size}
+          size={props.size}
           state={isDisabled() ? "disabled" : undefined}
-          issues={local.issues}
+          issues={props.issues}
           aria-describedby={hasHelper() ? helperId() : undefined}
-          {...{ class: local.class }}
-          dataTheme={local.dataTheme}
+          {...{ class: props.class }}
+          dataTheme={props.dataTheme}
         />
         <Show when={hasHelper()}>
           <InputHelper id={helperId()} invalid={isInvalid()}>

@@ -270,7 +270,7 @@ HTML attributes and `UIBaseProps`; that is an assertion, not a gap.
 
 ### DialogContent
 
-`backdrop children isDismissable placement scrollBehavior shouldCloseOnBackdropClick size`
+`backdrop children isDismissable material placement scrollBehavior shouldCloseOnBackdropClick size`
 
 ### DialogFooter
 
@@ -318,7 +318,7 @@ HTML attributes and `UIBaseProps`; that is an assertion, not a gap.
 
 ### DrawerContent
 
-`children placement scrollBehavior`
+`children material placement scrollBehavior`
 
 ### DrawerDialog
 
@@ -422,7 +422,7 @@ HTML attributes and `UIBaseProps`; that is an assertion, not a gap.
 
 ### InputOTP
 
-`autoFocus children defaultValue disabled inputClassName inputMode issues maxLength name onChange onComplete pattern state value variant`
+`autoFocus children defaultValue disabled inputClassName inputmode issues maxLength name onChange onComplete pattern state value variant`
 
 ### InputOTPGroup
 
@@ -494,7 +494,7 @@ HTML attributes and `UIBaseProps`; that is an assertion, not a gap.
 
 ### Menu
 
-`children defaultSelectedKeys disabled disabledKeys disallowEmptySelection items onAction onSelectionChange renderEmpty selectedKeys selectionMode state`
+`children defaultSelectedKeys disabled disabledKeys disallowEmptySelection items material onAction onSelectionChange renderEmpty selectedKeys selectionMode state`
 
 ### MenuItem
 
@@ -534,7 +534,7 @@ HTML attributes and `UIBaseProps`; that is an assertion, not a gap.
 
 ### Navbar
 
-`as dataTheme`
+`as dataTheme material`
 
 ### NoiseBackground
 
@@ -634,7 +634,7 @@ HTML attributes and `UIBaseProps`; that is an assertion, not a gap.
 
 ### TableVirtualSpacerRow
 
-`colSpan height`
+`colspan height`
 
 ### Tabs
 

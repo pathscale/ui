@@ -1,4 +1,4 @@
-import type { JSX } from "solid-js";
+import type { JSX } from "@solidjs/web";
 
 /**
  * The shared parameter vocabulary.
@@ -86,6 +86,25 @@ export type State = "default" | "loading" | "error" | "invalid" | "disabled" | "
 
 /** How much emphasis, and what shape. */
 export type Variant = "solid" | "soft" | "outline" | "ghost" | "plain";
+
+/**
+ * What a surface is made of.
+ *
+ * Orthogonal to `variant`, which is how much emphasis it carries. A glass card
+ * and a solid card can both be `outline`; the difference is whether the fill is
+ * a colour or a blurred view of whatever is behind it.
+ *
+ * `glass` reads the `--glass-*` family, which `src/styles/glass.ts` derives
+ * from three numbers. Every read carries a fallback, so a theme that sets none
+ * of them still renders — an undefined custom property makes CSS drop the whole
+ * declaration rather than fall back, which is how a partial set produced a card
+ * with no background at all.
+ *
+ * Only surfaces that can hold content take this. A `Button` is not made of
+ * anything: it is a control, and blurring what is behind a 32px pill reads as a
+ * smudge rather than as material.
+ */
+export type Material = "solid" | "glass";
 
 /** One scale, everywhere. */
 export type Size = "xs" | "sm" | "md" | "lg" | "xl";

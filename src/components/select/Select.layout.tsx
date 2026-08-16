@@ -1,20 +1,7 @@
 import "./Select.css";
-import {
-  createContext,
-  createEffect,
-  createMemo,
-  createSignal,
-  createUniqueId,
-  onCleanup,
-  onMount,
-  splitProps,
-  useContext,
-  type Accessor,
-  type Component,
-  type JSX,
-} from "solid-js";
-import { Portal } from "solid-js/web";
-import { twMerge } from "tailwind-merge";
+import {createContext, createEffect, createMemo, createSignal, createUniqueId, onCleanup, onSettled, omit, useContext, type Accessor, type Component} from "solid-js";
+import { Portal, type JSX} from "@solidjs/web";
+import { twMerge } from "../../lib/twMerge";
 import {
   createOverlayPosition,
   type OverlayPlacement,
@@ -146,7 +133,8 @@ export type SelectRootProps = Omit<JSX.HTMLAttributes<HTMLDivElement>, "onChange
   };
 
 const SelectRoot: Layout<typeof componentRecipe, SelectRootProps> = () => {
-  const [local, others] = splitProps(props, [
+  const others = omit(
+    props,
     "children",
     "class",
     "dataTheme",
@@ -168,23 +156,23 @@ const SelectRoot: Layout<typeof componentRecipe, SelectRootProps> = () => {
     "defaultOpen",
     "onOpenChange",
     "ref",
-  ]);
+  );
 
   const baseId = createUniqueId();
   const triggerId = `${baseId}-trigger`;
   const listboxId = `${baseId}-listbox`;
 
-  const selectionMode = () => local.selectionMode ?? "single";
-  const variant = () => local.variant ?? "primary";
-  const fullWidth = () => Boolean(local.fullWidth);
-  const disabled = () => Boolean((local.state === "disabled")) || Boolean(local.disabled);
+  const selectionMode = () => props.selectionMode ?? "single";
+  const variant = () => props.variant ?? "primary";
+  const fullWidth = () => Boolean(props.fullWidth);
+  const disabled = () => Boolean((props.state === "disabled")) || Boolean(props.disabled);
 
   const initialSelected = normalizeSelection(
     selectionMode(),
-    local.defaultSelectedKeys ?? local.defaultValue,
+    props.defaultSelectedKeys ?? props.defaultValue,
   );
   const [internalSelectedKeys, setInternalSelectedKeys] = createSignal<string[]>(initialSelected);
-  const [internalOpen, setInternalOpen] = createSignal(Boolean(local.defaultOpen));
+  const [internalOpen, setInternalOpen] = createSignal(Boolean(props.defaultOpen));
   const [options, setOptions] = createSignal<SelectOptionRecord[]>([]);
   const [optionTextByKey, setOptionTextByKey] = createSignal(new Map<string, string>());
   const [focusedKey, setFocusedKey] = createSignal<string | undefined>();
@@ -193,13 +181,13 @@ const SelectRoot: Layout<typeof componentRecipe, SelectRootProps> = () => {
   const [popoverRef, setPopoverRefSignal] = createSignal<HTMLDivElement | undefined>();
   const [rootRef, setRootRefSignal] = createSignal<HTMLDivElement | undefined>();
 
-  const open = () => (local.open !== undefined ? Boolean(local.open) : internalOpen());
-  const placement = () => local.placement ?? "bottom";
-  const autoFlip = () => local.autoFlip ?? true;
+  const open = () => (props.open !== undefined ? Boolean(props.open) : internalOpen());
+  const placement = () => props.placement ?? "bottom";
+  const autoFlip = () => props.autoFlip ?? true;
 
   const selectedKeys = createMemo(() => {
     const controlledValue =
-      local.selectedKeys !== undefined ? local.selectedKeys : local.value;
+      props.selectedKeys !== undefined ? props.selectedKeys : props.value;
     if (controlledValue !== undefined) {
       return normalizeSelection(selectionMode(), controlledValue);
     }
@@ -256,12 +244,12 @@ const SelectRoot: Layout<typeof componentRecipe, SelectRootProps> = () => {
   };
 
   const emitSelectionChange = (nextKeys: string[]) => {
-    if (local.selectedKeys === undefined && local.value === undefined) {
+    if (props.selectedKeys === undefined && props.value === undefined) {
       setInternalSelectedKeys(nextKeys);
     }
 
-    local.onSelectionChange?.(new Set(nextKeys));
-    local.onChange?.(
+    props.onSelectionChange?.(new Set(nextKeys));
+    props.onChange?.(
       selectionMode() === "multiple" ? nextKeys : (nextKeys[0] ?? null),
     );
   };
@@ -269,10 +257,10 @@ const SelectRoot: Layout<typeof componentRecipe, SelectRootProps> = () => {
   const setOpen = (next: boolean, options?: { focusTrigger?: boolean }) => {
     if (next && disabled()) return;
 
-    if (local.open === undefined) {
+    if (props.open === undefined) {
       setInternalOpen(next);
     }
-    local.onOpenChange?.(next);
+    props.onOpenChange?.(next);
 
     if (!next) {
       setFocusRequest(null);
@@ -339,8 +327,8 @@ const SelectRoot: Layout<typeof componentRecipe, SelectRootProps> = () => {
 
   const setRootRef = (el: HTMLDivElement) => {
     setRootRefSignal(el);
-    if (typeof local.ref === "function") {
-      local.ref(el);
+    if (typeof props.ref === "function") {
+      props.ref(el);
     }
   };
 
@@ -367,7 +355,7 @@ const SelectRoot: Layout<typeof componentRecipe, SelectRootProps> = () => {
     }
   });
 
-  onMount(() => {
+  onSettled(() => {
     const handlePointerDown = (event: PointerEvent) => {
       if (!open()) return;
       const target = event.target as Node;
@@ -384,14 +372,14 @@ const SelectRoot: Layout<typeof componentRecipe, SelectRootProps> = () => {
   });
 
   return (
-    <SelectContext.Provider
+    <SelectContext
       value={{
         open,
         variant,
         fullWidth,
         disabled,
         selectionMode,
-        placeholder: () => local.placeholder ?? "Select an option",
+        placeholder: () => props.placeholder ?? "Select an option",
         triggerId,
         listboxId,
         placement,
@@ -423,17 +411,17 @@ const SelectRoot: Layout<typeof componentRecipe, SelectRootProps> = () => {
           CLASSES.base,
           CLASSES.variant[variant()],
           fullWidth() && CLASSES.flag.fullWidth,
-          local.class,
+          props.class,
         ) }}
-        data-theme={local.dataTheme}
+        data-theme={props.dataTheme}
         data-slot="ui-select"
         data-open={open() ? "true" : "false"}
         data-disabled={disabled() ? "true" : "false"}
         data-selection-mode={selectionMode()}
       >
-        {local.children}
+        {props.children}
       </div>
-    </SelectContext.Provider>
+    </SelectContext>
   );
 };
 
@@ -445,7 +433,8 @@ export type SelectTriggerProps = JSX.ButtonHTMLAttributes<HTMLButtonElement> &
 
 const SelectTrigger: Layout<typeof componentRecipe, SelectTriggerProps> = () => {
   const ctx = useContext(SelectContext);
-  const [local, others] = splitProps(props, [
+  const others = omit(
+    props,
     "children",
     "class",
     "dataTheme",
@@ -456,49 +445,49 @@ const SelectTrigger: Layout<typeof componentRecipe, SelectTriggerProps> = () => 
     "onKeyDown",
     "ref",
     "type",
-  ]);
+  );
 
   if (!ctx) {
     return (
       <button
         {...others}
-        {...{ class: twMerge(CLASSES.slot.trigger, local.class) }}
-        data-theme={local.dataTheme}
-        type={local.type ?? "button"}
+        {...{ class: twMerge(CLASSES.slot.trigger, props.class) }}
+        data-theme={props.dataTheme}
+        type={props.type ?? "button"}
       >
-        {local.startIcon ? (
+        {props.startIcon ? (
           <span {...{ class: twMerge(CLASSES.slot.icon, CLASSES.slot.iconStart) }} data-slot="ui-select-trigger-start-icon">
-            {local.startIcon}
+            {props.startIcon}
           </span>
         ) : null}
-        {local.children}
-        {local.endIcon ? (
+        {props.children}
+        {props.endIcon ? (
           <span {...{ class: twMerge(CLASSES.slot.icon, CLASSES.slot.iconEnd) }} data-slot="ui-select-trigger-end-icon">
-            {local.endIcon}
+            {props.endIcon}
           </span>
         ) : null}
       </button>
     );
   }
 
-  const isDisabled = () => Boolean(local.disabled) || ctx.disabled();
+  const isDisabled = () => Boolean(props.disabled) || ctx.disabled();
 
   const setRef = (el: HTMLButtonElement) => {
     ctx.setTriggerRef(el);
-    if (typeof local.ref === "function") {
-      local.ref(el);
+    if (typeof props.ref === "function") {
+      props.ref(el);
     }
   };
 
   const handleClick: JSX.EventHandlerUnion<HTMLButtonElement, MouseEvent> = (event) => {
-    invokeEventHandler(local.onClick, event);
+    invokeEventHandler(props.onClick, event);
     if (event.defaultPrevented) return;
     if (isDisabled()) return;
     ctx.toggleOpen();
   };
 
   const handleKeyDown: JSX.EventHandlerUnion<HTMLButtonElement, KeyboardEvent> = (event) => {
-    invokeEventHandler(local.onKeyDown, event);
+    invokeEventHandler(props.onKeyDown, event);
     if (event.defaultPrevented) return;
     if (isDisabled()) return;
 
@@ -542,32 +531,32 @@ const SelectTrigger: Layout<typeof componentRecipe, SelectTriggerProps> = () => 
       {...others}
       ref={setRef}
       id={ctx.triggerId}
-      type={local.type ?? "button"}
+      type={props.type ?? "button"}
       {...{ class: twMerge(
         CLASSES.slot.trigger,
         ctx.fullWidth() && CLASSES.slot.triggerFullWidth,
-        local.class,
+        props.class,
       ) }}
-      data-theme={local.dataTheme}
+      data-theme={props.dataTheme}
       data-slot="ui-select-trigger"
       data-open={ctx.open() ? "true" : "false"}
       aria-haspopup="listbox"
-      aria-expanded={ctx.open()}
+      aria-expanded={ctx.open() ? "true" : "false"}
       aria-controls={ctx.listboxId}
       aria-disabled={isDisabled() ? "true" : "false"}
       disabled={isDisabled()}
       onClick={handleClick}
       onKeyDown={handleKeyDown}
     >
-      {local.startIcon ? (
+      {props.startIcon ? (
         <span {...{ class: twMerge(CLASSES.slot.icon, CLASSES.slot.iconStart) }} data-slot="ui-select-trigger-start-icon">
-          {local.startIcon}
+          {props.startIcon}
         </span>
       ) : null}
-      {local.children}
-      {local.endIcon ? (
+      {props.children}
+      {props.endIcon ? (
         <span {...{ class: twMerge(CLASSES.slot.icon, CLASSES.slot.iconEnd) }} data-slot="ui-select-trigger-end-icon">
-          {local.endIcon}
+          {props.endIcon}
         </span>
       ) : null}
     </button>
@@ -579,11 +568,7 @@ export type SelectValueProps = JSX.HTMLAttributes<HTMLSpanElement> &
 
 const SelectValue: Layout<typeof componentRecipe, SelectValueProps> = () => {
   const ctx = useContext(SelectContext);
-  const [local, others] = splitProps(props, [
-    "children",
-    "class",
-    "dataTheme",
-  ]);
+  const others = omit(props, "children", "class", "dataTheme");
 
   const placeholder = () => ctx?.placeholder() ?? "";
   const text = () => ctx?.selectedText() ?? "";
@@ -592,12 +577,12 @@ const SelectValue: Layout<typeof componentRecipe, SelectValueProps> = () => {
   return (
     <span
       {...others}
-      {...{ class: twMerge(CLASSES.slot.value, local.class) }}
-      data-theme={local.dataTheme}
+      {...{ class: twMerge(CLASSES.slot.value, props.class) }}
+      data-theme={props.dataTheme}
       data-slot="ui-select-value"
       data-placeholder={isPlaceholder() ? "true" : "false"}
     >
-      {local.children ?? (isPlaceholder() ? placeholder() : text())}
+      {props.children ?? (isPlaceholder() ? placeholder() : text())}
     </span>
   );
 };
@@ -610,32 +595,26 @@ export type SelectIndicatorProps = JSX.HTMLAttributes<HTMLSpanElement> &
 
 const SelectIndicator: Layout<typeof componentRecipe, SelectIndicatorProps> = () => {
   const ctx = useContext(SelectContext);
-  const [local, others] = splitProps(props, [
-    "children",
-    "class",
-    "dataTheme",
-    "startIcon",
-    "endIcon",
-  ]);
+  const others = omit(props, "children", "class", "dataTheme", "startIcon", "endIcon");
 
   return (
     <span
       {...others}
-      {...{ class: twMerge(CLASSES.slot.indicator, local.class) }}
-      data-theme={local.dataTheme}
+      {...{ class: twMerge(CLASSES.slot.indicator, props.class) }}
+      data-theme={props.dataTheme}
       data-slot="ui-select-indicator"
       data-open={ctx?.open() ? "true" : "false"}
       aria-hidden="true"
     >
-      {local.startIcon ? (
+      {props.startIcon ? (
         <span {...{ class: twMerge(CLASSES.slot.icon, CLASSES.slot.iconStart) }} data-slot="ui-select-indicator-start-icon">
-          {local.startIcon}
+          {props.startIcon}
         </span>
       ) : null}
-      {local.children}
-      {local.endIcon ? (
+      {props.children}
+      {props.endIcon ? (
         <span {...{ class: twMerge(CLASSES.slot.icon, CLASSES.slot.iconEnd) }} data-slot="ui-select-indicator-end-icon">
-          {local.endIcon}
+          {props.endIcon}
         </span>
       ) : null}
     </span>
@@ -647,13 +626,7 @@ export type SelectPopoverProps = JSX.HTMLAttributes<HTMLDivElement> &
 
 const SelectPopover: Layout<typeof componentRecipe, SelectPopoverProps> = () => {
   const ctx = useContext(SelectContext);
-  const [local, others] = splitProps(props, [
-    "children",
-    "class",
-    "dataTheme",
-    "style",
-    "onPointerDown",
-  ]);
+  const others = omit(props, "children", "class", "dataTheme", "style", "onPointerDown");
 
   const overlayPosition = createOverlayPosition({
     open: () => ctx?.open() ?? false,
@@ -670,9 +643,9 @@ const SelectPopover: Layout<typeof componentRecipe, SelectPopoverProps> = () => 
   const popoverStyle = () => {
     const overlayStyle = overlayPosition.style();
 
-    if (typeof local.style === "string") {
+    if (typeof props.style === "string") {
       return [
-        local.style,
+        props.style,
         Object.entries(overlayStyle)
           .map(([key, value]) => `${key}: ${String(value)}`)
           .join("; "),
@@ -682,7 +655,7 @@ const SelectPopover: Layout<typeof componentRecipe, SelectPopoverProps> = () => 
     }
 
     return {
-      ...(local.style ?? {}),
+      ...(props.style ?? {}),
       ...overlayStyle,
     } as JSX.CSSProperties;
   };
@@ -692,18 +665,21 @@ const SelectPopover: Layout<typeof componentRecipe, SelectPopoverProps> = () => 
       <div
         {...others}
         ref={ctx?.setPopoverRef}
-        {...{ class: twMerge(CLASSES.slot.popover, local.class) }}
-        data-theme={local.dataTheme}
+        {...{ class: twMerge(CLASSES.slot.popover, props.class) }}
+        data-theme={props.dataTheme}
         data-slot="ui-select-popover"
         data-open={ctx?.open() ? "true" : "false"}
         data-placement={overlayPosition.placement()}
         style={popoverStyle()}
-        on:pointerdown={(event) => {
-          invokeEventHandler(local.onPointerDown, event);
+        // `on:pointerdown` was the 1.x escape hatch for a non-delegated
+        // listener. 2.0 dropped the namespace; the ordinary prop is what is
+        // left, and the stopPropagation below is what mattered here anyway.
+        onPointerDown={(event) => {
+          invokeEventHandler(props.onPointerDown, event);
           if (!event.defaultPrevented) event.stopPropagation();
         }}
       >
-        {local.children}
+        {props.children}
       </div>
     </Portal>
   );
@@ -714,24 +690,20 @@ export type SelectListboxProps = JSX.HTMLAttributes<HTMLDivElement> &
 
 const SelectListbox: Layout<typeof componentRecipe, SelectListboxProps> = () => {
   const ctx = useContext(SelectContext);
-  const [local, others] = splitProps(props, [
-    "children",
-    "class",
-    "dataTheme",
-  ]);
+  const others = omit(props, "children", "class", "dataTheme");
 
   return (
     <div
       {...others}
       id={ctx?.listboxId}
-      {...{ class: twMerge(CLASSES.slot.listbox, local.class) }}
-      data-theme={local.dataTheme}
+      {...{ class: twMerge(CLASSES.slot.listbox, props.class) }}
+      data-theme={props.dataTheme}
       data-slot="ui-select-listbox"
       role="listbox"
       aria-multiselectable={ctx?.selectionMode() === "multiple" ? "true" : undefined}
       tabindex={-1}
     >
-      {local.children}
+      {props.children}
     </div>
   );
 };
@@ -747,7 +719,8 @@ export type SelectOptionProps = Omit<JSX.ButtonHTMLAttributes<HTMLButtonElement>
 
 const SelectOption: Layout<typeof componentRecipe, SelectOptionProps> = () => {
   const ctx = useContext(SelectContext);
-  const [local, others] = splitProps(props, [
+  const others = omit(
+    props,
     "children",
     "class",
     "dataTheme",
@@ -762,26 +735,26 @@ const SelectOption: Layout<typeof componentRecipe, SelectOptionProps> = () => {
     "onMouseEnter",
     "ref",
     "type",
-  ]);
+  );
 
   if (!ctx) {
     return (
       <button
         {...others}
-        {...{ class: twMerge(CLASSES.slot.option, local.class) }}
-        data-theme={local.dataTheme}
-        type={local.type ?? "button"}
+        {...{ class: twMerge(CLASSES.slot.option, props.class) }}
+        data-theme={props.dataTheme}
+        type={props.type ?? "button"}
       >
-        {local.startIcon ? (
+        {props.startIcon ? (
           <span {...{ class: twMerge(CLASSES.slot.icon, CLASSES.slot.iconStart) }} data-slot="ui-select-option-start-icon">
-            {local.startIcon}
+            {props.startIcon}
           </span>
         ) : null}
-        {local.children}
-        {local.endIcon ? (
+        {props.children}
+        {props.endIcon ? (
           <span {...{ class: CLASSES.slot.optionIndicator }} data-slot="ui-select-option-indicator" aria-hidden="true">
             <span {...{ class: twMerge(CLASSES.slot.icon, CLASSES.slot.iconEnd) }} data-slot="ui-select-option-end-icon">
-              {local.endIcon}
+              {props.endIcon}
             </span>
           </span>
         ) : null}
@@ -789,8 +762,8 @@ const SelectOption: Layout<typeof componentRecipe, SelectOptionProps> = () => {
     );
   }
 
-  const key = () => String(local.value);
-  const isDisabled = () => Boolean((local.state === "disabled")) || Boolean(local.disabled) || ctx.disabled();
+  const key = () => String(props.value);
+  const isDisabled = () => Boolean((props.state === "disabled")) || Boolean(props.disabled) || ctx.disabled();
   const isSelected = () => ctx.isSelected(key());
   const isFocused = () => ctx.focusedKey() === key();
   let optionRef: HTMLButtonElement | undefined;
@@ -800,13 +773,13 @@ const SelectOption: Layout<typeof componentRecipe, SelectOptionProps> = () => {
     ctx.registerOption({
       key: key(),
       textValue:
-        local.textValue ??
-        (typeof local.children === "string" ? local.children : key()),
+        props.textValue ??
+        (typeof props.children === "string" ? props.children : key()),
       disabled: isDisabled(),
       ref: el,
     });
-    if (typeof local.ref === "function") {
-      local.ref(el);
+    if (typeof props.ref === "function") {
+      props.ref(el);
     }
   };
 
@@ -815,8 +788,8 @@ const SelectOption: Layout<typeof componentRecipe, SelectOptionProps> = () => {
     ctx.registerOption({
       key: key(),
       textValue:
-        local.textValue ??
-        (typeof local.children === "string" ? local.children : key()),
+        props.textValue ??
+        (typeof props.children === "string" ? props.children : key()),
       disabled: isDisabled(),
       ref: optionRef,
     });
@@ -827,21 +800,21 @@ const SelectOption: Layout<typeof componentRecipe, SelectOptionProps> = () => {
   });
 
   const handleClick: JSX.EventHandlerUnion<HTMLButtonElement, MouseEvent> = (event) => {
-    invokeEventHandler(local.onClick, event);
+    invokeEventHandler(props.onClick, event);
     if (event.defaultPrevented) return;
     if (isDisabled()) return;
     ctx.selectKey(key());
   };
 
   const handleMouseEnter: JSX.EventHandlerUnion<HTMLButtonElement, MouseEvent> = (event) => {
-    invokeEventHandler(local.onMouseEnter, event);
+    invokeEventHandler(props.onMouseEnter, event);
     if (event.defaultPrevented) return;
     if (isDisabled()) return;
     ctx.setFocusedKey(key());
   };
 
   const handleKeyDown: JSX.EventHandlerUnion<HTMLButtonElement, KeyboardEvent> = (event) => {
-    invokeEventHandler(local.onKeyDown, event);
+    invokeEventHandler(props.onKeyDown, event);
     if (event.defaultPrevented) return;
     if (isDisabled()) return;
 
@@ -890,15 +863,15 @@ const SelectOption: Layout<typeof componentRecipe, SelectOptionProps> = () => {
     <button
       {...others}
       ref={setRef}
-      type={local.type ?? "button"}
-      {...{ class: twMerge(CLASSES.slot.option, local.class) }}
-      data-theme={local.dataTheme}
+      type={props.type ?? "button"}
+      {...{ class: twMerge(CLASSES.slot.option, props.class) }}
+      data-theme={props.dataTheme}
       data-slot="ui-select-option"
       data-selected={isSelected() ? "true" : "false"}
       data-focused={isFocused() ? "true" : "false"}
       data-disabled={isDisabled() ? "true" : "false"}
       role="option"
-      aria-selected={isSelected()}
+      aria-selected={isSelected() ? "true" : "false"}
       aria-disabled={isDisabled() ? "true" : "false"}
       disabled={isDisabled()}
       tabindex={-1}
@@ -907,18 +880,18 @@ const SelectOption: Layout<typeof componentRecipe, SelectOptionProps> = () => {
       onFocus={() => ctx.setFocusedKey(key())}
       onKeyDown={handleKeyDown}
     >
-      {local.startIcon ? (
+      {props.startIcon ? (
         <span {...{ class: twMerge(CLASSES.slot.icon, CLASSES.slot.iconStart) }} data-slot="ui-select-option-start-icon">
-          {local.startIcon}
+          {props.startIcon}
         </span>
       ) : null}
       <span {...{ class: CLASSES.slot.optionLabel }} data-slot="ui-select-option-label">
-        {local.children}
+        {props.children}
       </span>
-      {local.endIcon ? (
+      {props.endIcon ? (
         <span {...{ class: CLASSES.slot.optionIndicator }} data-slot="ui-select-option-indicator" aria-hidden="true">
           <span {...{ class: twMerge(CLASSES.slot.icon, CLASSES.slot.iconEnd) }} data-slot="ui-select-option-end-icon">
-            {local.endIcon}
+            {props.endIcon}
           </span>
         </span>
       ) : null}

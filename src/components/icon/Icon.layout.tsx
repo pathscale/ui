@@ -1,5 +1,6 @@
 import "./Icon.css";
-import { Show, type JSX } from "solid-js";
+import type { JSX } from "@solidjs/web";
+import {Show} from "solid-js";
 import type { Layout } from "../../lib/layouts";
 import type { Flavor, UIBaseProps } from "../vocabulary";
 import { icon } from "./Icon.recipe";
@@ -56,7 +57,11 @@ export const IconLayout: Layout<typeof icon, IconProps> = () => (
       when={typeof local.src === "string"}
       fallback={<span {...slot.glyph}>{local.src}</span>}
     >
-      <span {...slot.glyph} classList={{ [preloadClasses(local.src as string)]: true }} />
+      {/*
+        `classList` is gone in 2.0: `class` takes the same record and applies
+        the truthy keys, which is what this was always doing with one of them.
+      */}
+      <span {...slot.glyph} class={preloadClasses(local.src as string)} />
     </Show>
   </span>
 );

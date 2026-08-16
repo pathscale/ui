@@ -1,4 +1,4 @@
-import { splitProps, type ParentComponent } from "solid-js";
+import { omit, type ParentComponent } from "solid-js";
 import Button from "../button";
 import type { ButtonProps } from "../button";
 import { useFormContext } from "../../hooks/form/FormContext";
@@ -37,32 +37,26 @@ export type FormSubmitButtonProps = Omit<ButtonProps, "type" | "isDisabled" | "i
  * ```
  */
 const FormSubmitButton: Layout<typeof componentRecipe, FormSubmitButtonProps> = () => {
-  const [local, others] = splitProps(props, ["form", "children"]);
+  const others = omit(props, "form", "children");
 
   const resolveForm = (): AnyFormApi => {
-    if (local.form != null) return local.form;
+    if (props.form != null) return props.form;
     return useFormContext();
   };
 
   const form = resolveForm();
-  const tsForm = form._tsForm;
 
+  // `<tsForm.Subscribe>` was a render prop whose only job was to deliver two
+  // booleans. Both are accessors on the form now, so the component reads them
+  // directly and Solid tracks them the same way.
   return (
-    <tsForm.Subscribe
-      selector={(s: { canSubmit: boolean; isSubmitting: boolean }) => ({
-        canSubmit: s.canSubmit,
-        isSubmitting: s.isSubmitting,
-      })}
-      children={(state: () => { canSubmit: boolean; isSubmitting: boolean }) => (
-        <Button
-          {...others}
-          type="submit"
-          state={state().isSubmitting ? "loading" : state().canSubmit ? "default" : "disabled"}
-        >
-          {local.children}
-        </Button>
-      )}
-    />
+    <Button
+      {...others}
+      type="submit"
+      state={form.isSubmitting() ? "loading" : form.isValid() ? "default" : "disabled"}
+    >
+      {props.children}
+    </Button>
   );
 };
 

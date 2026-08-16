@@ -1,33 +1,7 @@
 export type { ExpandToggleProps } from "./ExpandToggle.generated";
 export { default as ExpandToggle } from "./ExpandToggle.generated";
-export type {
-  HookSortDescriptor,
-  HookSortDirection,
-  TableSelectionState,
-  UseAnchoredOverlayPositionOptions,
-  UseTableExpansionOptions,
-  UseTableExpansionResult,
-  UseTableFilteringOptions,
-  UseTableFilteringResult,
-  UseTableModelOptions,
-  UseTablePaginationOptions,
-  UseTablePaginationResult,
-  UseTableSelectionOptions,
-  UseTableSelectionResult,
-  UseTableSortingOptions,
-  UseTableSortingResult,
-} from "./hooks";
-export {
-  toSortDescriptor,
-  toSortingState,
-  useAnchoredOverlayPosition,
-  useTableExpansion,
-  useTableFiltering,
-  useTableModel,
-  useTablePagination,
-  useTableSelection,
-  useTableSorting,
-} from "./hooks";
+export type { UseAnchoredOverlayPositionOptions } from "./hooks";
+export { useAnchoredOverlayPosition } from "./hooks";
 export type {
   InlineConfirmProps,
   InlineConfirmVariant,

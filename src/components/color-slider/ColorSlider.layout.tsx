@@ -1,6 +1,7 @@
 import "./ColorSlider.css";
-import { createEffect, createMemo, createSignal, splitProps, type Component, type JSX } from "solid-js";
-import { twMerge } from "tailwind-merge";
+import type { JSX } from "@solidjs/web";
+import {createEffect, createMemo, createSignal, omit, type Component} from "solid-js";
+import { twMerge } from "../../lib/twMerge";
 import type { UIBaseProps, State } from "../vocabulary";
 import { CLASSES } from "./ColorSlider.recipe";
 import type { Layout } from "../../lib/layouts";
@@ -45,7 +46,8 @@ const fromPercent = (type: ColorSliderType, percent: number) => {
 };
 
 const ColorSlider: Layout<typeof componentRecipe, ColorSliderProps> = () => {
-  const [local, others] = splitProps(props, [
+  const others = omit(
+    props,
     "class",
     "value",
     "defaultValue",
@@ -55,25 +57,25 @@ const ColorSlider: Layout<typeof componentRecipe, ColorSliderProps> = () => {
     "style",
     "dataTheme",
     "aria-label",
-  ]);
+  );
 
-  const sliderType = () => local.type ?? "hue";
-  const isDisabled = () => Boolean((local.state === "disabled"));
+  const sliderType = () => props.type ?? "hue";
+  const isDisabled = () => Boolean((props.state === "disabled"));
 
   const initialValue = () => {
     const fallback = sliderType() === "alpha" ? 1 : 0;
-    return normalizeValue(sliderType(), local.value ?? local.defaultValue ?? fallback);
+    return normalizeValue(sliderType(), props.value ?? props.defaultValue ?? fallback);
   };
 
   const [internalValue, setInternalValue] = createSignal(initialValue());
   const [isDragging, setIsDragging] = createSignal(false);
   let sliderRef: HTMLDivElement | undefined;
 
-  const isControlled = () => local.value !== undefined;
+  const isControlled = () => props.value !== undefined;
 
   createEffect(() => {
     const nextType = sliderType();
-    const nextValue = local.value;
+    const nextValue = props.value;
 
     if (nextValue === undefined) {
       if (!isControlled()) {
@@ -87,7 +89,7 @@ const ColorSlider: Layout<typeof componentRecipe, ColorSliderProps> = () => {
 
   const currentValue = createMemo(() => {
     if (isControlled()) {
-      return normalizeValue(sliderType(), local.value ?? internalValue());
+      return normalizeValue(sliderType(), props.value ?? internalValue());
     }
 
     return normalizeValue(sliderType(), internalValue());
@@ -98,13 +100,16 @@ const ColorSlider: Layout<typeof componentRecipe, ColorSliderProps> = () => {
     if (!isControlled()) {
       setInternalValue(normalized);
     }
-    local.onChange?.(normalized);
+    props.onChange?.(normalized);
   };
 
   const updateFromPointer = (clientX: number) => {
-    if (!sliderRef || isDisabled()) return;
+    // Bound to a const so the guard narrows: TypeScript will not carry a
+    // narrowing on a captured `let` across the closure boundary.
+    const node = sliderRef;
+    if (!node || isDisabled()) return;
 
-    const rect = sliderRef.getBoundingClientRect();
+    const rect = node.getBoundingClientRect();
     if (rect.width <= 0) return;
 
     const percent = ((clientX - rect.left) / rect.width) * 100;
@@ -156,7 +161,7 @@ const ColorSlider: Layout<typeof componentRecipe, ColorSliderProps> = () => {
   const percent = () => toPercent(sliderType(), currentValue());
 
   const sliderStyle = (): JSX.CSSProperties => {
-    const userStyle = local.style as JSX.CSSProperties | undefined;
+    const userStyle = props.style as JSX.CSSProperties | undefined;
 
     if (sliderType() === "hue") {
       return {
@@ -191,14 +196,14 @@ const ColorSlider: Layout<typeof componentRecipe, ColorSliderProps> = () => {
         CLASSES.base,
         sliderType() === "alpha" && CLASSES.flag.alpha,
         isDragging() && CLASSES.flag.dragging,
-        local.class,
+        props.class,
       ) }}
-      data-theme={local.dataTheme}
+      data-theme={props.dataTheme}
       data-slot="color-slider"
       data-type={sliderType()}
       data-disabled={isDisabled() ? "true" : "false"}
       role="slider"
-      tabIndex={isDisabled() ? -1 : 0}
+      tabindex={isDisabled() ? -1 : 0}
       aria-label={local["aria-label"] ?? (sliderType() === "alpha" ? "Alpha" : "Hue")}
       aria-valuemin={sliderType() === "alpha" ? 0 : 0}
       aria-valuemax={sliderType() === "alpha" ? 1 : 360}

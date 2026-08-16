@@ -1,6 +1,7 @@
 import "./footer.css";
-import { type JSX, type ParentComponent, splitProps } from "solid-js";
-import { twMerge } from "tailwind-merge";
+import type { JSX } from "@solidjs/web";
+import {type ParentComponent, omit} from "solid-js";
+import { twMerge } from "../../lib/twMerge";
 import type { UIBaseProps } from "../vocabulary";
 import { FooterTitle } from "./FooterTitle.generated";
 import { CLASSES } from "./Footer.recipe";
@@ -15,31 +16,24 @@ export type FooterProps = UIBaseProps & {
 };
 
 const Footer: Layout<typeof componentRecipe, FooterProps> = () => {
-  const [local, others] = splitProps(props, [
-    "children",
-    "class",
-    "dataTheme",
-    "center",
-    "horizontal",
-    "vertical",
-  ]);
+  const others = omit(props, "children", "class", "dataTheme", "center", "horizontal", "vertical");
 
   const classes = () =>
     twMerge(
       CLASSES.base,
-      local.center && CLASSES.flag.center,
-      local.horizontal && CLASSES.flag.horizontal,
-      local.vertical && CLASSES.flag.vertical,
-      local.class,
+      props.center && CLASSES.flag.center,
+      props.horizontal && CLASSES.flag.horizontal,
+      props.vertical && CLASSES.flag.vertical,
+      props.class,
     );
 
   return (
     <footer
       {...others}
-      data-theme={local.dataTheme}
+      data-theme={props.dataTheme}
       {...{ class: classes() }}
     >
-      {local.children}
+      {props.children}
     </footer>
   );
 };

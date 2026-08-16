@@ -1,4 +1,4 @@
-import { createSignal, onCleanup, onMount } from "solid-js";
+import { createSignal, onCleanup, onSettled } from "solid-js";
 
 export function useDesktop(breakpoint = 1024) {
   const [isDesktop, setIsDesktop] = createSignal(false);
@@ -8,7 +8,7 @@ export function useDesktop(breakpoint = 1024) {
     setIsDesktop(width >= breakpoint);
   };
 
-  onMount(() => {
+  onSettled(() => {
     checkIfDesktop();
     window.addEventListener("resize", checkIfDesktop);
   });

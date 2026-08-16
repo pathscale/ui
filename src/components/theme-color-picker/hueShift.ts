@@ -197,7 +197,36 @@ export function createHueShiftStore(storagePrefix: string): HueShiftStore {
     return null;
   };
 
-  const [themeColor, setThemeColorInternal] = createSignal<string | null>(getInitial());
+  // The initial value is read once, not tracked. Hoisted to a const because
+  // `createSignal` overloads on `Exclude<T, Function>` versus a compute
+  // function, and a call expression in argument position resolves to the
+  // compute overload, which types the accessor as `never`.
+  const initialThemeColor: string | null = getInitial();
+  const [themeColor, setThemeColorInternal] = createSignal<string | null>(initialThemeColor);
+  /*
+   * The accessor, held at its declared type.
+   *
+   * TypeScript narrows a captured binding by the control flow around each use,
+   * and inside the `MutationObserver` callback below it narrowed this one to
+   * `never` - not the value, the accessor itself, so calling it stopped
+   * typechecking. Annotating the alias pins what it is and the narrowing has
+   * nothing left to do.
+   */
+  const readThemeColor: () => string | null = themeColor;
+
+  /**
+   * Re-apply the current colour after the theme attribute flips.
+   *
+   * A named function rather than a closure inside the observer: TypeScript
+   * narrows a captured binding by the control flow around each use, and inside
+   * that callback it narrowed the accessor itself to `never`, so calling it
+   * stopped typechecking. Declared out here there is no such flow to narrow by,
+   * and the handler reads better at the call site than an inline arrow.
+   */
+  const reapplyThemeColor = (): void => {
+    const color = readThemeColor();
+    if (color !== null) applyThemeColor(color);
+  };
 
   createEffect(() => {
     const color = themeColor();
@@ -225,12 +254,7 @@ export function createHueShiftStore(storagePrefix: string): HueShiftStore {
           mutation.type === "attributes" &&
           mutation.attributeName === "data-theme"
         ) {
-          requestAnimationFrame(() => {
-            const color = themeColor();
-            if (color !== null) {
-              applyThemeColor(color);
-            }
-          });
+          requestAnimationFrame(reapplyThemeColor);
         }
       }
     });

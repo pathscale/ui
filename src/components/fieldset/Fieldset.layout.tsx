@@ -1,6 +1,7 @@
 import "./Fieldset.css";
-import { splitProps, type Component, type JSX, type ParentComponent } from "solid-js";
-import { twMerge } from "tailwind-merge";
+import type { JSX } from "@solidjs/web";
+import {omit, type Component, type ParentComponent} from "solid-js";
+import { twMerge } from "../../lib/twMerge";
 
 import type { UIBaseProps } from "../vocabulary";
 import { CLASSES } from "./Fieldset.recipe";
@@ -22,85 +23,65 @@ export type FieldsetActionsProps = Omit<JSX.HTMLAttributes<HTMLDivElement>, "chi
   };
 
 const FieldsetRoot: Layout<typeof componentRecipe, FieldsetRootProps> = () => {
-  const [local, others] = splitProps(props, [
-    "children",
-    "class",
-    "dataTheme",
-    "style",
-  ]);
+  const others = omit(props, "children", "class", "dataTheme", "style");
 
   return (
     <fieldset
       {...others}
-      {...{ class: twMerge(CLASSES.Root.base, local.class) }}
+      {...{ class: twMerge(CLASSES.Root.base, props.class) }}
       data-slot="fieldset"
-      data-theme={local.dataTheme}
-      style={local.style}
+      data-theme={props.dataTheme}
+      style={props.style}
     >
-      {local.children}
+      {props.children}
     </fieldset>
   );
 };
 
 const FieldsetLegend: Layout<typeof componentRecipe, FieldsetLegendProps> = () => {
-  const [local, others] = splitProps(props, [
-    "children",
-    "class",
-    "dataTheme",
-    "style",
-  ]);
+  const others = omit(props, "children", "class", "dataTheme", "style");
 
   return (
     <legend
       {...others}
-      {...{ class: twMerge(CLASSES.Legend.base, local.class) }}
+      {...{ class: twMerge(CLASSES.Legend.base, props.class) }}
       data-slot="fieldset-legend"
-      data-theme={local.dataTheme}
-      style={local.style}
+      data-theme={props.dataTheme}
+      style={props.style}
     >
-      {local.children}
+      {props.children}
     </legend>
   );
 };
 
 const FieldGroup: Layout<typeof componentRecipe, FieldGroupProps> = () => {
-  const [local, others] = splitProps(props, [
-    "children",
-    "class",
-    "dataTheme",
-    "style",
-  ]);
+  const others = omit(props, "children", "class", "dataTheme", "style");
 
   return (
     <div
       {...others}
-      {...{ class: twMerge(CLASSES.Group.base, local.class) }}
+      {...{ class: twMerge(CLASSES.Group.base, props.class) }}
       data-slot="fieldset-field-group"
-      data-theme={local.dataTheme}
-      style={local.style}
+      data-theme={props.dataTheme}
+      style={props.style}
     >
-      {local.children}
+      {props.children}
     </div>
   );
 };
 
 const FieldsetActions: Layout<typeof componentRecipe, FieldsetActionsProps> = () => {
-  const [local, others] = splitProps(props, [
-    "children",
-    "class",
-    "dataTheme",
-    "style",
-  ]);
+  const others = omit(props, "children", "class", "dataTheme", "style");
 
   return (
     <div
       {...others}
-      {...{ class: twMerge(CLASSES.Actions.base, local.class) }}
+      {...{ class: twMerge(CLASSES.Actions.base, props.class) }}
       data-slot="fieldset-actions"
-      data-theme={local.dataTheme}
-      style={local.style}
+      data-theme={props.dataTheme}
+      style={props.style}
     >
-      {local.children}
+      {props.children}
     </div>
   );
 };

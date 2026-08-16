@@ -1,5 +1,6 @@
-import { type JSX, splitProps } from "solid-js";
-import { twMerge } from "tailwind-merge";
+import {omit} from "solid-js";
+import type { JSX } from "@solidjs/web";
+import { twMerge } from "../../lib/twMerge";
 import { CLASSES } from "./Navbar.recipe";
 import type { Layout } from "../../lib/layouts";
 import { componentRecipe } from "./Navbar.recipe";
@@ -10,29 +11,23 @@ export type NavbarSectionProps = JSX.HTMLAttributes<HTMLDivElement> & {
 };
 
 const NavbarSection: Layout<typeof componentRecipe, NavbarSectionProps> = () => {
-  const [local, others] = splitProps(props, [
-    "children",
-    "section",
-    "dataTheme",
-    "class",
-    "style",
-  ]);
+  const others = omit(props, "children", "section", "dataTheme", "class", "style");
 
   const classes = () =>
     twMerge(
       CLASSES.section.base,
-      CLASSES.section.variant[local.section],
-      local.class,
+      CLASSES.section.variant[props.section],
+      props.class,
     );
 
   return (
     <div
       {...others}
-      data-theme={local.dataTheme}
+      data-theme={props.dataTheme}
       {...{ class: classes() }}
-      style={local.style}
+      style={props.style}
     >
-      {local.children}
+      {props.children}
     </div>
   );
 };

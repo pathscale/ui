@@ -1,13 +1,7 @@
 import "./Slider.css";
-import {
-  Show,
-  createSignal,
-  createUniqueId,
-  splitProps,
-  type Component,
-  type JSX,
-} from "solid-js";
-import { twMerge } from "tailwind-merge";
+import type { JSX } from "@solidjs/web";
+import {Show, createSignal, createUniqueId, omit, type Component} from "solid-js";
+import { twMerge } from "../../lib/twMerge";
 import type { UIBaseProps } from "../vocabulary";
 import { CLASSES } from "./Slider.recipe";
 import type { Layout } from "../../lib/layouts";
@@ -49,27 +43,13 @@ const Slider: Layout<typeof componentRecipe, SliderProps> = () => {
   let trackRef: HTMLDivElement | undefined;
   let thumbRef: HTMLDivElement | undefined;
 
-  const [local] = splitProps(props, [
-    "label",
-    "value",
-    "onChange",
-    "onChangeEnd",
-    "min",
-    "max",
-    "step",
-    "disabled",
-    "formatValue",
-    "size",
-    "dataTheme",
-    "class",
-    "style",
-  ]);
 
-  const min = () => local.min ?? 0;
-  const max = () => local.max ?? 100;
-  const step = () => local.step ?? 1;
-  const size = () => local.size ?? "md";
-  const isDisabled = () => Boolean(local.disabled);
+
+  const min = () => props.min ?? 0;
+  const max = () => props.max ?? 100;
+  const step = () => props.step ?? 1;
+  const size = () => props.size ?? "md";
+  const isDisabled = () => Boolean(props.disabled);
 
   const labelId = createUniqueId();
   const [dragging, setDragging] = createSignal(false);
@@ -78,11 +58,11 @@ const Slider: Layout<typeof componentRecipe, SliderProps> = () => {
   const fraction = () => {
     const range = max() - min();
     if (range <= 0) return 0;
-    return (local.value - min()) / range;
+    return (props.value - min()) / range;
   };
 
   const formattedValue = () =>
-    local.formatValue ? local.formatValue(local.value) : String(local.value);
+    props.formatValue ? props.formatValue(props.value) : String(props.value);
 
   const thumbLeft = () => {
     const f = fraction();
@@ -132,9 +112,9 @@ const Slider: Layout<typeof componentRecipe, SliderProps> = () => {
   };
 
   const getValueFromPosition = (clientX: number) => {
-    if (!trackRef) return local.value;
+    if (!trackRef) return props.value;
     const geometry = dragGeometry ?? measureTrack();
-    if (!geometry || geometry.usable <= 0) return local.value;
+    if (!geometry || geometry.usable <= 0) return props.value;
     const frac = clamp((clientX - geometry.left - geometry.inset) / geometry.usable, 0, 1);
     const raw = min() + frac * (max() - min());
     return snapToStep(raw, min(), max(), step());
@@ -175,15 +155,15 @@ const Slider: Layout<typeof componentRecipe, SliderProps> = () => {
 
   const interactions = createSliderInteractionHandlers({
     isDisabled,
-    value: () => local.value,
+    value: () => props.value,
     valueFromPosition: getValueFromPosition,
     valueFromKey: getValueFromKey,
     onDragGeometry: (active) => {
       dragGeometry = active ? measureTrack() : undefined;
     },
     isThumb: (target) => Boolean(thumbRef && target === thumbRef),
-    onChange: (value) => local.onChange(value),
-    onChangeEnd: (value) => local.onChangeEnd?.(value),
+    onChange: (value) => props.onChange(value),
+    onChangeEnd: (value) => props.onChangeEnd?.(value),
     onDraggingChange: setDragging,
   });
 
@@ -195,16 +175,16 @@ const Slider: Layout<typeof componentRecipe, SliderProps> = () => {
       {...{ class: twMerge(
         CLASSES.base,
         CLASSES.size[size()],
-        local.class,
+        props.class,
       ) }}
-      data-theme={local.dataTheme}
+      data-theme={props.dataTheme}
       data-slot="slider"
       data-disabled={isDisabled() ? "true" : "false"}
-      style={local.style}
+      style={props.style}
     >
-      <Show when={local.label}>
+      <Show when={props.label}>
         <span id={labelId} {...{ class: CLASSES.label }} data-slot="label">
-          {local.label}
+          {props.label}
         </span>
         <span {...{ class: CLASSES.output }} data-slot="slider-output" aria-live="polite">
           {formattedValue()}
@@ -234,12 +214,12 @@ const Slider: Layout<typeof componentRecipe, SliderProps> = () => {
           data-focus-visible={focusVisible() ? "true" : "false"}
           style={{ left: thumbLeft() }}
           role="slider"
-          tabIndex={isDisabled() ? -1 : 0}
+          tabindex={isDisabled() ? -1 : 0}
           aria-valuemin={min()}
           aria-valuemax={max()}
-          aria-valuenow={local.value}
+          aria-valuenow={props.value}
           aria-valuetext={formattedValue()}
-          aria-labelledby={local.label ? labelId : undefined}
+          aria-labelledby={props.label ? labelId : undefined}
           aria-disabled={isDisabled() ? "true" : undefined}
           onKeyDown={interactions.onKeyDown}
           onKeyUp={interactions.onKeyUp}

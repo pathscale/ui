@@ -1,5 +1,6 @@
 import "./Spinner.css";
-import { createUniqueId, type Component, type JSX } from "solid-js";
+import type { JSX } from "@solidjs/web";
+import {createUniqueId, type Component} from "solid-js";
 import type { Flavor, Size, UIBaseProps } from "../vocabulary";
 import type { Layout } from "../../lib/layouts";
 import { spinner } from "./Spinner.recipe";

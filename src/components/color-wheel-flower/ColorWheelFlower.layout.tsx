@@ -1,15 +1,8 @@
 import "./ColorWheelFlower.css";
-import {
-  type JSX,
-  For,
-  createEffect,
-  createMemo,
-  createSignal,
-  onCleanup,
-  splitProps,
-} from "solid-js";
+import type { JSX } from "@solidjs/web";
+import {For, createEffect, createMemo, createSignal, onCleanup, omit} from "solid-js";
 import { clsx } from "clsx";
-import { twMerge } from "tailwind-merge";
+import { twMerge } from "../../lib/twMerge";
 import ColorSwatch from "../color-swatch";
 import ColorSwatchPicker from "../color-swatch-picker";
 import { useColorPickerContext } from "./colorWheelFlowerContext";
@@ -242,7 +235,7 @@ const MAX_WAVE_DISTANCE = MAX_RADIUS * 2;
 const MAX_WAVE_DELAY = 0.12;
 
 const ColorWheelFlower: Layout<typeof componentRecipe, ColorWheelFlowerProps> = () => {
-  const [local] = splitProps(props, ["class", "mode", "palette"]);
+
   const context = useColorPickerContext();
 
   const [selectedIndex, setSelectedIndex] = createSignal<number | null>(null);
@@ -274,9 +267,9 @@ const ColorWheelFlower: Layout<typeof componentRecipe, ColorWheelFlowerProps> = 
     onCleanup(() => observer.disconnect());
   }
 
-  const mode = (): ColorWheelFlowerMode => local.mode ?? currentTheme();
+  const mode = (): ColorWheelFlowerMode => props.mode ?? currentTheme();
   const colors = createMemo(() =>
-    buildColors(resolveColorWheelFlowerPalette(mode(), local.palette)),
+    buildColors(resolveColorWheelFlowerPalette(mode(), props.palette)),
   );
 
   const rainbowGradient = () => {
@@ -413,9 +406,11 @@ const ColorWheelFlower: Layout<typeof componentRecipe, ColorWheelFlowerProps> = 
   });
 
   const handlePointerMove = (event: MouseEvent) => {
-    if (!containerRef) return;
+    // Bound to a const so the guard narrows across the closure boundary.
+    const node = containerRef;
+    if (!node) return;
 
-    const rect = containerRef.getBoundingClientRect();
+    const rect = node.getBoundingClientRect();
     const x = event.clientX - rect.left - rect.width / 2;
     const y = event.clientY - rect.top - rect.height / 2;
 
@@ -473,13 +468,15 @@ const ColorWheelFlower: Layout<typeof componentRecipe, ColorWheelFlowerProps> = 
   });
 
   createEffect(() => {
-    if (!outerRingRef) return;
+    // Bound to a const so the guard narrows across the closure boundary.
+    const node = outerRingRef;
+    if (!node) return;
 
     const target = outerRingTarget();
     outerRingControl?.stop();
     outerRingControl = runMotion(
-      outerRingRef,
-      readMotionState(outerRingRef),
+      node,
+      readMotionState(node),
       target,
       ringTransition,
     );
@@ -506,7 +503,7 @@ const ColorWheelFlower: Layout<typeof componentRecipe, ColorWheelFlowerProps> = 
         class: twMerge(
           CLASSES.base,
           clsx({ [CLASSES.flag.disabled]: context.disabled() }),
-          local.class,
+          props.class,
         ),
       }}
       onMouseMove={handlePointerMove}

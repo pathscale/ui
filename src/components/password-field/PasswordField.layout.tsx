@@ -1,5 +1,6 @@
 import "./PasswordField.css";
-import { createSignal, type JSX } from "solid-js";
+import type { JSX } from "@solidjs/web";
+import {createSignal} from "solid-js";
 import Button from "../button";
 import Icon from "../icon";
 import Input from "../input";
@@ -120,7 +121,7 @@ export const PasswordFieldLayout: Layout<typeof passwordField, PasswordFieldProp
             onPointerDown={preventPasswordTogglePointerDown}
             onClick={toggleVisibility}
             aria-label={toggleLabel()}
-            aria-pressed={isVisible()}
+            aria-pressed={isVisible() ? "true" : "false"}
             title={toggleLabel()}
           >
             {toggleIcon()}

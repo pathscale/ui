@@ -1,5 +1,6 @@
-import { type JSX, splitProps } from "solid-js";
-import { twMerge } from "tailwind-merge";
+import {omit} from "solid-js";
+import type { JSX } from "@solidjs/web";
+import { twMerge } from "../../lib/twMerge";
 import type { Layout } from "../../lib/layouts";
 import type { UIBaseProps } from "../vocabulary";
 import { CLASSES, tablePageSizeRecipe } from "./Table.recipe";
@@ -21,7 +22,8 @@ const TablePageSize: Layout<
   typeof tablePageSizeRecipe,
   TablePageSizeProps
 > = () => {
-  const [local, rest] = splitProps(props, [
+  const rest = omit(
+    props,
     "class",
     "dataTheme",
     "value",
@@ -30,33 +32,33 @@ const TablePageSize: Layout<
     "label",
     "selectClass",
     "selectClassName",
-  ]);
+  );
 
   return (
     <label
-      {...{ class: twMerge(CLASSES.pageSize, local.class) }}
-      data-theme={local.dataTheme}
+      {...{ class: twMerge(CLASSES.pageSize, props.class) }}
+      data-theme={props.dataTheme}
       data-slot="table-page-size"
     >
       <span
         {...{ class: CLASSES.pageSizeLabel }}
         data-slot="table-page-size-label"
       >
-        {local.label ?? "Rows"}
+        {props.label ?? "Rows"}
       </span>
       <select
         {...rest}
         {...{
           class: twMerge(
             CLASSES.pageSizeSelect,
-            local.selectClass,
-            local.selectClassName,
+            props.selectClass,
+            props.selectClassName,
           ),
         }}
-        value={local.value}
-        onChange={(event) => local.onChange(Number(event.currentTarget.value))}
+        value={props.value}
+        onChange={(event) => props.onChange(Number(event.currentTarget.value))}
       >
-        {local.options.map((option) => (
+        {props.options.map((option) => (
           <option value={option}>{option}</option>
         ))}
       </select>

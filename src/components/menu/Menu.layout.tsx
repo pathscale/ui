@@ -1,15 +1,10 @@
 import "./Menu.css";
-import {
-  For,
-  createMemo,
-  createSignal,
-  splitProps,
-  type Component,
-  type JSX,
-} from "solid-js";
-import { twMerge } from "tailwind-merge";
+import type { JSX } from "@solidjs/web";
+import {For, createMemo, createSignal, omit, type Component} from "solid-js";
+import { twMerge } from "../../lib/twMerge";
 
-import type { UIBaseProps, State } from "../vocabulary";
+import "../_shared/material.css";
+import type { Material, State, UIBaseProps } from "../vocabulary";
 import { CLASSES } from "./Menu.recipe";
 import {
   MenuContext,
@@ -67,10 +62,13 @@ export type MenuRootProps<T = unknown> = Omit<
     onAction?: (key: string) => void;
     state?: State;
     disabled?: boolean;
+    /** What the surface is made of. `solid` by default. */
+    material?: Material;
   };
 
 const MenuRoot: Layout<typeof componentRecipe, MenuRootProps> = () => {
-  const [local, others] = splitProps(props, [
+  const others = omit(
+    props,
     "children",
     "class",
     "dataTheme",
@@ -84,25 +82,26 @@ const MenuRoot: Layout<typeof componentRecipe, MenuRootProps> = () => {
     "disallowEmptySelection",
     "onSelectionChange",
     "onAction",
+    "material",
     "state",
     "disabled",
     "role",
     "onKeyDown",
-  ]);
+  );
 
   const [internalSelectedKeys, setInternalSelectedKeys] = createSignal(
-    normalizeKeys(local.defaultSelectedKeys),
+    normalizeKeys(props.defaultSelectedKeys),
   );
   const [focusedKey, setFocusedKey] = createSignal<string | undefined>();
   const [registeredItems, setRegisteredItems] = createSignal<MenuItemRecord[]>([]);
 
-  const selectionMode = () => local.selectionMode ?? "none";
-  const isControlled = () => local.selectedKeys !== undefined;
-  const isDisabled = () => Boolean((local.state === "disabled")) || Boolean(local.disabled);
+  const selectionMode = () => props.selectionMode ?? "none";
+  const isControlled = () => props.selectedKeys !== undefined;
+  const isDisabled = () => Boolean((props.state === "disabled")) || Boolean(props.disabled);
   const selectedKeys = createMemo(() =>
-    isControlled() ? normalizeKeys(local.selectedKeys) : internalSelectedKeys(),
+    isControlled() ? normalizeKeys(props.selectedKeys) : internalSelectedKeys(),
   );
-  const disabledKeys = createMemo(() => normalizeKeys(local.disabledKeys));
+  const disabledKeys = createMemo(() => normalizeKeys(props.disabledKeys));
 
   const getEnabledItems = () =>
     registeredItems().filter(
@@ -153,7 +152,7 @@ const MenuRoot: Layout<typeof componentRecipe, MenuRootProps> = () => {
       setInternalSelectedKeys(nextKeys);
     }
 
-    local.onSelectionChange?.(nextKeys);
+    props.onSelectionChange?.(nextKeys);
   };
 
   const activateKey = (key: string, event: Event) => {
@@ -161,7 +160,7 @@ const MenuRoot: Layout<typeof componentRecipe, MenuRootProps> = () => {
     if (disabledKeys().has(key)) return;
 
     if (selectionMode() === "none") {
-      local.onAction?.(key);
+      props.onAction?.(key);
       return;
     }
 
@@ -171,15 +170,15 @@ const MenuRoot: Layout<typeof componentRecipe, MenuRootProps> = () => {
       if (!(current.size === 1 && current.has(key))) {
         updateSelection(new Set([key]));
       }
-      local.onAction?.(key);
+      props.onAction?.(key);
       return;
     }
 
     const next = new Set(current);
 
     if (next.has(key)) {
-      if (local.disallowEmptySelection && next.size === 1) {
-        local.onAction?.(key);
+      if (props.disallowEmptySelection && next.size === 1) {
+        props.onAction?.(key);
         return;
       }
       next.delete(key);
@@ -188,7 +187,7 @@ const MenuRoot: Layout<typeof componentRecipe, MenuRootProps> = () => {
     }
 
     updateSelection(next);
-    local.onAction?.(key);
+    props.onAction?.(key);
   };
 
   const registerItem = (item: MenuItemRecord) => {
@@ -222,7 +221,7 @@ const MenuRoot: Layout<typeof componentRecipe, MenuRootProps> = () => {
   };
 
   const handleKeyDown: JSX.EventHandlerUnion<HTMLDivElement, KeyboardEvent> = (event) => {
-    invokeEventHandler(local.onKeyDown, event);
+    invokeEventHandler(props.onKeyDown, event);
 
     if (event.defaultPrevented) return;
     if (event.target !== event.currentTarget) return;
@@ -250,24 +249,24 @@ const MenuRoot: Layout<typeof componentRecipe, MenuRootProps> = () => {
 
   const renderChildren = (): JSX.Element => {
     const isItemRenderer =
-      typeof local.children === "function" &&
-      (local.children as (...args: unknown[]) => unknown).length > 0;
+      typeof props.children === "function" &&
+      (props.children as (...args: unknown[]) => unknown).length > 0;
 
     const resolvedStaticChildren =
-      typeof local.children === "function"
+      typeof props.children === "function"
         ? isItemRenderer
           ? null
-          : (local.children as () => JSX.Element)()
-        : (local.children ?? null);
+          : (props.children as () => JSX.Element)()
+        : (props.children ?? null);
 
-    if (local.items) {
-      if (local.items.length === 0) {
-        return local.renderEmpty?.() ?? null;
+    if (props.items) {
+      if (props.items.length === 0) {
+        return props.renderEmpty?.() ?? null;
       }
 
       if (isItemRenderer) {
-        const renderItem = local.children as (item: unknown) => JSX.Element;
-        return <For each={local.items}>{(item) => renderItem(item)}</For>;
+        const renderItem = props.children as (item: unknown) => JSX.Element;
+        return <For each={props.items}>{(item) => renderItem(item)}</For>;
       }
 
       return resolvedStaticChildren;
@@ -277,7 +276,7 @@ const MenuRoot: Layout<typeof componentRecipe, MenuRootProps> = () => {
   };
 
   return (
-    <MenuContext.Provider
+    <MenuContext
       value={{
         selectionMode,
         selectedKeys,
@@ -297,19 +296,20 @@ const MenuRoot: Layout<typeof componentRecipe, MenuRootProps> = () => {
     >
       <div
         {...others}
-        role={local.role ?? "menu"}
+        role={props.role ?? "menu"}
         aria-disabled={isDisabled() ? "true" : undefined}
         data-slot="menu"
-        data-theme={local.dataTheme}
+        data-material={props.material ?? "solid"}
+        data-theme={props.dataTheme}
         data-selection-mode={selectionMode()}
         data-disabled={isDisabled() ? "true" : "false"}
-        {...{ class: twMerge(CLASSES.Root.base, local.class) }}
-        style={local.style}
+        {...{ class: twMerge(CLASSES.Root.base, props.class) }}
+        style={props.style}
         onKeyDown={handleKeyDown}
       >
         {renderChildren()}
       </div>
-    </MenuContext.Provider>
+    </MenuContext>
   );
 };
 

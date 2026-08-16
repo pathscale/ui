@@ -1,5 +1,6 @@
-import { type JSX, splitProps } from "solid-js";
-import { twMerge } from "tailwind-merge";
+import {omit} from "solid-js";
+import type { JSX } from "@solidjs/web";
+import { twMerge } from "../../lib/twMerge";
 import type { Layout } from "../../lib/layouts";
 import type { UIBaseProps } from "../vocabulary";
 import { CLASSES, tableScrollContainerRecipe } from "./Table.recipe";
@@ -11,16 +12,16 @@ const TableScrollContainer: Layout<
   typeof tableScrollContainerRecipe,
   TableScrollContainerProps
 > = () => {
-  const [local, rest] = splitProps(props, ["children", "class", "dataTheme"]);
+  const rest = omit(props, "children", "class", "dataTheme");
 
   return (
     <div
-      {...{ class: twMerge(CLASSES.scroll, local.class) }}
-      data-theme={local.dataTheme}
+      {...{ class: twMerge(CLASSES.scroll, props.class) }}
+      data-theme={props.dataTheme}
       data-slot="table-scroll-container"
       {...rest}
     >
-      {local.children}
+      {props.children}
     </div>
   );
 };

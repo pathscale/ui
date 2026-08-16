@@ -1,5 +1,6 @@
-import { type JSX, splitProps } from "solid-js";
-import { twMerge } from "tailwind-merge";
+import {omit} from "solid-js";
+import type { JSX } from "@solidjs/web";
+import { twMerge } from "../../lib/twMerge";
 import type { Layout } from "../../lib/layouts";
 import type { UIBaseProps } from "../vocabulary";
 import { CLASSES, tableLoadMoreRecipe } from "./Table.recipe";
@@ -11,16 +12,16 @@ const TableLoadMore: Layout<
   typeof tableLoadMoreRecipe,
   TableLoadMoreProps
 > = () => {
-  const [local, rest] = splitProps(props, ["children", "class", "dataTheme"]);
+  const rest = omit(props, "children", "class", "dataTheme");
 
   return (
     <tr
-      {...{ class: twMerge(CLASSES.loadMore, local.class) }}
-      data-theme={local.dataTheme}
+      {...{ class: twMerge(CLASSES.loadMore, props.class) }}
+      data-theme={props.dataTheme}
       data-slot="table-load-more"
       {...rest}
     >
-      {local.children}
+      {props.children}
     </tr>
   );
 };

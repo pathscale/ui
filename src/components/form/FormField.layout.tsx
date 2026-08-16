@@ -1,6 +1,6 @@
-import { Show, splitProps, type Component, type JSX } from "solid-js";
-import { twMerge } from "tailwind-merge";
-import type { FieldApi } from "@tanstack/solid-form";
+import {Show, omit, type Component} from "solid-js";
+import type { JSX } from "@solidjs/web";
+import { twMerge } from "../../lib/twMerge";
 
 import Input from "../input";
 import type { InputFieldProps } from "../input";
@@ -60,64 +60,46 @@ export type FormFieldProps = {
  * ```
  */
 const FormField: Layout<typeof componentRecipe, FormFieldProps> = () => {
-  const [local, _rest] = splitProps(props, [
-    "name",
-    "label",
-    "inputProps",
-    "class",
-    "form",
-  ]);
+  const _rest = omit(props, "name", "label", "inputProps", "class", "form");
 
   // Resolve form: explicit prop takes priority over context.
   const resolveForm = (): AnyFormApi => {
-    if (local.form != null) return local.form;
+    if (props.form != null) return props.form;
     return useFormContext();
   };
 
   const form = resolveForm();
-  const tsForm = form._tsForm;
+
+  // Read straight off the form rather than through a render-prop child. The
+  // engine is ours now, so field state is just three accessors, and a wrapper
+  // component that exists only to hand them down would be a layer with no job.
+  const meta = () => form.getFieldMeta(props.name);
+  const errorMessage = () =>
+    meta().isTouched ? getFirstFieldError(meta().errors) : undefined;
 
   return (
-    <tsForm.Field
-      name={local.name as never}
-      children={(field: () => FieldApi<any, any, any, any, any, any, any, any, any, any, any, any, any, any, any, any, any, any, any, any, any, any, any>) => {
-        const errorMessage = () =>
-          field().state.meta.isTouched
-            ? getFirstFieldError((field().state.meta.errors ?? []) as unknown[])
-            : undefined;
+    <div {...{ class: twMerge("flex flex-col gap-1", props.class) }} data-slot="form-field">
+      <Show when={props.label}>
+        <Label for={props.name} data-invalid={errorMessage() ? "true" : undefined}>
+          {props.label}
+        </Label>
+      </Show>
 
-        return (
-          <div
-            {...{ class: twMerge("flex flex-col gap-1", local.class) }}
-            data-slot="form-field"
-          >
-            <Show when={local.label}>
-              <Label
-                for={local.name}
-                data-invalid={Boolean(errorMessage()) ? "true" : undefined}
-              >
-                {local.label}
-              </Label>
-            </Show>
+      <Input.Field
+        {...props.inputProps}
+        id={props.name}
+        name={props.name}
+        value={String(form.getFieldValue(props.name) ?? "")}
+        onInput={(e: InputEvent & { currentTarget: HTMLInputElement }) => {
+          form.setFieldValue(props.name, e.currentTarget.value);
+        }}
+        onBlur={() => form.validateField(props.name, "blur")}
+        aria-invalid={errorMessage() ? "true" : undefined}
+        issues={errorMessage() ? [{ code: "invalid", message: String(errorMessage()) }] : undefined}
+      />
 
-            <Input.Field
-              {...local.inputProps}
-              id={local.name}
-              name={local.name}
-              value={String(field().state.value ?? "")}
-              onInput={(e: InputEvent & { currentTarget: HTMLInputElement }) => {
-                field().handleChange(e.currentTarget.value as never);
-              }}
-              onBlur={() => field().handleBlur()}
-              aria-invalid={Boolean(errorMessage()) ? true : undefined}
-              issues={errorMessage() ? [{ code: "invalid", message: String(errorMessage()) }] : undefined}
-            />
-
-            <FieldErrorMessage message={errorMessage()} />
-          </div>
-        );
-      }}
-    />
+      <FieldErrorMessage message={errorMessage()} />
+    </div>
   );
 };
 

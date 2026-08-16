@@ -29,8 +29,8 @@ export type UseFieldResult = {
  * Reads live field state for `name` from the nearest `<Form>` context.
  *
  * Must be called **inside** a `<Form form={...}>` descendant component.
- * For fields that need fine-grained rendering, prefer using `form._tsForm.Field`
- * render prop directly.
+ * Field components own their own presentation; this supplies the state they
+ * need to show it.
  *
  * ```tsx
  * // Inside a child of <Form form={form}>
@@ -40,35 +40,28 @@ export type UseFieldResult = {
  *   value={String(email.value() ?? "")}
  *   onInput={(e) => email.handleChange(e.currentTarget.value)}
  *   onBlur={email.handleBlur}
- *   aria-invalid={email.invalid()}
+ *   aria-invalid={email.invalid() ? "true" : "false"}
  * />
  * ```
  */
 export const useField = (name: string): UseFieldResult => {
   const form = useFormContext();
-  const tsForm = form._tsForm;
 
-  const value = createMemo(() => tsForm.getFieldValue(name as never));
+  const value = createMemo(() => form.getFieldValue(name));
+  const meta = createMemo(() => form.getFieldMeta(name));
+  const touched = createMemo(() => meta().isTouched);
 
-  const meta = createMemo(() => tsForm.getFieldMeta(name as never));
-
-  const touched = createMemo(() => Boolean(meta()?.isTouched));
-
-  const error = createMemo((): string | undefined => {
-    const m = meta();
-    if (!m?.isTouched) return undefined;
-    return getFirstFieldError((m.errors ?? []) as unknown[]);
-  });
+  // Gated on `isTouched` so a form does not open covered in errors for fields
+  // nobody has reached yet. `submit()` touches everything, which is what makes
+  // a failed submit show all of them at once.
+  const error = createMemo((): string | undefined =>
+    meta().isTouched ? getFirstFieldError(meta().errors) : undefined,
+  );
 
   const invalid = createMemo(() => Boolean(error()));
 
-  const handleChange = (value: unknown) => {
-    tsForm.setFieldValue(name as never, value as never);
-  };
-
-  const handleBlur = () => {
-    tsForm.validateField(name as never, "blur");
-  };
+  const handleChange = (next: unknown) => form.setFieldValue(name, next);
+  const handleBlur = () => form.validateField(name, "blur");
 
   return { value, error, touched, invalid, handleChange, handleBlur };
 };

@@ -50,19 +50,19 @@ const createPasswordForm = (onSubmit?: (value: PasswordValues) => void | Promise
 describe("createForm", () => {
   it("clears blur-origin errors after valid change", async () => {
     const { form, dispose } = createPasswordForm();
-    const tsForm = form._tsForm;
 
     try {
-      tsForm.setFieldValue("password", "abc");
-      await tsForm.validateField("password", "blur");
+      form.setFieldValue("password", "abc");
+      await form.validateField("password", "blur");
 
-      expect(tsForm.state.canSubmit).toBeFalse();
-      expect(tsForm.getFieldMeta("password")?.errorMap?.onBlur).toBeDefined();
+      expect(form.isValid()).toBeFalse();
+      expect(form.getFieldMeta("password").errors.length).toBeGreaterThan(0);
+      expect(form.getFieldMeta("password").isTouched).toBeTrue();
 
-      tsForm.setFieldValue("password", "abcd");
+      form.setFieldValue("password", "abcd");
 
-      expect(tsForm.state.canSubmit).toBeTrue();
-      expect(tsForm.getFieldMeta("password")?.errorMap?.onBlur).toBeUndefined();
+      expect(form.isValid()).toBeTrue();
+      expect(form.getFieldMeta("password").errors).toEqual([]);
     } finally {
       dispose();
     }
@@ -71,22 +71,40 @@ describe("createForm", () => {
   it("allows submit after correcting a blur-invalid value", async () => {
     const onSubmit = mock(async (_value: PasswordValues) => {});
     const { form, dispose } = createPasswordForm(onSubmit);
-    const tsForm = form._tsForm;
 
     try {
-      tsForm.setFieldValue("password", "abc");
-      await tsForm.validateField("password", "blur");
-      await tsForm.handleSubmit();
+      form.setFieldValue("password", "abc");
+      await form.validateField("password", "blur");
+      await form.submit();
 
-      expect(tsForm.state.canSubmit).toBeFalse();
+      expect(form.isValid()).toBeFalse();
       expect(onSubmit).toHaveBeenCalledTimes(0);
 
-      tsForm.setFieldValue("password", "abcd");
-      await tsForm.handleSubmit();
+      form.setFieldValue("password", "abcd");
+      await form.submit();
 
-      expect(tsForm.state.canSubmit).toBeTrue();
+      expect(form.isValid()).toBeTrue();
       expect(onSubmit).toHaveBeenCalledTimes(1);
       expect(onSubmit.mock.calls[0]?.[0]).toEqual({ password: "abcd" });
+    } finally {
+      dispose();
+    }
+  });
+
+  it("shows every error on a failed submit, not only the touched ones", async () => {
+    const onSubmit = mock(async (_value: PasswordValues) => {});
+    const { form, dispose } = createPasswordForm(onSubmit);
+
+    try {
+      // Nothing blurred, so nothing is touched and nothing displays yet.
+      expect(form.getFieldMeta("password").isTouched).toBeFalse();
+
+      form.setFieldValue("password", "abc");
+      await form.submit();
+
+      // A submit that refuses has to say why, so it touches everything.
+      expect(form.getFieldMeta("password").isTouched).toBeTrue();
+      expect(onSubmit).toHaveBeenCalledTimes(0);
     } finally {
       dispose();
     }

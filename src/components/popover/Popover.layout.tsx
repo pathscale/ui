@@ -1,22 +1,10 @@
 import "./Popover.css";
-import {
-  Show,
-  createEffect,
-  createContext,
-  createMemo,
-  createSignal,
-  onCleanup,
-  onMount,
-  splitProps,
-  useContext,
-  type Component,
-  type JSX,
-  type ParentComponent,
-} from "solid-js";
-import { Portal } from "solid-js/web";
-import { twMerge } from "tailwind-merge";
+import {Show, createEffect, createContext, createMemo, createSignal, onCleanup, onSettled, omit, useContext, type Component, type ParentComponent} from "solid-js";
+import { Portal, type JSX} from "@solidjs/web";
+import { twMerge } from "../../lib/twMerge";
 
-import type { UIBaseProps } from "../vocabulary";
+import "../_shared/material.css";
+import type { Material, UIBaseProps } from "../vocabulary";
 import {
   createOverlayPosition,
   type OverlayAnchorRect,
@@ -72,7 +60,8 @@ export type PopoverRootProps = UIBaseProps &
   };
 
 const PopoverRoot: Layout<typeof componentRecipe, PopoverRootProps> = () => {
-  const [local, others] = splitProps(props, [
+  const others = omit(
+    props,
     "children",
     "class",
     "dataTheme",
@@ -87,50 +76,50 @@ const PopoverRoot: Layout<typeof componentRecipe, PopoverRootProps> = () => {
     "closeOnOutsideClick",
     "closeOnEscape",
     "onInteractOutside",
-  ]);
+  );
 
-  const [internalOpen, setInternalOpen] = createSignal(Boolean(local.defaultOpen));
+  const [internalOpen, setInternalOpen] = createSignal(Boolean(props.defaultOpen));
   const [triggerRef, setTriggerRef] = createSignal<HTMLElement | undefined>();
   const [contentRef, setContentRef] = createSignal<HTMLElement | undefined>();
   const [triggerId] = createSignal(`popover-trigger-${Math.random().toString(36).slice(2, 8)}`);
   const [contentId] = createSignal(`popover-content-${Math.random().toString(36).slice(2, 8)}`);
   const [resolvedPlacement, setResolvedPlacement] = createSignal<PopoverPlacement>(
-    local.placement ?? "bottom",
+    props.placement ?? "bottom",
   );
 
-  const isControlled = createMemo(() => local.open !== undefined);
-  const isOpen = createMemo(() => (isControlled() ? Boolean(local.open) : internalOpen()));
+  const isControlled = createMemo(() => props.open !== undefined);
+  const isOpen = createMemo(() => (isControlled() ? Boolean(props.open) : internalOpen()));
 
   const setIsOpen = (next: boolean, options?: { focusTrigger?: boolean }) => {
     if (!isControlled()) setInternalOpen(next);
-    if (isOpen() !== next) local.onOpenChange?.(next);
+    if (isOpen() !== next) props.onOpenChange?.(next);
     if (!next && options?.focusTrigger) {
       triggerRef()?.focus();
     }
   };
 
-  const preferredPlacement = () => local.placement ?? "bottom";
+  const preferredPlacement = () => props.placement ?? "bottom";
   const placement = () => resolvedPlacement();
-  const offset = () => local.offset ?? 8;
-  const autoFlip = () => local.autoFlip ?? true;
+  const offset = () => props.offset ?? 8;
+  const autoFlip = () => props.autoFlip ?? true;
   const anchorRect = () =>
-    typeof local.anchorRect === "function" ? local.anchorRect() : local.anchorRect;
+    typeof props.anchorRect === "function" ? props.anchorRect() : props.anchorRect;
 
-  onMount(() => {
+  onSettled(() => {
     const handlePointerDown = (event: PointerEvent) => {
       if (!isOpen()) return;
-      if (local.closeOnOutsideClick === false) return;
+      if (props.closeOnOutsideClick === false) return;
       const content = contentRef();
       const trigger = triggerRef();
       if (content?.contains(event.target as Node)) return;
       if (trigger?.contains(event.target as Node)) return;
-      local.onInteractOutside?.(event);
+      props.onInteractOutside?.(event);
       setIsOpen(false, { focusTrigger: false });
     };
 
     const handleKeyDown = (event: KeyboardEvent) => {
       if (!isOpen()) return;
-      if (local.closeOnEscape === false) return;
+      if (props.closeOnEscape === false) return;
       if (event.key !== "Escape") return;
       event.preventDefault();
       setIsOpen(false, { focusTrigger: true });
@@ -160,21 +149,21 @@ const PopoverRoot: Layout<typeof componentRecipe, PopoverRootProps> = () => {
     triggerId,
     contentId,
     offset,
-    onInteractOutside: local.onInteractOutside,
+    onInteractOutside: props.onInteractOutside,
   };
 
   return (
-    <PopoverContext.Provider value={ctx}>
+    <PopoverContext value={ctx}>
       <div
         {...others}
-        {...{ class: twMerge(CLASSES.slot.root, local.class) }}
+        {...{ class: twMerge(CLASSES.slot.root, props.class) }}
         data-slot="popover-root"
-        data-theme={local.dataTheme}
-        style={local.style}
+        data-theme={props.dataTheme}
+        style={props.style}
       >
-        {local.children}
+        {props.children}
       </div>
-    </PopoverContext.Provider>
+    </PopoverContext>
   );
 };
 
@@ -184,25 +173,18 @@ export type PopoverTriggerProps = UIBaseProps &
   };
 
 const PopoverTrigger: Layout<typeof componentRecipe, PopoverTriggerProps> = () => {
-  const [local, others] = splitProps(props, [
-    "children",
-    "class",
-    "dataTheme",
-    "style",
-    "onClick",
-    "onKeyDown",
-  ]);
+  const others = omit(props, "children", "class", "dataTheme", "style", "onClick", "onKeyDown");
 
   const ctx = usePopoverContext();
 
   const handleClick: JSX.EventHandlerUnion<HTMLDivElement, MouseEvent> = (event) => {
-    if (typeof local.onClick === "function") local.onClick(event);
+    if (typeof props.onClick === "function") props.onClick(event);
     if (event.defaultPrevented) return;
     ctx.setIsOpen(!ctx.isOpen());
   };
 
   const handleKeyDown: JSX.EventHandlerUnion<HTMLDivElement, KeyboardEvent> = (event) => {
-    if (typeof local.onKeyDown === "function") local.onKeyDown(event);
+    if (typeof props.onKeyDown === "function") props.onKeyDown(event);
     if (event.defaultPrevented) return;
     if (event.key === "Enter" || event.key === " ") {
       event.preventDefault();
@@ -220,18 +202,18 @@ const PopoverTrigger: Layout<typeof componentRecipe, PopoverTriggerProps> = () =
       ref={(el) => ctx.setTriggerRef(el)}
       id={ctx.triggerId()}
       role="button"
-      tabIndex={0}
-      {...{ class: twMerge(CLASSES.slot.trigger, local.class) }}
+      tabindex={0}
+      {...{ class: twMerge(CLASSES.slot.trigger, props.class) }}
       data-slot="popover-trigger"
-      data-theme={local.dataTheme}
-      style={local.style}
+      data-theme={props.dataTheme}
+      style={props.style}
       aria-haspopup="dialog"
       aria-expanded={ctx.isOpen() ? "true" : "false"}
       aria-controls={ctx.isOpen() ? ctx.contentId() : undefined}
       onClick={handleClick}
       onKeyDown={handleKeyDown}
     >
-      {local.children}
+      {props.children}
     </div>
   );
 };
@@ -240,16 +222,12 @@ export type PopoverContentProps = UIBaseProps &
   Omit<JSX.HTMLAttributes<HTMLDivElement>, "children"> & {
     children: JSX.Element;
     sideOffset?: number;
+    /** What the panel is made of. `solid` by default. */
+    material?: Material;
   };
 
 const PopoverContent: Layout<typeof componentRecipe, PopoverContentProps> = () => {
-  const [local, others] = splitProps(props, [
-    "children",
-    "class",
-    "dataTheme",
-    "style",
-    "sideOffset",
-  ]);
+  const others = omit(props, "children", "class", "dataTheme", "style", "sideOffset", "material");
 
   const ctx = usePopoverContext();
   const overlayPosition = createOverlayPosition({
@@ -258,7 +236,7 @@ const PopoverContent: Layout<typeof componentRecipe, PopoverContentProps> = () =
     anchorRect: ctx.anchorRect,
     overlayRef: ctx.contentRef,
     placement: ctx.preferredPlacement,
-    offset: () => local.sideOffset ?? ctx.offset(),
+    offset: () => props.sideOffset ?? ctx.offset(),
     autoFlip: ctx.autoFlip,
     align: () => "center",
   });
@@ -270,9 +248,9 @@ const PopoverContent: Layout<typeof componentRecipe, PopoverContentProps> = () =
   const style = () => {
     const overlayStyle = overlayPosition.style();
 
-    if (typeof local.style === "string") {
+    if (typeof props.style === "string") {
       return [
-        local.style,
+        props.style,
         Object.entries(overlayStyle)
           .map(([key, value]) => `${key}: ${String(value)}`)
           .join("; "),
@@ -282,7 +260,7 @@ const PopoverContent: Layout<typeof componentRecipe, PopoverContentProps> = () =
     }
 
     return {
-      ...(local.style ?? {}),
+      ...(props.style ?? {}),
       ...overlayStyle,
     } as JSX.CSSProperties;
   };
@@ -295,16 +273,17 @@ const PopoverContent: Layout<typeof componentRecipe, PopoverContentProps> = () =
           ref={(el) => ctx.setContentRef(el)}
           id={ctx.contentId()}
           role="dialog"
-          {...{ class: twMerge(CLASSES.base, local.class) }}
+          {...{ class: twMerge(CLASSES.base, props.class) }}
           data-slot="popover-content"
+          data-material={props.material ?? "solid"}
           data-open={ctx.isOpen() ? "true" : "false"}
           data-placement={ctx.placement()}
-          data-theme={local.dataTheme}
+          data-theme={props.dataTheme}
           style={style()}
           aria-labelledby={ctx.triggerRef() ? ctx.triggerId() : undefined}
           aria-hidden={ctx.isOpen() ? "false" : "true"}
         >
-          {local.children}
+          {props.children}
         </div>
       </Portal>
     </Show>
@@ -317,22 +296,17 @@ export type PopoverDialogProps = UIBaseProps &
   };
 
 const PopoverDialog: Layout<typeof componentRecipe, PopoverDialogProps> = () => {
-  const [local, others] = splitProps(props, [
-    "children",
-    "class",
-    "dataTheme",
-    "style",
-  ]);
+  const others = omit(props, "children", "class", "dataTheme", "style");
 
   return (
     <div
       {...others}
-      {...{ class: twMerge(CLASSES.slot.dialog, local.class) }}
+      {...{ class: twMerge(CLASSES.slot.dialog, props.class) }}
       data-slot="popover-dialog"
-      data-theme={local.dataTheme}
-      style={local.style}
+      data-theme={props.dataTheme}
+      style={props.style}
     >
-      {local.children}
+      {props.children}
     </div>
   );
 };
@@ -343,12 +317,7 @@ export type PopoverArrowProps = UIBaseProps &
   };
 
 const PopoverArrow: Layout<typeof componentRecipe, PopoverArrowProps> = () => {
-  const [local, others] = splitProps(props, [
-    "children",
-    "class",
-    "dataTheme",
-    "style",
-  ]);
+  const others = omit(props, "children", "class", "dataTheme", "style");
 
   const ctx = usePopoverContext();
 
@@ -368,14 +337,14 @@ const PopoverArrow: Layout<typeof componentRecipe, PopoverArrowProps> = () => {
   return (
     <span
       {...others}
-      {...{ class: twMerge(CLASSES.slot.arrow, local.class) }}
+      {...{ class: twMerge(CLASSES.slot.arrow, props.class) }}
       data-slot="popover-arrow"
       data-placement={ctx.placement()}
-      data-theme={local.dataTheme}
-      style={local.style}
+      data-theme={props.dataTheme}
+      style={props.style}
       aria-hidden="true"
     >
-      {local.children ?? defaultArrow}
+      {props.children ?? defaultArrow}
     </span>
   );
 };
@@ -386,22 +355,17 @@ export type PopoverHeadingProps = UIBaseProps &
   };
 
 const PopoverHeading: Layout<typeof componentRecipe, PopoverHeadingProps> = () => {
-  const [local, others] = splitProps(props, [
-    "children",
-    "class",
-    "dataTheme",
-    "style",
-  ]);
+  const others = omit(props, "children", "class", "dataTheme", "style");
 
   return (
     <h3
       {...others}
-      {...{ class: twMerge(CLASSES.slot.heading, local.class) }}
+      {...{ class: twMerge(CLASSES.slot.heading, props.class) }}
       data-slot="popover-heading"
-      data-theme={local.dataTheme}
-      style={local.style}
+      data-theme={props.dataTheme}
+      style={props.style}
     >
-      {local.children}
+      {props.children}
     </h3>
   );
 };

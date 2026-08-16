@@ -1,6 +1,7 @@
 import "./ButtonGroup.css";
-import { splitProps, type Component, type JSX, type ParentComponent } from "solid-js";
-import { twMerge } from "tailwind-merge";
+import type { JSX } from "@solidjs/web";
+import {omit, type Component, type ParentComponent} from "solid-js";
+import { twMerge } from "../../lib/twMerge";
 
 import { CLASSES } from "./ButtonGroup.recipe";
 import { ButtonGroupContext } from "./context";
@@ -24,7 +25,8 @@ export type ButtonGroupSeparatorProps = Omit<JSX.HTMLAttributes<HTMLSpanElement>
   UIBaseProps;
 
 const ButtonGroupRoot: Layout<typeof componentRecipe, ButtonGroupRootProps> = () => {
-  const [local, others] = splitProps(props, [
+  const others = omit(
+    props,
     "children",
     "class",
     "dataTheme",
@@ -35,17 +37,17 @@ const ButtonGroupRoot: Layout<typeof componentRecipe, ButtonGroupRootProps> = ()
     "state",
     "fullWidth",
     "role",
-  ]);
+  );
 
-  const orientation = () => local.orientation ?? "horizontal";
+  const orientation = () => props.orientation ?? "horizontal";
 
   return (
-    <ButtonGroupContext.Provider
+    <ButtonGroupContext
       value={{
-        size: () => local.size,
-        variant: () => local.variant,
-        isDisabled: () => (local.state === "disabled"),
-        fullWidth: () => local.fullWidth,
+        size: () => props.size,
+        variant: () => props.variant,
+        isDisabled: () => (props.state === "disabled"),
+        fullWidth: () => props.fullWidth,
       }}
     >
       <div
@@ -53,33 +55,33 @@ const ButtonGroupRoot: Layout<typeof componentRecipe, ButtonGroupRootProps> = ()
         {...{ class: twMerge(
           CLASSES.Root.base,
           CLASSES.Root.orientation[orientation()],
-          local.fullWidth && CLASSES.Root.flag.fullWidth,
-          local.class,
+          props.fullWidth && CLASSES.Root.flag.fullWidth,
+          props.class,
         ) }}
         data-slot="button-group"
         data-orientation={orientation()}
-        data-theme={local.dataTheme}
-        style={local.style}
-        role={local.role ?? "group"}
-        aria-disabled={(local.state === "disabled") ? "true" : undefined}
+        data-theme={props.dataTheme}
+        style={props.style}
+        role={props.role ?? "group"}
+        aria-disabled={(props.state === "disabled") ? "true" : undefined}
       >
-        {local.children}
+        {props.children}
       </div>
-    </ButtonGroupContext.Provider>
+    </ButtonGroupContext>
   );
 };
 
 const ButtonGroupSeparator: Layout<typeof componentRecipe, ButtonGroupSeparatorProps> = () => {
-  const [local, others] = splitProps(props, ["class", "dataTheme", "style"]);
+  const others = omit(props, "class", "dataTheme", "style");
 
   return (
     <span
       {...others}
       aria-hidden="true"
-      {...{ class: twMerge(CLASSES.Separator.base, local.class) }}
+      {...{ class: twMerge(CLASSES.Separator.base, props.class) }}
       data-slot="button-group-separator"
-      data-theme={local.dataTheme}
-      style={local.style}
+      data-theme={props.dataTheme}
+      style={props.style}
     />
   );
 };

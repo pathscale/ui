@@ -1,5 +1,6 @@
 {
   "mode": "source",
+  "solid": 2,
   "source": "src/components",
   "output": "dist",
   "exports": [

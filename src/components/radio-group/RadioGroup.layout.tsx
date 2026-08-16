@@ -1,6 +1,7 @@
 import "./RadioGroup.css";
-import { Show, createSignal, createUniqueId, splitProps, type Component, type JSX } from "solid-js";
-import { twMerge } from "tailwind-merge";
+import type { JSX } from "@solidjs/web";
+import {Show, createSignal, createUniqueId, omit, type Component} from "solid-js";
+import { twMerge } from "../../lib/twMerge";
 import { RadioGroupContext, type RadioGroupContextValue } from "./context";
 import type { UIBaseProps, State, Issue } from "../vocabulary";
 import { CLASSES } from "./RadioGroup.recipe";
@@ -29,7 +30,8 @@ export type RadioGroupProps = Omit<JSX.HTMLAttributes<HTMLDivElement>, "children
   };
 
 const RadioGroup: Layout<typeof componentRecipe, RadioGroupProps> = () => {
-  const [local, others] = splitProps(props, [
+  const others = omit(
+    props,
     "children",
     "class",
     "value",
@@ -47,40 +49,40 @@ const RadioGroup: Layout<typeof componentRecipe, RadioGroupProps> = () => {
     "dataTheme",
     "aria-describedby",
     "aria-labelledby",
-  ]);
+  );
 
   const baseId = createUniqueId();
   const generatedName = `${baseId}-radio-group`;
-  const [internalValue, setInternalValue] = createSignal(local.defaultValue);
+  const [internalValue, setInternalValue] = createSignal(props.defaultValue);
 
   const labelId = `${baseId}-label`;
   const descriptionId = `${baseId}-description`;
   const errorId = `${baseId}-error`;
 
-  const orientation = () => local.orientation ?? "vertical";
-  const variant = () => local.variant ?? "primary";
-  const isControlled = () => local.value !== undefined;
-  const selectedValue = () => (isControlled() ? local.value : internalValue());
-  const isDisabled = () => Boolean((local.state === "disabled")) || Boolean(local.disabled);
-  const isInvalid = () => Boolean((resolveState(local.state, local.issues) === "invalid"));
-  const name = () => local.name ?? generatedName;
+  const orientation = () => props.orientation ?? "vertical";
+  const variant = () => props.variant ?? "primary";
+  const isControlled = () => props.value !== undefined;
+  const selectedValue = () => (isControlled() ? props.value : internalValue());
+  const isDisabled = () => Boolean((props.state === "disabled")) || Boolean(props.disabled);
+  const isInvalid = () => Boolean((resolveState(props.state, props.issues) === "invalid"));
+  const name = () => props.name ?? generatedName;
 
   const handleChange = (nextValue: string) => {
     if (nextValue === selectedValue()) return;
     if (!isControlled()) {
       setInternalValue(nextValue);
     }
-    local.onChange?.(nextValue);
+    props.onChange?.(nextValue);
   };
 
   const describedBy = () => {
     const ids = [local["aria-describedby"]];
-    if (local.description) ids.push(descriptionId);
-    if (local.errorMessage) ids.push(errorId);
+    if (props.description) ids.push(descriptionId);
+    if (props.errorMessage) ids.push(errorId);
     return ids.filter(Boolean).join(" ") || undefined;
   };
 
-  const labelledBy = () => local["aria-labelledby"] ?? (local.label ? labelId : undefined);
+  const labelledBy = () => local["aria-labelledby"] ?? (props.label ? labelId : undefined);
 
   const contextValue: RadioGroupContextValue = {
     name,
@@ -94,14 +96,14 @@ const RadioGroup: Layout<typeof componentRecipe, RadioGroupProps> = () => {
   };
 
   return (
-    <RadioGroupContext.Provider value={contextValue}>
+    <RadioGroupContext value={contextValue}>
       <div
         {...others}
         role="radiogroup"
         aria-invalid={isInvalid() ? "true" : undefined}
         aria-labelledby={labelledBy()}
         aria-describedby={describedBy()}
-        data-theme={local.dataTheme}
+        data-theme={props.dataTheme}
         data-slot="radio-group"
         data-orientation={orientation()}
         data-variant={variant()}
@@ -113,32 +115,32 @@ const RadioGroup: Layout<typeof componentRecipe, RadioGroupProps> = () => {
           CLASSES.variant[variant()],
           isDisabled() && CLASSES.flag.disabled,
           isInvalid() && CLASSES.flag.invalid,
-          local.class,
+          props.class,
         ) }}
       >
-        <Show when={local.label}>
+        <Show when={props.label}>
           <span id={labelId} {...{ class: CLASSES.slot.label }} data-slot="label">
-            {local.label}
+            {props.label}
           </span>
         </Show>
 
-        <Show when={local.description}>
+        <Show when={props.description}>
           <span id={descriptionId} {...{ class: CLASSES.slot.description }} data-slot="description">
-            {local.description}
+            {props.description}
           </span>
         </Show>
 
         <div {...{ class: CLASSES.slot.items }} data-slot="radio-group-items">
-          {local.children}
+          {props.children}
         </div>
 
-        <Show when={local.errorMessage}>
+        <Show when={props.errorMessage}>
           <span id={errorId} {...{ class: CLASSES.slot.error }} data-slot="error-message">
-            {local.errorMessage}
+            {props.errorMessage}
           </span>
         </Show>
       </div>
-    </RadioGroupContext.Provider>
+    </RadioGroupContext>
   );
 };
 

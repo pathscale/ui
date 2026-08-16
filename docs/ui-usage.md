@@ -31,9 +31,43 @@ Layout components require the application compiler before the normal Solid trans
 ## Theming
 
 - Two themes: `light` (default when no attribute) and `dark`. Switch: `document.documentElement.setAttribute("data-theme", "dark")`.
-- Tokens are CSS vars: `--color-primary(/-content)`, `--color-secondary`, `--color-accent`, `--color-neutral`, `--color-info/success/warning/error`, `--color-danger`, surfaces `--color-base-100/200/300`, `--color-base-content`, HeroUI-style `--color-default(/-foreground/-hover)`, `--color-background/foreground`, daisy short aliases `--b1/--b2/--b3/--bc`, radii `--radius-selector/-field/-box`, and a ~35-var `--glass-*` set (runtime-tweakable on `documentElement.style`).
+- Tokens are CSS vars: `--color-primary(/-content)`, `--color-secondary`, `--color-accent`, `--color-neutral`, `--color-info/success/warning/error`, `--color-danger`, surfaces `--color-base-100/200/300`, `--color-base-content`, HeroUI-style `--color-default(/-foreground/-hover)`, `--color-background/foreground`, daisy short aliases `--b1/--b2/--b3/--bc`, radii `--radius-selector/-field/-box`, and the `--glass-*` set: six colours the theme owns, plus the rest derived from three numbers by `applyGlassTokens` (see [Glass](#glass)).
 - `src/index.css` has a Tailwind v4 `@theme` block, so in a Tailwind v4 app `bg-primary`, `text-base-content`, `bg-base-100` etc. work.
 - Any component accepts `dataTheme` prop → rendered as `data-theme` attr (scoped theming).
+
+### Glass
+
+`material="glass"` makes a surface out of what is behind it rather than a fill.
+It is on `Card`, `Dialog.Content`, `Drawer.Content`, `Popover.Content`, `Menu`
+and `Navbar`; `solid` is the default everywhere, so nothing changes until it is
+asked for.
+
+The look is driven by the `--glass-*` custom properties, and you do not set
+those by hand — `applyGlassTokens` derives all twenty-five from three numbers:
+
+```ts
+import { applyGlassTokens, GLASS_DEFAULTS, GLASS_LIMITS } from "@pathscale/ui";
+
+applyGlassTokens({ blur: 9, refraction: 0.31, depth: 24 }, "dark");
+```
+
+- `blur` (0–50px) how far the backdrop is smeared
+- `refraction` (0–0.4) how much the surface asserts its own tint, border and highlight
+- `depth` (0–30) how far off the page it sits: glow, sheen, shadow
+
+`GLASS_LIMITS` carries those ranges and `GLASS_DEFAULTS` the per-mode defaults,
+so a settings panel should read both from here rather than restating them.
+`resolveGlassTokens` returns the same set as an object, and `glassTokensToCss`
+as a declaration block for a theme that wants them baked in.
+
+Pass a **complete** tuning. Three of the derived tokens are read without a CSS
+fallback, and an undefined custom property makes CSS drop the whole declaration
+rather than fall back — so a partial set renders a surface with no background at
+all rather than a plainer one.
+
+Nested glass is flattened to one pane on purpose, and both
+`prefers-reduced-transparency` and a browser without `backdrop-filter` fall back
+to a more opaque fill.
 
 ## Component conventions (consumer-facing)
 
@@ -92,7 +126,7 @@ the shared fallback. This works with PathScale Fonts and application-owned font 
 
 ## Component inventory (by family)
 
-- **Layout/primitives**: Flex, Grid, Join, Surface, Card, GlassPanel, Separator, ScrollShadow, Skeleton, EmptyState, Footer, Header, Navbar, Toolbar, FloatingDock
+- **Layout/primitives**: Flex, Grid, Join, Card, Separator, ScrollArea, Skeleton, Empty, Footer, Header, Navbar, Toolbar, Dock
 - **Typography/misc**: Text, Link, Kbd, Badge, Chip, Tag/TagGroup, Avatar, Icon, Tooltip, Breadcrumbs, Pagination, Meter, ProgressBar, ProgressCircle, Spinner (alias: Loading)
 - **Inputs**: Input, InputGroup, InputOTP, TextField, TextArea (and textarea), NumberField, SearchField, PasswordField (+ password-requirements/rules, `passwordRules.ts`), ColorField, Checkbox(+Group), Radio(+Group), Toggle, Slider, Select, ComboBox, ListBox, SizePicker, Form pieces (Label, Description, ErrorMessage, FieldError, Fieldset)
 - **Dates**: Calendar, RangeCalendar, DatePicker, DateRangePicker (internal date engine); DateField, TimeField (separate segmented editors)
@@ -112,7 +146,7 @@ the same normalized hex that it displays. Surface strength, softness and accent 
 remain consumer theme concerns; use the literal selected hex as their input rather than
 making the wheel silently transform it.
 
-## Forms (TanStack Form + Standard Schema)
+## Forms (built in, plus Standard Schema)
 
 ```tsx
 import { createForm, Form, FormField, FormSubmitButton } from "@pathscale/ui";
@@ -131,8 +165,8 @@ const form = createForm({
 ```
 
 - `Form` without a `form` prop = plain styled `<form>` (`FormRoot`). With `form` = context provider + wired submit.
-- Inside a `<Form>`: `useField(name)` → `{value, error, touched, invalid, handleChange, handleBlur}`. **Errors are touch-gated** — `error()` is `undefined` until the field blurs. `FormSubmitButton` disables on `!canSubmit` (not touch-gated), so the button can be disabled with no visible error.
-- Escape hatch: `form._tsForm` is the raw TanStack form API (typed `any` on purpose).
+- Inside a `<Form>`: `useField(name)` → `{value, error, touched, invalid, handleChange, handleBlur}`. **Errors are touch-gated** — `error()` is `undefined` until the field blurs. `FormSubmitButton` disables on `!form.isValid()` (not touch-gated), so the button can be disabled with no visible error. A failed `submit()` touches every field, so the errors it refused on all become visible at once.
+- The form API is the library's own: `values()`, `getFieldValue`, `getFieldMeta`, `setFieldValue`, `validateField`, `submit()`, `isSubmitting()`, `isValid()`. There is no longer a `_tsForm` escape hatch, because there is no longer a wrapped library to escape to.
 - Schema validation runs on change+blur+submit; blur errors clear immediately on change once valid.
 
 ## DataGrid (assembled)
@@ -216,7 +250,7 @@ const table = useTableModel({
 
 - State-slice hooks (all controlled-or-uncontrolled): `useTableSorting`, `useTableSelection`, `useTableFiltering` (per-column popovers + `getColumnFilterProps`), `useTablePagination` (⚠️ `nextPage(max)`/`lastPage(max)` need caller-supplied max page index), `useTableExpansion`.
 - Parts: TableRoot/ScrollContainer/Content/Header/Column/Body/Row/Cell/ExpandedRow/Footer/PageSize/ResizableContainer/ColumnResizer/LoadMore(+Content), plus SortIcon, ExpandToggle, InlineConfirm, MobileListView (responsive card fallback), VirtualSpacerRow.
-- **Virtualization is not built in**: combine `useVirtualRows` (wraps @tanstack/solid-virtual) + `VirtualSpacerRow` yourself. See the Table section above.
+- **Virtualization is not built in.** `useVirtualRows` was a thin wrapper over `@tanstack/solid-virtual` that nothing in the library used; it was removed with the rest of TanStack. `VirtualSpacerRow` is still here for a caller that brings its own windowing.
 
 ## Motion
 

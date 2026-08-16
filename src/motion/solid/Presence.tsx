@@ -1,12 +1,9 @@
-import {
-  type JSX,
-  Show,
-  createEffect,
-  createSignal,
-  onCleanup,
-  untrack,
-} from "solid-js";
+import {Show, createEffect, createSignal, onCleanup, untrack} from "solid-js";
+import type { JSX } from "@solidjs/web";
 import { prefersReducedMotion } from "../reduced-motion";
+import { nextPresenceState, type PresenceState } from "./presenceState";
+
+export { nextPresenceState, type PresenceState };
 
 export type PresenceRenderProp = (
   isExiting: () => boolean,
@@ -31,27 +28,6 @@ export interface PresenceProps {
   reduceMotion?: boolean;
 }
 
-interface PresenceState {
-  mounted: boolean;
-  isExiting: boolean;
-}
-
-/**
- * Pure state transition for Presence. Given the previous state and the next
- * `when` value, returns the next state. Exposed for unit testing.
- */
-export const nextPresenceState = (
-  prev: PresenceState,
-  when: boolean,
-): PresenceState => {
-  if (when) {
-    return { mounted: true, isExiting: false };
-  }
-  if (prev.mounted && !prev.isExiting) {
-    return { mounted: true, isExiting: true };
-  }
-  return prev.mounted ? prev : { mounted: false, isExiting: false };
-};
 
 const DEFAULT_EXIT_TIMEOUT = 800;
 

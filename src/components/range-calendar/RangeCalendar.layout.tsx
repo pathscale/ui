@@ -1,6 +1,7 @@
 import "./RangeCalendar.css";
-import { createMemo, splitProps, type JSX } from "solid-js";
-import { twMerge } from "tailwind-merge";
+import type { JSX } from "@solidjs/web";
+import {createMemo, omit} from "solid-js";
+import { twMerge } from "../../lib/twMerge";
 
 import {
   useRangeSelection,
@@ -38,7 +39,8 @@ export type RangeCalendarProps = Omit<
   RangeCalendarBaseProps;
 
 const RangeCalendar: Layout<typeof componentRecipe, RangeCalendarProps> = () => {
-  const [local, others] = splitProps(props, [
+  const others = omit(
+    props,
     "class",
     "dataTheme",
     "style",
@@ -56,23 +58,23 @@ const RangeCalendar: Layout<typeof componentRecipe, RangeCalendarProps> = () => 
     "disabled",
     "onDaySelect",
     "onDayHover",
-  ]);
+  );
 
-  const isDisabled = createMemo(() => Boolean((local.state === "disabled")) || Boolean(local.disabled));
+  const isDisabled = createMemo(() => Boolean((props.state === "disabled")) || Boolean(props.disabled));
 
   const rangeSelection = useRangeSelection({
-    value: () => local.value,
-    defaultValue: () => local.defaultValue,
-    onChange: () => local.onChange,
+    value: () => props.value,
+    defaultValue: () => props.defaultValue,
+    onChange: () => props.onChange,
   });
 
   const handleDaySelect = (date: Date) => {
-    local.onDaySelect?.(date);
+    props.onDaySelect?.(date);
     rangeSelection.selectDate(date);
   };
 
   const handleDayHover = (date?: Date) => {
-    local.onDayHover?.(date);
+    props.onDayHover?.(date);
     rangeSelection.setHoverDate(date);
   };
 
@@ -80,18 +82,18 @@ const RangeCalendar: Layout<typeof componentRecipe, RangeCalendarProps> = () => 
     <div
       {...others}
       ref={(node) => {
-        if (typeof local.ref === "function") local.ref(node);
+        if (typeof props.ref === "function") props.ref(node);
       }}
       data-slot="range-calendar"
       data-disabled={isDisabled() ? "true" : "false"}
-      data-theme={local.dataTheme}
-      style={local.style}
+      data-theme={props.dataTheme}
+      style={props.style}
       aria-disabled={isDisabled() ? "true" : undefined}
       {...{
         class: twMerge(
           CLASSES.Root.base,
           isDisabled() && CLASSES.Root.flag.disabled,
-          local.class,
+          props.class,
         ),
       }}
     >
@@ -102,12 +104,12 @@ const RangeCalendar: Layout<typeof componentRecipe, RangeCalendarProps> = () => 
         rangeStart={rangeSelection.rangeStart() ?? undefined}
         rangeEnd={rangeSelection.rangeEnd() ?? undefined}
         rangePreview={rangeSelection.hoveredDate() ?? undefined}
-        locale={local.locale}
-        weekdayFormat={local.weekdayFormat}
-        minValue={local.minValue}
-        maxValue={local.maxValue}
-        isDateUnavailable={local.isDateUnavailable}
-        showOutsideDays={local.showOutsideDays}
+        locale={props.locale}
+        weekdayFormat={props.weekdayFormat}
+        minValue={props.minValue}
+        maxValue={props.maxValue}
+        isDateUnavailable={props.isDateUnavailable}
+        showOutsideDays={props.showOutsideDays}
         state={isDisabled() ? "disabled" : undefined}
         onDaySelect={handleDaySelect}
         onDayHover={handleDayHover}

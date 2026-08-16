@@ -1,5 +1,6 @@
-import { type Component, type JSX, Show, splitProps } from "solid-js";
-import { twMerge } from "tailwind-merge";
+import {type Component, Show, omit} from "solid-js";
+import type { JSX } from "@solidjs/web";
+import { twMerge } from "../../lib/twMerge";
 import Icon from "../icon";
 import type { UIBaseProps } from "../vocabulary";
 import type { Layout } from "../../lib/layouts";
@@ -15,7 +16,8 @@ export type ExpandToggleProps = Omit<JSX.ButtonHTMLAttributes<HTMLButtonElement>
   };
 
 const ExpandToggle: Layout<typeof tableExpandToggleRecipe, ExpandToggleProps> = () => {
-  const [local, rest] = splitProps(props, [
+  const rest = omit(
+    props,
     "expanded",
     "onToggle",
     "size",
@@ -24,21 +26,21 @@ const ExpandToggle: Layout<typeof tableExpandToggleRecipe, ExpandToggleProps> = 
     "class",
     "onClick",
     "dataTheme",
-  ]);
+  );
 
-  const iconSize = () => local.size ?? 16;
-  const ariaLabel = () => local.label ?? "Toggle row details";
-  const isDisabled = () => Boolean(local.disabled);
+  const iconSize = () => props.size ?? 16;
+  const ariaLabel = () => props.label ?? "Toggle row details";
+  const isDisabled = () => Boolean(props.disabled);
 
   const handleClick: JSX.EventHandlerUnion<HTMLButtonElement, MouseEvent> = (event) => {
-    if (typeof local.onClick === "function") {
-      local.onClick(event);
-    } else if (Array.isArray(local.onClick) && typeof local.onClick[0] === "function") {
-      local.onClick[0](local.onClick[1], event);
+    if (typeof props.onClick === "function") {
+      props.onClick(event);
+    } else if (Array.isArray(props.onClick) && typeof props.onClick[0] === "function") {
+      props.onClick[0](props.onClick[1], event);
     }
     if (event.defaultPrevented) return;
     if (isDisabled()) return;
-    local.onToggle?.();
+    props.onToggle?.();
   };
 
   return (
@@ -49,18 +51,18 @@ const ExpandToggle: Layout<typeof tableExpandToggleRecipe, ExpandToggleProps> = 
         "inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-md border border-base-300 bg-base-100 text-base-content transition-colors hover:bg-base-200",
         "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/60",
         isDisabled() && "cursor-not-allowed opacity-60 hover:bg-base-100",
-        local.class,
+        props.class,
       ) }}
-      data-theme={local.dataTheme}
+      data-theme={props.dataTheme}
       data-slot="table-expand-toggle"
-      data-expanded={local.expanded ? "true" : "false"}
-      aria-expanded={local.expanded}
+      data-expanded={props.expanded ? "true" : "false"}
+      aria-expanded={props.expanded ? "true" : "false"}
       aria-label={ariaLabel()}
       disabled={isDisabled()}
       onClick={handleClick}
     >
       <Show
-        when={local.expanded}
+        when={props.expanded}
         fallback={<Icon src="icon-[lucide--chevron-right]" width={iconSize()} height={iconSize()} aria-hidden="true" />}
       >
         <Icon src="icon-[lucide--chevron-down]" width={iconSize()} height={iconSize()} aria-hidden="true" />

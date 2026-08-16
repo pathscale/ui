@@ -1,5 +1,6 @@
 import "./AuthPoweredBy.css";
-import { Show, type JSX } from "solid-js";
+import type { JSX } from "@solidjs/web";
+import {Show} from "solid-js";
 import type { UIBaseProps } from "../vocabulary";
 import type { Layout } from "../../lib/layouts";
 import { authPoweredBy } from "./AuthPoweredBy.recipe";

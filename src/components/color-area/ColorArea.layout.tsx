@@ -1,6 +1,7 @@
 import "./ColorArea.css";
-import { createSignal, splitProps, type Component, type JSX } from "solid-js";
-import { twMerge } from "tailwind-merge";
+import type { JSX } from "@solidjs/web";
+import {createSignal, omit, type Component} from "solid-js";
+import { twMerge } from "../../lib/twMerge";
 import type { UIBaseProps, State } from "../vocabulary";
 import { CLASSES } from "./ColorArea.recipe";
 import type { Layout } from "../../lib/layouts";
@@ -75,7 +76,8 @@ const hsvToRgb = (h: number, s: number, v: number) => {
 };
 
 const ColorArea: Layout<typeof componentRecipe, ColorAreaProps> = () => {
-  const [local, others] = splitProps(props, [
+  const others = omit(
+    props,
     "class",
     "value",
     "onChange",
@@ -83,22 +85,22 @@ const ColorArea: Layout<typeof componentRecipe, ColorAreaProps> = () => {
     "dataTheme",
     "style",
     "aria-label",
-  ]);
+  );
 
   const [internalValue, setInternalValue] = createSignal<ColorAreaValue>(DEFAULT_VALUE);
   const [isDragging, setIsDragging] = createSignal(false);
   let areaRef: HTMLDivElement | undefined;
 
-  const isControlled = () => local.value !== undefined;
-  const currentValue = () => normalizeValue(local.value ?? internalValue());
-  const isDisabled = () => Boolean((local.state === "disabled"));
+  const isControlled = () => props.value !== undefined;
+  const currentValue = () => normalizeValue(props.value ?? internalValue());
+  const isDisabled = () => Boolean((props.state === "disabled"));
 
   const emitChange = (next: ColorAreaValue) => {
     const normalized = normalizeValue(next);
     if (!isControlled()) {
       setInternalValue(normalized);
     }
-    local.onChange?.(normalized);
+    props.onChange?.(normalized);
   };
 
   const updateFromPointer = (clientX: number, clientY: number) => {
@@ -170,7 +172,7 @@ const ColorArea: Layout<typeof componentRecipe, ColorAreaProps> = () => {
   const style = (): JSX.CSSProperties => {
     const color = currentValue();
     const thumb = hsvToRgb(color.h, color.s, color.v);
-    const userStyle = local.style as JSX.CSSProperties | undefined;
+    const userStyle = props.style as JSX.CSSProperties | undefined;
 
     return {
       "--color-area-background": `linear-gradient(to top, #000, transparent), linear-gradient(to right, #fff, hsl(${color.h} 100% 50%))`,
@@ -183,11 +185,11 @@ const ColorArea: Layout<typeof componentRecipe, ColorAreaProps> = () => {
     <div
       {...others}
       ref={areaRef}
-      {...{ class: twMerge(CLASSES.base, local.class) }}
-      data-theme={local.dataTheme}
+      {...{ class: twMerge(CLASSES.base, props.class) }}
+      data-theme={props.dataTheme}
       data-slot="color-area"
       data-disabled={isDisabled() ? "true" : "false"}
-      tabIndex={isDisabled() ? -1 : 0}
+      tabindex={isDisabled() ? -1 : 0}
       role="slider"
       aria-label={local["aria-label"] ?? "Color area"}
       aria-valuemin={0}

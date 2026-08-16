@@ -1,5 +1,6 @@
 import "./PasswordRequirements.css";
-import { For, Show, type JSX } from "solid-js";
+import type { JSX } from "@solidjs/web";
+import {For, Show} from "solid-js";
 import Icon from "../icon";
 import type { UIBaseProps } from "../vocabulary";
 import type { PasswordRuleResult } from "../../passwordRules";

@@ -1,21 +1,10 @@
 import "./Dialog.css";
-import {
-  Show,
-  createContext,
-  createEffect,
-  createSignal,
-  createUniqueId,
-  onCleanup,
-  splitProps,
-  useContext,
-  type Component,
-  type JSX,
-  type ParentComponent,
-} from "solid-js";
-import { Portal } from "solid-js/web";
-import { twMerge } from "tailwind-merge";
+import {Show, createContext, createEffect, createSignal, createUniqueId, onCleanup, omit, useContext, type Component, type ParentComponent} from "solid-js";
+import { Portal, type JSX} from "@solidjs/web";
+import { twMerge } from "../../lib/twMerge";
 
-import type { UIBaseProps } from "../vocabulary";
+import "../_shared/material.css";
+import type { Material, UIBaseProps } from "../vocabulary";
 import { CLASSES } from "./Dialog.recipe";
 import type { Layout } from "../../lib/layouts";
 import { componentRecipe } from "./Dialog.recipe";
@@ -189,6 +178,14 @@ export type DialogContentProps = Omit<JSX.HTMLAttributes<HTMLDivElement>, "child
     scrollBehavior?: DialogScrollBehavior;
     isDismissable?: boolean;
     shouldCloseOnBackdropClick?: boolean;
+    /**
+     * What the panel is made of. `solid` by default.
+     *
+     * `glass` pairs naturally with `backdrop="transparent"`: the point of a
+     * glass dialog is seeing the page through it, and an opaque backdrop is
+     * exactly the thing that would hide it.
+     */
+    material?: Material;
   };
 
 export type DialogHeaderProps = Omit<JSX.HTMLAttributes<HTMLDivElement>, "children"> &
@@ -222,7 +219,8 @@ export type DialogCloseTriggerProps = Omit<JSX.ButtonHTMLAttributes<HTMLButtonEl
   };
 
 const DialogRoot: Layout<typeof componentRecipe, DialogRootProps> = () => {
-  const [local, others] = splitProps(props, [
+  const others = omit(
+    props,
     "children",
     "class",
     "dataTheme",
@@ -238,18 +236,18 @@ const DialogRoot: Layout<typeof componentRecipe, DialogRootProps> = () => {
     "size",
     "backdrop",
     "scrollBehavior",
-  ]);
+  );
 
-  const [internalOpen, setInternalOpen] = createSignal(Boolean(local.defaultOpen));
+  const [internalOpen, setInternalOpen] = createSignal(Boolean(props.defaultOpen));
   const [animState, setAnimState] = createSignal<DialogAnimState>(
-    Boolean(local.open ?? local.defaultOpen) ? "open" : "closed",
+    props.open ?? props.defaultOpen ? "open" : "closed",
   );
   const [contentRef, setContentRef] = createSignal<HTMLDivElement | undefined>(undefined);
   const [labelledBy, setLabelledBy] = createSignal<string | undefined>(undefined);
   const [describedBy, setDescribedBy] = createSignal<string | undefined>(undefined);
 
-  const isControlled = () => local.open !== undefined;
-  const isOpen = () => (isControlled() ? Boolean(local.open) : internalOpen());
+  const isControlled = () => props.open !== undefined;
+  const isOpen = () => (isControlled() ? Boolean(props.open) : internalOpen());
 
   const setIsOpen = (next: boolean) => {
     if (isOpen() === next) return;
@@ -258,7 +256,7 @@ const DialogRoot: Layout<typeof componentRecipe, DialogRootProps> = () => {
       setInternalOpen(next);
     }
 
-    local.onOpenChange?.(next);
+    props.onOpenChange?.(next);
   };
 
   let exitTimer: ReturnType<typeof setTimeout> | undefined;
@@ -334,7 +332,7 @@ const DialogRoot: Layout<typeof componentRecipe, DialogRootProps> = () => {
       if (!isVisibleState(animState())) return;
 
       if (event.key === "Escape") {
-        if (local.isDismissable !== false && local.shouldCloseOnEsc !== false) {
+        if (props.isDismissable !== false && props.shouldCloseOnEsc !== false) {
           event.preventDefault();
           setIsOpen(false);
         }
@@ -367,13 +365,13 @@ const DialogRoot: Layout<typeof componentRecipe, DialogRootProps> = () => {
     isOpen,
     setIsOpen,
     animState,
-    isDismissable: () => local.isDismissable !== false,
-    shouldCloseOnEsc: () => local.shouldCloseOnEsc !== false,
-    shouldCloseOnBackdropClick: () => local.shouldCloseOnBackdropClick !== false,
-    placement: () => local.placement ?? "auto",
-    size: () => local.size ?? "md",
-    backdrop: () => local.backdrop ?? "opaque",
-    scrollBehavior: () => local.scrollBehavior ?? "inside",
+    isDismissable: () => props.isDismissable !== false,
+    shouldCloseOnEsc: () => props.shouldCloseOnEsc !== false,
+    shouldCloseOnBackdropClick: () => props.shouldCloseOnBackdropClick !== false,
+    placement: () => props.placement ?? "auto",
+    size: () => props.size ?? "md",
+    backdrop: () => props.backdrop ?? "opaque",
+    scrollBehavior: () => props.scrollBehavior ?? "inside",
     contentRef,
     setContentRef,
     labelledBy,
@@ -383,66 +381,60 @@ const DialogRoot: Layout<typeof componentRecipe, DialogRootProps> = () => {
   };
 
   return (
-    <DialogContext.Provider value={contextValue}>
+    <DialogContext value={contextValue}>
       <div
         {...others}
         ref={(node) => {
-          if (typeof local.ref === "function") {
-            local.ref(node);
+          if (typeof props.ref === "function") {
+            props.ref(node);
           }
         }}
         {...{ class: twMerge(
           CLASSES.Root.base,
           isVisibleState(animState()) && CLASSES.Root.flag.open,
-          local.class,
+          props.class,
         ) }}
         data-slot="dialog-root"
         data-open={isVisibleState(animState()) ? "true" : "false"}
-        data-theme={local.dataTheme}
-        style={local.style}
+        data-theme={props.dataTheme}
+        style={props.style}
       >
-        {local.children}
+        {props.children}
       </div>
-    </DialogContext.Provider>
+    </DialogContext>
   );
 };
 
 const DialogTrigger: Layout<typeof componentRecipe, DialogTriggerProps> = () => {
-  const [local, others] = splitProps(props, [
-    "children",
-    "class",
-    "dataTheme",
-    "style",
-    "type",
-    "onClick",
-  ]);
+  const others = omit(props, "children", "class", "dataTheme", "style", "type", "onClick");
 
   const context = useModalContext();
 
   const handleClick: JSX.EventHandlerUnion<HTMLButtonElement, MouseEvent> = (event) => {
     context.setIsOpen(true);
-    if (typeof local.onClick === "function") {
-      local.onClick(event);
+    if (typeof props.onClick === "function") {
+      props.onClick(event);
     }
   };
 
   return (
     <button
       {...others}
-      type={local.type ?? "button"}
-      {...{ class: twMerge(CLASSES.Trigger.base, local.class) }}
+      type={props.type ?? "button"}
+      {...{ class: twMerge(CLASSES.Trigger.base, props.class) }}
       data-slot="dialog-trigger"
-      data-theme={local.dataTheme}
-      style={local.style}
+      data-theme={props.dataTheme}
+      style={props.style}
       onClick={handleClick}
     >
-      {local.children}
+      {props.children}
     </button>
   );
 };
 
 const DialogBackdrop: Layout<typeof componentRecipe, DialogBackdropProps> = () => {
-  const [local, others] = splitProps(props, [
+  const others = omit(
+    props,
     "children",
     "class",
     "dataTheme",
@@ -451,13 +443,13 @@ const DialogBackdrop: Layout<typeof componentRecipe, DialogBackdropProps> = () =
     "isDismissable",
     "shouldCloseOnBackdropClick",
     "onClick",
-  ]);
+  );
 
   const context = useModalContext();
-  const variant = () => local.variant ?? context.backdrop();
-  const dismissable = () => local.isDismissable ?? context.isDismissable();
+  const variant = () => props.variant ?? context.backdrop();
+  const dismissable = () => props.isDismissable ?? context.isDismissable();
   const shouldCloseOnBackdropClick = () =>
-    local.shouldCloseOnBackdropClick ?? context.shouldCloseOnBackdropClick();
+    props.shouldCloseOnBackdropClick ?? context.shouldCloseOnBackdropClick();
   const isEntering = () => context.animState() === "entering";
   const isExiting = () => context.animState() === "exiting";
 
@@ -470,8 +462,8 @@ const DialogBackdrop: Layout<typeof componentRecipe, DialogBackdropProps> = () =
       context.setIsOpen(false);
     }
 
-    if (typeof local.onClick === "function") {
-      local.onClick(event);
+    if (typeof props.onClick === "function") {
+      props.onClick(event);
     }
   };
 
@@ -483,22 +475,23 @@ const DialogBackdrop: Layout<typeof componentRecipe, DialogBackdropProps> = () =
         CLASSES.Backdrop.variant[variant()],
         isEntering() && CLASSES.Backdrop.state.entering,
         isExiting() && CLASSES.Backdrop.state.exiting,
-        local.class,
+        props.class,
       ) }}
       data-slot="dialog-backdrop"
       data-entering={isEntering() ? "true" : undefined}
       data-exiting={isExiting() ? "true" : undefined}
-      data-theme={local.dataTheme}
-      style={local.style}
+      data-theme={props.dataTheme}
+      style={props.style}
       onClick={handleClick}
     >
-      {local.children}
+      {props.children}
     </div>
   );
 };
 
 const DialogContent: Layout<typeof componentRecipe, DialogContentProps> = () => {
-  const [local, others] = splitProps(props, [
+  const others = omit(
+    props,
     "children",
     "class",
     "dataTheme",
@@ -510,17 +503,18 @@ const DialogContent: Layout<typeof componentRecipe, DialogContentProps> = () => 
     "scrollBehavior",
     "isDismissable",
     "shouldCloseOnBackdropClick",
+    "material",
     "role",
-    "tabIndex",
+    "tabindex",
     "aria-labelledby",
     "aria-describedby",
-  ]);
+  );
 
   const context = useModalContext();
 
-  const placement = () => local.placement ?? context.placement();
-  const size = () => local.size ?? context.size();
-  const scrollBehavior = () => local.scrollBehavior ?? context.scrollBehavior();
+  const placement = () => props.placement ?? context.placement();
+  const size = () => props.size ?? context.size();
+  const scrollBehavior = () => props.scrollBehavior ?? context.scrollBehavior();
   const isEntering = () => context.animState() === "entering";
   const isExiting = () => context.animState() === "exiting";
   const containerSizeClass = () => {
@@ -533,10 +527,10 @@ const DialogContent: Layout<typeof componentRecipe, DialogContentProps> = () => 
     <Show when={context.animState() !== "closed"}>
       <Portal>
         <DialogBackdrop
-          variant={local.backdrop}
-          isDismissable={local.isDismissable}
-          shouldCloseOnBackdropClick={local.shouldCloseOnBackdropClick}
-          dataTheme={local.dataTheme}
+          variant={props.backdrop}
+          isDismissable={props.isDismissable}
+          shouldCloseOnBackdropClick={props.shouldCloseOnBackdropClick}
+          dataTheme={props.dataTheme}
         >
           <div
             {...{ class: twMerge(
@@ -556,33 +550,34 @@ const DialogContent: Layout<typeof componentRecipe, DialogContentProps> = () => 
               {...others}
               ref={(node) => {
                 context.setContentRef(node);
-                if (typeof local.ref === "function") {
-                  local.ref(node);
+                if (typeof props.ref === "function") {
+                  props.ref(node);
                 }
               }}
-              role={local.role ?? "dialog"}
+              role={props.role ?? "dialog"}
               aria-modal="true"
               aria-labelledby={local["aria-labelledby"] ?? context.labelledBy()}
               aria-describedby={local["aria-describedby"] ?? context.describedBy()}
-              tabIndex={local.tabIndex ?? -1}
+              tabindex={props.tabindex ?? -1}
               {...{ class: twMerge(
                 CLASSES.Content.base,
                 CLASSES.Content.scroll[scrollBehavior()],
                 CLASSES.Content.size[size()],
                 isEntering() && CLASSES.Content.state.entering,
                 isExiting() && CLASSES.Content.state.exiting,
-                local.class,
+                props.class,
               ) }}
               data-slot="dialog-content"
+              data-material={props.material ?? "solid"}
               data-placement={placement()}
               data-size={size()}
               data-scroll={scrollBehavior()}
               data-entering={isEntering() ? "true" : undefined}
               data-exiting={isExiting() ? "true" : undefined}
-              data-theme={local.dataTheme}
-              style={local.style}
+              data-theme={props.dataTheme}
+              style={props.style}
             >
-              {local.children}
+              {props.children}
             </div>
           </div>
         </DialogBackdrop>
@@ -592,38 +587,30 @@ const DialogContent: Layout<typeof componentRecipe, DialogContentProps> = () => 
 };
 
 const DialogHeader: Layout<typeof componentRecipe, DialogHeaderProps> = () => {
-  const [local, others] = splitProps(props, [
-    "children",
-    "class",
-    "dataTheme",
-    "style",
-  ]);
+  const others = omit(props, "children", "class", "dataTheme", "style");
 
   return (
     <div
       {...others}
-      {...{ class: twMerge(CLASSES.Header.base, local.class) }}
+      {...{ class: twMerge(CLASSES.Header.base, props.class) }}
       data-slot="dialog-header"
-      data-theme={local.dataTheme}
-      style={local.style}
+      data-theme={props.dataTheme}
+      style={props.style}
     >
-      {local.children}
+      {props.children}
     </div>
   );
 };
 
 const DialogHeading: Layout<typeof componentRecipe, DialogHeadingProps> = () => {
-  const [local, others] = splitProps(props, [
-    "children",
-    "class",
-    "dataTheme",
-    "style",
-    "id",
-  ]);
+  const others = omit(props, "children", "class", "dataTheme", "style", "id");
 
   const context = useModalContext();
   const uniqueId = createUniqueId();
-  const headingId = () => local.id ?? `dialog-heading-${uniqueId}`;
+  // `props.id` is `string | false | undefined` in 2.0, where `false` means
+  // "remove the attribute". Only a real string can name an element for
+  // `aria-labelledby`, so a `false` falls through to the generated id.
+  const headingId = () => (typeof props.id === "string" ? props.id : undefined) ?? `dialog-heading-${uniqueId}`;
 
   createEffect(() => {
     const id = headingId();
@@ -640,49 +627,38 @@ const DialogHeading: Layout<typeof componentRecipe, DialogHeadingProps> = () => 
     <h2
       {...others}
       id={headingId()}
-      {...{ class: twMerge(CLASSES.Heading.base, local.class) }}
+      {...{ class: twMerge(CLASSES.Heading.base, props.class) }}
       data-slot="dialog-heading"
-      data-theme={local.dataTheme}
-      style={local.style}
+      data-theme={props.dataTheme}
+      style={props.style}
     >
-      {local.children}
+      {props.children}
     </h2>
   );
 };
 
 const DialogIcon: Layout<typeof componentRecipe, DialogIconProps> = () => {
-  const [local, others] = splitProps(props, [
-    "children",
-    "class",
-    "dataTheme",
-    "style",
-  ]);
+  const others = omit(props, "children", "class", "dataTheme", "style");
 
   return (
     <div
       {...others}
-      {...{ class: twMerge(CLASSES.Icon.base, local.class) }}
+      {...{ class: twMerge(CLASSES.Icon.base, props.class) }}
       data-slot="dialog-icon"
-      data-theme={local.dataTheme}
-      style={local.style}
+      data-theme={props.dataTheme}
+      style={props.style}
     >
-      {local.children}
+      {props.children}
     </div>
   );
 };
 
 const DialogBody: Layout<typeof componentRecipe, DialogBodyProps> = () => {
-  const [local, others] = splitProps(props, [
-    "children",
-    "class",
-    "dataTheme",
-    "style",
-    "id",
-  ]);
+  const others = omit(props, "children", "class", "dataTheme", "style", "id");
 
   const context = useModalContext();
   const uniqueId = createUniqueId();
-  const bodyId = () => local.id ?? `dialog-body-${uniqueId}`;
+  const bodyId = () => (typeof props.id === "string" ? props.id : undefined) ?? `dialog-body-${uniqueId}`;
 
   createEffect(() => {
     const id = bodyId();
@@ -702,41 +678,37 @@ const DialogBody: Layout<typeof componentRecipe, DialogBodyProps> = () => {
       {...{ class: twMerge(
         CLASSES.Body.base,
         CLASSES.Body.scroll[context.scrollBehavior()],
-        local.class,
+        props.class,
       ) }}
       data-slot="dialog-body"
       data-scroll={context.scrollBehavior()}
-      data-theme={local.dataTheme}
-      style={local.style}
+      data-theme={props.dataTheme}
+      style={props.style}
     >
-      {local.children}
+      {props.children}
     </div>
   );
 };
 
 const DialogFooter: Layout<typeof componentRecipe, DialogFooterProps> = () => {
-  const [local, others] = splitProps(props, [
-    "children",
-    "class",
-    "dataTheme",
-    "style",
-  ]);
+  const others = omit(props, "children", "class", "dataTheme", "style");
 
   return (
     <div
       {...others}
-      {...{ class: twMerge(CLASSES.Footer.base, local.class) }}
+      {...{ class: twMerge(CLASSES.Footer.base, props.class) }}
       data-slot="dialog-footer"
-      data-theme={local.dataTheme}
-      style={local.style}
+      data-theme={props.dataTheme}
+      style={props.style}
     >
-      {local.children}
+      {props.children}
     </div>
   );
 };
 
 const DialogCloseTrigger: Layout<typeof componentRecipe, DialogCloseTriggerProps> = () => {
-  const [local, others] = splitProps(props, [
+  const others = omit(
+    props,
     "children",
     "class",
     "dataTheme",
@@ -744,29 +716,29 @@ const DialogCloseTrigger: Layout<typeof componentRecipe, DialogCloseTriggerProps
     "type",
     "onClick",
     "aria-label",
-  ]);
+  );
 
   const context = useModalContext();
 
   const handleClick: JSX.EventHandlerUnion<HTMLButtonElement, MouseEvent> = (event) => {
     context.setIsOpen(false);
-    if (typeof local.onClick === "function") {
-      local.onClick(event);
+    if (typeof props.onClick === "function") {
+      props.onClick(event);
     }
   };
 
   return (
     <button
       {...others}
-      type={local.type ?? "button"}
+      type={props.type ?? "button"}
       aria-label={local["aria-label"] ?? "Close dialog"}
-      {...{ class: twMerge(CLASSES.CloseTrigger.base, local.class) }}
+      {...{ class: twMerge(CLASSES.CloseTrigger.base, props.class) }}
       data-slot="dialog-close-trigger"
-      data-theme={local.dataTheme}
-      style={local.style}
+      data-theme={props.dataTheme}
+      style={props.style}
       onClick={handleClick}
     >
-      {local.children ?? (
+      {props.children ?? (
         <svg
           {...{ class: CLASSES.CloseTrigger.icon }}
           data-slot="dialog-close-trigger-icon"

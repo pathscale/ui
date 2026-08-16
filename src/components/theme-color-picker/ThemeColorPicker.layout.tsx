@@ -1,6 +1,6 @@
-import { type Component, type JSX, Show, For, createSignal, createMemo, createEffect, onCleanup, splitProps } from "solid-js";
-import { Portal } from "solid-js/web";
-import { twMerge } from "tailwind-merge";
+import {type Component, Show, For, createSignal, createMemo, createEffect, onCleanup, omit} from "solid-js";
+import { Portal, type JSX} from "@solidjs/web";
+import { twMerge } from "../../lib/twMerge";
 import type { ColorValue, ColorPickerContextType, ColorFormat } from "../color-wheel-flower";
 import { ColorPickerContext, ColorWheelFlower } from "../color-wheel-flower";
 import { createColorFromHsl, parseColor } from "../color-wheel-flower/ColorUtils";
@@ -70,7 +70,8 @@ function hexToColorValue(hex: string | null): ColorValue {
 }
 
 const ThemeColorPicker: Layout<typeof componentRecipe, ThemeColorPickerProps> = () => {
-  const [local, others] = splitProps(props, [
+  const others = omit(
+    props,
     "storagePrefix",
     "onColorChange",
     "onThemeSwitch",
@@ -82,14 +83,14 @@ const ThemeColorPicker: Layout<typeof componentRecipe, ThemeColorPickerProps> = 
     "class",
     "style",
     "dataTheme",
-  ]);
+  );
 
   const [isOpen, setIsOpen] = createSignal(false);
   const [featureAvailable, setFeatureAvailable] = createSignal(true);
   const [containerRef, setContainerRef] = createSignal<HTMLDivElement | undefined>();
   const [popoverRef, setPopoverRef] = createSignal<HTMLDivElement | undefined>();
 
-  const store: HueShiftStore = createHueShiftStore(local.storagePrefix ?? "theme");
+  const store: HueShiftStore = createHueShiftStore(props.storagePrefix ?? "theme");
 
   const colorValue = createMemo(() => hexToColorValue(store.themeColor()));
 
@@ -98,12 +99,12 @@ const ThemeColorPicker: Layout<typeof componentRecipe, ThemeColorPickerProps> = 
 
     if (s < 10 && l > 90) {
       store.setThemeColor(null);
-      local.onColorChange?.(null, 100);
+      props.onColorChange?.(null, 100);
       return;
     }
 
     store.setThemeColor(color.hex);
-    local.onColorChange?.(color.hsl.h, color.hsl.s);
+    props.onColorChange?.(color.hsl.h, color.hsl.s);
   };
 
   type GrayscaleSwatch = {
@@ -129,9 +130,9 @@ const ThemeColorPicker: Layout<typeof componentRecipe, ThemeColorPickerProps> = 
     // reads it inside applyThemeColor. Solid's effect flush order (consumer
     // theme effect → picker store effect) lets applyThemeColor see the new
     // data-theme and pick the correct background anchors on the first pass.
-    local.onThemeSwitch?.(swatch.theme);
+    props.onThemeSwitch?.(swatch.theme);
     store.setThemeColor(swatch.hex);
-    local.onColorChange?.(null, 0);
+    props.onColorChange?.(null, 0);
   };
 
   createEffect(() => {
@@ -175,7 +176,7 @@ const ThemeColorPicker: Layout<typeof componentRecipe, ThemeColorPickerProps> = 
     onFormatChange: () => {},
   });
 
-  const classes = () => twMerge(CLASSES.base, local.class);
+  const classes = () => twMerge(CLASSES.base, props.class);
 
   const popoverClasses = () => CLASSES.popover;
 
@@ -183,10 +184,10 @@ const ThemeColorPicker: Layout<typeof componentRecipe, ThemeColorPickerProps> = 
     open: isOpen,
     triggerRef: containerRef,
     overlayRef: popoverRef,
-    placement: () => local.placement ?? "bottom",
+    placement: () => props.placement ?? "bottom",
     offset: () => 8,
-    autoFlip: () => local.autoFlip ?? true,
-    align: () => (local.align === "start" ? "start" : "end"),
+    autoFlip: () => props.autoFlip ?? true,
+    align: () => (props.align === "start" ? "start" : "end"),
   });
 
   const popoverStyle = () => overlayPosition.style();
@@ -197,7 +198,7 @@ const ThemeColorPicker: Layout<typeof componentRecipe, ThemeColorPickerProps> = 
         ref={setContainerRef}
         {...{ class: classes() }}
         onKeyDown={handleKeyDown}
-        style={local.style}
+        style={props.style}
         {...others}
       >
         <Button
@@ -206,9 +207,9 @@ const ThemeColorPicker: Layout<typeof componentRecipe, ThemeColorPickerProps> = 
           variant="ghost"
           onClick={() => setIsOpen(!isOpen())}
           aria-label={local["aria-label"] ?? "Change theme color"}
-          aria-expanded={isOpen()}
+          aria-expanded={isOpen() ? "true" : "false"}
         >
-          {local.children ?? (
+          {props.children ?? (
             <Icon
               src="icon-[mdi--palette]"
               width={16}
@@ -226,7 +227,7 @@ const ThemeColorPicker: Layout<typeof componentRecipe, ThemeColorPickerProps> = 
               data-placement={overlayPosition.placement()}
               style={popoverStyle()}
             >
-              <ColorPickerContext.Provider value={contextValue()}>
+              <ColorPickerContext value={contextValue()}>
                 <div {...{ class: CLASSES.row }}>
                   <div {...{ class: CLASSES.wheelWrap }}>
                     <ColorWheelFlower {...{ class: CLASSES.wheelCustom }} />
@@ -246,7 +247,7 @@ const ThemeColorPicker: Layout<typeof componentRecipe, ThemeColorPickerProps> = 
                     </For>
                   </div>
                 </div>
-              </ColorPickerContext.Provider>
+              </ColorPickerContext>
             </div>
           </Portal>
         </Show>

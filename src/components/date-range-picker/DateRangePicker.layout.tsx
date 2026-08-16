@@ -1,6 +1,7 @@
 import "./DateRangePicker.css";
-import { Show, createEffect, createMemo, createUniqueId, splitProps, type JSX } from "solid-js";
-import { twMerge } from "tailwind-merge";
+import type { JSX } from "@solidjs/web";
+import {Show, createEffect, createMemo, createUniqueId, omit} from "solid-js";
+import { twMerge } from "../../lib/twMerge";
 
 import {
   formatDate,
@@ -45,7 +46,8 @@ export type DateRangePickerProps = Omit<
   DateRangePickerBaseProps;
 
 const DateRangePicker: Layout<typeof componentRecipe, DateRangePickerProps> = () => {
-  const [local, others] = splitProps(props, [
+  const others = omit(
+    props,
     "class",
     "dataTheme",
     "style",
@@ -67,20 +69,20 @@ const DateRangePicker: Layout<typeof componentRecipe, DateRangePickerProps> = ()
     "isDateUnavailable",
     "state",
     "disabled",
-  ]);
+  );
 
-  const isDisabled = createMemo(() => Boolean((local.state === "disabled")) || Boolean(local.disabled));
+  const isDisabled = createMemo(() => Boolean((props.state === "disabled")) || Boolean(props.disabled));
 
   const rangeSelection = useRangeSelection({
-    value: () => local.value,
-    defaultValue: () => local.defaultValue,
-    onChange: () => local.onChange,
+    value: () => props.value,
+    defaultValue: () => props.defaultValue,
+    onChange: () => props.onChange,
   });
 
   const openState = usePickerOpenState({
-    isOpen: () => local.open,
-    defaultOpen: () => local.defaultOpen,
-    onOpenChange: () => local.onOpenChange,
+    isOpen: () => props.open,
+    defaultOpen: () => props.defaultOpen,
+    onOpenChange: () => props.onOpenChange,
     isDisabled,
   });
 
@@ -89,19 +91,19 @@ const DateRangePicker: Layout<typeof componentRecipe, DateRangePickerProps> = ()
     rangeSelection.clearPendingSelection();
   });
 
-  const locale = createMemo(() => local.locale ?? "en-US");
+  const locale = createMemo(() => props.locale ?? "en-US");
 
   const startValue = createMemo(() => rangeSelection.rangeStart());
   const endValue = createMemo(() => rangeSelection.rangeEnd());
   const focusDate = createMemo(() => rangeSelection.focusDate());
 
   const startDisplay = createMemo(() => {
-    if (!startValue()) return local.startPlaceholder ?? "Start date";
+    if (!startValue()) return props.startPlaceholder ?? "Start date";
     return formatDate(startValue(), locale());
   });
 
   const endDisplay = createMemo(() => {
-    if (!endValue()) return local.endPlaceholder ?? "End date";
+    if (!endValue()) return props.endPlaceholder ?? "End date";
     return formatDate(endValue(), locale());
   });
 
@@ -122,35 +124,35 @@ const DateRangePicker: Layout<typeof componentRecipe, DateRangePickerProps> = ()
       {...others}
       ref={(node) => {
         openState.setRootRef(node);
-        if (typeof local.ref === "function") {
-          local.ref(node);
+        if (typeof props.ref === "function") {
+          props.ref(node);
         }
       }}
       {...{ class: twMerge(
         CLASSES.Root.base,
         openState.isOpen() && CLASSES.Root.flag.open,
         isDisabled() && CLASSES.Root.flag.disabled,
-        local.class,
+        props.class,
       ) }}
       data-slot="date-range-picker"
       data-open={openState.isOpen() ? "true" : "false"}
       data-disabled={isDisabled() ? "true" : "false"}
-      data-theme={local.dataTheme}
-      style={local.style}
+      data-theme={props.dataTheme}
+      style={props.style}
       aria-disabled={isDisabled() ? "true" : undefined}
     >
-      <Show when={local.startName}>
+      <Show when={props.startName}>
         <input
           type="hidden"
-          name={local.startName}
+          name={props.startName}
           value={toISODate(startValue())}
           disabled={isDisabled()}
         />
       </Show>
-      <Show when={local.endName}>
+      <Show when={props.endName}>
         <input
           type="hidden"
-          name={local.endName}
+          name={props.endName}
           value={toISODate(endValue())}
           disabled={isDisabled()}
         />
@@ -237,10 +239,10 @@ const DateRangePicker: Layout<typeof componentRecipe, DateRangePickerProps> = ()
             onDaySelect={handleDateSelect}
             onDayHover={rangeSelection.setHoverDate}
             locale={locale()}
-            weekdayFormat={local.weekdayFormat}
-            minValue={local.minValue}
-            maxValue={local.maxValue}
-            isDateUnavailable={local.isDateUnavailable}
+            weekdayFormat={props.weekdayFormat}
+            minValue={props.minValue}
+            maxValue={props.maxValue}
+            isDateUnavailable={props.isDateUnavailable}
             state={isDisabled() ? "disabled" : undefined}
           />
         </div>

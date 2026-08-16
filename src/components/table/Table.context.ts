@@ -1,4 +1,5 @@
-import { type Accessor, createContext, type JSX, useContext } from "solid-js";
+import {type Accessor, createContext, useContext} from "solid-js";
+import type { JSX } from "@solidjs/web";
 
 export type TableVariant = "primary" | "secondary";
 export type TableSortDirection = "ascending" | "descending";
@@ -20,34 +21,30 @@ export type TableContextValue = {
   variant: Accessor<TableVariant>;
 };
 
-export const TableContext = createContext<TableContextValue>();
+/*
+ * Defaults rather than empty contexts.
+ *
+ * Solid 2's `useContext` throws on an `undefined` value where 1.9 returned it,
+ * so a table part used outside its root would crash instead of rendering
+ * plainly. Both readers below already carried these exact fallbacks inline.
+ */
+export const TableContext = createContext<TableContextValue>({
+  variant: () => "primary",
+});
 
 export type TableContentContextValue = {
   sortDescriptor: Accessor<TableSortDescriptor | undefined>;
   onSortChange?: (descriptor: TableSortDescriptor) => void;
 };
 
-export const TableContentContext = createContext<TableContentContextValue>();
+export const TableContentContext = createContext<TableContentContextValue>({
+  sortDescriptor: () => undefined,
+});
 
-export const useTableContext = (): TableContextValue => {
-  const context = useContext(TableContext);
-  if (context) {
-    return context;
-  }
-  return {
-    variant: () => "primary",
-  };
-};
+export const useTableContext = (): TableContextValue => useContext(TableContext);
 
-export const useTableContentContext = (): TableContentContextValue => {
-  const context = useContext(TableContentContext);
-  if (context) {
-    return context;
-  }
-  return {
-    sortDescriptor: () => undefined,
-  };
-};
+export const useTableContentContext = (): TableContentContextValue =>
+  useContext(TableContentContext);
 
 /* A JSX event prop is either the handler or a `[handler, data]` pair; Solid
    accepts both and a Layout that wraps one has to unwrap it by hand. */

@@ -1,13 +1,8 @@
 import "./Flex.css";
-import {
-  type JSX,
-  splitProps,
-  children as resolveChildren,
-  createMemo,
-} from "solid-js";
-import { Dynamic } from "solid-js/web";
+import {omit, children as resolveChildren, createMemo} from "solid-js";
+import { Dynamic, type JSX} from "@solidjs/web";
 import clsx from "clsx";
-import { twMerge } from "tailwind-merge";
+import { twMerge } from "../../lib/twMerge";
 import type { UIBaseProps } from "../vocabulary";
 import type { ResponsiveProp } from "../types";
 import { mapResponsiveProp } from "../utils";
@@ -108,7 +103,8 @@ export type FlexProps = UIBaseProps &
  */
 
 const Flex: Layout<typeof componentRecipe, FlexProps> = () => {
-  const [local, rest] = splitProps(props, [
+  const rest = omit(
+    props,
     "as",
     "class",
     "children",
@@ -128,32 +124,32 @@ const Flex: Layout<typeof componentRecipe, FlexProps> = () => {
     "grow",
     "shrink",
     "basis",
-  ]);
+  );
 
-  const tag = createMemo(() => local.as || "div");
-  const resolvedChildren = resolveChildren(() => local.children);
+  const tag = createMemo(() => props.as || "div");
+  const resolvedChildren = resolveChildren(() => props.children);
 
   const classes = createMemo(() =>
     twMerge(
       clsx(
         CLASSES.base,
-        mapResponsiveProp(local.direction, CLASSES.direction),
-        mapResponsiveProp(local.justify, CLASSES.justify),
-        mapResponsiveProp(local.align, CLASSES.align),
-        mapResponsiveProp(local.wrap, CLASSES.wrap),
-        mapResponsiveProp(local.gap, CLASSES.gap),
-        mapResponsiveProp(local.gapX, CLASSES.gapX),
-        mapResponsiveProp(local.gapY, CLASSES.gapY),
-        mapResponsiveProp(local.paddingInline, CLASSES.paddingInline),
-        mapResponsiveProp(local.paddingBlock, CLASSES.paddingBlock),
-        mapResponsiveProp(local.width, CLASSES.width),
-        mapResponsiveProp(local.height, CLASSES.height),
-        mapResponsiveProp(local.minWidth, CLASSES.minWidth),
-        mapResponsiveProp(local.minHeight, CLASSES.minHeight),
-        mapResponsiveProp(local.grow, CLASSES.grow),
-        mapResponsiveProp(local.shrink, CLASSES.shrink),
-        mapResponsiveProp(local.basis, CLASSES.basis),
-        local.class,
+        mapResponsiveProp(props.direction, CLASSES.direction),
+        mapResponsiveProp(props.justify, CLASSES.justify),
+        mapResponsiveProp(props.align, CLASSES.align),
+        mapResponsiveProp(props.wrap, CLASSES.wrap),
+        mapResponsiveProp(props.gap, CLASSES.gap),
+        mapResponsiveProp(props.gapX, CLASSES.gapX),
+        mapResponsiveProp(props.gapY, CLASSES.gapY),
+        mapResponsiveProp(props.paddingInline, CLASSES.paddingInline),
+        mapResponsiveProp(props.paddingBlock, CLASSES.paddingBlock),
+        mapResponsiveProp(props.width, CLASSES.width),
+        mapResponsiveProp(props.height, CLASSES.height),
+        mapResponsiveProp(props.minWidth, CLASSES.minWidth),
+        mapResponsiveProp(props.minHeight, CLASSES.minHeight),
+        mapResponsiveProp(props.grow, CLASSES.grow),
+        mapResponsiveProp(props.shrink, CLASSES.shrink),
+        mapResponsiveProp(props.basis, CLASSES.basis),
+        props.class,
       ),
     ),
   );

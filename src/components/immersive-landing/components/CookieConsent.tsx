@@ -2,7 +2,7 @@ import {
   type Component,
   createSignal,
   createEffect,
-  onMount,
+  onSettled,
   onCleanup,
   Show,
 } from "solid-js";
@@ -217,7 +217,7 @@ export const CookieConsent: Component<CookieConsentProps> = (props) => {
     }
   };
 
-  onMount(() => {
+  onSettled(() => {
     if (checkConsent()) {
       setShowBanner(true);
     }

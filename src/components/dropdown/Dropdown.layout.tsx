@@ -1,19 +1,7 @@
 import "./Dropdown.css";
-import {
-  Show,
-  createContext,
-  createEffect,
-  createSignal,
-  createUniqueId,
-  onCleanup,
-  onMount,
-  splitProps,
-  useContext,
-  type Accessor,
-  type JSX,
-} from "solid-js";
-import { Portal } from "solid-js/web";
-import { twMerge } from "tailwind-merge";
+import {Show, createContext, createEffect, createSignal, createUniqueId, onCleanup, onSettled, omit, useContext, type Accessor} from "solid-js";
+import { Portal, type JSX} from "@solidjs/web";
+import { twMerge } from "../../lib/twMerge";
 import {
   createOverlayPosition,
   type OverlayPlacement,
@@ -89,7 +77,8 @@ type DropdownRootProps = Omit<JSX.HTMLAttributes<HTMLDivElement>, "onChange"> & 
 };
 
 const DropdownRoot: Layout<typeof componentRecipe, DropdownRootProps> = () => {
-  const [local, others] = splitProps(props, [
+  const others = omit(
+    props,
     "children",
     "class",
     "open",
@@ -100,13 +89,13 @@ const DropdownRoot: Layout<typeof componentRecipe, DropdownRootProps> = () => {
     "disabled",
     "dataTheme",
     "ref",
-  ]);
+  );
 
   const baseId = createUniqueId();
   const triggerId = `${baseId}-trigger`;
   const menuId = `${baseId}-menu`;
 
-  const [internalOpen, setInternalOpen] = createSignal(Boolean(local.defaultOpen));
+  const [internalOpen, setInternalOpen] = createSignal(Boolean(props.defaultOpen));
   const [items, setItems] = createSignal<DropdownItemRecord[]>([]);
   const [focusedKey, setFocusedKey] = createSignal<string | undefined>(undefined);
   const [focusRequest, setFocusRequest] = createSignal<DropdownFocusRequest>(null);
@@ -114,16 +103,16 @@ const DropdownRoot: Layout<typeof componentRecipe, DropdownRootProps> = () => {
   const [menuRef, setMenuRefSignal] = createSignal<HTMLDivElement | undefined>(undefined);
   const [rootRef, setRootRefSignal] = createSignal<HTMLDivElement | undefined>(undefined);
 
-  const isControlled = () => local.open !== undefined;
-  const isDisabled = () => Boolean(local.disabled);
-  const open = () => (isControlled() ? Boolean(local.open) : internalOpen());
-  const placement = () => local.placement ?? "bottom";
-  const autoFlip = () => local.autoFlip ?? true;
+  const isControlled = () => props.open !== undefined;
+  const isDisabled = () => Boolean(props.disabled);
+  const open = () => (isControlled() ? Boolean(props.open) : internalOpen());
+  const placement = () => props.placement ?? "bottom";
+  const autoFlip = () => props.autoFlip ?? true;
 
   const setRootRef = (el: HTMLDivElement) => {
     setRootRefSignal(el);
-    if (typeof local.ref === "function") {
-      local.ref(el);
+    if (typeof props.ref === "function") {
+      props.ref(el);
     }
   };
 
@@ -175,7 +164,7 @@ const DropdownRoot: Layout<typeof componentRecipe, DropdownRootProps> = () => {
       setInternalOpen(next);
     }
     if (current !== next) {
-      local.onOpenChange?.(next);
+      props.onOpenChange?.(next);
     }
     if (!next) {
       setFocusedKey(undefined);
@@ -229,7 +218,7 @@ const DropdownRoot: Layout<typeof componentRecipe, DropdownRootProps> = () => {
     }
   });
 
-  onMount(() => {
+  onSettled(() => {
     const handlePointerDown = (event: PointerEvent) => {
       if (!open()) return;
       const target = event.target as Node;
@@ -246,7 +235,7 @@ const DropdownRoot: Layout<typeof componentRecipe, DropdownRootProps> = () => {
   });
 
   return (
-    <DropdownContext.Provider
+    <DropdownContext
       value={{
         open,
         disabled: isDisabled,
@@ -273,14 +262,14 @@ const DropdownRoot: Layout<typeof componentRecipe, DropdownRootProps> = () => {
       <div
         {...others}
         ref={setRootRef}
-        {...{ class: twMerge(CLASSES.base, local.class) }}
-        data-theme={local.dataTheme}
+        {...{ class: twMerge(CLASSES.base, props.class) }}
+        data-theme={props.dataTheme}
         data-slot="dropdown"
         data-open={open() ? "true" : "false"}
       >
-        {local.children}
+        {props.children}
       </div>
-    </DropdownContext.Provider>
+    </DropdownContext>
   );
 };
 
@@ -288,7 +277,8 @@ type DropdownTriggerProps = JSX.ButtonHTMLAttributes<HTMLButtonElement>;
 
 const DropdownTrigger: Layout<typeof componentRecipe, DropdownTriggerProps> = () => {
   const ctx = useContext(DropdownContext);
-  const [local, others] = splitProps(props, [
+  const others = omit(
+    props,
     "class",
     "children",
     "disabled",
@@ -296,34 +286,34 @@ const DropdownTrigger: Layout<typeof componentRecipe, DropdownTriggerProps> = ()
     "onKeyDown",
     "ref",
     "type",
-  ]);
+  );
 
   if (!ctx) {
     return (
-      <button {...others} {...{ class: twMerge(CLASSES.slot.trigger, local.class) }} type={local.type ?? "button"}>
-        {local.children}
+      <button {...others} {...{ class: twMerge(CLASSES.slot.trigger, props.class) }} type={props.type ?? "button"}>
+        {props.children}
       </button>
     );
   }
 
-  const isDisabled = () => Boolean(local.disabled) || ctx.disabled();
+  const isDisabled = () => Boolean(props.disabled) || ctx.disabled();
 
   const setRef = (el: HTMLButtonElement) => {
     ctx.setTriggerRef(el);
-    if (typeof local.ref === "function") {
-      local.ref(el);
+    if (typeof props.ref === "function") {
+      props.ref(el);
     }
   };
 
   const handleClick: JSX.EventHandlerUnion<HTMLButtonElement, MouseEvent> = (event) => {
-    invokeEventHandler(local.onClick, event);
+    invokeEventHandler(props.onClick, event);
     if (event.defaultPrevented) return;
     if (isDisabled()) return;
     ctx.toggleOpen();
   };
 
   const handleKeyDown: JSX.EventHandlerUnion<HTMLButtonElement, KeyboardEvent> = (event) => {
-    invokeEventHandler(local.onKeyDown, event);
+    invokeEventHandler(props.onKeyDown, event);
     if (event.defaultPrevented) return;
     if (isDisabled()) return;
 
@@ -370,17 +360,17 @@ const DropdownTrigger: Layout<typeof componentRecipe, DropdownTriggerProps> = ()
       {...others}
       ref={setRef}
       id={ctx.triggerId}
-      type={local.type ?? "button"}
-      {...{ class: twMerge(CLASSES.slot.trigger, local.class) }}
+      type={props.type ?? "button"}
+      {...{ class: twMerge(CLASSES.slot.trigger, props.class) }}
       data-slot="dropdown-trigger"
       aria-haspopup="menu"
-      aria-expanded={ctx.open()}
+      aria-expanded={ctx.open() ? "true" : "false"}
       aria-controls={ctx.menuId}
       disabled={isDisabled()}
       onClick={handleClick}
       onKeyDown={handleKeyDown}
     >
-      {local.children}
+      {props.children}
     </button>
   );
 };
@@ -394,7 +384,8 @@ type DropdownMenuProps = JSX.HTMLAttributes<HTMLDivElement> & {
 
 const DropdownMenu: Layout<typeof componentRecipe, DropdownMenuProps> = () => {
   const ctx = useContext(DropdownContext);
-  const [local, others] = splitProps(props, [
+  const others = omit(
+    props,
     "class",
     "children",
     "align",
@@ -404,12 +395,12 @@ const DropdownMenu: Layout<typeof componentRecipe, DropdownMenuProps> = () => {
     "onKeyDown",
     "style",
     "role",
-  ]);
+  );
 
   if (!ctx) {
     return (
-      <div {...others} {...{ class: twMerge(CLASSES.slot.popover, local.class) }}>
-        <div {...{ class: CLASSES.slot.menu }}>{local.children}</div>
+      <div {...others} {...{ class: twMerge(CLASSES.slot.popover, props.class) }}>
+        <div {...{ class: CLASSES.slot.menu }}>{props.children}</div>
       </div>
     );
   }
@@ -418,14 +409,14 @@ const DropdownMenu: Layout<typeof componentRecipe, DropdownMenuProps> = () => {
     open: ctx.open,
     triggerRef: ctx.triggerRef,
     overlayRef: ctx.menuRef,
-    placement: () => local.placement ?? ctx.placement(),
-    offset: () => local.sideOffset ?? 6,
-    autoFlip: () => local.autoFlip ?? ctx.autoFlip(),
-    align: () => (local.align === "end" ? "end" : "start"),
+    placement: () => props.placement ?? ctx.placement(),
+    offset: () => props.sideOffset ?? 6,
+    autoFlip: () => props.autoFlip ?? ctx.autoFlip(),
+    align: () => (props.align === "end" ? "end" : "start"),
   });
 
   const handleKeyDown: JSX.EventHandlerUnion<HTMLDivElement, KeyboardEvent> = (event) => {
-    invokeEventHandler(local.onKeyDown, event);
+    invokeEventHandler(props.onKeyDown, event);
     if (event.defaultPrevented) return;
 
     switch (event.key) {
@@ -460,9 +451,9 @@ const DropdownMenu: Layout<typeof componentRecipe, DropdownMenuProps> = () => {
   const menuStyle = () => {
     const overlayStyle = overlayPosition.style();
 
-    if (typeof local.style === "string") {
+    if (typeof props.style === "string") {
       return [
-        local.style,
+        props.style,
         Object.entries(overlayStyle)
           .map(([key, value]) => `${key}: ${String(value)}`)
           .join("; "),
@@ -472,7 +463,7 @@ const DropdownMenu: Layout<typeof componentRecipe, DropdownMenuProps> = () => {
     }
 
     return {
-      ...(local.style ?? {}),
+      ...(props.style ?? {}),
       ...overlayStyle,
     } as JSX.CSSProperties;
   };
@@ -484,18 +475,18 @@ const DropdownMenu: Layout<typeof componentRecipe, DropdownMenuProps> = () => {
           {...others}
           ref={ctx.setMenuRef}
           id={ctx.menuId}
-          {...{ class: twMerge(CLASSES.slot.popover, local.class) }}
-          role={local.role ?? "menu"}
+          {...{ class: twMerge(CLASSES.slot.popover, props.class) }}
+          role={props.role ?? "menu"}
           data-slot="dropdown-popover"
           data-open={ctx.open() ? "true" : "false"}
-          data-align={local.align ?? "start"}
+          data-align={props.align ?? "start"}
           data-placement={overlayPosition.placement()}
           aria-hidden={ctx.open() ? "false" : "true"}
           style={menuStyle()}
           onKeyDown={handleKeyDown}
         >
           <div {...{ class: CLASSES.slot.menu }} data-slot="dropdown-menu">
-            {local.children}
+            {props.children}
           </div>
         </div>
       </Portal>
@@ -509,7 +500,8 @@ type DropdownItemProps = JSX.ButtonHTMLAttributes<HTMLButtonElement> & {
 
 const DropdownItem: Layout<typeof componentRecipe, DropdownItemProps> = () => {
   const ctx = useContext(DropdownContext);
-  const [local, others] = splitProps(props, [
+  const others = omit(
+    props,
     "class",
     "children",
     "disabled",
@@ -520,18 +512,18 @@ const DropdownItem: Layout<typeof componentRecipe, DropdownItemProps> = () => {
     "ref",
     "role",
     "type",
-  ]);
+  );
   const itemKey = createUniqueId();
 
   let itemRef: HTMLButtonElement | undefined;
 
   if (ctx) {
-    onMount(() => {
+    onSettled(() => {
       if (itemRef) {
         ctx.registerItem({
           key: itemKey,
           ref: itemRef,
-          disabled: Boolean(local.disabled),
+          disabled: Boolean(props.disabled),
         });
       }
     });
@@ -541,26 +533,26 @@ const DropdownItem: Layout<typeof componentRecipe, DropdownItemProps> = () => {
     });
   }
 
-  const isDisabled = () => Boolean(local.disabled);
+  const isDisabled = () => Boolean(props.disabled);
 
   const setRef = (el: HTMLButtonElement) => {
     itemRef = el;
-    if (typeof local.ref === "function") {
-      local.ref(el);
+    if (typeof props.ref === "function") {
+      props.ref(el);
     }
   };
 
   const handleClick: JSX.EventHandlerUnion<HTMLButtonElement, MouseEvent> = (event) => {
-    invokeEventHandler(local.onClick, event);
+    invokeEventHandler(props.onClick, event);
     if (event.defaultPrevented) return;
     if (isDisabled()) return;
-    if (ctx && (local.closeOnSelect ?? true)) {
+    if (ctx && (props.closeOnSelect ?? true)) {
       ctx.setOpen(false, { focusTrigger: true });
     }
   };
 
   const handleMouseEnter: JSX.EventHandlerUnion<HTMLButtonElement, MouseEvent> = (event) => {
-    invokeEventHandler(local.onMouseEnter, event);
+    invokeEventHandler(props.onMouseEnter, event);
     if (event.defaultPrevented) return;
     if (ctx && !isDisabled()) {
       ctx.setFocusedKey(itemKey);
@@ -568,7 +560,7 @@ const DropdownItem: Layout<typeof componentRecipe, DropdownItemProps> = () => {
   };
 
   const handleFocus: JSX.EventHandlerUnion<HTMLButtonElement, FocusEvent> = (event) => {
-    invokeEventHandler(local.onFocus, event);
+    invokeEventHandler(props.onFocus, event);
     if (event.defaultPrevented) return;
     if (ctx && !isDisabled()) {
       ctx.setFocusedKey(itemKey);
@@ -579,20 +571,20 @@ const DropdownItem: Layout<typeof componentRecipe, DropdownItemProps> = () => {
     <button
       {...others}
       ref={setRef}
-      type={local.type ?? "button"}
-      role={local.role ?? "menuitem"}
-      {...{ class: twMerge(CLASSES.slot.item, local.class) }}
+      type={props.type ?? "button"}
+      role={props.role ?? "menuitem"}
+      {...{ class: twMerge(CLASSES.slot.item, props.class) }}
       data-slot="menu-item"
       data-disabled={isDisabled() ? "true" : "false"}
       data-focused={ctx?.focusedKey() === itemKey ? "true" : "false"}
       aria-disabled={isDisabled() ? "true" : "false"}
       disabled={isDisabled()}
-      tabIndex={ctx ? (ctx.open() && ctx.focusedKey() === itemKey ? 0 : -1) : 0}
+      tabindex={ctx ? (ctx.open() && ctx.focusedKey() === itemKey ? 0 : -1) : 0}
       onClick={handleClick}
       onMouseEnter={handleMouseEnter}
       onFocus={handleFocus}
     >
-      {local.children}
+      {props.children}
     </button>
   );
 };
@@ -600,10 +592,10 @@ const DropdownItem: Layout<typeof componentRecipe, DropdownItemProps> = () => {
 type DropdownGroupProps = JSX.HTMLAttributes<HTMLDivElement>;
 
 const DropdownGroup: Layout<typeof componentRecipe, DropdownGroupProps> = () => {
-  const [local, others] = splitProps(props, ["class", "children"]);
+  const others = omit(props, "class", "children");
   return (
-    <div {...others} role="group" {...{ class: twMerge(CLASSES.slot.group, local.class) }} data-slot="dropdown-group">
-      {local.children}
+    <div {...others} role="group" {...{ class: twMerge(CLASSES.slot.group, props.class) }} data-slot="dropdown-group">
+      {props.children}
     </div>
   );
 };
@@ -611,12 +603,12 @@ const DropdownGroup: Layout<typeof componentRecipe, DropdownGroupProps> = () => 
 type DropdownSeparatorProps = JSX.HTMLAttributes<HTMLDivElement>;
 
 const DropdownSeparator: Layout<typeof componentRecipe, DropdownSeparatorProps> = () => {
-  const [local, others] = splitProps(props, ["class"]);
+  const others = omit(props, "class");
   return (
     <div
       {...others}
       role="separator"
-      {...{ class: twMerge(CLASSES.slot.separator, local.class) }}
+      {...{ class: twMerge(CLASSES.slot.separator, props.class) }}
       data-slot="separator"
       aria-orientation="horizontal"
     />

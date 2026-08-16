@@ -1,14 +1,15 @@
-import {
-  type JSX,
-  Show,
-  createEffect,
-  createSignal,
-  onCleanup,
-  untrack,
-} from "solid-js";
+import {Show, createEffect, createSignal, onCleanup, untrack} from "solid-js";
+import type { JSX } from "@solidjs/web";
 import { getMotionDriver } from "../driver";
 import { resolveEase } from "../easing";
 import { prefersReducedMotion } from "../reduced-motion";
+import {
+  computeCollapseStyle,
+  nextCollapsePhase,
+  type CollapsePhase,
+} from "./collapseState";
+
+export { computeCollapseStyle, nextCollapsePhase, type CollapsePhase };
 
 export interface AnimatedCollapseProps {
   /** Whether the panel is expanded. */
@@ -29,52 +30,6 @@ export interface AnimatedCollapseProps {
   /** Override for prefers-reduced-motion detection. */
   reduceMotion?: boolean;
 }
-
-type CollapsePhase = "closed" | "opening" | "open" | "closing";
-
-/**
- * Pure: returns the next collapse phase given the previous phase and target
- * `open`. Exposed for unit testing.
- */
-export const nextCollapsePhase = (
-  prev: CollapsePhase,
-  open: boolean,
-): CollapsePhase => {
-  if (open) {
-    return prev === "open" || prev === "opening" ? prev : "opening";
-  }
-  return prev === "closed" || prev === "closing" ? prev : "closing";
-};
-
-/**
- * Pure: computes the inline style for the collapse wrapper based on phase,
- * measured height (px), and opacity preference. `null` means "no inline
- * height — let layout flow" (used while fully open with dynamic content).
- * Exposed for unit testing.
- */
-export const computeCollapseStyle = (
-  phase: CollapsePhase,
-  heightPx: number | null,
-  animateOpacity: boolean,
-): JSX.CSSProperties => {
-  const style: JSX.CSSProperties = { overflow: "hidden" };
-  if (phase === "closed") {
-    style.height = "0px";
-    if (animateOpacity) style.opacity = 0;
-    return style;
-  }
-  if (phase === "open") {
-    // Let height flow naturally so dynamic content can grow.
-    if (animateOpacity) style.opacity = 1;
-    style.overflow = "visible";
-    return style;
-  }
-  // opening or closing — drive height from JS animation
-  if (heightPx !== null) {
-    style.height = `${heightPx}px`;
-  }
-  return style;
-};
 
 const DEFAULT_DURATION = 0.24;
 
@@ -228,7 +183,7 @@ export const AnimatedCollapse = (props: AnimatedCollapseProps) => {
             ? { opacity: opacity() }
             : {}),
         }}
-        aria-hidden={phase() === "closed" ? true : undefined}
+        aria-hidden={phase() === "closed" ? "true" : undefined}
       >
         <div ref={contentEl} class={props.contentClass}>
           {props.children}

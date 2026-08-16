@@ -1,20 +1,7 @@
 import "./InputOTP.css";
-import {
-  For,
-  Show,
-  createContext,
-  createEffect,
-  createMemo,
-  createSignal,
-  onMount,
-  splitProps,
-  useContext,
-  type Accessor,
-  type Component,
-  type JSX,
-  type ParentComponent,
-} from "solid-js";
-import { twMerge } from "tailwind-merge";
+import type { JSX } from "@solidjs/web";
+import {For, Show, createContext, createEffect, createMemo, createSignal, onSettled, omit, useContext, type Accessor, type Component, type ParentComponent} from "solid-js";
+import { twMerge } from "../../lib/twMerge";
 
 import type { UIBaseProps, State, Issue } from "../vocabulary";
 import { CLASSES } from "./InputOTP.recipe";
@@ -75,7 +62,7 @@ export type InputOTPRootProps = Omit<
     disabled?: boolean;
     issues?: Issue[];
     inputClassName?: string;
-    inputMode?: JSX.InputHTMLAttributes<HTMLInputElement>["inputMode"];
+    inputmode?: JSX.InputHTMLAttributes<HTMLInputElement>["inputmode"];
   };
 
 export type InputOTPGroupProps = Omit<JSX.HTMLAttributes<HTMLDivElement>, "children"> &
@@ -94,7 +81,8 @@ export type InputOTPSeparatorProps = Omit<JSX.HTMLAttributes<HTMLDivElement>, "c
   };
 
 const InputOTPRoot: Layout<typeof componentRecipe, InputOTPRootProps> = () => {
-  const [local, others] = splitProps(props, [
+  const others = omit(
+    props,
     "children",
     "class",
     "dataTheme",
@@ -112,31 +100,31 @@ const InputOTPRoot: Layout<typeof componentRecipe, InputOTPRootProps> = () => {
     "disabled",
     "issues",
     "inputClassName",
-    "inputMode",
+    "inputmode",
     "onMouseDown",
     "onFocusOut",
     "aria-invalid",
     "ref",
-  ]);
+  );
 
   let inputRef: HTMLInputElement | undefined;
   let rootRef: HTMLDivElement | undefined;
 
-  const [internalValue, setInternalValue] = createSignal(local.defaultValue ?? "");
+  const [internalValue, setInternalValue] = createSignal(props.defaultValue ?? "");
   const [activeIndex, setActiveIndexSignal] = createSignal(0);
   const [isFocused, setIsFocused] = createSignal(false);
 
   const maxLength = () => {
-    const parsed = Number(local.maxLength);
+    const parsed = Number(props.maxLength);
     if (!Number.isFinite(parsed)) return 6;
     return Math.max(1, Math.floor(parsed));
   };
 
   const patternRegex = createMemo(() => {
-    if (!local.pattern) return undefined;
+    if (!props.pattern) return undefined;
 
     try {
-      return new RegExp(local.pattern);
+      return new RegExp(props.pattern);
     } catch {
       return undefined;
     }
@@ -161,10 +149,10 @@ const InputOTPRoot: Layout<typeof componentRecipe, InputOTPRootProps> = () => {
     return result.join("");
   };
 
-  const normalizedControlledValue = createMemo(() => sanitizeValue(local.value ?? ""));
+  const normalizedControlledValue = createMemo(() => sanitizeValue(props.value ?? ""));
 
   const value = createMemo(() =>
-    local.value !== undefined ? normalizedControlledValue() : sanitizeValue(internalValue()),
+    props.value !== undefined ? normalizedControlledValue() : sanitizeValue(internalValue()),
   );
 
   const chars = createMemo(() => {
@@ -172,10 +160,10 @@ const InputOTPRoot: Layout<typeof componentRecipe, InputOTPRootProps> = () => {
     return Array.from({ length: maxLength() }, (_, index) => current[index] ?? "");
   });
 
-  const variant = () => local.variant ?? "primary";
-  const isDisabled = () => Boolean((local.state === "disabled")) || Boolean(local.disabled);
+  const variant = () => props.variant ?? "primary";
+  const isDisabled = () => Boolean((props.state === "disabled")) || Boolean(props.disabled);
   const isInvalid = () =>
-    Boolean((resolveState(local.state, local.issues) === "invalid")) ||
+    Boolean((resolveState(props.state, props.issues) === "invalid")) ||
     Boolean(local["aria-invalid"]) ||
     local["aria-invalid"] === "true";
 
@@ -185,14 +173,14 @@ const InputOTPRoot: Layout<typeof componentRecipe, InputOTPRootProps> = () => {
 
     if (normalized === current) return;
 
-    if (local.value === undefined) {
+    if (props.value === undefined) {
       setInternalValue(normalized);
     }
 
-    local.onChange?.(normalized);
+    props.onChange?.(normalized);
 
     if (normalized.length === maxLength()) {
-      local.onComplete?.(normalized);
+      props.onComplete?.(normalized);
     }
   };
 
@@ -236,7 +224,7 @@ const InputOTPRoot: Layout<typeof componentRecipe, InputOTPRootProps> = () => {
   };
 
   const handleRootMouseDown: JSX.EventHandlerUnion<HTMLDivElement, MouseEvent> = (event) => {
-    invokeEventHandler(local.onMouseDown, event);
+    invokeEventHandler(props.onMouseDown, event);
     if (event.defaultPrevented || isDisabled()) return;
 
     const target = event.target as HTMLElement;
@@ -247,7 +235,7 @@ const InputOTPRoot: Layout<typeof componentRecipe, InputOTPRootProps> = () => {
   };
 
   const handleFocusOut: JSX.EventHandlerUnion<HTMLDivElement, FocusEvent> = (event) => {
-    invokeEventHandler(local.onFocusOut, event);
+    invokeEventHandler(props.onFocusOut, event);
     if (event.defaultPrevented) return;
 
     const nextTarget = event.relatedTarget as Node | null;
@@ -286,7 +274,7 @@ const InputOTPRoot: Layout<typeof componentRecipe, InputOTPRootProps> = () => {
   });
 
   createEffect(() => {
-    if (local.value !== undefined) return;
+    if (props.value !== undefined) return;
 
     const normalized = sanitizeValue(internalValue());
     if (normalized !== internalValue()) {
@@ -301,15 +289,15 @@ const InputOTPRoot: Layout<typeof componentRecipe, InputOTPRootProps> = () => {
     inputRef?.setSelectionRange(active, active);
   });
 
-  onMount(() => {
-    if (!local.autoFocus || isDisabled()) return;
+  onSettled(() => {
+    if (!props.autoFocus || isDisabled()) return;
     queueMicrotask(() => {
       focusInputAt(value().length);
     });
   });
 
   return (
-    <InputOTPContext.Provider
+    <InputOTPContext
       value={{
         value,
         chars,
@@ -327,33 +315,33 @@ const InputOTPRoot: Layout<typeof componentRecipe, InputOTPRootProps> = () => {
         {...others}
         ref={(node) => {
           rootRef = node;
-          if (typeof local.ref === "function") {
-            local.ref(node);
+          if (typeof props.ref === "function") {
+            props.ref(node);
           }
         }}
         {...{ class: twMerge(
           CLASSES.Root.base,
           CLASSES.Root.variant[variant()],
-          local.class,
+          props.class,
         ) }}
         data-slot="input-otp"
         data-disabled={isDisabled() ? "true" : undefined}
         data-invalid={isInvalid() ? "true" : undefined}
-        data-theme={local.dataTheme}
-        style={local.style}
+        data-theme={props.dataTheme}
+        style={props.style}
         onMouseDown={handleRootMouseDown}
         onFocusOut={handleFocusOut}
       >
         <input
           ref={inputRef}
-          {...{ class: twMerge(CLASSES.Input.base, local.inputClassName) }}
+          {...{ class: twMerge(CLASSES.Input.base, props.inputClassName) }}
           data-slot="input-otp-input"
           type="text"
-          inputMode={local.inputMode}
-          pattern={local.pattern}
-          maxLength={maxLength()}
+          inputmode={props.inputmode}
+          pattern={props.pattern}
+          maxlength={maxLength()}
           value={value()}
-          name={local.name}
+          name={props.name}
           disabled={isDisabled()}
           aria-disabled={isDisabled() ? "true" : undefined}
           aria-invalid={isInvalid() ? "true" : undefined}
@@ -367,7 +355,7 @@ const InputOTPRoot: Layout<typeof componentRecipe, InputOTPRootProps> = () => {
           onSelect={() => syncActiveFromInputCaret()}
         />
 
-        {local.children ?? (
+        {props.children ?? (
           <InputOTPGroup>
             <For each={Array.from({ length: maxLength() }, (_, index) => index)}>
               {(index) => <InputOTPSlot index={index} />}
@@ -375,22 +363,22 @@ const InputOTPRoot: Layout<typeof componentRecipe, InputOTPRootProps> = () => {
           </InputOTPGroup>
         )}
       </div>
-    </InputOTPContext.Provider>
+    </InputOTPContext>
   );
 };
 
 const InputOTPGroup: Layout<typeof componentRecipe, InputOTPGroupProps> = () => {
-  const [local, others] = splitProps(props, ["children", "class", "dataTheme", "style"]);
+  const others = omit(props, "children", "class", "dataTheme", "style");
 
   return (
     <div
       {...others}
-      {...{ class: twMerge(CLASSES.Group.base, local.class) }}
+      {...{ class: twMerge(CLASSES.Group.base, props.class) }}
       data-slot="input-otp-group"
-      data-theme={local.dataTheme}
-      style={local.style}
+      data-theme={props.dataTheme}
+      style={props.style}
     >
-      {local.children}
+      {props.children}
     </div>
   );
 };
@@ -398,40 +386,34 @@ const InputOTPGroup: Layout<typeof componentRecipe, InputOTPGroupProps> = () => 
 const InputOTPSlot: Layout<typeof componentRecipe, InputOTPSlotProps> = () => {
   const context = useContext(InputOTPContext);
 
-  const [local, others] = splitProps(props, [
-    "index",
-    "class",
-    "dataTheme",
-    "style",
-    "onMouseDown",
-  ]);
+  const others = omit(props, "index", "class", "dataTheme", "style", "onMouseDown");
 
-  const char = () => context?.chars()[local.index] ?? "";
+  const char = () => context?.chars()[props.index] ?? "";
   const isActive = () =>
     Boolean(context?.isFocused()) &&
     !Boolean(context?.isDisabled()) &&
-    (context?.activeIndex() ?? 0) === local.index;
+    (context?.activeIndex() ?? 0) === props.index;
 
   const handleMouseDown: JSX.EventHandlerUnion<HTMLDivElement, MouseEvent> = (event) => {
-    invokeEventHandler(local.onMouseDown, event);
+    invokeEventHandler(props.onMouseDown, event);
     if (event.defaultPrevented || context?.isDisabled()) return;
 
     event.preventDefault();
-    context?.setActiveIndex(local.index);
-    context?.focusInputAt(local.index);
+    context?.setActiveIndex(props.index);
+    context?.focusInputAt(props.index);
   };
 
   return (
     <div
       {...others}
-      {...{ class: twMerge(CLASSES.Slot.base, local.class) }}
+      {...{ class: twMerge(CLASSES.Slot.base, props.class) }}
       data-slot="input-otp-slot"
       data-active={isActive() ? "true" : undefined}
       data-filled={char().length > 0 ? "true" : undefined}
       data-disabled={context?.isDisabled() ? "true" : undefined}
       data-invalid={context?.isInvalid() ? "true" : undefined}
-      data-theme={local.dataTheme}
-      style={local.style}
+      data-theme={props.dataTheme}
+      style={props.style}
       onMouseDown={handleMouseDown}
     >
       <Show when={char().length > 0}>
@@ -447,17 +429,17 @@ const InputOTPSlot: Layout<typeof componentRecipe, InputOTPSlotProps> = () => {
 };
 
 const InputOTPSeparator: Layout<typeof componentRecipe, InputOTPSeparatorProps> = () => {
-  const [local, others] = splitProps(props, ["children", "class", "dataTheme", "style"]);
+  const others = omit(props, "children", "class", "dataTheme", "style");
 
   return (
     <div
       {...others}
-      {...{ class: twMerge(CLASSES.Separator.base, local.class) }}
+      {...{ class: twMerge(CLASSES.Separator.base, props.class) }}
       data-slot="input-otp-separator"
-      data-theme={local.dataTheme}
-      style={local.style}
+      data-theme={props.dataTheme}
+      style={props.style}
     >
-      {local.children}
+      {props.children}
     </div>
   );
 };

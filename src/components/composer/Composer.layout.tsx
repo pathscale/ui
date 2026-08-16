@@ -1,5 +1,6 @@
 import "./Composer.css";
-import { For, Show, createEffect, createSignal, onMount, type JSX } from "solid-js";
+import type { JSX } from "@solidjs/web";
+import {For, Show, createEffect, createSignal, onSettled} from "solid-js";
 import type { Layout } from "../../lib/layouts";
 import type {
   ChangeReason,
@@ -97,7 +98,7 @@ export const ComposerLayout: Layout<typeof composer, ComposerProps> = () => {
     local.onHeightChange?.(autosize(field, bounds, memo));
   };
 
-  onMount(() => {
+  onSettled(() => {
     if (local.autofocus) field?.focus();
     measure();
   });

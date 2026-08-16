@@ -1,6 +1,7 @@
 import "./Link.css";
-import { splitProps, type Component, type JSX } from "solid-js";
-import { twMerge } from "tailwind-merge";
+import type { JSX } from "@solidjs/web";
+import {omit, type Component} from "solid-js";
+import { twMerge } from "../../lib/twMerge";
 
 import type { UIBaseProps, State } from "../vocabulary";
 import { CLASSES } from "./Link.recipe";
@@ -20,15 +21,18 @@ export type LinkRootProps = Omit<JSX.AnchorHTMLAttributes<HTMLAnchorElement>, "c
 
 export type LinkIconProps = JSX.HTMLAttributes<HTMLSpanElement> & UIBaseProps;
 
-const ensureExternalRel = (value: string | undefined) => {
-  const relTokens = new Set((value ?? "").split(/\s+/).filter(Boolean));
+// `string | false | undefined`: Solid 2 lets any attribute be `false` to mean
+// "remove it", so that is what a `rel` prop can now hold.
+const ensureExternalRel = (value: string | false | undefined) => {
+  const relTokens = new Set((typeof value === "string" ? value : "").split(/\s+/).filter(Boolean));
   relTokens.add("noopener");
   relTokens.add("noreferrer");
   return Array.from(relTokens).join(" ");
 };
 
 const LinkRoot: Layout<typeof componentRecipe, LinkRootProps> = () => {
-  const [local, others] = splitProps(props, [
+  const others = omit(
+    props,
     "children",
     "href",
     "class",
@@ -40,61 +44,56 @@ const LinkRoot: Layout<typeof componentRecipe, LinkRootProps> = () => {
     "state",
     "target",
     "rel",
-    "tabIndex",
-  ]);
+    "tabindex",
+  );
 
-  const variant = () => local.variant ?? "default";
-  const underline = () => local.underline ?? "always";
-  const isDisabled = () => Boolean((local.state === "disabled"));
-  const isExternal = () => Boolean(local.isExternal);
+  const variant = () => props.variant ?? "default";
+  const underline = () => props.underline ?? "always";
+  const isDisabled = () => Boolean((props.state === "disabled"));
+  const isExternal = () => Boolean(props.isExternal);
 
   return (
     <a
       {...others}
-      href={isDisabled() ? undefined : local.href}
-      target={isExternal() ? "_blank" : local.target}
-      rel={isExternal() ? ensureExternalRel(local.rel) : local.rel}
-      tabIndex={isDisabled() ? -1 : local.tabIndex}
+      href={isDisabled() ? undefined : props.href}
+      target={isExternal() ? "_blank" : props.target}
+      rel={isExternal() ? ensureExternalRel(props.rel) : props.rel}
+      tabindex={isDisabled() ? -1 : props.tabindex}
       {...{ class: twMerge(
         CLASSES.base,
         CLASSES.variant[variant()],
         CLASSES.underline[underline()],
         isExternal() && CLASSES.flag.external,
         isDisabled() && CLASSES.flag.disabled,
-        local.class,
+        props.class,
       ) }}
       data-slot="link"
-      data-theme={local.dataTheme}
+      data-theme={props.dataTheme}
       data-external={isExternal() ? "true" : "false"}
       data-disabled={isDisabled() ? "true" : "false"}
       aria-disabled={isDisabled() ? "true" : undefined}
-      style={local.style}
+      style={props.style}
     >
-      {local.children}
+      {props.children}
     </a>
   );
 };
 
 const LinkIcon: Layout<typeof componentRecipe, LinkIconProps> = () => {
-  const [local, others] = splitProps(props, [
-    "class",
-    "children",
-    "dataTheme",
-    "style",
-  ]);
+  const others = omit(props, "class", "children", "dataTheme", "style");
 
-  const hasCustomIcon = () => local.children != null;
+  const hasCustomIcon = () => props.children != null;
 
   return (
     <span
       {...others}
-      {...{ class: twMerge(CLASSES.slot.icon, local.class) }}
+      {...{ class: twMerge(CLASSES.slot.icon, props.class) }}
       data-slot="link-icon"
       data-default-icon={hasCustomIcon() ? "false" : "true"}
-      data-theme={local.dataTheme}
-      style={local.style}
+      data-theme={props.dataTheme}
+      style={props.style}
     >
-      {local.children ?? (
+      {props.children ?? (
         <svg
           {...{ class: CLASSES.slot.iconDefault }}
           data-slot="link-default-icon"

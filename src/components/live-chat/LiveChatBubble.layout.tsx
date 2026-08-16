@@ -1,6 +1,7 @@
 import "./LiveChat.css";
-import { type Component, type JSX, createSignal, Show, splitProps } from "solid-js";
-import { twMerge } from "tailwind-merge";
+import type { JSX } from "@solidjs/web";
+import {type Component, createSignal, Show, omit} from "solid-js";
+import { twMerge } from "../../lib/twMerge";
 import type { UIBaseProps } from "../vocabulary";
 import LiveChatPanel from "./LiveChatPanel.generated";
 import type { LiveChatPanelProps } from "./LiveChatPanel.generated";
@@ -58,7 +59,8 @@ export interface LiveChatBubbleProps extends UIBaseProps {
 }
 
 const LiveChatBubble: Layout<typeof componentRecipe, LiveChatBubbleProps> = () => {
-  const [local, others] = splitProps(props, [
+  const others = omit(
+    props,
     "position",
     "aria-label",
     "unreadCount",
@@ -71,12 +73,12 @@ const LiveChatBubble: Layout<typeof componentRecipe, LiveChatBubbleProps> = () =
     "children",
     "class",
     "style",
-  ]);
+  );
 
   const [isOpen, setIsOpen] = createSignal(false);
-  const [internalUnread, setInternalUnread] = createSignal(local.unreadCount ?? 0);
+  const [internalUnread, setInternalUnread] = createSignal(props.unreadCount ?? 0);
 
-  const unreadCount = () => local.unreadCount ?? internalUnread();
+  const unreadCount = () => props.unreadCount ?? internalUnread();
 
   const toggleChat = () => {
     const newState = !isOpen();
@@ -84,19 +86,19 @@ const LiveChatBubble: Layout<typeof componentRecipe, LiveChatBubbleProps> = () =
 
     if (newState) {
       setInternalUnread(0);
-      local.onOpen?.();
+      props.onOpen?.();
     } else {
-      local.onClose?.();
+      props.onClose?.();
     }
   };
 
   const handleClose = () => {
     setIsOpen(false);
-    local.onClose?.();
+    props.onClose?.();
   };
 
   const positionClasses = () => {
-    const pos = local.position ?? "bottom-right";
+    const pos = props.position ?? "bottom-right";
     return pos === "bottom-left"
       ? CLASSES.bubble.position.left
       : CLASSES.bubble.position.right;
@@ -106,7 +108,7 @@ const LiveChatBubble: Layout<typeof componentRecipe, LiveChatBubbleProps> = () =
     twMerge(
       CLASSES.bubble.base,
       positionClasses(),
-      local.class,
+      props.class,
     );
 
   return (
@@ -115,10 +117,10 @@ const LiveChatBubble: Layout<typeof componentRecipe, LiveChatBubbleProps> = () =
         {...others}
         onClick={toggleChat}
         {...{ class: buttonClasses() }}
-        style={local.style}
+        style={props.style}
         aria-label={local["aria-label"] ?? "Open chat"}
       >
-        {local.children ?? (
+        {props.children ?? (
           <Show
             when={!isOpen()}
             fallback={
@@ -168,15 +170,15 @@ const LiveChatBubble: Layout<typeof componentRecipe, LiveChatBubbleProps> = () =
 
       <Show when={isOpen()}>
         <LiveChatPanel
-          {...(local.panelProps ?? {})}
+          {...(props.panelProps ?? {})}
           autoScrollOnNewMessage={
-            local.panelProps?.autoScrollOnNewMessage ?? local.autoScrollOnNewMessage
+            props.panelProps?.autoScrollOnNewMessage ?? props.autoScrollOnNewMessage
           }
           autoScrollBehavior={
-            local.panelProps?.autoScrollBehavior ?? local.autoScrollBehavior
+            props.panelProps?.autoScrollBehavior ?? props.autoScrollBehavior
           }
           stickToBottomThreshold={
-            local.panelProps?.stickToBottomThreshold ?? local.stickToBottomThreshold
+            props.panelProps?.stickToBottomThreshold ?? props.stickToBottomThreshold
           }
           onClose={handleClose}
         />

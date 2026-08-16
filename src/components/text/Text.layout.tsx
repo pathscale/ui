@@ -1,6 +1,7 @@
 import "./Text.css";
-import { splitProps, type Component, type JSX } from "solid-js";
-import { twMerge } from "tailwind-merge";
+import type { JSX } from "@solidjs/web";
+import {omit, type Component} from "solid-js";
+import { twMerge } from "../../lib/twMerge";
 
 import type { UIBaseProps } from "../vocabulary";
 import { CLASSES } from "./Text.recipe";
@@ -28,7 +29,8 @@ export type TextRootProps = Omit<JSX.HTMLAttributes<HTMLSpanElement>, "color"> &
   };
 
 const TextRoot: Layout<typeof componentRecipe, TextRootProps> = () => {
-  const [local, others] = splitProps(props, [
+  const others = omit(
+    props,
     "children",
     "class",
     "dataTheme",
@@ -40,27 +42,27 @@ const TextRoot: Layout<typeof componentRecipe, TextRootProps> = () => {
     "tracking",
     "leading",
     "family",
-  ]);
+  );
 
-  const size = () => local.size ?? "base";
-  const variant = () => local.variant ?? "default";
+  const size = () => props.size ?? "base";
+  const variant = () => props.variant ?? "default";
 
   return (
     <span
       {...others}
-      {...{ class: twMerge(CLASSES.base, local.class) }}
+      {...{ class: twMerge(CLASSES.base, props.class) }}
       data-slot="text"
       data-size={size()}
       data-variant={variant()}
-      data-weight={local.weight}
-      data-transform={local.transform}
-      data-tracking={local.tracking}
-      data-leading={local.leading}
-      data-family={local.family}
-      data-theme={local.dataTheme}
-      style={local.style}
+      data-weight={props.weight}
+      data-transform={props.transform}
+      data-tracking={props.tracking}
+      data-leading={props.leading}
+      data-family={props.family}
+      data-theme={props.dataTheme}
+      style={props.style}
     >
-      {local.children}
+      {props.children}
     </span>
   );
 };

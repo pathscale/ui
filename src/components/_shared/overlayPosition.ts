@@ -1,10 +1,5 @@
-import {
-  createEffect,
-  createSignal,
-  onCleanup,
-  type Accessor,
-  type JSX,
-} from "solid-js";
+import {createEffect, createSignal, onCleanup, type Accessor} from "solid-js";
+import type { JSX } from "@solidjs/web";
 
 export type OverlayPlacement = "top" | "bottom" | "left" | "right";
 export type OverlayAlign = "start" | "center" | "end";

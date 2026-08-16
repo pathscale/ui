@@ -1,6 +1,7 @@
 import "./Separator.css";
-import { splitProps, type Component, type JSX } from "solid-js";
-import { twMerge } from "tailwind-merge";
+import type { JSX } from "@solidjs/web";
+import {omit, type Component} from "solid-js";
+import { twMerge } from "../../lib/twMerge";
 
 import type { UIBaseProps } from "../vocabulary";
 import { CLASSES } from "./Separator.recipe";
@@ -17,22 +18,15 @@ export type SeparatorProps = Omit<JSX.HTMLAttributes<HTMLDivElement>, "children"
   };
 
 const Separator: Layout<typeof componentRecipe, SeparatorProps> = () => {
-  const [local, others] = splitProps(props, [
-    "class",
-    "dataTheme",
-    "style",
-    "orientation",
-    "variant",
-    "role",
-  ]);
+  const others = omit(props, "class", "dataTheme", "style", "orientation", "variant", "role");
 
-  const orientation = () => local.orientation ?? "horizontal";
-  const variant = () => local.variant ?? "default";
+  const orientation = () => props.orientation ?? "horizontal";
+  const variant = () => props.variant ?? "default";
 
   return (
     <div
       {...others}
-      role={local.role ?? "separator"}
+      role={props.role ?? "separator"}
       aria-orientation={orientation()}
       data-slot="separator"
       data-orientation={orientation()}
@@ -41,10 +35,10 @@ const Separator: Layout<typeof componentRecipe, SeparatorProps> = () => {
         CLASSES.base,
         CLASSES.orientation[orientation()],
         CLASSES.variant[variant()],
-        local.class,
+        props.class,
       )}
-      data-theme={local.dataTheme}
-      style={local.style}
+      data-theme={props.dataTheme}
+      style={props.style}
     />
   );
 };

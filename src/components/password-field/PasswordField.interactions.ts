@@ -1,5 +1,5 @@
-import type { JSX } from "solid-js";
-import { twMerge } from "tailwind-merge";
+import type { JSX } from "@solidjs/web";
+import { twMerge } from "../../lib/twMerge";
 
 /**
  * Pure helpers behind PasswordField's visibility toggle.

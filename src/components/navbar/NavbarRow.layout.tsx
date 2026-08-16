@@ -1,10 +1,6 @@
-import {
-  type JSX,
-  splitProps,
-  createMemo,
-  children as resolveChildren,
-} from "solid-js";
-import { twMerge } from "tailwind-merge";
+import {omit, createMemo, children as resolveChildren} from "solid-js";
+import type { JSX } from "@solidjs/web";
+import { twMerge } from "../../lib/twMerge";
 import type { UIBaseProps, Flavor, Variant } from "../vocabulary";
 import type { ComponentColor } from "../types";
 import { CLASSES } from "./Navbar.recipe";
@@ -21,7 +17,8 @@ export type NavbarRowProps = JSX.HTMLAttributes<HTMLDivElement> &
   };
 
 const NavbarRow: Layout<typeof componentRecipe, NavbarRowProps> = () => {
-  const [local, others] = splitProps(props, [
+  const others = omit(
+    props,
     "variant",
     "children",
     "bordered",
@@ -30,31 +27,31 @@ const NavbarRow: Layout<typeof componentRecipe, NavbarRowProps> = () => {
     "class",
     "style",
     "dataTheme",
-  ]);
+  );
 
-  const resolvedChildren = resolveChildren(() => local.children);
+  const resolvedChildren = resolveChildren(() => props.children);
 
   /* Ghost was a colour and is a variant: it is transparent chrome, not a tint. */
   const flavorClass = () =>
-    CLASSES.row.flavor[(local.flavor ?? "neutral") as keyof typeof CLASSES.row.flavor] ??
-    `navbar__row--flavor-${local.flavor}`;
+    CLASSES.row.flavor[(props.flavor ?? "neutral") as keyof typeof CLASSES.row.flavor] ??
+    `navbar__row--flavor-${props.flavor}`;
 
   const classes = createMemo(() =>
     twMerge(
       CLASSES.row.base,
-      local.bordered === true && CLASSES.row.flag.bordered,
-      local.padded !== false && CLASSES.row.flag.padded,
+      props.bordered === true && CLASSES.row.flag.bordered,
+      props.padded !== false && CLASSES.row.flag.padded,
       flavorClass(),
-      local.variant === "ghost" && CLASSES.row.variant.ghost,
-      local.class,
+      props.variant === "ghost" && CLASSES.row.variant.ghost,
+      props.class,
     ),
   );
 
   return (
     <div
       {...{ class: classes() }}
-      style={local.style}
-      data-theme={local.dataTheme}
+      style={props.style}
+      data-theme={props.dataTheme}
       {...others}
     >
       {resolvedChildren()}

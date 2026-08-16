@@ -117,8 +117,8 @@ The rules that hold across every component — worth two minutes before your fir
   flat. Parts are styleable via `data-slot` and state attributes such as `data-open`.
 - There is **no polymorphic `as` prop**.
 
-Forms are TanStack Form plus any Standard Schema validator; Table is headless and assembled
-from hooks. Both, with toasts, icons and dates, are covered in
+Forms are built in and take any Standard Schema validator; DataGrid derives filtering,
+sorting, pagination and selection itself. Both, with toasts, icons and dates, are covered in
 **[docs/ui-usage.md](https://github.com/pathscale/ui/blob/master/docs/ui-usage.md)**.
 
 ## Requirements
@@ -137,8 +137,7 @@ line and must not be used.
 The complete compiler contract, hard-error behavior, commands, and porting analyzer are
 documented in [docs/layouts.md](docs/layouts.md).
 
-Peers include `@solid-primitives/*`, `@tanstack/solid-form` and `@tanstack/solid-table`.
-Two are optional and only needed for the features they back: `popmotion` (JS animation
+Two peers are optional and only needed for the features they back: `popmotion` (JS animation
 driver) and `@standard-schema/spec` (schema validation).
 
 ## Subpath exports

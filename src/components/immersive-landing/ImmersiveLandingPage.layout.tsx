@@ -1,5 +1,6 @@
-import { splitProps, useContext, createMemo, type JSX } from "solid-js";
-import { twMerge } from "tailwind-merge";
+import {omit, useContext, createMemo} from "solid-js";
+import type { JSX } from "@solidjs/web";
+import { twMerge } from "../../lib/twMerge";
 import type { ImmersiveLandingPageProps } from "./types";
 import { ImmersiveLandingContext } from "./ImmersiveLandingContext";
 import { CLASSES } from "./ImmersiveLanding.recipe";
@@ -7,35 +8,35 @@ import type { Layout } from "../../lib/layouts";
 import { componentRecipe } from "./ImmersiveLanding.recipe";
 
 const ImmersiveLandingPage: Layout<typeof componentRecipe, ImmersiveLandingPageProps> = () => {
-  const [local, others] = splitProps(props, ["id", "children", "class", "style"]);
+  const others = omit(props, "id", "children", "class", "style");
 
   const context = useContext(ImmersiveLandingContext);
 
-  const isActive = createMemo(() => context?.activePage() === local.id);
+  const isActive = createMemo(() => context?.activePage() === props.id);
   const fadeDurationMs = 200;
 
   const classes = () =>
     twMerge(
       CLASSES.page.base,
       isActive() ? CLASSES.page.active : CLASSES.page.inactive,
-      local.class,
+      props.class,
     );
 
   return (
     <section
-      id={local.id}
+      id={props.id}
       role="region"
-      aria-label={`${local.id} section`}
+      aria-label={`${props.id} section`}
       {...{ class: classes() }}
       style={{
         "transition-duration": `${fadeDurationMs}ms`,
         "transition-delay": isActive() ? `${fadeDurationMs}ms` : "0ms",
-        ...local.style,
+        ...props.style,
       }}
-      aria-hidden={!isActive()}
+      aria-hidden={!isActive() ? "true" : undefined}
       {...others}
     >
-      <div {...{ class: CLASSES.page.content }}>{local.children}</div>
+      <div {...{ class: CLASSES.page.content }}>{props.children}</div>
     </section>
   );
 };

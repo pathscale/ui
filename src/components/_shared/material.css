@@ -1,0 +1,115 @@
+/*
+ * `material="glass"`, for every surface that can hold content.
+ *
+ * One definition rather than one per component. Card had these rules inline,
+ * and copying them to Dialog, Drawer, Popover, Menu, Dock and Navbar would be
+ * six places to update when the glass vocabulary moves — which it did once
+ * already, from thirty-one hand-declared properties to three numbers and
+ * twenty-five derived ones.
+ *
+ * A component opts in by importing this file and adding the `material` axis to
+ * its recipe. The classes are keyed on a data attribute rather than a
+ * `<component>--material-glass` class so the rules are genuinely shared: a
+ * per-component class name would need this block duplicated for each one, which
+ * is the thing being avoided.
+ *
+ * Every `--glass-*` read carries a fallback, and that is load-bearing rather
+ * than tidy. An undefined custom property does not fall back to its initial
+ * value: CSS drops the whole declaration. Three of these used to be read bare,
+ * so a theme that defined twenty-eight of the thirty-one glass tokens got a
+ * surface with no background at all rather than a plainer one. The two shipped
+ * themes both use `white` for the three colours, so that is what the fallbacks
+ * say. `src/styles/glass.ts` derives the rest from `blur`, `refraction` and
+ * `depth`.
+ */
+
+@layer components {
+  [data-material="solid"] {
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+  }
+
+  [data-material="glass"] {
+    background-color: color-mix(
+      in oklab,
+      var(--glass-background-color, white),
+      transparent calc(100% - var(--glass-background-opacity, 55%))
+    );
+    border-color: color-mix(
+      in oklab,
+      var(--glass-border-color, white),
+      transparent calc(100% - var(--glass-border-opacity, 12%))
+    );
+    backdrop-filter: blur(var(--glass-blur, 50px)) saturate(var(--glass-saturation, 1.2))
+      brightness(var(--glass-brightness, 1));
+    -webkit-backdrop-filter: blur(var(--glass-blur, 50px)) saturate(var(--glass-saturation, 1.2))
+      brightness(var(--glass-brightness, 1));
+  }
+
+  /*
+   * The inner highlight: the lit top edge that makes a pane read as a pane
+   * rather than as a translucent rectangle.
+   *
+   * On a pseudo-element so it cannot be overwritten by a component's own
+   * `box-shadow`, which is how elevation is expressed. `inherit` on the radius
+   * keeps it aligned to whatever corner the component chose.
+   */
+  [data-material="glass"]::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    pointer-events: none;
+    box-shadow: inset 0 var(--border, 1px) 0 0
+      color-mix(
+        in oklab,
+        var(--glass-highlight-color, white),
+        transparent calc(100% - var(--glass-highlight-opacity, 18%))
+      );
+  }
+
+  /*
+   * Glass inside glass is one pane, not two.
+   *
+   * A backdrop filter reads the pixels behind it, so nesting one inside another
+   * blurs already-blurred output. That is muddy rather than deeper, and it
+   * costs a second render pass to get there.
+   */
+  [data-material="glass"] [data-material="glass"] {
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+  }
+
+  /*
+   * No backdrop support, or a reader who asked for less transparency.
+   *
+   * Falls back to a more opaque fill rather than to a thin tint over whatever
+   * happens to be behind it, because the tint alone is unreadable. The
+   * highlight goes too: it reads as a stray line without the material.
+   */
+  @supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+    [data-material="glass"] {
+      background-color: color-mix(
+        in oklab,
+        var(--glass-background-color, white),
+        transparent calc(100% - var(--glass-fallback-background-opacity, 78%))
+      );
+    }
+  }
+
+  @media (prefers-reduced-transparency: reduce) {
+    [data-material="glass"] {
+      background-color: color-mix(
+        in oklab,
+        var(--glass-background-color, white),
+        transparent calc(100% - var(--glass-fallback-background-opacity, 78%))
+      );
+      backdrop-filter: none;
+      -webkit-backdrop-filter: none;
+    }
+
+    [data-material="glass"]::before {
+      box-shadow: none;
+    }
+  }
+}

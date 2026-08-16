@@ -1,18 +1,9 @@
 import "./Drawer.css";
-import {
-  Show,
-  createEffect,
-  createSignal,
-  createUniqueId,
-  onCleanup,
-  splitProps,
-  type Component,
-  type JSX,
-  type ParentComponent,
-} from "solid-js";
-import { Portal } from "solid-js/web";
-import { twMerge } from "tailwind-merge";
-import type { UIBaseProps } from "../vocabulary";
+import {Show, createEffect, createSignal, createUniqueId, onCleanup, omit, type Component, type ParentComponent} from "solid-js";
+import { Portal, type JSX} from "@solidjs/web";
+import { twMerge } from "../../lib/twMerge";
+import "../_shared/material.css";
+import type { Material, UIBaseProps } from "../vocabulary";
 import {
   focusFirst,
   isSidePlacement,
@@ -108,6 +99,8 @@ export type DrawerContentProps = Omit<JSX.HTMLAttributes<HTMLDivElement>, "child
     /** @deprecated Configure placement at Drawer.Root `placement` */
     placement?: DrawerPlacement;
     scrollBehavior?: DrawerScrollBehavior;
+    /** What the panel is made of. `solid` by default. */
+    material?: Material;
   };
 
 export type DrawerDialogSide = "left" | "right";
@@ -168,7 +161,8 @@ export type DrawerCloseProps = {
 const EXIT_MS = 200;
 
 const DrawerRoot: Layout<typeof componentRecipe, DrawerRootProps> = () => {
-  const [local, others] = splitProps(props, [
+  const others = omit(
+    props,
     "children",
     "class",
     "dataTheme",
@@ -185,11 +179,11 @@ const DrawerRoot: Layout<typeof componentRecipe, DrawerRootProps> = () => {
     "shouldCloseOnBackdropClick",
     "trapFocus",
     "restoreFocus",
-  ]);
+  );
 
-  const [internalOpen, setInternalOpen] = createSignal(Boolean(local.defaultOpen));
+  const [internalOpen, setInternalOpen] = createSignal(Boolean(props.defaultOpen));
   const [animState, setAnimState] = createSignal<DrawerAnimState>(
-    Boolean(local.open ?? local.defaultOpen) ? "open" : "closed",
+    props.open ?? props.defaultOpen ? "open" : "closed",
   );
 
   const [dialogRef, setDialogRef] = createSignal<HTMLDivElement | undefined>();
@@ -206,24 +200,24 @@ const DrawerRoot: Layout<typeof componentRecipe, DrawerRootProps> = () => {
     boolean | undefined
   >(undefined);
 
-  const isControlled = () => local.open !== undefined;
-  const isOpen = () => (isControlled() ? Boolean(local.open) : internalOpen());
+  const isControlled = () => props.open !== undefined;
+  const isOpen = () => (isControlled() ? Boolean(props.open) : internalOpen());
 
-  const placement = () => placementOverride() ?? local.placement ?? "bottom";
-  const size = () => local.size ?? "md";
-  const backdrop = () => local.backdrop ?? "opaque";
-  const scrollBehavior = () => local.scrollBehavior ?? "inside";
-  const isDismissable = () => backdropDismissableOverride() ?? local.isDismissable ?? true;
-  const shouldCloseOnEsc = () => local.shouldCloseOnEsc ?? true;
+  const placement = () => placementOverride() ?? props.placement ?? "bottom";
+  const size = () => props.size ?? "md";
+  const backdrop = () => props.backdrop ?? "opaque";
+  const scrollBehavior = () => props.scrollBehavior ?? "inside";
+  const isDismissable = () => backdropDismissableOverride() ?? props.isDismissable ?? true;
+  const shouldCloseOnEsc = () => props.shouldCloseOnEsc ?? true;
   const shouldCloseOnBackdropClick = () =>
-    backdropCloseOnClickOverride() ?? local.shouldCloseOnBackdropClick ?? true;
-  const trapFocusEnabled = () => local.trapFocus ?? true;
-  const restoreFocusEnabled = () => local.restoreFocus ?? true;
+    backdropCloseOnClickOverride() ?? props.shouldCloseOnBackdropClick ?? true;
+  const trapFocusEnabled = () => props.trapFocus ?? true;
+  const restoreFocusEnabled = () => props.restoreFocus ?? true;
 
   const setIsOpen = (next: boolean) => {
     if (next === isOpen()) return;
     if (!isControlled()) setInternalOpen(next);
-    local.onOpenChange?.(next);
+    props.onOpenChange?.(next);
   };
 
   const requestClose = (reason: DrawerCloseReason) => {
@@ -349,7 +343,7 @@ const DrawerRoot: Layout<typeof componentRecipe, DrawerRootProps> = () => {
   };
 
   return (
-    <DrawerContext.Provider value={contextValue}>
+    <DrawerContext value={contextValue}>
       <div
         {...others}
         class={twMerge(
@@ -358,67 +352,63 @@ const DrawerRoot: Layout<typeof componentRecipe, DrawerRootProps> = () => {
           animState() === "entering" && CLASSES.Root.state.entering,
           animState() === "exiting" && CLASSES.Root.state.exiting,
           animState() === "closed" && CLASSES.Root.state.closed,
-          local.class,
+          props.class,
         )}
         data-slot="drawer-root"
         data-open={isVisibleState(animState()) ? "true" : "false"}
-        data-theme={local.dataTheme}
-        style={local.style}
+        data-theme={props.dataTheme}
+        style={props.style}
       >
-        {local.children}
+        {props.children}
       </div>
-    </DrawerContext.Provider>
+    </DrawerContext>
   );
 };
 
 const DrawerTrigger: Layout<typeof componentRecipe, DrawerTriggerProps> = () => {
-  const [local, others] = splitProps(props, [
-    "children",
-    "class",
-    "dataTheme",
-    "style",
-    "onClick",
-  ]);
+  const others = omit(props, "children", "class", "dataTheme", "style", "onClick");
 
   const ctx = useDrawerContext();
 
   const handleClick: JSX.EventHandlerUnion<HTMLButtonElement, MouseEvent> = (event) => {
     ctx.setIsOpen(true);
-    if (typeof local.onClick === "function") local.onClick(event);
+    if (typeof props.onClick === "function") props.onClick(event);
   };
 
   return (
     <button
       {...others}
       type="button"
-      class={twMerge(CLASSES.Trigger.base, local.class)}
+      class={twMerge(CLASSES.Trigger.base, props.class)}
       data-slot="drawer-trigger"
-      data-theme={local.dataTheme}
-      style={local.style}
+      data-theme={props.dataTheme}
+      style={props.style}
       onClick={handleClick}
     >
-      {local.children}
+      {props.children}
     </button>
   );
 };
 
 const DrawerContent: Layout<typeof componentRecipe, DrawerContentProps> = () => {
-  const [local, others] = splitProps(props, [
+  const others = omit(
+    props,
     "children",
     "class",
     "dataTheme",
     "style",
     "placement",
     "scrollBehavior",
-  ]);
+    "material",
+  );
 
   const ctx = useDrawerContext();
-  const placement = () => local.placement ?? ctx.placement();
-  const scrollBehavior = () => local.scrollBehavior ?? ctx.scrollBehavior();
+  const placement = () => props.placement ?? ctx.placement();
+  const scrollBehavior = () => props.scrollBehavior ?? ctx.scrollBehavior();
 
   createEffect(() => {
-    if (local.placement === undefined) return;
-    ctx.setPlacementOverride(local.placement);
+    if (props.placement === undefined) return;
+    ctx.setPlacementOverride(props.placement);
     onCleanup(() => ctx.setPlacementOverride(undefined));
   });
 
@@ -431,23 +421,25 @@ const DrawerContent: Layout<typeof componentRecipe, DrawerContentProps> = () => 
         CLASSES.Content.scroll[scrollBehavior()],
         ctx.animState() === "entering" && CLASSES.Content.state.entering,
         ctx.animState() === "exiting" && CLASSES.Content.state.exiting,
-        local.class,
+        props.class,
       )}
       data-slot="drawer-content"
+      data-material={props.material ?? "solid"}
       data-placement={placement()}
       data-scroll={scrollBehavior()}
       data-entering={ctx.animState() === "entering" ? "true" : undefined}
       data-exiting={ctx.animState() === "exiting" ? "true" : undefined}
-      data-theme={local.dataTheme}
-      style={local.style}
+      data-theme={props.dataTheme}
+      style={props.style}
     >
-      {local.children}
+      {props.children}
     </div>
   );
 };
 
 const DrawerBackdrop: Layout<typeof componentRecipe, DrawerBackdropProps> = () => {
-  const [local, others] = splitProps(props, [
+  const others = omit(
+    props,
     "children",
     "class",
     "dataTheme",
@@ -456,21 +448,21 @@ const DrawerBackdrop: Layout<typeof componentRecipe, DrawerBackdropProps> = () =
     "isDismissable",
     "shouldCloseOnBackdropClick",
     "onClick",
-  ]);
+  );
 
   const ctx = useDrawerContext();
-  const variant = () => local.variant ?? ctx.backdrop();
+  const variant = () => props.variant ?? ctx.backdrop();
 
   createEffect(() => {
-    if (local.isDismissable !== undefined) {
-      ctx.setBackdropDismissableOverride(local.isDismissable);
+    if (props.isDismissable !== undefined) {
+      ctx.setBackdropDismissableOverride(props.isDismissable);
       onCleanup(() => ctx.setBackdropDismissableOverride(undefined));
     }
   });
 
   createEffect(() => {
-    if (local.shouldCloseOnBackdropClick !== undefined) {
-      ctx.setBackdropCloseOnClickOverride(local.shouldCloseOnBackdropClick);
+    if (props.shouldCloseOnBackdropClick !== undefined) {
+      ctx.setBackdropCloseOnClickOverride(props.shouldCloseOnBackdropClick);
       onCleanup(() => ctx.setBackdropCloseOnClickOverride(undefined));
     }
   });
@@ -479,7 +471,7 @@ const DrawerBackdrop: Layout<typeof componentRecipe, DrawerBackdropProps> = () =
     if (event.target === event.currentTarget) {
       ctx.requestClose("backdrop");
     }
-    if (typeof local.onClick === "function") local.onClick(event);
+    if (typeof props.onClick === "function") props.onClick(event);
   };
 
   return (
@@ -492,16 +484,16 @@ const DrawerBackdrop: Layout<typeof componentRecipe, DrawerBackdropProps> = () =
             CLASSES.Backdrop.variant[variant()],
             ctx.animState() === "entering" && CLASSES.Backdrop.state.entering,
             ctx.animState() === "exiting" && CLASSES.Backdrop.state.exiting,
-            local.class,
+            props.class,
           )}
           data-slot="drawer-backdrop"
           data-entering={ctx.animState() === "entering" ? "true" : undefined}
           data-exiting={ctx.animState() === "exiting" ? "true" : undefined}
-          data-theme={local.dataTheme}
-          style={local.style}
+          data-theme={props.dataTheme}
+          style={props.style}
           onClick={handleClick}
         >
-          {local.children}
+          {props.children}
         </div>
       </Portal>
     </Show>
@@ -513,7 +505,8 @@ const SIDE_MAP: Record<DrawerDialogSide, string> = {
   right: "drawer__dialog--side-right",
 };
 const DrawerDialog: Layout<typeof componentRecipe, DrawerDialogProps> = () => {
-  const [local, others] = splitProps(props, [
+  const others = omit(
+    props,
     "children",
     "class",
     "dataTheme",
@@ -528,99 +521,88 @@ const DrawerDialog: Layout<typeof componentRecipe, DrawerDialogProps> = () => {
     "ref",
     "size",
     "role",
-    "tabIndex",
+    "tabindex",
     "aria-labelledby",
     "aria-describedby",
-  ]);
+  );
 
   const ctx = useDrawerContext();
   const placement = () => ctx.placement();
   const axis = () => (isSidePlacement(placement()) ? "side" : "edge");
-  const size = () => local.size ?? ctx.size();
+  const size = () => props.size ?? ctx.size();
 
   const mergedStyle = (): JSX.CSSProperties => {
     const s: JSX.CSSProperties = {};
-    if (typeof local.style === "object" && local.style) Object.assign(s, local.style);
-    if (local.width) s["--drawer-dialog-width"] = local.width;
-    if (local.maxWidth) s["--drawer-dialog-max-width"] = local.maxWidth;
-    if (local.bg) s["--drawer-dialog-bg"] = local.bg;
-    if (local.padding) s["--drawer-dialog-padding"] = local.padding;
-    if (local.borderWidth) s["--drawer-dialog-border-width"] = local.borderWidth;
-    if (local.borderColor) s["--drawer-dialog-border-color"] = local.borderColor;
+    if (typeof props.style === "object" && props.style) Object.assign(s, props.style);
+    if (props.width) s["--drawer-dialog-width"] = props.width;
+    if (props.maxWidth) s["--drawer-dialog-max-width"] = props.maxWidth;
+    if (props.bg) s["--drawer-dialog-bg"] = props.bg;
+    if (props.padding) s["--drawer-dialog-padding"] = props.padding;
+    if (props.borderWidth) s["--drawer-dialog-border-width"] = props.borderWidth;
+    if (props.borderColor) s["--drawer-dialog-border-color"] = props.borderColor;
     return s;
   };
 
-  const hasCustomSize = () => Boolean(local.width || local.maxWidth);
-  const hasCustomPadding = () => Boolean(local.padding);
-  const hasCustomBg = () => Boolean(local.bg);
+  const hasCustomSize = () => Boolean(props.width || props.maxWidth);
+  const hasCustomPadding = () => Boolean(props.padding);
+  const hasCustomBg = () => Boolean(props.bg);
 
   return (
     <div
       {...others}
       ref={(node) => {
         ctx.setDialogRef(node);
-        if (typeof local.ref === "function") local.ref(node);
+        if (typeof props.ref === "function") props.ref(node);
       }}
-      role={local.role ?? "dialog"}
+      role={props.role ?? "dialog"}
       aria-modal="true"
       aria-labelledby={local["aria-labelledby"] ?? ctx.labelledBy()}
       aria-describedby={local["aria-describedby"] ?? ctx.describedBy()}
-      tabIndex={local.tabIndex ?? -1}
+      tabindex={props.tabindex ?? -1}
       class={twMerge(
         CLASSES.Dialog.base,
         CLASSES.Dialog.axis[axis()],
         CLASSES.Dialog.size[axis()][size()],
         ctx.animState() === "entering" && CLASSES.Dialog.state.entering,
         ctx.animState() === "exiting" && CLASSES.Dialog.state.exiting,
-        local.side ? SIDE_MAP[local.side] : undefined,
+        props.side ? SIDE_MAP[props.side] : undefined,
         hasCustomBg() ? "drawer__dialog--custom-bg" : undefined,
         hasCustomSize() ? "drawer__dialog--custom-size" : undefined,
         hasCustomPadding() ? "drawer__dialog--custom-padding" : undefined,
-        local.class,
+        props.class,
       )}
       data-slot="drawer-dialog"
       data-placement={placement()}
       data-size={size()}
-      data-theme={local.dataTheme}
+      data-theme={props.dataTheme}
       style={mergedStyle()}
     >
-      {local.children}
+      {props.children}
     </div>
   );
 };
 
 const DrawerHeader: Layout<typeof componentRecipe, DrawerHeaderProps> = () => {
-  const [local, others] = splitProps(props, [
-    "children",
-    "class",
-    "dataTheme",
-    "style",
-  ]);
+  const others = omit(props, "children", "class", "dataTheme", "style");
 
   return (
     <div
       {...others}
-      class={twMerge(CLASSES.Header.base, local.class)}
+      class={twMerge(CLASSES.Header.base, props.class)}
       data-slot="drawer-header"
-      data-theme={local.dataTheme}
-      style={local.style}
+      data-theme={props.dataTheme}
+      style={props.style}
     >
-      {local.children}
+      {props.children}
     </div>
   );
 };
 
 const DrawerHeading: Layout<typeof componentRecipe, DrawerHeadingProps> = () => {
-  const [local, others] = splitProps(props, [
-    "children",
-    "class",
-    "dataTheme",
-    "style",
-    "id",
-  ]);
+  const others = omit(props, "children", "class", "dataTheme", "style", "id");
   const ctx = useDrawerContext();
   const uid = createUniqueId();
-  const headingId = () => local.id ?? `drawer-heading-${uid}`;
+  const headingId = () => props.id ?? `drawer-heading-${uid}`;
 
   createEffect(() => {
     const id = headingId();
@@ -634,27 +616,21 @@ const DrawerHeading: Layout<typeof componentRecipe, DrawerHeadingProps> = () => 
     <h2
       {...others}
       id={headingId()}
-      class={twMerge(CLASSES.Heading.base, local.class)}
+      class={twMerge(CLASSES.Heading.base, props.class)}
       data-slot="drawer-heading"
-      data-theme={local.dataTheme}
-      style={local.style}
+      data-theme={props.dataTheme}
+      style={props.style}
     >
-      {local.children}
+      {props.children}
     </h2>
   );
 };
 
 const DrawerBody: Layout<typeof componentRecipe, DrawerBodyProps> = () => {
-  const [local, others] = splitProps(props, [
-    "children",
-    "class",
-    "dataTheme",
-    "style",
-    "id",
-  ]);
+  const others = omit(props, "children", "class", "dataTheme", "style", "id");
   const ctx = useDrawerContext();
   const uid = createUniqueId();
-  const bodyId = () => local.id ?? `drawer-body-${uid}`;
+  const bodyId = () => props.id ?? `drawer-body-${uid}`;
 
   createEffect(() => {
     const id = bodyId();
@@ -668,48 +644,43 @@ const DrawerBody: Layout<typeof componentRecipe, DrawerBodyProps> = () => {
     <div
       {...others}
       id={bodyId()}
-      class={twMerge(CLASSES.Body.base, local.class)}
+      class={twMerge(CLASSES.Body.base, props.class)}
       data-slot="drawer-body"
-      data-theme={local.dataTheme}
-      style={local.style}
+      data-theme={props.dataTheme}
+      style={props.style}
     >
-      {local.children}
+      {props.children}
     </div>
   );
 };
 
 const DrawerFooter: Layout<typeof componentRecipe, DrawerFooterProps> = () => {
-  const [local, others] = splitProps(props, [
-    "children",
-    "class",
-    "dataTheme",
-    "style",
-  ]);
+  const others = omit(props, "children", "class", "dataTheme", "style");
 
   return (
     <div
       {...others}
-      class={twMerge(CLASSES.Footer.base, local.class)}
+      class={twMerge(CLASSES.Footer.base, props.class)}
       data-slot="drawer-footer"
-      data-theme={local.dataTheme}
-      style={local.style}
+      data-theme={props.dataTheme}
+      style={props.style}
     >
-      {local.children}
+      {props.children}
     </div>
   );
 };
 
 const DrawerHandle: Layout<typeof componentRecipe, DrawerHandleProps> = () => {
-  const [local, others] = splitProps(props, ["class", "dataTheme", "style"]);
+  const others = omit(props, "class", "dataTheme", "style");
 
   return (
     <div
       {...others}
       aria-hidden="true"
-      class={twMerge(CLASSES.Handle.base, local.class)}
+      class={twMerge(CLASSES.Handle.base, props.class)}
       data-slot="drawer-handle"
-      data-theme={local.dataTheme}
-      style={local.style}
+      data-theme={props.dataTheme}
+      style={props.style}
     >
       <div class={CLASSES.Handle.bar} data-slot="drawer-handle-bar" />
     </div>
@@ -717,7 +688,8 @@ const DrawerHandle: Layout<typeof componentRecipe, DrawerHandleProps> = () => {
 };
 
 const DrawerCloseTrigger: Layout<typeof componentRecipe, DrawerCloseTriggerProps> = () => {
-  const [local, others] = splitProps(props, [
+  const others = omit(
+    props,
     "children",
     "class",
     "dataTheme",
@@ -726,13 +698,13 @@ const DrawerCloseTrigger: Layout<typeof componentRecipe, DrawerCloseTriggerProps
     "endIcon",
     "onClick",
     "aria-label",
-  ]);
+  );
 
   const ctx = useDrawerContext();
 
   const handleClick: JSX.EventHandlerUnion<HTMLButtonElement, MouseEvent> = (event) => {
     ctx.requestClose("trigger");
-    if (typeof local.onClick === "function") local.onClick(event);
+    if (typeof props.onClick === "function") props.onClick(event);
   };
 
   return (
@@ -740,21 +712,21 @@ const DrawerCloseTrigger: Layout<typeof componentRecipe, DrawerCloseTriggerProps
       {...others}
       type="button"
       aria-label={local["aria-label"] ?? "Close"}
-      class={twMerge(CLASSES.CloseTrigger.base, local.class)}
+      class={twMerge(CLASSES.CloseTrigger.base, props.class)}
       data-slot="drawer-close-trigger"
-      data-theme={local.dataTheme}
-      style={local.style}
+      data-theme={props.dataTheme}
+      style={props.style}
       onClick={handleClick}
     >
-      {local.startIcon ? (
+      {props.startIcon ? (
         <span class={twMerge(CLASSES.CloseTrigger.icon, CLASSES.CloseTrigger.iconStart)}>
-          {local.startIcon}
+          {props.startIcon}
         </span>
       ) : null}
-      {local.children}
-      {local.endIcon ? (
+      {props.children}
+      {props.endIcon ? (
         <span class={twMerge(CLASSES.CloseTrigger.icon, CLASSES.CloseTrigger.iconEnd)}>
-          {local.endIcon}
+          {props.endIcon}
         </span>
       ) : null}
     </button>

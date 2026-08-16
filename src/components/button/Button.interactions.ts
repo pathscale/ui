@@ -21,7 +21,10 @@ export const buttonElement = (href: string | undefined): "a" | "button" =>
  * announced.
  */
 export const buttonHref = (
-  href: string | undefined,
+  // Solid 2 lets any attribute be `false` to mean "remove it", so a prop that
+  // reaches here is `string | false | undefined`. The `typeof` guard below
+  // already handled that; the signature just says so now.
+  href: string | false | undefined,
   inert: boolean,
 ): string | undefined => (typeof href === "string" && !inert ? href : undefined);
 
@@ -33,7 +36,7 @@ export const buttonHref = (
  * `nofollow` still gets it.
  */
 export const buttonRel = (
-  rel: string | undefined,
-  target: string | undefined,
+  rel: string | false | undefined,
+  target: string | false | undefined,
 ): string | undefined =>
-  rel ?? (target === "_blank" ? "noopener noreferrer" : undefined);
+  (rel || undefined) ?? (target === "_blank" ? "noopener noreferrer" : undefined);

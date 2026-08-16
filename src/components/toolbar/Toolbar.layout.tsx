@@ -1,6 +1,7 @@
 import "./Toolbar.css";
-import { splitProps, type Component, type JSX } from "solid-js";
-import { twMerge } from "tailwind-merge";
+import type { JSX } from "@solidjs/web";
+import {omit, type Component} from "solid-js";
+import { twMerge } from "../../lib/twMerge";
 
 import type { UIBaseProps } from "../vocabulary";
 import { CLASSES } from "./Toolbar.recipe";
@@ -41,7 +42,8 @@ const getFocusableElements = (root: HTMLDivElement): HTMLElement[] =>
   Array.from(root.querySelectorAll<HTMLElement>(FOCUSABLE_SELECTOR)).filter(isFocusableElement);
 
 const ToolbarRoot: Layout<typeof componentRecipe, ToolbarRootProps> = () => {
-  const [local, others] = splitProps(props, [
+  const others = omit(
+    props,
     "children",
     "class",
     "dataTheme",
@@ -51,14 +53,14 @@ const ToolbarRoot: Layout<typeof componentRecipe, ToolbarRootProps> = () => {
     "onKeyDown",
     "role",
     "ref",
-  ]);
+  );
 
   let rootRef: HTMLDivElement | undefined;
 
-  const orientation = (): ToolbarOrientation => local.orientation ?? "horizontal";
+  const orientation = (): ToolbarOrientation => props.orientation ?? "horizontal";
 
   const handleKeyDown: JSX.EventHandlerUnion<HTMLDivElement, KeyboardEvent> = (event) => {
-    if (typeof local.onKeyDown === "function") local.onKeyDown(event);
+    if (typeof props.onKeyDown === "function") props.onKeyDown(event);
     if (event.defaultPrevented) return;
 
     if (isTypingContext(event.target)) return;
@@ -102,25 +104,25 @@ const ToolbarRoot: Layout<typeof componentRecipe, ToolbarRootProps> = () => {
       {...others}
       ref={(el) => {
         rootRef = el;
-        if (typeof local.ref === "function") local.ref(el);
+        if (typeof props.ref === "function") props.ref(el);
       }}
-      role={local.role ?? "toolbar"}
+      role={props.role ?? "toolbar"}
       aria-orientation={orientation()}
       data-slot="toolbar"
       data-orientation={orientation()}
-      data-theme={local.dataTheme}
-      style={local.style}
+      data-theme={props.dataTheme}
+      style={props.style}
       onKeyDown={handleKeyDown}
       {...{
         class: twMerge(
           CLASSES.base,
           CLASSES.orientation[orientation()],
-          local.isAttached && CLASSES.flag.attached,
-          local.class,
+          props.isAttached && CLASSES.flag.attached,
+          props.class,
         ),
       }}
     >
-      {local.children}
+      {props.children}
     </div>
   );
 };

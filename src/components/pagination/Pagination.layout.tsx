@@ -1,6 +1,7 @@
 import "./Pagination.css";
-import { For, splitProps, type JSX } from "solid-js";
-import { twMerge } from "tailwind-merge";
+import type { JSX } from "@solidjs/web";
+import {For, omit} from "solid-js";
+import { twMerge } from "../../lib/twMerge";
 import type { UIBaseProps, State } from "../vocabulary";
 import { CLASSES } from "./Pagination.recipe";
 import type { Layout } from "../../lib/layouts";
@@ -39,25 +40,18 @@ const getPaginationTokens = (page: number, total: number): PaginationToken[] => 
 };
 
 const Pagination: Layout<typeof componentRecipe, PaginationProps> = () => {
-  const [local, others] = splitProps(props, [
-    "class",
-    "dataTheme",
-    "page",
-    "total",
-    "onChange",
-    "state",
-  ]);
+  const others = omit(props, "class", "dataTheme", "page", "total", "onChange", "state");
 
-  const safeTotal = () => Math.max(1, Math.floor(local.total || 0));
-  const currentPage = () => clampPage(local.page, safeTotal());
+  const safeTotal = () => Math.max(1, Math.floor(props.total || 0));
+  const currentPage = () => clampPage(props.page, safeTotal());
   const tokens = () => getPaginationTokens(currentPage(), safeTotal());
-  const disabled = () => Boolean((local.state === "disabled"));
+  const disabled = () => Boolean((props.state === "disabled"));
 
   const handleChange = (nextPage: number) => {
     if (disabled()) return;
     const bounded = clampPage(nextPage, safeTotal());
     if (bounded === currentPage()) return;
-    local.onChange(bounded);
+    props.onChange(bounded);
   };
 
   return (
@@ -65,8 +59,8 @@ const Pagination: Layout<typeof componentRecipe, PaginationProps> = () => {
       {...others}
       aria-label="pagination"
       role="navigation"
-      {...{ class: twMerge(CLASSES.base, local.class) }}
-      data-theme={local.dataTheme}
+      {...{ class: twMerge(CLASSES.base, props.class) }}
+      data-theme={props.dataTheme}
       data-slot="pagination"
     >
       <div {...{ class: CLASSES.slot.summary }} data-slot="pagination-summary">

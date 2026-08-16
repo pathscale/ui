@@ -1,5 +1,6 @@
 import "./Address.css";
-import { Show, createSignal, onCleanup, type JSX } from "solid-js";
+import type { JSX } from "@solidjs/web";
+import {Show, createSignal, onCleanup} from "solid-js";
 import type { Layout } from "../../lib/layouts";
 import type { Size, State, UIBaseProps } from "../vocabulary";
 import { address } from "./Address.recipe";

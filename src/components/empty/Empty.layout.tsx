@@ -1,6 +1,7 @@
 import "./Empty.css";
-import { splitProps, type Component, type JSX, type ParentComponent } from "solid-js";
-import { twMerge } from "tailwind-merge";
+import type { JSX } from "@solidjs/web";
+import {omit, type Component, type ParentComponent} from "solid-js";
+import { twMerge } from "../../lib/twMerge";
 import type { UIBaseProps } from "../vocabulary";
 import { CLASSES } from "./Empty.recipe";
 import type { Layout } from "../../lib/layouts";
@@ -38,23 +39,18 @@ export type EmptyActionsProps = Omit<JSX.HTMLAttributes<HTMLDivElement>, "childr
  * Empty Root
  * -----------------------------------------------------------------------------------------------*/
 const EmptyRoot: Layout<typeof componentRecipe, EmptyRootProps> = () => {
-  const [local, others] = splitProps(props, [
-    "children",
-    "class",
-    "dataTheme",
-    "style",
-  ]);
+  const others = omit(props, "children", "class", "dataTheme", "style");
 
   return (
     <div
       {...others}
       role="status"
-      {...{ class: twMerge(CLASSES.base, local.class) }}
+      {...{ class: twMerge(CLASSES.base, props.class) }}
       data-slot="empty"
-      data-theme={local.dataTheme}
-      style={local.style}
+      data-theme={props.dataTheme}
+      style={props.style}
     >
-      {local.children}
+      {props.children}
     </div>
   );
 };
@@ -63,23 +59,18 @@ const EmptyRoot: Layout<typeof componentRecipe, EmptyRootProps> = () => {
  * Empty Icon
  * -----------------------------------------------------------------------------------------------*/
 const EmptyIcon: Layout<typeof componentRecipe, EmptyIconProps> = () => {
-  const [local, others] = splitProps(props, [
-    "children",
-    "class",
-    "dataTheme",
-    "style",
-  ]);
+  const others = omit(props, "children", "class", "dataTheme", "style");
 
   return (
     <div
       {...others}
-      {...{ class: twMerge(CLASSES.slot.icon, local.class) }}
+      {...{ class: twMerge(CLASSES.slot.icon, props.class) }}
       data-slot="empty-icon"
-      data-theme={local.dataTheme}
-      style={local.style}
+      data-theme={props.dataTheme}
+      style={props.style}
       aria-hidden="true"
     >
-      {local.children}
+      {props.children}
     </div>
   );
 };
@@ -88,22 +79,17 @@ const EmptyIcon: Layout<typeof componentRecipe, EmptyIconProps> = () => {
  * Empty Title
  * -----------------------------------------------------------------------------------------------*/
 const EmptyTitle: Layout<typeof componentRecipe, EmptyTitleProps> = () => {
-  const [local, others] = splitProps(props, [
-    "children",
-    "class",
-    "dataTheme",
-    "style",
-  ]);
+  const others = omit(props, "children", "class", "dataTheme", "style");
 
   return (
     <h3
       {...others}
-      {...{ class: twMerge(CLASSES.slot.title, local.class) }}
+      {...{ class: twMerge(CLASSES.slot.title, props.class) }}
       data-slot="empty-title"
-      data-theme={local.dataTheme}
-      style={local.style}
+      data-theme={props.dataTheme}
+      style={props.style}
     >
-      {local.children}
+      {props.children}
     </h3>
   );
 };
@@ -112,22 +98,17 @@ const EmptyTitle: Layout<typeof componentRecipe, EmptyTitleProps> = () => {
  * Empty Description
  * -----------------------------------------------------------------------------------------------*/
 const EmptyDescription: Layout<typeof componentRecipe, EmptyDescriptionProps> = () => {
-  const [local, others] = splitProps(props, [
-    "children",
-    "class",
-    "dataTheme",
-    "style",
-  ]);
+  const others = omit(props, "children", "class", "dataTheme", "style");
 
   return (
     <p
       {...others}
-      {...{ class: twMerge(CLASSES.slot.description, local.class) }}
+      {...{ class: twMerge(CLASSES.slot.description, props.class) }}
       data-slot="empty-description"
-      data-theme={local.dataTheme}
-      style={local.style}
+      data-theme={props.dataTheme}
+      style={props.style}
     >
-      {local.children}
+      {props.children}
     </p>
   );
 };
@@ -136,22 +117,17 @@ const EmptyDescription: Layout<typeof componentRecipe, EmptyDescriptionProps> = 
  * Empty Actions
  * -----------------------------------------------------------------------------------------------*/
 const EmptyActions: Layout<typeof componentRecipe, EmptyActionsProps> = () => {
-  const [local, others] = splitProps(props, [
-    "children",
-    "class",
-    "dataTheme",
-    "style",
-  ]);
+  const others = omit(props, "children", "class", "dataTheme", "style");
 
   return (
     <div
       {...others}
-      {...{ class: twMerge(CLASSES.slot.actions, local.class) }}
+      {...{ class: twMerge(CLASSES.slot.actions, props.class) }}
       data-slot="empty-actions"
-      data-theme={local.dataTheme}
-      style={local.style}
+      data-theme={props.dataTheme}
+      style={props.style}
     >
-      {local.children}
+      {props.children}
     </div>
   );
 };

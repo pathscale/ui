@@ -1,6 +1,7 @@
 import "./Kbd.css";
-import { splitProps, type Component, type JSX } from "solid-js";
-import { twMerge } from "tailwind-merge";
+import type { JSX } from "@solidjs/web";
+import {omit, type Component} from "solid-js";
+import { twMerge } from "../../lib/twMerge";
 
 import type { UIBaseProps } from "../vocabulary";
 import { CLASSES } from "./Kbd.recipe";
@@ -99,15 +100,9 @@ export type KbdContentProps = Omit<JSX.HTMLAttributes<HTMLSpanElement>, "childre
   };
 
 const KbdRoot: Layout<typeof componentRecipe, KbdRootProps> = () => {
-  const [local, others] = splitProps(props, [
-    "class",
-    "dataTheme",
-    "style",
-    "children",
-    "variant",
-  ]);
+  const others = omit(props, "class", "dataTheme", "style", "children", "variant");
 
-  const variant = () => local.variant ?? "default";
+  const variant = () => props.variant ?? "default";
 
   return (
     <kbd
@@ -115,59 +110,48 @@ const KbdRoot: Layout<typeof componentRecipe, KbdRootProps> = () => {
       {...{ class: twMerge(
         CLASSES.base,
         CLASSES.variant[variant()],
-        local.class,
+        props.class,
       ) }}
       data-slot="kbd"
       data-variant={variant()}
-      data-theme={local.dataTheme}
-      style={local.style}
+      data-theme={props.dataTheme}
+      style={props.style}
     >
-      {local.children}
+      {props.children}
     </kbd>
   );
 };
 
 const KbdAbbr: Layout<typeof componentRecipe, KbdAbbrProps> = () => {
-  const [local, others] = splitProps(props, [
-    "class",
-    "dataTheme",
-    "style",
-    "keyValue",
-    "title",
-  ]);
+  const others = omit(props, "class", "dataTheme", "style", "keyValue", "title");
 
   return (
     <abbr
       {...others}
-      {...{ class: twMerge(CLASSES.slot.abbr, local.class) }}
-      title={local.title ?? kbdKeysLabelMap[local.keyValue]}
+      {...{ class: twMerge(CLASSES.slot.abbr, props.class) }}
+      title={props.title ?? kbdKeysLabelMap[props.keyValue]}
       data-slot="kbd-abbr"
-      data-key={local.keyValue}
-      data-theme={local.dataTheme}
-      style={local.style}
+      data-key={props.keyValue}
+      data-theme={props.dataTheme}
+      style={props.style}
     >
-      {kbdKeysMap[local.keyValue]}
+      {kbdKeysMap[props.keyValue]}
     </abbr>
   );
 };
 
 const KbdContent: Layout<typeof componentRecipe, KbdContentProps> = () => {
-  const [local, others] = splitProps(props, [
-    "class",
-    "dataTheme",
-    "style",
-    "children",
-  ]);
+  const others = omit(props, "class", "dataTheme", "style", "children");
 
   return (
     <span
       {...others}
-      {...{ class: twMerge(CLASSES.slot.content, local.class) }}
+      {...{ class: twMerge(CLASSES.slot.content, props.class) }}
       data-slot="kbd-content"
-      data-theme={local.dataTheme}
-      style={local.style}
+      data-theme={props.dataTheme}
+      style={props.style}
     >
-      {local.children}
+      {props.children}
     </span>
   );
 };

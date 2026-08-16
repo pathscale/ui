@@ -1,6 +1,6 @@
-import { type JSX, splitProps } from "solid-js";
-import { Dynamic } from "solid-js/web";
-import { twMerge } from "tailwind-merge";
+import {omit} from "solid-js";
+import { Dynamic, type JSX} from "@solidjs/web";
+import { twMerge } from "../../lib/twMerge";
 
 import type { UIBaseProps } from "../vocabulary";
 import { CLASSES } from "./Avatar.recipe";
@@ -44,17 +44,19 @@ const VoidElementList: ElementType[] = [
 ];
 
 const AvatarGroup: Layout<typeof componentRecipe, AvatarGroupProps> = () => {
-  const [local, others] = splitProps(
+  const others = omit(
     props as AvatarGroupBaseProps & Record<string, unknown>,
-    ["as", "class", "children"],
+    "as",
+    "class",
+    "children",
   );
 
-  const Tag = local.as || "div";
+  const Tag = props.as || "div";
   const classes = () =>
-    twMerge(CLASSES.group.base, CLASSES.group.overlap, local.class);
+    twMerge(CLASSES.group.base, CLASSES.group.overlap, props.class);
 
   // Build an aria-label like "Group of N avatar photos"
-  const ariaLabel = `Group of ${local.children.length} avatar photos`;
+  const ariaLabel = `Group of ${props.children.length} avatar photos`;
 
   if (VoidElementList.includes(Tag)) {
     return (
@@ -74,7 +76,7 @@ const AvatarGroup: Layout<typeof componentRecipe, AvatarGroupProps> = () => {
       aria-label={ariaLabel}
       {...{ class: classes() }}
     >
-      {local.children}
+      {props.children}
     </Dynamic>
   );
 };

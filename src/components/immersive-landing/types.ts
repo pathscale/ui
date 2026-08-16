@@ -1,4 +1,5 @@
-import type { JSX, Accessor } from "solid-js";
+import type {Accessor} from "solid-js";
+import type { JSX } from "@solidjs/web";
 import type { UIBaseProps } from "../vocabulary";
 
 export interface UseImmersiveLandingOptions {

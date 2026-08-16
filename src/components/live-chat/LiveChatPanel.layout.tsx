@@ -1,15 +1,7 @@
 import "./LiveChat.css";
-import {
-  type Component,
-  type JSX,
-  createSignal,
-  createEffect,
-  onCleanup,
-  For,
-  Show,
-  splitProps,
-} from "solid-js";
-import { twMerge } from "tailwind-merge";
+import type { JSX } from "@solidjs/web";
+import {type Component, createSignal, createEffect, onCleanup, For, Show, omit} from "solid-js";
+import { twMerge } from "../../lib/twMerge";
 import Button from "../button";
 import Input from "../input";
 import type { UIBaseProps } from "../vocabulary";
@@ -147,7 +139,8 @@ const formatTime = (timestamp: number) => {
 };
 
 const LiveChatPanel: Layout<typeof componentRecipe, LiveChatPanelProps> = () => {
-  const [local, others] = splitProps(props, [
+  const others = omit(
+    props,
     "onClose",
     "title",
     "placeholder",
@@ -163,7 +156,7 @@ const LiveChatPanel: Layout<typeof componentRecipe, LiveChatPanelProps> = () => 
     "stickToBottomThreshold",
     "class",
     "style",
-  ]);
+  );
 
   const [internalMessages, setInternalMessages] = createSignal<ChatMessage[]>([]);
   const [inputValue, setInputValue] = createSignal("");
@@ -177,23 +170,23 @@ const LiveChatPanel: Layout<typeof componentRecipe, LiveChatPanelProps> = () => 
 
   // Initialize with mock data or provided messages
   createEffect(() => {
-    if (local.mockMode) {
+    if (props.mockMode) {
       setInternalMessages(getMockMessages());
-    } else if (local.messages) {
-      setInternalMessages(local.messages);
+    } else if (props.messages) {
+      setInternalMessages(props.messages);
     }
   });
 
   // Update messages when prop changes (for real-time updates)
   createEffect(() => {
-    if (!local.mockMode && local.messages) {
-      setInternalMessages(local.messages);
+    if (!props.mockMode && props.messages) {
+      setInternalMessages(props.messages);
     }
   });
 
-  const isSending = () => local.isSending ?? sending();
-  const autoScrollOnNewMessage = () => local.autoScrollOnNewMessage ?? true;
-  const autoScrollBehavior = () => local.autoScrollBehavior ?? "instant";
+  const isSending = () => props.isSending ?? sending();
+  const autoScrollOnNewMessage = () => props.autoScrollOnNewMessage ?? true;
+  const autoScrollBehavior = () => props.autoScrollBehavior ?? "instant";
 
   const scrollToBottom = () => {
     if (!scrollContainer) return;
@@ -263,7 +256,7 @@ const LiveChatPanel: Layout<typeof componentRecipe, LiveChatPanelProps> = () => 
     const content = inputValue().trim();
     if (!content || isSending()) return;
 
-    if (local.mockMode) {
+    if (props.mockMode) {
       // In mock mode, just add the message locally
       const userMessage: ChatMessage = {
         messageId: `user-${Date.now()}`,
@@ -284,10 +277,10 @@ const LiveChatPanel: Layout<typeof componentRecipe, LiveChatPanelProps> = () => 
         };
         setInternalMessages((prev) => [...prev, agentMessage]);
       }, 1000);
-    } else if (local.onSendMessage) {
+    } else if (props.onSendMessage) {
       setSending(true);
       try {
-        const response = await local.onSendMessage({ message: content });
+        const response = await props.onSendMessage({ message: content });
         const userMessage: ChatMessage = {
           messageId: response.messageId,
           content,
@@ -311,10 +304,10 @@ const LiveChatPanel: Layout<typeof componentRecipe, LiveChatPanelProps> = () => 
     }
   };
 
-  const classes = () => twMerge(CLASSES.panel.base, local.class);
+  const classes = () => twMerge(CLASSES.panel.base, props.class);
 
   return (
-    <div {...others} {...{ class: classes() }} style={local.style}>
+    <div {...others} {...{ class: classes() }} style={props.style}>
       {/* Header */}
       <div {...{ class: CLASSES.panel.header }}>
         <div {...{ class: CLASSES.panel.headerTitleWrap }}>
@@ -332,12 +325,12 @@ const LiveChatPanel: Layout<typeof componentRecipe, LiveChatPanelProps> = () => 
               d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"
             />
           </svg>
-          <h3 {...{ class: CLASSES.panel.headerTitle }}>{local.title ?? "Chat with us"}</h3>
+          <h3 {...{ class: CLASSES.panel.headerTitle }}>{props.title ?? "Chat with us"}</h3>
         </div>
         <button
-          onClick={local.onClose}
+          onClick={props.onClose}
           {...{ class: CLASSES.panel.closeButton }}
-          aria-label={local.closeLabel ?? "Close chat"}
+          aria-label={props.closeLabel ?? "Close chat"}
         >
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -413,7 +406,7 @@ const LiveChatPanel: Layout<typeof componentRecipe, LiveChatPanelProps> = () => 
 
         <Show when={internalMessages().length === 0}>
           <div {...{ class: CLASSES.panel.empty }}>
-            {local.emptyMessage ?? "No messages yet. Start a conversation!"}
+            {props.emptyMessage ?? "No messages yet. Start a conversation!"}
           </div>
         </Show>
       </div>
@@ -425,7 +418,7 @@ const LiveChatPanel: Layout<typeof componentRecipe, LiveChatPanelProps> = () => 
             value={inputValue()}
             onInput={(e) => setInputValue(e.currentTarget.value)}
             onKeyPress={handleKeyPress}
-            placeholder={local.placeholder ?? "Message support..."}
+            placeholder={props.placeholder ?? "Message support..."}
             disabled={isSending()}
             {...{ class: CLASSES.panel.input }}
           />
@@ -441,7 +434,7 @@ const LiveChatPanel: Layout<typeof componentRecipe, LiveChatPanelProps> = () => 
                 <span {...{ class: CLASSES.panel.spinner }} />
               }
             >
-              {local.sendLabel ?? "Send"}
+              {props.sendLabel ?? "Send"}
             </Show>
           </Button>
       </div>

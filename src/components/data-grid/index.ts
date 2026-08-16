@@ -18,7 +18,7 @@ export type {
   DataGridStriping,
 } from "./DataGrid.generated";
 
-import type { JSX } from "solid-js";
+import type { JSX } from "@solidjs/web";
 import GeneratedDataGrid from "./DataGrid.generated";
 import type { DataGridProps as Props } from "./DataGrid.generated";
 import type { DataGridRow as Row } from "./createDataGrid";

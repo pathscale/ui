@@ -1,6 +1,7 @@
 import "./Switch.css";
-import { Show, createSignal, splitProps, type Component, type JSX } from "solid-js";
-import { twMerge } from "tailwind-merge";
+import type { JSX } from "@solidjs/web";
+import {Show, createSignal, omit, type Component} from "solid-js";
+import { twMerge } from "../../lib/twMerge";
 import type { UIBaseProps, Flavor, State } from "../vocabulary";
 import { CLASSES } from "./Switch.recipe";
 import type { Layout } from "../../lib/layouts";
@@ -32,7 +33,8 @@ export type ToggleProps = Omit<JSX.InputHTMLAttributes<HTMLInputElement>, "type"
   };
 
 const Switch: Layout<typeof componentRecipe, ToggleProps> = () => {
-  const [local, others] = splitProps(props, [
+  const others = omit(
+    props,
     "class",
     "children",
     "description",
@@ -45,19 +47,19 @@ const Switch: Layout<typeof componentRecipe, ToggleProps> = () => {
     "disabled",
     "onChange",
     "dataTheme",
-  ]);
+  );
 
-  const [internalSelected, setInternalSelected] = createSignal(Boolean(local.defaultChecked));
+  const [internalSelected, setInternalSelected] = createSignal(Boolean(props.defaultChecked));
 
-  const isControlled = () => local.checked !== undefined;
-  const isSelected = () => (isControlled() ? Boolean(local.checked) : internalSelected());
-  const isDisabled = () => Boolean((local.state === "disabled")) || Boolean(local.disabled);
-  const color = () => local.flavor ?? "accent";
-  const size = () => local.size ?? "md";
-  const hasContent = () => local.children != null || local.description != null;
+  const isControlled = () => props.checked !== undefined;
+  const isSelected = () => (isControlled() ? Boolean(props.checked) : internalSelected());
+  const isDisabled = () => Boolean((props.state === "disabled")) || Boolean(props.disabled);
+  const color = () => props.flavor ?? "accent";
+  const size = () => props.size ?? "md";
+  const hasContent = () => props.children != null || props.description != null;
 
   const handleChange: JSX.EventHandlerUnion<HTMLInputElement, Event> = (event) => {
-    invokeEventHandler(local.onChange, event);
+    invokeEventHandler(props.onChange, event);
     if (event.defaultPrevented) return;
     if (isDisabled()) return;
 
@@ -73,9 +75,9 @@ const Switch: Layout<typeof componentRecipe, ToggleProps> = () => {
         CLASSES.size[size()],
         (CLASSES.flavor[color() as keyof typeof CLASSES.flavor] ?? `switch--flavor-${color()}`),
         isDisabled() && CLASSES.flag.disabled,
-        local.class,
+        props.class,
       ) }}
-      data-theme={local.dataTheme}
+      data-theme={props.dataTheme}
       data-slot="switch"
       data-selected={isSelected() ? "true" : "false"}
       data-disabled={isDisabled() ? "true" : "false"}
@@ -94,9 +96,9 @@ const Switch: Layout<typeof componentRecipe, ToggleProps> = () => {
 
       <span {...{ class: CLASSES.slot.control }} data-slot="switch-control" aria-hidden="true">
         <span {...{ class: CLASSES.slot.thumb }} data-slot="switch-thumb">
-          <Show when={local.icon}>
+          <Show when={props.icon}>
             <span {...{ class: CLASSES.slot.icon }} data-slot="switch-icon">
-              {local.icon}
+              {props.icon}
             </span>
           </Show>
         </span>
@@ -104,12 +106,12 @@ const Switch: Layout<typeof componentRecipe, ToggleProps> = () => {
 
       <Show when={hasContent()}>
         <span {...{ class: CLASSES.slot.content }} data-slot="switch-content">
-          <Show when={local.children}>
-            <span data-slot="label">{local.children}</span>
+          <Show when={props.children}>
+            <span data-slot="label">{props.children}</span>
           </Show>
-          <Show when={local.description}>
+          <Show when={props.description}>
             <span {...{ class: CLASSES.slot.description }} data-slot="description">
-              {local.description}
+              {props.description}
             </span>
           </Show>
         </span>

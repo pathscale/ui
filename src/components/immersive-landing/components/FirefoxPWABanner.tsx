@@ -1,4 +1,4 @@
-import { type Component, createSignal, onMount, Show } from "solid-js";
+import { type Component, createSignal, onSettled, Show } from "solid-js";
 import { BrowserType, FirefoxPWABannerProps } from "../types";
 import Button from "../../button";
 import Card from "../../card";
@@ -109,7 +109,7 @@ export const FirefoxPWABanner: Component<FirefoxPWABannerProps> = (props) => {
     }
   };
 
-  onMount(() => {
+  onSettled(() => {
     if (checkShouldShow()) {
       // Small delay to not overwhelm user immediately
       setTimeout(() => setShowBanner(true), 2000);

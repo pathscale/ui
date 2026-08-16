@@ -1,6 +1,7 @@
 import "./CloseButton.css";
-import { splitProps, type Component, type JSX } from "solid-js";
-import { twMerge } from "tailwind-merge";
+import type { JSX } from "@solidjs/web";
+import {omit, type Component} from "solid-js";
+import { twMerge } from "../../lib/twMerge";
 
 import type { UIBaseProps, State } from "../vocabulary";
 import { CLASSES } from "./CloseButton.recipe";
@@ -19,7 +20,8 @@ export type CloseButtonProps = Omit<JSX.ButtonHTMLAttributes<HTMLButtonElement>,
   };
 
 const CloseButton: Layout<typeof componentRecipe, CloseButtonProps> = () => {
-  const [local, others] = splitProps(props, [
+  const others = omit(
+    props,
     "children",
     "class",
     "variant",
@@ -31,43 +33,43 @@ const CloseButton: Layout<typeof componentRecipe, CloseButtonProps> = () => {
     "dataTheme",
     "style",
     "aria-label",
-  ]);
+  );
 
-  const variant = () => local.variant ?? "default";
-  const disabled = () => Boolean((local.state === "disabled")) || Boolean(local.isPending);
+  const variant = () => props.variant ?? "default";
+  const disabled = () => Boolean((props.state === "disabled")) || Boolean(props.isPending);
 
   return (
     <button
       {...others}
-      type={local.type ?? "button"}
+      type={props.type ?? "button"}
       aria-label={local["aria-label"] ?? "Close"}
       {...{ class: twMerge(
         CLASSES.base,
         CLASSES.variant[variant()],
-        local.class,
+        props.class,
       ) }}
       data-slot="close-button"
-      data-pending={local.isPending ? "true" : "false"}
-      data-theme={local.dataTheme}
-      style={local.style}
+      data-pending={props.isPending ? "true" : "false"}
+      data-theme={props.dataTheme}
+      style={props.style}
       disabled={disabled()}
       aria-disabled={disabled() ? "true" : "false"}
     >
-      {local.startIcon ? (
+      {props.startIcon ? (
         <span
           {...{ class: twMerge(CLASSES.slot.icon, CLASSES.slot.iconStart) }}
           data-slot="close-button-start-icon"
         >
-          {local.startIcon}
+          {props.startIcon}
         </span>
       ) : null}
-      {local.children}
-      {local.endIcon ? (
+      {props.children}
+      {props.endIcon ? (
         <span
           {...{ class: twMerge(CLASSES.slot.icon, CLASSES.slot.iconEnd) }}
           data-slot="close-button-end-icon"
         >
-          {local.endIcon}
+          {props.endIcon}
         </span>
       ) : null}
     </button>

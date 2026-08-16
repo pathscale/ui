@@ -1,6 +1,7 @@
 import "./ColorField.css";
-import { createEffect, createSignal, splitProps, type Component, type JSX } from "solid-js";
-import { twMerge } from "tailwind-merge";
+import type { JSX } from "@solidjs/web";
+import {createEffect, createSignal, omit, type Component} from "solid-js";
+import { twMerge } from "../../lib/twMerge";
 import { formatColor, parseColor, type ColorFormat } from "../color-wheel-flower/ColorUtils";
 import type { UIBaseProps, State } from "../vocabulary";
 import { CLASSES } from "./ColorField.recipe";
@@ -44,7 +45,8 @@ export type ColorFieldProps = Omit<
   };
 
 const ColorField: Layout<typeof componentRecipe, ColorFieldProps> = () => {
-  const [local, others] = splitProps(props, [
+  const others = omit(
+    props,
     "class",
     "value",
     "defaultValue",
@@ -58,13 +60,13 @@ const ColorField: Layout<typeof componentRecipe, ColorFieldProps> = () => {
     "onBlur",
     "onFocus",
     "onKeyDown",
-  ]);
+  );
 
-  const format = () => local.format ?? "hex";
-  const isDisabled = () => Boolean((local.state === "disabled")) || Boolean(local.disabled);
+  const format = () => props.format ?? "hex";
+  const isDisabled = () => Boolean((props.state === "disabled")) || Boolean(props.disabled);
 
   const initialValue = () => {
-    const seed = local.value ?? local.defaultValue ?? FALLBACK_COLOR;
+    const seed = props.value ?? props.defaultValue ?? FALLBACK_COLOR;
     return normalizeColor(seed, format()) ?? FALLBACK_COLOR;
   };
 
@@ -74,7 +76,7 @@ const ColorField: Layout<typeof componentRecipe, ColorFieldProps> = () => {
   const [isFocused, setIsFocused] = createSignal(false);
 
   createEffect(() => {
-    const nextValue = local.value;
+    const nextValue = props.value;
     const nextFormat = format();
 
     if (isFocused()) return;
@@ -96,7 +98,7 @@ const ColorField: Layout<typeof componentRecipe, ColorFieldProps> = () => {
   const emitIfValid = (value: string) => {
     const normalized = normalizeColor(value, format());
     if (!normalized) return null;
-    local.onChange?.(normalized);
+    props.onChange?.(normalized);
     return normalized;
   };
 
@@ -115,7 +117,7 @@ const ColorField: Layout<typeof componentRecipe, ColorFieldProps> = () => {
   };
 
   const handleInput: JSX.EventHandlerUnion<HTMLInputElement, InputEvent> = (event) => {
-    invokeEventHandler(local.onInput, event);
+    invokeEventHandler(props.onInput, event);
     if (event.defaultPrevented) return;
 
     const raw = event.currentTarget.value;
@@ -132,20 +134,20 @@ const ColorField: Layout<typeof componentRecipe, ColorFieldProps> = () => {
   };
 
   const handleBlur: JSX.EventHandlerUnion<HTMLInputElement, FocusEvent> = (event) => {
-    invokeEventHandler(local.onBlur, event);
+    invokeEventHandler(props.onBlur, event);
     setIsFocused(false);
     if (event.defaultPrevented) return;
     commit();
   };
 
   const handleFocus: JSX.EventHandlerUnion<HTMLInputElement, FocusEvent> = (event) => {
-    invokeEventHandler(local.onFocus, event);
+    invokeEventHandler(props.onFocus, event);
     if (event.defaultPrevented) return;
     setIsFocused(true);
   };
 
   const handleKeyDown: JSX.EventHandlerUnion<HTMLInputElement, KeyboardEvent> = (event) => {
-    invokeEventHandler(local.onKeyDown, event);
+    invokeEventHandler(props.onKeyDown, event);
     if (event.defaultPrevented) return;
 
     if (event.key === "Enter") {
@@ -165,11 +167,11 @@ const ColorField: Layout<typeof componentRecipe, ColorFieldProps> = () => {
     <div
       {...{ class: twMerge(
         CLASSES.base,
-        local.fullWidth && CLASSES.flag.fullWidth,
+        props.fullWidth && CLASSES.flag.fullWidth,
         isDisabled() && CLASSES.flag.disabled,
-        local.class,
+        props.class,
       ) }}
-      data-theme={local.dataTheme}
+      data-theme={props.dataTheme}
       data-slot="color-field"
       data-disabled={isDisabled() ? "true" : "false"}
       data-invalid={isInvalid() ? "true" : "false"}
@@ -179,7 +181,7 @@ const ColorField: Layout<typeof componentRecipe, ColorFieldProps> = () => {
         {...{ class: twMerge(
           CLASSES.slot.group,
           isInvalid() && CLASSES.flag.groupInvalid,
-          local.fullWidth && CLASSES.flag.groupFullWidth,
+          props.fullWidth && CLASSES.flag.groupFullWidth,
         ) }}
         data-slot="color-field-group"
         data-disabled={isDisabled() ? "true" : "false"}
