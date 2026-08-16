@@ -422,7 +422,7 @@ HTML attributes and `UIBaseProps`; that is an assertion, not a gap.
 
 ### InputOTP
 
-`autoFocus children defaultValue disabled inputClassName inputMode issues maxLength name onChange onComplete pattern state value variant`
+`autoFocus children defaultValue disabled inputClassName inputmode issues maxLength name onChange onComplete pattern state value variant`
 
 ### InputOTPGroup
 
@@ -634,7 +634,7 @@ HTML attributes and `UIBaseProps`; that is an assertion, not a gap.
 
 ### TableVirtualSpacerRow
 
-`colSpan height`
+`colspan height`
 
 ### Tabs
 
