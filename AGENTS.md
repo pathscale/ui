@@ -17,7 +17,14 @@ natively, and Claude Code loads it through the `@AGENTS.md` import in
   implementation files.** It is the frontend working agreement: SolidJS/`@pathscale/ui`
   conventions, and a context-efficient workflow. Reading it first keeps
   context small and avoids re-deriving patterns that already exist.
-- **Publishing to npm is irreversible.** A version can never be reused. Check the built artifact before releasing.
+- **Releases are automatic — never run `npm publish` by hand.** Pushing to `master`
+  runs [`.github/workflows/release.yml`](.github/workflows/release.yml), which derives the
+  version from the conventional commits since the last release, bumps `package.json`,
+  publishes through npm Trusted Publishing (OIDC) and tags it. There is no `NPM_TOKEN` in
+  this repository, so a local publish cannot authenticate anyway, and a hand-written
+  version bump only fights the workflow. Publishing is irreversible and a version can
+  never be reused, so if a release looks wrong, read the workflow run before touching
+  anything.
 - **`bun` is the package manager** — its lockfile is authoritative. Don't introduce a second one by running npm/yarn/pnpm here.
 - **Docs describe what is true now.** If you change behaviour, update the README and any affected doc in the same change.
 
@@ -40,29 +47,16 @@ success.
   error is not something you introduced, and saying so requires checking.
 - A build that finishes suspiciously fast was cached, not rebuilt. Force a real rebuild when
   the rebuild is the thing you're verifying.
+- **`bun run lint` rewrites your working tree.** `lint:code` is `biome lint --write`, so it
+  is a fixer, not a check: it will quietly reformat files your change never touched. Run it
+  *before* you stage, check `git diff --name-only` afterwards, and never assume a clean exit
+  means nothing moved. `bun run build` regenerates `*.generated.tsx` from the `*.layout.tsx`
+  sources, so a stray edit there reaches the build even when your own diff looks right.
 
 ## PR discipline
 
 **Always paste the full PR URL** (`https://github.com/pathscale/UI/pull/<n>`), not just the number, so it's
 clickable.
-
-<!-- DORMANT — CI-green gating. Do not follow this rule yet; re-enable it as its own project.
-
-Why it's off: CI here does not reliably attach checks to pull requests, so
-`statusCheckRollup` comes back empty and "wait for green" would teach an agent to wait on
-nothing. Verify per repo before switching this on.
-
-To enable: ensure the workflow runs on `pull_request:`, confirm checks attach to a PR, then
-uncomment the rule below.
-
-    After any push or PR, **check CI and don't call it done until it's green**:
-
-    ```bash
-    gh pr view <number> --repo pathscale/UI --json statusCheckRollup
-    ```
-
-    CI running → wait and recheck. CI failed → read the logs, fix, push, wait for green.
--->
 
 ## Keeping docs honest
 
@@ -80,23 +74,32 @@ to every agent and human; private memory dies with your machine.
 - **Force-push your own branch freely.** Rebasing a feature branch onto a moved
   base, or amending before review, is normal and correct — use
   `--force-with-lease` so you don't clobber someone else's push.
-- **Never force-push the default branch** (`main`/`master`). That is the history
-  everyone else builds on, and it is protected server-side for a reason.
+- **Never force-push the default branch.** That is the history everyone else builds on,
+  and it is protected server-side for a reason.
 - **Never create merge commits — this is a hard ban.** Not locally, not to refresh a
   branch, not to land a pull request. If your branch
   has fallen behind, **rebase** it onto the moved base (`git rebase origin/master`, then
-  `--force-with-lease`). `git merge master` into a feature branch is not an acceptable
-  shortcut: it adds a commit whose only content is the fact that you were behind, and it
+  `--force-with-lease`). `git merge <default-branch>` into a feature branch is not an
+  acceptable shortcut: it adds a commit whose only content is the fact that you were behind, and it
   turns a readable line of work into a diamond. Merge commits are disabled server-side on
   these repositories — that is a backstop, not a licence to rely on it.
 - **Rebase is the default everywhere** — refreshing a branch, and landing a pull request.
   Individual commits carry information: what was tried, in what order, and why. A rebase
   merge keeps that granularity on the base branch, so write commits worth keeping and land
   them intact.
+- **Landing a pull request means rebase, then fast-forward.** `git rebase origin/master`
+  on the branch, then `git merge --ff-only <branch>` on the base, then push. Those two
+  commands are the whole job, so don't reach for `gh pr merge`: its default writes a
+  merge commit. Rebasing rewrites the commit SHAs, so GitHub cannot always detect that
+  a branch landed — close such pull requests explicitly and say why.
+- **Don't delete remote branches by hand.** Once the work is on the default branch it is
+  reaped automatically. Deleting your own local copy is fine.
 - **Squash is acceptable** where it genuinely makes things easier or is the more
   appropriate shape for the branch — one logical change scattered across fixup commits, or
   a long branch whose intermediate states aren't worth preserving. It is a judgement call,
   not a violation. Merging is the only thing that is never allowed.
+- **Delete what is deprecated.** A superseded file, flag, branch or code path gets removed
+  in the change that supersedes it, not left behind with a deprecation note.
 
 ## Guardrails
 
