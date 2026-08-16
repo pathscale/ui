@@ -56,3 +56,11 @@ jobs:
       # declare.
       - name: Consumer Smoke
         run: bun run smoke
+
+      # The same gate the release job runs, moved forward to where it is cheap
+      # to fail. It lived only in Release, so a README documenting a subpath
+      # that no longer shipped passed every check here and stopped the 2.6.0
+      # publish instead. npm forbids replacing a version, so a release that
+      # fails this late costs a version number rather than a re-run.
+      - name: Package Check
+        run: bun run check:package
