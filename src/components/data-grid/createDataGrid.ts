@@ -1,6 +1,6 @@
 import {type Accessor, createMemo, createSignal, getOwner} from "solid-js";
 import type { JSX } from "@solidjs/web";
-import { createStore } from "solid-js";
+import { createStore, flush } from "solid-js";
 
 /**
  * The imperative grid model.
@@ -195,27 +195,56 @@ export function createDataGrid<Row extends DataGridRow = DataGridRow>(
     searchable: options.searchable ?? false,
   };
 
-  const [columnStore, setColumnStore] = createStore<{
+  /*
+   * Every write below is followed by a flush, and that is the model's contract
+   * rather than a workaround.
+   *
+   * Solid 2 batches signal writes and flushes them on a microtask, so a read in
+   * the same tick still sees the previous value. This grid is imperative by
+   * design - `addColumn(...)` then `columns()`, `sortByColumn(...)` then
+   * `sort()` - and its whole API is call-then-read. Deferring that by a tick
+   * would make `grid.addRow(r)` followed by `grid.rows()` return the rows from
+   * before the call, which is not a thing a caller can reason about.
+   *
+   * Wrapped once here so no individual method has to remember.
+   */
+  const settled =
+    <A extends unknown[]>(write: (...args: A) => void) =>
+    (...args: A): void => {
+      write(...args);
+      flush();
+    };
+
+  const [columnStore, writeColumnStore] = createStore<{
     items: DataGridColumn<Row>[];
   }>({
     items: [...(options.columns ?? [])],
   });
-  const [rowStore, setRowStore] = createStore<{ items: Row[] }>({
+  const setColumnStore = settled(writeColumnStore);
+
+  const [rowStore, writeRowStore] = createStore<{ items: Row[] }>({
     items: [...(options.rows ?? [])],
   });
+  const setRowStore = settled(writeRowStore);
 
-  const [sort, writeSort] = createSignal<DataGridSort | null>(
+  const [sort, writeSortSignal] = createSignal<DataGridSort | null>(
     options.sort ?? null,
   );
-  const [queries, setQueries] = createSignal<Record<string, string>>({});
-  const [page, setPage] = createSignal(0);
-  const [pageSize, setPageSize] = createSignal(options.pageSize ?? 0);
-  const [selectedIds, setSelectedIds] = createSignal<ReadonlySet<string>>(
+  const writeSort = settled(writeSortSignal);
+  const [queries, writeQueries] = createSignal<Record<string, string>>({});
+  const setQueries = settled(writeQueries);
+  const [page, writePage] = createSignal(0);
+  const setPage = settled(writePage);
+  const [pageSize, writePageSize] = createSignal(options.pageSize ?? 0);
+  const setPageSize = settled(writePageSize);
+  const [selectedIds, writeSelectedIds] = createSignal<ReadonlySet<string>>(
     new Set<string>(),
   );
-  const [groupBy, setGroupBy] = createSignal<string | null>(
+  const setSelectedIds = settled(writeSelectedIds);
+  const [groupBy, writeGroupBy] = createSignal<string | null>(
     options.groupBy ?? null,
   );
+  const setGroupBy = settled(writeGroupBy);
 
   const selectionMode = () => options.selection ?? "none";
 

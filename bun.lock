@@ -18,6 +18,7 @@
         "@rsbuild/core": "^2.0.9",
         "@rsbuild/plugin-solid": "^1.2.1",
         "@rslib/core": "^0.22.0",
+        "@solidjs/h": "2.0.0-rc.0",
         "@standard-schema/spec": "^1.1.0",
         "@types/bun": "^1.3.14",
         "babel-preset-solid": "^1.9.12",
@@ -221,6 +222,8 @@
     "@rspack/binding-win32-x64-msvc": ["@rspack/binding-win32-x64-msvc@2.0.5", "", { "os": "win32", "cpu": "x64" }, "sha512-vP0BR6fxdPL9cb02HAuZATg/CjR07aecWel3s1vqRwW1aDffgXh9PVmqEKIHTgyaNsNR55kSKNJsB9AcQ8/QrA=="],
 
     "@rspack/core": ["@rspack/core@2.0.5", "", { "dependencies": { "@rspack/binding": "2.0.5" }, "peerDependencies": { "@module-federation/runtime-tools": "^0.24.1 || ^2.0.0", "@swc/helpers": "^0.5.23" }, "optionalPeers": ["@module-federation/runtime-tools", "@swc/helpers"] }, "sha512-9tv2HAnSiTote5WPH2tmz1hLZ1zKbzkiZc1eYp7LP/8jcsiJBuf40ihiWidAgbbuYtJo3kWET6q+qOm5UhNiGA=="],
+
+    "@solidjs/h": ["@solidjs/h@2.0.0-rc.0", "", { "peerDependencies": { "@solidjs/web": "^2.0.0-rc.0" } }, "sha512-APPxIiLi7E0JME1RDkwvkwhjgk5PB6wg81aZ8lqGxb+ljqLgTogCK30E9K3BHJTk/qnWGlvOHbVvmgGf3s2fZQ=="],
 
     "@solidjs/signals": ["@solidjs/signals@2.0.0-rc.0", "", {}, "sha512-oKZSfvsCcKw1uJjOGbUkJ+OqlhXLHtZ+rShSyu9KH0lUH7UUwfMfsKeh81JPiQxDDg4YLhEwI38hg0JkwzTdvA=="],
 

@@ -1,5 +1,5 @@
 import { describe, expect, it, mock } from "bun:test";
-import h from "solid-js/h";
+import h from "@solidjs/h";
 import {
   capturePasswordToggleSnapshot,
   createPasswordFieldInputContract,

@@ -1,5 +1,5 @@
 import { describe, expect, it } from "bun:test";
-import { nextPresenceState } from "../../src/motion/solid/Presence";
+import { nextPresenceState } from "../../src/motion/solid/presenceState";
 
 describe("nextPresenceState", () => {
   it("mounts and shows the child when when=true from cold start", () => {

@@ -2,7 +2,7 @@ import { describe, expect, it } from "bun:test";
 import {
   computeCollapseStyle,
   nextCollapsePhase,
-} from "../../src/motion/solid/AnimatedCollapse";
+} from "../../src/motion/solid/collapseState";
 
 describe("nextCollapsePhase", () => {
   it("transitions closed -> opening when open=true", () => {
