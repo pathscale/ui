@@ -671,7 +671,10 @@ const SelectPopover: Layout<typeof componentRecipe, SelectPopoverProps> = () => 
         data-open={ctx?.open() ? "true" : "false"}
         data-placement={overlayPosition.placement()}
         style={popoverStyle()}
-        on:pointerdown={(event) => {
+        // `on:pointerdown` was the 1.x escape hatch for a non-delegated
+        // listener. 2.0 dropped the namespace; the ordinary prop is what is
+        // left, and the stopPropagation below is what mattered here anyway.
+        onPointerDown={(event) => {
           invokeEventHandler(props.onPointerDown, event);
           if (!event.defaultPrevented) event.stopPropagation();
         }}

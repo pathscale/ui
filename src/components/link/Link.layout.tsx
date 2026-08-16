@@ -24,7 +24,7 @@ export type LinkIconProps = JSX.HTMLAttributes<HTMLSpanElement> & UIBaseProps;
 // `string | false | undefined`: Solid 2 lets any attribute be `false` to mean
 // "remove it", so that is what a `rel` prop can now hold.
 const ensureExternalRel = (value: string | false | undefined) => {
-  const relTokens = new Set((value ?? "").split(/\s+/).filter(Boolean));
+  const relTokens = new Set((typeof value === "string" ? value : "").split(/\s+/).filter(Boolean));
   relTokens.add("noopener");
   relTokens.add("noreferrer");
   return Array.from(relTokens).join(" ");

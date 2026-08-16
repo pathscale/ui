@@ -339,7 +339,7 @@ const InputOTPRoot: Layout<typeof componentRecipe, InputOTPRootProps> = () => {
           type="text"
           inputmode={props.inputmode}
           pattern={props.pattern}
-          maxLength={maxLength()}
+          maxlength={maxLength()}
           value={value()}
           name={props.name}
           disabled={isDisabled()}

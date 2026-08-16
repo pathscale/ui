@@ -187,8 +187,10 @@ const MetalBorder: Layout<typeof componentRecipe, MetalBorderProps> = () => {
       cornerRadius: readCornerRadius(),
     });
 
-    if (glowHandles && glowRef) {
-      glowHandles = resizeGlow(glowHandles, glowRef, {
+    // Bound to a const so the guard narrows across the closure boundary.
+    const glowNode = glowRef;
+    if (glowHandles && glowNode) {
+      glowHandles = resizeGlow(glowHandles, glowNode, {
         ...getGlowOptions(hostRef, kind(), readCornerRadius()),
         scale: 1,
       });
@@ -316,8 +318,10 @@ const MetalBorder: Layout<typeof componentRecipe, MetalBorderProps> = () => {
       kind: kind(),
       cornerRadius: readCornerRadius(),
     });
-    if (glowHandles && glowRef) {
-      glowHandles = resizeGlow(glowHandles, glowRef, {
+    // Bound to a const so the guard narrows across the closure boundary.
+    const glowNode = glowRef;
+    if (glowHandles && glowNode) {
+      glowHandles = resizeGlow(glowHandles, glowNode, {
         ...getGlowOptions(hostRef, kind(), readCornerRadius()),
         scale: 1,
       });
@@ -355,7 +359,10 @@ const MetalBorder: Layout<typeof componentRecipe, MetalBorderProps> = () => {
       data-preset={preset()}
       data-theme={props.dataTheme}
       style={{
-        ...(props.style ?? {}),
+        // `style` is `CSSProperties | string` in 2.0, and a string cannot be
+        // spread. A caller passing one keeps it; the custom property below is
+        // what this component actually needs to set.
+        ...(typeof props.style === "object" && props.style !== null ? props.style : {}),
         "--metal-border-radius": radiusCssValue(),
       }}
     >

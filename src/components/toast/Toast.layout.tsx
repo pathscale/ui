@@ -823,7 +823,8 @@ const ToastProvider: Layout<typeof componentRecipe, ToastProviderProps> = () => 
 
   const providerStyle = createMemo<JSX.CSSProperties>(() => ({
     "--toast-width": widthValue(),
-    ...(props.style ?? {}),
+    // `style` is `CSSProperties | string` in 2.0 and a string cannot be spread.
+    ...(typeof props.style === "object" && props.style !== null ? props.style : {}),
   }));
 
   const handleMouseEnter: JSX.EventHandlerUnion<HTMLDivElement, MouseEvent> = (event) => {

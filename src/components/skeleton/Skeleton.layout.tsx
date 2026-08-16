@@ -47,13 +47,15 @@ export const SkeletonLayout: Layout<typeof skeleton, SkeletonProps> = () => (
       {/*
         `For keyed={false}` is 2.0's `Index`: the row identity is its position,
         which is right here because the items are placeholders with no identity
-        of their own. The index arrives as an accessor rather than a number.
+        of their own. Note the overload flips which argument is reactive - with
+        `keyed={false}` the *item* is the accessor and the index is a plain
+        number, the opposite of the keyed form.
       */}
       <For each={Array.from({ length: local.lines ?? 0 })} keyed={false}>
         {(_, index) => (
           <span
             {...slot.line}
-            data-last={index() === (local.lines ?? 0) - 1 ? "true" : "false"}
+            data-last={index === (local.lines ?? 0) - 1 ? "true" : "false"}
           />
         )}
       </For>

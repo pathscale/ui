@@ -203,10 +203,30 @@ export function createHueShiftStore(storagePrefix: string): HueShiftStore {
   // compute overload, which types the accessor as `never`.
   const initialThemeColor: string | null = getInitial();
   const [themeColor, setThemeColorInternal] = createSignal<string | null>(initialThemeColor);
-  // Read through a plain function so the accessor is not narrowed by whatever
-  // control flow encloses a call site. Inside the MutationObserver callback
-  // below, TypeScript narrowed the captured accessor itself to `never`.
-  const readThemeColor = (): string | null => themeColor();
+  /*
+   * The accessor, held at its declared type.
+   *
+   * TypeScript narrows a captured binding by the control flow around each use,
+   * and inside the `MutationObserver` callback below it narrowed this one to
+   * `never` - not the value, the accessor itself, so calling it stopped
+   * typechecking. Annotating the alias pins what it is and the narrowing has
+   * nothing left to do.
+   */
+  const readThemeColor: () => string | null = themeColor;
+
+  /**
+   * Re-apply the current colour after the theme attribute flips.
+   *
+   * A named function rather than a closure inside the observer: TypeScript
+   * narrows a captured binding by the control flow around each use, and inside
+   * that callback it narrowed the accessor itself to `never`, so calling it
+   * stopped typechecking. Declared out here there is no such flow to narrow by,
+   * and the handler reads better at the call site than an inline arrow.
+   */
+  const reapplyThemeColor = (): void => {
+    const color = readThemeColor();
+    if (color !== null) applyThemeColor(color);
+  };
 
   createEffect(() => {
     const color = themeColor();
@@ -234,12 +254,7 @@ export function createHueShiftStore(storagePrefix: string): HueShiftStore {
           mutation.type === "attributes" &&
           mutation.attributeName === "data-theme"
         ) {
-          requestAnimationFrame(() => {
-            const color = readThemeColor();
-            if (color !== null) {
-              applyThemeColor(color);
-            }
-          });
+          requestAnimationFrame(reapplyThemeColor);
         }
       }
     });
