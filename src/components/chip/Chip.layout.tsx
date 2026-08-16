@@ -1,7 +1,7 @@
 import { clsx } from "clsx";
 import type { JSX } from "@solidjs/web";
 import {Show, omit} from "solid-js";
-import { twMerge } from "tailwind-merge";
+import { twMerge } from "../../lib/twMerge";
 
 import "./Chip.css";
 import { CLASSES } from "./Chip.recipe";

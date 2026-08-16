@@ -1,7 +1,7 @@
 import "./Meter.css";
 import type { JSX } from "@solidjs/web";
 import {createContext, createMemo, omit, useContext, type Accessor, type Component} from "solid-js";
-import { twMerge } from "tailwind-merge";
+import { twMerge } from "../../lib/twMerge";
 
 import type { UIBaseProps, Flavor, State } from "../vocabulary";
 import { CLASSES } from "./Meter.recipe";

@@ -1,6 +1,6 @@
 import {omit} from "solid-js";
 import { Dynamic, type JSX} from "@solidjs/web";
-import { twMerge } from "tailwind-merge";
+import { twMerge } from "../../lib/twMerge";
 
 import type { UIBaseProps } from "../vocabulary";
 import { CLASSES } from "./Avatar.recipe";

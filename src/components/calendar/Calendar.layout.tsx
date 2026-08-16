@@ -1,7 +1,7 @@
 import "./Calendar.css";
 import type { JSX } from "@solidjs/web";
 import {For, Show, createEffect, createMemo, createUniqueId, omit} from "solid-js";
-import { twMerge } from "tailwind-merge";
+import { twMerge } from "../../lib/twMerge";
 
 import {
   DAYS_PER_WEEK,
@@ -435,7 +435,7 @@ const Calendar: Layout<typeof componentRecipe, CalendarProps> = () => {
                             aria-selected={cellState.isAriaSelected ? "true" : "false"}
                             aria-disabled={cellState.isDisabled ? "true" : "false"}
                             disabled={cellState.isDisabled}
-                            tabIndex={cellState.isFocused ? 0 : -1}
+                            tabindex={cellState.isFocused ? 0 : -1}
                             onClick={() => selectDate(date)}
                             onFocus={() => navigation.setFocusedDate(date)}
                             onMouseEnter={() => {

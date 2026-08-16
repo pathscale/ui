@@ -1,5 +1,5 @@
 import { type Component, For, createMemo, omit } from "solid-js";
-import { twMerge } from "tailwind-merge";
+import { twMerge } from "../../lib/twMerge";
 import { clsx } from "clsx";
 import Button from "../button";
 import type { UIBaseProps } from "../vocabulary";
@@ -55,7 +55,7 @@ const SizePicker: Layout<typeof componentRecipe, SizePickerProps> = () => {
             variant={store().size() === preset ? "solid" : "ghost"} flavor={store().size() === preset ? "primary" : "neutral"}
             onClick={() => handleClick(preset)}
             role="radio"
-            aria-checked={store().size() === preset}
+            aria-checked={store().size() === preset ? "true" : "false"}
             aria-label={`Size ${preset}`}
           >
             {preset}

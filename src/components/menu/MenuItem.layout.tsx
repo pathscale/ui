@@ -1,6 +1,6 @@
 import {createContext, createEffect, createMemo, createUniqueId, onCleanup, omit, useContext, type Component, type ParentComponent} from "solid-js";
 import type { JSX } from "@solidjs/web";
-import { twMerge } from "tailwind-merge";
+import { twMerge } from "../../lib/twMerge";
 
 import type { UIBaseProps, State } from "../vocabulary";
 import { MenuContext, type MenuItemVariant, type MenuSelectionMode } from "./context";
@@ -98,7 +98,7 @@ const MenuItemRoot: Layout<typeof componentRecipe, MenuItemRootProps> = () => {
     "onFocus",
     "onBlur",
     "ref",
-    "tabIndex",
+    "tabindex",
     "role",
   );
 
@@ -139,7 +139,7 @@ const MenuItemRoot: Layout<typeof componentRecipe, MenuItemRootProps> = () => {
   };
 
   const resolvedTabIndex = () => {
-    if (props.tabIndex !== undefined) return props.tabIndex;
+    if (props.tabindex !== undefined) return props.tabindex;
     if (!menu) return isDisabled() ? -1 : 0;
     return menu.getItemTabIndex(key(), isDisabled());
   };
@@ -230,7 +230,7 @@ const MenuItemRoot: Layout<typeof componentRecipe, MenuItemRootProps> = () => {
           }
         }}
         role={resolvedRole()}
-        tabIndex={resolvedTabIndex()}
+        tabindex={resolvedTabIndex()}
         aria-selected={selectionMode() === "none" ? undefined : (isSelected() ? "true" : "false")}
         aria-checked={selectionMode() === "none" ? undefined : (isSelected() ? "true" : "false")}
         aria-disabled={isDisabled() ? "true" : undefined}

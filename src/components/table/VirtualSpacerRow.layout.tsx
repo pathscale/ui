@@ -1,5 +1,5 @@
 import { type Component, omit } from "solid-js";
-import { twMerge } from "tailwind-merge";
+import { twMerge } from "../../lib/twMerge";
 import type { UIBaseProps } from "../vocabulary";
 import type { Layout } from "../../lib/layouts";
 import { tableVirtualSpacerRowRecipe } from "./Table.recipe";

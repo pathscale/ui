@@ -1,6 +1,6 @@
 import "./LanguageSwitcher.css";
 import { type Component, For, Show, omit } from "solid-js";
-import { twMerge } from "tailwind-merge";
+import { twMerge } from "../../lib/twMerge";
 import Dropdown, { type DropdownAlign } from "../dropdown";
 import Icon from "../icon";
 import type { UIBaseProps } from "../vocabulary";

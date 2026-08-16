@@ -1,7 +1,7 @@
 import "./Drawer.css";
 import {Show, createEffect, createSignal, createUniqueId, onCleanup, omit, type Component, type ParentComponent} from "solid-js";
 import { Portal, type JSX} from "@solidjs/web";
-import { twMerge } from "tailwind-merge";
+import { twMerge } from "../../lib/twMerge";
 import "../_shared/material.css";
 import type { Material, UIBaseProps } from "../vocabulary";
 import {
@@ -521,7 +521,7 @@ const DrawerDialog: Layout<typeof componentRecipe, DrawerDialogProps> = () => {
     "ref",
     "size",
     "role",
-    "tabIndex",
+    "tabindex",
     "aria-labelledby",
     "aria-describedby",
   );
@@ -558,7 +558,7 @@ const DrawerDialog: Layout<typeof componentRecipe, DrawerDialogProps> = () => {
       aria-modal="true"
       aria-labelledby={local["aria-labelledby"] ?? ctx.labelledBy()}
       aria-describedby={local["aria-describedby"] ?? ctx.describedBy()}
-      tabIndex={props.tabIndex ?? -1}
+      tabindex={props.tabindex ?? -1}
       class={twMerge(
         CLASSES.Dialog.base,
         CLASSES.Dialog.axis[axis()],

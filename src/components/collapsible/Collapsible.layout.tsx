@@ -1,7 +1,7 @@
 import "./Collapsible.css";
 import type { JSX } from "@solidjs/web";
 import {Show, createContext, createMemo, createSignal, createUniqueId, omit, useContext, type Component, type ParentComponent} from "solid-js";
-import { twMerge } from "tailwind-merge";
+import { twMerge } from "../../lib/twMerge";
 
 import type { UIBaseProps, State } from "../vocabulary";
 import { CLASSES } from "./Collapsible.recipe";

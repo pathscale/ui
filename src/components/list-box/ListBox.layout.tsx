@@ -1,7 +1,7 @@
 import "./ListBox.css";
 import type { JSX } from "@solidjs/web";
 import {For, createMemo, createSignal, omit, type Component} from "solid-js";
-import { twMerge } from "tailwind-merge";
+import { twMerge } from "../../lib/twMerge";
 
 import type { UIBaseProps, State } from "../vocabulary";
 import { CLASSES } from "./ListBox.recipe";

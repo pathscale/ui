@@ -1,7 +1,7 @@
 import "./Toast.css";
 import type { JSX } from "@solidjs/web";
 import {For, Show, createContext, createEffect, createMemo, createSignal, onCleanup, omit, useContext, type Accessor, type Component, type ParentComponent} from "solid-js";
-import { twMerge } from "tailwind-merge";
+import { twMerge } from "../../lib/twMerge";
 
 import Button, { type ButtonProps } from "../button";
 import CloseButton, { type CloseButtonProps } from "../close-button";

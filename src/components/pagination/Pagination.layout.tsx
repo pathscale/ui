@@ -1,7 +1,7 @@
 import "./Pagination.css";
 import type { JSX } from "@solidjs/web";
 import {For, omit} from "solid-js";
-import { twMerge } from "tailwind-merge";
+import { twMerge } from "../../lib/twMerge";
 import type { UIBaseProps, State } from "../vocabulary";
 import { CLASSES } from "./Pagination.recipe";
 import type { Layout } from "../../lib/layouts";

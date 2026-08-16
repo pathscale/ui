@@ -1,7 +1,7 @@
 import "./ScrollArea.css";
 import type { JSX } from "@solidjs/web";
 import {createEffect, createMemo, omit} from "solid-js";
-import { twMerge } from "tailwind-merge";
+import { twMerge } from "../../lib/twMerge";
 import type { UIBaseProps } from "../vocabulary";
 import { CLASSES } from "./ScrollArea.recipe";
 import {

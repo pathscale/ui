@@ -1,6 +1,6 @@
 import {Show, omit, type Component} from "solid-js";
 import type { JSX } from "@solidjs/web";
-import { twMerge } from "tailwind-merge";
+import { twMerge } from "../../lib/twMerge";
 
 import type { UIBaseProps } from "../vocabulary";
 import { CLASSES } from "./ListBox.recipe";

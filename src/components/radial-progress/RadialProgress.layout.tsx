@@ -1,7 +1,7 @@
 import "./RadialProgress.css";
 import type { JSX } from "@solidjs/web";
 import {createMemo, omit} from "solid-js";
-import { twMerge } from "tailwind-merge";
+import { twMerge } from "../../lib/twMerge";
 import type { UIBaseProps, Flavor, State } from "../vocabulary";
 import { CLASSES } from "./RadialProgress.recipe";
 import type { Layout } from "../../lib/layouts";

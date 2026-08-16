@@ -1,6 +1,6 @@
 import {Show, omit, type Component} from "solid-js";
 import type { JSX } from "@solidjs/web";
-import { twMerge } from "tailwind-merge";
+import { twMerge } from "../../lib/twMerge";
 
 import Input from "../input";
 import type { InputFieldProps } from "../input";
@@ -94,7 +94,7 @@ const FormField: Layout<typeof componentRecipe, FormFieldProps> = () => {
           form.setFieldValue(props.name, e.currentTarget.value);
         }}
         onBlur={() => form.validateField(props.name, "blur")}
-        aria-invalid={errorMessage() ? true : undefined}
+        aria-invalid={errorMessage() ? "true" : undefined}
         issues={errorMessage() ? [{ code: "invalid", message: String(errorMessage()) }] : undefined}
       />
 

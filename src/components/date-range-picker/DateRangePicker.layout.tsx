@@ -1,7 +1,7 @@
 import "./DateRangePicker.css";
 import type { JSX } from "@solidjs/web";
 import {Show, createEffect, createMemo, createUniqueId, omit} from "solid-js";
-import { twMerge } from "tailwind-merge";
+import { twMerge } from "../../lib/twMerge";
 
 import {
   formatDate,

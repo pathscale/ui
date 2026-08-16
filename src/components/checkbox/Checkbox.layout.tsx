@@ -1,7 +1,7 @@
 import "./Checkbox.css";
 import type { JSX } from "@solidjs/web";
 import {Show, createEffect, createSignal, omit, useContext, type Component} from "solid-js";
-import { twMerge } from "tailwind-merge";
+import { twMerge } from "../../lib/twMerge";
 import { CheckboxGroupContext } from "../checkbox-group/context";
 import type { UIBaseProps, State, Issue } from "../vocabulary";
 import { CLASSES } from "./Checkbox.recipe";
@@ -127,7 +127,7 @@ const Checkbox: Layout<typeof componentRecipe, CheckboxProps> = () => {
         name={name()}
         checked={isSelected()}
         disabled={isDisabled()}
-        aria-invalid={local["aria-invalid"] ?? (isInvalid() ? true : undefined)}
+        aria-invalid={props["aria-invalid"] ?? (isInvalid() ? "true" : undefined)}
         aria-checked={isIndeterminate() ? "mixed" : undefined}
         onChange={handleChange}
       />

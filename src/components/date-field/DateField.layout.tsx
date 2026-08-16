@@ -1,7 +1,7 @@
 import "./DateField.css";
 import type { JSX } from "@solidjs/web";
 import {createContext, createSignal, omit, useContext, type Accessor, type Component, type ParentComponent} from "solid-js";
-import { twMerge } from "tailwind-merge";
+import { twMerge } from "../../lib/twMerge";
 
 import type { UIBaseProps, State, Issue } from "../vocabulary";
 import { CLASSES } from "./DateField.recipe";

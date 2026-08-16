@@ -1,7 +1,7 @@
 import "./ColorPicker.css";
 import type { JSX } from "@solidjs/web";
 import {createContext, createEffect, createMemo, createSignal, omit, useContext, type Accessor, type Component} from "solid-js";
-import { twMerge } from "tailwind-merge";
+import { twMerge } from "../../lib/twMerge";
 import ColorArea, { type ColorAreaProps, type ColorAreaValue } from "../color-area";
 import ColorField, { type ColorFieldProps } from "../color-field";
 import ColorSlider, { type ColorSliderProps, type ColorSliderType } from "../color-slider";

@@ -1,6 +1,6 @@
 import {For, Show, omit} from "solid-js";
 import type { JSX } from "@solidjs/web";
-import { twMerge } from "tailwind-merge";
+import { twMerge } from "../../lib/twMerge";
 import { Empty } from "../empty";
 import Icon from "../icon";
 import type { UIBaseProps } from "../vocabulary";

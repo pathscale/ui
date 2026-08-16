@@ -1,7 +1,7 @@
 import "./Link.css";
 import type { JSX } from "@solidjs/web";
 import {omit, type Component} from "solid-js";
-import { twMerge } from "tailwind-merge";
+import { twMerge } from "../../lib/twMerge";
 
 import type { UIBaseProps, State } from "../vocabulary";
 import { CLASSES } from "./Link.recipe";
@@ -42,7 +42,7 @@ const LinkRoot: Layout<typeof componentRecipe, LinkRootProps> = () => {
     "state",
     "target",
     "rel",
-    "tabIndex",
+    "tabindex",
   );
 
   const variant = () => props.variant ?? "default";
@@ -56,7 +56,7 @@ const LinkRoot: Layout<typeof componentRecipe, LinkRootProps> = () => {
       href={isDisabled() ? undefined : props.href}
       target={isExternal() ? "_blank" : props.target}
       rel={isExternal() ? ensureExternalRel(props.rel) : props.rel}
-      tabIndex={isDisabled() ? -1 : props.tabIndex}
+      tabindex={isDisabled() ? -1 : props.tabindex}
       {...{ class: twMerge(
         CLASSES.base,
         CLASSES.variant[variant()],

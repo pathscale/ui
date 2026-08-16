@@ -1,7 +1,7 @@
 import "./RadioGroup.css";
 import type { JSX } from "@solidjs/web";
 import {Show, createSignal, createUniqueId, omit, type Component} from "solid-js";
-import { twMerge } from "tailwind-merge";
+import { twMerge } from "../../lib/twMerge";
 import { RadioGroupContext, type RadioGroupContextValue } from "./context";
 import type { UIBaseProps, State, Issue } from "../vocabulary";
 import { CLASSES } from "./RadioGroup.recipe";

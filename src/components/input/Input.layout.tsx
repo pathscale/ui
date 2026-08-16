@@ -1,7 +1,7 @@
 import "./Input.css";
 import type { JSX } from "@solidjs/web";
 import {Show, createContext, createUniqueId, omit, useContext, type Accessor, type Component} from "solid-js";
-import { twMerge } from "tailwind-merge";
+import { twMerge } from "../../lib/twMerge";
 import { CLASSES } from "./Input.recipe";
 import type { Layout } from "../../lib/layouts";
 import { componentRecipe } from "./Input.recipe";

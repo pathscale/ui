@@ -121,7 +121,7 @@ export const PasswordFieldLayout: Layout<typeof passwordField, PasswordFieldProp
             onPointerDown={preventPasswordTogglePointerDown}
             onClick={toggleVisibility}
             aria-label={toggleLabel()}
-            aria-pressed={isVisible()}
+            aria-pressed={isVisible() ? "true" : "false"}
             title={toggleLabel()}
           >
             {toggleIcon()}

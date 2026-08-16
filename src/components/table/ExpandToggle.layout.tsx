@@ -1,6 +1,6 @@
 import {type Component, Show, omit} from "solid-js";
 import type { JSX } from "@solidjs/web";
-import { twMerge } from "tailwind-merge";
+import { twMerge } from "../../lib/twMerge";
 import Icon from "../icon";
 import type { UIBaseProps } from "../vocabulary";
 import type { Layout } from "../../lib/layouts";
@@ -56,7 +56,7 @@ const ExpandToggle: Layout<typeof tableExpandToggleRecipe, ExpandToggleProps> = 
       data-theme={props.dataTheme}
       data-slot="table-expand-toggle"
       data-expanded={props.expanded ? "true" : "false"}
-      aria-expanded={props.expanded}
+      aria-expanded={props.expanded ? "true" : "false"}
       aria-label={ariaLabel()}
       disabled={isDisabled()}
       onClick={handleClick}

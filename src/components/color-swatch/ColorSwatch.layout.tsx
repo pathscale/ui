@@ -1,7 +1,7 @@
 import "./ColorSwatch.css";
 import type { JSX } from "@solidjs/web";
 import {omit, useContext, type Component} from "solid-js";
-import { twMerge } from "tailwind-merge";
+import { twMerge } from "../../lib/twMerge";
 import { ColorSwatchPickerContext } from "../color-swatch-picker/ColorSwatchPicker.generated";
 import type { UIBaseProps, State } from "../vocabulary";
 import { CLASSES } from "./ColorSwatch.recipe";
@@ -55,7 +55,7 @@ const ColorSwatch: Layout<typeof componentRecipe, ColorSwatchProps> = () => {
     "dataTheme",
     "aria-label",
     "role",
-    "tabIndex",
+    "tabindex",
   );
 
   const isInsidePicker = () => Boolean(picker);
@@ -112,9 +112,9 @@ const ColorSwatch: Layout<typeof componentRecipe, ColorSwatchProps> = () => {
     };
   };
 
-  const tabIndex = () => {
-    if (props.tabIndex !== undefined) {
-      return props.tabIndex;
+  const tabindex = () => {
+    if (props.tabindex !== undefined) {
+      return props.tabindex;
     }
 
     if (!isInsidePicker()) {
@@ -146,7 +146,7 @@ const ColorSwatch: Layout<typeof componentRecipe, ColorSwatchProps> = () => {
       data-disabled={isDisabled() ? "true" : "false"}
       disabled={isDisabled()}
       role={props.role ?? (isInsidePicker() ? "radio" : "option")}
-      tabIndex={tabIndex()}
+      tabindex={tabindex()}
       aria-label={local["aria-label"] ?? props.colorName ?? `Color ${props.color}`}
       aria-selected={isSelected() ? "true" : "false"}
       aria-checked={isInsidePicker() ? (isSelected() ? "true" : "false") : undefined}

@@ -1,7 +1,7 @@
 import "./DataGrid.css";
 import type { JSX } from "@solidjs/web";
 import {For, Show, omit} from "solid-js";
-import { twMerge } from "tailwind-merge";
+import { twMerge } from "../../lib/twMerge";
 import type { Layout } from "../../lib/layouts";
 import Button from "../button";
 import Checkbox from "../checkbox";

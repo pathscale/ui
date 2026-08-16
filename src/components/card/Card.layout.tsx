@@ -70,7 +70,7 @@ export const CardLayout: Layout<typeof card, CardProps> = () => {
     <div
       {...slot.root}
       role={local.role ?? (local.isInteractive ? "button" : undefined)}
-      tabIndex={local.tabIndex ?? (local.isInteractive ? 0 : undefined)}
+      tabindex={local.tabindex ?? (local.isInteractive ? 0 : undefined)}
       onKeyDown={handleKeyDown}
       data-flavor={local.flavor ?? "neutral"}
       data-material={local.material ?? "solid"}

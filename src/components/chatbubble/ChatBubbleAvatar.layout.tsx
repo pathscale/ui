@@ -1,5 +1,5 @@
 import type { JSX } from "@solidjs/web";
-import { twMerge } from "tailwind-merge";
+import { twMerge } from "../../lib/twMerge";
 import Avatar from "../avatar";
 import type { AvatarRootProps } from "../avatar";
 import type { UIBaseProps } from "../vocabulary";

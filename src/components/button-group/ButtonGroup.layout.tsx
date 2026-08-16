@@ -1,7 +1,7 @@
 import "./ButtonGroup.css";
 import type { JSX } from "@solidjs/web";
 import {omit, type Component, type ParentComponent} from "solid-js";
-import { twMerge } from "tailwind-merge";
+import { twMerge } from "../../lib/twMerge";
 
 import { CLASSES } from "./ButtonGroup.recipe";
 import { ButtonGroupContext } from "./context";

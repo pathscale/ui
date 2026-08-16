@@ -1,7 +1,7 @@
 import "./Breadcrumb.css";
 import type { JSX } from "@solidjs/web";
 import {createContext, omit, useContext, Show, type Component, type ParentComponent} from "solid-js";
-import { twMerge } from "tailwind-merge";
+import { twMerge } from "../../lib/twMerge";
 import type { UIBaseProps } from "../vocabulary";
 import { CLASSES } from "./Breadcrumb.recipe";
 import type { Layout } from "../../lib/layouts";

@@ -1,7 +1,7 @@
 import "./ColorSwatchPicker.css";
 import type { JSX } from "@solidjs/web";
 import {createContext, createMemo, createSignal, omit, type Accessor, type Component} from "solid-js";
-import { twMerge } from "tailwind-merge";
+import { twMerge } from "../../lib/twMerge";
 import type { UIBaseProps, State } from "../vocabulary";
 import { CLASSES } from "./ColorSwatchPicker.recipe";
 import type { Layout } from "../../lib/layouts";

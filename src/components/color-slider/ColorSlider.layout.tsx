@@ -1,7 +1,7 @@
 import "./ColorSlider.css";
 import type { JSX } from "@solidjs/web";
 import {createEffect, createMemo, createSignal, omit, type Component} from "solid-js";
-import { twMerge } from "tailwind-merge";
+import { twMerge } from "../../lib/twMerge";
 import type { UIBaseProps, State } from "../vocabulary";
 import { CLASSES } from "./ColorSlider.recipe";
 import type { Layout } from "../../lib/layouts";
@@ -200,7 +200,7 @@ const ColorSlider: Layout<typeof componentRecipe, ColorSliderProps> = () => {
       data-type={sliderType()}
       data-disabled={isDisabled() ? "true" : "false"}
       role="slider"
-      tabIndex={isDisabled() ? -1 : 0}
+      tabindex={isDisabled() ? -1 : 0}
       aria-label={local["aria-label"] ?? (sliderType() === "alpha" ? "Alpha" : "Hue")}
       aria-valuemin={sliderType() === "alpha" ? 0 : 0}
       aria-valuemax={sliderType() === "alpha" ? 1 : 360}

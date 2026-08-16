@@ -1,7 +1,7 @@
 import "./Separator.css";
 import type { JSX } from "@solidjs/web";
 import {omit, type Component} from "solid-js";
-import { twMerge } from "tailwind-merge";
+import { twMerge } from "../../lib/twMerge";
 
 import type { UIBaseProps } from "../vocabulary";
 import { CLASSES } from "./Separator.recipe";

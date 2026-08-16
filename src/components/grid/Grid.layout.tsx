@@ -1,7 +1,7 @@
 import "./Grid.css";
 import {omit, mergeProps, children as resolveChildren} from "solid-js";
 import { Dynamic, type JSX} from "@solidjs/web";
-import { twMerge } from "tailwind-merge";
+import { twMerge } from "../../lib/twMerge";
 import type { UIBaseProps } from "../vocabulary";
 import clsx from "clsx";
 import type { ResponsiveProp } from "../types";

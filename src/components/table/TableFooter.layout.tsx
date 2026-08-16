@@ -1,6 +1,6 @@
 import {omit} from "solid-js";
 import type { JSX } from "@solidjs/web";
-import { twMerge } from "tailwind-merge";
+import { twMerge } from "../../lib/twMerge";
 import type { Layout } from "../../lib/layouts";
 import type { UIBaseProps } from "../vocabulary";
 import { CLASSES, tableFooterRecipe } from "./Table.recipe";

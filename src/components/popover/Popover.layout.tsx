@@ -1,7 +1,7 @@
 import "./Popover.css";
 import {Show, createEffect, createContext, createMemo, createSignal, onCleanup, onSettled, omit, useContext, type Component, type ParentComponent} from "solid-js";
 import { Portal, type JSX} from "@solidjs/web";
-import { twMerge } from "tailwind-merge";
+import { twMerge } from "../../lib/twMerge";
 
 import "../_shared/material.css";
 import type { Material, UIBaseProps } from "../vocabulary";
@@ -202,7 +202,7 @@ const PopoverTrigger: Layout<typeof componentRecipe, PopoverTriggerProps> = () =
       ref={(el) => ctx.setTriggerRef(el)}
       id={ctx.triggerId()}
       role="button"
-      tabIndex={0}
+      tabindex={0}
       {...{ class: twMerge(CLASSES.slot.trigger, props.class) }}
       data-slot="popover-trigger"
       data-theme={props.dataTheme}

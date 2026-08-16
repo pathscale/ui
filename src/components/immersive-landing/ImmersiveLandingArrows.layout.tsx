@@ -1,6 +1,6 @@
 import {Show, omit} from "solid-js";
 import type { JSX } from "@solidjs/web";
-import { twMerge } from "tailwind-merge";
+import { twMerge } from "../../lib/twMerge";
 import type { ImmersiveLandingArrowsProps } from "./types";
 import { CLASSES } from "./ImmersiveLanding.recipe";
 import type { Layout } from "../../lib/layouts";

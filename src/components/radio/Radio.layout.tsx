@@ -1,7 +1,7 @@
 import "./Radio.css";
 import type { JSX } from "@solidjs/web";
 import {Show, omit, useContext, type Component} from "solid-js";
-import { twMerge } from "tailwind-merge";
+import { twMerge } from "../../lib/twMerge";
 import { RadioGroupContext } from "../radio-group/context";
 import type { UIBaseProps, State, Issue } from "../vocabulary";
 import { CLASSES } from "./Radio.recipe";

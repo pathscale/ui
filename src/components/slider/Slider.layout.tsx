@@ -1,7 +1,7 @@
 import "./Slider.css";
 import type { JSX } from "@solidjs/web";
 import {Show, createSignal, createUniqueId, omit, type Component} from "solid-js";
-import { twMerge } from "tailwind-merge";
+import { twMerge } from "../../lib/twMerge";
 import type { UIBaseProps } from "../vocabulary";
 import { CLASSES } from "./Slider.recipe";
 import type { Layout } from "../../lib/layouts";
@@ -214,7 +214,7 @@ const Slider: Layout<typeof componentRecipe, SliderProps> = () => {
           data-focus-visible={focusVisible() ? "true" : "false"}
           style={{ left: thumbLeft() }}
           role="slider"
-          tabIndex={isDisabled() ? -1 : 0}
+          tabindex={isDisabled() ? -1 : 0}
           aria-valuemin={min()}
           aria-valuemax={max()}
           aria-valuenow={props.value}

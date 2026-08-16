@@ -1,7 +1,7 @@
 import "./DatePicker.css";
 import type { JSX } from "@solidjs/web";
 import {Show, createMemo, createUniqueId, omit} from "solid-js";
-import { twMerge } from "tailwind-merge";
+import { twMerge } from "../../lib/twMerge";
 
 import {
   formatDate,

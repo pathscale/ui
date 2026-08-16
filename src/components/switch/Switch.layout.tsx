@@ -1,7 +1,7 @@
 import "./Switch.css";
 import type { JSX } from "@solidjs/web";
 import {Show, createSignal, omit, type Component} from "solid-js";
-import { twMerge } from "tailwind-merge";
+import { twMerge } from "../../lib/twMerge";
 import type { UIBaseProps, Flavor, State } from "../vocabulary";
 import { CLASSES } from "./Switch.recipe";
 import type { Layout } from "../../lib/layouts";

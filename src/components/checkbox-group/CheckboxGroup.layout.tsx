@@ -1,7 +1,7 @@
 import "./CheckboxGroup.css";
 import type { JSX } from "@solidjs/web";
 import {createSignal, omit, type Component} from "solid-js";
-import { twMerge } from "tailwind-merge";
+import { twMerge } from "../../lib/twMerge";
 
 import type { CheckboxVariant } from "../checkbox";
 import type { UIBaseProps, State, Issue } from "../vocabulary";

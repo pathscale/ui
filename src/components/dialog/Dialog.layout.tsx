@@ -1,7 +1,7 @@
 import "./Dialog.css";
 import {Show, createContext, createEffect, createSignal, createUniqueId, onCleanup, omit, useContext, type Component, type ParentComponent} from "solid-js";
 import { Portal, type JSX} from "@solidjs/web";
-import { twMerge } from "tailwind-merge";
+import { twMerge } from "../../lib/twMerge";
 
 import "../_shared/material.css";
 import type { Material, UIBaseProps } from "../vocabulary";
@@ -505,7 +505,7 @@ const DialogContent: Layout<typeof componentRecipe, DialogContentProps> = () => 
     "shouldCloseOnBackdropClick",
     "material",
     "role",
-    "tabIndex",
+    "tabindex",
     "aria-labelledby",
     "aria-describedby",
   );
@@ -558,7 +558,7 @@ const DialogContent: Layout<typeof componentRecipe, DialogContentProps> = () => 
               aria-modal="true"
               aria-labelledby={local["aria-labelledby"] ?? context.labelledBy()}
               aria-describedby={local["aria-describedby"] ?? context.describedBy()}
-              tabIndex={props.tabIndex ?? -1}
+              tabindex={props.tabindex ?? -1}
               {...{ class: twMerge(
                 CLASSES.Content.base,
                 CLASSES.Content.scroll[scrollBehavior()],

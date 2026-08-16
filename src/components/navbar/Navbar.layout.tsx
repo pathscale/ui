@@ -1,7 +1,7 @@
 import "./Navbar.css";
 import {omit} from "solid-js";
 import { Dynamic, type JSX} from "@solidjs/web";
-import { twMerge } from "tailwind-merge";
+import { twMerge } from "../../lib/twMerge";
 import NavbarSection from "./NavbarSection.generated";
 import NavbarStack from "./NavbarStack.generated";
 import NavbarRow from "./NavbarRow.generated";

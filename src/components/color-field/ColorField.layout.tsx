@@ -1,7 +1,7 @@
 import "./ColorField.css";
 import type { JSX } from "@solidjs/web";
 import {createEffect, createSignal, omit, type Component} from "solid-js";
-import { twMerge } from "tailwind-merge";
+import { twMerge } from "../../lib/twMerge";
 import { formatColor, parseColor, type ColorFormat } from "../color-wheel-flower/ColorUtils";
 import type { UIBaseProps, State } from "../vocabulary";
 import { CLASSES } from "./ColorField.recipe";

@@ -1,7 +1,7 @@
 import "./Table.css";
 import type { JSX } from "@solidjs/web";
 import {omit} from "solid-js";
-import { twMerge } from "tailwind-merge";
+import { twMerge } from "../../lib/twMerge";
 import type { Layout } from "../../lib/layouts";
 import type { UIBaseProps } from "../vocabulary";
 import { TableContext, type TableVariant } from "./Table.context";

@@ -2,7 +2,7 @@ import "./Flex.css";
 import {omit, children as resolveChildren, createMemo} from "solid-js";
 import { Dynamic, type JSX} from "@solidjs/web";
 import clsx from "clsx";
-import { twMerge } from "tailwind-merge";
+import { twMerge } from "../../lib/twMerge";
 import type { UIBaseProps } from "../vocabulary";
 import type { ResponsiveProp } from "../types";
 import { mapResponsiveProp } from "../utils";

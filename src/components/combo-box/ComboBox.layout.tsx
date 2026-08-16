@@ -1,7 +1,7 @@
 import "./ComboBox.css";
 import type { JSX } from "@solidjs/web";
 import {For, Show, createContext, createEffect, createMemo, createSignal, createUniqueId, onCleanup, onSettled, omit, useContext, type Accessor, type Component, type ParentComponent} from "solid-js";
-import { twMerge } from "tailwind-merge";
+import { twMerge } from "../../lib/twMerge";
 
 import type { UIBaseProps, State, Issue } from "../vocabulary";
 import { CLASSES } from "./ComboBox.recipe";

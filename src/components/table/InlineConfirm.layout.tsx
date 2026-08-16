@@ -1,5 +1,5 @@
 import { type Component, omit } from "solid-js";
-import { twMerge } from "tailwind-merge";
+import { twMerge } from "../../lib/twMerge";
 import Button from "../button";
 import type { UIBaseProps } from "../vocabulary";
 import type { Layout } from "../../lib/layouts";

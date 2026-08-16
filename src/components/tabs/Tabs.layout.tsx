@@ -1,7 +1,7 @@
 import "./Tabs.css";
 import type { JSX } from "@solidjs/web";
 import {createContext, createEffect, createMemo, createSignal, createUniqueId, onCleanup, onSettled, omit, useContext, type Accessor} from "solid-js";
-import { twMerge } from "tailwind-merge";
+import { twMerge } from "../../lib/twMerge";
 import { CLASSES } from "./Tabs.recipe";
 import type { Layout } from "../../lib/layouts";
 import { componentRecipe } from "./Tabs.recipe";
@@ -371,11 +371,11 @@ const Tab: Layout<typeof componentRecipe, TabProps> = () => {
       data-slot="tabs-tab"
       data-selected={isSelected() ? "true" : "false"}
       data-disabled={isDisabled() ? "true" : "false"}
-      aria-selected={isSelected()}
+      aria-selected={isSelected() ? "true" : "false"}
       aria-controls={ctx.getPanelId(props.id)}
       aria-disabled={isDisabled()}
       disabled={isDisabled()}
-      tabIndex={isSelected() ? 0 : -1}
+      tabindex={isSelected() ? 0 : -1}
       onKeyDown={handleKeyDown}
       onClick={handleClick}
     >

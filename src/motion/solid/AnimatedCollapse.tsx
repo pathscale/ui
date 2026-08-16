@@ -222,7 +222,7 @@ export const AnimatedCollapse = (props: AnimatedCollapseProps) => {
             ? { opacity: opacity() }
             : {}),
         }}
-        aria-hidden={phase() === "closed" ? true : undefined}
+        aria-hidden={phase() === "closed" ? "true" : undefined}
       >
         <div ref={contentEl} class={props.contentClass}>
           {props.children}

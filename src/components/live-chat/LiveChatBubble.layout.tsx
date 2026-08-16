@@ -1,7 +1,7 @@
 import "./LiveChat.css";
 import type { JSX } from "@solidjs/web";
 import {type Component, createSignal, Show, omit} from "solid-js";
-import { twMerge } from "tailwind-merge";
+import { twMerge } from "../../lib/twMerge";
 import type { UIBaseProps } from "../vocabulary";
 import LiveChatPanel from "./LiveChatPanel.generated";
 import type { LiveChatPanelProps } from "./LiveChatPanel.generated";

@@ -1,7 +1,7 @@
 import type { UIBaseProps } from "../vocabulary";
 import type { JSX } from "@solidjs/web";
 import {type ParentComponent, omit} from "solid-js";
-import { twMerge } from "tailwind-merge";
+import { twMerge } from "../../lib/twMerge";
 import { CLASSES } from "./Footer.recipe";
 import type { Layout } from "../../lib/layouts";
 import { componentRecipe } from "./Footer.recipe";

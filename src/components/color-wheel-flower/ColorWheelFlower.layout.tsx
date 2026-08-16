@@ -2,7 +2,7 @@ import "./ColorWheelFlower.css";
 import type { JSX } from "@solidjs/web";
 import {For, createEffect, createMemo, createSignal, onCleanup, omit} from "solid-js";
 import { clsx } from "clsx";
-import { twMerge } from "tailwind-merge";
+import { twMerge } from "../../lib/twMerge";
 import ColorSwatch from "../color-swatch";
 import ColorSwatchPicker from "../color-swatch-picker";
 import { useColorPickerContext } from "./colorWheelFlowerContext";

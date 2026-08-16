@@ -1,7 +1,7 @@
 import "./Avatar.css";
 import type { JSX } from "@solidjs/web";
 import {createContext, createSignal, omit, useContext, Show, onSettled, type Component, type ParentComponent} from "solid-js";
-import { twMerge } from "tailwind-merge";
+import { twMerge } from "../../lib/twMerge";
 import type { UIBaseProps, Flavor } from "../vocabulary";
 import { CLASSES } from "./Avatar.recipe";
 import type { Layout } from "../../lib/layouts";

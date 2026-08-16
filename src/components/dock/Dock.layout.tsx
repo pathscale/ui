@@ -1,7 +1,7 @@
 import "./Dock.css";
 import {type Component, For, Show, createSignal, onCleanup, onSettled, omit} from "solid-js";
 import { Portal, type JSX} from "@solidjs/web";
-import { twMerge } from "tailwind-merge";
+import { twMerge } from "../../lib/twMerge";
 
 import type { UIBaseProps } from "../vocabulary";
 import { CLASSES } from "./Dock.recipe";

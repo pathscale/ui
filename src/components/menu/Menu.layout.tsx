@@ -1,7 +1,7 @@
 import "./Menu.css";
 import type { JSX } from "@solidjs/web";
 import {For, createMemo, createSignal, omit, type Component} from "solid-js";
-import { twMerge } from "tailwind-merge";
+import { twMerge } from "../../lib/twMerge";
 
 import "../_shared/material.css";
 import type { Material, State, UIBaseProps } from "../vocabulary";

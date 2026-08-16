@@ -1,7 +1,7 @@
 import "./Tooltip.css";
 import {createContext, createEffect, createSignal, onCleanup, omit, useContext, Show, type Component, type ParentComponent} from "solid-js";
 import { Portal, type JSX} from "@solidjs/web";
-import { twMerge } from "tailwind-merge";
+import { twMerge } from "../../lib/twMerge";
 import {
   createOverlayPosition,
   type OverlayPlacement,

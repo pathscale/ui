@@ -1,6 +1,6 @@
 import {type Component, Show, For, createSignal, createMemo, createEffect, onCleanup, omit} from "solid-js";
 import { Portal, type JSX} from "@solidjs/web";
-import { twMerge } from "tailwind-merge";
+import { twMerge } from "../../lib/twMerge";
 import type { ColorValue, ColorPickerContextType, ColorFormat } from "../color-wheel-flower";
 import { ColorPickerContext, ColorWheelFlower } from "../color-wheel-flower";
 import { createColorFromHsl, parseColor } from "../color-wheel-flower/ColorUtils";

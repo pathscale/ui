@@ -1,7 +1,7 @@
 import "./Dropdown.css";
 import {Show, createContext, createEffect, createSignal, createUniqueId, onCleanup, onSettled, omit, useContext, type Accessor} from "solid-js";
 import { Portal, type JSX} from "@solidjs/web";
-import { twMerge } from "tailwind-merge";
+import { twMerge } from "../../lib/twMerge";
 import {
   createOverlayPosition,
   type OverlayPlacement,
@@ -364,7 +364,7 @@ const DropdownTrigger: Layout<typeof componentRecipe, DropdownTriggerProps> = ()
       {...{ class: twMerge(CLASSES.slot.trigger, props.class) }}
       data-slot="dropdown-trigger"
       aria-haspopup="menu"
-      aria-expanded={ctx.open()}
+      aria-expanded={ctx.open() ? "true" : "false"}
       aria-controls={ctx.menuId}
       disabled={isDisabled()}
       onClick={handleClick}
@@ -579,7 +579,7 @@ const DropdownItem: Layout<typeof componentRecipe, DropdownItemProps> = () => {
       data-focused={ctx?.focusedKey() === itemKey ? "true" : "false"}
       aria-disabled={isDisabled() ? "true" : "false"}
       disabled={isDisabled()}
-      tabIndex={ctx ? (ctx.open() && ctx.focusedKey() === itemKey ? 0 : -1) : 0}
+      tabindex={ctx ? (ctx.open() && ctx.focusedKey() === itemKey ? 0 : -1) : 0}
       onClick={handleClick}
       onMouseEnter={handleMouseEnter}
       onFocus={handleFocus}

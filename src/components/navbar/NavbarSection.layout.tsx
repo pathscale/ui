@@ -1,6 +1,6 @@
 import {omit} from "solid-js";
 import type { JSX } from "@solidjs/web";
-import { twMerge } from "tailwind-merge";
+import { twMerge } from "../../lib/twMerge";
 import { CLASSES } from "./Navbar.recipe";
 import type { Layout } from "../../lib/layouts";
 import { componentRecipe } from "./Navbar.recipe";

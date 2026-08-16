@@ -1,6 +1,6 @@
 import {createEffect, createContext, createMemo, createUniqueId, onCleanup, omit, useContext, type Component, type ParentComponent} from "solid-js";
 import type { JSX } from "@solidjs/web";
-import { twMerge } from "tailwind-merge";
+import { twMerge } from "../../lib/twMerge";
 
 import type { UIBaseProps, State } from "../vocabulary";
 import { ListBoxContext, type ListBoxVariant } from "./context";
@@ -81,7 +81,7 @@ const ListBoxItemRoot: Layout<typeof componentRecipe, ListBoxItemRootProps> = ()
     "onFocus",
     "onBlur",
     "ref",
-    "tabIndex",
+    "tabindex",
     "role",
   );
 
@@ -113,7 +113,7 @@ const ListBoxItemRoot: Layout<typeof componentRecipe, ListBoxItemRootProps> = ()
   }));
 
   const resolvedTabIndex = () => {
-    if (props.tabIndex !== undefined) return props.tabIndex;
+    if (props.tabindex !== undefined) return props.tabindex;
     if (!listBox) return isDisabled() ? -1 : 0;
     return listBox.getItemTabIndex(key(), isDisabled());
   };
@@ -199,7 +199,7 @@ const ListBoxItemRoot: Layout<typeof componentRecipe, ListBoxItemRootProps> = ()
           }
         }}
         role={props.role ?? "option"}
-        tabIndex={resolvedTabIndex()}
+        tabindex={resolvedTabIndex()}
         aria-selected={isSelectable() ? (isSelected() ? "true" : "false") : undefined}
         aria-disabled={isDisabled() ? "true" : undefined}
         data-slot="listbox-item"

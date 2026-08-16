@@ -1,6 +1,6 @@
 import {omit, createMemo, children as resolveChildren} from "solid-js";
 import type { JSX } from "@solidjs/web";
-import { twMerge } from "tailwind-merge";
+import { twMerge } from "../../lib/twMerge";
 import type { UIBaseProps, Flavor, Variant } from "../vocabulary";
 import type { ComponentColor } from "../types";
 import { CLASSES } from "./Navbar.recipe";

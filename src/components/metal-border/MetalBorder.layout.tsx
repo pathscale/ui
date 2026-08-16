@@ -1,7 +1,7 @@
 import "./MetalBorder.css";
 import type { JSX } from "@solidjs/web";
 import {createEffect, createSignal, onCleanup, onSettled, omit} from "solid-js";
-import { twMerge } from "tailwind-merge";
+import { twMerge } from "../../lib/twMerge";
 
 import { prefersReducedMotion } from "../../motion/reduced-motion";
 import type { UIBaseProps } from "../vocabulary";

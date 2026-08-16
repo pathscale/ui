@@ -1,6 +1,6 @@
 import {omit, useContext, createMemo} from "solid-js";
 import type { JSX } from "@solidjs/web";
-import { twMerge } from "tailwind-merge";
+import { twMerge } from "../../lib/twMerge";
 import type { ImmersiveLandingPageProps } from "./types";
 import { ImmersiveLandingContext } from "./ImmersiveLandingContext";
 import { CLASSES } from "./ImmersiveLanding.recipe";
@@ -33,7 +33,7 @@ const ImmersiveLandingPage: Layout<typeof componentRecipe, ImmersiveLandingPageP
         "transition-delay": isActive() ? `${fadeDurationMs}ms` : "0ms",
         ...props.style,
       }}
-      aria-hidden={!isActive()}
+      aria-hidden={!isActive() ? "true" : undefined}
       {...others}
     >
       <div {...{ class: CLASSES.page.content }}>{props.children}</div>

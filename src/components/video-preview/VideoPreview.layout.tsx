@@ -1,6 +1,6 @@
 import {type Accessor, type Component, Show, createEffect, onCleanup, omit} from "solid-js";
 import type { JSX } from "@solidjs/web";
-import { twMerge } from "tailwind-merge";
+import { twMerge } from "../../lib/twMerge";
 
 import type { UIBaseProps } from "../vocabulary";
 import { CLASSES } from "./VideoPreview.recipe";

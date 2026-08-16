@@ -1,7 +1,7 @@
 import "./ChatBubble.css";
 import type { JSX } from "@solidjs/web";
 import {createMemo, omit} from "solid-js";
-import { twMerge } from "tailwind-merge";
+import { twMerge } from "../../lib/twMerge";
 
 import type { UIBaseProps } from "../vocabulary";
 import ChatBubbleHeader from "./ChatBubbleHeader.generated";

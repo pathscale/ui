@@ -1,7 +1,7 @@
 import "./Select.css";
 import {createContext, createEffect, createMemo, createSignal, createUniqueId, onCleanup, onSettled, omit, useContext, type Accessor, type Component} from "solid-js";
 import { Portal, type JSX} from "@solidjs/web";
-import { twMerge } from "tailwind-merge";
+import { twMerge } from "../../lib/twMerge";
 import {
   createOverlayPosition,
   type OverlayPlacement,
@@ -541,7 +541,7 @@ const SelectTrigger: Layout<typeof componentRecipe, SelectTriggerProps> = () => 
       data-slot="ui-select-trigger"
       data-open={ctx.open() ? "true" : "false"}
       aria-haspopup="listbox"
-      aria-expanded={ctx.open()}
+      aria-expanded={ctx.open() ? "true" : "false"}
       aria-controls={ctx.listboxId}
       aria-disabled={isDisabled() ? "true" : "false"}
       disabled={isDisabled()}
@@ -868,7 +868,7 @@ const SelectOption: Layout<typeof componentRecipe, SelectOptionProps> = () => {
       data-focused={isFocused() ? "true" : "false"}
       data-disabled={isDisabled() ? "true" : "false"}
       role="option"
-      aria-selected={isSelected()}
+      aria-selected={isSelected() ? "true" : "false"}
       aria-disabled={isDisabled() ? "true" : "false"}
       disabled={isDisabled()}
       tabindex={-1}

@@ -1,7 +1,7 @@
 import "./ColorArea.css";
 import type { JSX } from "@solidjs/web";
 import {createSignal, omit, type Component} from "solid-js";
-import { twMerge } from "tailwind-merge";
+import { twMerge } from "../../lib/twMerge";
 import type { UIBaseProps, State } from "../vocabulary";
 import { CLASSES } from "./ColorArea.recipe";
 import type { Layout } from "../../lib/layouts";
@@ -189,7 +189,7 @@ const ColorArea: Layout<typeof componentRecipe, ColorAreaProps> = () => {
       data-theme={props.dataTheme}
       data-slot="color-area"
       data-disabled={isDisabled() ? "true" : "false"}
-      tabIndex={isDisabled() ? -1 : 0}
+      tabindex={isDisabled() ? -1 : 0}
       role="slider"
       aria-label={local["aria-label"] ?? "Color area"}
       aria-valuemin={0}

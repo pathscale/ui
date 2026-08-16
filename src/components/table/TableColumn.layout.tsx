@@ -1,6 +1,6 @@
 import {omit} from "solid-js";
 import type { JSX } from "@solidjs/web";
-import { twMerge } from "tailwind-merge";
+import { twMerge } from "../../lib/twMerge";
 import type { Layout } from "../../lib/layouts";
 import type { UIBaseProps } from "../vocabulary";
 import {
@@ -33,7 +33,7 @@ const TableColumn: Layout<typeof tableColumnRecipe, TableColumnProps> = () => {
     "dataTheme",
     "onClick",
     "onKeyDown",
-    "tabIndex",
+    "tabindex",
   );
 
   const isSortable = () => Boolean(props.allowsSorting);
@@ -92,7 +92,7 @@ const TableColumn: Layout<typeof tableColumnRecipe, TableColumnProps> = () => {
       data-allows-sorting={isSortable() ? "true" : undefined}
       data-sort-direction={sortDirection()}
       aria-sort={isSortable() ? (sortDirection() ?? "none") : undefined}
-      tabIndex={isSortable() ? (props.tabIndex ?? 0) : props.tabIndex}
+      tabindex={isSortable() ? (props.tabindex ?? 0) : props.tabindex}
       onClick={handleClick}
       onKeyDown={handleKeyDown}
       {...rest}
