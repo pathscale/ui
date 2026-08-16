@@ -1,4 +1,4 @@
-import { createSignal, createEffect, onMount, onCleanup } from "solid-js";
+import { createSignal, createEffect, onSettled, onCleanup } from "solid-js";
 import type { UseImmersiveLandingOptions, UseImmersiveLandingReturn } from "./types";
 
 export function useImmersiveLanding(options: UseImmersiveLandingOptions): UseImmersiveLandingReturn {
@@ -87,7 +87,7 @@ export function useImmersiveLanding(options: UseImmersiveLandingOptions): UseImm
     }
   };
 
-  onMount(() => {
+  onSettled(() => {
     if (typeof window === "undefined") return;
     if (!enableScrollNavigation) return;
 

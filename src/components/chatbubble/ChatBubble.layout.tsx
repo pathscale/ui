@@ -1,5 +1,6 @@
 import "./ChatBubble.css";
-import { createMemo, type JSX, splitProps } from "solid-js";
+import type { JSX } from "@solidjs/web";
+import {createMemo, omit} from "solid-js";
 import { twMerge } from "tailwind-merge";
 
 import type { UIBaseProps } from "../vocabulary";
@@ -18,27 +19,22 @@ export type ChatBubbleProps = UIBaseProps &
   };
 
 const ChatBubble: Layout<typeof componentRecipe, ChatBubbleProps> = () => {
-  const [local, others] = splitProps(props, [
-    "end",
-    "dataTheme",
-    "class",
-    "style",
-  ]);
+  const others = omit(props, "end", "dataTheme", "class", "style");
 
   const classes = createMemo(() =>
     twMerge(
       CLASSES.base,
-      local.end ? CLASSES.align.end : CLASSES.align.start,
-      local.class,
+      props.end ? CLASSES.align.end : CLASSES.align.start,
+      props.class,
     ),
   );
 
   return (
     <div
       {...others}
-      data-theme={local.dataTheme}
+      data-theme={props.dataTheme}
       {...{ class: classes() }}
-      style={local.style}
+      style={props.style}
     >
       {others.children}
     </div>

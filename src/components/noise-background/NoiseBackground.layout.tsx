@@ -1,5 +1,6 @@
 import "./NoiseBackground.css";
-import { type JSX, onCleanup, onMount, splitProps } from "solid-js";
+import type { JSX } from "@solidjs/web";
+import {onCleanup, onSettled, omit} from "solid-js";
 import { twMerge } from "tailwind-merge";
 
 import type { UIBaseProps } from "../vocabulary";
@@ -56,7 +57,8 @@ function createSpring(initial: number, stiffness = 100, damping = 30) {
 /* ------------------------------------------------------------------ */
 
 const NoiseBackground: Layout<typeof componentRecipe, NoiseBackgroundProps> = () => {
-  const [local, others] = splitProps(rawProps, [
+  const others = omit(
+    rawProps,
     "children",
     "class",
     "containerClass",
@@ -70,7 +72,7 @@ const NoiseBackground: Layout<typeof componentRecipe, NoiseBackgroundProps> = ()
     "showNoise",
     "dataTheme",
     "style",
-  ]);
+  );
 
   let containerRef: HTMLDivElement | undefined;
   let layer0: HTMLDivElement | undefined;
@@ -79,15 +81,15 @@ const NoiseBackground: Layout<typeof componentRecipe, NoiseBackgroundProps> = ()
   let stripEl: HTMLDivElement | undefined;
 
   const colors = () =>
-    local.gradientColors ?? [
+    rawProps.gradientColors ?? [
       "rgb(255, 100, 150)",
       "rgb(100, 150, 255)",
       "rgb(255, 200, 100)",
     ];
-  const noiseIntensity = () => local.noiseIntensity ?? 0.2;
-  const speed = () => local.speed ?? 0.1;
-  const animating = () => local.animating ?? true;
-  const borderRadius = () => local.borderRadius ?? "var(--radius-box, 1rem)";
+  const noiseIntensity = () => rawProps.noiseIntensity ?? 0.2;
+  const speed = () => rawProps.speed ?? 0.1;
+  const animating = () => rawProps.animating ?? true;
+  const borderRadius = () => rawProps.borderRadius ?? "var(--radius-box, 1rem)";
 
   const springX = createSpring(0);
   const springY = createSpring(0);
@@ -104,7 +106,7 @@ const NoiseBackground: Layout<typeof componentRecipe, NoiseBackgroundProps> = ()
     return { x: Math.cos(angle) * mag, y: Math.sin(angle) * mag };
   };
 
-  onMount(() => {
+  onSettled(() => {
     if (!containerRef) return;
     const initRect = containerRef.getBoundingClientRect();
     const cx = initRect.width / 2;
@@ -207,12 +209,12 @@ const NoiseBackground: Layout<typeof componentRecipe, NoiseBackgroundProps> = ()
   const containerClasses = () =>
     twMerge(
       CLASSES.base,
-      (local.backdropBlur ?? false) && CLASSES.flag.backdropBlur,
-      local.containerClass,
+      (rawProps.backdropBlur ?? false) && CLASSES.flag.backdropBlur,
+      rawProps.containerClass,
     );
 
   const contentClasses = () =>
-    twMerge(CLASSES.slot.content, local.class);
+    twMerge(CLASSES.slot.content, rawProps.class);
 
   return (
     <div
@@ -221,9 +223,9 @@ const NoiseBackground: Layout<typeof componentRecipe, NoiseBackgroundProps> = ()
       style={{
         "--noise-opacity": noiseIntensity(),
         "border-radius": borderRadius(),
-        ...(typeof local.style === "object" ? local.style : {}),
+        ...(typeof rawProps.style === "object" ? rawProps.style : {}),
       }}
-      data-theme={local.dataTheme}
+      data-theme={rawProps.dataTheme}
       {...others}
     >
       {/* Moving gradient layers */}
@@ -242,10 +244,10 @@ const NoiseBackground: Layout<typeof componentRecipe, NoiseBackgroundProps> = ()
       />
 
       {/* Static noise pattern (opt-in) */}
-      {(local.showNoise ?? false) && (
+      {(rawProps.showNoise ?? false) && (
         <div {...{ class: CLASSES.slot.noiseWrap }}>
           <img
-            src={local.noiseSrc ?? "/noise.webp"}
+            src={rawProps.noiseSrc ?? "/noise.webp"}
             alt=""
             {...{ class: CLASSES.slot.noiseImage }}
             style={{
@@ -256,7 +258,7 @@ const NoiseBackground: Layout<typeof componentRecipe, NoiseBackgroundProps> = ()
       )}
 
       {/* Content */}
-      <div {...{ class: contentClasses() }}>{local.children}</div>
+      <div {...{ class: contentClasses() }}>{rawProps.children}</div>
     </div>
   );
 };

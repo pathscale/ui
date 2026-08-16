@@ -1,5 +1,6 @@
 import "./RadialProgress.css";
-import { createMemo, splitProps, type JSX } from "solid-js";
+import type { JSX } from "@solidjs/web";
+import {createMemo, omit} from "solid-js";
 import { twMerge } from "tailwind-merge";
 import type { UIBaseProps, Flavor, State } from "../vocabulary";
 import { CLASSES } from "./RadialProgress.recipe";
@@ -28,7 +29,8 @@ const RADIUS = CENTER - STROKE_WIDTH / 2;
 const CIRCUMFERENCE = 2 * Math.PI * RADIUS;
 
 const RadialProgress: Layout<typeof componentRecipe, RadialProgressProps> = () => {
-  const [local, others] = splitProps(props, [
+  const others = omit(
+    props,
     "value",
     "minValue",
     "maxValue",
@@ -41,22 +43,22 @@ const RadialProgress: Layout<typeof componentRecipe, RadialProgressProps> = () =
     "class",
     "dataTheme",
     "style",
-  ]);
+  );
 
-  const min = () => local.minValue ?? 0;
-  const max = () => local.maxValue ?? 100;
-  const isIndeterminate = () => Boolean(local.isIndeterminate) || local.value === undefined;
+  const min = () => props.minValue ?? 0;
+  const max = () => props.maxValue ?? 100;
+  const isIndeterminate = () => Boolean(props.isIndeterminate) || props.value === undefined;
 
   const percentage = createMemo(() => {
     if (isIndeterminate()) return 0;
-    const clamped = Math.min(Math.max(local.value ?? 0, min()), max());
+    const clamped = Math.min(Math.max(props.value ?? 0, min()), max());
     return ((clamped - min()) / (max() - min())) * 100;
   });
 
   const valueText = createMemo(() => {
     if (isIndeterminate()) return "";
-    if (local.formatValue && local.value !== undefined) {
-      return local.formatValue(local.value);
+    if (props.formatValue && props.value !== undefined) {
+      return props.formatValue(props.value);
     }
     return `${Math.round(percentage())}%`;
   });
@@ -68,11 +70,11 @@ const RadialProgress: Layout<typeof componentRecipe, RadialProgressProps> = () =
   const classes = createMemo(() =>
     twMerge(
       CLASSES.base,
-      CLASSES.size[local.size ?? "md"],
-      (CLASSES.flavor[(local.flavor ?? "accent") as keyof typeof CLASSES.flavor] ?? `radial-progress--flavor-${local.flavor ?? "accent"}`),
+      CLASSES.size[props.size ?? "md"],
+      (CLASSES.flavor[(props.flavor ?? "accent") as keyof typeof CLASSES.flavor] ?? `radial-progress--flavor-${props.flavor ?? "accent"}`),
       isIndeterminate() && CLASSES.state.indeterminate,
-      (local.state === "disabled") && CLASSES.state.disabled,
-      local.class,
+      (props.state === "disabled") && CLASSES.state.disabled,
+      props.class,
     ),
   );
 
@@ -81,15 +83,15 @@ const RadialProgress: Layout<typeof componentRecipe, RadialProgressProps> = () =
       {...others}
       role="progressbar"
       {...{ class: classes() }}
-      data-theme={local.dataTheme}
-      style={local.style}
-      aria-valuenow={isIndeterminate() ? undefined : local.value}
+      data-theme={props.dataTheme}
+      style={props.style}
+      aria-valuenow={isIndeterminate() ? undefined : props.value}
       aria-valuemin={min()}
       aria-valuemax={max()}
       aria-valuetext={isIndeterminate() ? undefined : valueText()}
-      aria-label={local.label}
-      aria-disabled={(local.state === "disabled") ? "true" : undefined}
-      data-disabled={(local.state === "disabled") ? "true" : undefined}
+      aria-label={props.label}
+      aria-disabled={(props.state === "disabled") ? "true" : undefined}
+      data-disabled={(props.state === "disabled") ? "true" : undefined}
     >
       <svg
         {...{ class: CLASSES.svg }}

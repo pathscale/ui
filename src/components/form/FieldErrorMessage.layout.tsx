@@ -1,4 +1,5 @@
-import { Show, type Component, type JSX } from "solid-js";
+import {Show, type Component} from "solid-js";
+import type { JSX } from "@solidjs/web";
 import { twMerge } from "tailwind-merge";
 import type { Layout } from "../../lib/layouts";
 import { componentRecipe } from "./Form.recipe";

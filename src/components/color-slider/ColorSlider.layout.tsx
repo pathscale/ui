@@ -1,5 +1,6 @@
 import "./ColorSlider.css";
-import { createEffect, createMemo, createSignal, splitProps, type Component, type JSX } from "solid-js";
+import type { JSX } from "@solidjs/web";
+import {createEffect, createMemo, createSignal, omit, type Component} from "solid-js";
 import { twMerge } from "tailwind-merge";
 import type { UIBaseProps, State } from "../vocabulary";
 import { CLASSES } from "./ColorSlider.recipe";
@@ -45,7 +46,8 @@ const fromPercent = (type: ColorSliderType, percent: number) => {
 };
 
 const ColorSlider: Layout<typeof componentRecipe, ColorSliderProps> = () => {
-  const [local, others] = splitProps(props, [
+  const others = omit(
+    props,
     "class",
     "value",
     "defaultValue",
@@ -55,25 +57,25 @@ const ColorSlider: Layout<typeof componentRecipe, ColorSliderProps> = () => {
     "style",
     "dataTheme",
     "aria-label",
-  ]);
+  );
 
-  const sliderType = () => local.type ?? "hue";
-  const isDisabled = () => Boolean((local.state === "disabled"));
+  const sliderType = () => props.type ?? "hue";
+  const isDisabled = () => Boolean((props.state === "disabled"));
 
   const initialValue = () => {
     const fallback = sliderType() === "alpha" ? 1 : 0;
-    return normalizeValue(sliderType(), local.value ?? local.defaultValue ?? fallback);
+    return normalizeValue(sliderType(), props.value ?? props.defaultValue ?? fallback);
   };
 
   const [internalValue, setInternalValue] = createSignal(initialValue());
   const [isDragging, setIsDragging] = createSignal(false);
   let sliderRef: HTMLDivElement | undefined;
 
-  const isControlled = () => local.value !== undefined;
+  const isControlled = () => props.value !== undefined;
 
   createEffect(() => {
     const nextType = sliderType();
-    const nextValue = local.value;
+    const nextValue = props.value;
 
     if (nextValue === undefined) {
       if (!isControlled()) {
@@ -87,7 +89,7 @@ const ColorSlider: Layout<typeof componentRecipe, ColorSliderProps> = () => {
 
   const currentValue = createMemo(() => {
     if (isControlled()) {
-      return normalizeValue(sliderType(), local.value ?? internalValue());
+      return normalizeValue(sliderType(), props.value ?? internalValue());
     }
 
     return normalizeValue(sliderType(), internalValue());
@@ -98,7 +100,7 @@ const ColorSlider: Layout<typeof componentRecipe, ColorSliderProps> = () => {
     if (!isControlled()) {
       setInternalValue(normalized);
     }
-    local.onChange?.(normalized);
+    props.onChange?.(normalized);
   };
 
   const updateFromPointer = (clientX: number) => {
@@ -156,7 +158,7 @@ const ColorSlider: Layout<typeof componentRecipe, ColorSliderProps> = () => {
   const percent = () => toPercent(sliderType(), currentValue());
 
   const sliderStyle = (): JSX.CSSProperties => {
-    const userStyle = local.style as JSX.CSSProperties | undefined;
+    const userStyle = props.style as JSX.CSSProperties | undefined;
 
     if (sliderType() === "hue") {
       return {
@@ -191,9 +193,9 @@ const ColorSlider: Layout<typeof componentRecipe, ColorSliderProps> = () => {
         CLASSES.base,
         sliderType() === "alpha" && CLASSES.flag.alpha,
         isDragging() && CLASSES.flag.dragging,
-        local.class,
+        props.class,
       ) }}
-      data-theme={local.dataTheme}
+      data-theme={props.dataTheme}
       data-slot="color-slider"
       data-type={sliderType()}
       data-disabled={isDisabled() ? "true" : "false"}

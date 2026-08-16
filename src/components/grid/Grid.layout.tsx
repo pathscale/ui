@@ -1,11 +1,6 @@
 import "./Grid.css";
-import {
-  splitProps,
-  type JSX,
-  mergeProps,
-  children as resolveChildren,
-} from "solid-js";
-import { Dynamic } from "solid-js/web";
+import {omit, mergeProps, children as resolveChildren} from "solid-js";
+import { Dynamic, type JSX} from "@solidjs/web";
 import { twMerge } from "tailwind-merge";
 import type { UIBaseProps } from "../vocabulary";
 import clsx from "clsx";
@@ -89,7 +84,8 @@ export type GridProps = UIBaseProps &
 
 const Grid: Layout<typeof componentRecipe, GridProps> = () => {
   const merged = mergeProps({ as: "div" }, props);
-  const [local, rest] = splitProps(merged, [
+  const rest = omit(
+    merged,
     "as",
     "class",
     "children",
@@ -99,24 +95,24 @@ const Grid: Layout<typeof componentRecipe, GridProps> = () => {
     "gap",
     "autoCols",
     "autoRows",
-  ]);
+  );
 
-  const resolvedChildren = resolveChildren(() => local.children);
+  const resolvedChildren = resolveChildren(() => merged.children);
 
   const classes = clsx(
     CLASSES.base,
-    mapResponsiveProp(local.cols, CLASSES.cols),
-    mapResponsiveProp(local.rows, CLASSES.rows),
-    mapResponsiveProp(local.flow, CLASSES.flow),
-    mapResponsiveProp(local.gap, CLASSES.gap),
-    mapResponsiveProp(local.autoCols, CLASSES.autoCols),
-    mapResponsiveProp(local.autoRows, CLASSES.autoRows),
-    local.class,
+    mapResponsiveProp(merged.cols, CLASSES.cols),
+    mapResponsiveProp(merged.rows, CLASSES.rows),
+    mapResponsiveProp(merged.flow, CLASSES.flow),
+    mapResponsiveProp(merged.gap, CLASSES.gap),
+    mapResponsiveProp(merged.autoCols, CLASSES.autoCols),
+    mapResponsiveProp(merged.autoRows, CLASSES.autoRows),
+    merged.class,
   );
 
   return (
     <Dynamic
-      component={local.as}
+      component={merged.as}
       {...{ class: twMerge(classes) }}
       {...rest}
     >

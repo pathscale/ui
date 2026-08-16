@@ -1,5 +1,6 @@
 import "./Icon.css";
-import { Show, type JSX } from "solid-js";
+import type { JSX } from "@solidjs/web";
+import {Show} from "solid-js";
 import type { Layout } from "../../lib/layouts";
 import type { Flavor, UIBaseProps } from "../vocabulary";
 import { icon } from "./Icon.recipe";

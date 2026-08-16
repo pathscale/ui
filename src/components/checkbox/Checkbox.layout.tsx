@@ -1,5 +1,6 @@
 import "./Checkbox.css";
-import { Show, createEffect, createSignal, splitProps, useContext, type Component, type JSX } from "solid-js";
+import type { JSX } from "@solidjs/web";
+import {Show, createEffect, createSignal, omit, useContext, type Component} from "solid-js";
 import { twMerge } from "tailwind-merge";
 import { CheckboxGroupContext } from "../checkbox-group/context";
 import type { UIBaseProps, State, Issue } from "../vocabulary";
@@ -37,7 +38,8 @@ const Checkbox: Layout<typeof componentRecipe, CheckboxProps> = () => {
   let inputRef: HTMLInputElement | undefined;
   const group = useContext(CheckboxGroupContext);
 
-  const [local, others] = splitProps(props, [
+  const others = omit(
+    props,
     "class",
     "children",
     "description",
@@ -54,27 +56,27 @@ const Checkbox: Layout<typeof componentRecipe, CheckboxProps> = () => {
     "onChange",
     "dataTheme",
     "aria-invalid",
-  ]);
+  );
 
-  const [internalSelected, setInternalSelected] = createSignal(Boolean(local.defaultChecked));
+  const [internalSelected, setInternalSelected] = createSignal(Boolean(props.defaultChecked));
 
-  const isControlled = () => local.checked !== undefined;
-  const optionValue = () => (local.value != null ? String(local.value) : undefined);
+  const isControlled = () => props.checked !== undefined;
+  const optionValue = () => (props.value != null ? String(props.value) : undefined);
   const isGrouped = () => Boolean(group && optionValue() !== undefined);
   const isSelected = () =>
     isGrouped()
       ? Boolean(group?.value().includes(optionValue() as string))
       : isControlled()
-      ? Boolean(local.checked)
+      ? Boolean(props.checked)
       : internalSelected();
   const isDisabled = () =>
-    Boolean((local.state === "disabled")) || Boolean(local.disabled) || Boolean(group?.isDisabled());
+    Boolean((props.state === "disabled")) || Boolean(props.disabled) || Boolean(group?.isDisabled());
   const isInvalid = () =>
-    Boolean((resolveState(local.state, local.issues) === "invalid")) || Boolean(local["aria-invalid"]) || Boolean(group?.isInvalid());
-  const isIndeterminate = () => Boolean(local.isIndeterminate) || Boolean(local.indeterminate);
-  const variant = () => local.variant ?? group?.variant() ?? "primary";
-  const name = () => local.name ?? group?.name();
-  const hasContent = () => local.children != null || local.description != null;
+    Boolean((resolveState(props.state, props.issues) === "invalid")) || Boolean(local["aria-invalid"]) || Boolean(group?.isInvalid());
+  const isIndeterminate = () => Boolean(props.isIndeterminate) || Boolean(props.indeterminate);
+  const variant = () => props.variant ?? group?.variant() ?? "primary";
+  const name = () => props.name ?? group?.name();
+  const hasContent = () => props.children != null || props.description != null;
 
   createEffect(() => {
     if (!inputRef) return;
@@ -82,7 +84,7 @@ const Checkbox: Layout<typeof componentRecipe, CheckboxProps> = () => {
   });
 
   const handleChange: JSX.EventHandlerUnion<HTMLInputElement, Event> = (event) => {
-    invokeEventHandler(local.onChange, event);
+    invokeEventHandler(props.onChange, event);
     if (event.defaultPrevented) return;
     if (isDisabled()) return;
 
@@ -102,15 +104,15 @@ const Checkbox: Layout<typeof componentRecipe, CheckboxProps> = () => {
         CLASSES.base,
         CLASSES.variant[variant()],
         isDisabled() && CLASSES.flag.disabled,
-        local.class,
+        props.class,
       ) }}
-      data-theme={local.dataTheme}
+      data-theme={props.dataTheme}
       data-slot="checkbox"
       data-selected={isSelected() ? "true" : "false"}
       data-indeterminate={isIndeterminate() ? "true" : "false"}
       data-disabled={isDisabled() ? "true" : "false"}
       data-invalid={isInvalid() ? "true" : "false"}
-      data-has-description={local.description != null ? "true" : "false"}
+      data-has-description={props.description != null ? "true" : "false"}
       aria-disabled={isDisabled() ? "true" : "false"}
     >
       <input
@@ -121,7 +123,7 @@ const Checkbox: Layout<typeof componentRecipe, CheckboxProps> = () => {
         type="checkbox"
         {...{ class: CLASSES.slot.input }}
         data-slot="checkbox-input"
-        value={local.value}
+        value={props.value}
         name={name()}
         checked={isSelected()}
         disabled={isDisabled()}
@@ -168,12 +170,12 @@ const Checkbox: Layout<typeof componentRecipe, CheckboxProps> = () => {
 
       <Show when={hasContent()}>
         <span {...{ class: CLASSES.slot.content }} data-slot="checkbox-content">
-          <Show when={local.children}>
-            <span data-slot="label">{local.children}</span>
+          <Show when={props.children}>
+            <span data-slot="label">{props.children}</span>
           </Show>
-          <Show when={local.description}>
+          <Show when={props.description}>
             <span {...{ class: CLASSES.slot.description }} data-slot="description">
-              {local.description}
+              {props.description}
             </span>
           </Show>
         </span>

@@ -1,5 +1,6 @@
 import "./MetalBorder.css";
-import { createEffect, createSignal, onCleanup, onMount, splitProps, type JSX } from "solid-js";
+import type { JSX } from "@solidjs/web";
+import {createEffect, createSignal, onCleanup, onSettled, omit} from "solid-js";
 import { twMerge } from "tailwind-merge";
 
 import { prefersReducedMotion } from "../../motion/reduced-motion";
@@ -120,7 +121,8 @@ const ensureGlowCallback = () => {
 };
 
 const MetalBorder: Layout<typeof componentRecipe, MetalBorderProps> = () => {
-  const [local, others] = splitProps(props, [
+  const others = omit(
+    props,
     "children",
     "class",
     "contentClass",
@@ -134,7 +136,7 @@ const MetalBorder: Layout<typeof componentRecipe, MetalBorderProps> = () => {
     "theme",
     "cornerRadius",
     "ref",
-  ]);
+  );
 
   let hostRef: HTMLDivElement | undefined;
   let contentRef: HTMLDivElement | undefined;
@@ -153,23 +155,23 @@ const MetalBorder: Layout<typeof componentRecipe, MetalBorderProps> = () => {
   const [prefersReduced, setPrefersReduced] = createSignal(false);
   const [isWebGlUnavailable, setIsWebGlUnavailable] = createSignal(false);
 
-  const preset = () => local.preset ?? DEFAULT_PRESET;
-  const kind = () => local.kind ?? DEFAULT_KIND;
-  const theme = () => local.theme ?? DEFAULT_THEME;
-  const strength = () => clampStrength(local.strength);
-  const glow = () => local.glow ?? false;
-  const effectivePaused = () => (local.paused ?? false) || prefersReduced();
-  const radiusCssValue = () => toRadiusCssValue(local.cornerRadius);
+  const preset = () => props.preset ?? DEFAULT_PRESET;
+  const kind = () => props.kind ?? DEFAULT_KIND;
+  const theme = () => props.theme ?? DEFAULT_THEME;
+  const strength = () => clampStrength(props.strength);
+  const glow = () => props.glow ?? false;
+  const effectivePaused = () => (props.paused ?? false) || prefersReduced();
+  const radiusCssValue = () => toRadiusCssValue(props.cornerRadius);
   const effectEnabled = () => !isWebGlUnavailable();
 
   const syncResolvedTheme = () => {
     if (typeof window === "undefined") return;
-    setResolvedTheme(resolveThemeValue(theme(), local.dataTheme, hostRef));
+    setResolvedTheme(resolveThemeValue(theme(), props.dataTheme, hostRef));
   };
 
   const readCornerRadius = () => {
-    if (typeof local.cornerRadius === "number") return local.cornerRadius;
-    if (typeof local.cornerRadius === "string") return readRadiusPx(hostRef);
+    if (typeof props.cornerRadius === "number") return props.cornerRadius;
+    if (typeof props.cornerRadius === "string") return readRadiusPx(hostRef);
 
     const firstChild = contentRef?.firstElementChild;
     return readRadiusPx(
@@ -213,7 +215,7 @@ const MetalBorder: Layout<typeof componentRecipe, MetalBorderProps> = () => {
     if (glowRef) glowRef.innerHTML = "";
   };
 
-  onMount(() => {
+  onSettled(() => {
     if (typeof window === "undefined") return;
 
     setPrefersReduced(prefersReducedMotion());
@@ -339,7 +341,7 @@ const MetalBorder: Layout<typeof componentRecipe, MetalBorderProps> = () => {
       {...others}
       ref={(element) => {
         hostRef = element;
-        if (typeof local.ref === "function") local.ref(element);
+        if (typeof props.ref === "function") props.ref(element);
       }}
       class={twMerge(
         CLASSES.Root.base,
@@ -347,13 +349,13 @@ const MetalBorder: Layout<typeof componentRecipe, MetalBorderProps> = () => {
         effectEnabled() && CLASSES.Root.flag.enabled,
         isWebGlUnavailable() && CLASSES.Root.flag.unavailable,
         effectivePaused() && CLASSES.Root.flag.paused,
-        local.class,
+        props.class,
       )}
       data-kind={kind()}
       data-preset={preset()}
-      data-theme={local.dataTheme}
+      data-theme={props.dataTheme}
       style={{
-        ...(local.style ?? {}),
+        ...(props.style ?? {}),
         "--metal-border-radius": radiusCssValue(),
       }}
     >
@@ -374,9 +376,9 @@ const MetalBorder: Layout<typeof componentRecipe, MetalBorderProps> = () => {
       )}
       <div
         ref={contentRef}
-        class={twMerge(CLASSES.Content.base, local.contentClass)}
+        class={twMerge(CLASSES.Content.base, props.contentClass)}
       >
-        {local.children}
+        {props.children}
       </div>
     </div>
   );

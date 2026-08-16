@@ -197,7 +197,12 @@ export function createHueShiftStore(storagePrefix: string): HueShiftStore {
     return null;
   };
 
-  const [themeColor, setThemeColorInternal] = createSignal<string | null>(getInitial());
+  // The initial value is read once, not tracked. Hoisted to a const because
+  // `createSignal` overloads on `Exclude<T, Function>` versus a compute
+  // function, and a call expression in argument position resolves to the
+  // compute overload, which types the accessor as `never`.
+  const initialThemeColor: string | null = getInitial();
+  const [themeColor, setThemeColorInternal] = createSignal<string | null>(initialThemeColor);
 
   createEffect(() => {
     const color = themeColor();

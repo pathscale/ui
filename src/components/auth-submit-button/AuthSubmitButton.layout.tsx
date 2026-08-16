@@ -1,5 +1,5 @@
 import "./AuthSubmitButton.css";
-import type { JSX } from "solid-js";
+import type { JSX } from "@solidjs/web";
 import Button from "../button";
 import type { Layout } from "../../lib/layouts";
 import { authSubmitButton } from "./AuthSubmitButton.recipe";

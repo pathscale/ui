@@ -1,4 +1,4 @@
-import { createEffect, createMemo, createSignal, onCleanup, onMount, type Accessor } from "solid-js";
+import { createEffect, createMemo, createSignal, onCleanup, onSettled, type Accessor } from "solid-js";
 
 type PickerOpenStateOptions = {
   isOpen: Accessor<boolean | undefined>;
@@ -35,7 +35,7 @@ export const usePickerOpenState = (options: PickerOpenStateOptions) => {
     setOpen(!isOpen());
   };
 
-  onMount(() => {
+  onSettled(() => {
     const handlePointerDown = (event: PointerEvent) => {
       if (!isOpen()) return;
 

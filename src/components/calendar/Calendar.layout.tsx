@@ -1,13 +1,6 @@
 import "./Calendar.css";
-import {
-  For,
-  Show,
-  createEffect,
-  createMemo,
-  createUniqueId,
-  splitProps,
-  type JSX,
-} from "solid-js";
+import type { JSX } from "@solidjs/web";
+import {For, Show, createEffect, createMemo, createUniqueId, omit} from "solid-js";
 import { twMerge } from "tailwind-merge";
 
 import {
@@ -62,7 +55,8 @@ export type CalendarProps = Omit<
   CalendarBaseProps;
 
 const Calendar: Layout<typeof componentRecipe, CalendarProps> = () => {
-  const [local, others] = splitProps(props, [
+  const others = omit(
+    props,
     "class",
     "dataTheme",
     "style",
@@ -84,28 +78,28 @@ const Calendar: Layout<typeof componentRecipe, CalendarProps> = () => {
     "showOutsideDays",
     "state",
     "disabled",
-  ]);
+  );
 
   const selectionMode = createMemo<CalendarSelectionMode>(
-    () => local.selectionMode ?? "single",
+    () => props.selectionMode ?? "single",
   );
 
   const dateSelection = useDateSelection({
-    value: () => local.value,
-    defaultValue: () => local.defaultValue,
-    onChange: () => local.onChange,
+    value: () => props.value,
+    defaultValue: () => props.defaultValue,
+    onChange: () => props.onChange,
   });
 
   const selectedDate = createMemo(() =>
     selectionMode() === "single" ? dateSelection.selectedDate() : null,
   );
 
-  const rangeStart = createMemo(() => normalizeDate(local.rangeStart));
-  const rangeEnd = createMemo(() => normalizeDate(local.rangeEnd));
-  const rangePreview = createMemo(() => normalizeDate(local.rangePreview));
+  const rangeStart = createMemo(() => normalizeDate(props.rangeStart));
+  const rangeEnd = createMemo(() => normalizeDate(props.rangeEnd));
+  const rangePreview = createMemo(() => normalizeDate(props.rangePreview));
 
   const defaultReferenceDate = createMemo(
-    () => normalizeDate(local.defaultValue) ?? getToday(),
+    () => normalizeDate(props.defaultValue) ?? getToday(),
   );
 
   const focusReferenceDate = createMemo(
@@ -113,22 +107,22 @@ const Calendar: Layout<typeof componentRecipe, CalendarProps> = () => {
       selectedDate() ??
       rangeEnd() ??
       rangeStart() ??
-      normalizeDate(local.value) ??
+      normalizeDate(props.value) ??
       defaultReferenceDate(),
   );
 
-  const minDate = createMemo(() => normalizeDate(local.minValue));
-  const maxDate = createMemo(() => normalizeDate(local.maxValue));
-  const locale = createMemo(() => local.locale ?? "en-US");
+  const minDate = createMemo(() => normalizeDate(props.minValue));
+  const maxDate = createMemo(() => normalizeDate(props.maxValue));
+  const locale = createMemo(() => props.locale ?? "en-US");
   const weekdayFormat = createMemo<CalendarWeekdayFormat>(
-    () => local.weekdayFormat ?? "short",
+    () => props.weekdayFormat ?? "short",
   );
-  const showOutsideDays = createMemo(() => local.showOutsideDays ?? true);
+  const showOutsideDays = createMemo(() => props.showOutsideDays ?? true);
   const isCalendarDisabled = createMemo(
-    () => Boolean((local.state === "disabled")) || Boolean(local.disabled),
+    () => Boolean((props.state === "disabled")) || Boolean(props.disabled),
   );
 
-  const isDateUnavailable = (date: Date) => Boolean(local.isDateUnavailable?.(date));
+  const isDateUnavailable = (date: Date) => Boolean(props.isDateUnavailable?.(date));
 
   const isDateDisabled = (date: Date) => {
     if (isCalendarDisabled()) return true;
@@ -183,8 +177,8 @@ const Calendar: Layout<typeof componentRecipe, CalendarProps> = () => {
   const selectDate = (date: Date) => {
     if (isDateDisabled(date)) return;
 
-    if (typeof local.onDaySelect === "function") {
-      local.onDaySelect(date);
+    if (typeof props.onDaySelect === "function") {
+      props.onDaySelect(date);
     } else if (selectionMode() === "single") {
       dateSelection.setSelectedDate(date);
     }
@@ -272,20 +266,20 @@ const Calendar: Layout<typeof componentRecipe, CalendarProps> = () => {
       {...others}
       ref={(node) => {
         rootRef = node;
-        if (typeof local.ref === "function") {
-          local.ref(node);
+        if (typeof props.ref === "function") {
+          props.ref(node);
         }
       }}
       {...{ class: twMerge(
         CLASSES.Root.base,
         isCalendarDisabled() && CLASSES.Root.flag.disabled,
-        local.class,
+        props.class,
       ) }}
       data-slot="calendar"
       data-selection-mode={selectionMode()}
       data-disabled={isCalendarDisabled() ? "true" : "false"}
-      data-theme={local.dataTheme}
-      style={local.style}
+      data-theme={props.dataTheme}
+      style={props.style}
       aria-disabled={isCalendarDisabled() ? "true" : undefined}
     >
       <div {...{ class: CLASSES.Header.base }} data-slot="calendar-header">
@@ -384,7 +378,7 @@ const Calendar: Layout<typeof componentRecipe, CalendarProps> = () => {
           {...{ class: CLASSES.GridBody.base }}
           data-slot="calendar-grid-body"
           role="rowgroup"
-          onMouseLeave={() => local.onDayHover?.(undefined)}
+          onMouseLeave={() => props.onDayHover?.(undefined)}
         >
           <For each={calendarState.calendarWeeks()}>
             {(week) => (
@@ -446,7 +440,7 @@ const Calendar: Layout<typeof componentRecipe, CalendarProps> = () => {
                             onFocus={() => navigation.setFocusedDate(date)}
                             onMouseEnter={() => {
                               if (cellState.isDisabled) return;
-                              local.onDayHover?.(date);
+                              props.onDayHover?.(date);
                             }}
                             onKeyDown={handleCellKeyDown}
                           >

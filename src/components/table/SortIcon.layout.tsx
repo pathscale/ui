@@ -1,4 +1,5 @@
-import { type Component, type JSX, Show, splitProps } from "solid-js";
+import {type Component, Show, omit} from "solid-js";
+import type { JSX } from "@solidjs/web";
 import { twMerge } from "tailwind-merge";
 import Icon from "../icon";
 import type { UIBaseProps } from "../vocabulary";
@@ -16,7 +17,8 @@ export type SortIconProps = UIBaseProps & {
 };
 
 const SortIcon: Layout<typeof tableSortIconRecipe, SortIconProps> = () => {
-  const [local, rest] = splitProps(props, [
+  const rest = omit(
+    props,
     "state",
     "size",
     "ascIcon",
@@ -24,27 +26,27 @@ const SortIcon: Layout<typeof tableSortIconRecipe, SortIconProps> = () => {
     "neutralIcon",
     "class",
     "dataTheme",
-  ]);
+  );
 
-  const iconSize = () => local.size ?? 16;
+  const iconSize = () => props.size ?? 16;
   const iconName = () => {
-    if (local.state === "asc") return "icon-[lucide--arrow-up]";
-    if (local.state === "desc") return "icon-[lucide--arrow-down]";
+    if (props.state === "asc") return "icon-[lucide--arrow-up]";
+    if (props.state === "desc") return "icon-[lucide--arrow-down]";
     return "icon-[lucide--arrow-up-down]";
   };
   const customIcon = () => {
-    if (local.state === "asc") return local.ascIcon;
-    if (local.state === "desc") return local.descIcon;
-    return local.neutralIcon;
+    if (props.state === "asc") return props.ascIcon;
+    if (props.state === "desc") return props.descIcon;
+    return props.neutralIcon;
   };
 
   return (
     <span
       {...rest}
-      {...{ class: twMerge("inline-flex shrink-0 items-center justify-center", local.class) }}
-      data-theme={local.dataTheme}
+      {...{ class: twMerge("inline-flex shrink-0 items-center justify-center", props.class) }}
+      data-theme={props.dataTheme}
       data-slot="table-sort-icon"
-      data-state={local.state}
+      data-state={props.state}
       aria-hidden="true"
     >
       <Show when={customIcon()} fallback={<Icon src={iconName()} width={iconSize()} height={iconSize()} />}>

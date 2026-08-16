@@ -1,4 +1,5 @@
-import { type JSX, splitProps } from "solid-js";
+import {omit} from "solid-js";
+import type { JSX } from "@solidjs/web";
 import { twMerge } from "tailwind-merge";
 import type { Layout } from "../../lib/layouts";
 import type { UIBaseProps } from "../vocabulary";
@@ -15,32 +16,26 @@ const TableContent: Layout<
   typeof tableContentRecipe,
   TableContentProps
 > = () => {
-  const [local, rest] = splitProps(props, [
-    "children",
-    "class",
-    "dataTheme",
-    "sortDescriptor",
-    "onSortChange",
-  ]);
+  const rest = omit(props, "children", "class", "dataTheme", "sortDescriptor", "onSortChange");
 
   return (
-    <TableContentContext.Provider
+    <TableContentContext
       value={{
-        sortDescriptor: () => local.sortDescriptor,
-        onSortChange: local.onSortChange,
+        sortDescriptor: () => props.sortDescriptor,
+        onSortChange: props.onSortChange,
       }}
     >
       <table
-        {...{ class: twMerge(CLASSES.content, local.class) }}
-        data-theme={local.dataTheme}
+        {...{ class: twMerge(CLASSES.content, props.class) }}
+        data-theme={props.dataTheme}
         data-slot="table-content"
-        data-sort-column={local.sortDescriptor?.column}
-        data-sort-direction={local.sortDescriptor?.direction}
+        data-sort-column={props.sortDescriptor?.column}
+        data-sort-direction={props.sortDescriptor?.direction}
         {...rest}
       >
-        {local.children}
+        {props.children}
       </table>
-    </TableContentContext.Provider>
+    </TableContentContext>
   );
 };
 

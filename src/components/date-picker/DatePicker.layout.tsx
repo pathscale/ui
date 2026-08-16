@@ -1,5 +1,6 @@
 import "./DatePicker.css";
-import { Show, createMemo, createUniqueId, splitProps, type JSX } from "solid-js";
+import type { JSX } from "@solidjs/web";
+import {Show, createMemo, createUniqueId, omit} from "solid-js";
 import { twMerge } from "tailwind-merge";
 
 import {
@@ -40,7 +41,8 @@ export type DatePickerProps = Omit<
   DatePickerBaseProps;
 
 const DatePicker: Layout<typeof componentRecipe, DatePickerProps> = () => {
-  const [local, others] = splitProps(props, [
+  const others = omit(
+    props,
     "class",
     "dataTheme",
     "style",
@@ -60,28 +62,28 @@ const DatePicker: Layout<typeof componentRecipe, DatePickerProps> = () => {
     "isDateUnavailable",
     "state",
     "disabled",
-  ]);
+  );
 
-  const isDisabled = createMemo(() => Boolean((local.state === "disabled")) || Boolean(local.disabled));
+  const isDisabled = createMemo(() => Boolean((props.state === "disabled")) || Boolean(props.disabled));
 
   const selection = useDateSelection({
-    value: () => local.value,
-    defaultValue: () => local.defaultValue,
-    onChange: () => local.onChange,
+    value: () => props.value,
+    defaultValue: () => props.defaultValue,
+    onChange: () => props.onChange,
   });
 
   const openState = usePickerOpenState({
-    isOpen: () => local.open,
-    defaultOpen: () => local.defaultOpen,
-    onOpenChange: () => local.onOpenChange,
+    isOpen: () => props.open,
+    defaultOpen: () => props.defaultOpen,
+    onOpenChange: () => props.onOpenChange,
     isDisabled,
   });
 
-  const locale = createMemo(() => local.locale ?? "en-US");
+  const locale = createMemo(() => props.locale ?? "en-US");
 
   const displayValue = createMemo(() => {
     const selectedDate = selection.selectedDate();
-    if (!selectedDate) return local.placeholder ?? "Select date";
+    if (!selectedDate) return props.placeholder ?? "Select date";
 
     return formatDate(selectedDate, locale());
   });
@@ -99,27 +101,27 @@ const DatePicker: Layout<typeof componentRecipe, DatePickerProps> = () => {
       {...others}
       ref={(node) => {
         openState.setRootRef(node);
-        if (typeof local.ref === "function") {
-          local.ref(node);
+        if (typeof props.ref === "function") {
+          props.ref(node);
         }
       }}
       {...{ class: twMerge(
         CLASSES.Root.base,
         openState.isOpen() && CLASSES.Root.flag.open,
         isDisabled() && CLASSES.Root.flag.disabled,
-        local.class,
+        props.class,
       ) }}
       data-slot="date-picker"
       data-open={openState.isOpen() ? "true" : "false"}
       data-disabled={isDisabled() ? "true" : "false"}
-      data-theme={local.dataTheme}
-      style={local.style}
+      data-theme={props.dataTheme}
+      style={props.style}
       aria-disabled={isDisabled() ? "true" : undefined}
     >
-      <Show when={local.name}>
+      <Show when={props.name}>
         <input
           type="hidden"
-          name={local.name}
+          name={props.name}
           value={toISODate(selection.selectedDate())}
           disabled={isDisabled()}
         />
@@ -187,10 +189,10 @@ const DatePicker: Layout<typeof componentRecipe, DatePickerProps> = () => {
             value={selection.selectedDate() ?? undefined}
             onChange={handleDateChange}
             locale={locale()}
-            weekdayFormat={local.weekdayFormat}
-            minValue={local.minValue}
-            maxValue={local.maxValue}
-            isDateUnavailable={local.isDateUnavailable}
+            weekdayFormat={props.weekdayFormat}
+            minValue={props.minValue}
+            maxValue={props.maxValue}
+            isDateUnavailable={props.isDateUnavailable}
             state={isDisabled() ? "disabled" : undefined}
           />
         </div>

@@ -1,17 +1,6 @@
 import "./Tabs.css";
-import {
-  createContext,
-  createEffect,
-  createMemo,
-  createSignal,
-  createUniqueId,
-  onCleanup,
-  onMount,
-  splitProps,
-  useContext,
-  type Accessor,
-  type JSX,
-} from "solid-js";
+import type { JSX } from "@solidjs/web";
+import {createContext, createEffect, createMemo, createSignal, createUniqueId, onCleanup, onSettled, omit, useContext, type Accessor} from "solid-js";
 import { twMerge } from "tailwind-merge";
 import { CLASSES } from "./Tabs.recipe";
 import type { Layout } from "../../lib/layouts";
@@ -67,7 +56,8 @@ type TabsRootProps = Omit<
 };
 
 const TabsRoot: Layout<typeof componentRecipe, TabsRootProps> = () => {
-  const [local, others] = splitProps(props, [
+  const others = omit(
+    props,
     "children",
     "class",
     "orientation",
@@ -75,24 +65,24 @@ const TabsRoot: Layout<typeof componentRecipe, TabsRootProps> = () => {
     "selectedKey",
     "defaultSelectedKey",
     "onSelectionChange",
-  ]);
+  );
 
   const baseId = createUniqueId();
   const [internalSelectedKey, setInternalSelectedKey] = createSignal<TabKey | undefined>(
-    local.defaultSelectedKey,
+    props.defaultSelectedKey,
   );
   const [tabs, setTabs] = createSignal<TabInfo[]>([]);
 
-  const isControlled = () => local.selectedKey !== undefined;
-  const selectedKey = () => (isControlled() ? local.selectedKey : internalSelectedKey());
+  const isControlled = () => props.selectedKey !== undefined;
+  const selectedKey = () => (isControlled() ? props.selectedKey : internalSelectedKey());
 
   const setSelectedKey = (key: TabKey) => {
     if (isControlled()) {
-      local.onSelectionChange?.(key);
+      props.onSelectionChange?.(key);
       return;
     }
     setInternalSelectedKey(key);
-    local.onSelectionChange?.(key);
+    props.onSelectionChange?.(key);
   };
 
   const registerTab = (info: TabInfo) => {
@@ -117,13 +107,13 @@ const TabsRoot: Layout<typeof componentRecipe, TabsRootProps> = () => {
   const classes = () =>
     twMerge(
       CLASSES.base,
-      local.variant === "secondary" && CLASSES.variant.secondary,
-      local.class,
+      props.variant === "secondary" && CLASSES.variant.secondary,
+      props.class,
     );
 
   const context = createMemo<TabsContextValue>(() => ({
-    orientation: local.orientation ?? "horizontal",
-    variant: local.variant ?? "primary",
+    orientation: props.orientation ?? "horizontal",
+    variant: props.variant ?? "primary",
     selectedKey,
     setSelectedKey,
     registerTab,
@@ -134,30 +124,30 @@ const TabsRoot: Layout<typeof componentRecipe, TabsRootProps> = () => {
   }));
 
   return (
-    <TabsContext.Provider value={context()}>
+    <TabsContext value={context()}>
       <div
         {...others}
         {...{ class: classes() }}
         data-slot="tabs"
-        data-orientation={local.orientation ?? "horizontal"}
+        data-orientation={props.orientation ?? "horizontal"}
       >
-        {local.children}
+        {props.children}
       </div>
-    </TabsContext.Provider>
+    </TabsContext>
   );
 };
 
 type TabListContainerProps = JSX.HTMLAttributes<HTMLDivElement>;
 
 const TabListContainer: Layout<typeof componentRecipe, TabListContainerProps> = () => {
-  const [local, others] = splitProps(props, ["class", "children"]);
+  const others = omit(props, "class", "children");
   return (
     <div
       {...others}
-      {...{ class: twMerge(CLASSES.slot.listContainer, local.class) }}
+      {...{ class: twMerge(CLASSES.slot.listContainer, props.class) }}
       data-slot="tabs-list-container"
     >
-      {local.children}
+      {props.children}
     </div>
   );
 };
@@ -168,7 +158,7 @@ type TabListProps = JSX.HTMLAttributes<HTMLDivElement> & {
 
 const TabList: Layout<typeof componentRecipe, TabListProps> = () => {
   const ctx = useContext(TabsContext);
-  const [local, others] = splitProps(props, ["class", "children", "ref"]);
+  const others = omit(props, "class", "children", "ref");
 
   const [indicatorStyle, setIndicatorStyle] = createSignal<JSX.CSSProperties>({
     "--tabs-indicator-x": "0px",
@@ -182,13 +172,13 @@ const TabList: Layout<typeof componentRecipe, TabListProps> = () => {
   let rafId: number | undefined;
 
   if (!ctx) {
-    return <div {...others}>{local.children}</div>;
+    return <div {...others}>{props.children}</div>;
   }
 
   const setListRef = (element: HTMLDivElement) => {
     listRef = element;
-    if (typeof local.ref === "function") {
-      local.ref(element);
+    if (typeof props.ref === "function") {
+      props.ref(element);
     }
   };
 
@@ -253,7 +243,7 @@ const TabList: Layout<typeof componentRecipe, TabListProps> = () => {
     onCleanup(disconnect);
   });
 
-  onMount(() => {
+  onSettled(() => {
     scheduleMeasure();
     window.addEventListener("resize", scheduleMeasure);
     onCleanup(() => {
@@ -270,11 +260,11 @@ const TabList: Layout<typeof componentRecipe, TabListProps> = () => {
       ref={setListRef}
       role="tablist"
       aria-orientation={ctx.orientation}
-      {...{ class: twMerge(CLASSES.slot.list, local.class) }}
+      {...{ class: twMerge(CLASSES.slot.list, props.class) }}
       data-slot="tabs-list"
       data-orientation={ctx.orientation}
     >
-      {local.children}
+      {props.children}
       <span
         {...{ class: CLASSES.slot.indicator }}
         data-slot="tabs-indicator"
@@ -293,36 +283,29 @@ type TabProps = Omit<JSX.ButtonHTMLAttributes<HTMLButtonElement>, "id"> & {
 
 const Tab: Layout<typeof componentRecipe, TabProps> = () => {
   const ctx = useContext(TabsContext);
-  const [local, others] = splitProps(props, [
-    "class",
-    "children",
-    "id",
-    "state",
-    "onClick",
-    "onKeyDown",
-  ]);
+  const others = omit(props, "class", "children", "id", "state", "onClick", "onKeyDown");
 
   let tabRef: HTMLButtonElement | undefined;
 
   if (!ctx) {
     return (
-      <button {...others} {...{ class: twMerge(CLASSES.slot.tab, local.class) }}>
-        {local.children}
+      <button {...others} {...{ class: twMerge(CLASSES.slot.tab, props.class) }}>
+        {props.children}
       </button>
     );
   }
 
-  const isSelected = createMemo(() => ctx.selectedKey() === local.id);
-  const isDisabled = () => Boolean((local.state === "disabled"));
+  const isSelected = createMemo(() => ctx.selectedKey() === props.id);
+  const isDisabled = () => Boolean((props.state === "disabled"));
 
-  onMount(() => {
+  onSettled(() => {
     if (tabRef) {
-      ctx.registerTab({ key: local.id, ref: tabRef, disabled: isDisabled() });
+      ctx.registerTab({ key: props.id, ref: tabRef, disabled: isDisabled() });
     }
   });
 
   onCleanup(() => {
-    ctx.unregisterTab(local.id);
+    ctx.unregisterTab(props.id);
   });
 
   const focusTab = (info: TabInfo) => {
@@ -333,14 +316,14 @@ const Tab: Layout<typeof componentRecipe, TabProps> = () => {
   const moveFocus = (direction: 1 | -1) => {
     const list = ctx.tabs().filter((tab) => !tab.disabled);
     if (!list.length) return;
-    const index = list.findIndex((tab) => tab.key === local.id);
+    const index = list.findIndex((tab) => tab.key === props.id);
     if (index === -1) return;
     const nextIndex = (index + direction + list.length) % list.length;
     focusTab(list[nextIndex]);
   };
 
   const handleKeyDown: JSX.EventHandlerUnion<HTMLButtonElement, KeyboardEvent> = (event) => {
-    invokeEventHandler(local.onKeyDown, event);
+    invokeEventHandler(props.onKeyDown, event);
     if (event.defaultPrevented) return;
 
     if (isDisabled()) return;
@@ -370,33 +353,33 @@ const Tab: Layout<typeof componentRecipe, TabProps> = () => {
   };
 
   const handleClick: JSX.EventHandlerUnion<HTMLButtonElement, MouseEvent> = (event) => {
-    invokeEventHandler(local.onClick, event);
+    invokeEventHandler(props.onClick, event);
     if (event.defaultPrevented) return;
     if (isDisabled()) return;
-    ctx.setSelectedKey(local.id);
+    ctx.setSelectedKey(props.id);
   };
 
-  const classes = () => twMerge(CLASSES.slot.tab, local.class);
+  const classes = () => twMerge(CLASSES.slot.tab, props.class);
 
   return (
     <button
       {...others}
       ref={tabRef}
-      id={ctx.getTabId(local.id)}
+      id={ctx.getTabId(props.id)}
       role="tab"
       {...{ class: classes() }}
       data-slot="tabs-tab"
       data-selected={isSelected() ? "true" : "false"}
       data-disabled={isDisabled() ? "true" : "false"}
       aria-selected={isSelected()}
-      aria-controls={ctx.getPanelId(local.id)}
+      aria-controls={ctx.getPanelId(props.id)}
       aria-disabled={isDisabled()}
       disabled={isDisabled()}
       tabIndex={isSelected() ? 0 : -1}
       onKeyDown={handleKeyDown}
       onClick={handleClick}
     >
-      {local.children}
+      {props.children}
     </button>
   );
 };
@@ -413,26 +396,26 @@ type TabPanelProps = Omit<JSX.HTMLAttributes<HTMLDivElement>, "id"> & {
 
 const TabPanel: Layout<typeof componentRecipe, TabPanelProps> = () => {
   const ctx = useContext(TabsContext);
-  const [local, others] = splitProps(props, ["class", "children", "id"]);
+  const others = omit(props, "class", "children", "id");
 
   if (!ctx) {
-    return <div {...others}>{local.children}</div>;
+    return <div {...others}>{props.children}</div>;
   }
 
-  const isSelected = () => ctx.selectedKey() === local.id;
+  const isSelected = () => ctx.selectedKey() === props.id;
 
   return (
     <div
       {...others}
-      id={ctx.getPanelId(local.id)}
+      id={ctx.getPanelId(props.id)}
       role="tabpanel"
-      aria-labelledby={ctx.getTabId(local.id)}
-      {...{ class: twMerge(CLASSES.slot.panel, local.class) }}
+      aria-labelledby={ctx.getTabId(props.id)}
+      {...{ class: twMerge(CLASSES.slot.panel, props.class) }}
       data-slot="tabs-panel"
       data-orientation={ctx.orientation}
       hidden={!isSelected()}
     >
-      {local.children}
+      {props.children}
     </div>
   );
 };
@@ -440,12 +423,12 @@ const TabPanel: Layout<typeof componentRecipe, TabPanelProps> = () => {
 type TabSeparatorProps = JSX.HTMLAttributes<HTMLSpanElement>;
 
 const TabSeparator: Layout<typeof componentRecipe, TabSeparatorProps> = () => {
-  const [local, others] = splitProps(props, ["class"]);
+  const others = omit(props, "class");
   return (
     <span
       {...others}
       aria-hidden="true"
-      {...{ class: twMerge(CLASSES.slot.separator, local.class) }}
+      {...{ class: twMerge(CLASSES.slot.separator, props.class) }}
       data-slot="tabs-separator"
     />
   );

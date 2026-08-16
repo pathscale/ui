@@ -1,6 +1,6 @@
 import "./Navbar.css";
-import { type JSX, splitProps } from "solid-js";
-import { Dynamic } from "solid-js/web";
+import {omit} from "solid-js";
+import { Dynamic, type JSX} from "@solidjs/web";
 import { twMerge } from "tailwind-merge";
 import NavbarSection from "./NavbarSection.generated";
 import NavbarStack from "./NavbarStack.generated";
@@ -20,17 +20,10 @@ export type NavbarProps = JSX.HTMLAttributes<HTMLElement> &
   };
 
 const Navbar: Layout<typeof componentRecipe, NavbarProps> = () => {
-  const [local, others] = splitProps(props, [
-    "as",
-    "class",
-    "style",
-    "children",
-    "dataTheme",
-    "material",
-  ]);
+  const others = omit(props, "as", "class", "style", "children", "dataTheme", "material");
 
-  const Tag = (local.as || "div") as keyof JSX.IntrinsicElements;
-  const classes = () => twMerge(CLASSES.navbar.base, local.class);
+  const Tag = (props.as || "div") as keyof JSX.IntrinsicElements;
+  const classes = () => twMerge(CLASSES.navbar.base, props.class);
 
   return (
     <Dynamic
@@ -38,12 +31,12 @@ const Navbar: Layout<typeof componentRecipe, NavbarProps> = () => {
       role="navigation"
       aria-label="Navbar"
       {...others}
-      data-theme={local.dataTheme}
-      data-material={local.material ?? "solid"}
+      data-theme={props.dataTheme}
+      data-material={props.material ?? "solid"}
       {...{ class: classes() }}
-      style={local.style}
+      style={props.style}
     >
-      {local.children}
+      {props.children}
     </Dynamic>
   );
 };

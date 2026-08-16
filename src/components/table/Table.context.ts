@@ -1,4 +1,5 @@
-import { type Accessor, createContext, type JSX, useContext } from "solid-js";
+import {type Accessor, createContext, useContext} from "solid-js";
+import type { JSX } from "@solidjs/web";
 
 export type TableVariant = "primary" | "secondary";
 export type TableSortDirection = "ascending" | "descending";

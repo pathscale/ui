@@ -1,14 +1,6 @@
 import "./TimeField.css";
-import {
-  createContext,
-  createSignal,
-  splitProps,
-  useContext,
-  type Accessor,
-  type Component,
-  type JSX,
-  type ParentComponent,
-} from "solid-js";
+import type { JSX } from "@solidjs/web";
+import {createContext, createSignal, omit, useContext, type Accessor, type Component, type ParentComponent} from "solid-js";
 import { twMerge } from "tailwind-merge";
 
 import type { UIBaseProps, State, Issue } from "../vocabulary";
@@ -100,7 +92,8 @@ export type TimeFieldPrefixProps = JSX.HTMLAttributes<HTMLDivElement> & UIBasePr
 export type TimeFieldSuffixProps = JSX.HTMLAttributes<HTMLDivElement> & UIBaseProps;
 
 const TimeFieldRoot: Layout<typeof componentRecipe, TimeFieldRootProps> = () => {
-  const [local, others] = splitProps(props, [
+  const others = omit(
+    props,
     "children",
     "class",
     "dataTheme",
@@ -116,24 +109,23 @@ const TimeFieldRoot: Layout<typeof componentRecipe, TimeFieldRootProps> = () => 
     "disabled",
     "issues",
     "required",
-    
-  ]);
+  );
 
-  const [internalValue, setInternalValue] = createSignal(local.defaultValue ?? "");
+  const [internalValue, setInternalValue] = createSignal(props.defaultValue ?? "");
 
-  const isControlled = () => local.value !== undefined;
-  const value = () => (isControlled() ? local.value ?? "" : internalValue());
-  const variant = () => local.variant ?? "primary";
-  const fullWidth = () => Boolean(local.fullWidth);
-  const isDisabled = () => Boolean((local.state === "disabled")) || Boolean(local.disabled);
-  const isInvalid = () => Boolean((resolveState(local.state, local.issues) === "invalid"));
-  const isRequired = () => Boolean(local.required) || Boolean(local.required);
+  const isControlled = () => props.value !== undefined;
+  const value = () => (isControlled() ? props.value ?? "" : internalValue());
+  const variant = () => props.variant ?? "primary";
+  const fullWidth = () => Boolean(props.fullWidth);
+  const isDisabled = () => Boolean((props.state === "disabled")) || Boolean(props.disabled);
+  const isInvalid = () => Boolean((resolveState(props.state, props.issues) === "invalid"));
+  const isRequired = () => Boolean(props.required) || Boolean(props.required);
 
   const setValue = (nextValue: string) => {
     if (!isControlled()) {
       setInternalValue(nextValue);
     }
-    local.onChange?.(nextValue);
+    props.onChange?.(nextValue);
   };
 
   const renderProps = () => ({
@@ -145,25 +137,25 @@ const TimeFieldRoot: Layout<typeof componentRecipe, TimeFieldRootProps> = () => 
 
   const contextValue: TimeFieldContextValue = {
     value,
-    name: () => local.name,
+    name: () => props.name,
     variant,
     fullWidth,
     isDisabled,
     isInvalid,
     isRequired,
-    onBlur: () => local.onBlur,
+    onBlur: () => props.onBlur,
     setValue,
   };
 
   return (
-    <TimeFieldContext.Provider value={contextValue}>
+    <TimeFieldContext value={contextValue}>
       <div
         {...others}
         {...{ class: twMerge(
           CLASSES.Root.base,
           CLASSES.Root.variant[variant()],
           fullWidth() && CLASSES.Root.flag.fullWidth,
-          local.class,
+          props.class,
         ) }}
         data-slot="time-field"
         data-invalid={isInvalid() ? "true" : undefined}
@@ -171,26 +163,26 @@ const TimeFieldRoot: Layout<typeof componentRecipe, TimeFieldRootProps> = () => 
         data-required={isRequired() ? "true" : undefined}
         aria-invalid={isInvalid() ? "true" : undefined}
         aria-disabled={isDisabled() ? "true" : undefined}
-        data-theme={local.dataTheme}
-        style={local.style}
+        data-theme={props.dataTheme}
+        style={props.style}
       >
-        {typeof local.children === "function" ? (
-          local.children(renderProps())
-        ) : local.children ? (
-          local.children
+        {typeof props.children === "function" ? (
+          props.children(renderProps())
+        ) : props.children ? (
+          props.children
         ) : (
           <TimeFieldGroup>
             <TimeFieldInput />
           </TimeFieldGroup>
         )}
       </div>
-    </TimeFieldContext.Provider>
+    </TimeFieldContext>
   );
 };
 
 const TimeFieldGroup: Layout<typeof componentRecipe, TimeFieldGroupProps> = () => {
   const context = useContext(TimeFieldContext);
-  const [local, others] = splitProps(props, ["children", "class", "dataTheme", "style"]);
+  const others = omit(props, "children", "class", "dataTheme", "style");
 
   const renderProps = () => ({
     value: context?.value() ?? "",
@@ -206,38 +198,31 @@ const TimeFieldGroup: Layout<typeof componentRecipe, TimeFieldGroupProps> = () =
         CLASSES.Group.base,
         CLASSES.Group.variant[context?.variant() ?? "primary"],
         context?.fullWidth() && CLASSES.Group.flag.fullWidth,
-        local.class,
+        props.class,
       ) }}
       data-slot="date-input-group"
       data-invalid={context?.isInvalid() ? "true" : undefined}
       data-disabled={context?.isDisabled() ? "true" : undefined}
-      data-theme={local.dataTheme}
-      style={local.style}
+      data-theme={props.dataTheme}
+      style={props.style}
     >
-      {typeof local.children === "function" ? local.children(renderProps()) : local.children}
+      {typeof props.children === "function" ? props.children(renderProps()) : props.children}
     </div>
   );
 };
 
 const TimeFieldInput: Layout<typeof componentRecipe, TimeFieldInputProps> = () => {
   const context = useContext(TimeFieldContext);
-  const [local, others] = splitProps(props, [
-    "class",
-    "dataTheme",
-    "style",
-    "onInput",
-    "onBlur",
-    "name",
-  ]);
+  const others = omit(props, "class", "dataTheme", "style", "onInput", "onBlur", "name");
 
   const handleInput: JSX.EventHandlerUnion<HTMLInputElement, InputEvent> = (event) => {
-    invokeEventHandler(local.onInput, event);
+    invokeEventHandler(props.onInput, event);
     if (event.defaultPrevented) return;
     context?.setValue(event.currentTarget.value);
   };
 
   const handleBlur: JSX.EventHandlerUnion<HTMLInputElement, FocusEvent> = (event) => {
-    invokeEventHandler(local.onBlur, event);
+    invokeEventHandler(props.onBlur, event);
     invokeEventHandler(context?.onBlur(), event);
   };
 
@@ -245,11 +230,11 @@ const TimeFieldInput: Layout<typeof componentRecipe, TimeFieldInputProps> = () =
     <input
       {...others}
       type="time"
-      {...{ class: twMerge(CLASSES.Input.base, local.class) }}
+      {...{ class: twMerge(CLASSES.Input.base, props.class) }}
       data-slot="date-input-group-input"
-      data-theme={local.dataTheme}
-      style={local.style}
-      name={local.name ?? context?.name()}
+      data-theme={props.dataTheme}
+      style={props.style}
+      name={props.name ?? context?.name()}
       value={context?.value() ?? ""}
       disabled={context?.isDisabled()}
       required={context?.isRequired()}
@@ -262,76 +247,70 @@ const TimeFieldInput: Layout<typeof componentRecipe, TimeFieldInputProps> = () =
 };
 
 const TimeFieldInputContainer: Layout<typeof componentRecipe, TimeFieldInputContainerProps> = () => {
-  const [local, others] = splitProps(props, ["children", "class", "dataTheme", "style"]);
+  const others = omit(props, "children", "class", "dataTheme", "style");
 
   return (
     <div
       {...others}
-      {...{ class: twMerge(CLASSES.InputContainer.base, local.class) }}
+      {...{ class: twMerge(CLASSES.InputContainer.base, props.class) }}
       data-slot="date-input-group-input-container"
-      data-theme={local.dataTheme}
-      style={local.style}
+      data-theme={props.dataTheme}
+      style={props.style}
     >
-      {local.children}
+      {props.children}
     </div>
   );
 };
 
 const TimeFieldSegment: Layout<typeof componentRecipe, TimeFieldSegmentProps> = () => {
-  const [local, others] = splitProps(props, [
-    "children",
-    "class",
-    "dataTheme",
-    "style",
-    "segment",
-  ]);
+  const others = omit(props, "children", "class", "dataTheme", "style", "segment");
 
   return (
     <span
       {...others}
-      {...{ class: twMerge(CLASSES.Segment.base, local.class) }}
+      {...{ class: twMerge(CLASSES.Segment.base, props.class) }}
       data-slot="date-input-group-segment"
-      data-type={local.segment?.type}
-      data-placeholder={local.segment?.isPlaceholder ? "true" : undefined}
-      data-invalid={local.segment?.issues?.length ? "true" : undefined}
-      data-focused={local.segment?.isFocused ? "true" : undefined}
-      data-disabled={local.segment?.state === "disabled" ? "true" : undefined}
-      data-theme={local.dataTheme}
-      style={local.style}
+      data-type={props.segment?.type}
+      data-placeholder={props.segment?.isPlaceholder ? "true" : undefined}
+      data-invalid={props.segment?.issues?.length ? "true" : undefined}
+      data-focused={props.segment?.isFocused ? "true" : undefined}
+      data-disabled={props.segment?.state === "disabled" ? "true" : undefined}
+      data-theme={props.dataTheme}
+      style={props.style}
     >
-      {local.children ?? local.segment?.text}
+      {props.children ?? props.segment?.text}
     </span>
   );
 };
 
 const TimeFieldPrefix: Layout<typeof componentRecipe, TimeFieldPrefixProps> = () => {
-  const [local, others] = splitProps(props, ["children", "class", "dataTheme", "style"]);
+  const others = omit(props, "children", "class", "dataTheme", "style");
 
   return (
     <div
       {...others}
-      {...{ class: twMerge(CLASSES.Prefix.base, local.class) }}
+      {...{ class: twMerge(CLASSES.Prefix.base, props.class) }}
       data-slot="date-input-group-prefix"
-      data-theme={local.dataTheme}
-      style={local.style}
+      data-theme={props.dataTheme}
+      style={props.style}
     >
-      {local.children}
+      {props.children}
     </div>
   );
 };
 
 const TimeFieldSuffix: Layout<typeof componentRecipe, TimeFieldSuffixProps> = () => {
-  const [local, others] = splitProps(props, ["children", "class", "dataTheme", "style"]);
+  const others = omit(props, "children", "class", "dataTheme", "style");
 
   return (
     <div
       {...others}
-      {...{ class: twMerge(CLASSES.Suffix.base, local.class) }}
+      {...{ class: twMerge(CLASSES.Suffix.base, props.class) }}
       data-slot="date-input-group-suffix"
-      data-theme={local.dataTheme}
-      style={local.style}
+      data-theme={props.dataTheme}
+      style={props.style}
     >
-      {local.children}
+      {props.children}
     </div>
   );
 };

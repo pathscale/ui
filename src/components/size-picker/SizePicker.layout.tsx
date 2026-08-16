@@ -1,4 +1,4 @@
-import { type Component, For, createMemo, splitProps } from "solid-js";
+import { type Component, For, createMemo, omit } from "solid-js";
 import { twMerge } from "tailwind-merge";
 import { clsx } from "clsx";
 import Button from "../button";
@@ -17,31 +17,32 @@ export interface SizePickerProps extends UIBaseProps {
 }
 
 const SizePicker: Layout<typeof componentRecipe, SizePickerProps> = () => {
-  const [local, others] = splitProps(props, [
+  const others = omit(
+    props,
     "storagePrefix",
     "onSizeChange",
     "aria-label",
     "class",
     "style",
     "dataTheme",
-  ]);
+  );
 
   const store = createMemo<SizeStore>(() =>
-    createSizeStore(local.storagePrefix ?? "theme")
+    createSizeStore(props.storagePrefix ?? "theme")
   );
 
   const handleClick = (preset: SizePreset) => {
     store().setSize(preset);
-    local.onSizeChange?.(preset);
+    props.onSizeChange?.(preset);
   };
 
   const classes = () =>
-    twMerge(CLASSES.base, clsx(local.class));
+    twMerge(CLASSES.base, clsx(props.class));
 
   return (
     <div
       {...{ class: classes() }}
-      style={local.style}
+      style={props.style}
       role="radiogroup"
       aria-label={local["aria-label"] ?? "Change text size"}
       {...others}

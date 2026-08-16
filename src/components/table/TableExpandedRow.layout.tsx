@@ -1,4 +1,5 @@
-import { type JSX, splitProps } from "solid-js";
+import {omit} from "solid-js";
+import type { JSX } from "@solidjs/web";
 import { twMerge } from "tailwind-merge";
 import type { Layout } from "../../lib/layouts";
 import type { UIBaseProps } from "../vocabulary";
@@ -18,7 +19,8 @@ const TableExpandedRow: Layout<
   typeof tableExpandedRowRecipe,
   TableExpandedRowProps
 > = () => {
-  const [local, rest] = splitProps(props, [
+  const rest = omit(
+    props,
     "children",
     "class",
     "dataTheme",
@@ -26,27 +28,27 @@ const TableExpandedRow: Layout<
     "cellClass",
     "cellClassName",
     "cellDataTheme",
-  ]);
+  );
 
   return (
     <TableRow
-      {...{ class: twMerge(CLASSES.expandedRow, local.class) }}
-      data-theme={local.dataTheme}
+      {...{ class: twMerge(CLASSES.expandedRow, props.class) }}
+      data-theme={props.dataTheme}
       data-slot="table-expanded-row"
       {...rest}
     >
       <TableCell
-        colSpan={local.colSpan}
+        colSpan={props.colSpan}
         {...{
           class: twMerge(
             CLASSES.expandedCell,
-            local.cellClass,
-            local.cellClassName,
+            props.cellClass,
+            props.cellClassName,
           ),
         }}
-        dataTheme={local.cellDataTheme ?? local.dataTheme}
+        dataTheme={props.cellDataTheme ?? props.dataTheme}
       >
-        {local.children}
+        {props.children}
       </TableCell>
     </TableRow>
   );

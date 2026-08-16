@@ -1,5 +1,6 @@
 import "./Skeleton.css";
-import { Index, Show, type JSX } from "solid-js";
+import type { JSX } from "@solidjs/web";
+import {Index, Show} from "solid-js";
 import type { Radius, Size, UIBaseProps, Width } from "../vocabulary";
 import type { Layout } from "../../lib/layouts";
 import { skeleton } from "./Skeleton.recipe";

@@ -1,4 +1,5 @@
-import { For, Show, type JSX, splitProps } from "solid-js";
+import {For, Show, omit} from "solid-js";
+import type { JSX } from "@solidjs/web";
 import { twMerge } from "tailwind-merge";
 import { Empty } from "../empty";
 import Icon from "../icon";
@@ -18,7 +19,8 @@ export type MobileListViewProps<TRow> = UIBaseProps & {
 };
 
 const MobileListView: Layout<typeof tableMobileListViewRecipe, MobileListViewProps<unknown>> = () => {
-  const [local, rest] = splitProps(props, [
+  const rest = omit(
+    props,
     "rows",
     "renderRow",
     "empty",
@@ -29,25 +31,25 @@ const MobileListView: Layout<typeof tableMobileListViewRecipe, MobileListViewPro
     "emptyIcon",
     "class",
     "dataTheme",
-  ]);
+  );
   const renderRow = (row: unknown, index: number) => {
-    if (local.renderRow) return local.renderRow(row, index);
-    if (local.children) return local.children(row, index);
+    if (props.renderRow) return props.renderRow(row, index);
+    if (props.children) return props.children(row, index);
     return null;
   };
   const emptyContent = () => {
-    if (local.empty) return local.empty;
-    if (!local.emptyTitle) return null;
+    if (props.empty) return props.empty;
+    if (!props.emptyTitle) return null;
     return (
       <Empty>
         <Empty.Icon>
           <Icon
-            src={local.emptyIcon ?? "icon-[mdi--inbox-outline]"}
+            src={props.emptyIcon ?? "icon-[mdi--inbox-outline]"}
             width={24}
             height={24}
           />
         </Empty.Icon>
-        <Empty.Title>{local.emptyTitle}</Empty.Title>
+        <Empty.Title>{props.emptyTitle}</Empty.Title>
       </Empty>
     );
   };
@@ -55,16 +57,16 @@ const MobileListView: Layout<typeof tableMobileListViewRecipe, MobileListViewPro
   return (
     <div
       {...rest}
-      {...{ class: twMerge("w-full", local.class) }}
-      data-theme={local.dataTheme}
+      {...{ class: twMerge("w-full", props.class) }}
+      data-theme={props.dataTheme}
       data-slot="table-mobile-list-view"
     >
       <ul
-        {...{ class: twMerge("divide-y divide-base-content/10", local.listClass) }}
+        {...{ class: twMerge("divide-y divide-base-content/10", props.listClass) }}
         data-slot="table-mobile-list-view-list"
       >
         <Show
-          when={local.rows.length > 0}
+          when={props.rows.length > 0}
           fallback={
             <Show when={emptyContent()}>
               <li class="py-8" data-slot="table-mobile-list-view-empty">
@@ -73,10 +75,10 @@ const MobileListView: Layout<typeof tableMobileListViewRecipe, MobileListViewPro
             </Show>
           }
         >
-          <For each={local.rows}>
+          <For each={props.rows}>
             {(row, index) =>
-              local.renderRow ? (
-                <li {...{ class: local.itemClass }} data-slot="table-mobile-list-view-item">
+              props.renderRow ? (
+                <li {...{ class: props.itemClass }} data-slot="table-mobile-list-view-item">
                   {renderRow(row, index())}
                 </li>
               ) : (

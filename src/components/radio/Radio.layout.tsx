@@ -1,5 +1,6 @@
 import "./Radio.css";
-import { Show, splitProps, useContext, type Component, type JSX } from "solid-js";
+import type { JSX } from "@solidjs/web";
+import {Show, omit, useContext, type Component} from "solid-js";
 import { twMerge } from "tailwind-merge";
 import { RadioGroupContext } from "../radio-group/context";
 import type { UIBaseProps, State, Issue } from "../vocabulary";
@@ -30,7 +31,8 @@ export type RadioProps = Omit<JSX.InputHTMLAttributes<HTMLInputElement>, "type" 
 
 const Radio: Layout<typeof componentRecipe, RadioProps> = () => {
   const group = useContext(RadioGroupContext);
-  const [local, others] = splitProps(props, [
+  const others = omit(
+    props,
     "class",
     "children",
     "description",
@@ -44,22 +46,22 @@ const Radio: Layout<typeof componentRecipe, RadioProps> = () => {
     "onChange",
     "dataTheme",
     "aria-invalid",
-  ]);
+  );
 
-  const value = () => (local.value != null ? String(local.value) : undefined);
+  const value = () => (props.value != null ? String(props.value) : undefined);
   const isGrouped = () => Boolean(group && value() !== undefined);
-  const isSelected = () => (isGrouped() ? group?.value() === value() : Boolean(local.checked));
+  const isSelected = () => (isGrouped() ? group?.value() === value() : Boolean(props.checked));
   const isDisabled = () =>
-    Boolean((local.state === "disabled")) || Boolean(local.disabled) || Boolean(group?.isDisabled());
+    Boolean((props.state === "disabled")) || Boolean(props.disabled) || Boolean(group?.isDisabled());
   const isInvalid = () =>
-    Boolean((resolveState(local.state, local.issues) === "invalid")) || Boolean(local["aria-invalid"]) || Boolean(group?.isInvalid());
-  const name = () => local.name ?? group?.name();
+    Boolean((resolveState(props.state, props.issues) === "invalid")) || Boolean(local["aria-invalid"]) || Boolean(group?.isInvalid());
+  const name = () => props.name ?? group?.name();
   const ariaInvalid = () => local["aria-invalid"] ?? (isInvalid() ? true : undefined);
 
-  const hasContent = () => local.children != null || local.description != null;
+  const hasContent = () => props.children != null || props.description != null;
 
   const handleChange: JSX.EventHandlerUnion<HTMLInputElement, Event> = (event) => {
-    invokeEventHandler(local.onChange, event);
+    invokeEventHandler(props.onChange, event);
     if (event.defaultPrevented) return;
 
     if (event.currentTarget.checked && group && value() !== undefined) {
@@ -69,8 +71,8 @@ const Radio: Layout<typeof componentRecipe, RadioProps> = () => {
 
   return (
     <label
-      {...{ class: twMerge(CLASSES.base, isDisabled() && CLASSES.flag.disabled, local.class) }}
-      data-theme={local.dataTheme}
+      {...{ class: twMerge(CLASSES.base, isDisabled() && CLASSES.flag.disabled, props.class) }}
+      data-theme={props.dataTheme}
       data-slot="radio"
       data-selected={isSelected() ? "true" : "false"}
       data-disabled={isDisabled() ? "true" : "false"}
@@ -80,9 +82,9 @@ const Radio: Layout<typeof componentRecipe, RadioProps> = () => {
       <input
         {...others}
         type="radio"
-        value={local.value}
+        value={props.value}
         name={name()}
-        checked={isGrouped() ? isSelected() : local.checked}
+        checked={isGrouped() ? isSelected() : props.checked}
         disabled={isDisabled()}
         {...{ class: CLASSES.slot.input }}
         data-slot="radio-input"
@@ -92,18 +94,18 @@ const Radio: Layout<typeof componentRecipe, RadioProps> = () => {
 
       <span {...{ class: CLASSES.slot.control }} data-slot="radio-control" aria-hidden="true">
         <span {...{ class: CLASSES.slot.indicator }} data-slot="radio-indicator">
-          {local.indicator}
+          {props.indicator}
         </span>
       </span>
 
       <Show when={hasContent()}>
         <span {...{ class: CLASSES.slot.content }} data-slot="radio-content">
-          <Show when={local.children}>
-            <span data-slot="label">{local.children}</span>
+          <Show when={props.children}>
+            <span data-slot="label">{props.children}</span>
           </Show>
-          <Show when={local.description}>
+          <Show when={props.description}>
             <span {...{ class: CLASSES.slot.description }} data-slot="description">
-              {local.description}
+              {props.description}
             </span>
           </Show>
         </span>

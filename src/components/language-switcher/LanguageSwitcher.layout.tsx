@@ -1,5 +1,5 @@
 import "./LanguageSwitcher.css";
-import { type Component, For, Show, splitProps } from "solid-js";
+import { type Component, For, Show, omit } from "solid-js";
 import { twMerge } from "tailwind-merge";
 import Dropdown, { type DropdownAlign } from "../dropdown";
 import Icon from "../icon";
@@ -42,7 +42,8 @@ export interface LanguageSwitcherProps extends UIBaseProps {
 }
 
 const LanguageSwitcher: Layout<typeof componentRecipe, LanguageSwitcherProps> = () => {
-  const [local, others] = splitProps(props, [
+  const others = omit(
+    props,
     "i18n",
     "class",
     "style",
@@ -52,54 +53,54 @@ const LanguageSwitcher: Layout<typeof componentRecipe, LanguageSwitcherProps> = 
     "loadingLabel",
     "align",
     "onLanguageChange",
-  ]);
+  );
 
-  const currentLanguageName = () => local.i18n.languageNames[local.i18n.locale];
-  const isSelected = (lang: string) => local.i18n.locale === lang;
+  const currentLanguageName = () => props.i18n.languageNames[props.i18n.locale];
+  const isSelected = (lang: string) => props.i18n.locale === lang;
 
   const handleSelect = async (lang: string) => {
-    await local.i18n.setLocale(lang);
-    local.onLanguageChange?.(lang);
+    await props.i18n.setLocale(lang);
+    props.onLanguageChange?.(lang);
   };
 
-  const classes = () => twMerge(CLASSES.base, local.class);
+  const classes = () => twMerge(CLASSES.base, props.class);
 
   return (
     <Dropdown.Root
       {...others}
       {...{ class: classes() }}
-      style={local.style}
+      style={props.style}
       role={undefined}
       aria-label={local["aria-label"] ?? "Language selector"}
     >
       <Dropdown.Trigger
         {...{ class: CLASSES.trigger }}
-        aria-label={`${local.currentLanguageLabel ?? "Current language"}: ${currentLanguageName()}`}
+        aria-label={`${props.currentLanguageLabel ?? "Current language"}: ${currentLanguageName()}`}
       >
         <Show
-          when={!local.i18n.isLoading}
+          when={!props.i18n.isLoading}
           fallback={
             <Icon
               src="icon-[mdi--loading]"
               {...{ class: CLASSES.loadingIcon }}
               width={16}
               height={16}
-              aria-label={local.loadingLabel ?? "Loading language"}
+              aria-label={props.loadingLabel ?? "Loading language"}
             />
           }
         >
           <span {...{ class: CLASSES.locale }} aria-hidden="true">
-            {local.i18n.locale.toUpperCase()}
+            {props.i18n.locale.toUpperCase()}
           </span>
         </Show>
       </Dropdown.Trigger>
 
       <Dropdown.Menu
         {...{ class: CLASSES.menu }}
-        align={local.align}
-        aria-label={local.optionsLabel ?? "Language options"}
+        align={props.align}
+        aria-label={props.optionsLabel ?? "Language options"}
       >
-        <For each={local.i18n.languages}>
+        <For each={props.i18n.languages}>
           {(lang) => (
             <Dropdown.Item
               onClick={() => handleSelect(lang.code)}

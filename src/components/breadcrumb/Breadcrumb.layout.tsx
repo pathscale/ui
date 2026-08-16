@@ -1,13 +1,6 @@
 import "./Breadcrumb.css";
-import {
-  createContext,
-  splitProps,
-  useContext,
-  Show,
-  type Component,
-  type JSX,
-  type ParentComponent,
-} from "solid-js";
+import type { JSX } from "@solidjs/web";
+import {createContext, omit, useContext, Show, type Component, type ParentComponent} from "solid-js";
 import { twMerge } from "tailwind-merge";
 import type { UIBaseProps } from "../vocabulary";
 import { CLASSES } from "./Breadcrumb.recipe";
@@ -72,31 +65,25 @@ const ChevronRight = () => (
  * Breadcrumb Root
  * -----------------------------------------------------------------------------------------------*/
 const BreadcrumbRoot: Layout<typeof componentRecipe, BreadcrumbRootProps> = () => {
-  const [local, others] = splitProps(props, [
-    "children",
-    "class",
-    "separator",
-    "dataTheme",
-    "style",
-  ]);
+  const others = omit(props, "children", "class", "separator", "dataTheme", "style");
 
   const ctx: BreadcrumbContextValue = {
-    separator: () => local.separator,
+    separator: () => props.separator,
   };
 
   return (
-    <BreadcrumbContext.Provider value={ctx}>
+    <BreadcrumbContext value={ctx}>
       <nav
         {...others}
         aria-label="Breadcrumb"
-        {...{ class: twMerge(CLASSES.Root.base, local.class) }}
+        {...{ class: twMerge(CLASSES.Root.base, props.class) }}
         data-slot="breadcrumb"
-        data-theme={local.dataTheme}
-        style={local.style}
+        data-theme={props.dataTheme}
+        style={props.style}
       >
-        {local.children}
+        {props.children}
       </nav>
-    </BreadcrumbContext.Provider>
+    </BreadcrumbContext>
   );
 };
 
@@ -106,47 +93,40 @@ const BreadcrumbRoot: Layout<typeof componentRecipe, BreadcrumbRootProps> = () =
 const [ITEM_CLASS, LINK_CLASS, SEPARATOR_CLASS] = CLASSES.Item.base;
 
 const BreadcrumbItem: Layout<typeof componentRecipe, BreadcrumbItemProps> = () => {
-  const [local, others] = splitProps(props, [
-    "children",
-    "class",
-    "href",
-    "isCurrent",
-    "dataTheme",
-    "style",
-  ]);
+  const others = omit(props, "children", "class", "href", "isCurrent", "dataTheme", "style");
 
   const ctx = useBreadcrumbContext();
 
   return (
     <li
       {...others}
-      {...{ class: twMerge(ITEM_CLASS, local.class) }}
+      {...{ class: twMerge(ITEM_CLASS, props.class) }}
       data-slot="breadcrumb-item"
-      data-theme={local.dataTheme}
-      style={local.style}
+      data-theme={props.dataTheme}
+      style={props.style}
     >
       <Show
-        when={local.href && !local.isCurrent}
+        when={props.href && !props.isCurrent}
         fallback={
           <span
             {...{ class: LINK_CLASS }}
             data-slot="breadcrumb-link"
-            data-current={local.isCurrent ? "true" : undefined}
-            aria-current={local.isCurrent ? "page" : undefined}
+            data-current={props.isCurrent ? "true" : undefined}
+            aria-current={props.isCurrent ? "page" : undefined}
           >
-            {local.children}
+            {props.children}
           </span>
         }
       >
         <a
-          href={local.href}
+          href={props.href}
           {...{ class: LINK_CLASS }}
           data-slot="breadcrumb-link"
         >
-          {local.children}
+          {props.children}
         </a>
       </Show>
-      <Show when={!local.isCurrent}>
+      <Show when={!props.isCurrent}>
         <span {...{ class: SEPARATOR_CLASS }} data-slot="breadcrumb-separator">
           {ctx.separator() ?? <ChevronRight />}
         </span>

@@ -1,19 +1,6 @@
 import "./Toast.css";
-import {
-  For,
-  Show,
-  createContext,
-  createEffect,
-  createMemo,
-  createSignal,
-  onCleanup,
-  splitProps,
-  useContext,
-  type Accessor,
-  type Component,
-  type JSX,
-  type ParentComponent,
-} from "solid-js";
+import type { JSX } from "@solidjs/web";
+import {For, Show, createContext, createEffect, createMemo, createSignal, onCleanup, omit, useContext, type Accessor, type Component, type ParentComponent} from "solid-js";
 import { twMerge } from "tailwind-merge";
 
 import Button, { type ButtonProps } from "../button";
@@ -539,92 +526,86 @@ export type ToastCloseButtonProps = Omit<
   Omit<CloseButtonProps, "children" | "startIcon" | "endIcon">;
 
 const ToastContent: Layout<typeof componentRecipe, ToastContentProps> = () => {
-  const [local, others] = splitProps(props, ["children", "class", "dataTheme", "style"]);
+  const others = omit(props, "children", "class", "dataTheme", "style");
 
   return (
     <div
       {...others}
-      {...{ class: twMerge(CLASSES.Content.base, local.class) }}
+      {...{ class: twMerge(CLASSES.Content.base, props.class) }}
       data-slot="toast-content"
-      data-theme={local.dataTheme}
-      style={local.style}
+      data-theme={props.dataTheme}
+      style={props.style}
     >
-      {local.children}
+      {props.children}
     </div>
   );
 };
 
 const ToastIndicator: Layout<typeof componentRecipe, ToastIndicatorProps> = () => {
   const ctx = useToastItemContext();
-  const [local, others] = splitProps(props, [
-    "children",
-    "class",
-    "dataTheme",
-    "style",
-    "variant",
-  ]);
+  const others = omit(props, "children", "class", "dataTheme", "style", "variant");
 
-  const variant = createMemo(() => normalizeVariant(local.variant ?? ctx.variant()));
+  const variant = createMemo(() => normalizeVariant(props.variant ?? ctx.variant()));
 
   return (
     <div
       {...others}
-      {...{ class: twMerge(CLASSES.Indicator.base, local.class) }}
+      {...{ class: twMerge(CLASSES.Indicator.base, props.class) }}
       data-slot="toast-indicator"
-      data-theme={local.dataTheme}
-      style={local.style}
+      data-theme={props.dataTheme}
+      style={props.style}
     >
       <Show
-        when={local.children}
+        when={props.children}
         fallback={<DefaultIndicator variant={variant()} isLoading={ctx.isLoading()} />}
       >
-        {local.children}
+        {props.children}
       </Show>
     </div>
   );
 };
 
 const ToastTitle: Layout<typeof componentRecipe, ToastTitleProps> = () => {
-  const [local, others] = splitProps(props, ["children", "class", "dataTheme", "style"]);
+  const others = omit(props, "children", "class", "dataTheme", "style");
 
   return (
     <p
       {...others}
-      {...{ class: twMerge(CLASSES.Title.base, local.class) }}
+      {...{ class: twMerge(CLASSES.Title.base, props.class) }}
       data-slot="toast-title"
-      data-theme={local.dataTheme}
-      style={local.style}
+      data-theme={props.dataTheme}
+      style={props.style}
     >
-      {local.children}
+      {props.children}
     </p>
   );
 };
 
 const ToastDescription: Layout<typeof componentRecipe, ToastDescriptionProps> = () => {
-  const [local, others] = splitProps(props, ["children", "class", "dataTheme", "style"]);
+  const others = omit(props, "children", "class", "dataTheme", "style");
 
   return (
     <p
       {...others}
-      {...{ class: twMerge(CLASSES.Description.base, local.class) }}
+      {...{ class: twMerge(CLASSES.Description.base, props.class) }}
       data-slot="toast-description"
-      data-theme={local.dataTheme}
-      style={local.style}
+      data-theme={props.dataTheme}
+      style={props.style}
     >
-      {local.children}
+      {props.children}
     </p>
   );
 };
 
 const ToastActionButton: Layout<typeof componentRecipe, ToastActionButtonProps> = () => {
-  const [local, others] = splitProps(props, ["class"]);
+  const others = omit(props, "class");
 
   return (
     <Button
       {...others}
       variant="outline"
       size="sm"
-      {...{ class: twMerge(CLASSES.Action.base, local.class as string | undefined) }}
+      {...{ class: twMerge(CLASSES.Action.base, props.class as string | undefined) }}
       data-slot="toast-action"
     >
       {props.children}
@@ -634,16 +615,10 @@ const ToastActionButton: Layout<typeof componentRecipe, ToastActionButtonProps> 
 
 const ToastCloseButton: Layout<typeof componentRecipe, ToastCloseButtonProps> = () => {
   const ctx = useToastItemContext();
-  const [local, others] = splitProps(props, [
-    "class",
-    "aria-label",
-    "dataTheme",
-    "style",
-    "onClick",
-  ]);
+  const others = omit(props, "class", "aria-label", "dataTheme", "style", "onClick");
 
   const handleClick: JSX.EventHandlerUnion<HTMLButtonElement, MouseEvent> = (event) => {
-    invokeEventHandler(local.onClick, event);
+    invokeEventHandler(props.onClick, event);
     if (event.defaultPrevented) return;
     ctx.onClose?.();
   };
@@ -651,19 +626,20 @@ const ToastCloseButton: Layout<typeof componentRecipe, ToastCloseButtonProps> = 
   return (
     <CloseButton
       {...others}
-      {...{ class: twMerge(CLASSES.Close.base, local.class) }}
+      {...{ class: twMerge(CLASSES.Close.base, props.class) }}
       aria-label={local["aria-label"] ?? "Dismiss notification"}
       startIcon={<CloseIcon />}
       data-slot="toast-close"
-      data-theme={local.dataTheme}
-      style={local.style}
+      data-theme={props.dataTheme}
+      style={props.style}
       onClick={handleClick}
     />
   );
 };
 
 const ToastRoot: Layout<typeof componentRecipe, ToastRootProps> = () => {
-  const [local, others] = splitProps(props, [
+  const others = omit(
+    props,
     "children",
     "class",
     "dataTheme",
@@ -679,24 +655,24 @@ const ToastRoot: Layout<typeof componentRecipe, ToastRootProps> = () => {
     "isHidden",
     "isEntering",
     "isExiting",
-  ]);
+  );
 
-  const variant = createMemo(() => normalizeVariant(local.variant));
-  const isLoading = createMemo(() => Boolean((local.state === "loading")));
-  const isFrontmost = createMemo(() => local.isFrontmost ?? true);
-  const isHidden = createMemo(() => local.isHidden ?? false);
+  const variant = createMemo(() => normalizeVariant(props.variant));
+  const isLoading = createMemo(() => Boolean((props.state === "loading")));
+  const isFrontmost = createMemo(() => props.isFrontmost ?? true);
+  const isHidden = createMemo(() => props.isHidden ?? false);
 
   const contextValue: ToastItemContextValue = {
     variant,
     isLoading,
-    onClose: local.onClose,
+    onClose: props.onClose,
   };
 
   const role = createMemo(() => (variant() === "danger" ? "alert" : "status"));
   const ariaLive = createMemo(() => (variant() === "danger" ? "assertive" : "polite"));
 
   return (
-    <ToastItemContext.Provider value={contextValue}>
+    <ToastItemContext value={contextValue}>
       <div
         {...others}
         {...{ class: twMerge(
@@ -704,9 +680,9 @@ const ToastRoot: Layout<typeof componentRecipe, ToastRootProps> = () => {
           CLASSES.Item.variant[variant()],
           isFrontmost() && CLASSES.Item.state.frontmost,
           isHidden() && CLASSES.Item.state.hidden,
-          local.isEntering && CLASSES.Item.state.entering,
-          local.isExiting && CLASSES.Item.state.exiting,
-          local.class,
+          props.isEntering && CLASSES.Item.state.entering,
+          props.isExiting && CLASSES.Item.state.exiting,
+          props.class,
         ) }}
         role={role()}
         aria-live={ariaLive()}
@@ -714,39 +690,39 @@ const ToastRoot: Layout<typeof componentRecipe, ToastRootProps> = () => {
         data-variant={variant()}
         data-frontmost={isFrontmost() ? "true" : "false"}
         data-hidden={isHidden() ? "true" : "false"}
-        data-theme={local.dataTheme}
-        style={local.style}
+        data-theme={props.dataTheme}
+        style={props.style}
       >
         <Show
-          when={local.children}
+          when={props.children}
           fallback={
             <>
-              <ToastIndicator>{local.indicator}</ToastIndicator>
+              <ToastIndicator>{props.indicator}</ToastIndicator>
 
               <ToastContent>
-                <Show when={local.title != null}>
-                  <ToastTitle>{local.title}</ToastTitle>
+                <Show when={props.title != null}>
+                  <ToastTitle>{props.title}</ToastTitle>
                 </Show>
 
-                <Show when={local.description != null}>
-                  <ToastDescription>{local.description}</ToastDescription>
+                <Show when={props.description != null}>
+                  <ToastDescription>{props.description}</ToastDescription>
                 </Show>
 
-                <Show when={local.actionProps?.children}>
-                  <ToastActionButton {...local.actionProps!} />
+                <Show when={props.actionProps?.children}>
+                  <ToastActionButton {...props.actionProps!} />
                 </Show>
               </ToastContent>
 
-              <Show when={local.onClose}>
+              <Show when={props.onClose}>
                 <ToastCloseButton />
               </Show>
             </>
           }
         >
-          {local.children}
+          {props.children}
         </Show>
       </div>
-    </ToastItemContext.Provider>
+    </ToastItemContext>
   );
 };
 
@@ -768,7 +744,8 @@ export type ToastProviderProps = Omit<JSX.HTMLAttributes<HTMLDivElement>, "child
   };
 
 const ToastProvider: Layout<typeof componentRecipe, ToastProviderProps> = () => {
-  const [local, others] = splitProps(props, [
+  const others = omit(
+    props,
     "children",
     "class",
     "dataTheme",
@@ -783,15 +760,15 @@ const ToastProvider: Layout<typeof componentRecipe, ToastProviderProps> = () => 
     "renderToast",
     "onMouseEnter",
     "onMouseLeave",
-  ]);
+  );
 
-  const queue = createMemo(() => (local.queue === undefined ? toastQueue : local.queue));
-  const placement = createMemo(() => normalizePlacement(local.placement));
-  const gap = createMemo(() => local.gap ?? DEFAULT_GAP);
-  const scaleFactor = createMemo(() => local.scaleFactor ?? DEFAULT_SCALE_FACTOR);
+  const queue = createMemo(() => (props.queue === undefined ? toastQueue : props.queue));
+  const placement = createMemo(() => normalizePlacement(props.placement));
+  const gap = createMemo(() => props.gap ?? DEFAULT_GAP);
+  const scaleFactor = createMemo(() => props.scaleFactor ?? DEFAULT_SCALE_FACTOR);
   const maxVisible = createMemo(
     () =>
-      local.maxVisibleToasts ??
+      props.maxVisibleToasts ??
       queue()?.maxVisibleToasts ??
       DEFAULT_MAX_VISIBLE_TOAST,
   );
@@ -837,46 +814,46 @@ const ToastProvider: Layout<typeof componentRecipe, ToastProviderProps> = () => 
   });
 
   const widthValue = createMemo(() => {
-    if (typeof local.width === "number") {
-      return `${local.width}px`;
+    if (typeof props.width === "number") {
+      return `${props.width}px`;
     }
 
-    return local.width ?? `${DEFAULT_TOAST_WIDTH}px`;
+    return props.width ?? `${DEFAULT_TOAST_WIDTH}px`;
   });
 
   const providerStyle = createMemo<JSX.CSSProperties>(() => ({
     "--toast-width": widthValue(),
-    ...(local.style ?? {}),
+    ...(props.style ?? {}),
   }));
 
   const handleMouseEnter: JSX.EventHandlerUnion<HTMLDivElement, MouseEvent> = (event) => {
-    invokeEventHandler(local.onMouseEnter, event);
+    invokeEventHandler(props.onMouseEnter, event);
     queue()?.pauseAll();
   };
 
   const handleMouseLeave: JSX.EventHandlerUnion<HTMLDivElement, MouseEvent> = (event) => {
-    invokeEventHandler(local.onMouseLeave, event);
+    invokeEventHandler(props.onMouseLeave, event);
     queue()?.resumeAll();
   };
 
   return (
     <div
       {...others}
-      ref={local.ref}
+      ref={props.ref}
       {...{ class: twMerge(
         CLASSES.Provider.base,
         CLASSES.Provider.placement[placement()],
-        local.class,
+        props.class,
       ) }}
       data-slot="toast-region"
       data-placement={placement()}
-      data-theme={local.dataTheme}
+      data-theme={props.dataTheme}
       style={providerStyle()}
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
     >
       <div {...{ class: CLASSES.Provider.stack }} data-slot="toast-stack">
-        {local.children}
+        {props.children}
 
         <For each={toasts()}>
           {(queuedToast, index) => {
@@ -914,7 +891,7 @@ const ToastProvider: Layout<typeof componentRecipe, ToastProviderProps> = () => 
                 style={itemStyle()}
               >
                 <Show
-                  when={local.renderToast}
+                  when={props.renderToast}
                   fallback={
                     <ToastRoot
                       title={queuedToast.content.title}

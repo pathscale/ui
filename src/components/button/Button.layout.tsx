@@ -1,6 +1,6 @@
 import "./Button.css";
-import { Show, type JSX } from "solid-js";
-import { Dynamic } from "solid-js/web";
+import {Show} from "solid-js";
+import { Dynamic, type JSX} from "@solidjs/web";
 import type {
   Flavor,
   IconSlotProps,

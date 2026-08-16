@@ -1,4 +1,5 @@
-import { type JSX, splitProps } from "solid-js";
+import {omit} from "solid-js";
+import type { JSX } from "@solidjs/web";
 import { twMerge } from "tailwind-merge";
 import type { Layout } from "../../lib/layouts";
 import type { UIBaseProps } from "../vocabulary";
@@ -11,24 +12,18 @@ const TableColumnResizer: Layout<
   typeof tableColumnResizerRecipe,
   TableColumnResizerProps
 > = () => {
-  const [local, rest] = splitProps(props, [
-    "children",
-    "class",
-    "dataTheme",
-    "role",
-    "aria-orientation",
-  ]);
+  const rest = omit(props, "children", "class", "dataTheme", "role", "aria-orientation");
 
   return (
     <div
-      role={local.role ?? "separator"}
+      role={props.role ?? "separator"}
       aria-orientation={local["aria-orientation"] ?? "vertical"}
-      {...{ class: twMerge(CLASSES.columnResizer, local.class) }}
-      data-theme={local.dataTheme}
+      {...{ class: twMerge(CLASSES.columnResizer, props.class) }}
+      data-theme={props.dataTheme}
       data-slot="table-column-resizer"
       {...rest}
     >
-      {local.children}
+      {props.children}
     </div>
   );
 };

@@ -1,4 +1,5 @@
-import { type Accessor, type Component, Show, createEffect, onCleanup, splitProps, type JSX } from "solid-js";
+import {type Accessor, type Component, Show, createEffect, onCleanup, omit} from "solid-js";
+import type { JSX } from "@solidjs/web";
 import { twMerge } from "tailwind-merge";
 
 import type { UIBaseProps } from "../vocabulary";
@@ -30,20 +31,13 @@ export type VideoPreviewProps = VideoPreviewBaseProps &
   Omit<JSX.VideoHTMLAttributes<HTMLVideoElement>, keyof VideoPreviewBaseProps>;
 
 export const VideoPreview: Layout<typeof componentRecipe, VideoPreviewProps> = () => {
-  const [local, others] = splitProps(props, [
-    "stream",
-    "muted",
-    "mirror",
-    "dataTheme",
-    "class",
-    "style",
-  ]);
+  const others = omit(props, "stream", "muted", "mirror", "dataTheme", "class", "style");
 
-  const muted = () => local.muted ?? true;
-  const mirror = () => local.mirror ?? false;
+  const muted = () => props.muted ?? true;
+  const mirror = () => props.mirror ?? false;
 
   return (
-    <Show when={local.stream()}>
+    <Show when={props.stream()}>
       {(stream) => {
         let videoRef!: HTMLVideoElement;
 
@@ -62,9 +56,9 @@ export const VideoPreview: Layout<typeof componentRecipe, VideoPreviewProps> = (
             autoplay
             playsinline
             muted={muted()}
-            data-theme={local.dataTheme}
-            {...{ class: twMerge(mirror() && CLASSES.mirror, local.class) }}
-            style={local.style}
+            data-theme={props.dataTheme}
+            {...{ class: twMerge(mirror() && CLASSES.mirror, props.class) }}
+            style={props.style}
           />
         );
       }}

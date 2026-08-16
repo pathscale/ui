@@ -1,6 +1,6 @@
 import "./Alert.css";
-import { Show, type Component, type JSX } from "solid-js";
-import { Dynamic } from "solid-js/web";
+import {Show, type Component} from "solid-js";
+import { Dynamic, type JSX} from "@solidjs/web";
 import type { Flavor, UIBaseProps, Variant } from "../vocabulary";
 import type { Layout } from "../../lib/layouts";
 import { alert } from "./Alert.recipe";

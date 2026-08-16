@@ -1,11 +1,5 @@
-import {
-  type Component,
-  type JSX,
-  createEffect,
-  createSignal,
-  onCleanup,
-  splitProps,
-} from "solid-js";
+import {type Component, createEffect, createSignal, onCleanup, omit} from "solid-js";
+import type { JSX } from "@solidjs/web";
 import { runMotion } from "../engine";
 import type { MotionState, MotionTransition } from "../types";
 
@@ -20,7 +14,8 @@ export interface MotionDivProps extends JSX.HTMLAttributes<HTMLDivElement> {
 }
 
 export const MotionDiv: Component<MotionDivProps> = (props) => {
-  const [local, rest] = splitProps(props, [
+  const rest = omit(
+    props,
     "initial",
     "animate",
     "exit",
@@ -30,7 +25,7 @@ export const MotionDiv: Component<MotionDivProps> = (props) => {
     "animateKey",
     "children",
     "ref",
-  ]);
+  );
   const [elementRef, setElementRef] = createSignal<HTMLDivElement | undefined>(
     undefined
   );
@@ -80,13 +75,13 @@ export const MotionDiv: Component<MotionDivProps> = (props) => {
     const target = elementRef();
     if (!target) return;
 
-    const isExiting = Boolean(local.isExiting);
-    const trigger = local.animateKey;
-    const initial = local.initial;
-    const animate = local.animate;
-    const exit = local.exit;
-    const transition = local.transition;
-    const onComplete = local.onExitComplete;
+    const isExiting = Boolean(props.isExiting);
+    const trigger = props.animateKey;
+    const initial = props.initial;
+    const animate = props.animate;
+    const exit = props.exit;
+    const transition = props.transition;
+    const onComplete = props.onExitComplete;
 
     if (isExiting) {
       if (!lastIsExiting) {
@@ -113,13 +108,13 @@ export const MotionDiv: Component<MotionDivProps> = (props) => {
     <div
       ref={(el) => {
         setElementRef(el);
-        if (typeof local.ref === "function") {
-          local.ref(el);
+        if (typeof props.ref === "function") {
+          props.ref(el);
         }
       }}
       {...rest}
     >
-      {local.children}
+      {props.children}
     </div>
   );
 };

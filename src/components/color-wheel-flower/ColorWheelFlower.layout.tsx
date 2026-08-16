@@ -1,13 +1,6 @@
 import "./ColorWheelFlower.css";
-import {
-  type JSX,
-  For,
-  createEffect,
-  createMemo,
-  createSignal,
-  onCleanup,
-  splitProps,
-} from "solid-js";
+import type { JSX } from "@solidjs/web";
+import {For, createEffect, createMemo, createSignal, onCleanup, omit} from "solid-js";
 import { clsx } from "clsx";
 import { twMerge } from "tailwind-merge";
 import ColorSwatch from "../color-swatch";
@@ -242,7 +235,7 @@ const MAX_WAVE_DISTANCE = MAX_RADIUS * 2;
 const MAX_WAVE_DELAY = 0.12;
 
 const ColorWheelFlower: Layout<typeof componentRecipe, ColorWheelFlowerProps> = () => {
-  const [local] = splitProps(props, ["class", "mode", "palette"]);
+
   const context = useColorPickerContext();
 
   const [selectedIndex, setSelectedIndex] = createSignal<number | null>(null);
@@ -274,9 +267,9 @@ const ColorWheelFlower: Layout<typeof componentRecipe, ColorWheelFlowerProps> = 
     onCleanup(() => observer.disconnect());
   }
 
-  const mode = (): ColorWheelFlowerMode => local.mode ?? currentTheme();
+  const mode = (): ColorWheelFlowerMode => props.mode ?? currentTheme();
   const colors = createMemo(() =>
-    buildColors(resolveColorWheelFlowerPalette(mode(), local.palette)),
+    buildColors(resolveColorWheelFlowerPalette(mode(), props.palette)),
   );
 
   const rainbowGradient = () => {
@@ -506,7 +499,7 @@ const ColorWheelFlower: Layout<typeof componentRecipe, ColorWheelFlowerProps> = 
         class: twMerge(
           CLASSES.base,
           clsx({ [CLASSES.flag.disabled]: context.disabled() }),
-          local.class,
+          props.class,
         ),
       }}
       onMouseMove={handlePointerMove}

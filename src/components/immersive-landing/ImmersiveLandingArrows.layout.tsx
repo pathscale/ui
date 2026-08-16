@@ -1,4 +1,5 @@
-import { Show, splitProps, type JSX } from "solid-js";
+import {Show, omit} from "solid-js";
+import type { JSX } from "@solidjs/web";
 import { twMerge } from "tailwind-merge";
 import type { ImmersiveLandingArrowsProps } from "./types";
 import { CLASSES } from "./ImmersiveLanding.recipe";
@@ -6,30 +7,24 @@ import type { Layout } from "../../lib/layouts";
 import { componentRecipe } from "./ImmersiveLanding.recipe";
 
 const ImmersiveLandingArrows: Layout<typeof componentRecipe, ImmersiveLandingArrowsProps> = () => {
-  const [local, others] = splitProps(props, [
-    "onPrev",
-    "onNext",
-    "isFirstPage",
-    "isLastPage",
-    "class",
-    ]);
+  const others = omit(props, "onPrev", "onNext", "isFirstPage", "isLastPage", "class");
 
   const handleNext = () => {
-    if (local.onNext) {
-      local.onNext();
+    if (props.onNext) {
+      props.onNext();
     }
   };
 
   const handlePrev = () => {
-    if (local.onPrev) {
-      local.onPrev();
+    if (props.onPrev) {
+      props.onPrev();
     }
   };
 
   return (
     <>
       {/* Left Arrow - Desktop only */}
-      <Show when={!local.isFirstPage}>
+      <Show when={!props.isFirstPage}>
         <button
           type="button"
           onClick={handlePrev}
@@ -37,7 +32,7 @@ const ImmersiveLandingArrows: Layout<typeof componentRecipe, ImmersiveLandingArr
             class: twMerge(
               CLASSES.arrows.button,
               CLASSES.arrows.prev,
-              local.class,
+              props.class,
             ),
           }}
           aria-label="Previous page"
@@ -56,7 +51,7 @@ const ImmersiveLandingArrows: Layout<typeof componentRecipe, ImmersiveLandingArr
       </Show>
 
       {/* Right Arrow - Desktop only */}
-      <Show when={!local.isLastPage}>
+      <Show when={!props.isLastPage}>
         <button
           type="button"
           onClick={handleNext}
@@ -64,7 +59,7 @@ const ImmersiveLandingArrows: Layout<typeof componentRecipe, ImmersiveLandingArr
             class: twMerge(
               CLASSES.arrows.button,
               CLASSES.arrows.next,
-              local.class,
+              props.class,
             ),
           }}
           aria-label="Next page"

@@ -1,4 +1,5 @@
-import { Show, splitProps, type Component, type JSX } from "solid-js";
+import {Show, omit, type Component} from "solid-js";
+import type { JSX } from "@solidjs/web";
 import { twMerge } from "tailwind-merge";
 
 import type { UIBaseProps } from "../vocabulary";
@@ -13,31 +14,24 @@ export type ListBoxSectionRootProps = Omit<JSX.HTMLAttributes<HTMLDivElement>, "
   };
 
 const ListBoxSectionRoot: Layout<typeof componentRecipe, ListBoxSectionRootProps> = () => {
-  const [local, others] = splitProps(props, [
-    "children",
-    "class",
-    "dataTheme",
-    "style",
-    "title",
-    "role",
-  ]);
+  const others = omit(props, "children", "class", "dataTheme", "style", "title", "role");
 
   return (
     <div
       {...others}
-      role={local.role ?? "group"}
+      role={props.role ?? "group"}
       data-slot="listbox-section"
-      data-theme={local.dataTheme}
-      {...{ class: twMerge(CLASSES.Section.base, local.class) }}
-      style={local.style}
+      data-theme={props.dataTheme}
+      {...{ class: twMerge(CLASSES.Section.base, props.class) }}
+      style={props.style}
     >
-      <Show when={local.title}>
+      <Show when={props.title}>
         <span {...{ class: CLASSES.Section.title }} data-slot="heading">
-          {local.title}
+          {props.title}
         </span>
       </Show>
 
-      {local.children}
+      {props.children}
     </div>
   );
 };

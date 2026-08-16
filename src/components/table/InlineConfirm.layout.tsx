@@ -1,4 +1,4 @@
-import { type Component, splitProps } from "solid-js";
+import { type Component, omit } from "solid-js";
 import { twMerge } from "tailwind-merge";
 import Button from "../button";
 import type { UIBaseProps } from "../vocabulary";
@@ -25,7 +25,8 @@ const toButtonFlavor = (variant: InlineConfirmVariant) => {
 };
 
 const InlineConfirm: Layout<typeof tableInlineConfirmRecipe, InlineConfirmProps> = () => {
-  const [local, rest] = splitProps(props, [
+  const rest = omit(
+    props,
     "prompt",
     "confirmLabel",
     "cancelLabel",
@@ -36,40 +37,40 @@ const InlineConfirm: Layout<typeof tableInlineConfirmRecipe, InlineConfirmProps>
     "confirmFlavor",
     "class",
     "dataTheme",
-  ]);
+  );
 
-  const isBusy = () => Boolean(local.loading);
-  const isDisabled = () => Boolean(local.disabled) || isBusy();
-  const confirmFlavor = () => toButtonFlavor(local.confirmFlavor ?? "primary");
+  const isBusy = () => Boolean(props.loading);
+  const isDisabled = () => Boolean(props.disabled) || isBusy();
+  const confirmFlavor = () => toButtonFlavor(props.confirmFlavor ?? "primary");
 
   return (
     <div
       {...rest}
-      {...{ class: twMerge("inline-flex flex-wrap items-center gap-2", local.class) }}
-      data-theme={local.dataTheme}
+      {...{ class: twMerge("inline-flex flex-wrap items-center gap-2", props.class) }}
+      data-theme={props.dataTheme}
       data-slot="table-inline-confirm"
     >
       <span class="text-sm text-base-content/70" data-slot="table-inline-confirm-prompt">
-        {local.prompt}
+        {props.prompt}
       </span>
       <div class="inline-flex items-center gap-2" data-slot="table-inline-confirm-actions">
         <Button
           size="sm"
           flavor={confirmFlavor()}
           state={isBusy() ? "loading" : isDisabled() ? "disabled" : "default"}
-          onClick={local.onConfirm}
-          aria-label={local.confirmLabel}
+          onClick={props.onConfirm}
+          aria-label={props.confirmLabel}
         >
-          {local.confirmLabel}
+          {props.confirmLabel}
         </Button>
         <Button
           size="sm"
           variant="ghost"
           state={isDisabled() ? "disabled" : "default"}
-          onClick={local.onCancel}
-          aria-label={local.cancelLabel}
+          onClick={props.onCancel}
+          aria-label={props.cancelLabel}
         >
-          {local.cancelLabel}
+          {props.cancelLabel}
         </Button>
       </div>
     </div>

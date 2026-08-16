@@ -1,5 +1,6 @@
 import "./AuthMessage.css";
-import { Show, type JSX } from "solid-js";
+import type { JSX } from "@solidjs/web";
+import {Show} from "solid-js";
 import Alert from "../alert";
 import type { Flavor, UIBaseProps } from "../vocabulary";
 import type { Layout } from "../../lib/layouts";

@@ -1,16 +1,6 @@
 import "./Collapsible.css";
-import {
-  Show,
-  createContext,
-  createMemo,
-  createSignal,
-  createUniqueId,
-  splitProps,
-  useContext,
-  type Component,
-  type JSX,
-  type ParentComponent,
-} from "solid-js";
+import type { JSX } from "@solidjs/web";
+import {Show, createContext, createMemo, createSignal, createUniqueId, omit, useContext, type Component, type ParentComponent} from "solid-js";
 import { twMerge } from "tailwind-merge";
 
 import type { UIBaseProps, State } from "../vocabulary";
@@ -78,7 +68,8 @@ export type CollapsibleIndicatorProps = Omit<JSX.HTMLAttributes<HTMLSpanElement>
 const normalizeKey = (value: string) => String(value);
 
 const CollapsibleRoot: Layout<typeof componentRecipe, CollapsibleRootProps> = () => {
-  const [local, others] = splitProps(props, [
+  const others = omit(
+    props,
     "children",
     "class",
     "dataTheme",
@@ -89,20 +80,20 @@ const CollapsibleRoot: Layout<typeof componentRecipe, CollapsibleRootProps> = ()
     "onOpenChange",
     "state",
     "disabled",
-  ]);
+  );
 
   const uniqueId = createUniqueId();
-  const itemId = () => normalizeKey(local.id ?? uniqueId);
+  const itemId = () => normalizeKey(props.id ?? uniqueId);
   const triggerId = () => `collapsible-trigger-${itemId()}`;
   const contentId = () => `collapsible-content-${itemId()}`;
 
-  const [internalOpen, setInternalOpen] = createSignal(Boolean(local.defaultOpen));
-  const isControlled = createMemo(() => local.open !== undefined);
+  const [internalOpen, setInternalOpen] = createSignal(Boolean(props.defaultOpen));
+  const isControlled = createMemo(() => props.open !== undefined);
   const standaloneOpen = createMemo(() =>
-    isControlled() ? Boolean(local.open) : internalOpen(),
+    isControlled() ? Boolean(props.open) : internalOpen(),
   );
 
-  const isDisabled = () => Boolean((local.state === "disabled")) || Boolean(local.disabled);
+  const isDisabled = () => Boolean((props.state === "disabled")) || Boolean(props.disabled);
   const isExpanded = () => standaloneOpen();
 
   const setOpen = (next: boolean) => {
@@ -112,7 +103,7 @@ const CollapsibleRoot: Layout<typeof componentRecipe, CollapsibleRootProps> = ()
       setInternalOpen(next);
     }
     if (standaloneOpen() !== next) {
-      local.onOpenChange?.(next);
+      props.onOpenChange?.(next);
     }
   };
 
@@ -127,51 +118,47 @@ const CollapsibleRoot: Layout<typeof componentRecipe, CollapsibleRootProps> = ()
   };
 
   return (
-    <CollapsibleContext.Provider value={ctx}>
+    <CollapsibleContext value={ctx}>
       <div
         {...others}
         {...{ class: twMerge(
           CLASSES.base,
           isExpanded() && CLASSES.flag.expanded,
           isDisabled() && CLASSES.flag.disabled,
-          local.class,
+          props.class,
         ) }}
         data-slot="collapsible"
         data-expanded={isExpanded() ? "true" : "false"}
         data-disabled={isDisabled() ? "true" : "false"}
-        data-theme={local.dataTheme}
-        style={local.style}
+        data-theme={props.dataTheme}
+        style={props.style}
       >
-        {local.children}
+        {props.children}
       </div>
-    </CollapsibleContext.Provider>
+    </CollapsibleContext>
   );
 };
 
 const CollapsibleHeading: Layout<typeof componentRecipe, CollapsibleHeadingProps> = () => {
-  const [local, others] = splitProps(props, [
-    "children",
-    "class",
-    "dataTheme",
-    "style",
-  ]);
+  const others = omit(props, "children", "class", "dataTheme", "style");
 
   return (
     <h3
       {...others}
-      {...{ class: twMerge(CLASSES.slot.heading, local.class) }}
+      {...{ class: twMerge(CLASSES.slot.heading, props.class) }}
       data-slot="collapsible-heading"
-      data-theme={local.dataTheme}
-      style={local.style}
+      data-theme={props.dataTheme}
+      style={props.style}
     >
-      {local.children}
+      {props.children}
     </h3>
   );
 };
 
 const CollapsibleTrigger: Layout<typeof componentRecipe, CollapsibleTriggerProps> = () => {
   const ctx = useCollapsibleContext();
-  const [local, others] = splitProps(props, [
+  const others = omit(
+    props,
     "children",
     "class",
     "dataTheme",
@@ -179,16 +166,16 @@ const CollapsibleTrigger: Layout<typeof componentRecipe, CollapsibleTriggerProps
     "onClick",
     "onKeyDown",
     "type",
-  ]);
+  );
 
   const handleClick: JSX.EventHandlerUnion<HTMLButtonElement, MouseEvent> = (event) => {
-    if (typeof local.onClick === "function") local.onClick(event);
+    if (typeof props.onClick === "function") props.onClick(event);
     if (event.defaultPrevented) return;
     ctx.toggle();
   };
 
   const handleKeyDown: JSX.EventHandlerUnion<HTMLButtonElement, KeyboardEvent> = (event) => {
-    if (typeof local.onKeyDown === "function") local.onKeyDown(event);
+    if (typeof props.onKeyDown === "function") props.onKeyDown(event);
     if (event.defaultPrevented) return;
 
     if (event.key === "Enter" || event.key === " ") {
@@ -201,12 +188,12 @@ const CollapsibleTrigger: Layout<typeof componentRecipe, CollapsibleTriggerProps
     <button
       {...others}
       id={ctx.triggerId()}
-      type={local.type ?? "button"}
-      {...{ class: twMerge(CLASSES.slot.trigger, local.class) }}
+      type={props.type ?? "button"}
+      {...{ class: twMerge(CLASSES.slot.trigger, props.class) }}
       data-slot="collapsible-trigger"
       data-expanded={ctx.isExpanded() ? "true" : "false"}
-      data-theme={local.dataTheme}
-      style={local.style}
+      data-theme={props.dataTheme}
+      style={props.style}
       aria-expanded={ctx.isExpanded() ? "true" : "false"}
       aria-controls={ctx.contentId()}
       aria-disabled={ctx.isDisabled() ? "true" : undefined}
@@ -214,23 +201,17 @@ const CollapsibleTrigger: Layout<typeof componentRecipe, CollapsibleTriggerProps
       onClick={handleClick}
       onKeyDown={handleKeyDown}
     >
-      {local.children}
+      {props.children}
     </button>
   );
 };
 
 const CollapsibleContent: Layout<typeof componentRecipe, CollapsibleContentProps> = () => {
   const ctx = useCollapsibleContext();
-  const [local, others] = splitProps(props, [
-    "children",
-    "class",
-    "dataTheme",
-    "style",
-    "keepMounted",
-  ]);
+  const others = omit(props, "children", "class", "dataTheme", "style", "keepMounted");
 
   const expanded = () => ctx.isExpanded();
-  const keepMounted = () => local.keepMounted ?? true;
+  const keepMounted = () => props.keepMounted ?? true;
 
   return (
     <Show when={shouldMountCollapsibleContent(keepMounted(), expanded())}>
@@ -238,38 +219,33 @@ const CollapsibleContent: Layout<typeof componentRecipe, CollapsibleContentProps
         {...others}
         id={ctx.contentId()}
         role="region"
-        {...{ class: twMerge(CLASSES.slot.content, local.class) }}
+        {...{ class: twMerge(CLASSES.slot.content, props.class) }}
         data-slot="collapsible-content"
         data-expanded={expanded() ? "true" : "false"}
-        data-theme={local.dataTheme}
-        style={local.style}
+        data-theme={props.dataTheme}
+        style={props.style}
         aria-hidden={expanded() ? "false" : "true"}
         aria-labelledby={ctx.triggerId()}
       >
-        {local.children}
+        {props.children}
       </div>
     </Show>
   );
 };
 
 const CollapsibleBody: Layout<typeof componentRecipe, CollapsibleBodyProps> = () => {
-  const [local, others] = splitProps(props, [
-    "children",
-    "class",
-    "dataTheme",
-    "style",
-  ]);
+  const others = omit(props, "children", "class", "dataTheme", "style");
 
   return (
     <div
       {...others}
-      {...{ class: twMerge(CLASSES.slot.body, local.class) }}
+      {...{ class: twMerge(CLASSES.slot.body, props.class) }}
       data-slot="collapsible-body"
-      data-theme={local.dataTheme}
-      style={local.style}
+      data-theme={props.dataTheme}
+      style={props.style}
     >
       <div {...{ class: CLASSES.slot.bodyInner }} data-slot="collapsible-body-inner">
-        {local.children}
+        {props.children}
       </div>
     </div>
   );
@@ -277,24 +253,19 @@ const CollapsibleBody: Layout<typeof componentRecipe, CollapsibleBodyProps> = ()
 
 const CollapsibleIndicator: Layout<typeof componentRecipe, CollapsibleIndicatorProps> = () => {
   const ctx = useCollapsibleContext();
-  const [local, others] = splitProps(props, [
-    "children",
-    "class",
-    "dataTheme",
-    "style",
-  ]);
+  const others = omit(props, "children", "class", "dataTheme", "style");
 
   return (
     <span
       {...others}
       aria-hidden="true"
-      {...{ class: twMerge(CLASSES.slot.indicator, local.class) }}
+      {...{ class: twMerge(CLASSES.slot.indicator, props.class) }}
       data-slot="collapsible-indicator"
       data-expanded={ctx.isExpanded() ? "true" : "false"}
-      data-theme={local.dataTheme}
-      style={local.style}
+      data-theme={props.dataTheme}
+      style={props.style}
     >
-      {local.children ?? (
+      {props.children ?? (
         <svg
           fill="none"
           role="presentation"

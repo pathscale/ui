@@ -1,4 +1,5 @@
-import { createSignal, createContext, useContext, type JSX, type FlowComponent } from "solid-js";
+import {createSignal, createContext, useContext, type FlowComponent} from "solid-js";
+import type { JSX } from "@solidjs/web";
 
 export interface Language {
   code: string;
@@ -98,7 +99,7 @@ function getNestedValue(obj: unknown, path: string): string {
  * <p>Current: {i18n.locale}</p>
  *
  * // Initialize on app mount
- * onMount(() => i18n.init());
+ * onSettled(() => i18n.init());
  * ```
  */
 export function createI18n(options: I18nOptions): I18nStore {
@@ -220,8 +221,8 @@ export interface I18nProviderProps {
  */
 export const I18nProvider: FlowComponent<I18nProviderProps> = (props) => {
   return (
-    <I18nContext.Provider value={{ i18n: props.i18n }}>
+    <I18nContext value={{ i18n: props.i18n }}>
       {props.children}
-    </I18nContext.Provider>
+    </I18nContext>
   );
 };

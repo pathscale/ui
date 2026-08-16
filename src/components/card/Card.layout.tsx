@@ -1,6 +1,7 @@
 import "../_shared/material.css";
+import type { JSX } from "@solidjs/web";
 import "./Card.css";
-import { Show, type JSX } from "solid-js";
+import {Show} from "solid-js";
 import type { Flavor, Material, Radius, Space, State, UIBaseProps, Variant } from "../vocabulary";
 import type { Layout } from "../../lib/layouts";
 import { card, cardBody, cardFooter, cardHeader } from "./Card.recipe";

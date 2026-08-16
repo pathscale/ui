@@ -1,7 +1,7 @@
 import {
   type Component,
   createSignal,
-  onMount,
+  onSettled,
   onCleanup,
   Show,
 } from "solid-js";
@@ -90,7 +90,7 @@ export const PWAInstallPrompt: Component<PWAInstallPromptProps> = (props) => {
     setDeferredPrompt(null);
   };
 
-  onMount(() => {
+  onSettled(() => {
     window.addEventListener(
       "beforeinstallprompt",
       handleBeforeInstallPrompt as EventListener

@@ -1,4 +1,4 @@
-import { createStore, produce } from "solid-js/store";
+import { createStore } from "solid-js";
 import type { StandardSchemaV1 } from "@standard-schema/spec";
 import { getFirstFieldError } from "./getFirstFieldError";
 
@@ -111,13 +111,29 @@ const issuesToErrors = (issues: readonly StandardSchemaV1.Issue[]): Record<strin
 export const createForm = <TValues extends AnyValues = AnyValues>(
   options: CreateFormOptions<TValues>,
 ): FormApi<TValues> => {
-  const [values, setValues] = createStore<TValues>({ ...options.defaultValues });
+  // `NoFn` rejects a callable initial value, which a generic `TValues` cannot
+  // prove it is not. The values are a plain object by construction.
+  const [values, setValues] = createStore<TValues>(
+    { ...options.defaultValues } as never,
+  );
   const [meta, setMeta] = createStore<Record<string, FieldMeta>>({});
   const [status, setStatus] = createStore({ isSubmitting: false });
 
   const metaFor = (name: string): FieldMeta => meta[name] ?? { isTouched: false, errors: [] };
 
-  /** Run the schema and replace every field's errors with its verdict. */
+  /** Replace every field's errors with the schema's verdict, keeping touched. */
+  const applyErrors = (errors: Record<string, string[]>, touchAll: boolean): void => {
+    setMeta((draft) => {
+      for (const name of new Set([...Object.keys(draft), ...Object.keys(errors)])) {
+        draft[name] = {
+          isTouched: touchAll || (draft[name]?.isTouched ?? false),
+          errors: errors[name] ?? [],
+        };
+      }
+    });
+  };
+
+  /** Run the schema synchronously. Returns false when it found problems. */
   const runSchema = (): boolean => {
     const schema = options.schema;
     if (!schema) return true;
@@ -126,15 +142,7 @@ export const createForm = <TValues extends AnyValues = AnyValues>(
     // here (change, blur) cannot wait for one, and treating a pending result as
     // "no errors" would clear real ones, so it is left to `submit()`.
     if (result instanceof Promise) return true;
-    const errors = result.issues ? issuesToErrors(result.issues) : {};
-    setMeta(
-      produce((draft) => {
-        const names = new Set([...Object.keys(draft), ...Object.keys(errors)]);
-        for (const name of names) {
-          draft[name] = { isTouched: draft[name]?.isTouched ?? false, errors: errors[name] ?? [] };
-        }
-      }),
-    );
+    applyErrors(result.issues ? issuesToErrors(result.issues) : {}, false);
     return !result.issues?.length;
   };
 
@@ -142,21 +150,17 @@ export const createForm = <TValues extends AnyValues = AnyValues>(
     // Cast at the boundary: the store is typed by the caller's values, and a
     // field name is a string the caller chose, so this is the one place the two
     // cannot be related without making `name` a keyof and losing dotted paths.
-    (setValues as unknown as (fn: (draft: AnyValues) => void) => void)(
-      produce((draft: AnyValues) => {
-        draft[name] = value;
-      }),
-    );
+    (setValues as unknown as (fn: (draft: AnyValues) => void) => void)((draft) => {
+      draft[name] = value;
+    });
     runSchema();
   };
 
   const validateField = (name: string, cause: "change" | "blur"): void => {
     if (cause === "blur") {
-      setMeta(
-        produce((draft) => {
-          draft[name] = { isTouched: true, errors: draft[name]?.errors ?? [] };
-        }),
-      );
+      setMeta((draft) => {
+        draft[name] = { isTouched: true, errors: draft[name]?.errors ?? [] };
+      });
     }
     runSchema();
   };
@@ -165,13 +169,11 @@ export const createForm = <TValues extends AnyValues = AnyValues>(
     // Touch everything first: an untouched field hides its error, and a submit
     // that silently does nothing because of an error you cannot see is the
     // worst version of this.
-    setMeta(
-      produce((draft) => {
-        for (const name of Object.keys(values as AnyValues)) {
-          draft[name] = { isTouched: true, errors: draft[name]?.errors ?? [] };
-        }
-      }),
-    );
+    setMeta((draft) => {
+      for (const name of Object.keys(values as AnyValues)) {
+        draft[name] = { isTouched: true, errors: draft[name]?.errors ?? [] };
+      }
+    });
 
     let ok = runSchema();
 
@@ -181,40 +183,35 @@ export const createForm = <TValues extends AnyValues = AnyValues>(
       const result = schema["~standard"].validate(values as TValues);
       if (result instanceof Promise) {
         const resolved = await result;
-        const errors = resolved.issues ? issuesToErrors(resolved.issues) : {};
-        setMeta(
-          produce((draft) => {
-            for (const name of new Set([...Object.keys(draft), ...Object.keys(errors)])) {
-              draft[name] = { isTouched: true, errors: errors[name] ?? [] };
-            }
-          }),
-        );
+        applyErrors(resolved.issues ? issuesToErrors(resolved.issues) : {}, true);
         ok = !resolved.issues?.length;
       }
     }
 
     if (!ok) return;
 
-    setStatus("isSubmitting", true);
+    setStatus((draft) => {
+      draft.isSubmitting = true;
+    });
     try {
-      const async = options.asyncValidators?.onSubmit;
-      if (async) {
-        const serverErrors = await async({ value: values as TValues });
+      const asyncSubmit = options.asyncValidators?.onSubmit;
+      if (asyncSubmit) {
+        const serverErrors = await asyncSubmit({ value: values as TValues });
         if (serverErrors && Object.keys(serverErrors).length > 0) {
-          setMeta(
-            produce((draft) => {
-              for (const [name, message] of Object.entries(serverErrors)) {
-                if (!message) continue;
-                draft[name] = { isTouched: true, errors: [String(message)] };
-              }
-            }),
-          );
+          setMeta((draft) => {
+            for (const [name, message] of Object.entries(serverErrors)) {
+              if (!message) continue;
+              draft[name] = { isTouched: true, errors: [String(message)] };
+            }
+          });
           return;
         }
       }
       await options.onSubmit?.(values as TValues);
     } finally {
-      setStatus("isSubmitting", false);
+      setStatus((draft) => {
+        draft.isSubmitting = false;
+      });
     }
   };
 

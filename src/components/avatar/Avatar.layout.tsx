@@ -1,15 +1,6 @@
 import "./Avatar.css";
-import {
-  createContext,
-  createSignal,
-  splitProps,
-  useContext,
-  Show,
-  onMount,
-  type Component,
-  type JSX,
-  type ParentComponent,
-} from "solid-js";
+import type { JSX } from "@solidjs/web";
+import {createContext, createSignal, omit, useContext, Show, onSettled, type Component, type ParentComponent} from "solid-js";
 import { twMerge } from "tailwind-merge";
 import type { UIBaseProps, Flavor } from "../vocabulary";
 import { CLASSES } from "./Avatar.recipe";
@@ -62,7 +53,8 @@ export type AvatarFallbackProps = Omit<JSX.HTMLAttributes<HTMLSpanElement>, "chi
  * Avatar Root
  * -----------------------------------------------------------------------------------------------*/
 const AvatarRoot: Layout<typeof componentRecipe, AvatarRootProps> = () => {
-  const [local, others] = splitProps(props, [
+  const others = omit(
+    props,
     "children",
     "class",
     "size",
@@ -70,12 +62,12 @@ const AvatarRoot: Layout<typeof componentRecipe, AvatarRootProps> = () => {
     "variant",
     "dataTheme",
     "style",
-  ]);
+  );
 
   const [imageLoaded, setImageLoaded] = createSignal(false);
-  const size = () => local.size ?? "md";
-  const flavor = () => local.flavor ?? "neutral";
-  const variant = () => local.variant ?? "default";
+  const size = () => props.size ?? "md";
+  const flavor = () => props.flavor ?? "neutral";
+  const variant = () => props.variant ?? "default";
 
   const ctx: AvatarContextValue = {
     size,
@@ -86,22 +78,22 @@ const AvatarRoot: Layout<typeof componentRecipe, AvatarRootProps> = () => {
   };
 
   return (
-    <AvatarContext.Provider value={ctx}>
+    <AvatarContext value={ctx}>
       <span
         {...others}
         {...{ class: twMerge(
           CLASSES.base,
           CLASSES.size[size()],
           CLASSES.variant[variant()],
-          local.class,
+          props.class,
         ) }}
         data-slot="avatar-root"
-        data-theme={local.dataTheme}
-        style={local.style}
+        data-theme={props.dataTheme}
+        style={props.style}
       >
-        {local.children}
+        {props.children}
       </span>
-    </AvatarContext.Provider>
+    </AvatarContext>
   );
 };
 
@@ -109,36 +101,28 @@ const AvatarRoot: Layout<typeof componentRecipe, AvatarRootProps> = () => {
  * Avatar Image
  * -----------------------------------------------------------------------------------------------*/
 const AvatarImage: Layout<typeof componentRecipe, AvatarImageProps> = () => {
-  const [local, others] = splitProps(props, [
-    "class",
-    "dataTheme",
-    "style",
-    "src",
-    "alt",
-    "onLoad",
-    "onError",
-  ]);
+  const others = omit(props, "class", "dataTheme", "style", "src", "alt", "onLoad", "onError");
 
   const ctx = useAvatarContext();
 
   const handleLoad: JSX.EventHandlerUnion<HTMLImageElement, Event> = (e) => {
     ctx.setImageLoaded(true);
-    if (typeof local.onLoad === "function") local.onLoad(e);
+    if (typeof props.onLoad === "function") props.onLoad(e);
   };
 
   const handleError = (e: Event & { currentTarget: HTMLImageElement }) => {
     ctx.setImageLoaded(false);
-    if (typeof local.onError === "function") (local.onError as (e: Event) => void)(e);
+    if (typeof props.onError === "function") (props.onError as (e: Event) => void)(e);
   };
 
   return (
     <img
       {...others}
-      src={local.src}
-      alt={local.alt}
-      {...{ class: twMerge(CLASSES.slot.image, local.class) }}
+      src={props.src}
+      alt={props.alt}
+      {...{ class: twMerge(CLASSES.slot.image, props.class) }}
       data-slot="avatar-image"
-      style={local.style}
+      style={props.style}
       onLoad={handleLoad}
       onError={handleError}
     />
@@ -149,20 +133,14 @@ const AvatarImage: Layout<typeof componentRecipe, AvatarImageProps> = () => {
  * Avatar Fallback
  * -----------------------------------------------------------------------------------------------*/
 const AvatarFallback: Layout<typeof componentRecipe, AvatarFallbackProps> = () => {
-  const [local, others] = splitProps(props, [
-    "children",
-    "class",
-    "dataTheme",
-    "style",
-    "delayMs",
-  ]);
+  const others = omit(props, "children", "class", "dataTheme", "style", "delayMs");
 
   const ctx = useAvatarContext();
-  const [showFallback, setShowFallback] = createSignal(!local.delayMs);
+  const [showFallback, setShowFallback] = createSignal(!props.delayMs);
 
-  onMount(() => {
-    if (local.delayMs) {
-      const timer = setTimeout(() => setShowFallback(true), local.delayMs);
+  onSettled(() => {
+    if (props.delayMs) {
+      const timer = setTimeout(() => setShowFallback(true), props.delayMs);
       return () => clearTimeout(timer);
     }
   });
@@ -174,13 +152,13 @@ const AvatarFallback: Layout<typeof componentRecipe, AvatarFallbackProps> = () =
         {...{ class: twMerge(
           CLASSES.slot.fallback,
           (CLASSES.flavor[ctx.flavor() as keyof typeof CLASSES.flavor] ?? `avatar__fallback--flavor-${ctx.flavor()}`),
-          local.class,
+          props.class,
         ) }}
         data-slot="avatar-fallback"
-        data-theme={local.dataTheme}
-        style={local.style}
+        data-theme={props.dataTheme}
+        style={props.style}
       >
-        {local.children}
+        {props.children}
       </span>
     </Show>
   );

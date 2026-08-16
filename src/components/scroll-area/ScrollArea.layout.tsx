@@ -1,5 +1,6 @@
 import "./ScrollArea.css";
-import { createEffect, createMemo, splitProps, type JSX } from "solid-js";
+import type { JSX } from "@solidjs/web";
+import {createEffect, createMemo, omit} from "solid-js";
 import { twMerge } from "tailwind-merge";
 import type { UIBaseProps } from "../vocabulary";
 import { CLASSES } from "./ScrollArea.recipe";
@@ -36,7 +37,8 @@ export type ScrollAreaProps = UIBaseProps &
   };
 
 const ScrollArea: Layout<typeof componentRecipe, ScrollAreaProps> = () => {
-  const [local, others] = splitProps(props, [
+  const others = omit(
+    props,
     "children",
     "class",
     "dataTheme",
@@ -50,16 +52,16 @@ const ScrollArea: Layout<typeof componentRecipe, ScrollAreaProps> = () => {
     "hideScrollBar",
     "onVisibilityChange",
     "ref",
-  ]);
+  );
 
   let containerRef: HTMLDivElement | undefined;
 
-  const size = () => local.size ?? 40;
-  const offset = () => local.offset ?? 0;
-  const variant = () => local.variant ?? "fade";
-  const visibility = () => local.visibility ?? "auto";
-  const orientation = () => local.orientation ?? "vertical";
-  const isEnabled = () => local.isEnabled ?? true;
+  const size = () => props.size ?? 40;
+  const offset = () => props.offset ?? 0;
+  const variant = () => props.variant ?? "fade";
+  const visibility = () => props.visibility ?? "auto";
+  const orientation = () => props.orientation ?? "vertical";
+  const isEnabled = () => props.isEnabled ?? true;
 
   useScrollArea({
     containerRef: () => containerRef,
@@ -67,7 +69,7 @@ const ScrollArea: Layout<typeof componentRecipe, ScrollAreaProps> = () => {
     offset,
     visibility,
     isEnabled,
-    onVisibilityChange: () => local.onVisibilityChange,
+    onVisibilityChange: () => props.onVisibilityChange,
   });
 
   createEffect(() => {
@@ -92,20 +94,20 @@ const ScrollArea: Layout<typeof componentRecipe, ScrollAreaProps> = () => {
       CLASSES.base,
       CLASSES.orientation[orientation()],
       CLASSES.variant[variant()],
-      local.hideScrollBar && CLASSES.flag.hideScrollBar,
-      local.class,
+      props.hideScrollBar && CLASSES.flag.hideScrollBar,
+      props.class,
     ),
   );
 
   const style = createMemo<JSX.CSSProperties | string>(() => {
-    if (typeof local.style === "string") {
-      const trimmed = local.style.trim();
+    if (typeof props.style === "string") {
+      const trimmed = props.style.trim();
       const suffix = trimmed.length > 0 && !trimmed.endsWith(";") ? ";" : "";
       return `${trimmed}${suffix} --scroll-area-size: ${size()}px;`;
     }
 
     return {
-      ...(local.style ?? {}),
+      ...(props.style ?? {}),
       "--scroll-area-size": `${size()}px`,
     } as JSX.CSSProperties;
   });
@@ -115,15 +117,15 @@ const ScrollArea: Layout<typeof componentRecipe, ScrollAreaProps> = () => {
       {...others}
       ref={(el) => {
         containerRef = el;
-        if (typeof local.ref === "function") local.ref(el);
+        if (typeof props.ref === "function") props.ref(el);
       }}
       {...{ class: classes() }}
-      data-theme={local.dataTheme}
+      data-theme={props.dataTheme}
       data-orientation={orientation()}
       data-scroll-area-size={size()}
       style={style()}
     >
-      {local.children}
+      {props.children}
     </div>
   );
 };

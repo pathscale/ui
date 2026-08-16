@@ -1,4 +1,5 @@
-import { splitProps, type JSX } from "solid-js";
+import {omit} from "solid-js";
+import type { JSX } from "@solidjs/web";
 import { twMerge } from "tailwind-merge";
 import type { UIBaseProps } from "../vocabulary";
 import { CLASSES } from "./ChatBubble.recipe";
@@ -9,12 +10,12 @@ export type ChatBubbleHeaderProps = JSX.HTMLAttributes<HTMLDivElement> &
   UIBaseProps;
 
 const ChatBubbleHeader: Layout<typeof componentRecipe, ChatBubbleHeaderProps> = () => {
-  const [local, others] = splitProps(props, ["class"]);
+  const others = omit(props, "class");
 
   return (
     <div
       {...others}
-      {...{ class: twMerge(CLASSES.slot.header, local.class) }}
+      {...{ class: twMerge(CLASSES.slot.header, props.class) }}
     />
   );
 };

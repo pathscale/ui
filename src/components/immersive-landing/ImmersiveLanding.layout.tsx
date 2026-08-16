@@ -1,5 +1,5 @@
 import "./ImmersiveLanding.css";
-import { Show, splitProps, type Component } from "solid-js";
+import { Show, omit, type Component } from "solid-js";
 import { twMerge } from "tailwind-merge";
 import type {
   ImmersiveLandingProps,
@@ -19,7 +19,8 @@ import { componentRecipe } from "./ImmersiveLanding.recipe";
 
 const ImmersiveLanding: Layout<typeof componentRecipe, ImmersiveLandingProps> = () => {
   // Don't split children - access directly from props to preserve reactivity
-  const [local, others] = splitProps(props, [
+  const others = omit(
+    props,
     "pages",
     "initialPage",
     "currentPage",
@@ -40,16 +41,16 @@ const ImmersiveLanding: Layout<typeof componentRecipe, ImmersiveLandingProps> = 
     "showPWAPrompt",
     "showCookieConsent",
     "showFirefoxBanner",
-  ]);
+  );
 
   const navigation = useImmersiveLanding({
-    pages: local.pages,
-    initialPage: local.initialPage,
-    currentPage: local.currentPage,
-    transitionDuration: local.transitionDuration,
-    onNavigate: local.onNavigate,
-    onNavigationComplete: local.onNavigationComplete,
-    enableScrollNavigation: local.enableScrollNavigation,
+    pages: props.pages,
+    initialPage: props.initialPage,
+    currentPage: props.currentPage,
+    transitionDuration: props.transitionDuration,
+    onNavigate: props.onNavigate,
+    onNavigationComplete: props.onNavigationComplete,
+    enableScrollNavigation: props.enableScrollNavigation,
   });
 
   // Create context value - pass signal getters directly
@@ -59,54 +60,54 @@ const ImmersiveLanding: Layout<typeof componentRecipe, ImmersiveLandingProps> = 
     goNext: navigation.goNext,
     goPrev: navigation.goPrev,
     currentIndex: navigation.currentIndex,
-    totalPages: local.pages.length,
+    totalPages: props.pages.length,
     isFirstPage: navigation.isFirstPage,
     isLastPage: navigation.isLastPage,
     direction: navigation.direction,
     transitionDuration: navigation.transitionDuration,
-    pages: local.pages,
-    appVersion: local.appVersion,
+    pages: props.pages,
+    appVersion: props.appVersion,
   };
 
-  const showNav = () => local.showNavigation !== false;
-  const showArrowNav = () => local.showArrows !== false;
+  const showNav = () => props.showNavigation !== false;
+  const showArrowNav = () => props.showArrows !== false;
 
   const classes = () =>
     twMerge(
       CLASSES.landing.base,
-      local.class,
+      props.class,
     );
 
   // Render children - if it's a function, call it with context for render props pattern
   const renderChildren = () => {
-    return typeof local.children === "function"
-      ? local.children(contextValue)
-      : local.children;
+    return typeof props.children === "function"
+      ? props.children(contextValue)
+      : props.children;
   };
 
   const renderOverlay = () => {
-    return typeof local.overlay === "function"
-      ? local.overlay(contextValue)
-      : local.overlay;
+    return typeof props.overlay === "function"
+      ? props.overlay(contextValue)
+      : props.overlay;
   };
 
   return (
-    <ImmersiveLandingContext.Provider value={contextValue}>
+    <ImmersiveLandingContext value={contextValue}>
       {/* Fixed viewport */}
-      <div {...{ class: classes() }} style={local.style} {...others}>
+      <div {...{ class: classes() }} style={props.style} {...others}>
         {/* Layered container for fade transitions */}
         <div {...{ class: CLASSES.landing.viewport }}>
           <div {...{ class: CLASSES.landing.pageLayer }}>{renderChildren()}</div>
         </div>
       </div>
 
-      <Show when={local.overlay || local.appVersion}>
+      <Show when={props.overlay || props.appVersion}>
         <div {...{ class: CLASSES.landing.overlay }}>
           {renderOverlay()}
-          <Show when={local.appVersion}>
+          <Show when={props.appVersion}>
             <div {...{ class: CLASSES.landing.versionWrap }} aria-hidden="true">
               <span {...{ class: CLASSES.landing.versionLabel }}>
-                v{local.appVersion}
+                v{props.appVersion}
               </span>
             </div>
           </Show>
@@ -126,7 +127,7 @@ const ImmersiveLanding: Layout<typeof componentRecipe, ImmersiveLandingProps> = 
       {/* Bottom navigation (dots, counter, mobile arrows) */}
       {showNav() && (
         <ImmersiveLandingNavigation
-          pages={local.pages}
+          pages={props.pages}
           currentPageIndex={navigation.currentIndex()}
           onPageDotClick={navigation.navigateTo}
           onPrev={navigation.goPrev}
@@ -136,35 +137,35 @@ const ImmersiveLanding: Layout<typeof componentRecipe, ImmersiveLandingProps> = 
         />
       )}
 
-      <Show when={local.showPWAPrompt}>
+      <Show when={props.showPWAPrompt}>
         <PWAInstallPrompt
-          appName={local.pwaConfig?.appName}
-          appIcon={local.pwaConfig?.appIcon}
-          storageKey={local.pwaConfig?.storageKey ?? "app_pwa_dismissed"}
-          texts={local.pwaConfig?.texts}
-          onInstall={local.pwaConfig?.onInstall}
-          onDismiss={local.pwaConfig?.onDismiss}
+          appName={props.pwaConfig?.appName}
+          appIcon={props.pwaConfig?.appIcon}
+          storageKey={props.pwaConfig?.storageKey ?? "app_pwa_dismissed"}
+          texts={props.pwaConfig?.texts}
+          onInstall={props.pwaConfig?.onInstall}
+          onDismiss={props.pwaConfig?.onDismiss}
         />
       </Show>
-      <Show when={local.showFirefoxBanner}>
+      <Show when={props.showFirefoxBanner}>
         <FirefoxPWABanner
-          extensionUrl={local.firefoxPWAConfig?.extensionUrl}
+          extensionUrl={props.firefoxPWAConfig?.extensionUrl}
           storageKey={
-            local.firefoxPWAConfig?.storageKey ?? "app_firefox_pwa_dismissed"
+            props.firefoxPWAConfig?.storageKey ?? "app_firefox_pwa_dismissed"
           }
-          texts={local.firefoxPWAConfig?.texts}
-          onInstall={local.firefoxPWAConfig?.onInstall}
-          onDismiss={local.firefoxPWAConfig?.onDismiss}
+          texts={props.firefoxPWAConfig?.texts}
+          onInstall={props.firefoxPWAConfig?.onInstall}
+          onDismiss={props.firefoxPWAConfig?.onDismiss}
         />
       </Show>
-      <Show when={local.showCookieConsent}>
+      <Show when={props.showCookieConsent}>
         <CookieConsent
-          storageKeys={local.cookieConfig?.storageKeys}
-          texts={local.cookieConfig?.texts}
-          onConsentChange={local.cookieConfig?.onConsentChange}
+          storageKeys={props.cookieConfig?.storageKeys}
+          texts={props.cookieConfig?.texts}
+          onConsentChange={props.cookieConfig?.onConsentChange}
         />
       </Show>
-    </ImmersiveLandingContext.Provider>
+    </ImmersiveLandingContext>
   );
 };
 

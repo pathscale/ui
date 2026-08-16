@@ -1,4 +1,5 @@
-import { type JSX, splitProps } from "solid-js";
+import {omit} from "solid-js";
+import type { JSX } from "@solidjs/web";
 import { twMerge } from "tailwind-merge";
 import type { Layout } from "../../lib/layouts";
 import type { UIBaseProps } from "../vocabulary";
@@ -23,7 +24,8 @@ export type TableColumnProps = Omit<
 
 const TableColumn: Layout<typeof tableColumnRecipe, TableColumnProps> = () => {
   const contentContext = useTableContentContext();
-  const [local, rest] = splitProps(props, [
+  const rest = omit(
+    props,
     "id",
     "allowsSorting",
     "children",
@@ -32,20 +34,20 @@ const TableColumn: Layout<typeof tableColumnRecipe, TableColumnProps> = () => {
     "onClick",
     "onKeyDown",
     "tabIndex",
-  ]);
+  );
 
-  const isSortable = () => Boolean(local.allowsSorting);
+  const isSortable = () => Boolean(props.allowsSorting);
 
   const sortDirection = (): TableSortDirection | undefined => {
     const descriptor = contentContext.sortDescriptor();
-    if (!descriptor || descriptor.column !== local.id) return undefined;
+    if (!descriptor || descriptor.column !== props.id) return undefined;
     return descriptor.direction;
   };
 
   const emitSortChange = () => {
     if (!isSortable() || !contentContext.onSortChange) return;
     contentContext.onSortChange({
-      column: local.id,
+      column: props.id,
       direction: sortDirection() === "ascending" ? "descending" : "ascending",
     });
   };
@@ -53,7 +55,7 @@ const TableColumn: Layout<typeof tableColumnRecipe, TableColumnProps> = () => {
   const handleClick: JSX.EventHandlerUnion<HTMLTableCellElement, MouseEvent> = (
     event,
   ) => {
-    invokeEventHandler(local.onClick, event);
+    invokeEventHandler(props.onClick, event);
     if (event.defaultPrevented) return;
     emitSortChange();
   };
@@ -62,7 +64,7 @@ const TableColumn: Layout<typeof tableColumnRecipe, TableColumnProps> = () => {
     HTMLTableCellElement,
     KeyboardEvent
   > = (event) => {
-    invokeEventHandler(local.onKeyDown, event);
+    invokeEventHandler(props.onKeyDown, event);
     if (event.defaultPrevented) return;
     if (!isSortable()) return;
     if (event.key !== "Enter" && event.key !== " ") return;
@@ -71,26 +73,26 @@ const TableColumn: Layout<typeof tableColumnRecipe, TableColumnProps> = () => {
   };
 
   const renderedChildren = () => {
-    if (typeof local.children === "function") {
-      return (local.children as (props: TableColumnRenderProps) => JSX.Element)(
+    if (typeof props.children === "function") {
+      return (props.children as (props: TableColumnRenderProps) => JSX.Element)(
         {
           sortDirection: sortDirection(),
         },
       );
     }
-    return local.children;
+    return props.children;
   };
 
   return (
     <th
-      {...{ class: twMerge(CLASSES.column, local.class) }}
-      data-theme={local.dataTheme}
+      {...{ class: twMerge(CLASSES.column, props.class) }}
+      data-theme={props.dataTheme}
       data-slot="table-column"
-      data-column-id={local.id}
+      data-column-id={props.id}
       data-allows-sorting={isSortable() ? "true" : undefined}
       data-sort-direction={sortDirection()}
       aria-sort={isSortable() ? (sortDirection() ?? "none") : undefined}
-      tabIndex={isSortable() ? (local.tabIndex ?? 0) : local.tabIndex}
+      tabIndex={isSortable() ? (props.tabIndex ?? 0) : props.tabIndex}
       onClick={handleClick}
       onKeyDown={handleKeyDown}
       {...rest}

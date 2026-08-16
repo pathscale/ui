@@ -1,5 +1,6 @@
 import "./Table.css";
-import { type JSX, splitProps } from "solid-js";
+import type { JSX } from "@solidjs/web";
+import {omit} from "solid-js";
 import { twMerge } from "tailwind-merge";
 import type { Layout } from "../../lib/layouts";
 import type { UIBaseProps } from "../vocabulary";
@@ -12,33 +13,28 @@ export type TableRootProps = JSX.HTMLAttributes<HTMLDivElement> &
   };
 
 const TableRoot: Layout<typeof componentRecipe, TableRootProps> = () => {
-  const [local, rest] = splitProps(props, [
-    "children",
-    "variant",
-    "class",
-    "dataTheme",
-  ]);
+  const rest = omit(props, "children", "variant", "class", "dataTheme");
 
-  const variant = () => local.variant ?? "primary";
+  const variant = () => props.variant ?? "primary";
 
   return (
-    <TableContext.Provider value={{ variant }}>
+    <TableContext value={{ variant }}>
       <div
         {...{
           class: twMerge(
             CLASSES.root.base,
             CLASSES.root.variant[variant()],
-            local.class,
+            props.class,
           ),
         }}
-        data-theme={local.dataTheme}
+        data-theme={props.dataTheme}
         data-slot="table"
         data-variant={variant()}
         {...rest}
       >
-        {local.children}
+        {props.children}
       </div>
-    </TableContext.Provider>
+    </TableContext>
   );
 };
 

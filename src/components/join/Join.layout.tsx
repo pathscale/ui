@@ -1,9 +1,5 @@
-import {
-  splitProps,
-  type JSX,
-  createMemo,
-  children as resolveChildren,
-} from "solid-js";
+import {omit, createMemo, children as resolveChildren} from "solid-js";
+import type { JSX } from "@solidjs/web";
 import { clsx } from "clsx";
 import { twMerge } from "tailwind-merge";
 import type { UIBaseProps } from "../vocabulary";
@@ -19,7 +15,8 @@ export type JoinProps = UIBaseProps &
   };
 
 const Join: Layout<typeof componentRecipe, JoinProps> = () => {
-  const [local, others] = splitProps(props, [
+  const others = omit(
+    props,
     "responsive",
     "vertical",
     "horizontal",
@@ -27,19 +24,19 @@ const Join: Layout<typeof componentRecipe, JoinProps> = () => {
     "dataTheme",
     "style",
     "children",
-  ]);
+  );
 
-  const resolvedChildren = resolveChildren(() => local.children);
+  const resolvedChildren = resolveChildren(() => props.children);
 
   const classes = createMemo(() =>
     twMerge(
       CLASSES.base,
       clsx({
-        [CLASSES.flag.vertical]: !local.responsive && local.vertical,
-        [CLASSES.flag.horizontal]: !local.responsive && local.horizontal,
-        [CLASSES.flag.responsive]: local.responsive,
+        [CLASSES.flag.vertical]: !props.responsive && props.vertical,
+        [CLASSES.flag.horizontal]: !props.responsive && props.horizontal,
+        [CLASSES.flag.responsive]: props.responsive,
       }),
-      local.class,
+      props.class,
     ),
   );
 
@@ -47,8 +44,8 @@ const Join: Layout<typeof componentRecipe, JoinProps> = () => {
     <div
       {...others}
       {...{ class: classes() }}
-      data-theme={local.dataTheme}
-      style={local.style}
+      data-theme={props.dataTheme}
+      style={props.style}
     >
       {resolvedChildren()}
     </div>

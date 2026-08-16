@@ -1,4 +1,5 @@
-import { splitProps, type JSX } from "solid-js";
+import {omit} from "solid-js";
+import type { JSX } from "@solidjs/web";
 import { twMerge } from "tailwind-merge";
 import type { UIBaseProps, Flavor } from "../vocabulary";
 import { CLASSES } from "./ChatBubble.recipe";
@@ -11,11 +12,11 @@ export type ChatBubbleMessageProps = JSX.HTMLAttributes<HTMLDivElement> &
   };
 
 const ChatBubbleMessage: Layout<typeof componentRecipe, ChatBubbleMessageProps> = () => {
-  const [local, others] = splitProps(props, ["flavor", "class"]);
+  const others = omit(props, "flavor", "class");
 
   const colorClass = () => {
-    if (!local.flavor) return undefined;
-    const f = local.flavor;
+    if (!props.flavor) return undefined;
+    const f = props.flavor;
     return CLASSES.flavor[f as keyof typeof CLASSES.flavor] ?? `chatbubble__message--flavor-${f}`;
   };
 
@@ -25,7 +26,7 @@ const ChatBubbleMessage: Layout<typeof componentRecipe, ChatBubbleMessageProps> 
       class={twMerge(
         CLASSES.slot.message,
         colorClass(),
-        local.class,
+        props.class,
       )}
     />
   );

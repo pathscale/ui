@@ -1,21 +1,6 @@
 import "./ComboBox.css";
-import {
-  For,
-  Show,
-  createContext,
-  createEffect,
-  createMemo,
-  createSignal,
-  createUniqueId,
-  onCleanup,
-  onMount,
-  splitProps,
-  useContext,
-  type Accessor,
-  type Component,
-  type JSX,
-  type ParentComponent,
-} from "solid-js";
+import type { JSX } from "@solidjs/web";
+import {For, Show, createContext, createEffect, createMemo, createSignal, createUniqueId, onCleanup, onSettled, omit, useContext, type Accessor, type Component, type ParentComponent} from "solid-js";
 import { twMerge } from "tailwind-merge";
 
 import type { UIBaseProps, State, Issue } from "../vocabulary";
@@ -216,7 +201,8 @@ export type ComboBoxListProps = Omit<
   };
 
 const ComboBoxRoot: Layout<typeof componentRecipe, ComboBoxRootProps> = () => {
-  const [local, others] = splitProps(props, [
+  const others = omit(
+    props,
     "children",
     "startIcon",
     "endIcon",
@@ -243,54 +229,53 @@ const ComboBoxRoot: Layout<typeof componentRecipe, ComboBoxRootProps> = () => {
     "placeholder",
     "name",
     "required",
-    
     "defaultFilter",
     "itemKey",
     "itemTextValue",
     "itemDisabled",
     "onFocusOut",
     "ref",
-  ]);
+  );
 
   const listBoxId = `${createUniqueId()}-listbox`;
   const [internalSelectedKey, setInternalSelectedKey] = createSignal<string | null>(
-    normalizeKey(local.defaultSelectedKey),
+    normalizeKey(props.defaultSelectedKey),
   );
-  const [internalInputValue, setInternalInputValue] = createSignal(local.defaultInputValue ?? "");
-  const [internalOpen, setInternalOpen] = createSignal(Boolean(local.defaultOpen));
+  const [internalInputValue, setInternalInputValue] = createSignal(props.defaultInputValue ?? "");
+  const [internalOpen, setInternalOpen] = createSignal(Boolean(props.defaultOpen));
   const [activeKey, setActiveKeySignal] = createSignal<string | null>(null);
 
   let rootRef: HTMLDivElement | undefined;
   let inputRef: HTMLInputElement | undefined;
 
-  const variant = () => local.variant ?? "primary";
-  const menuTrigger = () => local.menuTrigger ?? "focus";
-  const fullWidth = () => Boolean(local.fullWidth);
-  const isDisabled = () => Boolean((local.state === "disabled")) || Boolean(local.disabled);
-  const isInvalid = () => Boolean((resolveState(local.state, local.issues) === "invalid"));
-  const isRequired = () => Boolean(local.required) || Boolean(local.required);
-  const isOpen = () => (local.open !== undefined ? Boolean(local.open) : internalOpen());
+  const variant = () => props.variant ?? "primary";
+  const menuTrigger = () => props.menuTrigger ?? "focus";
+  const fullWidth = () => Boolean(props.fullWidth);
+  const isDisabled = () => Boolean((props.state === "disabled")) || Boolean(props.disabled);
+  const isInvalid = () => Boolean((resolveState(props.state, props.issues) === "invalid"));
+  const isRequired = () => Boolean(props.required) || Boolean(props.required);
+  const isOpen = () => (props.open !== undefined ? Boolean(props.open) : internalOpen());
   const selectedKey = createMemo(() =>
-    local.selectedKey !== undefined ? normalizeKey(local.selectedKey) : internalSelectedKey(),
+    props.selectedKey !== undefined ? normalizeKey(props.selectedKey) : internalSelectedKey(),
   );
   const inputValue = createMemo(() =>
-    local.inputValue !== undefined ? local.inputValue : internalInputValue(),
+    props.inputValue !== undefined ? props.inputValue : internalInputValue(),
   );
 
   const normalizedItems = createMemo<NormalizedComboBoxItem<unknown>[]>(() =>
-    (local.items ?? []).map((item, index) => {
+    (props.items ?? []).map((item, index) => {
       const baseKey =
-        local.itemKey != null
-          ? String(local.itemKey(item, index))
+        props.itemKey != null
+          ? String(props.itemKey(item, index))
           : extractItemKey(item, index);
 
       const textValue =
-        local.itemTextValue != null
-          ? local.itemTextValue(item, index)
+        props.itemTextValue != null
+          ? props.itemTextValue(item, index)
           : extractItemText(item, baseKey);
 
       const disabled =
-        local.itemDisabled != null ? Boolean(local.itemDisabled(item, index)) : extractItemDisabled(item);
+        props.itemDisabled != null ? Boolean(props.itemDisabled(item, index)) : extractItemDisabled(item);
 
       return {
         key: baseKey,
@@ -309,7 +294,7 @@ const ComboBoxRoot: Layout<typeof componentRecipe, ComboBoxRootProps> = () => {
 
   const filteredItems = createMemo(() => {
     const query = inputValue();
-    const filter = local.defaultFilter ?? defaultFilter;
+    const filter = props.defaultFilter ?? defaultFilter;
 
     return normalizedItems().filter((item) => filter(item.textValue, query));
   });
@@ -317,29 +302,29 @@ const ComboBoxRoot: Layout<typeof componentRecipe, ComboBoxRootProps> = () => {
   const getEnabledItems = () => filteredItems().filter((item) => !item.disabled);
 
   const setSelectedKey = (nextKey: string | null) => {
-    if (local.selectedKey === undefined) {
+    if (props.selectedKey === undefined) {
       setInternalSelectedKey(nextKey);
     }
 
-    local.onSelectionChange?.(nextKey);
+    props.onSelectionChange?.(nextKey);
   };
 
   const setInputValue = (nextValue: string) => {
-    if (local.inputValue === undefined) {
+    if (props.inputValue === undefined) {
       setInternalInputValue(nextValue);
     }
 
-    local.onInputChange?.(nextValue);
+    props.onInputChange?.(nextValue);
   };
 
   const setOpen = (next: boolean, options?: { focusInput?: boolean }) => {
     if (next && isDisabled()) return;
 
-    if (local.open === undefined) {
+    if (props.open === undefined) {
       setInternalOpen(next);
     }
 
-    local.onOpenChange?.(next);
+    props.onOpenChange?.(next);
 
     if (!next && options?.focusInput) {
       queueMicrotask(() => {
@@ -397,14 +382,14 @@ const ComboBoxRoot: Layout<typeof componentRecipe, ComboBoxRootProps> = () => {
     setOpen(false);
     setActiveKeySignal(null);
 
-    if (!local.allowsCustomValue) {
+    if (!props.allowsCustomValue) {
       const selected = selectedItem();
       setInputValue(selected?.textValue ?? "");
     }
   };
 
   const handleFocusOut: JSX.EventHandlerUnion<HTMLDivElement, FocusEvent> = (event) => {
-    invokeEventHandler(local.onFocusOut, event);
+    invokeEventHandler(props.onFocusOut, event);
 
     if (event.defaultPrevented) return;
 
@@ -418,7 +403,7 @@ const ComboBoxRoot: Layout<typeof componentRecipe, ComboBoxRootProps> = () => {
   const getOptionId = (key: string) => `${listBoxId}-${toOptionKey(key, 0)}`;
 
   createEffect(() => {
-    if (local.inputValue !== undefined) return;
+    if (props.inputValue !== undefined) return;
 
     const selected = selectedItem();
     if (!selected) return;
@@ -446,7 +431,7 @@ const ComboBoxRoot: Layout<typeof componentRecipe, ComboBoxRootProps> = () => {
     setActiveKeySignal((selected ?? enabledItems[0]).key);
   });
 
-  onMount(() => {
+  onSettled(() => {
     const handlePointerDown = (event: PointerEvent) => {
       if (!rootRef) return;
       if (rootRef.contains(event.target as Node)) return;
@@ -464,13 +449,13 @@ const ComboBoxRoot: Layout<typeof componentRecipe, ComboBoxRootProps> = () => {
     const currentKey = selectedKey();
 
     if (currentKey) return currentKey;
-    if (local.allowsCustomValue) return inputValue();
+    if (props.allowsCustomValue) return inputValue();
 
     return "";
   });
 
   return (
-    <ComboBoxContext.Provider
+    <ComboBoxContext
       value={{
         variant,
         fullWidth,
@@ -503,15 +488,15 @@ const ComboBoxRoot: Layout<typeof componentRecipe, ComboBoxRootProps> = () => {
         {...others}
         ref={(node) => {
           rootRef = node;
-          if (typeof local.ref === "function") {
-            local.ref(node);
+          if (typeof props.ref === "function") {
+            props.ref(node);
           }
         }}
         {...{ class: twMerge(
           CLASSES.Root.base,
           CLASSES.Root.variant[variant()],
           fullWidth() && CLASSES.Root.flag.fullWidth,
-          local.class,
+          props.class,
         ) }}
         data-slot="combobox"
         data-open={isOpen() ? "true" : "false"}
@@ -519,27 +504,27 @@ const ComboBoxRoot: Layout<typeof componentRecipe, ComboBoxRootProps> = () => {
         data-disabled={isDisabled() ? "true" : undefined}
         aria-invalid={isInvalid() ? "true" : undefined}
         aria-disabled={isDisabled() ? "true" : undefined}
-        data-theme={local.dataTheme}
-        style={local.style}
+        data-theme={props.dataTheme}
+        style={props.style}
         onFocusOut={handleFocusOut}
       >
-        <Show when={local.name}>
-          <input name={local.name} type="hidden" value={hiddenValue()} />
+        <Show when={props.name}>
+          <input name={props.name} type="hidden" value={hiddenValue()} />
         </Show>
 
-        {local.children ?? (
+        {props.children ?? (
           <>
             <ComboBoxInputGroup>
-              <Show when={local.startIcon}>
+              <Show when={props.startIcon}>
                 <span
                   {...{ class: twMerge(CLASSES.Icon.base, CLASSES.Icon.start) }}
                   data-slot="combobox-start-icon"
                 >
-                  {local.startIcon}
+                  {props.startIcon}
                 </span>
               </Show>
-              <ComboBoxInput placeholder={local.placeholder} required={isRequired()} />
-              <ComboBoxTrigger endIcon={local.endIcon} />
+              <ComboBoxInput placeholder={props.placeholder} required={isRequired()} />
+              <ComboBoxTrigger endIcon={props.endIcon} />
             </ComboBoxInputGroup>
             <ComboBoxPopover>
               <ComboBoxList />
@@ -547,13 +532,13 @@ const ComboBoxRoot: Layout<typeof componentRecipe, ComboBoxRootProps> = () => {
           </>
         )}
       </div>
-    </ComboBoxContext.Provider>
+    </ComboBoxContext>
   );
 };
 
 const ComboBoxInputGroup: Layout<typeof componentRecipe, ComboBoxInputGroupProps> = () => {
   const context = useContext(ComboBoxContext);
-  const [local, others] = splitProps(props, ["children", "class", "dataTheme", "style"]);
+  const others = omit(props, "children", "class", "dataTheme", "style");
 
   return (
     <div
@@ -561,22 +546,23 @@ const ComboBoxInputGroup: Layout<typeof componentRecipe, ComboBoxInputGroupProps
       {...{ class: twMerge(
         CLASSES.InputGroup.base,
         context?.fullWidth() && CLASSES.InputGroup.flag.fullWidth,
-        local.class,
+        props.class,
       ) }}
       data-slot="combobox-input-group"
       data-disabled={context?.isDisabled() ? "true" : undefined}
       data-invalid={context?.isInvalid() ? "true" : undefined}
-      data-theme={local.dataTheme}
-      style={local.style}
+      data-theme={props.dataTheme}
+      style={props.style}
     >
-      {local.children}
+      {props.children}
     </div>
   );
 };
 
 const ComboBoxInput: Layout<typeof componentRecipe, ComboBoxInputProps> = () => {
   const context = useContext(ComboBoxContext);
-  const [local, others] = splitProps(props, [
+  const others = omit(
+    props,
     "class",
     "dataTheme",
     "style",
@@ -586,10 +572,10 @@ const ComboBoxInput: Layout<typeof componentRecipe, ComboBoxInputProps> = () => 
     "onBlur",
     "ref",
     "required",
-  ]);
+  );
 
   const handleInput: JSX.EventHandlerUnion<HTMLInputElement, InputEvent> = (event) => {
-    invokeEventHandler(local.onInput, event);
+    invokeEventHandler(props.onInput, event);
     if (event.defaultPrevented) return;
 
     const nextValue = event.currentTarget.value;
@@ -606,7 +592,7 @@ const ComboBoxInput: Layout<typeof componentRecipe, ComboBoxInputProps> = () => 
   };
 
   const handleFocus: JSX.EventHandlerUnion<HTMLInputElement, FocusEvent> = (event) => {
-    invokeEventHandler(local.onFocus, event);
+    invokeEventHandler(props.onFocus, event);
     if (event.defaultPrevented) return;
 
     if ((context?.menuTrigger() ?? "focus") === "focus") {
@@ -615,7 +601,7 @@ const ComboBoxInput: Layout<typeof componentRecipe, ComboBoxInputProps> = () => 
   };
 
   const handleKeyDown: JSX.EventHandlerUnion<HTMLInputElement, KeyboardEvent> = (event) => {
-    invokeEventHandler(local.onKeyDown, event);
+    invokeEventHandler(props.onKeyDown, event);
     if (event.defaultPrevented) return;
 
     const isOpen = context?.isOpen() ?? false;
@@ -685,8 +671,8 @@ const ComboBoxInput: Layout<typeof componentRecipe, ComboBoxInputProps> = () => 
       {...others}
       ref={(node) => {
         context?.attachInputRef(node);
-        if (typeof local.ref === "function") {
-          local.ref(node);
+        if (typeof props.ref === "function") {
+          props.ref(node);
         }
       }}
       role="combobox"
@@ -697,16 +683,16 @@ const ComboBoxInput: Layout<typeof componentRecipe, ComboBoxInputProps> = () => 
       aria-activedescendant={activeOptionId()}
       aria-disabled={context?.isDisabled() ? "true" : undefined}
       aria-invalid={context?.isInvalid() ? "true" : undefined}
-      {...{ class: twMerge(CLASSES.Input.base, local.class) }}
+      {...{ class: twMerge(CLASSES.Input.base, props.class) }}
       data-slot="combobox-input"
-      data-theme={local.dataTheme}
-      style={local.style}
+      data-theme={props.dataTheme}
+      style={props.style}
       value={context?.inputValue() ?? ""}
       disabled={context?.isDisabled()}
-      required={local.required ?? context?.isRequired()}
+      required={props.required ?? context?.isRequired()}
       onInput={handleInput}
       onFocus={handleFocus}
-      onBlur={(event) => invokeEventHandler(local.onBlur, event)}
+      onBlur={(event) => invokeEventHandler(props.onBlur, event)}
       onKeyDown={handleKeyDown}
     />
   );
@@ -714,7 +700,8 @@ const ComboBoxInput: Layout<typeof componentRecipe, ComboBoxInputProps> = () => 
 
 const ComboBoxTrigger: Layout<typeof componentRecipe, ComboBoxTriggerProps> = () => {
   const context = useContext(ComboBoxContext);
-  const [local, others] = splitProps(props, [
+  const others = omit(
+    props,
     "children",
     "class",
     "dataTheme",
@@ -722,10 +709,10 @@ const ComboBoxTrigger: Layout<typeof componentRecipe, ComboBoxTriggerProps> = ()
     "startIcon",
     "endIcon",
     "onClick",
-  ]);
+  );
 
   const handleClick: JSX.EventHandlerUnion<HTMLButtonElement, MouseEvent> = (event) => {
-    invokeEventHandler(local.onClick, event);
+    invokeEventHandler(props.onClick, event);
     if (event.defaultPrevented) return;
     context?.toggleOpen();
   };
@@ -734,11 +721,11 @@ const ComboBoxTrigger: Layout<typeof componentRecipe, ComboBoxTriggerProps> = ()
     <button
       {...others}
       type="button"
-      {...{ class: twMerge(CLASSES.Trigger.base, local.class) }}
+      {...{ class: twMerge(CLASSES.Trigger.base, props.class) }}
       data-slot="combobox-trigger"
       data-open={context?.isOpen() ? "true" : "false"}
-      data-theme={local.dataTheme}
-      style={local.style}
+      data-theme={props.dataTheme}
+      style={props.style}
       disabled={context?.isDisabled()}
       aria-disabled={context?.isDisabled() ? "true" : undefined}
       aria-haspopup="listbox"
@@ -747,21 +734,21 @@ const ComboBoxTrigger: Layout<typeof componentRecipe, ComboBoxTriggerProps> = ()
       aria-label="Toggle options"
       onClick={handleClick}
     >
-      {local.startIcon ? (
+      {props.startIcon ? (
         <span
           {...{ class: twMerge(CLASSES.Icon.base, CLASSES.Icon.start) }}
           data-slot="combobox-trigger-start-icon"
         >
-          {local.startIcon}
+          {props.startIcon}
         </span>
       ) : null}
-      {local.children}
-      {local.endIcon ? (
+      {props.children}
+      {props.endIcon ? (
         <span
           {...{ class: twMerge(CLASSES.Icon.base, CLASSES.Icon.end, CLASSES.Trigger.icon) }}
           data-slot="combobox-trigger-end-icon"
         >
-          {local.endIcon}
+          {props.endIcon}
         </span>
       ) : null}
     </button>
@@ -770,32 +757,25 @@ const ComboBoxTrigger: Layout<typeof componentRecipe, ComboBoxTriggerProps> = ()
 
 const ComboBoxPopover: Layout<typeof componentRecipe, ComboBoxPopoverProps> = () => {
   const context = useContext(ComboBoxContext);
-  const [local, others] = splitProps(props, ["children", "class", "dataTheme", "style"]);
+  const others = omit(props, "children", "class", "dataTheme", "style");
 
   return (
     <div
       {...others}
-      {...{ class: twMerge(CLASSES.Popover.base, local.class) }}
+      {...{ class: twMerge(CLASSES.Popover.base, props.class) }}
       data-slot="combobox-popover"
       data-open={context?.isOpen() ? "true" : "false"}
-      data-theme={local.dataTheme}
-      style={local.style}
+      data-theme={props.dataTheme}
+      style={props.style}
     >
-      {local.children ?? <ComboBoxList />}
+      {props.children ?? <ComboBoxList />}
     </div>
   );
 };
 
 const ComboBoxList: Layout<typeof componentRecipe, ComboBoxListProps> = () => {
   const context = useContext(ComboBoxContext);
-  const [local, others] = splitProps(props, [
-    "children",
-    "class",
-    "dataTheme",
-    "style",
-    "renderEmpty",
-    "endIcon",
-  ]);
+  const others = omit(props, "children", "class", "dataTheme", "style", "renderEmpty", "endIcon");
 
   const items = () => context?.filteredItems() ?? [];
 
@@ -804,15 +784,15 @@ const ComboBoxList: Layout<typeof componentRecipe, ComboBoxListProps> = () => {
       {...others}
       id={context?.listBoxId}
       role="listbox"
-      {...{ class: twMerge(CLASSES.List.base, local.class) }}
+      {...{ class: twMerge(CLASSES.List.base, props.class) }}
       data-slot="combobox-list"
-      data-theme={local.dataTheme}
-      style={local.style}
+      data-theme={props.dataTheme}
+      style={props.style}
     >
       <Show
         when={items().length > 0}
         fallback={
-          local.renderEmpty?.() ?? (
+          props.renderEmpty?.() ?? (
             <div {...{ class: CLASSES.List.empty }} data-slot="combobox-empty-state">
               No matching options
             </div>
@@ -856,15 +836,15 @@ const ComboBoxList: Layout<typeof componentRecipe, ComboBoxListProps> = () => {
                 }}
               >
                 <span {...{ class: CLASSES.Option.label }}>
-                  {typeof local.children === "function" ? local.children(state) : item.textValue}
+                  {typeof props.children === "function" ? props.children(state) : item.textValue}
                 </span>
-                {local.endIcon ? (
+                {props.endIcon ? (
                   <span {...{ class: CLASSES.Option.indicator }} aria-hidden="true">
                     <span
                       {...{ class: twMerge(CLASSES.Icon.base, CLASSES.Icon.end) }}
                       data-slot="combobox-option-end-icon"
                     >
-                      {local.endIcon}
+                      {props.endIcon}
                     </span>
                   </span>
                 ) : null}

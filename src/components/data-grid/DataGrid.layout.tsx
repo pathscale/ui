@@ -1,5 +1,6 @@
 import "./DataGrid.css";
-import { For, type JSX, Show, splitProps } from "solid-js";
+import type { JSX } from "@solidjs/web";
+import {For, Show, omit} from "solid-js";
 import { twMerge } from "tailwind-merge";
 import type { Layout } from "../../lib/layouts";
 import Button from "../button";
@@ -73,7 +74,8 @@ export type DataGridProps<Row extends DataGridRow = DataGridRow> = Omit<
   };
 
 const DataGrid: Layout<typeof componentRecipe, DataGridProps> = () => {
-  const [local, rest] = splitProps(props, [
+  const rest = omit(
+    props,
     "model",
     "borders",
     "striping",
@@ -90,43 +92,43 @@ const DataGrid: Layout<typeof componentRecipe, DataGridProps> = () => {
     "onSelectionChange",
     "class",
     "dataTheme",
-  ]);
+  );
 
-  const borders = () => local.borders ?? "rows";
-  const striping = () => local.striping ?? "none";
-  const sticky = () => local.sticky ?? "none";
-  const size = () => local.size ?? "md";
+  const borders = () => props.borders ?? "rows";
+  const striping = () => props.striping ?? "none";
+  const sticky = () => props.sticky ?? "none";
+  const size = () => props.size ?? "md";
 
   const searchable = () =>
-    local.model.visibleColumns().filter((column) => column.searchable);
-  const selects = () => local.model.selectionMode() !== "none";
-  const paginates = () => local.model.pageSize() > 0;
-  const span = () => columnSpan(local.model.visibleColumns().length, selects());
+    props.model.visibleColumns().filter((column) => column.searchable);
+  const selects = () => props.model.selectionMode() !== "none";
+  const paginates = () => props.model.pageSize() > 0;
+  const span = () => columnSpan(props.model.visibleColumns().length, selects());
 
   const allOnPageSelected = () => {
-    const rows = local.model.pageRows();
+    const rows = props.model.pageRows();
     if (rows.length === 0) return false;
-    return rows.every((row, index) => local.model.isSelected(row, index));
+    return rows.every((row, index) => props.model.isSelected(row, index));
   };
 
   const changeSort = (descriptor: DataGridSort) => {
-    local.model.sortByColumn(descriptor.column);
-    local.onSortChange?.(local.model.sort());
+    props.model.sortByColumn(descriptor.column);
+    props.onSortChange?.(props.model.sort());
   };
 
   const changePage = (page: number) => {
-    local.model.switchPage(page);
-    local.onPageChange?.(local.model.page());
+    props.model.switchPage(page);
+    props.onPageChange?.(props.model.page());
   };
 
   const changeSelection = (row: DataGridRow, index: number) => {
-    local.model.toggleCheck(row, index);
-    local.onSelectionChange?.(local.model.selectedIds());
+    props.model.toggleCheck(row, index);
+    props.onSelectionChange?.(props.model.selectedIds());
   };
 
   const changeSelectAll = (selected: boolean) => {
-    local.model.toggleCheckAll(selected);
-    local.onSelectionChange?.(local.model.selectedIds());
+    props.model.toggleCheckAll(selected);
+    props.onSelectionChange?.(props.model.selectedIds());
   };
 
   return (
@@ -138,15 +140,15 @@ const DataGrid: Layout<typeof componentRecipe, DataGridProps> = () => {
           CLASSES.striping[striping()],
           CLASSES.sticky[sticky()],
           CLASSES.size[size()],
-          local.interactive ? CLASSES.interactive : undefined,
-          local.class,
+          props.interactive ? CLASSES.interactive : undefined,
+          props.class,
         ),
       }}
-      data-theme={local.dataTheme}
+      data-theme={props.dataTheme}
       data-slot="data-grid"
-      data-flavor={local.flavor}
-      data-width={local.width}
-      data-selection={local.model.selectionMode()}
+      data-flavor={props.flavor}
+      data-width={props.width}
+      data-selection={props.model.selectionMode()}
       {...rest}
     >
       <Show when={searchable().length > 0}>
@@ -166,10 +168,10 @@ const DataGrid: Layout<typeof componentRecipe, DataGridProps> = () => {
                 <input
                   {...{ class: CLASSES.searchInput }}
                   type="search"
-                  value={local.model.queries()[column.name] ?? ""}
+                  value={props.model.queries()[column.name] ?? ""}
                   placeholder={searchPlaceholder(column.label)}
                   onInput={(event) =>
-                    local.model.searchColumn(column.name, readInputValue(event))
+                    props.model.searchColumn(column.name, readInputValue(event))
                   }
                 />
               </label>
@@ -180,11 +182,11 @@ const DataGrid: Layout<typeof componentRecipe, DataGridProps> = () => {
 
       <TableScrollContainer>
         <TableContent
-          sortDescriptor={local.model.sort() ?? undefined}
+          sortDescriptor={props.model.sort() ?? undefined}
           onSortChange={changeSort}
         >
-          <Show when={local.caption}>
-            <caption>{local.caption}</caption>
+          <Show when={props.caption}>
+            <caption>{props.caption}</caption>
           </Show>
 
           <TableHeader>
@@ -201,7 +203,7 @@ const DataGrid: Layout<typeof componentRecipe, DataGridProps> = () => {
                   />
                 </TableColumn>
               </Show>
-              <For each={local.model.visibleColumns()}>
+              <For each={props.model.visibleColumns()}>
                 {(column) => (
                   <TableColumn
                     id={column.name}
@@ -233,10 +235,10 @@ const DataGrid: Layout<typeof componentRecipe, DataGridProps> = () => {
           </TableHeader>
 
           <TableBody>
-            <For each={local.model.groupedRows()}>
+            <For each={props.model.groupedRows()}>
               {(group) => (
                 <>
-                  <Show when={local.model.groupBy()}>
+                  <Show when={props.model.groupBy()}>
                     <TableRow
                       {...{ class: CLASSES.groupRow }}
                       data-slot="data-grid-group-row"
@@ -251,7 +253,7 @@ const DataGrid: Layout<typeof componentRecipe, DataGridProps> = () => {
                       <>
                         <TableRow
                           data-selected={
-                            local.model.isSelected(row, index())
+                            props.model.isSelected(row, index())
                               ? "true"
                               : undefined
                           }
@@ -260,12 +262,12 @@ const DataGrid: Layout<typeof componentRecipe, DataGridProps> = () => {
                             <TableCell {...{ class: CLASSES.selectCell }}>
                               <Checkbox
                                 aria-label="Select row"
-                                checked={local.model.isSelected(row, index())}
+                                checked={props.model.isSelected(row, index())}
                                 onChange={() => changeSelection(row, index())}
                               />
                             </TableCell>
                           </Show>
-                          <For each={local.model.visibleColumns()}>
+                          <For each={props.model.visibleColumns()}>
                             {(column) => (
                               <TableCell
                                 {...{ class: CLASSES.cell }}
@@ -277,10 +279,10 @@ const DataGrid: Layout<typeof componentRecipe, DataGridProps> = () => {
                             )}
                           </For>
                         </TableRow>
-                        <Show when={local.renderExpanded}>
+                        <Show when={props.renderExpanded}>
                           <TableRow>
                             <TableCell colSpan={span()}>
-                              {local.renderExpanded?.(row)}
+                              {props.renderExpanded?.(row)}
                             </TableCell>
                           </TableRow>
                         </Show>
@@ -291,14 +293,14 @@ const DataGrid: Layout<typeof componentRecipe, DataGridProps> = () => {
               )}
             </For>
 
-            <Show when={local.model.pageRows().length === 0}>
+            <Show when={props.model.pageRows().length === 0}>
               <TableRow>
                 <TableCell
                   colSpan={span()}
                   {...{ class: CLASSES.empty }}
                   data-slot="data-grid-empty"
                 >
-                  {local.empty ?? "No rows"}
+                  {props.empty ?? "No rows"}
                 </TableCell>
               </TableRow>
             </Show>
@@ -313,17 +315,17 @@ const DataGrid: Layout<typeof componentRecipe, DataGridProps> = () => {
         >
           <span {...{ class: CLASSES.pageStatus }}>
             {rangeLabel(
-              local.model.page(),
-              local.model.pageSize(),
-              local.model.total(),
+              props.model.page(),
+              props.model.pageSize(),
+              props.model.total(),
             )}
           </span>
           <Button
             variant="ghost"
             size="sm"
             aria-label="Previous page"
-            state={local.model.page() === 0 ? "disabled" : "default"}
-            onClick={() => changePage(local.model.page() - 1)}
+            state={props.model.page() === 0 ? "disabled" : "default"}
+            onClick={() => changePage(props.model.page() - 1)}
           >
             Previous
           </Button>
@@ -332,11 +334,11 @@ const DataGrid: Layout<typeof componentRecipe, DataGridProps> = () => {
             size="sm"
             aria-label="Next page"
             state={
-              local.model.page() >= local.model.pageCount() - 1
+              props.model.page() >= props.model.pageCount() - 1
                 ? "disabled"
                 : "default"
             }
-            onClick={() => changePage(local.model.page() + 1)}
+            onClick={() => changePage(props.model.page() + 1)}
           >
             Next
           </Button>

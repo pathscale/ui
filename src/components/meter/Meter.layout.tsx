@@ -1,13 +1,6 @@
 import "./Meter.css";
-import {
-  createContext,
-  createMemo,
-  splitProps,
-  useContext,
-  type Accessor,
-  type Component,
-  type JSX,
-} from "solid-js";
+import type { JSX } from "@solidjs/web";
+import {createContext, createMemo, omit, useContext, type Accessor, type Component} from "solid-js";
 import { twMerge } from "tailwind-merge";
 
 import type { UIBaseProps, Flavor, State } from "../vocabulary";
@@ -64,7 +57,8 @@ const useMeterContext = (): MeterContextValue => {
 const clamp = (value: number, min: number, max: number): number => Math.min(Math.max(value, min), max);
 
 const MeterRoot: Layout<typeof componentRecipe, MeterRootProps> = () => {
-  const [local, others] = splitProps(props, [
+  const others = omit(
+    props,
     "children",
     "class",
     "dataTheme",
@@ -80,25 +74,25 @@ const MeterRoot: Layout<typeof componentRecipe, MeterRootProps> = () => {
     "flavor",
     "formatOptions",
     "formatValue",
-  ]);
+  );
 
-  const minValue = createMemo(() => local.minValue ?? 0);
+  const minValue = createMemo(() => props.minValue ?? 0);
   const maxValue = createMemo(() => {
     const resolvedMin = minValue();
-    const resolvedMax = local.maxValue ?? 100;
+    const resolvedMax = props.maxValue ?? 100;
     return resolvedMax > resolvedMin ? resolvedMax : resolvedMin + 1;
   });
 
-  const clampedValue = createMemo(() => clamp(local.value ?? minValue(), minValue(), maxValue()));
+  const clampedValue = createMemo(() => clamp(props.value ?? minValue(), minValue(), maxValue()));
 
   const percentage = createMemo(
     () => ((clampedValue() - minValue()) / (maxValue() - minValue())) * 100,
   );
 
   const formatter = createMemo(() => {
-    if (!local.formatOptions) return undefined;
+    if (!props.formatOptions) return undefined;
     try {
-      return new Intl.NumberFormat(undefined, local.formatOptions);
+      return new Intl.NumberFormat(undefined, props.formatOptions);
     } catch {
       return undefined;
     }
@@ -110,11 +104,11 @@ const MeterRoot: Layout<typeof componentRecipe, MeterRootProps> = () => {
       minValue: minValue(),
       maxValue: maxValue(),
       percentage: percentage(),
-      isDisabled: Boolean((local.state === "disabled")),
+      isDisabled: Boolean((props.state === "disabled")),
     };
 
-    const valueText = local.formatValue
-      ? local.formatValue(base.value, base)
+    const valueText = props.formatValue
+      ? props.formatValue(base.value, base)
       : formatter()?.format(base.value) ?? `${Math.round(base.percentage)}%`;
 
     return {
@@ -126,15 +120,15 @@ const MeterRoot: Layout<typeof componentRecipe, MeterRootProps> = () => {
   const rootClasses = createMemo(() =>
     twMerge(
       CLASSES.base,
-      CLASSES.size[local.size ?? "md"],
-      (CLASSES.flavor[(local.flavor ?? "accent") as keyof typeof CLASSES.flavor] ?? `meter--flavor-${local.flavor ?? "accent"}`),
-      (local.state === "disabled") && CLASSES.state.disabled,
-      local.class,
+      CLASSES.size[props.size ?? "md"],
+      (CLASSES.flavor[(props.flavor ?? "accent") as keyof typeof CLASSES.flavor] ?? `meter--flavor-${props.flavor ?? "accent"}`),
+      (props.state === "disabled") && CLASSES.state.disabled,
+      props.class,
     ),
   );
 
   return (
-    <MeterContext.Provider value={{ state }}>
+    <MeterContext value={{ state }}>
       <div
         {...others}
         role={others.role ?? "meter"}
@@ -142,78 +136,68 @@ const MeterRoot: Layout<typeof componentRecipe, MeterRootProps> = () => {
         aria-valuemax={maxValue()}
         aria-valuenow={state().value}
         aria-valuetext={state().valueText}
-        aria-disabled={(local.state === "disabled") ? "true" : undefined}
-        data-disabled={(local.state === "disabled") ? "true" : undefined}
+        aria-disabled={(props.state === "disabled") ? "true" : undefined}
+        data-disabled={(props.state === "disabled") ? "true" : undefined}
         data-slot="meter"
-        data-theme={local.dataTheme}
-        data-low-value={local.lowValue}
-        data-high-value={local.highValue}
-        data-optimum-value={local.optimumValue}
-        style={local.style}
+        data-theme={props.dataTheme}
+        data-low-value={props.lowValue}
+        data-high-value={props.highValue}
+        data-optimum-value={props.optimumValue}
+        style={props.style}
         {...{ class: rootClasses() }}
       >
-        {typeof local.children === "function" ? local.children(state()) : local.children}
+        {typeof props.children === "function" ? props.children(state()) : props.children}
       </div>
-    </MeterContext.Provider>
+    </MeterContext>
   );
 };
 
 const MeterOutput: Layout<typeof componentRecipe, MeterOutputProps> = () => {
-  const [local, others] = splitProps(props, [
-    "children",
-    "class",
-    "dataTheme",
-    "style",
-  ]);
+  const others = omit(props, "children", "class", "dataTheme", "style");
   const { state } = useMeterContext();
 
   return (
     <span
       {...others}
       data-slot="meter-output"
-      data-theme={local.dataTheme}
-      style={local.style}
-      {...{ class: twMerge(CLASSES.output, local.class) }}
+      data-theme={props.dataTheme}
+      style={props.style}
+      {...{ class: twMerge(CLASSES.output, props.class) }}
     >
-      {local.children ?? state().valueText}
+      {props.children ?? state().valueText}
     </span>
   );
 };
 
 const MeterTrack: Layout<typeof componentRecipe, MeterTrackProps> = () => {
-  const [local, others] = splitProps(props, [
-    "children",
-    "class",
-    "dataTheme",
-    "style",
-  ]);
+  const others = omit(props, "children", "class", "dataTheme", "style");
 
   return (
     <div
       {...others}
       data-slot="meter-track"
-      data-theme={local.dataTheme}
-      style={local.style}
-      {...{ class: twMerge(CLASSES.track, local.class) }}
+      data-theme={props.dataTheme}
+      style={props.style}
+      {...{ class: twMerge(CLASSES.track, props.class) }}
     >
-      {local.children}
+      {props.children}
     </div>
   );
 };
 
 const MeterFill: Layout<typeof componentRecipe, MeterFillProps> = () => {
-  const [local, others] = splitProps(props, ["class", "dataTheme", "style"]);
+  const others = omit(props, "class", "dataTheme", "style");
   const { state } = useMeterContext();
 
   const style = createMemo<JSX.CSSProperties | string>(() => {
-    if (typeof local.style === "string") {
-      const trimmed = local.style.trim();
+    if (typeof props.style === "string") {
+      const trimmed = props.style.trim();
       const suffix = trimmed.length > 0 && !trimmed.endsWith(";") ? ";" : "";
       return `${trimmed}${suffix} width: ${state().percentage}%;`;
     }
 
     return {
-      ...(local.style ?? {}),
+      ...(props.style ?? {}),
       width: `${state().percentage}%`,
     } as JSX.CSSProperties;
   });
@@ -222,9 +206,9 @@ const MeterFill: Layout<typeof componentRecipe, MeterFillProps> = () => {
     <div
       {...others}
       data-slot="meter-fill"
-      data-theme={local.dataTheme}
+      data-theme={props.dataTheme}
       style={style()}
-      {...{ class: twMerge(CLASSES.fill, local.class) }}
+      {...{ class: twMerge(CLASSES.fill, props.class) }}
     />
   );
 };

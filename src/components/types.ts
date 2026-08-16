@@ -1,4 +1,4 @@
-import type { JSX } from "solid-js";
+import type { JSX } from "@solidjs/web";
 
 export type ResponsiveBreakpoints = "base" | "sm" | "md" | "lg" | "xl";
 export type ResponsiveProp<T> = T | Partial<Record<ResponsiveBreakpoints, T>>;

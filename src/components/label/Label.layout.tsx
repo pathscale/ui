@@ -1,5 +1,6 @@
 import "./Label.css";
-import { splitProps, type Component, type JSX } from "solid-js";
+import type { JSX } from "@solidjs/web";
+import {omit, type Component} from "solid-js";
 import { twMerge } from "tailwind-merge";
 
 import type { UIBaseProps, State, Issue } from "../vocabulary";
@@ -18,7 +19,8 @@ export type LabelRootProps = Omit<JSX.LabelHTMLAttributes<HTMLLabelElement>, "fo
   };
 
 const LabelRoot: Layout<typeof componentRecipe, LabelRootProps> = () => {
-  const [local, others] = splitProps(props, [
+  const others = omit(
+    props,
     "children",
     "class",
     "dataTheme",
@@ -28,29 +30,29 @@ const LabelRoot: Layout<typeof componentRecipe, LabelRootProps> = () => {
     "required",
     "state",
     "issues",
-  ]);
+  );
 
   return (
     <label
       {...others}
-      for={local.for ?? local.htmlFor}
+      for={props.for ?? props.htmlFor}
       class={twMerge(
         CLASSES.base,
-        local.required && CLASSES.flag.required,
-        (local.state === "disabled") && CLASSES.flag.disabled,
-        (resolveState(local.state, local.issues) === "invalid") && CLASSES.flag.invalid,
-        local.class,
+        props.required && CLASSES.flag.required,
+        (props.state === "disabled") && CLASSES.flag.disabled,
+        (resolveState(props.state, props.issues) === "invalid") && CLASSES.flag.invalid,
+        props.class,
       )}
       data-slot="label"
-      data-required={local.required ? "true" : undefined}
-      data-disabled={(local.state === "disabled") ? "true" : undefined}
-      data-invalid={(resolveState(local.state, local.issues) === "invalid") ? "true" : undefined}
-      data-theme={local.dataTheme}
-      style={local.style}
-      aria-disabled={(local.state === "disabled") ? "true" : undefined}
-      aria-invalid={(resolveState(local.state, local.issues) === "invalid") ? "true" : undefined}
+      data-required={props.required ? "true" : undefined}
+      data-disabled={(props.state === "disabled") ? "true" : undefined}
+      data-invalid={(resolveState(props.state, props.issues) === "invalid") ? "true" : undefined}
+      data-theme={props.dataTheme}
+      style={props.style}
+      aria-disabled={(props.state === "disabled") ? "true" : undefined}
+      aria-invalid={(resolveState(props.state, props.issues) === "invalid") ? "true" : undefined}
     >
-      {local.children}
+      {props.children}
     </label>
   );
 };

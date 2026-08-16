@@ -1,4 +1,4 @@
-import { splitProps, type ParentComponent } from "solid-js";
+import { omit, type ParentComponent } from "solid-js";
 import Button from "../button";
 import type { ButtonProps } from "../button";
 import { useFormContext } from "../../hooks/form/FormContext";
@@ -37,10 +37,10 @@ export type FormSubmitButtonProps = Omit<ButtonProps, "type" | "isDisabled" | "i
  * ```
  */
 const FormSubmitButton: Layout<typeof componentRecipe, FormSubmitButtonProps> = () => {
-  const [local, others] = splitProps(props, ["form", "children"]);
+  const others = omit(props, "form", "children");
 
   const resolveForm = (): AnyFormApi => {
-    if (local.form != null) return local.form;
+    if (props.form != null) return props.form;
     return useFormContext();
   };
 
@@ -55,7 +55,7 @@ const FormSubmitButton: Layout<typeof componentRecipe, FormSubmitButtonProps> = 
       type="submit"
       state={form.isSubmitting() ? "loading" : form.isValid() ? "default" : "disabled"}
     >
-      {local.children}
+      {props.children}
     </Button>
   );
 };

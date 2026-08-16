@@ -1,11 +1,6 @@
-import {
-  type Accessor,
-  createMemo,
-  createSignal,
-  getOwner,
-  type JSX,
-} from "solid-js";
-import { createStore, produce } from "solid-js/store";
+import {type Accessor, createMemo, createSignal, getOwner} from "solid-js";
+import type { JSX } from "@solidjs/web";
+import { createStore } from "solid-js";
 
 /**
  * The imperative grid model.
@@ -321,49 +316,42 @@ export function createDataGrid<Row extends DataGridRow = DataGridRow>(
 
   return {
     addColumn(name, label, dataType = "string", columnOptions = {}) {
-      setColumnStore(
-        "items",
-        produce((items) => {
-          items.push({
-            name,
-            label,
-            dataType,
-            visible: true,
-            sticky: false,
-            ...columnDefaults,
-            ...columnOptions,
-          } as DataGridColumn<Row>);
-        }),
-      );
+      setColumnStore((store) => {
+        store.items.push({
+          name,
+          label,
+          dataType,
+          visible: true,
+          sticky: false,
+          ...columnDefaults,
+          ...columnOptions,
+        } as DataGridColumn<Row>);
+      });
     },
 
     removeColumn(name) {
-      setColumnStore("items", (items) =>
-        items.filter((column) => column.name !== name),
-      );
+      setColumnStore((store) => {
+        store.items = store.items.filter((column) => column.name !== name);
+      });
     },
 
     addRow(row, index) {
-      setRowStore(
-        "items",
-        produce((items) => {
-          if (index === undefined) items.push(row);
-          else items.splice(index, 0, row);
-        }),
-      );
+      setRowStore((store) => {
+        if (index === undefined) store.items.push(row);
+        else store.items.splice(index, 0, row);
+      });
     },
 
     deleteRow(index) {
-      setRowStore(
-        "items",
-        produce((items) => {
-          items.splice(index, 1);
-        }),
-      );
+      setRowStore((store) => {
+        store.items.splice(index, 1);
+      });
     },
 
     setRows(next) {
-      setRowStore("items", [...next]);
+      setRowStore((store) => {
+        store.items = [...next];
+      });
     },
 
     columns,
@@ -371,13 +359,13 @@ export function createDataGrid<Row extends DataGridRow = DataGridRow>(
     columnsByName,
 
     toggleColumn(name, visible) {
-      setColumnStore("items", (items) =>
-        items.map((column) =>
+      setColumnStore((store) => {
+        store.items = store.items.map((column) =>
           column.name === name
             ? { ...column, visible: visible ?? !column.visible }
             : column,
-        ),
-      );
+        );
+      });
     },
 
     rows,

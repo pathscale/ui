@@ -1,9 +1,5 @@
-import {
-  type JSX,
-  splitProps,
-  createMemo,
-  children as resolveChildren,
-} from "solid-js";
+import {omit, createMemo, children as resolveChildren} from "solid-js";
+import type { JSX } from "@solidjs/web";
 import { twMerge } from "tailwind-merge";
 import type { UIBaseProps } from "../vocabulary";
 import { CLASSES } from "./Navbar.recipe";
@@ -18,31 +14,24 @@ export type NavbarStackProps = JSX.HTMLAttributes<HTMLDivElement> &
   };
 
 const NavbarStack: Layout<typeof componentRecipe, NavbarStackProps> = () => {
-  const [local, others] = splitProps(props, [
-    "children",
-    "sticky",
-    "container",
-    "class",
-    "style",
-    "dataTheme",
-  ]);
+  const others = omit(props, "children", "sticky", "container", "class", "style", "dataTheme");
 
-  const resolvedChildren = resolveChildren(() => local.children);
+  const resolvedChildren = resolveChildren(() => props.children);
 
   const classes = createMemo(() =>
     twMerge(
       CLASSES.stack.base,
-      local.sticky && CLASSES.stack.flag.sticky,
-      local.container && CLASSES.stack.flag.container,
-      local.class,
+      props.sticky && CLASSES.stack.flag.sticky,
+      props.container && CLASSES.stack.flag.container,
+      props.class,
     ),
   );
 
   return (
     <div
       {...{ class: classes() }}
-      style={local.style}
-      data-theme={local.dataTheme}
+      style={props.style}
+      data-theme={props.dataTheme}
       {...others}
     >
       {resolvedChildren()}

@@ -1,5 +1,6 @@
 import { clsx } from "clsx";
-import { Show, splitProps, type JSX } from "solid-js";
+import type { JSX } from "@solidjs/web";
+import {Show, omit} from "solid-js";
 import { twMerge } from "tailwind-merge";
 
 import "./Chip.css";
@@ -26,7 +27,8 @@ interface ChipRootProps extends Omit<JSX.HTMLAttributes<HTMLSpanElement>, "color
 }
 
 const ChipRoot: Layout<typeof componentRecipe, ChipRootProps> = () => {
-  const [local, others] = splitProps(props, [
+  const others = omit(
+    props,
     "children",
     "class",
     "variant",
@@ -37,12 +39,12 @@ const ChipRoot: Layout<typeof componentRecipe, ChipRootProps> = () => {
     "onRemove",
     "removeButtonLabel",
     "state",
-  ]);
+  );
 
   const classes = () => {
-    const variant = local.variant ?? "solid";
-    const color = local.flavor ?? "default";
-    const size = local.size ?? "md";
+    const variant = props.variant ?? "solid";
+    const color = props.flavor ?? "default";
+    const size = props.size ?? "md";
 
     return twMerge(
       clsx(
@@ -50,13 +52,13 @@ const ChipRoot: Layout<typeof componentRecipe, ChipRootProps> = () => {
         CLASSES.variant[variant],
         (CLASSES.flavor[color as keyof typeof CLASSES.flavor] ?? `chip--flavor-${color}`),
         CLASSES.size[size],
-        local.class,
+        props.class,
       ),
     );
   };
 
   const chipChildren = () => {
-    const c = local.children;
+    const c = props.children;
     if (typeof c === "string" || typeof c === "number") {
       return <ChipLabel>{c}</ChipLabel>;
     }
@@ -65,7 +67,7 @@ const ChipRoot: Layout<typeof componentRecipe, ChipRootProps> = () => {
 
   const handleRemove = (event: MouseEvent) => {
     event.stopPropagation();
-    local.onRemove?.();
+    props.onRemove?.();
   };
 
   return (
@@ -73,34 +75,34 @@ const ChipRoot: Layout<typeof componentRecipe, ChipRootProps> = () => {
       {...others}
       {...{ class: classes() }}
       data-slot="chip"
-      data-disabled={(local.state === "disabled") ? "true" : "false"}
-      data-removable={local.onRemove ? "true" : "false"}
+      data-disabled={(props.state === "disabled") ? "true" : "false"}
+      data-removable={props.onRemove ? "true" : "false"}
     >
-      <Show when={local.startIcon}>
+      <Show when={props.startIcon}>
         <span {...{ class: twMerge(CLASSES.slot.icon, CLASSES.slot.iconStart) }} data-slot="chip-start-icon">
-          {local.startIcon}
+          {props.startIcon}
         </span>
       </Show>
       {chipChildren()}
-      <Show when={local.onRemove && local.endIcon}>
+      <Show when={props.onRemove && props.endIcon}>
         <button
           type="button"
           {...{ class: CLASSES.slot.remove }}
           data-slot="chip-remove"
-          aria-label={local.removeButtonLabel ?? "Remove"}
+          aria-label={props.removeButtonLabel ?? "Remove"}
           onClick={handleRemove}
-          disabled={Boolean((local.state === "disabled"))}
+          disabled={Boolean((props.state === "disabled"))}
         >
-          <Show when={local.endIcon}>
+          <Show when={props.endIcon}>
             <span {...{ class: CLASSES.slot.removeIcon }} data-slot="chip-remove-icon">
-              {local.endIcon}
+              {props.endIcon}
             </span>
           </Show>
         </button>
       </Show>
-      <Show when={!local.onRemove && local.endIcon}>
+      <Show when={!props.onRemove && props.endIcon}>
         <span {...{ class: twMerge(CLASSES.slot.icon, CLASSES.slot.iconEnd) }} data-slot="chip-end-icon">
-          {local.endIcon}
+          {props.endIcon}
         </span>
       </Show>
     </span>
@@ -112,11 +114,11 @@ interface ChipLabelProps extends JSX.HTMLAttributes<HTMLSpanElement> {
 }
 
 const ChipLabel: Layout<typeof componentRecipe, ChipLabelProps> = () => {
-  const [local, others] = splitProps(props, ["children", "class"]);
+  const others = omit(props, "children", "class");
 
   return (
-    <span {...{ class: twMerge(CLASSES.slot.label, local.class) }} data-slot="chip-label" {...others}>
-      {local.children}
+    <span {...{ class: twMerge(CLASSES.slot.label, props.class) }} data-slot="chip-label" {...others}>
+      {props.children}
     </span>
   );
 };

@@ -1,5 +1,6 @@
 import "./Textarea.css";
-import { splitProps, type Component, type JSX } from "solid-js";
+import type { JSX } from "@solidjs/web";
+import {omit, type Component} from "solid-js";
 import { twMerge } from "tailwind-merge";
 
 import type { UIBaseProps, State, Issue } from "../vocabulary";
@@ -20,7 +21,8 @@ export type TextareaRootProps = Omit<JSX.TextareaHTMLAttributes<HTMLTextAreaElem
   };
 
 const TextareaRoot: Layout<typeof componentRecipe, TextareaRootProps> = () => {
-  const [local, others] = splitProps(props, [
+  const others = omit(
+    props,
     "class",
     "dataTheme",
     "style",
@@ -29,12 +31,12 @@ const TextareaRoot: Layout<typeof componentRecipe, TextareaRootProps> = () => {
     "issues",
     "state",
     "disabled",
-  ]);
+  );
 
-  const variant = () => local.variant ?? "primary";
-  const fullWidth = () => Boolean(local.fullWidth);
-  const isInvalid = () => Boolean((resolveState(local.state, local.issues) === "invalid"));
-  const isDisabled = () => Boolean((local.state === "disabled")) || Boolean(local.disabled);
+  const variant = () => props.variant ?? "primary";
+  const fullWidth = () => Boolean(props.fullWidth);
+  const isInvalid = () => Boolean((resolveState(props.state, props.issues) === "invalid"));
+  const isDisabled = () => Boolean((props.state === "disabled")) || Boolean(props.disabled);
 
   return (
     <textarea
@@ -43,15 +45,15 @@ const TextareaRoot: Layout<typeof componentRecipe, TextareaRootProps> = () => {
         CLASSES.base,
         CLASSES.variant[variant()],
         fullWidth() && CLASSES.flag.fullWidth,
-        local.class,
+        props.class,
       )}
       data-slot="textarea"
       data-invalid={isInvalid() ? "true" : undefined}
       data-disabled={isDisabled() ? "true" : undefined}
       aria-invalid={isInvalid() ? "true" : undefined}
       aria-disabled={isDisabled() ? "true" : undefined}
-      data-theme={local.dataTheme}
-      style={local.style}
+      data-theme={props.dataTheme}
+      style={props.style}
       disabled={isDisabled()}
     />
   );

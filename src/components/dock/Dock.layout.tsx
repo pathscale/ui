@@ -1,15 +1,6 @@
 import "./Dock.css";
-import {
-  type JSX,
-  type Component,
-  For,
-  Show,
-  createSignal,
-  onCleanup,
-  onMount,
-  splitProps,
-} from "solid-js";
-import { Portal } from "solid-js/web";
+import {type Component, For, Show, createSignal, onCleanup, onSettled, omit} from "solid-js";
+import { Portal, type JSX} from "@solidjs/web";
 import { twMerge } from "tailwind-merge";
 
 import type { UIBaseProps } from "../vocabulary";
@@ -172,7 +163,7 @@ const DockItem: Layout<typeof componentRecipe, {
   const [tooltipStyle, setTooltipStyle] = createSignal<{ top: string; left: string }>({ top: "0", left: "0" });
   const cfg = props.cfg;
 
-  onMount(() => {
+  onSettled(() => {
     if (wrapRef && iconRef) props.registerRefs(wrapRef, iconRef);
   });
 
@@ -527,63 +518,85 @@ const DockMobile: Layout<typeof componentRecipe, {
 /* ------------------------------------------------------------------ */
 
 const Dock: Layout<typeof componentRecipe, DockProps> = () => {
-  const [local, others] = splitProps(rawProps, [
-    "items", "orientation", "tooltipDirection", "mobilePopupDirection", "mobileMode", "gap",
-    "baseSize", "hoverSize", "iconSize", "hoverIconSize", "magnifyRange",
-    "magnify", "nudge", "showDesktop", "showMobile", "showContainer",
-    "desktopClass", "mobileClass", "itemClass", "tooltipClass", "mobileToggleIcon",
-    "springMass", "springStiffness", "springDamping",
-    "class", "dataTheme", "style",
-  ]);
+  const others = omit(
+    rawProps,
+    "items",
+    "orientation",
+    "tooltipDirection",
+    "mobilePopupDirection",
+    "mobileMode",
+    "gap",
+    "baseSize",
+    "hoverSize",
+    "iconSize",
+    "hoverIconSize",
+    "magnifyRange",
+    "magnify",
+    "nudge",
+    "showDesktop",
+    "showMobile",
+    "showContainer",
+    "desktopClass",
+    "mobileClass",
+    "itemClass",
+    "tooltipClass",
+    "mobileToggleIcon",
+    "springMass",
+    "springStiffness",
+    "springDamping",
+    "class",
+    "dataTheme",
+    "style",
+  );
 
   const cfg = (): ResolvedConfig => ({
-    baseSize: local.baseSize ?? 40,
-    hoverSize: local.hoverSize ?? 64,
-    iconSize: local.iconSize ?? 20,
-    hoverIconSize: local.hoverIconSize ?? 20,
-    magnifyRange: local.magnifyRange ?? 110,
+    baseSize: rawProps.baseSize ?? 40,
+    hoverSize: rawProps.hoverSize ?? 64,
+    iconSize: rawProps.iconSize ?? 20,
+    hoverIconSize: rawProps.hoverIconSize ?? 20,
+    magnifyRange: rawProps.magnifyRange ?? 110,
     // Default OFF — Liquid Glass dock is calm; hover scale/expand opt-in via prop.
-    magnify: local.magnify === true,
-    nudge: local.nudge ?? 20,
-    gap: local.gap ?? 8,
-    tooltipDir: local.tooltipDirection ?? "top",
-    orientation: local.orientation ?? "horizontal",
-    itemClass: local.itemClass,
-    tooltipClass: local.tooltipClass,
+    magnify: rawProps.magnify === true,
+    nudge: rawProps.nudge ?? 20,
+    gap: rawProps.gap ?? 8,
+    tooltipDir: rawProps.tooltipDirection ?? "top",
+    orientation: rawProps.orientation ?? "horizontal",
+    itemClass: rawProps.itemClass,
+    tooltipClass: rawProps.tooltipClass,
     springOpts: {
-      mass: local.springMass ?? 0.1,
-      stiffness: local.springStiffness ?? 170,
-      damping: local.springDamping ?? 12,
+      mass: rawProps.springMass ?? 0.1,
+      stiffness: rawProps.springStiffness ?? 170,
+      damping: rawProps.springDamping ?? 12,
     },
   });
 
   return (
-    <div {...{ class: CLASSES.base }} data-theme={local.dataTheme} style={local.style} {...others}>
-      <Show when={local.showDesktop !== false}>
+    <div {...{ class: CLASSES.base }} data-theme={rawProps.dataTheme} style={rawProps.style} {...others}>
+      <Show when={rawProps.showDesktop !== false}>
         <DockDesktop
-          items={local.items}
-          {...{ class: twMerge(local.class, local.desktopClass) }}
+          items={rawProps.items}
+          {...{ class: twMerge(rawProps.class, rawProps.desktopClass) }}
           cfg={cfg()}
-          showContainer={local.showContainer !== false}
+          showContainer={rawProps.showContainer !== false}
         />
       </Show>
-      <Show when={local.showMobile !== false}>
+      <Show when={rawProps.showMobile !== false}>
         <Show
-          when={local.mobileMode !== "dock"}
+          when={rawProps.mobileMode !== "dock"}
           fallback={
             <DockDesktop
-              items={local.items}
-              {...{ class: twMerge(CLASSES.barMobileDock, local.mobileClass) }}
+              items={rawProps.items}
+              {...{ class: twMerge(CLASSES.barMobileDock, rawProps.mobileClass) }}
               cfg={cfg()}
-              showContainer={local.showContainer !== false}
+              showContainer={rawProps.showContainer !== false}
             />
           }
         >
           <DockMobile
-            items={local.items}
-            {...{ class: local.mobileClass }}
-            toggleIcon={local.mobileToggleIcon}
-            popupDirection={local.mobilePopupDirection ?? "top"}
+            items={rawProps.items}
+            {...{ class: rawProps.mobileClass }}
+            toggleIcon={rawProps.mobileToggleIcon}
+            popupDirection={rawProps.mobilePopupDirection ?? "top"}
             cfg={cfg()}
           />
         </Show>

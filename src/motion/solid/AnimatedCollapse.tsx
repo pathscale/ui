@@ -1,11 +1,5 @@
-import {
-  type JSX,
-  Show,
-  createEffect,
-  createSignal,
-  onCleanup,
-  untrack,
-} from "solid-js";
+import {Show, createEffect, createSignal, onCleanup, untrack} from "solid-js";
+import type { JSX } from "@solidjs/web";
 import { getMotionDriver } from "../driver";
 import { resolveEase } from "../easing";
 import { prefersReducedMotion } from "../reduced-motion";

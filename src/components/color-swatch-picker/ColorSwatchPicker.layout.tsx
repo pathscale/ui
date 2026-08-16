@@ -1,13 +1,6 @@
 import "./ColorSwatchPicker.css";
-import {
-  createContext,
-  createMemo,
-  createSignal,
-  splitProps,
-  type Accessor,
-  type Component,
-  type JSX,
-} from "solid-js";
+import type { JSX } from "@solidjs/web";
+import {createContext, createMemo, createSignal, omit, type Accessor, type Component} from "solid-js";
 import { twMerge } from "tailwind-merge";
 import type { UIBaseProps, State } from "../vocabulary";
 import { CLASSES } from "./ColorSwatchPicker.recipe";
@@ -43,7 +36,8 @@ export type ColorSwatchPickerProps = Omit<JSX.HTMLAttributes<HTMLDivElement>, "o
   };
 
 const ColorSwatchPicker: Layout<typeof componentRecipe, ColorSwatchPickerProps> = () => {
-  const [local, others] = splitProps(props, [
+  const others = omit(
+    props,
     "class",
     "children",
     "value",
@@ -53,14 +47,14 @@ const ColorSwatchPicker: Layout<typeof componentRecipe, ColorSwatchPickerProps> 
     "dataTheme",
     "role",
     "onKeyDown",
-  ]);
+  );
 
-  const [internalValue, setInternalValue] = createSignal<string | undefined>(local.defaultValue);
+  const [internalValue, setInternalValue] = createSignal<string | undefined>(props.defaultValue);
   let rootRef: HTMLDivElement | undefined;
 
-  const isControlled = () => local.value !== undefined;
-  const currentValue = () => (isControlled() ? local.value : internalValue());
-  const isDisabled = () => Boolean((local.state === "disabled"));
+  const isControlled = () => props.value !== undefined;
+  const currentValue = () => (isControlled() ? props.value : internalValue());
+  const isDisabled = () => Boolean((props.state === "disabled"));
 
   const setValue = (next: string) => {
     if (isDisabled()) return;
@@ -68,7 +62,7 @@ const ColorSwatchPicker: Layout<typeof componentRecipe, ColorSwatchPickerProps> 
     if (!isControlled()) {
       setInternalValue(next);
     }
-    local.onChange?.(next);
+    props.onChange?.(next);
   };
 
   const getEnabledItems = () => {
@@ -96,7 +90,7 @@ const ColorSwatchPicker: Layout<typeof componentRecipe, ColorSwatchPickerProps> 
   };
 
   const handleKeyDown: JSX.EventHandlerUnion<HTMLDivElement, KeyboardEvent> = (event) => {
-    invokeEventHandler(local.onKeyDown, event);
+    invokeEventHandler(props.onKeyDown, event);
     if (event.defaultPrevented || isDisabled()) return;
 
     const key = event.key;
@@ -145,21 +139,21 @@ const ColorSwatchPicker: Layout<typeof componentRecipe, ColorSwatchPickerProps> 
   }));
 
   return (
-    <ColorSwatchPickerContext.Provider value={context()}>
+    <ColorSwatchPickerContext value={context()}>
       <div
         {...others}
         ref={rootRef}
-        {...{ class: twMerge(CLASSES.base, local.class) }}
-        data-theme={local.dataTheme}
+        {...{ class: twMerge(CLASSES.base, props.class) }}
+        data-theme={props.dataTheme}
         data-slot="color-swatch-picker"
         data-disabled={isDisabled() ? "true" : "false"}
-        role={local.role ?? "radiogroup"}
+        role={props.role ?? "radiogroup"}
         aria-disabled={isDisabled() ? "true" : "false"}
         onKeyDown={handleKeyDown}
       >
-        {local.children}
+        {props.children}
       </div>
-    </ColorSwatchPickerContext.Provider>
+    </ColorSwatchPickerContext>
   );
 };
 

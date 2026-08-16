@@ -1,5 +1,6 @@
 import "./PasswordField.css";
-import { createSignal, type JSX } from "solid-js";
+import type { JSX } from "@solidjs/web";
+import {createSignal} from "solid-js";
 import Button from "../button";
 import Icon from "../icon";
 import Input from "../input";

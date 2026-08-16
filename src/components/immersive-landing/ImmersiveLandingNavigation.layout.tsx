@@ -1,4 +1,5 @@
-import { For, splitProps, type JSX } from "solid-js";
+import {For, omit} from "solid-js";
+import type { JSX } from "@solidjs/web";
 import { twMerge } from "tailwind-merge";
 import type { ImmersiveLandingNavigationProps } from "./types";
 import { CLASSES } from "./ImmersiveLanding.recipe";
@@ -6,7 +7,8 @@ import type { Layout } from "../../lib/layouts";
 import { componentRecipe } from "./ImmersiveLanding.recipe";
 
 const ImmersiveLandingNavigation: Layout<typeof componentRecipe, ImmersiveLandingNavigationProps> = () => {
-  const [local, others] = splitProps(props, [
+  const others = omit(
+    props,
     "pages",
     "currentPageIndex",
     "onPageDotClick",
@@ -16,7 +18,7 @@ const ImmersiveLandingNavigation: Layout<typeof componentRecipe, ImmersiveLandin
     "isLastPage",
     "class",
     "style",
-  ]);
+  );
 
   const mobileArrowClasses = (disabled: boolean) =>
     twMerge(
@@ -27,10 +29,10 @@ const ImmersiveLandingNavigation: Layout<typeof componentRecipe, ImmersiveLandin
   return (
     <nav
       {...{
-        class: twMerge(CLASSES.navigation.base, local.class),
+        class: twMerge(CLASSES.navigation.base, props.class),
       }}
       aria-label="Page navigation"
-      style={{ bottom: "calc(0.75rem + env(safe-area-inset-bottom))", ...local.style }}
+      style={{ bottom: "calc(0.75rem + env(safe-area-inset-bottom))", ...props.style }}
       {...others}
     >
       <div {...{ class: CLASSES.navigation.shell }}>
@@ -38,9 +40,9 @@ const ImmersiveLandingNavigation: Layout<typeof componentRecipe, ImmersiveLandin
           {/* Left arrow - Mobile only */}
           <button
             type="button"
-            onClick={local.onPrev}
-            disabled={local.isFirstPage}
-            {...{ class: mobileArrowClasses(local.isFirstPage) }}
+            onClick={props.onPrev}
+            disabled={props.isFirstPage}
+            {...{ class: mobileArrowClasses(props.isFirstPage) }}
             aria-label="Previous page"
           >
             <svg
@@ -55,21 +57,21 @@ const ImmersiveLandingNavigation: Layout<typeof componentRecipe, ImmersiveLandin
           </button>
 
           {/* Page position dots - Desktop only */}
-          {local.pages && local.pages.length > 0 && (
+          {props.pages && props.pages.length > 0 && (
             <div {...{ class: CLASSES.navigation.dots }}>
-              <For each={local.pages}>
+              <For each={props.pages}>
                 {(pageId, index) => (
                   <button
                     type="button"
-                    onClick={() => local.onPageDotClick(pageId)}
+                    onClick={() => props.onPageDotClick(pageId)}
                     {...{
                       class: twMerge(
                         CLASSES.navigation.dot,
-                        index() === local.currentPageIndex && CLASSES.navigation.dotActive,
+                        index() === props.currentPageIndex && CLASSES.navigation.dotActive,
                       ),
                     }}
-                    aria-label={`Go to page ${index() + 1} of ${local.pages.length}`}
-                    aria-current={index() === local.currentPageIndex ? "step" : undefined}
+                    aria-label={`Go to page ${index() + 1} of ${props.pages.length}`}
+                    aria-current={index() === props.currentPageIndex ? "step" : undefined}
                   />
                 )}
               </For>
@@ -77,18 +79,18 @@ const ImmersiveLandingNavigation: Layout<typeof componentRecipe, ImmersiveLandin
           )}
 
           {/* Page counter */}
-          {local.pages && local.pages.length > 0 && (
+          {props.pages && props.pages.length > 0 && (
             <span {...{ class: CLASSES.navigation.counter }}>
-              {(local.currentPageIndex ?? 0) + 1}/{local.pages.length}
+              {(props.currentPageIndex ?? 0) + 1}/{props.pages.length}
             </span>
           )}
 
           {/* Right arrow - Mobile only */}
           <button
             type="button"
-            onClick={local.onNext}
-            disabled={local.isLastPage}
-            {...{ class: mobileArrowClasses(local.isLastPage) }}
+            onClick={props.onNext}
+            disabled={props.isLastPage}
+            {...{ class: mobileArrowClasses(props.isLastPage) }}
             aria-label="Next page"
           >
             <svg

@@ -1,5 +1,6 @@
 import { clsx } from "clsx";
-import { type JSX, splitProps } from "solid-js";
+import type { JSX } from "@solidjs/web";
+import {omit} from "solid-js";
 import { twMerge } from "tailwind-merge";
 
 import "./Badge.css";
@@ -17,15 +18,15 @@ interface BadgeAnchorProps extends JSX.HTMLAttributes<HTMLSpanElement> {
 }
 
 const BadgeAnchor: Layout<typeof componentRecipe, BadgeAnchorProps> = () => {
-  const [local, others] = splitProps(props, ["children", "class"]);
+  const others = omit(props, "children", "class");
 
   return (
     <span
       {...others}
-      {...{ class: twMerge(CLASSES.slot.anchor, local.class) }}
+      {...{ class: twMerge(CLASSES.slot.anchor, props.class) }}
       data-slot="badge-anchor"
     >
-      {local.children}
+      {props.children}
     </span>
   );
 };
@@ -47,7 +48,8 @@ interface BadgeRootProps extends Omit<JSX.HTMLAttributes<HTMLSpanElement>, "colo
 }
 
 const BadgeRoot: Layout<typeof componentRecipe, BadgeRootProps> = () => {
-  const [local, others] = splitProps(props, [
+  const others = omit(
+    props,
     "children",
     "class",
     "flavor",
@@ -55,18 +57,18 @@ const BadgeRoot: Layout<typeof componentRecipe, BadgeRootProps> = () => {
     "state",
     "size",
     "placement",
-  ]);
+  );
 
   const classes = () => {
-    const size = local.size ?? "md";
+    const size = props.size ?? "md";
     /* Flavor is open, so a name the library does not ship still produces a
        class an app can style, rather than silently rendering unflavoured. */
-    const flavor = local.flavor ?? "neutral";
+    const flavor = props.flavor ?? "neutral";
     const flavorClass =
       CLASSES.flavor[flavor as keyof typeof CLASSES.flavor] ?? `badge--flavor-${flavor}`;
-    const variant = local.variant ?? "solid";
-    const state = resolveState(local.state);
-    const placement = local.placement ?? "top-right";
+    const variant = props.variant ?? "solid";
+    const state = resolveState(props.state);
+    const placement = props.placement ?? "top-right";
 
     return twMerge(
       clsx(
@@ -76,13 +78,13 @@ const BadgeRoot: Layout<typeof componentRecipe, BadgeRootProps> = () => {
         CLASSES.variant[variant],
         CLASSES.state[state],
         CLASSES.placement[placement],
-        local.class,
+        props.class,
       ),
     );
   };
 
   const badgeChildren = () => {
-    const c = local.children;
+    const c = props.children;
     if (typeof c === "string" || typeof c === "number") {
       return <BadgeLabel>{c}</BadgeLabel>;
     }
@@ -104,15 +106,15 @@ interface BadgeLabelProps extends JSX.HTMLAttributes<HTMLSpanElement> {
 }
 
 const BadgeLabel: Layout<typeof componentRecipe, BadgeLabelProps> = () => {
-  const [local, others] = splitProps(props, ["children", "class"]);
+  const others = omit(props, "children", "class");
 
   return (
     <span
-      {...{ class: twMerge(CLASSES.slot.label, local.class) }}
+      {...{ class: twMerge(CLASSES.slot.label, props.class) }}
       data-slot="badge-label"
       {...others}
     >
-      {local.children}
+      {props.children}
     </span>
   );
 };
