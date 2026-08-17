@@ -82,10 +82,27 @@
     box-shadow: 0 0 0 3px color-mix(in oklab, var(--color-accent) 22%, transparent);
   }
 
+  /*
+   * Hover has to reach a radio that carries its own indicator content.
+   *
+   * The second rule below is `:empty::before`, which is right for the dot this
+   * component draws itself: there is nothing to tint but the pseudo-element.
+   * A radio given real content — a colour swatch, an icon, a preview — has a
+   * non-empty indicator, so that half matched nothing, and the surviving half
+   * only moved `border-color` on `.radio__control`. Any consumer that also
+   * restyled the control's border then had no hover feedback at all: that is
+   * what happened to AgencyZero's colour wheel, where 31 petals gave no
+   * indication of which one the pointer was on.
+   *
+   * So the control lifts on hover as well. `transform` is the one channel a
+   * consumer's own border and background overrides cannot silently cancel, and
+   * it reads on a petal whose entire surface is already a colour.
+   */
   @media (hover: hover) {
     .radio:hover:not([data-selected="true"]):not([data-disabled="true"]) .radio__control,
     .radio[data-hovered="true"]:not([data-selected="true"]):not([data-disabled="true"]) .radio__control {
       border-color: color-mix(in oklab, var(--color-base-content) 24%, transparent);
+      transform: scale(1.12);
     }
 
     .radio:hover:not([data-selected="true"]):not([data-disabled="true"]) .radio__indicator:empty::before,
