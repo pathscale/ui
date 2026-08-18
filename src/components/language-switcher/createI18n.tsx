@@ -201,7 +201,7 @@ export interface I18nContextValue {
   i18n: I18nStore;
 }
 
-export const I18nContext = createContext<I18nContextValue>();
+export const I18nContext = createContext<I18nContextValue | null>(null);
 
 export function useI18n(): I18nStore {
   const context = useContext(I18nContext);

@@ -27,7 +27,7 @@ type ColorPickerContextValue = {
   setFromSlider: (type: ColorSliderType, value: number) => void;
 };
 
-const ColorPickerContext = createContext<ColorPickerContextValue>();
+const ColorPickerContext = createContext<ColorPickerContextValue | null>(null);
 
 const clamp = (value: number, min: number, max: number) => Math.min(max, Math.max(min, value));
 

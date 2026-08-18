@@ -21,7 +21,7 @@ type AvatarContextValue = {
   setImageLoaded: (v: boolean) => void;
 };
 
-const AvatarContext = createContext<AvatarContextValue>();
+const AvatarContext = createContext<AvatarContextValue | null>(null);
 
 const useAvatarContext = () => {
   const ctx = useContext(AvatarContext);

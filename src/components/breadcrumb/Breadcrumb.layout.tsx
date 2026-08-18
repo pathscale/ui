@@ -14,7 +14,7 @@ type BreadcrumbContextValue = {
   separator: () => JSX.Element | undefined;
 };
 
-const BreadcrumbContext = createContext<BreadcrumbContextValue>();
+const BreadcrumbContext = createContext<BreadcrumbContextValue | null>(null);
 
 const useBreadcrumbContext = () => {
   const ctx = useContext(BreadcrumbContext);

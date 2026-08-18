@@ -56,7 +56,7 @@ type SelectContextValue = {
   setRootRef: (el: HTMLDivElement) => void;
 };
 
-const SelectContext = createContext<SelectContextValue>();
+const SelectContext = createContext<SelectContextValue | null>(null);
 
 const invokeEventHandler = (handler: unknown, event: Event) => {
   if (typeof handler === "function") {

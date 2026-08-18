@@ -17,7 +17,7 @@ type CollapsibleContextValue = {
   toggle: () => void;
 };
 
-const CollapsibleContext = createContext<CollapsibleContextValue>();
+const CollapsibleContext = createContext<CollapsibleContextValue | null>(null);
 
 const useCollapsibleContext = () => {
   const ctx = useContext(CollapsibleContext);

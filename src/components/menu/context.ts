@@ -28,4 +28,4 @@ export type MenuContextValue = {
   focusBoundary: (target: MenuFocusTarget) => void;
 };
 
-export const MenuContext = createContext<MenuContextValue>();
+export const MenuContext = createContext<MenuContextValue | null>(null);

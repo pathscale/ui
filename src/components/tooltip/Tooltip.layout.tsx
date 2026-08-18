@@ -32,7 +32,7 @@ type TooltipContextValue = {
   dataTheme: () => string | undefined;
 };
 
-const TooltipContext = createContext<TooltipContextValue>();
+const TooltipContext = createContext<TooltipContextValue | null>(null);
 
 const useTooltipContext = () => {
   const ctx = useContext(TooltipContext);

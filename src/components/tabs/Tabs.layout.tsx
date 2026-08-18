@@ -30,7 +30,7 @@ type TabsContextValue = {
   getPanelId: (key: TabKey) => string;
 };
 
-const TabsContext = createContext<TabsContextValue>();
+const TabsContext = createContext<TabsContextValue | null>(null);
 
 const invokeEventHandler = (handler: unknown, event: Event) => {
   if (typeof handler === "function") {
