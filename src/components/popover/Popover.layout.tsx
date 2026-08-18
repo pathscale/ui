@@ -36,7 +36,7 @@ type PopoverContextValue = {
   onInteractOutside?: (event: Event) => void;
 };
 
-const PopoverContext = createContext<PopoverContextValue>();
+const PopoverContext = createContext<PopoverContextValue | null>(null);
 
 const usePopoverContext = () => {
   const ctx = useContext(PopoverContext);

@@ -56,7 +56,7 @@ type ComboBoxContextValue = {
   attachInputRef: (node: HTMLInputElement) => void;
 };
 
-const ComboBoxContext = createContext<ComboBoxContextValue>();
+const ComboBoxContext = createContext<ComboBoxContextValue | null>(null);
 
 const invokeEventHandler = <T extends Event>(handler: unknown, event: T) => {
   if (typeof handler === "function") {

@@ -35,7 +35,7 @@ type DialogContextValue = {
   setDescribedBy: (id: string | undefined) => void;
 };
 
-const DialogContext = createContext<DialogContextValue>();
+const DialogContext = createContext<DialogContextValue | null>(null);
 
 const useModalContext = () => {
   const context = useContext(DialogContext);

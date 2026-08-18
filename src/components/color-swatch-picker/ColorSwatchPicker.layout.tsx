@@ -24,7 +24,7 @@ export type ColorSwatchPickerContextValue = {
   select: (value: string) => void;
 };
 
-export const ColorSwatchPickerContext = createContext<ColorSwatchPickerContextValue>();
+export const ColorSwatchPickerContext = createContext<ColorSwatchPickerContextValue | null>(null);
 
 export type ColorSwatchPickerProps = Omit<JSX.HTMLAttributes<HTMLDivElement>, "onChange"> &
   UIBaseProps & {

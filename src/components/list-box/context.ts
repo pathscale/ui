@@ -29,4 +29,4 @@ export type ListBoxContextValue = {
   focusBoundary: (target: ListBoxFocusTarget) => void;
 };
 
-export const ListBoxContext = createContext<ListBoxContextValue>();
+export const ListBoxContext = createContext<ListBoxContextValue | null>(null);

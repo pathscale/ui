@@ -43,7 +43,7 @@ type DropdownContextValue = {
   setRootRef: (el: HTMLDivElement) => void;
 };
 
-const DropdownContext = createContext<DropdownContextValue>();
+const DropdownContext = createContext<DropdownContextValue | null>(null);
 
 const invokeEventHandler = (handler: unknown, event: Event) => {
   if (typeof handler === "function") {
