@@ -25,6 +25,28 @@ natively, and Claude Code loads it through the `@AGENTS.md` import in
   version bump only fights the workflow. Publishing is irreversible and a version can
   never be reused, so if a release looks wrong, read the workflow run before touching
   anything.
+- **After a merge, confirm the fix actually published.** The automatic release has one
+  hole and it is easy to walk into: if the release job for the *previous* merge is still
+  running when yours lands, the new tag can end up pointing at your commit while npm
+  never receives it. `bun run scripts/next-version.ts` then reports "no releasable
+  commits", because the range it inspects is already empty. The symptom is a merged fix
+  that a consumer cannot install.
+
+  So check, every time:
+
+  ```sh
+  npm view @pathscale/ui version          # what consumers can actually install
+  git log --oneline -1                    # what master says
+  git tag --points-at HEAD                # a tag here with no npm release is the hole
+  ```
+
+  If master is ahead of npm, push a one-line `chore(release): <next>` bump to `master`
+  to trigger the workflow. That is the one case where touching the version by hand is
+  correct, and it is a repair, not the normal path.
+- **One open PR per repository. Add to it.** If a PR is already open here, push your
+  commits onto that branch instead of opening a second one. Two open PRs against the
+  same library mean two releases, two version bumps, and a consumer that has to wait for
+  both — and whichever lands second can hit the tag hole above.
 - **`bun` is the package manager** — its lockfile is authoritative. Don't introduce a second one by running npm/yarn/pnpm here.
 - **Docs describe what is true now.** If you change behaviour, update the README and any affected doc in the same change.
 
