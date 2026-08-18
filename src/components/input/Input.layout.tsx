@@ -18,7 +18,20 @@ type InputContextValue = {
   fullWidth: Accessor<boolean>;
 };
 
-const InputContext = createContext<InputContextValue>();
+/*
+ * Defaulted to `null` rather than left undefined.
+ *
+ * Every consumer below reads it as `ctx?.…`, so a field used on its own,
+ * without an `<Input>` root, has always been supported. Solid 2 made that
+ * throw: `getContext` raises `ContextNotFoundError` when the resolved value
+ * is `undefined`, which happens before the optional chain can run. `null` is
+ * a value, so the lookup succeeds and the existing optional reads behave as
+ * they always have.
+ *
+ * `{}` would also silence the throw and is wrong: it is truthy, so `ctx?.size()`
+ * would be called on an object with no such method.
+ */
+const InputContext = createContext<InputContextValue | null>(null);
 
 type InputRootProps = Omit<JSX.HTMLAttributes<HTMLDivElement>, "children"> & {
   children: JSX.Element;
