@@ -55,8 +55,8 @@
 
   .dialog__backdrop--blur {
     background-color: color-mix(in oklab, rgb(var(--shadow-color, 0 0 0)) 35%, transparent);
-    backdrop-filter: blur(0.75rem);
     -webkit-backdrop-filter: blur(0.75rem);
+    backdrop-filter: blur(0.75rem);
   }
 
   .dialog__backdrop--entering {

@@ -25,8 +25,8 @@
 
 @layer components {
   [data-material="solid"] {
-    backdrop-filter: none;
     -webkit-backdrop-filter: none;
+    backdrop-filter: none;
   }
 
   [data-material="glass"] {
@@ -40,9 +40,9 @@
       var(--glass-border-color, white),
       transparent calc(100% - var(--glass-border-opacity, 12%))
     );
-    backdrop-filter: blur(var(--glass-blur, 50px)) saturate(var(--glass-saturation, 1.2))
-      brightness(var(--glass-brightness, 1));
     -webkit-backdrop-filter: blur(var(--glass-blur, 50px)) saturate(var(--glass-saturation, 1.2))
+      brightness(var(--glass-brightness, 1));
+    backdrop-filter: blur(var(--glass-blur, 50px)) saturate(var(--glass-saturation, 1.2))
       brightness(var(--glass-brightness, 1));
   }
 
@@ -76,8 +76,8 @@
    * costs a second render pass to get there.
    */
   [data-material="glass"] [data-material="glass"] {
-    backdrop-filter: none;
     -webkit-backdrop-filter: none;
+    backdrop-filter: none;
   }
 
   /*
@@ -104,8 +104,8 @@
         var(--glass-background-color, white),
         transparent calc(100% - var(--glass-fallback-background-opacity, 78%))
       );
-      backdrop-filter: none;
       -webkit-backdrop-filter: none;
+      backdrop-filter: none;
     }
 
     [data-material="glass"]::before {
