@@ -1,15 +1,23 @@
 import "./ColorSlider.css";
 import type { JSX } from "@solidjs/web";
-import {createMemo, createSignal, createTrackedEffect, omit, type Component} from "solid-js";
-import { twMerge } from "../../lib/twMerge";
-import type { UIBaseProps, State } from "../vocabulary";
-import { CLASSES } from "./ColorSlider.recipe";
+import {
+  type Component,
+  createMemo,
+  createSignal,
+  createTrackedEffect,
+  omit,
+} from "solid-js";
 import type { Layout } from "../../lib/layouts";
-import { componentRecipe } from "./ColorSlider.recipe";
+import { twMerge } from "../../lib/twMerge";
+import type { State, UIBaseProps } from "../vocabulary";
+import { CLASSES, type componentRecipe } from "./ColorSlider.recipe";
 
 export type ColorSliderType = "hue" | "alpha";
 
-export type ColorSliderProps = Omit<JSX.HTMLAttributes<HTMLDivElement>, "children" | "onChange"> &
+export type ColorSliderProps = Omit<
+  JSX.HTMLAttributes<HTMLDivElement>,
+  "children" | "onChange"
+> &
   UIBaseProps & {
     value?: number;
     defaultValue?: number;
@@ -18,7 +26,8 @@ export type ColorSliderProps = Omit<JSX.HTMLAttributes<HTMLDivElement>, "childre
     state?: State;
   };
 
-const clamp = (value: number, min: number, max: number) => Math.min(max, Math.max(min, value));
+const clamp = (value: number, min: number, max: number) =>
+  Math.min(max, Math.max(min, value));
 
 const normalizeValue = (type: ColorSliderType, value: number) => {
   if (type === "alpha") {
@@ -60,11 +69,14 @@ const ColorSlider: Layout<typeof componentRecipe, ColorSliderProps> = () => {
   );
 
   const sliderType = () => props.type ?? "hue";
-  const isDisabled = () => Boolean((props.state === "disabled"));
+  const isDisabled = () => Boolean(props.state === "disabled");
 
   const initialValue = () => {
     const fallback = sliderType() === "alpha" ? 1 : 0;
-    return normalizeValue(sliderType(), props.value ?? props.defaultValue ?? fallback);
+    return normalizeValue(
+      sliderType(),
+      props.value ?? props.defaultValue ?? fallback,
+    );
   };
 
   const [internalValue, setInternalValue] = createSignal(initialValue());
@@ -116,7 +128,10 @@ const ColorSlider: Layout<typeof componentRecipe, ColorSliderProps> = () => {
     emitChange(fromPercent(sliderType(), percent));
   };
 
-  const handlePointerDown: JSX.EventHandlerUnion<HTMLDivElement, PointerEvent> = (event) => {
+  const handlePointerDown: JSX.EventHandlerUnion<
+    HTMLDivElement,
+    PointerEvent
+  > = (event) => {
     if (isDisabled()) return;
     event.preventDefault();
     event.currentTarget.setPointerCapture(event.pointerId);
@@ -124,23 +139,33 @@ const ColorSlider: Layout<typeof componentRecipe, ColorSliderProps> = () => {
     updateFromPointer(event.clientX);
   };
 
-  const handlePointerMove: JSX.EventHandlerUnion<HTMLDivElement, PointerEvent> = (event) => {
+  const handlePointerMove: JSX.EventHandlerUnion<
+    HTMLDivElement,
+    PointerEvent
+  > = (event) => {
     if (!isDragging()) return;
     updateFromPointer(event.clientX);
   };
 
-  const handlePointerUp: JSX.EventHandlerUnion<HTMLDivElement, PointerEvent> = (event) => {
+  const handlePointerUp: JSX.EventHandlerUnion<HTMLDivElement, PointerEvent> = (
+    event,
+  ) => {
     if (event.currentTarget.hasPointerCapture(event.pointerId)) {
       event.currentTarget.releasePointerCapture(event.pointerId);
     }
     setIsDragging(false);
   };
 
-  const handleLostPointerCapture: JSX.EventHandlerUnion<HTMLDivElement, PointerEvent> = () => {
+  const handleLostPointerCapture: JSX.EventHandlerUnion<
+    HTMLDivElement,
+    PointerEvent
+  > = () => {
     setIsDragging(false);
   };
 
-  const handleKeyDown: JSX.EventHandlerUnion<HTMLDivElement, KeyboardEvent> = (event) => {
+  const handleKeyDown: JSX.EventHandlerUnion<HTMLDivElement, KeyboardEvent> = (
+    event,
+  ) => {
     if (isDisabled()) return;
 
     const key = event.key;
@@ -153,7 +178,14 @@ const ColorSlider: Layout<typeof componentRecipe, ColorSliderProps> = () => {
 
     event.preventDefault();
 
-    const step = sliderType() === "alpha" ? (event.shiftKey ? 0.1 : 0.01) : event.shiftKey ? 10 : 1;
+    const step =
+      sliderType() === "alpha"
+        ? event.shiftKey
+          ? 0.1
+          : 0.01
+        : event.shiftKey
+          ? 10
+          : 1;
     const direction = isIncrease ? 1 : -1;
     emitChange(currentValue() + direction * step);
   };
@@ -192,22 +224,30 @@ const ColorSlider: Layout<typeof componentRecipe, ColorSliderProps> = () => {
     <div
       {...others}
       ref={sliderRef}
-      {...{ class: twMerge(
-        CLASSES.base,
-        sliderType() === "alpha" && CLASSES.flag.alpha,
-        isDragging() && CLASSES.flag.dragging,
-        props.class,
-      ) }}
+      {...{
+        class: twMerge(
+          CLASSES.base,
+          sliderType() === "alpha" && CLASSES.flag.alpha,
+          isDragging() && CLASSES.flag.dragging,
+          props.class,
+        ),
+      }}
       data-theme={props.dataTheme}
       data-slot="color-slider"
       data-type={sliderType()}
       data-disabled={isDisabled() ? "true" : "false"}
       role="slider"
       tabindex={isDisabled() ? -1 : 0}
-      aria-label={local["aria-label"] ?? (sliderType() === "alpha" ? "Alpha" : "Hue")}
+      aria-label={
+        local["aria-label"] ?? (sliderType() === "alpha" ? "Alpha" : "Hue")
+      }
       aria-valuemin={sliderType() === "alpha" ? 0 : 0}
       aria-valuemax={sliderType() === "alpha" ? 1 : 360}
-      aria-valuenow={sliderType() === "alpha" ? Number(currentValue().toFixed(2)) : Math.round(currentValue())}
+      aria-valuenow={
+        sliderType() === "alpha"
+          ? Number(currentValue().toFixed(2))
+          : Math.round(currentValue())
+      }
       aria-valuetext={valueText()}
       aria-disabled={isDisabled() ? "true" : "false"}
       style={sliderStyle()}
@@ -217,7 +257,10 @@ const ColorSlider: Layout<typeof componentRecipe, ColorSliderProps> = () => {
       onLostPointerCapture={handleLostPointerCapture}
       onKeyDown={handleKeyDown}
     >
-      <div {...{ class: CLASSES.slot.track }} data-slot="color-slider-track" />
+      <div
+        {...{ class: CLASSES.slot.track }}
+        data-slot="color-slider-track"
+      />
       <div
         {...{ class: CLASSES.slot.thumb }}
         data-slot="color-slider-thumb"

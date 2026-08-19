@@ -1,19 +1,23 @@
 import "./CheckboxGroup.css";
 import type { JSX } from "@solidjs/web";
-import {createSignal, omit, type Component} from "solid-js";
-import { twMerge } from "../../lib/twMerge";
-
-import type { CheckboxVariant } from "../checkbox";
-import type { UIBaseProps, State, Issue } from "../vocabulary";
-import { CLASSES } from "./CheckboxGroup.recipe";
-import { CheckboxGroupContext, type CheckboxGroupContextValue } from "./context";
+import { type Component, createSignal, omit } from "solid-js";
 import type { Layout } from "../../lib/layouts";
-import { componentRecipe } from "./CheckboxGroup.recipe";
+import { twMerge } from "../../lib/twMerge";
+import type { CheckboxVariant } from "../checkbox";
+import type { Issue, State, UIBaseProps } from "../vocabulary";
 import { resolveState } from "../vocabulary";
+import { CLASSES, type componentRecipe } from "./CheckboxGroup.recipe";
+import {
+  CheckboxGroupContext,
+  type CheckboxGroupContextValue,
+} from "./context";
 
 export type CheckboxGroupVariant = CheckboxVariant;
 
-export type CheckboxGroupProps = Omit<JSX.HTMLAttributes<HTMLDivElement>, "children" | "onChange"> &
+export type CheckboxGroupProps = Omit<
+  JSX.HTMLAttributes<HTMLDivElement>,
+  "children" | "onChange"
+> &
   UIBaseProps & {
     children?: JSX.Element | ((values: string[]) => JSX.Element);
     value?: string[];
@@ -26,7 +30,10 @@ export type CheckboxGroupProps = Omit<JSX.HTMLAttributes<HTMLDivElement>, "child
     variant?: CheckboxGroupVariant;
   };
 
-const CheckboxGroup: Layout<typeof componentRecipe, CheckboxGroupProps> = () => {
+const CheckboxGroup: Layout<
+  typeof componentRecipe,
+  CheckboxGroupProps
+> = () => {
   const others = omit(
     props,
     "children",
@@ -44,13 +51,18 @@ const CheckboxGroup: Layout<typeof componentRecipe, CheckboxGroupProps> = () => 
     "role",
   );
 
-  const [internalValue, setInternalValue] = createSignal<string[]>(props.defaultValue ?? []);
+  const [internalValue, setInternalValue] = createSignal<string[]>(
+    props.defaultValue ?? [],
+  );
 
   const isControlled = () => props.value !== undefined;
-  const selectedValues = () => (isControlled() ? props.value ?? [] : internalValue());
+  const selectedValues = () =>
+    isControlled() ? (props.value ?? []) : internalValue();
   const variant = () => props.variant ?? "primary";
-  const isDisabled = () => Boolean((props.state === "disabled")) || Boolean(props.disabled);
-  const isInvalid = () => Boolean((resolveState(props.state, props.issues) === "invalid"));
+  const isDisabled = () =>
+    Boolean(props.state === "disabled") || Boolean(props.disabled);
+  const isInvalid = () =>
+    Boolean(resolveState(props.state, props.issues) === "invalid");
 
   const handleToggle = (optionValue: string, checked: boolean) => {
     const currentValues = selectedValues();
@@ -100,7 +112,9 @@ const CheckboxGroup: Layout<typeof componentRecipe, CheckboxGroupProps> = () => 
         data-theme={props.dataTheme}
         style={props.style}
       >
-        {typeof props.children === "function" ? props.children(selectedValues()) : props.children}
+        {typeof props.children === "function"
+          ? props.children(selectedValues())
+          : props.children}
       </div>
     </CheckboxGroupContext>
   );

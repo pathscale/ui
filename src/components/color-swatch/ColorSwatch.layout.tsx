@@ -1,12 +1,11 @@
 import "./ColorSwatch.css";
 import type { JSX } from "@solidjs/web";
-import {omit, useContext, type Component} from "solid-js";
+import { type Component, omit, useContext } from "solid-js";
+import type { Layout } from "../../lib/layouts";
 import { twMerge } from "../../lib/twMerge";
 import { ColorSwatchPickerContext } from "../color-swatch-picker/ColorSwatchPicker.generated";
-import type { UIBaseProps, State } from "../vocabulary";
-import { CLASSES } from "./ColorSwatch.recipe";
-import type { Layout } from "../../lib/layouts";
-import { componentRecipe } from "./ColorSwatch.recipe";
+import type { State, UIBaseProps } from "../vocabulary";
+import { CLASSES, type componentRecipe } from "./ColorSwatch.recipe";
 
 const invokeEventHandler = (handler: unknown, event: Event) => {
   if (typeof handler === "function") {
@@ -22,7 +21,10 @@ const invokeEventHandler = (handler: unknown, event: Event) => {
 export type ColorSwatchShape = "circle" | "square";
 export type ColorSwatchSize = "xs" | "sm" | "md" | "lg" | "xl";
 
-export type ColorSwatchProps = Omit<JSX.ButtonHTMLAttributes<HTMLButtonElement>, "onChange" | "onSelect"> &
+export type ColorSwatchProps = Omit<
+  JSX.ButtonHTMLAttributes<HTMLButtonElement>,
+  "onChange" | "onSelect"
+> &
   UIBaseProps & {
     color: string;
     colorName?: string;
@@ -59,12 +61,14 @@ const ColorSwatch: Layout<typeof componentRecipe, ColorSwatchProps> = () => {
   );
 
   const isInsidePicker = () => Boolean(picker);
-  const hasPickerSelection = () => (picker ? picker.value() !== undefined : false);
+  const hasPickerSelection = () =>
+    picker ? picker.value() !== undefined : false;
   const shape = () => props.shape ?? "circle";
   const size = () => props.size ?? "md";
 
   const isDisabled = () => {
-    const localDisabled = Boolean((props.state === "disabled")) || Boolean(props.disabled);
+    const localDisabled =
+      Boolean(props.state === "disabled") || Boolean(props.disabled);
     const pickerDisabled = picker ? picker.isDisabled() : false;
     return localDisabled || pickerDisabled;
   };
@@ -87,13 +91,18 @@ const ColorSwatch: Layout<typeof componentRecipe, ColorSwatchProps> = () => {
     picker?.select(props.color);
   };
 
-  const handleClick: JSX.EventHandlerUnion<HTMLButtonElement, MouseEvent> = (event) => {
+  const handleClick: JSX.EventHandlerUnion<HTMLButtonElement, MouseEvent> = (
+    event,
+  ) => {
     invokeEventHandler(props.onClick, event);
     if (event.defaultPrevented || isDisabled()) return;
     emitSelection();
   };
 
-  const handleKeyDown: JSX.EventHandlerUnion<HTMLButtonElement, KeyboardEvent> = (event) => {
+  const handleKeyDown: JSX.EventHandlerUnion<
+    HTMLButtonElement,
+    KeyboardEvent
+  > = (event) => {
     invokeEventHandler(props.onKeyDown, event);
     if (event.defaultPrevented || isDisabled()) return;
 
@@ -147,9 +156,13 @@ const ColorSwatch: Layout<typeof componentRecipe, ColorSwatchProps> = () => {
       disabled={isDisabled()}
       role={props.role ?? (isInsidePicker() ? "radio" : "option")}
       tabindex={tabindex()}
-      aria-label={local["aria-label"] ?? props.colorName ?? `Color ${props.color}`}
+      aria-label={
+        local["aria-label"] ?? props.colorName ?? `Color ${props.color}`
+      }
       aria-selected={isSelected() ? "true" : "false"}
-      aria-checked={isInsidePicker() ? (isSelected() ? "true" : "false") : undefined}
+      aria-checked={
+        isInsidePicker() ? (isSelected() ? "true" : "false") : undefined
+      }
       aria-disabled={isDisabled() ? "true" : "false"}
       style={style()}
       onClick={handleClick}

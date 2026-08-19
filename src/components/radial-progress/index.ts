@@ -1,6 +1,6 @@
-export { default } from "./RadialProgress.generated";
 export type {
+  RadialProgressColor,
   RadialProgressProps,
   RadialProgressSize,
-  RadialProgressColor,
 } from "./RadialProgress.generated";
+export { default } from "./RadialProgress.generated";

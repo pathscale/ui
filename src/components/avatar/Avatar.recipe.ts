@@ -29,4 +29,12 @@ export const CLASSES = {
     overlap: "-space-x-6",
   },
 } as const;
-export const componentRecipe = recipe({component:"avatar",slots:{"avatar-fallback":{},"avatar-image":{},"avatar-root":{},"root":{},},});
+export const componentRecipe = recipe({
+  component: "avatar",
+  slots: {
+    "avatar-fallback": {},
+    "avatar-image": {},
+    "avatar-root": {},
+    root: {},
+  },
+});

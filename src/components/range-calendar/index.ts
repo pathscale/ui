@@ -3,4 +3,3 @@ export {
   type RangeCalendarProps,
   type RangeCalendarValue,
 } from "./RangeCalendar.generated";
-

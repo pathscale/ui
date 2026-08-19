@@ -1,5 +1,11 @@
-import {type Component, createSignal, createTrackedEffect, onCleanup, omit} from "solid-js";
 import type { JSX } from "@solidjs/web";
+import {
+  type Component,
+  createSignal,
+  createTrackedEffect,
+  omit,
+  onCleanup,
+} from "solid-js";
 import { runMotion } from "../engine";
 import type { MotionState, MotionTransition } from "../types";
 
@@ -27,7 +33,7 @@ export const MotionDiv: Component<MotionDivProps> = (props) => {
     "ref",
   );
   const [elementRef, setElementRef] = createSignal<HTMLDivElement | undefined>(
-    undefined
+    undefined,
   );
   let activeControl: { stop: () => void } | null = null;
   let lastTrigger: unknown;
@@ -43,7 +49,7 @@ export const MotionDiv: Component<MotionDivProps> = (props) => {
     target: HTMLDivElement,
     from: MotionState | undefined,
     to: MotionState | undefined,
-    transition: MotionTransition | undefined
+    transition: MotionTransition | undefined,
   ) => {
     if (!to) return;
     stopActive();
@@ -55,7 +61,7 @@ export const MotionDiv: Component<MotionDivProps> = (props) => {
     from: MotionState | undefined,
     to: MotionState | undefined,
     transition: MotionTransition | undefined,
-    onComplete: (() => void) | undefined
+    onComplete: (() => void) | undefined,
   ) => {
     if (!to) {
       onComplete?.();
@@ -67,7 +73,7 @@ export const MotionDiv: Component<MotionDivProps> = (props) => {
       from ?? {},
       to ?? {},
       transition,
-      onComplete
+      onComplete,
     );
   };
 

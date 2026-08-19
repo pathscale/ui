@@ -1,12 +1,18 @@
 import "./Calendar.css";
 import type { JSX } from "@solidjs/web";
-import {For, Show, createMemo, createTrackedEffect, createUniqueId, omit} from "solid-js";
-import { twMerge } from "../../lib/twMerge";
-
 import {
-  DAYS_PER_WEEK,
+  createMemo,
+  createTrackedEffect,
+  createUniqueId,
+  For,
+  omit,
+  Show,
+} from "solid-js";
+import {
   addDays,
+  type CalendarSelectionMode,
   compareDates,
+  DAYS_PER_WEEK,
   getToday,
   normalizeDate,
   parseDate,
@@ -15,12 +21,11 @@ import {
   useCalendarNavigation,
   useCalendarState,
   useDateSelection,
-  type CalendarSelectionMode,
 } from "../../hooks/date";
-import type { UIBaseProps, State } from "../vocabulary";
-import { CLASSES } from "./Calendar.recipe";
 import type { Layout } from "../../lib/layouts";
-import { componentRecipe } from "./Calendar.recipe";
+import { twMerge } from "../../lib/twMerge";
+import type { State, UIBaseProps } from "../vocabulary";
+import { CLASSES, type componentRecipe } from "./Calendar.recipe";
 
 export type CalendarWeekdayFormat = "narrow" | "short" | "long";
 export type { CalendarSelectionMode };
@@ -119,10 +124,11 @@ const Calendar: Layout<typeof componentRecipe, CalendarProps> = () => {
   );
   const showOutsideDays = createMemo(() => props.showOutsideDays ?? true);
   const isCalendarDisabled = createMemo(
-    () => Boolean((props.state === "disabled")) || Boolean(props.disabled),
+    () => Boolean(props.state === "disabled") || Boolean(props.disabled),
   );
 
-  const isDateUnavailable = (date: Date) => Boolean(props.isDateUnavailable?.(date));
+  const isDateUnavailable = (date: Date) =>
+    Boolean(props.isDateUnavailable?.(date));
 
   const isDateDisabled = (date: Date) => {
     if (isCalendarDisabled()) return true;
@@ -168,7 +174,7 @@ const Calendar: Layout<typeof componentRecipe, CalendarProps> = () => {
 
     queueMicrotask(() => {
       const target = rootRef?.querySelector<HTMLButtonElement>(
-        `[data-slot=\"calendar-cell\"][data-date=\"${dateValue}\"]`,
+        `[data-slot="calendar-cell"][data-date="${dateValue}"]`,
       );
       target?.focus();
     });
@@ -196,9 +202,10 @@ const Calendar: Layout<typeof componentRecipe, CalendarProps> = () => {
     }
   };
 
-  const handleCellKeyDown: JSX.EventHandlerUnion<HTMLButtonElement, KeyboardEvent> = (
-    event,
-  ) => {
+  const handleCellKeyDown: JSX.EventHandlerUnion<
+    HTMLButtonElement,
+    KeyboardEvent
+  > = (event) => {
     if (isCalendarDisabled()) return;
 
     const dateValue = parseDate(event.currentTarget.dataset.date);
@@ -270,11 +277,13 @@ const Calendar: Layout<typeof componentRecipe, CalendarProps> = () => {
           props.ref(node);
         }
       }}
-      {...{ class: twMerge(
-        CLASSES.Root.base,
-        isCalendarDisabled() && CLASSES.Root.flag.disabled,
-        props.class,
-      ) }}
+      {...{
+        class: twMerge(
+          CLASSES.Root.base,
+          isCalendarDisabled() && CLASSES.Root.flag.disabled,
+          props.class,
+        ),
+      }}
       data-slot="calendar"
       data-selection-mode={selectionMode()}
       data-disabled={isCalendarDisabled() ? "true" : "false"}
@@ -282,8 +291,14 @@ const Calendar: Layout<typeof componentRecipe, CalendarProps> = () => {
       style={props.style}
       aria-disabled={isCalendarDisabled() ? "true" : undefined}
     >
-      <div {...{ class: CLASSES.Header.base }} data-slot="calendar-header">
-        <div {...{ class: CLASSES.Nav.base }} data-slot="calendar-nav">
+      <div
+        {...{ class: CLASSES.Header.base }}
+        data-slot="calendar-header"
+      >
+        <div
+          {...{ class: CLASSES.Nav.base }}
+          data-slot="calendar-nav"
+        >
           <button
             type="button"
             {...{ class: CLASSES.NavButton.base }}
@@ -322,7 +337,10 @@ const Calendar: Layout<typeof componentRecipe, CalendarProps> = () => {
           {calendarState.monthFormatter().format(navigation.visibleMonth())}
         </div>
 
-        <div {...{ class: CLASSES.Nav.base }} data-slot="calendar-nav">
+        <div
+          {...{ class: CLASSES.Nav.base }}
+          data-slot="calendar-nav"
+        >
           <button
             type="button"
             {...{ class: CLASSES.NavButton.base }}
@@ -331,7 +349,9 @@ const Calendar: Layout<typeof componentRecipe, CalendarProps> = () => {
             onClick={() => navigateMonth(1)}
             disabled={isCalendarDisabled() || !navigation.canNavigateNext()}
             data-disabled={
-              isCalendarDisabled() || !navigation.canNavigateNext() ? "true" : undefined
+              isCalendarDisabled() || !navigation.canNavigateNext()
+                ? "true"
+                : undefined
             }
           >
             <svg
@@ -358,8 +378,16 @@ const Calendar: Layout<typeof componentRecipe, CalendarProps> = () => {
         aria-labelledby={headingId}
         aria-readonly={isCalendarDisabled() ? "true" : undefined}
       >
-        <div {...{ class: CLASSES.GridHeader.base }} data-slot="calendar-grid-header" role="rowgroup">
-          <div {...{ class: CLASSES.GridRow.base }} data-slot="calendar-grid-row" role="row">
+        <div
+          {...{ class: CLASSES.GridHeader.base }}
+          data-slot="calendar-grid-header"
+          role="rowgroup"
+        >
+          <div
+            {...{ class: CLASSES.GridRow.base }}
+            data-slot="calendar-grid-row"
+            role="row"
+          >
             <For each={calendarState.weekdayLabels()}>
               {(label) => (
                 <span
@@ -382,14 +410,22 @@ const Calendar: Layout<typeof componentRecipe, CalendarProps> = () => {
         >
           <For each={calendarState.calendarWeeks()}>
             {(week) => (
-              <div {...{ class: CLASSES.GridRow.base }} data-slot="calendar-grid-row" role="row">
+              <div
+                {...{ class: CLASSES.GridRow.base }}
+                data-slot="calendar-grid-row"
+                role="row"
+              >
                 <For each={week}>
                   {(date) => {
                     const cellState = calendarState.getCellState(date);
                     const isoDate = toISODate(date);
 
                     return (
-                      <div {...{ class: CLASSES.DayWrapper.base }} data-slot="calendar-day-wrapper" role="presentation">
+                      <div
+                        {...{ class: CLASSES.DayWrapper.base }}
+                        data-slot="calendar-day-wrapper"
+                        role="presentation"
+                      >
                         <Show
                           when={showOutsideDays() || !cellState.isOutsideMonth}
                           fallback={
@@ -402,38 +438,68 @@ const Calendar: Layout<typeof componentRecipe, CalendarProps> = () => {
                         >
                           <button
                             type="button"
-                            {...{ class: twMerge(
-                              CLASSES.Cell.base,
-                              cellState.isSelected && CLASSES.Cell.flag.selected,
-                              cellState.isRangeStart && CLASSES.Cell.flag.rangeStart,
-                              cellState.isRangeEnd && CLASSES.Cell.flag.rangeEnd,
-                              cellState.isInCommittedRange && CLASSES.Cell.flag.inRange,
-                              cellState.isInPreviewRange &&
-                                !cellState.isInCommittedRange &&
-                                CLASSES.Cell.flag.inPreviewRange,
-                              cellState.isToday && CLASSES.Cell.flag.today,
-                              cellState.isOutsideMonth && CLASSES.Cell.flag.outsideMonth,
-                              cellState.isDisabled && CLASSES.Cell.flag.disabled,
-                              cellState.isUnavailable && CLASSES.Cell.flag.unavailable,
-                              cellState.isFocused && CLASSES.Cell.flag.focused,
-                            ) }}
+                            {...{
+                              class: twMerge(
+                                CLASSES.Cell.base,
+                                cellState.isSelected &&
+                                  CLASSES.Cell.flag.selected,
+                                cellState.isRangeStart &&
+                                  CLASSES.Cell.flag.rangeStart,
+                                cellState.isRangeEnd &&
+                                  CLASSES.Cell.flag.rangeEnd,
+                                cellState.isInCommittedRange &&
+                                  CLASSES.Cell.flag.inRange,
+                                cellState.isInPreviewRange &&
+                                  !cellState.isInCommittedRange &&
+                                  CLASSES.Cell.flag.inPreviewRange,
+                                cellState.isToday && CLASSES.Cell.flag.today,
+                                cellState.isOutsideMonth &&
+                                  CLASSES.Cell.flag.outsideMonth,
+                                cellState.isDisabled &&
+                                  CLASSES.Cell.flag.disabled,
+                                cellState.isUnavailable &&
+                                  CLASSES.Cell.flag.unavailable,
+                                cellState.isFocused &&
+                                  CLASSES.Cell.flag.focused,
+                              ),
+                            }}
                             data-slot="calendar-cell"
                             data-date={isoDate}
-                            data-selected={cellState.isSelected ? "true" : "false"}
-                            data-range-start={cellState.isRangeStart ? "true" : "false"}
-                            data-range-end={cellState.isRangeEnd ? "true" : "false"}
-                            data-in-range={cellState.isInCommittedRange ? "true" : "false"}
+                            data-selected={
+                              cellState.isSelected ? "true" : "false"
+                            }
+                            data-range-start={
+                              cellState.isRangeStart ? "true" : "false"
+                            }
+                            data-range-end={
+                              cellState.isRangeEnd ? "true" : "false"
+                            }
+                            data-in-range={
+                              cellState.isInCommittedRange ? "true" : "false"
+                            }
                             data-in-preview-range={
                               cellState.isInPreviewRange ? "true" : "false"
                             }
                             data-today={cellState.isToday ? "true" : "false"}
-                            data-outside-month={cellState.isOutsideMonth ? "true" : "false"}
-                            data-disabled={cellState.isDisabled ? "true" : "false"}
-                            data-unavailable={cellState.isUnavailable ? "true" : "false"}
+                            data-outside-month={
+                              cellState.isOutsideMonth ? "true" : "false"
+                            }
+                            data-disabled={
+                              cellState.isDisabled ? "true" : "false"
+                            }
+                            data-unavailable={
+                              cellState.isUnavailable ? "true" : "false"
+                            }
                             role="gridcell"
-                            aria-label={calendarState.dayLabelFormatter().format(date)}
-                            aria-selected={cellState.isAriaSelected ? "true" : "false"}
-                            aria-disabled={cellState.isDisabled ? "true" : "false"}
+                            aria-label={calendarState
+                              .dayLabelFormatter()
+                              .format(date)}
+                            aria-selected={
+                              cellState.isAriaSelected ? "true" : "false"
+                            }
+                            aria-disabled={
+                              cellState.isDisabled ? "true" : "false"
+                            }
                             disabled={cellState.isDisabled}
                             tabindex={cellState.isFocused ? 0 : -1}
                             onClick={() => selectDate(date)}
@@ -444,7 +510,10 @@ const Calendar: Layout<typeof componentRecipe, CalendarProps> = () => {
                             }}
                             onKeyDown={handleCellKeyDown}
                           >
-                            <span {...{ class: CLASSES.Day.base }} data-slot="calendar-day">
+                            <span
+                              {...{ class: CLASSES.Day.base }}
+                              data-slot="calendar-day"
+                            >
                               {date.getDate()}
                             </span>
                           </button>

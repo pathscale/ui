@@ -24,4 +24,13 @@ export const CLASSES = {
   },
 } as const;
 
-export const componentRecipe = recipe({component:"meter",slots:{"meter":{},"meter-fill":{},"meter-output":{},"meter-track":{},"root":{},},});
+export const componentRecipe = recipe({
+  component: "meter",
+  slots: {
+    meter: {},
+    "meter-fill": {},
+    "meter-output": {},
+    "meter-track": {},
+    root: {},
+  },
+});

@@ -2,7 +2,10 @@ import { describe, expect, it } from "bun:test";
 import { readFileSync } from "node:fs";
 import { join } from "node:path";
 
-const CSS = readFileSync(join(import.meta.dir, "../../../src/components/radio/Radio.css"), "utf8");
+const CSS = readFileSync(
+  join(import.meta.dir, "../../../src/components/radio/Radio.css"),
+  "utf8",
+);
 
 /**
  * Hover has to reach a radio that carries its own indicator content.
@@ -38,10 +41,14 @@ describe("radio hover", () => {
   });
 
   it("leaves a pressed radio pressed, since :active is ordered after hover", () => {
-    expect(CSS.indexOf(".radio:active")).toBeGreaterThan(CSS.indexOf("@media (hover: hover)"));
+    expect(CSS.indexOf(".radio:active")).toBeGreaterThan(
+      CSS.indexOf("@media (hover: hover)"),
+    );
   });
 
   it("never fires on a selected or disabled radio", () => {
-    expect(hoverBlock).toContain('.radio:hover:not([data-selected="true"]):not([data-disabled="true"])');
+    expect(hoverBlock).toContain(
+      '.radio:hover:not([data-selected="true"]):not([data-disabled="true"])',
+    );
   });
 });

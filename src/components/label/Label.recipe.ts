@@ -7,4 +7,7 @@ export const CLASSES = {
     invalid: "label--invalid",
   },
 } as const;
-export const componentRecipe = recipe({component:"label",slots:{"label":{},"root":{},},});
+export const componentRecipe = recipe({
+  component: "label",
+  slots: { label: {}, root: {} },
+});

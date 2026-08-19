@@ -36,4 +36,16 @@ export const CLASSES = {
     base: "date-input-group__suffix",
   },
 } as const;
-export const componentRecipe = recipe({component:"time-field",slots:{"date-input-group":{},"date-input-group-input":{},"date-input-group-input-container":{},"date-input-group-prefix":{},"date-input-group-segment":{},"date-input-group-suffix":{},"root":{},"time-field":{},},});
+export const componentRecipe = recipe({
+  component: "time-field",
+  slots: {
+    "date-input-group": {},
+    "date-input-group-input": {},
+    "date-input-group-input-container": {},
+    "date-input-group-prefix": {},
+    "date-input-group-segment": {},
+    "date-input-group-suffix": {},
+    root: {},
+    "time-field": {},
+  },
+});

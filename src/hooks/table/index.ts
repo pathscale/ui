@@ -10,5 +10,6 @@
  * `useAnchoredOverlayPosition` stays because it never had anything to do with
  * TanStack: it positions an overlay against a cell, which a grid still needs.
  */
-export { useAnchoredOverlayPosition } from "./useAnchoredOverlayPosition";
+
 export type { UseAnchoredOverlayPositionOptions } from "./useAnchoredOverlayPosition";
+export { useAnchoredOverlayPosition } from "./useAnchoredOverlayPosition";

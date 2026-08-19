@@ -1,9 +1,9 @@
-import {omit} from "solid-js";
 import type { JSX } from "@solidjs/web";
-import { twMerge } from "../../lib/twMerge";
+import { omit } from "solid-js";
 import type { Layout } from "../../lib/layouts";
+import { twMerge } from "../../lib/twMerge";
 import type { UIBaseProps } from "../vocabulary";
-import { CLASSES, tablePageSizeRecipe } from "./Table.recipe";
+import { CLASSES, type tablePageSizeRecipe } from "./Table.recipe";
 
 export type TablePageSizeProps = Omit<
   JSX.SelectHTMLAttributes<HTMLSelectElement>,

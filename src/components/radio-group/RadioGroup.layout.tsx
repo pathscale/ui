@@ -1,18 +1,26 @@
 import "./RadioGroup.css";
 import type { JSX } from "@solidjs/web";
-import {Show, createSignal, createUniqueId, omit, type Component} from "solid-js";
-import { twMerge } from "../../lib/twMerge";
-import { RadioGroupContext, type RadioGroupContextValue } from "./context";
-import type { UIBaseProps, State, Issue } from "../vocabulary";
-import { CLASSES } from "./RadioGroup.recipe";
+import {
+  type Component,
+  createSignal,
+  createUniqueId,
+  omit,
+  Show,
+} from "solid-js";
 import type { Layout } from "../../lib/layouts";
-import { componentRecipe } from "./RadioGroup.recipe";
+import { twMerge } from "../../lib/twMerge";
+import type { Issue, State, UIBaseProps } from "../vocabulary";
 import { resolveState } from "../vocabulary";
+import { RadioGroupContext, type RadioGroupContextValue } from "./context";
+import { CLASSES, type componentRecipe } from "./RadioGroup.recipe";
 
 export type RadioGroupOrientation = "vertical" | "horizontal";
 export type RadioGroupVariant = "primary" | "secondary";
 
-export type RadioGroupProps = Omit<JSX.HTMLAttributes<HTMLDivElement>, "children" | "onChange"> &
+export type RadioGroupProps = Omit<
+  JSX.HTMLAttributes<HTMLDivElement>,
+  "children" | "onChange"
+> &
   UIBaseProps & {
     children: JSX.Element;
     value?: string;
@@ -63,8 +71,10 @@ const RadioGroup: Layout<typeof componentRecipe, RadioGroupProps> = () => {
   const variant = () => props.variant ?? "primary";
   const isControlled = () => props.value !== undefined;
   const selectedValue = () => (isControlled() ? props.value : internalValue());
-  const isDisabled = () => Boolean((props.state === "disabled")) || Boolean(props.disabled);
-  const isInvalid = () => Boolean((resolveState(props.state, props.issues) === "invalid"));
+  const isDisabled = () =>
+    Boolean(props.state === "disabled") || Boolean(props.disabled);
+  const isInvalid = () =>
+    Boolean(resolveState(props.state, props.issues) === "invalid");
   const name = () => props.name ?? generatedName;
 
   const handleChange = (nextValue: string) => {
@@ -82,7 +92,8 @@ const RadioGroup: Layout<typeof componentRecipe, RadioGroupProps> = () => {
     return ids.filter(Boolean).join(" ") || undefined;
   };
 
-  const labelledBy = () => local["aria-labelledby"] ?? (props.label ? labelId : undefined);
+  const labelledBy = () =>
+    local["aria-labelledby"] ?? (props.label ? labelId : undefined);
 
   const contextValue: RadioGroupContextValue = {
     name,
@@ -109,33 +120,50 @@ const RadioGroup: Layout<typeof componentRecipe, RadioGroupProps> = () => {
         data-variant={variant()}
         data-disabled={isDisabled() ? "true" : "false"}
         data-invalid={isInvalid() ? "true" : "false"}
-        {...{ class: twMerge(
-          CLASSES.base,
-          CLASSES.orientation[orientation()],
-          CLASSES.variant[variant()],
-          isDisabled() && CLASSES.flag.disabled,
-          isInvalid() && CLASSES.flag.invalid,
-          props.class,
-        ) }}
+        {...{
+          class: twMerge(
+            CLASSES.base,
+            CLASSES.orientation[orientation()],
+            CLASSES.variant[variant()],
+            isDisabled() && CLASSES.flag.disabled,
+            isInvalid() && CLASSES.flag.invalid,
+            props.class,
+          ),
+        }}
       >
         <Show when={props.label}>
-          <span id={labelId} {...{ class: CLASSES.slot.label }} data-slot="label">
+          <span
+            id={labelId}
+            {...{ class: CLASSES.slot.label }}
+            data-slot="label"
+          >
             {props.label}
           </span>
         </Show>
 
         <Show when={props.description}>
-          <span id={descriptionId} {...{ class: CLASSES.slot.description }} data-slot="description">
+          <span
+            id={descriptionId}
+            {...{ class: CLASSES.slot.description }}
+            data-slot="description"
+          >
             {props.description}
           </span>
         </Show>
 
-        <div {...{ class: CLASSES.slot.items }} data-slot="radio-group-items">
+        <div
+          {...{ class: CLASSES.slot.items }}
+          data-slot="radio-group-items"
+        >
           {props.children}
         </div>
 
         <Show when={props.errorMessage}>
-          <span id={errorId} {...{ class: CLASSES.slot.error }} data-slot="error-message">
+          <span
+            id={errorId}
+            {...{ class: CLASSES.slot.error }}
+            data-slot="error-message"
+          >
             {props.errorMessage}
           </span>
         </Show>

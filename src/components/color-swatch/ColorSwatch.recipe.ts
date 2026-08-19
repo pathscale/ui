@@ -13,4 +13,7 @@ export const CLASSES = {
     xl: "color-swatch--xl",
   },
 } as const;
-export const componentRecipe = recipe({component:"color-swatch",slots:{"color-swatch":{},"root":{},},});
+export const componentRecipe = recipe({
+  component: "color-swatch",
+  slots: { "color-swatch": {}, root: {} },
+});

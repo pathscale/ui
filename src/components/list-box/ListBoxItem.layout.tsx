@@ -1,12 +1,20 @@
-import {createContext, createMemo, createTrackedEffect, createUniqueId, onCleanup, omit, useContext, type Component, type ParentComponent} from "solid-js";
 import type { JSX } from "@solidjs/web";
-import { twMerge } from "../../lib/twMerge";
-
-import type { UIBaseProps, State } from "../vocabulary";
-import { ListBoxContext, type ListBoxVariant } from "./context";
-import { CLASSES } from "./ListBox.recipe";
+import {
+  type Component,
+  createContext,
+  createMemo,
+  createTrackedEffect,
+  createUniqueId,
+  omit,
+  onCleanup,
+  type ParentComponent,
+  useContext,
+} from "solid-js";
 import type { Layout } from "../../lib/layouts";
-import { componentRecipe } from "./ListBox.recipe";
+import { twMerge } from "../../lib/twMerge";
+import type { State, UIBaseProps } from "../vocabulary";
+import { ListBoxContext, type ListBoxVariant } from "./context";
+import { CLASSES, type componentRecipe } from "./ListBox.recipe";
 
 type ListBoxItemRenderProps = {
   isSelected: boolean;
@@ -54,10 +62,17 @@ type ListBoxItemContextValue = {
  * reader instead of each one repeating it.
  */
 const ListBoxItemContext = createContext<ListBoxItemContextValue>({
-  renderState: () => ({ isSelected: false, isFocused: false, isDisabled: false }),
+  renderState: () => ({
+    isSelected: false,
+    isFocused: false,
+    isDisabled: false,
+  }),
 });
 
-export type ListBoxItemRootProps = Omit<JSX.HTMLAttributes<HTMLDivElement>, "children"> &
+export type ListBoxItemRootProps = Omit<
+  JSX.HTMLAttributes<HTMLDivElement>,
+  "children"
+> &
   UIBaseProps & {
     id?: string | number;
     textValue?: string;
@@ -67,12 +82,18 @@ export type ListBoxItemRootProps = Omit<JSX.HTMLAttributes<HTMLDivElement>, "chi
     children?: JSX.Element | ((props: ListBoxItemRenderProps) => JSX.Element);
   };
 
-export type ListBoxItemIndicatorProps = Omit<JSX.HTMLAttributes<HTMLSpanElement>, "children"> &
+export type ListBoxItemIndicatorProps = Omit<
+  JSX.HTMLAttributes<HTMLSpanElement>,
+  "children"
+> &
   UIBaseProps & {
     children?: JSX.Element | ((props: ListBoxItemRenderProps) => JSX.Element);
   };
 
-const ListBoxItemRoot: Layout<typeof componentRecipe, ListBoxItemRootProps> = () => {
+const ListBoxItemRoot: Layout<
+  typeof componentRecipe,
+  ListBoxItemRootProps
+> = () => {
   const listBox = useContext(ListBoxContext);
   const fallbackKey = createUniqueId();
 
@@ -102,7 +123,8 @@ const ListBoxItemRoot: Layout<typeof componentRecipe, ListBoxItemRootProps> = ()
     if (props.id != null) return String(props.id);
     if (props.textValue) return toSlug(props.textValue);
 
-    const staticChildren = typeof props.children === "function" ? [] : [props.children];
+    const staticChildren =
+      typeof props.children === "function" ? [] : [props.children];
     const textValue = extractTextValue(staticChildren);
 
     if (textValue) return toSlug(textValue);
@@ -114,8 +136,11 @@ const ListBoxItemRoot: Layout<typeof componentRecipe, ListBoxItemRootProps> = ()
   const isSelected = () => listBox?.isSelected(key()) ?? false;
   const isFocused = () => listBox?.focusedKey() === key();
   const isDisabled = () =>
-    listBox?.isItemDisabled(key(), Boolean((props.state === "disabled")) || Boolean(props.disabled)) ??
-    (Boolean((props.state === "disabled")) || Boolean(props.disabled));
+    listBox?.isItemDisabled(
+      key(),
+      Boolean(props.state === "disabled") || Boolean(props.disabled),
+    ) ??
+    (Boolean(props.state === "disabled") || Boolean(props.disabled));
 
   const renderState = createMemo<ListBoxItemRenderProps>(() => ({
     isSelected: isSelected(),
@@ -129,13 +154,17 @@ const ListBoxItemRoot: Layout<typeof componentRecipe, ListBoxItemRootProps> = ()
     return listBox.getItemTabIndex(key(), isDisabled());
   };
 
-  const handleClick: JSX.EventHandlerUnion<HTMLDivElement, MouseEvent> = (event) => {
+  const handleClick: JSX.EventHandlerUnion<HTMLDivElement, MouseEvent> = (
+    event,
+  ) => {
     invokeEventHandler(props.onClick, event);
     if (event.defaultPrevented || isDisabled()) return;
     listBox?.activateKey(key(), event);
   };
 
-  const handleKeyDown: JSX.EventHandlerUnion<HTMLDivElement, KeyboardEvent> = (event) => {
+  const handleKeyDown: JSX.EventHandlerUnion<HTMLDivElement, KeyboardEvent> = (
+    event,
+  ) => {
     invokeEventHandler(props.onKeyDown, event);
     if (event.defaultPrevented || isDisabled()) return;
 
@@ -169,13 +198,17 @@ const ListBoxItemRoot: Layout<typeof componentRecipe, ListBoxItemRootProps> = ()
     }
   };
 
-  const handleFocus: JSX.EventHandlerUnion<HTMLDivElement, FocusEvent> = (event) => {
+  const handleFocus: JSX.EventHandlerUnion<HTMLDivElement, FocusEvent> = (
+    event,
+  ) => {
     invokeEventHandler(props.onFocus, event);
     if (event.defaultPrevented) return;
     listBox?.setFocusedKey(key());
   };
 
-  const handleBlur: JSX.EventHandlerUnion<HTMLDivElement, FocusEvent> = (event) => {
+  const handleBlur: JSX.EventHandlerUnion<HTMLDivElement, FocusEvent> = (
+    event,
+  ) => {
     invokeEventHandler(props.onBlur, event);
     if (event.defaultPrevented) return;
 
@@ -189,7 +222,7 @@ const ListBoxItemRoot: Layout<typeof componentRecipe, ListBoxItemRootProps> = ()
 
     listBox.registerItem({
       key: key(),
-      disabled: Boolean((props.state === "disabled")) || Boolean(props.disabled),
+      disabled: Boolean(props.state === "disabled") || Boolean(props.disabled),
       ref: itemRef,
     });
   });
@@ -211,7 +244,9 @@ const ListBoxItemRoot: Layout<typeof componentRecipe, ListBoxItemRootProps> = ()
         }}
         role={props.role ?? "option"}
         tabindex={resolvedTabIndex()}
-        aria-selected={isSelectable() ? (isSelected() ? "true" : "false") : undefined}
+        aria-selected={
+          isSelectable() ? (isSelected() ? "true" : "false") : undefined
+        }
         aria-disabled={isDisabled() ? "true" : undefined}
         data-slot="listbox-item"
         data-theme={props.dataTheme}
@@ -219,11 +254,13 @@ const ListBoxItemRoot: Layout<typeof componentRecipe, ListBoxItemRootProps> = ()
         data-selected={isSelected() ? "true" : "false"}
         data-focus={isFocused() ? "true" : "false"}
         data-key={key()}
-        {...{ class: twMerge(
-          CLASSES.Item.base,
-          CLASSES.Item.variant[variant()],
-          props.class,
-        ) }}
+        {...{
+          class: twMerge(
+            CLASSES.Item.base,
+            CLASSES.Item.variant[variant()],
+            props.class,
+          ),
+        }}
         style={props.style}
         onClick={handleClick}
         onKeyDown={handleKeyDown}
@@ -236,14 +273,19 @@ const ListBoxItemRoot: Layout<typeof componentRecipe, ListBoxItemRootProps> = ()
           the union to be inferred.
         */}
         {typeof props.children === "function"
-          ? (props.children as (props: ListBoxItemRenderProps) => JSX.Element)(renderState())
+          ? (props.children as (props: ListBoxItemRenderProps) => JSX.Element)(
+              renderState(),
+            )
           : (props.children as JSX.Element)}
       </div>
     </ListBoxItemContext>
   );
 };
 
-const ListBoxItemIndicator: Layout<typeof componentRecipe, ListBoxItemIndicatorProps> = () => {
+const ListBoxItemIndicator: Layout<
+  typeof componentRecipe,
+  ListBoxItemIndicatorProps
+> = () => {
   const context = useContext(ListBoxItemContext);
   const others = omit(props, "children", "class", "dataTheme", "style");
 
@@ -265,7 +307,9 @@ const ListBoxItemIndicator: Layout<typeof componentRecipe, ListBoxItemIndicatorP
       style={props.style}
     >
       {typeof props.children === "function" ? (
-        (props.children as (props: ListBoxItemRenderProps) => JSX.Element)(renderState())
+        (props.children as (props: ListBoxItemRenderProps) => JSX.Element)(
+          renderState(),
+        )
       ) : props.children ? (
         props.children
       ) : (
@@ -295,9 +339,9 @@ const ListBoxItem = Object.assign(ListBoxItemRoot, {
 });
 
 export default ListBoxItem;
-export { ListBoxItem, ListBoxItemRoot, ListBoxItemIndicator };
 export type {
-  ListBoxItemRootProps as ListBoxItemProps,
   ListBoxItemRenderProps,
+  ListBoxItemRootProps as ListBoxItemProps,
   ListBoxVariant,
 };
+export { ListBoxItem, ListBoxItemIndicator, ListBoxItemRoot };

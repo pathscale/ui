@@ -1,496 +1,608 @@
-export {
-  default as Accordion,
-  AccordionItem,
-  AccordionTrigger,
-  AccordionContent,
-  AccordionIndicator,
-} from "./components/accordion";
 export type {
-  AccordionProps,
-  AccordionRootProps,
-  AccordionItemProps,
-  AccordionTriggerProps,
   AccordionContentProps,
   AccordionIndicatorProps,
+  AccordionItemProps,
+  AccordionProps,
+  AccordionRootProps,
   AccordionSelectionMode,
-  AccordionVariant,
+  AccordionTriggerProps,
   AccordionValue,
+  AccordionVariant,
 } from "./components/accordion";
-export { Alert } from "./components/alert";
-export type { AlertProps, AlertPlacement } from "./components/alert";
 export {
-  default as Avatar,
-  AvatarImage,
-  AvatarFallback,
-} from "./components/avatar";
+  AccordionContent,
+  AccordionIndicator,
+  AccordionItem,
+  AccordionTrigger,
+  default as Accordion,
+} from "./components/accordion";
 export type {
+  AddressProps,
+  AddressTruncate,
+  TruncateOptions,
+} from "./components/address";
+export {
+  copyAddress,
+  default as Address,
+  truncateAddress,
+} from "./components/address";
+export type { AlertPlacement, AlertProps } from "./components/alert";
+export { Alert } from "./components/alert";
+export { AuthCard, type AuthCardProps } from "./components/auth-card";
+export {
+  AuthFieldGroup,
+  type AuthFieldGroupProps,
+} from "./components/auth-field-group";
+export {
+  type AuthFooterLinkItem,
+  AuthFooterLinks,
+  type AuthFooterLinksProps,
+} from "./components/auth-footer-links";
+export type { AuthMessageProps } from "./components/auth-message";
+export { AuthMessage } from "./components/auth-message";
+export {
+  AuthPoweredBy,
+  type AuthPoweredByProps,
+} from "./components/auth-powered-by";
+export {
+  AuthSubmitButton,
+  type AuthSubmitButtonProps,
+} from "./components/auth-submit-button";
+export type {
+  AvatarFallbackProps,
+  AvatarImageProps,
+  AvatarRootProps,
   AvatarSize,
   AvatarVariant,
-  AvatarRootProps,
-  AvatarImageProps,
-  AvatarFallbackProps,
+} from "./components/avatar";
+export {
+  AvatarFallback,
+  AvatarImage,
+  default as Avatar,
 } from "./components/avatar";
 export { default as Badge } from "./components/badge";
+export type {
+  BreadcrumbItemProps,
+  BreadcrumbRootProps,
+} from "./components/breadcrumb";
 export {
   Breadcrumb,
   BreadcrumbItem,
 } from "./components/breadcrumb";
-export type {
-  BreadcrumbRootProps,
-  BreadcrumbItemProps,
-} from "./components/breadcrumb";
-
-export { default as Address } from "./components/address";
-export type { AddressProps, AddressTruncate, TruncateOptions } from "./components/address";
-export { truncateAddress, copyAddress } from "./components/address";
-
-export { default as Button } from "./components/button";
 export type { ButtonProps } from "./components/button";
+export { default as Button } from "./components/button";
 export {
-  default as Calendar,
-  type CalendarProps,
-  type CalendarWeekdayFormat,
-  type CalendarSelectionMode,
-  type CalendarDaySelectHandler,
   type CalendarDayHoverHandler,
+  type CalendarDaySelectHandler,
+  type CalendarProps,
+  type CalendarSelectionMode,
+  type CalendarWeekdayFormat,
+  default as Calendar,
 } from "./components/calendar";
-export { default as Card, Card as CardRoot, CardHeader, CardBody, CardFooter } from "./components/card";
-export type { CardProps, CardSectionProps, CardMaterial, CardElevation } from "./components/card";
-
+export type {
+  CardElevation,
+  CardMaterial,
+  CardProps,
+  CardSectionProps,
+} from "./components/card";
+export {
+  Card as CardRoot,
+  CardBody,
+  CardFooter,
+  CardHeader,
+  default as Card,
+} from "./components/card";
+export { default as ChatBubble } from "./components/chatbubble";
 export { default as Checkbox } from "./components/checkbox";
+export type {
+  ChipColor,
+  ChipLabelProps,
+  ChipProps,
+  ChipRootProps,
+  ChipSize,
+  ChipVariant,
+} from "./components/chip";
 export { default as Chip } from "./components/chip";
-export { default as Composer } from "./components/composer";
+export type {
+  CollapsibleBodyProps,
+  CollapsibleContentProps,
+  CollapsibleHeadingProps,
+  CollapsibleIndicatorProps,
+  CollapsibleProps,
+  CollapsibleRootProps,
+  CollapsibleTriggerProps,
+} from "./components/collapsible";
+export { default as Collapsible } from "./components/collapsible";
+export type {
+  ColorSwatchProps,
+  ColorSwatchShape,
+  ColorSwatchSize,
+} from "./components/color-swatch";
+export { default as ColorSwatch } from "./components/color-swatch";
 export type { ComposerProps } from "./components/composer";
 export {
   autosize,
   boundsFromRows,
+  default as Composer,
   isSubmittable,
   shouldSubmit,
 } from "./components/composer";
 export type {
-  ChipProps,
-  ChipRootProps,
-  ChipLabelProps,
-  ChipVariant,
-  ChipColor,
-  ChipSize,
-} from "./components/chip";
-
+  CreateDataGridOptions,
+  DataGridBorders,
+  DataGridCellContext,
+  DataGridColumn,
+  DataGridColumnOptions,
+  DataGridDataType,
+  DataGridModel,
+  DataGridProps,
+  DataGridRow,
+  DataGridSelectionMode,
+  DataGridSort,
+  DataGridSortDirection,
+  DataGridSticky,
+  DataGridStriping,
+} from "./components/data-grid";
+export { createDataGrid, default as DataGrid } from "./components/data-grid";
+export type {
+  DialogBackdropProps,
+  DialogBackdropVariant,
+  DialogBodyProps,
+  DialogCloseTriggerProps,
+  DialogContentProps,
+  DialogFooterProps,
+  DialogHeaderProps,
+  DialogHeadingProps,
+  DialogIconProps,
+  DialogPanelProps,
+  DialogPlacement,
+  DialogProps,
+  DialogRootProps,
+  DialogScrollBehavior,
+  DialogSize,
+  DialogTriggerProps,
+} from "./components/dialog";
 export {
-  default as Drawer,
-  DrawerTrigger,
-  DrawerBackdrop,
-  DrawerContent,
-  DrawerDialog,
-  DrawerHeader,
-  DrawerHeading,
-  DrawerBody,
-  DrawerFooter,
-  DrawerHandle,
-  DrawerCloseTrigger,
-  DrawerClose,
-} from "./components/drawer";
+  DialogBackdrop,
+  DialogBody,
+  DialogCloseTrigger,
+  DialogContent,
+  DialogFooter,
+  DialogHeader,
+  DialogHeading,
+  DialogIcon,
+  DialogTrigger,
+  default as Dialog,
+} from "./components/dialog";
 export type {
-  DrawerPlacement,
-  DrawerSize,
-  DrawerBackdropVariant,
-  DrawerDialogSide,
-  DrawerScrollBehavior,
-  DrawerRootProps,
-  DrawerTriggerProps,
-  DrawerBackdropProps,
-  DrawerContentProps,
-  DrawerDialogProps,
-  DrawerHeaderProps,
-  DrawerHeadingProps,
-  DrawerBodyProps,
-  DrawerFooterProps,
-  DrawerHandleProps,
-  DrawerCloseTriggerProps,
-  DrawerCloseProps,
-} from "./components/drawer";
-export { default as Dropdown } from "./components/dropdown";
-export { default as Collapsible } from "./components/collapsible";
-export type {
-  CollapsibleProps,
-  CollapsibleRootProps,
-  CollapsibleHeadingProps,
-  CollapsibleTriggerProps,
-  CollapsibleContentProps,
-  CollapsibleBodyProps,
-  CollapsibleIndicatorProps,
-} from "./components/collapsible";
-export { Empty, type EmptyProps } from "./components/empty";
+  DockDirection,
+  DockItem,
+  DockProps,
+} from "./components/dock";
 export { default as Dock } from "./components/dock";
 export type {
-  DockProps,
-  DockItem,
-  DockDirection,
-} from "./components/dock";
+  DrawerBackdropProps,
+  DrawerBackdropVariant,
+  DrawerBodyProps,
+  DrawerCloseProps,
+  DrawerCloseTriggerProps,
+  DrawerContentProps,
+  DrawerDialogProps,
+  DrawerDialogSide,
+  DrawerFooterProps,
+  DrawerHandleProps,
+  DrawerHeaderProps,
+  DrawerHeadingProps,
+  DrawerPlacement,
+  DrawerRootProps,
+  DrawerScrollBehavior,
+  DrawerSize,
+  DrawerTriggerProps,
+} from "./components/drawer";
+export {
+  DrawerBackdrop,
+  DrawerBody,
+  DrawerClose,
+  DrawerCloseTrigger,
+  DrawerContent,
+  DrawerDialog,
+  DrawerFooter,
+  DrawerHandle,
+  DrawerHeader,
+  DrawerHeading,
+  DrawerTrigger,
+  default as Drawer,
+} from "./components/drawer";
+export { default as Dropdown } from "./components/dropdown";
+export { Empty, type EmptyProps } from "./components/empty";
+export type {
+  FieldGroupProps,
+  FieldsetActionsProps,
+  FieldsetLegendProps,
+  FieldsetProps,
+  FieldsetRootProps,
+} from "./components/fieldset";
+export {
+  default as Fieldset,
+  FieldGroup,
+  FieldsetActions,
+  FieldsetLegend,
+} from "./components/fieldset";
 export { default as Flex } from "./components/flex";
+export type { FooterProps, FooterTitleProps } from "./components/footer";
+export { default as Footer } from "./components/footer";
+export type {
+  FieldErrorMessageProps,
+  FormFieldProps,
+  FormProps,
+  FormRootProps,
+  FormSubmitButtonProps,
+  FormWithContextProps,
+} from "./components/form";
+// ---------------------------------------------------------------------------
+// Form components and hooks
+// ---------------------------------------------------------------------------
+export {
+  default as Form,
+  FormField,
+  FormSubmitButton,
+  FormWithContext,
+} from "./components/form";
 export { GlowCard, type GlowCardProps } from "./components/glow-card";
-export { MetalBorder, type MetalBorderProps } from "./components/metal-border";
+export { default as Grid } from "./components/grid";
+export type { HeaderProps, HeaderRootProps } from "./components/header";
+export { default as Header } from "./components/header";
+export { default as Icon } from "./components/icon";
+export type {
+  CookieConsentProps,
+  CookieConsentStorageKeys,
+  CookieConsentTexts,
+  FirefoxPWABannerProps,
+  FirefoxPWABannerTexts,
+  ImmersiveLandingArrowsProps,
+  ImmersiveLandingContextValue,
+  ImmersiveLandingNavigationProps,
+  ImmersiveLandingPageProps,
+  ImmersiveLandingProps,
+  PWAInstallPromptProps,
+  PWAInstallPromptTexts,
+  UseImmersiveLandingOptions,
+  UseImmersiveLandingReturn,
+} from "./components/immersive-landing";
+export {
+  CookieConsent,
+  default as ImmersiveLanding,
+  FirefoxPWABanner,
+  ImmersiveLandingContext,
+  PWAInstallPrompt,
+  useImmersiveLanding,
+  useImmersiveLandingContext,
+} from "./components/immersive-landing";
+export { default as Input } from "./components/input";
+export type {
+  InputOTPGroupProps,
+  InputOTPProps,
+  InputOTPRootProps,
+  InputOTPSeparatorProps,
+  InputOTPSlotProps,
+  InputOTPVariant,
+} from "./components/input-otp";
+// Restored to the main surface: three were parked by a hand-written list
+// rather than the usage data, and ChatBubble is a forward-looking priority.
+export {
+  default as InputOTP,
+  InputOTPGroup,
+  InputOTPSeparator,
+  InputOTPSlot,
+  REGEXP_ONLY_CHARS,
+  REGEXP_ONLY_DIGITS,
+  REGEXP_ONLY_DIGITS_AND_CHARS,
+} from "./components/input-otp";
+export type { LabelProps, LabelRootProps } from "./components/label";
+export { default as Label } from "./components/label";
+export type {
+  I18nContextValue,
+  I18nOptions,
+  I18nProviderProps,
+  I18nStore,
+  Language,
+  LanguageSwitcherProps,
+} from "./components/language-switcher";
+export {
+  createI18n,
+  I18nContext,
+  I18nProvider,
+  LanguageSwitcher,
+  useI18n,
+} from "./components/language-switcher";
+export type {
+  LinkIconProps,
+  LinkProps,
+  LinkRootProps,
+  LinkUnderline,
+  LinkVariant,
+} from "./components/link";
+export { default as Link, LinkIcon } from "./components/link";
+export type {
+  ListBoxItemIndicatorProps,
+  ListBoxItemProps,
+  ListBoxItemRenderProps,
+  ListBoxItemRootProps,
+  ListBoxProps,
+  ListBoxRootProps,
+  ListBoxSectionProps,
+  ListBoxSectionRootProps,
+  ListBoxSelectionMode,
+  ListBoxVariant,
+} from "./components/list-box";
+export {
+  default as ListBox,
+  ListBoxItem,
+  ListBoxItemIndicator,
+  ListBoxSection,
+} from "./components/list-box";
+export type {
+  ChatMessage,
+  LiveChatBubbleProps,
+  LiveChatPanelProps,
+  SendMessagePayload,
+  SendMessageResponse,
+} from "./components/live-chat";
+export { LiveChatBubble, LiveChatPanel } from "./components/live-chat";
 export type {
   MetalBorderKind,
   MetalBorderPreset,
   MetalBorderResolvedTheme,
   MetalBorderTheme,
 } from "./components/metal-border";
-export { default as Footer } from "./components/footer";
-export type { FooterProps, FooterTitleProps } from "./components/footer";
-export {
-  default as Fieldset,
-  FieldsetLegend,
-  FieldGroup,
-  FieldsetActions,
-} from "./components/fieldset";
-export type {
-  FieldsetProps,
-  FieldsetRootProps,
-  FieldsetLegendProps,
-  FieldGroupProps,
-  FieldsetActionsProps,
-} from "./components/fieldset";
-// ---------------------------------------------------------------------------
-// Form components and hooks
-// ---------------------------------------------------------------------------
-export {
-  default as Form,
-  FormWithContext,
-} from "./components/form";
-export {
-  FormField,
-  FormSubmitButton,
-} from "./components/form";
-export { useDesktop } from "./hooks/layout";
-export type {
-  FormProps,
-  FormRootProps,
-  FormWithContextProps,
-  FormFieldProps,
-  FormSubmitButtonProps,
-  FieldErrorMessageProps,
-} from "./components/form";
-
-export { AuthCard, type AuthCardProps } from "./components/auth-card";
-export { AuthFieldGroup, type AuthFieldGroupProps } from "./components/auth-field-group";
-export { PasswordField, type PasswordFieldProps } from "./components/password-field";
-export { PasswordRequirements, type PasswordRequirementsProps } from "./components/password-requirements";
-export { AuthMessage } from "./components/auth-message";
-export type { AuthMessageProps } from "./components/auth-message";
-export { AuthSubmitButton, type AuthSubmitButtonProps } from "./components/auth-submit-button";
-export { AuthFooterLinks, type AuthFooterLinksProps, type AuthFooterLinkItem } from "./components/auth-footer-links";
-export { AuthPoweredBy, type AuthPoweredByProps } from "./components/auth-powered-by";
-export {
-  evaluatePasswordRules,
-  matchPasswordConfirmation,
-  type PasswordRuleConfig,
-  type PasswordRuleResult,
-  type PasswordCustomRegexRule,
-} from "./passwordRules";
-
-// Form API
-export {
-  createForm,
-  useFormContext,
-  useField,
-  getFirstFieldError,
-  FormContext,
-} from "./hooks/form";
-export type {
-  CreateFormOptions,
-  FormApi,
-  AnyFormApi,
-  UseFieldResult,
-} from "./hooks/form";
-export { default as Grid } from "./components/grid";
-export { default as Header } from "./components/header";
-export type { HeaderProps, HeaderRootProps } from "./components/header";
-export { default as Icon } from "./components/icon";
-export {
-  default as ImmersiveLanding,
-  useImmersiveLanding,
-  useImmersiveLandingContext,
-  ImmersiveLandingContext,
-  CookieConsent,
-  PWAInstallPrompt,
-  FirefoxPWABanner,
-} from "./components/immersive-landing";
-export type {
-  ImmersiveLandingProps,
-  ImmersiveLandingPageProps,
-  ImmersiveLandingArrowsProps,
-  ImmersiveLandingNavigationProps,
-  ImmersiveLandingContextValue,
-  UseImmersiveLandingOptions,
-  UseImmersiveLandingReturn,
-  CookieConsentProps,
-  CookieConsentTexts,
-  CookieConsentStorageKeys,
-  PWAInstallPromptProps,
-  PWAInstallPromptTexts,
-  FirefoxPWABannerProps,
-  FirefoxPWABannerTexts,
-} from "./components/immersive-landing";
-export { default as Input } from "./components/input";
-export { default as Label } from "./components/label";
-export type { LabelProps, LabelRootProps } from "./components/label";
-export { default as Link, LinkIcon } from "./components/link";
-export type {
-  LinkProps,
-  LinkRootProps,
-  LinkIconProps,
-  LinkVariant,
-  LinkUnderline,
-} from "./components/link";
-export { LiveChatBubble, LiveChatPanel } from "./components/live-chat";
-export type {
-  LiveChatBubbleProps,
-  LiveChatPanelProps,
-  ChatMessage,
-  SendMessagePayload,
-  SendMessageResponse,
-} from "./components/live-chat";
-export { default as Spinner } from "./components/spinner";
-export type { SpinnerProps, SpinnerShape } from "./components/spinner";
-export {
-  LanguageSwitcher,
-  createI18n,
-  I18nProvider,
-  I18nContext,
-  useI18n,
-} from "./components/language-switcher";
-export type {
-  LanguageSwitcherProps,
-  I18nStore,
-  I18nOptions,
-  I18nContextValue,
-  I18nProviderProps,
-  Language,
-} from "./components/language-switcher";
-export {
-  default as Dialog,
-  DialogTrigger,
-  DialogBackdrop,
-  DialogContent,
-  DialogHeader,
-  DialogHeading,
-  DialogIcon,
-  DialogBody,
-  DialogFooter,
-  DialogCloseTrigger,
-} from "./components/dialog";
-export type {
-  DialogProps,
-  DialogPanelProps,
-  DialogPlacement,
-  DialogSize,
-  DialogBackdropVariant,
-  DialogScrollBehavior,
-  DialogRootProps,
-  DialogTriggerProps,
-  DialogBackdropProps,
-  DialogContentProps,
-  DialogHeaderProps,
-  DialogHeadingProps,
-  DialogIconProps,
-  DialogBodyProps,
-  DialogFooterProps,
-  DialogCloseTriggerProps,
-} from "./components/dialog";
-export { default as Navbar } from "./components/navbar";
+export { MetalBorder, type MetalBorderProps } from "./components/metal-border";
 export type { NavbarProps } from "./components/navbar";
-export type { NavbarStackProps } from "./components/navbar/NavbarStack.generated";
+export { default as Navbar } from "./components/navbar";
 export type { NavbarRowProps } from "./components/navbar/NavbarRow.generated";
-export { default as Pagination } from "./components/pagination";
+export type { NavbarStackProps } from "./components/navbar/NavbarStack.generated";
 export type { PaginationProps } from "./components/pagination";
-export { default as Progress } from "./components/progress";
+export { default as Pagination } from "./components/pagination";
+export {
+  PasswordField,
+  type PasswordFieldProps,
+} from "./components/password-field";
+export {
+  PasswordRequirements,
+  type PasswordRequirementsProps,
+} from "./components/password-requirements";
 export type {
-  ProgressProps,
-  ProgressSize,
-  ProgressColor,
-} from "./components/progress";
-export { default as Popover } from "./components/popover";
-export type {
+  PopoverAnchor,
+  PopoverAnchorRect,
+  PopoverArrowProps,
+  PopoverContentProps,
+  PopoverDialogProps,
+  PopoverHeadingProps,
   PopoverProps,
   PopoverRootProps,
   PopoverTriggerProps,
-  PopoverContentProps,
-  PopoverDialogProps,
-  PopoverArrowProps,
-  PopoverHeadingProps,
-  PopoverAnchor,
-  PopoverAnchorRect,
 } from "./components/popover";
+export { default as Popover } from "./components/popover";
+export type {
+  ProgressColor,
+  ProgressProps,
+  ProgressSize,
+} from "./components/progress";
+export { default as Progress } from "./components/progress";
 export { default as Radio } from "./components/radio";
 export {
   RadioGroup,
-  type RadioGroupProps,
   type RadioGroupOrientation,
+  type RadioGroupProps,
   type RadioGroupVariant,
 } from "./components/radio-group";
-
-export { default as Select } from "./components/select";
-export { default as ScrollArea } from "./components/scroll-area";
 export type {
-  ScrollAreaProps,
-  ScrollAreaVisibility,
   ScrollAreaOrientation,
+  ScrollAreaProps,
   ScrollAreaVariant,
+  ScrollAreaVisibility,
 } from "./components/scroll-area";
-export { default as Separator } from "./components/separator";
+export { default as ScrollArea } from "./components/scroll-area";
+export { default as Select } from "./components/select";
 export type {
-  SeparatorProps,
   SeparatorOrientation,
+  SeparatorProps,
   SeparatorVariant,
 } from "./components/separator";
-export { default as Slider } from "./components/slider";
-export type { SliderProps, SliderSize } from "./components/slider";
+export { default as Separator } from "./components/separator";
 export { default as Skeleton } from "./components/skeleton";
-
-export { createDataGrid, default as DataGrid } from "./components/data-grid";
+export type { SliderProps, SliderSize } from "./components/slider";
+export { default as Slider } from "./components/slider";
+export type { SpinnerProps, SpinnerShape } from "./components/spinner";
+export { default as Spinner } from "./components/spinner";
 export type {
-  DataGridBorders,
-  DataGridProps,
-  DataGridSticky,
-  DataGridStriping,
-} from "./components/data-grid";
+  Health,
+  Quality,
+  StatusItem,
+  StatusSummary,
+  StatusTransition,
+} from "./components/status";
+// Aggregate status: combining many conditions into one indicator without
+// losing the one that matters. See docs/proposed-2.2-reference.md.
+export { diffStatus, summarizeStatus } from "./components/status";
+export { default as Switch } from "./components/switch";
 export type {
-  CreateDataGridOptions,
-  DataGridCellContext,
-  DataGridColumn,
-  DataGridColumnOptions,
-  DataGridDataType,
-  DataGridModel,
-  DataGridRow,
-  DataGridSelectionMode,
-  DataGridSort,
-  DataGridSortDirection,
-} from "./components/data-grid";
-
-export { default as Table } from "./components/table";
-export {
-  SortIcon as TableSortIcon,
-  ExpandToggle as TableExpandToggle,
-  VirtualSpacerRow as TableVirtualSpacerRow,
-  MobileListView as TableMobileListView,
-  InlineConfirm as TableInlineConfirm,
-} from "./components/table";
-export type {
-  TableProps,
-  TableSortDirection,
-  TableSortDescriptor,
-  TableColumnRenderProps,
-  SortIconProps as TableSortIconProps,
-  SortIconState as TableSortIconState,
   ExpandToggleProps as TableExpandToggleProps,
-  VirtualSpacerRowProps as TableVirtualSpacerRowProps,
-  MobileListViewProps as TableMobileListViewProps,
   InlineConfirmProps as TableInlineConfirmProps,
   InlineConfirmVariant as TableInlineConfirmVariant,
+  MobileListViewProps as TableMobileListViewProps,
+  SortIconProps as TableSortIconProps,
+  SortIconState as TableSortIconState,
+  TableColumnRenderProps,
+  TableProps,
+  TableSortDescriptor,
+  TableSortDirection,
+  VirtualSpacerRowProps as TableVirtualSpacerRowProps,
 } from "./components/table";
-export { useAnchoredOverlayPosition } from "./hooks/table";
-export type { UseAnchoredOverlayPositionOptions } from "./hooks/table";
-
-export { default as Tabs } from "./components/tabs";
+export {
+  default as Table,
+  ExpandToggle as TableExpandToggle,
+  InlineConfirm as TableInlineConfirm,
+  MobileListView as TableMobileListView,
+  SortIcon as TableSortIcon,
+  VirtualSpacerRow as TableVirtualSpacerRow,
+} from "./components/table";
 export type {
-  TabsRootProps,
+  TabIndicatorProps,
   TabListContainerProps,
   TabListProps,
-  TabProps,
-  TabIndicatorProps,
-  TabSeparatorProps,
   TabPanelProps,
+  TabProps,
+  TabSeparatorProps,
+  TabsRootProps,
 } from "./components/tabs";
-export { default as Text } from "./components/text";
+export { default as Tabs } from "./components/tabs";
 export type {
+  TextFamily,
+  TextLeading,
   TextProps,
   TextRootProps,
   TextSize,
+  TextTracking,
+  TextTransform,
   TextVariant,
   TextWeight,
-  TextTransform,
-  TextTracking,
-  TextLeading,
-  TextFamily,
 } from "./components/text";
-export { default as Textarea } from "./components/textarea";
+export { default as Text } from "./components/text";
 export type {
   TextareaProps,
   TextareaRootProps,
   TextareaVariant,
 } from "./components/textarea";
+export { default as Textarea } from "./components/textarea";
+export type {
+  HueShiftStore,
+  ThemeColorPickerProps,
+} from "./components/theme-color-picker";
 export {
-  ThemeColorPicker,
   createHueShiftStore,
   getDefaultHueShiftStore,
   resetHueShift,
+  ThemeColorPicker,
 } from "./components/theme-color-picker";
 export type {
-  ThemeColorPickerProps,
-  HueShiftStore,
-} from "./components/theme-color-picker";
-export {
-  default as Toast,
-  ToastProvider,
-  ToastContent,
-  ToastIndicator,
-  ToastTitle,
-  ToastDescription,
-  ToastActionButton,
-  ToastCloseButton,
-  ToastQueue,
-  toast,
-  toastQueue,
-  DEFAULT_GAP as DEFAULT_TOAST_GAP,
-  DEFAULT_MAX_VISIBLE_TOAST,
-  DEFAULT_SCALE_FACTOR as DEFAULT_TOAST_SCALE_FACTOR,
-  DEFAULT_TOAST_TIMEOUT,
-  DEFAULT_TOAST_WIDTH,
-} from "./components/toast";
-export type {
-  ToastPlacement,
-  ToastVariant,
+  HeroUIToastOptions,
+  ToastActionButtonProps,
   ToastActionProps,
+  ToastCloseButtonProps,
+  ToastContentProps,
   ToastContentValue,
+  ToastDescriptionProps,
+  ToastFunction,
+  ToastIndicatorProps,
+  ToastPlacement,
+  ToastPromiseOptions,
+  ToastProviderProps,
   ToastQueueAddOptions,
   ToastQueueItem,
   ToastQueueOptions,
   ToastRenderFn,
   ToastRootProps,
-  ToastProviderProps,
-  ToastContentProps,
-  ToastIndicatorProps,
   ToastTitleProps,
-  ToastDescriptionProps,
-  ToastActionButtonProps,
-  ToastCloseButtonProps,
-  HeroUIToastOptions,
-  ToastPromiseOptions,
-  ToastFunction,
+  ToastVariant,
 } from "./components/toast";
-export { default as Switch } from "./components/switch";
 export {
-  default as Tooltip,
-  TooltipTrigger,
-  TooltipContent,
-  TooltipArrow,
-} from "./components/tooltip";
+  DEFAULT_GAP as DEFAULT_TOAST_GAP,
+  DEFAULT_MAX_VISIBLE_TOAST,
+  DEFAULT_SCALE_FACTOR as DEFAULT_TOAST_SCALE_FACTOR,
+  DEFAULT_TOAST_TIMEOUT,
+  DEFAULT_TOAST_WIDTH,
+  default as Toast,
+  ToastActionButton,
+  ToastCloseButton,
+  ToastContent,
+  ToastDescription,
+  ToastIndicator,
+  ToastProvider,
+  ToastQueue,
+  ToastTitle,
+  toast,
+  toastQueue,
+} from "./components/toast";
 export type {
+  TooltipArrowProps,
+  TooltipContentProps,
   TooltipPlacement,
   TooltipRootProps,
   TooltipTriggerProps,
-  TooltipContentProps,
-  TooltipArrowProps,
+} from "./components/tooltip";
+export {
+  default as Tooltip,
+  TooltipArrow,
+  TooltipContent,
+  TooltipTrigger,
 } from "./components/tooltip";
 
+// The shared parameter vocabulary. A name here means the same thing on every
+// component; see docs/ui-usage.md and UI-2.2-API.md.
+export type {
+  Align,
+  CapabilityProps,
+  ChangeReason,
+  Constraint,
+  Controlled,
+  Direction,
+  Disclosable,
+  ErrorHandler,
+  Failable,
+  Flavor,
+  Height,
+  IconSlotProps,
+  Issue,
+  Justify,
+  Material,
+  MaxWidth,
+  OpenChangeReason,
+  Radius,
+  Size,
+  Space,
+  State,
+  UIBaseProps,
+  Validatable,
+  Validate,
+  ValidateOn,
+  Variant,
+  Width,
+} from "./components/vocabulary";
+export {
+  FLAVORS,
+  isInvalid,
+  resolveState,
+  SIZES,
+  SPACES,
+  STATES,
+  VARIANTS,
+} from "./components/vocabulary";
+export type {
+  AnyFormApi,
+  CreateFormOptions,
+  FormApi,
+  UseFieldResult,
+} from "./hooks/form";
+// Form API
+export {
+  createForm,
+  FormContext,
+  getFirstFieldError,
+  useField,
+  useFormContext,
+} from "./hooks/form";
+export { useDesktop } from "./hooks/layout";
+export type { UseAnchoredOverlayPositionOptions } from "./hooks/table";
+export { useAnchoredOverlayPosition } from "./hooks/table";
 // Motion
 export * from "./motion";
-
 export {
-  useStreamingBuffer,
-  useStreamingSubscription,
-} from "./primitives/streaming";
+  evaluatePasswordRules,
+  matchPasswordConfirmation,
+  type PasswordCustomRegexRule,
+  type PasswordRuleConfig,
+  type PasswordRuleResult,
+} from "./passwordRules";
 export type {
   StreamingBufferStrategy,
   StreamingSubscribeFn,
@@ -500,100 +612,18 @@ export type {
   UseStreamingSubscriptionOptions,
   UseStreamingSubscriptionResult,
 } from "./primitives/streaming";
-
-// The shared parameter vocabulary. A name here means the same thing on every
-// component; see docs/ui-usage.md and UI-2.2-API.md.
-export type {
-  Flavor,
-  State,
-
-  Variant,
-  Material,
-  Size,
-  Radius,
-  Space,
-  Width,
-  Height,
-  MaxWidth,
-  Align,
-  Justify,
-  Direction,
-  UIBaseProps,
-  IconSlotProps,
-  Controlled,
-  Issue,
-  ErrorHandler,
-  Failable,
-  Constraint,
-  Validate,
-  ValidateOn,
-  Validatable,
-  OpenChangeReason,
-  ChangeReason,
-  Disclosable,
-  CapabilityProps,
-} from "./components/vocabulary";
-export { isInvalid, resolveState } from "./components/vocabulary";
-export { FLAVORS, STATES, VARIANTS, SIZES, SPACES } from "./components/vocabulary";
-
-// Restored to the main surface: three were parked by a hand-written list
-// rather than the usage data, and ChatBubble is a forward-looking priority.
 export {
-  default as InputOTP,
-  InputOTPGroup,
-  InputOTPSlot,
-  InputOTPSeparator,
-  REGEXP_ONLY_DIGITS,
-  REGEXP_ONLY_CHARS,
-  REGEXP_ONLY_DIGITS_AND_CHARS,
-} from "./components/input-otp";
-export type {
-  InputOTPProps,
-  InputOTPRootProps,
-  InputOTPGroupProps,
-  InputOTPSlotProps,
-  InputOTPSeparatorProps,
-  InputOTPVariant,
-} from "./components/input-otp";
-export {
-  default as ListBox,
-  ListBoxItem,
-  ListBoxItemIndicator,
-  ListBoxSection,
-} from "./components/list-box";
-export type {
-  ListBoxProps,
-  ListBoxRootProps,
-  ListBoxSelectionMode,
-  ListBoxVariant,
-  ListBoxItemProps,
-  ListBoxItemRootProps,
-  ListBoxItemIndicatorProps,
-  ListBoxItemRenderProps,
-  ListBoxSectionProps,
-  ListBoxSectionRootProps,
-} from "./components/list-box";
-export { default as ColorSwatch } from "./components/color-swatch";
-export type {
-  ColorSwatchProps,
-  ColorSwatchShape,
-  ColorSwatchSize,
-} from "./components/color-swatch";
-export { default as ChatBubble } from "./components/chatbubble";
-
-// Aggregate status: combining many conditions into one indicator without
-// losing the one that matters. See docs/proposed-2.2-reference.md.
-export { summarizeStatus, diffStatus } from "./components/status";
-export type { Health, Quality, StatusItem, StatusSummary, StatusTransition } from "./components/status";
-
+  useStreamingBuffer,
+  useStreamingSubscription,
+} from "./primitives/streaming";
+export type { GlassMode, GlassTuning } from "./styles/glass";
 // Glass, as three numbers instead of thirty-one. `material="glass"` is styled
 // by a family of `--glass-*` custom properties; six are colours the theme
 // declares and the rest derive from blur, refraction and depth.
 export {
+  applyGlassTokens,
   GLASS_DEFAULTS,
   GLASS_LIMITS,
-  applyGlassTokens,
   glassTokensToCss,
   resolveGlassTokens,
 } from "./styles/glass";
-export type { GlassMode, GlassTuning } from "./styles/glass";

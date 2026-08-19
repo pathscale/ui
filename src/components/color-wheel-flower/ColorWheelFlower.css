@@ -97,7 +97,9 @@
     background: var(--color-swatch-current) !important;
     transform: none !important;
     box-shadow: 0 2px 8px rgb(var(--shadow-color, 0 0 0) / 25%) !important;
-    transition: box-shadow 200ms ease-out, opacity 140ms ease-out !important;
+    transition:
+      box-shadow 200ms ease-out,
+      opacity 140ms ease-out !important;
   }
 
   .color-wheel-flower__swatch:hover:not([data-disabled="true"]) {
@@ -132,7 +134,9 @@
     mix-blend-mode: overlay;
     pointer-events: none;
     opacity: 0;
-    transition: opacity 300ms ease-out, box-shadow 300ms ease-out;
+    transition:
+      opacity 300ms ease-out,
+      box-shadow 300ms ease-out;
   }
 
   .color-wheel-flower__highlight--hovered {

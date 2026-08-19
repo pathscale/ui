@@ -12,4 +12,12 @@ export const CLASSES = {
     groupInvalid: "color-field__group--invalid",
   },
 } as const;
-export const componentRecipe = recipe({component:"color-field",slots:{"color-field":{},"color-field-group":{},"color-field-input":{},"root":{},},});
+export const componentRecipe = recipe({
+  component: "color-field",
+  slots: {
+    "color-field": {},
+    "color-field-group": {},
+    "color-field-input": {},
+    root: {},
+  },
+});

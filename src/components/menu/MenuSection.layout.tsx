@@ -1,20 +1,32 @@
-import {Show, omit, type Component} from "solid-js";
 import type { JSX } from "@solidjs/web";
-import { twMerge } from "../../lib/twMerge";
-
-import type { UIBaseProps } from "../vocabulary";
-import { CLASSES } from "./Menu.recipe";
+import { type Component, omit, Show } from "solid-js";
 import type { Layout } from "../../lib/layouts";
-import { componentRecipe } from "./Menu.recipe";
+import { twMerge } from "../../lib/twMerge";
+import type { UIBaseProps } from "../vocabulary";
+import { CLASSES, type componentRecipe } from "./Menu.recipe";
 
-export type MenuSectionRootProps = Omit<JSX.HTMLAttributes<HTMLDivElement>, "children"> &
+export type MenuSectionRootProps = Omit<
+  JSX.HTMLAttributes<HTMLDivElement>,
+  "children"
+> &
   UIBaseProps & {
     children?: JSX.Element;
     title?: JSX.Element;
   };
 
-const MenuSectionRoot: Layout<typeof componentRecipe, MenuSectionRootProps> = () => {
-  const others = omit(props, "children", "class", "dataTheme", "style", "title", "role");
+const MenuSectionRoot: Layout<
+  typeof componentRecipe,
+  MenuSectionRootProps
+> = () => {
+  const others = omit(
+    props,
+    "children",
+    "class",
+    "dataTheme",
+    "style",
+    "title",
+    "role",
+  );
 
   return (
     <div
@@ -26,7 +38,10 @@ const MenuSectionRoot: Layout<typeof componentRecipe, MenuSectionRootProps> = ()
       style={props.style}
     >
       <Show when={props.title}>
-        <span {...{ class: CLASSES.Section.title }} data-slot="heading">
+        <span
+          {...{ class: CLASSES.Section.title }}
+          data-slot="heading"
+        >
           {props.title}
         </span>
       </Show>
@@ -39,5 +54,5 @@ const MenuSectionRoot: Layout<typeof componentRecipe, MenuSectionRootProps> = ()
 const MenuSection = MenuSectionRoot;
 
 export default MenuSection;
-export { MenuSection, MenuSectionRoot };
 export type { MenuSectionRootProps as MenuSectionProps };
+export { MenuSection, MenuSectionRoot };

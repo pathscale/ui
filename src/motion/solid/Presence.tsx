@@ -1,5 +1,11 @@
-import {Show, createSignal, createTrackedEffect, onCleanup, untrack} from "solid-js";
 import type { JSX } from "@solidjs/web";
+import {
+  createSignal,
+  createTrackedEffect,
+  onCleanup,
+  Show,
+  untrack,
+} from "solid-js";
 import { prefersReducedMotion } from "../reduced-motion";
 import { nextPresenceState, type PresenceState } from "./presenceState";
 
@@ -27,7 +33,6 @@ export interface PresenceProps {
   /** Override for prefers-reduced-motion detection. */
   reduceMotion?: boolean;
 }
-
 
 const DEFAULT_EXIT_TIMEOUT = 800;
 

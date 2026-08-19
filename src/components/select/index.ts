@@ -1,15 +1,15 @@
-export { default } from "./Select.generated";
 export type {
+  SelectIndicatorProps,
+  SelectListboxProps,
+  SelectOptionProps,
+  SelectPlacement,
+  SelectPopoverProps,
   SelectProps,
   SelectRootProps,
-  SelectPlacement,
-  SelectValueType,
-  SelectVariant,
   SelectSelectionMode,
   SelectTriggerProps,
   SelectValueProps,
-  SelectIndicatorProps,
-  SelectPopoverProps,
-  SelectListboxProps,
-  SelectOptionProps,
+  SelectValueType,
+  SelectVariant,
 } from "./Select.generated";
+export { default } from "./Select.generated";

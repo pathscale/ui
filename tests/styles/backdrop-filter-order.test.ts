@@ -48,7 +48,8 @@ function standardDeclarations(css: string): { at: number; line: number }[] {
     const head = css.slice(lineStart, at);
     // `@supports (backdrop-filter: blur(1px))` is a condition, not a
     // declaration, and has no ordering requirement.
-    if (head.includes("@supports") || head.trimStart().startsWith("(")) continue;
+    if (head.includes("@supports") || head.trimStart().startsWith("("))
+      continue;
     found.push({ at, line: css.slice(0, at).split("\n").length });
   }
   return found;

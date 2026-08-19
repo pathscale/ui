@@ -1,11 +1,17 @@
 import "./Breadcrumb.css";
 import type { JSX } from "@solidjs/web";
-import {createContext, omit, useContext, Show, type Component, type ParentComponent} from "solid-js";
+import {
+  type Component,
+  createContext,
+  omit,
+  type ParentComponent,
+  Show,
+  useContext,
+} from "solid-js";
+import type { Layout } from "../../lib/layouts";
 import { twMerge } from "../../lib/twMerge";
 import type { UIBaseProps } from "../vocabulary";
-import { CLASSES } from "./Breadcrumb.recipe";
-import type { Layout } from "../../lib/layouts";
-import { componentRecipe } from "./Breadcrumb.recipe";
+import { CLASSES, type componentRecipe } from "./Breadcrumb.recipe";
 
 /* -------------------------------------------------------------------------------------------------
  * Breadcrumb Context
@@ -25,13 +31,19 @@ const useBreadcrumbContext = () => {
 /* -------------------------------------------------------------------------------------------------
  * Types
  * -----------------------------------------------------------------------------------------------*/
-export type BreadcrumbRootProps = Omit<JSX.HTMLAttributes<HTMLElement>, "children"> &
+export type BreadcrumbRootProps = Omit<
+  JSX.HTMLAttributes<HTMLElement>,
+  "children"
+> &
   UIBaseProps & {
     children: JSX.Element;
     separator?: JSX.Element;
   };
 
-export type BreadcrumbItemProps = Omit<JSX.HTMLAttributes<HTMLLIElement>, "children"> &
+export type BreadcrumbItemProps = Omit<
+  JSX.HTMLAttributes<HTMLLIElement>,
+  "children"
+> &
   UIBaseProps & {
     children: JSX.Element;
     href?: string;
@@ -64,8 +76,18 @@ const ChevronRight = () => (
 /* -------------------------------------------------------------------------------------------------
  * Breadcrumb Root
  * -----------------------------------------------------------------------------------------------*/
-const BreadcrumbRoot: Layout<typeof componentRecipe, BreadcrumbRootProps> = () => {
-  const others = omit(props, "children", "class", "separator", "dataTheme", "style");
+const BreadcrumbRoot: Layout<
+  typeof componentRecipe,
+  BreadcrumbRootProps
+> = () => {
+  const others = omit(
+    props,
+    "children",
+    "class",
+    "separator",
+    "dataTheme",
+    "style",
+  );
 
   const ctx: BreadcrumbContextValue = {
     separator: () => props.separator,
@@ -92,8 +114,19 @@ const BreadcrumbRoot: Layout<typeof componentRecipe, BreadcrumbRootProps> = () =
  * -----------------------------------------------------------------------------------------------*/
 const [ITEM_CLASS, LINK_CLASS, SEPARATOR_CLASS] = CLASSES.Item.base;
 
-const BreadcrumbItem: Layout<typeof componentRecipe, BreadcrumbItemProps> = () => {
-  const others = omit(props, "children", "class", "href", "isCurrent", "dataTheme", "style");
+const BreadcrumbItem: Layout<
+  typeof componentRecipe,
+  BreadcrumbItemProps
+> = () => {
+  const others = omit(
+    props,
+    "children",
+    "class",
+    "href",
+    "isCurrent",
+    "dataTheme",
+    "style",
+  );
 
   const ctx = useBreadcrumbContext();
 
@@ -127,7 +160,10 @@ const BreadcrumbItem: Layout<typeof componentRecipe, BreadcrumbItemProps> = () =
         </a>
       </Show>
       <Show when={!props.isCurrent}>
-        <span {...{ class: SEPARATOR_CLASS }} data-slot="breadcrumb-separator">
+        <span
+          {...{ class: SEPARATOR_CLASS }}
+          data-slot="breadcrumb-separator"
+        >
           {ctx.separator() ?? <ChevronRight />}
         </span>
       </Show>
@@ -144,4 +180,4 @@ const Breadcrumb = Object.assign(BreadcrumbRoot, {
 });
 
 export default Breadcrumb;
-export { BreadcrumbRoot, BreadcrumbItem };
+export { BreadcrumbItem, BreadcrumbRoot };

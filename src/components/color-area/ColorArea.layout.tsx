@@ -1,11 +1,10 @@
 import "./ColorArea.css";
 import type { JSX } from "@solidjs/web";
-import {createSignal, omit, type Component} from "solid-js";
-import { twMerge } from "../../lib/twMerge";
-import type { UIBaseProps, State } from "../vocabulary";
-import { CLASSES } from "./ColorArea.recipe";
+import { type Component, createSignal, omit } from "solid-js";
 import type { Layout } from "../../lib/layouts";
-import { componentRecipe } from "./ColorArea.recipe";
+import { twMerge } from "../../lib/twMerge";
+import type { State, UIBaseProps } from "../vocabulary";
+import { CLASSES, type componentRecipe } from "./ColorArea.recipe";
 
 export type ColorAreaValue = {
   h: number;
@@ -13,7 +12,10 @@ export type ColorAreaValue = {
   v: number;
 };
 
-export type ColorAreaProps = Omit<JSX.HTMLAttributes<HTMLDivElement>, "children" | "onChange"> &
+export type ColorAreaProps = Omit<
+  JSX.HTMLAttributes<HTMLDivElement>,
+  "children" | "onChange"
+> &
   UIBaseProps & {
     value?: ColorAreaValue;
     onChange?: (value: ColorAreaValue) => void;
@@ -26,7 +28,8 @@ const DEFAULT_VALUE: ColorAreaValue = {
   v: 100,
 };
 
-const clamp = (value: number, min: number, max: number) => Math.min(max, Math.max(min, value));
+const clamp = (value: number, min: number, max: number) =>
+  Math.min(max, Math.max(min, value));
 
 const normalizeValue = (value: ColorAreaValue): ColorAreaValue => ({
   h: ((value.h % 360) + 360) % 360,
@@ -87,13 +90,14 @@ const ColorArea: Layout<typeof componentRecipe, ColorAreaProps> = () => {
     "aria-label",
   );
 
-  const [internalValue, setInternalValue] = createSignal<ColorAreaValue>(DEFAULT_VALUE);
+  const [internalValue, setInternalValue] =
+    createSignal<ColorAreaValue>(DEFAULT_VALUE);
   const [isDragging, setIsDragging] = createSignal(false);
   let areaRef: HTMLDivElement | undefined;
 
   const isControlled = () => props.value !== undefined;
   const currentValue = () => normalizeValue(props.value ?? internalValue());
-  const isDisabled = () => Boolean((props.state === "disabled"));
+  const isDisabled = () => Boolean(props.state === "disabled");
 
   const emitChange = (next: ColorAreaValue) => {
     const normalized = normalizeValue(next);
@@ -118,7 +122,10 @@ const ColorArea: Layout<typeof componentRecipe, ColorAreaProps> = () => {
     });
   };
 
-  const handlePointerDown: JSX.EventHandlerUnion<HTMLDivElement, PointerEvent> = (event) => {
+  const handlePointerDown: JSX.EventHandlerUnion<
+    HTMLDivElement,
+    PointerEvent
+  > = (event) => {
     if (isDisabled()) return;
     event.preventDefault();
     event.currentTarget.setPointerCapture(event.pointerId);
@@ -126,23 +133,33 @@ const ColorArea: Layout<typeof componentRecipe, ColorAreaProps> = () => {
     updateFromPointer(event.clientX, event.clientY);
   };
 
-  const handlePointerMove: JSX.EventHandlerUnion<HTMLDivElement, PointerEvent> = (event) => {
+  const handlePointerMove: JSX.EventHandlerUnion<
+    HTMLDivElement,
+    PointerEvent
+  > = (event) => {
     if (!isDragging()) return;
     updateFromPointer(event.clientX, event.clientY);
   };
 
-  const handlePointerUp: JSX.EventHandlerUnion<HTMLDivElement, PointerEvent> = (event) => {
+  const handlePointerUp: JSX.EventHandlerUnion<HTMLDivElement, PointerEvent> = (
+    event,
+  ) => {
     if (event.currentTarget.hasPointerCapture(event.pointerId)) {
       event.currentTarget.releasePointerCapture(event.pointerId);
     }
     setIsDragging(false);
   };
 
-  const handleLostPointerCapture: JSX.EventHandlerUnion<HTMLDivElement, PointerEvent> = () => {
+  const handleLostPointerCapture: JSX.EventHandlerUnion<
+    HTMLDivElement,
+    PointerEvent
+  > = () => {
     setIsDragging(false);
   };
 
-  const handleKeyDown: JSX.EventHandlerUnion<HTMLDivElement, KeyboardEvent> = (event) => {
+  const handleKeyDown: JSX.EventHandlerUnion<HTMLDivElement, KeyboardEvent> = (
+    event,
+  ) => {
     if (isDisabled()) return;
 
     const step = event.shiftKey ? 10 : 1;

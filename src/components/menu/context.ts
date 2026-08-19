@@ -1,4 +1,4 @@
-import { createContext, type Accessor } from "solid-js";
+import { type Accessor, createContext } from "solid-js";
 
 export type MenuItemVariant = "default" | "danger";
 export type MenuSelectionMode = "none" | "single" | "multiple";

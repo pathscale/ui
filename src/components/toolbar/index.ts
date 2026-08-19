@@ -1,9 +1,8 @@
 export {
   default,
   Toolbar,
-  ToolbarRoot,
-  type ToolbarProps,
-  type ToolbarRootProps,
   type ToolbarOrientation,
+  type ToolbarProps,
+  ToolbarRoot,
+  type ToolbarRootProps,
 } from "./Toolbar.generated";
-

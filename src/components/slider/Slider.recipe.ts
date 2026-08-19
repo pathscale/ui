@@ -12,4 +12,15 @@ export const CLASSES = {
     lg: "slider--lg",
   },
 } as const;
-export const componentRecipe = recipe({component:"slider",slots:{"label":{},"root":{},"slider":{},"slider-fill":{},"slider-output":{},"slider-thumb":{},"slider-track":{},},});
+export const componentRecipe = recipe({
+  component: "slider",
+  slots: {
+    label: {},
+    root: {},
+    slider: {},
+    "slider-fill": {},
+    "slider-output": {},
+    "slider-thumb": {},
+    "slider-track": {},
+  },
+});

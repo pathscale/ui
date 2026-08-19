@@ -1,8 +1,8 @@
 import { describe, expect, it } from "bun:test";
 import {
+  applyGlassTokens,
   GLASS_DEFAULTS,
   GLASS_LIMITS,
-  applyGlassTokens,
   glassTokensToCss,
   resolveGlassTokens,
 } from "../../src/styles/glass";
@@ -29,7 +29,9 @@ describe("glass tuning", () => {
         { blur: 999, refraction: 999, depth: 999 },
         {},
       ]) {
-        expect(Object.keys(resolveGlassTokens(tuning, mode)).sort()).toEqual([...DERIVED].sort());
+        expect(Object.keys(resolveGlassTokens(tuning, mode)).sort()).toEqual(
+          [...DERIVED].sort(),
+        );
       }
     }
   });
@@ -37,7 +39,9 @@ describe("glass tuning", () => {
   it("emits values CSS can parse", () => {
     const shape = /^(-?\d+(\.\d+)?(px|%)?|0 .*|1(\.\d+)?)$/;
     for (const mode of MODES) {
-      for (const [name, value] of Object.entries(resolveGlassTokens(GLASS_DEFAULTS[mode], mode))) {
+      for (const [name, value] of Object.entries(
+        resolveGlassTokens(GLASS_DEFAULTS[mode], mode),
+      )) {
         expect(value, `${name} is empty`).not.toBe("");
         expect(value, `${name} = ${value}`).not.toContain("NaN");
         expect(value, `${name} = ${value}`).not.toContain("undefined");
@@ -53,7 +57,10 @@ describe("glass tuning", () => {
    */
   it("clamps out-of-range input instead of propagating it", () => {
     for (const mode of MODES) {
-      const high = resolveGlassTokens({ blur: 1e6, refraction: 1e6, depth: 1e6 }, mode);
+      const high = resolveGlassTokens(
+        { blur: 1e6, refraction: 1e6, depth: 1e6 },
+        mode,
+      );
       const max = resolveGlassTokens(
         {
           blur: GLASS_LIMITS.blur.max,
@@ -64,8 +71,14 @@ describe("glass tuning", () => {
       );
       expect(high).toEqual(max);
 
-      const low = resolveGlassTokens({ blur: -50, refraction: -1, depth: -1 }, mode);
-      const min = resolveGlassTokens({ blur: 0, refraction: 0, depth: 0 }, mode);
+      const low = resolveGlassTokens(
+        { blur: -50, refraction: -1, depth: -1 },
+        mode,
+      );
+      const min = resolveGlassTokens(
+        { blur: 0, refraction: 0, depth: 0 },
+        mode,
+      );
       expect(low).toEqual(min);
     }
   });
@@ -75,7 +88,10 @@ describe("glass tuning", () => {
       const expected = resolveGlassTokens(GLASS_DEFAULTS[mode], mode);
       expect(resolveGlassTokens({}, mode)).toEqual(expected);
       expect(
-        resolveGlassTokens({ blur: Number.NaN, refraction: undefined, depth: Number.NaN }, mode),
+        resolveGlassTokens(
+          { blur: Number.NaN, refraction: undefined, depth: Number.NaN },
+          mode,
+        ),
       ).toEqual(expected);
     }
   });
@@ -87,7 +103,10 @@ describe("glass tuning", () => {
    */
   it("reaches a true zero at the bottom of the range", () => {
     for (const mode of MODES) {
-      const off = resolveGlassTokens({ blur: 0, refraction: 0, depth: 0 }, mode);
+      const off = resolveGlassTokens(
+        { blur: 0, refraction: 0, depth: 0 },
+        mode,
+      );
       expect(off["--glass-background-opacity"]).toBe("0%");
       expect(off["--glass-border-opacity"]).toBe("0%");
       expect(off["--glass-highlight-opacity"]).toBe("0%");
@@ -121,7 +140,11 @@ describe("glass tuning", () => {
   it("writes every derived token onto the target element", () => {
     const written: Record<string, string> = {};
     applyGlassTokens(GLASS_DEFAULTS.dark, "dark", {
-      style: { setProperty: (name, value) => { written[name] = value; } },
+      style: {
+        setProperty: (name, value) => {
+          written[name] = value;
+        },
+      },
     });
     expect(Object.keys(written).sort()).toEqual([...DERIVED].sort());
   });
@@ -130,6 +153,7 @@ describe("glass tuning", () => {
     const css = glassTokensToCss(GLASS_DEFAULTS.light, "light");
     const lines = css.split("\n");
     expect(lines).toHaveLength(DERIVED.length);
-    for (const line of lines) expect(line).toMatch(/^ {2}--glass-[a-z-]+: .+;$/);
+    for (const line of lines)
+      expect(line).toMatch(/^ {2}--glass-[a-z-]+: .+;$/);
   });
 });

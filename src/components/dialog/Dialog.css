@@ -50,11 +50,19 @@
   }
 
   .dialog__backdrop--opaque {
-    background-color: color-mix(in oklab, rgb(var(--shadow-color, 0 0 0)) 40%, transparent);
+    background-color: color-mix(
+      in oklab,
+      rgb(var(--shadow-color, 0 0 0)) 40%,
+      transparent
+    );
   }
 
   .dialog__backdrop--blur {
-    background-color: color-mix(in oklab, rgb(var(--shadow-color, 0 0 0)) 35%, transparent);
+    background-color: color-mix(
+      in oklab,
+      rgb(var(--shadow-color, 0 0 0)) 35%,
+      transparent
+    );
     -webkit-backdrop-filter: blur(0.75rem);
     backdrop-filter: blur(0.75rem);
   }
@@ -112,7 +120,8 @@
     background-color: var(--color-overlay, var(--color-base-100));
     box-shadow: var(
       --shadow-overlay,
-      0 24px 48px color-mix(in oklab, rgb(var(--shadow-color, 0 0 0)) 24%, transparent)
+      0 24px 48px
+        color-mix(in oklab, rgb(var(--shadow-color, 0 0 0)) 24%, transparent)
     );
     outline: none;
     padding: 1.5rem;
@@ -261,7 +270,11 @@
 
   .dialog__close-trigger:hover,
   .dialog__close-trigger[data-hovered="true"] {
-    background-color: color-mix(in oklab, var(--color-base-content) 10%, transparent);
+    background-color: color-mix(
+      in oklab,
+      var(--color-base-content) 10%,
+      transparent
+    );
   }
 
   .dialog__close-trigger:active,

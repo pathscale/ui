@@ -1,6 +1,6 @@
-export { default } from "./Dock.generated";
 export type {
-  DockProps,
-  DockItem,
   DockDirection,
+  DockItem,
+  DockProps,
 } from "./Dock.generated";
+export { default } from "./Dock.generated";

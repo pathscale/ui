@@ -32,7 +32,10 @@ export const DEFAULT_TAIL = 4;
  * Returns the value unchanged when shortening would not actually shorten it,
  * so a short address never gains an ellipsis it does not need.
  */
-export const truncateAddress = (value: string, options: TruncateOptions = {}): string => {
+export const truncateAddress = (
+  value: string,
+  options: TruncateOptions = {},
+): string => {
   const lead = Math.max(0, options.lead ?? DEFAULT_LEAD);
   const tail = Math.max(0, options.tail ?? DEFAULT_TAIL);
   if (!value) return "";

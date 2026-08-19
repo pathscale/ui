@@ -1,12 +1,12 @@
 import type { ComponentProps } from "solid-js";
 
 import Popover, {
-  PopoverRoot,
-  PopoverTrigger,
+  PopoverArrow,
   PopoverContent,
   PopoverDialog,
-  PopoverArrow,
   PopoverHeading,
+  PopoverRoot,
+  PopoverTrigger,
 } from "./Popover.generated";
 
 export type PopoverProps = ComponentProps<typeof PopoverRoot>;
@@ -19,12 +19,12 @@ export type PopoverHeadingProps = ComponentProps<typeof PopoverHeading>;
 export type { PopoverAnchor, PopoverAnchorRect } from "./Popover.generated";
 
 export {
-  PopoverRoot,
-  PopoverTrigger,
+  PopoverArrow,
   PopoverContent,
   PopoverDialog,
-  PopoverArrow,
   PopoverHeading,
+  PopoverRoot,
+  PopoverTrigger,
 };
 
 export default Popover;

@@ -1,13 +1,23 @@
 import "./Dialog.css";
-import {Show, createContext, createSignal, createTrackedEffect, createUniqueId, onCleanup, omit, useContext, type Component, type ParentComponent} from "solid-js";
-import { Portal, type JSX} from "@solidjs/web";
+import { type JSX, Portal } from "@solidjs/web";
+import {
+  type Component,
+  createContext,
+  createSignal,
+  createTrackedEffect,
+  createUniqueId,
+  omit,
+  onCleanup,
+  type ParentComponent,
+  Show,
+  useContext,
+} from "solid-js";
 import { twMerge } from "../../lib/twMerge";
 
 import "../_shared/material.css";
-import type { Material, UIBaseProps } from "../vocabulary";
-import { CLASSES } from "./Dialog.recipe";
 import type { Layout } from "../../lib/layouts";
-import { componentRecipe } from "./Dialog.recipe";
+import type { Material, UIBaseProps } from "../vocabulary";
+import { CLASSES, type componentRecipe } from "./Dialog.recipe";
 
 export type DialogPlacement = "auto" | "top" | "center" | "bottom";
 export type DialogSize = "xs" | "sm" | "md" | "lg" | "cover" | "full";
@@ -45,7 +55,8 @@ const useModalContext = () => {
   return context;
 };
 
-const isVisibleState = (state: DialogAnimState) => state === "entering" || state === "open";
+const isVisibleState = (state: DialogAnimState) =>
+  state === "entering" || state === "open";
 
 let bodyLockCount = 0;
 let previousBodyOverflow = "";
@@ -56,7 +67,8 @@ const lockBodyScroll = () => {
     previousBodyOverflow = document.body.style.overflow;
     previousBodyPaddingRight = document.body.style.paddingRight;
 
-    const scrollbarWidth = window.innerWidth - document.documentElement.clientWidth;
+    const scrollbarWidth =
+      window.innerWidth - document.documentElement.clientWidth;
     if (scrollbarWidth > 0) {
       document.body.style.paddingRight = `${scrollbarWidth}px`;
     }
@@ -93,7 +105,9 @@ const FOCUSABLE_SELECTOR = [
 ].join(",");
 
 const getFocusableElements = (container: HTMLElement) =>
-  Array.from(container.querySelectorAll<HTMLElement>(FOCUSABLE_SELECTOR)).filter((element) => {
+  Array.from(
+    container.querySelectorAll<HTMLElement>(FOCUSABLE_SELECTOR),
+  ).filter((element) => {
     if (element.hasAttribute("disabled")) return false;
     if (element.getAttribute("aria-hidden") === "true") return false;
     if (element.tabIndex < 0) return false;
@@ -141,7 +155,10 @@ const focusFirstElement = (container: HTMLElement) => {
   container.focus();
 };
 
-export type DialogRootProps = Omit<JSX.HTMLAttributes<HTMLDivElement>, "children"> &
+export type DialogRootProps = Omit<
+  JSX.HTMLAttributes<HTMLDivElement>,
+  "children"
+> &
   UIBaseProps & {
     children: JSX.Element;
     open?: boolean;
@@ -156,12 +173,18 @@ export type DialogRootProps = Omit<JSX.HTMLAttributes<HTMLDivElement>, "children
     scrollBehavior?: DialogScrollBehavior;
   };
 
-export type DialogTriggerProps = Omit<JSX.ButtonHTMLAttributes<HTMLButtonElement>, "children"> &
+export type DialogTriggerProps = Omit<
+  JSX.ButtonHTMLAttributes<HTMLButtonElement>,
+  "children"
+> &
   UIBaseProps & {
     children: JSX.Element;
   };
 
-export type DialogBackdropProps = Omit<JSX.HTMLAttributes<HTMLDivElement>, "children"> &
+export type DialogBackdropProps = Omit<
+  JSX.HTMLAttributes<HTMLDivElement>,
+  "children"
+> &
   UIBaseProps & {
     children: JSX.Element;
     variant?: DialogBackdropVariant;
@@ -169,7 +192,10 @@ export type DialogBackdropProps = Omit<JSX.HTMLAttributes<HTMLDivElement>, "chil
     shouldCloseOnBackdropClick?: boolean;
   };
 
-export type DialogContentProps = Omit<JSX.HTMLAttributes<HTMLDivElement>, "children"> &
+export type DialogContentProps = Omit<
+  JSX.HTMLAttributes<HTMLDivElement>,
+  "children"
+> &
   UIBaseProps & {
     children: JSX.Element;
     placement?: DialogPlacement;
@@ -188,32 +214,50 @@ export type DialogContentProps = Omit<JSX.HTMLAttributes<HTMLDivElement>, "child
     material?: Material;
   };
 
-export type DialogHeaderProps = Omit<JSX.HTMLAttributes<HTMLDivElement>, "children"> &
+export type DialogHeaderProps = Omit<
+  JSX.HTMLAttributes<HTMLDivElement>,
+  "children"
+> &
   UIBaseProps & {
     children: JSX.Element;
   };
 
-export type DialogHeadingProps = Omit<JSX.HTMLAttributes<HTMLHeadingElement>, "children"> &
+export type DialogHeadingProps = Omit<
+  JSX.HTMLAttributes<HTMLHeadingElement>,
+  "children"
+> &
   UIBaseProps & {
     children: JSX.Element;
   };
 
-export type DialogBodyProps = Omit<JSX.HTMLAttributes<HTMLDivElement>, "children"> &
+export type DialogBodyProps = Omit<
+  JSX.HTMLAttributes<HTMLDivElement>,
+  "children"
+> &
   UIBaseProps & {
     children: JSX.Element;
   };
 
-export type DialogFooterProps = Omit<JSX.HTMLAttributes<HTMLDivElement>, "children"> &
+export type DialogFooterProps = Omit<
+  JSX.HTMLAttributes<HTMLDivElement>,
+  "children"
+> &
   UIBaseProps & {
     children: JSX.Element;
   };
 
-export type DialogIconProps = Omit<JSX.HTMLAttributes<HTMLDivElement>, "children"> &
+export type DialogIconProps = Omit<
+  JSX.HTMLAttributes<HTMLDivElement>,
+  "children"
+> &
   UIBaseProps & {
     children: JSX.Element;
   };
 
-export type DialogCloseTriggerProps = Omit<JSX.ButtonHTMLAttributes<HTMLButtonElement>, "children"> &
+export type DialogCloseTriggerProps = Omit<
+  JSX.ButtonHTMLAttributes<HTMLButtonElement>,
+  "children"
+> &
   UIBaseProps & {
     children?: JSX.Element;
   };
@@ -238,13 +282,21 @@ const DialogRoot: Layout<typeof componentRecipe, DialogRootProps> = () => {
     "scrollBehavior",
   );
 
-  const [internalOpen, setInternalOpen] = createSignal(Boolean(props.defaultOpen));
-  const [animState, setAnimState] = createSignal<DialogAnimState>(
-    props.open ?? props.defaultOpen ? "open" : "closed",
+  const [internalOpen, setInternalOpen] = createSignal(
+    Boolean(props.defaultOpen),
   );
-  const [contentRef, setContentRef] = createSignal<HTMLDivElement | undefined>(undefined);
-  const [labelledBy, setLabelledBy] = createSignal<string | undefined>(undefined);
-  const [describedBy, setDescribedBy] = createSignal<string | undefined>(undefined);
+  const [animState, setAnimState] = createSignal<DialogAnimState>(
+    (props.open ?? props.defaultOpen) ? "open" : "closed",
+  );
+  const [contentRef, setContentRef] = createSignal<HTMLDivElement | undefined>(
+    undefined,
+  );
+  const [labelledBy, setLabelledBy] = createSignal<string | undefined>(
+    undefined,
+  );
+  const [describedBy, setDescribedBy] = createSignal<string | undefined>(
+    undefined,
+  );
 
   const isControlled = () => props.open !== undefined;
   const isOpen = () => (isControlled() ? Boolean(props.open) : internalOpen());
@@ -367,7 +419,8 @@ const DialogRoot: Layout<typeof componentRecipe, DialogRootProps> = () => {
     animState,
     isDismissable: () => props.isDismissable !== false,
     shouldCloseOnEsc: () => props.shouldCloseOnEsc !== false,
-    shouldCloseOnBackdropClick: () => props.shouldCloseOnBackdropClick !== false,
+    shouldCloseOnBackdropClick: () =>
+      props.shouldCloseOnBackdropClick !== false,
     placement: () => props.placement ?? "auto",
     size: () => props.size ?? "md",
     backdrop: () => props.backdrop ?? "opaque",
@@ -389,11 +442,13 @@ const DialogRoot: Layout<typeof componentRecipe, DialogRootProps> = () => {
             props.ref(node);
           }
         }}
-        {...{ class: twMerge(
-          CLASSES.Root.base,
-          isVisibleState(animState()) && CLASSES.Root.flag.open,
-          props.class,
-        ) }}
+        {...{
+          class: twMerge(
+            CLASSES.Root.base,
+            isVisibleState(animState()) && CLASSES.Root.flag.open,
+            props.class,
+          ),
+        }}
         data-slot="dialog-root"
         data-open={isVisibleState(animState()) ? "true" : "false"}
         data-theme={props.dataTheme}
@@ -405,12 +460,25 @@ const DialogRoot: Layout<typeof componentRecipe, DialogRootProps> = () => {
   );
 };
 
-const DialogTrigger: Layout<typeof componentRecipe, DialogTriggerProps> = () => {
-  const others = omit(props, "children", "class", "dataTheme", "style", "type", "onClick");
+const DialogTrigger: Layout<
+  typeof componentRecipe,
+  DialogTriggerProps
+> = () => {
+  const others = omit(
+    props,
+    "children",
+    "class",
+    "dataTheme",
+    "style",
+    "type",
+    "onClick",
+  );
 
   const context = useModalContext();
 
-  const handleClick: JSX.EventHandlerUnion<HTMLButtonElement, MouseEvent> = (event) => {
+  const handleClick: JSX.EventHandlerUnion<HTMLButtonElement, MouseEvent> = (
+    event,
+  ) => {
     context.setIsOpen(true);
     if (typeof props.onClick === "function") {
       props.onClick(event);
@@ -432,7 +500,10 @@ const DialogTrigger: Layout<typeof componentRecipe, DialogTriggerProps> = () => 
   );
 };
 
-const DialogBackdrop: Layout<typeof componentRecipe, DialogBackdropProps> = () => {
+const DialogBackdrop: Layout<
+  typeof componentRecipe,
+  DialogBackdropProps
+> = () => {
   const others = omit(
     props,
     "children",
@@ -453,7 +524,9 @@ const DialogBackdrop: Layout<typeof componentRecipe, DialogBackdropProps> = () =
   const isEntering = () => context.animState() === "entering";
   const isExiting = () => context.animState() === "exiting";
 
-  const handleClick: JSX.EventHandlerUnion<HTMLDivElement, MouseEvent> = (event) => {
+  const handleClick: JSX.EventHandlerUnion<HTMLDivElement, MouseEvent> = (
+    event,
+  ) => {
     if (
       dismissable() &&
       shouldCloseOnBackdropClick() &&
@@ -470,13 +543,15 @@ const DialogBackdrop: Layout<typeof componentRecipe, DialogBackdropProps> = () =
   return (
     <div
       {...others}
-      {...{ class: twMerge(
-        CLASSES.Backdrop.base,
-        CLASSES.Backdrop.variant[variant()],
-        isEntering() && CLASSES.Backdrop.state.entering,
-        isExiting() && CLASSES.Backdrop.state.exiting,
-        props.class,
-      ) }}
+      {...{
+        class: twMerge(
+          CLASSES.Backdrop.base,
+          CLASSES.Backdrop.variant[variant()],
+          isEntering() && CLASSES.Backdrop.state.entering,
+          isExiting() && CLASSES.Backdrop.state.exiting,
+          props.class,
+        ),
+      }}
       data-slot="dialog-backdrop"
       data-entering={isEntering() ? "true" : undefined}
       data-exiting={isExiting() ? "true" : undefined}
@@ -489,7 +564,10 @@ const DialogBackdrop: Layout<typeof componentRecipe, DialogBackdropProps> = () =
   );
 };
 
-const DialogContent: Layout<typeof componentRecipe, DialogContentProps> = () => {
+const DialogContent: Layout<
+  typeof componentRecipe,
+  DialogContentProps
+> = () => {
   const others = omit(
     props,
     "children",
@@ -533,14 +611,16 @@ const DialogContent: Layout<typeof componentRecipe, DialogContentProps> = () => 
           dataTheme={props.dataTheme}
         >
           <div
-            {...{ class: twMerge(
-              CLASSES.Container.base,
-              CLASSES.Container.placement[placement()],
-              CLASSES.Container.scroll[scrollBehavior()],
-              containerSizeClass(),
-              isEntering() && CLASSES.Container.state.entering,
-              isExiting() && CLASSES.Container.state.exiting,
-            ) }}
+            {...{
+              class: twMerge(
+                CLASSES.Container.base,
+                CLASSES.Container.placement[placement()],
+                CLASSES.Container.scroll[scrollBehavior()],
+                containerSizeClass(),
+                isEntering() && CLASSES.Container.state.entering,
+                isExiting() && CLASSES.Container.state.exiting,
+              ),
+            }}
             data-slot="dialog-container"
             data-placement={placement()}
             data-entering={isEntering() ? "true" : undefined}
@@ -557,19 +637,23 @@ const DialogContent: Layout<typeof componentRecipe, DialogContentProps> = () => 
               role={props.role ?? "dialog"}
               aria-modal="true"
               aria-labelledby={local["aria-labelledby"] ?? context.labelledBy()}
-              aria-describedby={local["aria-describedby"] ?? context.describedBy()}
+              aria-describedby={
+                local["aria-describedby"] ?? context.describedBy()
+              }
               tabindex={props.tabindex ?? -1}
-              {...{ class: twMerge(
-                CLASSES.Content.base,
-                CLASSES.Content.scroll[scrollBehavior()],
-                CLASSES.Content.size[size()],
-                isEntering() && CLASSES.Content.state.entering,
-                isExiting() && CLASSES.Content.state.exiting,
-                props.class,
-              ) }}
+              {...{
+                class: twMerge(
+                  CLASSES.Content.base,
+                  CLASSES.Content.scroll[scrollBehavior()],
+                  CLASSES.Content.size[size()],
+                  isEntering() && CLASSES.Content.state.entering,
+                  isExiting() && CLASSES.Content.state.exiting,
+                  props.class,
+                ),
+              }}
               data-slot="dialog-content"
               data-material={props.material ?? "solid"}
-      data-material-explicit={props.material ? "" : undefined}
+              data-material-explicit={props.material ? "" : undefined}
               data-placement={placement()}
               data-size={size()}
               data-scroll={scrollBehavior()}
@@ -603,7 +687,10 @@ const DialogHeader: Layout<typeof componentRecipe, DialogHeaderProps> = () => {
   );
 };
 
-const DialogHeading: Layout<typeof componentRecipe, DialogHeadingProps> = () => {
+const DialogHeading: Layout<
+  typeof componentRecipe,
+  DialogHeadingProps
+> = () => {
   const others = omit(props, "children", "class", "dataTheme", "style", "id");
 
   const context = useModalContext();
@@ -611,7 +698,9 @@ const DialogHeading: Layout<typeof componentRecipe, DialogHeadingProps> = () => 
   // `props.id` is `string | false | undefined` in 2.0, where `false` means
   // "remove the attribute". Only a real string can name an element for
   // `aria-labelledby`, so a `false` falls through to the generated id.
-  const headingId = () => (typeof props.id === "string" ? props.id : undefined) ?? `dialog-heading-${uniqueId}`;
+  const headingId = () =>
+    (typeof props.id === "string" ? props.id : undefined) ??
+    `dialog-heading-${uniqueId}`;
 
   createTrackedEffect(() => {
     const id = headingId();
@@ -659,7 +748,9 @@ const DialogBody: Layout<typeof componentRecipe, DialogBodyProps> = () => {
 
   const context = useModalContext();
   const uniqueId = createUniqueId();
-  const bodyId = () => (typeof props.id === "string" ? props.id : undefined) ?? `dialog-body-${uniqueId}`;
+  const bodyId = () =>
+    (typeof props.id === "string" ? props.id : undefined) ??
+    `dialog-body-${uniqueId}`;
 
   createTrackedEffect(() => {
     const id = bodyId();
@@ -676,11 +767,13 @@ const DialogBody: Layout<typeof componentRecipe, DialogBodyProps> = () => {
     <div
       {...others}
       id={bodyId()}
-      {...{ class: twMerge(
-        CLASSES.Body.base,
-        CLASSES.Body.scroll[context.scrollBehavior()],
-        props.class,
-      ) }}
+      {...{
+        class: twMerge(
+          CLASSES.Body.base,
+          CLASSES.Body.scroll[context.scrollBehavior()],
+          props.class,
+        ),
+      }}
       data-slot="dialog-body"
       data-scroll={context.scrollBehavior()}
       data-theme={props.dataTheme}
@@ -707,7 +800,10 @@ const DialogFooter: Layout<typeof componentRecipe, DialogFooterProps> = () => {
   );
 };
 
-const DialogCloseTrigger: Layout<typeof componentRecipe, DialogCloseTriggerProps> = () => {
+const DialogCloseTrigger: Layout<
+  typeof componentRecipe,
+  DialogCloseTriggerProps
+> = () => {
   const others = omit(
     props,
     "children",
@@ -721,7 +817,9 @@ const DialogCloseTrigger: Layout<typeof componentRecipe, DialogCloseTriggerProps
 
   const context = useModalContext();
 
-  const handleClick: JSX.EventHandlerUnion<HTMLButtonElement, MouseEvent> = (event) => {
+  const handleClick: JSX.EventHandlerUnion<HTMLButtonElement, MouseEvent> = (
+    event,
+  ) => {
     context.setIsOpen(false);
     if (typeof props.onClick === "function") {
       props.onClick(event);
@@ -790,16 +888,16 @@ const Dialog = Object.assign(DialogRoot, {
 export type DialogProps = DialogRootProps;
 export type DialogPanelProps = DialogContentProps;
 export {
-  DialogRoot,
-  DialogTrigger,
   DialogBackdrop,
+  DialogBody,
+  DialogCloseTrigger,
   DialogContent,
+  DialogFooter,
   DialogHeader,
   DialogHeading,
   DialogIcon,
-  DialogBody,
-  DialogFooter,
-  DialogCloseTrigger,
+  DialogRoot,
+  DialogTrigger,
 };
 
 export default Dialog;

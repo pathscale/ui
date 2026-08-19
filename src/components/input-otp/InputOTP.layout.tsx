@@ -1,13 +1,24 @@
 import "./InputOTP.css";
 import type { JSX } from "@solidjs/web";
-import {For, Show, createContext, createMemo, createSignal, createTrackedEffect, onSettled, omit, useContext, type Accessor, type Component, type ParentComponent} from "solid-js";
-import { twMerge } from "../../lib/twMerge";
-
-import type { UIBaseProps, State, Issue } from "../vocabulary";
-import { CLASSES } from "./InputOTP.recipe";
+import {
+  type Accessor,
+  type Component,
+  createContext,
+  createMemo,
+  createSignal,
+  createTrackedEffect,
+  For,
+  omit,
+  onSettled,
+  type ParentComponent,
+  Show,
+  useContext,
+} from "solid-js";
 import type { Layout } from "../../lib/layouts";
-import { componentRecipe } from "./InputOTP.recipe";
+import { twMerge } from "../../lib/twMerge";
+import type { Issue, State, UIBaseProps } from "../vocabulary";
 import { resolveState } from "../vocabulary";
+import { CLASSES, type componentRecipe } from "./InputOTP.recipe";
 
 export type InputOTPVariant = "primary" | "secondary";
 
@@ -43,7 +54,8 @@ type InputOTPContextValue = {
  */
 const InputOTPContext = createContext<InputOTPContextValue | null>(null);
 
-const clamp = (value: number, min: number, max: number) => Math.min(max, Math.max(min, value));
+const clamp = (value: number, min: number, max: number) =>
+  Math.min(max, Math.max(min, value));
 
 const invokeEventHandler = <T extends Event>(handler: unknown, event: T) => {
   if (typeof handler === "function") {
@@ -78,17 +90,26 @@ export type InputOTPRootProps = Omit<
     inputmode?: JSX.InputHTMLAttributes<HTMLInputElement>["inputmode"];
   };
 
-export type InputOTPGroupProps = Omit<JSX.HTMLAttributes<HTMLDivElement>, "children"> &
+export type InputOTPGroupProps = Omit<
+  JSX.HTMLAttributes<HTMLDivElement>,
+  "children"
+> &
   UIBaseProps & {
     children?: JSX.Element;
   };
 
-export type InputOTPSlotProps = Omit<JSX.HTMLAttributes<HTMLDivElement>, "children"> &
+export type InputOTPSlotProps = Omit<
+  JSX.HTMLAttributes<HTMLDivElement>,
+  "children"
+> &
   UIBaseProps & {
     index: number;
   };
 
-export type InputOTPSeparatorProps = Omit<JSX.HTMLAttributes<HTMLDivElement>, "children"> &
+export type InputOTPSeparatorProps = Omit<
+  JSX.HTMLAttributes<HTMLDivElement>,
+  "children"
+> &
   UIBaseProps & {
     children?: JSX.Element;
   };
@@ -123,7 +144,9 @@ const InputOTPRoot: Layout<typeof componentRecipe, InputOTPRootProps> = () => {
   let inputRef: HTMLInputElement | undefined;
   let rootRef: HTMLDivElement | undefined;
 
-  const [internalValue, setInternalValue] = createSignal(props.defaultValue ?? "");
+  const [internalValue, setInternalValue] = createSignal(
+    props.defaultValue ?? "",
+  );
   const [activeIndex, setActiveIndexSignal] = createSignal(0);
   const [isFocused, setIsFocused] = createSignal(false);
 
@@ -162,21 +185,29 @@ const InputOTPRoot: Layout<typeof componentRecipe, InputOTPRootProps> = () => {
     return result.join("");
   };
 
-  const normalizedControlledValue = createMemo(() => sanitizeValue(props.value ?? ""));
+  const normalizedControlledValue = createMemo(() =>
+    sanitizeValue(props.value ?? ""),
+  );
 
   const value = createMemo(() =>
-    props.value !== undefined ? normalizedControlledValue() : sanitizeValue(internalValue()),
+    props.value !== undefined
+      ? normalizedControlledValue()
+      : sanitizeValue(internalValue()),
   );
 
   const chars = createMemo(() => {
     const current = value();
-    return Array.from({ length: maxLength() }, (_, index) => current[index] ?? "");
+    return Array.from(
+      { length: maxLength() },
+      (_, index) => current[index] ?? "",
+    );
   });
 
   const variant = () => props.variant ?? "primary";
-  const isDisabled = () => Boolean((props.state === "disabled")) || Boolean(props.disabled);
+  const isDisabled = () =>
+    Boolean(props.state === "disabled") || Boolean(props.disabled);
   const isInvalid = () =>
-    Boolean((resolveState(props.state, props.issues) === "invalid")) ||
+    Boolean(resolveState(props.state, props.issues) === "invalid") ||
     Boolean(local["aria-invalid"]) ||
     local["aria-invalid"] === "true";
 
@@ -236,7 +267,10 @@ const InputOTPRoot: Layout<typeof componentRecipe, InputOTPRootProps> = () => {
     setActiveIndexSignal(resolveActiveSlot(bounded));
   };
 
-  const handleRootMouseDown: JSX.EventHandlerUnion<HTMLDivElement, MouseEvent> = (event) => {
+  const handleRootMouseDown: JSX.EventHandlerUnion<
+    HTMLDivElement,
+    MouseEvent
+  > = (event) => {
     invokeEventHandler(props.onMouseDown, event);
     if (event.defaultPrevented || isDisabled()) return;
 
@@ -247,7 +281,9 @@ const InputOTPRoot: Layout<typeof componentRecipe, InputOTPRootProps> = () => {
     focusInputAt(value().length);
   };
 
-  const handleFocusOut: JSX.EventHandlerUnion<HTMLDivElement, FocusEvent> = (event) => {
+  const handleFocusOut: JSX.EventHandlerUnion<HTMLDivElement, FocusEvent> = (
+    event,
+  ) => {
     invokeEventHandler(props.onFocusOut, event);
     if (event.defaultPrevented) return;
 
@@ -257,14 +293,19 @@ const InputOTPRoot: Layout<typeof componentRecipe, InputOTPRootProps> = () => {
     setIsFocused(false);
   };
 
-  const handleInput: JSX.EventHandlerUnion<HTMLInputElement, InputEvent> = (event) => {
+  const handleInput: JSX.EventHandlerUnion<HTMLInputElement, InputEvent> = (
+    event,
+  ) => {
     if (isDisabled()) return;
 
     setValue(event.currentTarget.value);
     queueMicrotask(syncActiveFromInputCaret);
   };
 
-  const handleKeyDown: JSX.EventHandlerUnion<HTMLInputElement, KeyboardEvent> = (event) => {
+  const handleKeyDown: JSX.EventHandlerUnion<
+    HTMLInputElement,
+    KeyboardEvent
+  > = (event) => {
     if (event.defaultPrevented || isDisabled()) return;
 
     if (
@@ -320,7 +361,8 @@ const InputOTPRoot: Layout<typeof componentRecipe, InputOTPRootProps> = () => {
         isInvalid,
         isFocused,
         activeIndex,
-        setActiveIndex: (index) => setActiveIndexSignal(resolveActiveSlot(index)),
+        setActiveIndex: (index) =>
+          setActiveIndexSignal(resolveActiveSlot(index)),
         focusInputAt,
       }}
     >
@@ -332,11 +374,13 @@ const InputOTPRoot: Layout<typeof componentRecipe, InputOTPRootProps> = () => {
             props.ref(node);
           }
         }}
-        {...{ class: twMerge(
-          CLASSES.Root.base,
-          CLASSES.Root.variant[variant()],
-          props.class,
-        ) }}
+        {...{
+          class: twMerge(
+            CLASSES.Root.base,
+            CLASSES.Root.variant[variant()],
+            props.class,
+          ),
+        }}
         data-slot="input-otp"
         data-disabled={isDisabled() ? "true" : undefined}
         data-invalid={isInvalid() ? "true" : undefined}
@@ -370,7 +414,9 @@ const InputOTPRoot: Layout<typeof componentRecipe, InputOTPRootProps> = () => {
 
         {props.children ?? (
           <InputOTPGroup>
-            <For each={Array.from({ length: maxLength() }, (_, index) => index)}>
+            <For
+              each={Array.from({ length: maxLength() }, (_, index) => index)}
+            >
               {(index) => <InputOTPSlot index={index} />}
             </For>
           </InputOTPGroup>
@@ -380,7 +426,10 @@ const InputOTPRoot: Layout<typeof componentRecipe, InputOTPRootProps> = () => {
   );
 };
 
-const InputOTPGroup: Layout<typeof componentRecipe, InputOTPGroupProps> = () => {
+const InputOTPGroup: Layout<
+  typeof componentRecipe,
+  InputOTPGroupProps
+> = () => {
   const others = omit(props, "children", "class", "dataTheme", "style");
 
   return (
@@ -399,15 +448,24 @@ const InputOTPGroup: Layout<typeof componentRecipe, InputOTPGroupProps> = () => 
 const InputOTPSlot: Layout<typeof componentRecipe, InputOTPSlotProps> = () => {
   const context = useContext(InputOTPContext);
 
-  const others = omit(props, "index", "class", "dataTheme", "style", "onMouseDown");
+  const others = omit(
+    props,
+    "index",
+    "class",
+    "dataTheme",
+    "style",
+    "onMouseDown",
+  );
 
   const char = () => context?.chars()[props.index] ?? "";
   const isActive = () =>
     Boolean(context?.isFocused()) &&
-    !Boolean(context?.isDisabled()) &&
+    !context?.isDisabled() &&
     (context?.activeIndex() ?? 0) === props.index;
 
-  const handleMouseDown: JSX.EventHandlerUnion<HTMLDivElement, MouseEvent> = (event) => {
+  const handleMouseDown: JSX.EventHandlerUnion<HTMLDivElement, MouseEvent> = (
+    event,
+  ) => {
     invokeEventHandler(props.onMouseDown, event);
     if (event.defaultPrevented || context?.isDisabled()) return;
 
@@ -430,18 +488,27 @@ const InputOTPSlot: Layout<typeof componentRecipe, InputOTPSlotProps> = () => {
       onMouseDown={handleMouseDown}
     >
       <Show when={char().length > 0}>
-        <div {...{ class: CLASSES.Slot.value }} data-slot="input-otp-slot-value">
+        <div
+          {...{ class: CLASSES.Slot.value }}
+          data-slot="input-otp-slot-value"
+        >
           {char()}
         </div>
       </Show>
       <Show when={isActive() && char().length === 0}>
-        <div {...{ class: CLASSES.Slot.caret }} data-slot="input-otp-caret" />
+        <div
+          {...{ class: CLASSES.Slot.caret }}
+          data-slot="input-otp-caret"
+        />
       </Show>
     </div>
   );
 };
 
-const InputOTPSeparator: Layout<typeof componentRecipe, InputOTPSeparatorProps> = () => {
+const InputOTPSeparator: Layout<
+  typeof componentRecipe,
+  InputOTPSeparatorProps
+> = () => {
   const others = omit(props, "children", "class", "dataTheme", "style");
 
   return (
@@ -465,11 +532,11 @@ const InputOTP = Object.assign(InputOTPRoot, {
 });
 
 export default InputOTP;
+export type { InputOTPRootProps as InputOTPProps };
 export {
   InputOTP,
-  InputOTPRoot,
   InputOTPGroup,
-  InputOTPSlot,
+  InputOTPRoot,
   InputOTPSeparator,
+  InputOTPSlot,
 };
-export type { InputOTPRootProps as InputOTPProps };

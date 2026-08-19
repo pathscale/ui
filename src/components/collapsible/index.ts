@@ -1,12 +1,12 @@
 import type { ComponentProps } from "solid-js";
 
 import Collapsible, {
-  CollapsibleRoot,
-  CollapsibleHeading,
-  CollapsibleTrigger,
-  CollapsibleContent,
   CollapsibleBody,
+  CollapsibleContent,
+  CollapsibleHeading,
   CollapsibleIndicator,
+  CollapsibleRoot,
+  CollapsibleTrigger,
 } from "./Collapsible.generated";
 
 export type CollapsibleProps = ComponentProps<typeof CollapsibleRoot>;
@@ -15,15 +15,17 @@ export type CollapsibleHeadingProps = ComponentProps<typeof CollapsibleHeading>;
 export type CollapsibleTriggerProps = ComponentProps<typeof CollapsibleTrigger>;
 export type CollapsibleContentProps = ComponentProps<typeof CollapsibleContent>;
 export type CollapsibleBodyProps = ComponentProps<typeof CollapsibleBody>;
-export type CollapsibleIndicatorProps = ComponentProps<typeof CollapsibleIndicator>;
+export type CollapsibleIndicatorProps = ComponentProps<
+  typeof CollapsibleIndicator
+>;
 
 export {
-  CollapsibleRoot,
-  CollapsibleHeading,
-  CollapsibleTrigger,
-  CollapsibleContent,
   CollapsibleBody,
+  CollapsibleContent,
+  CollapsibleHeading,
   CollapsibleIndicator,
+  CollapsibleRoot,
+  CollapsibleTrigger,
 };
 
 export default Collapsible;

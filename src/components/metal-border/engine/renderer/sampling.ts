@@ -10,8 +10,8 @@
 import {
   CANONICAL_PILL_H,
   CANONICAL_PILL_W,
-  SHARED,
   type MetalFxInstance,
+  SHARED,
   type ShaderRGB,
 } from "./core";
 
@@ -98,7 +98,8 @@ function sampleRegion(
       _sr.r += buf[i];
       _sr.g += buf[i + 1];
       _sr.b += buf[i + 2];
-      _sr.lum += (0.2126 * buf[i] + 0.7152 * buf[i + 1] + 0.0722 * buf[i + 2]) / 255;
+      _sr.lum +=
+        (0.2126 * buf[i] + 0.7152 * buf[i + 1] + 0.0722 * buf[i + 2]) / 255;
       _sr.count++;
     }
   }

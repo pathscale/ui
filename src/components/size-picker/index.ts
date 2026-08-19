@@ -1,8 +1,8 @@
-export { default as SizePicker } from "./SizePicker.generated";
 export type { SizePickerProps } from "./SizePicker.generated";
+export { default as SizePicker } from "./SizePicker.generated";
 export {
   createSizeStore,
   getDefaultSizeStore,
-  type SizeStore,
   type SizePreset,
+  type SizeStore,
 } from "./sizeStore";

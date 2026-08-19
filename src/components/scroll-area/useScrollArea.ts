@@ -1,4 +1,4 @@
-import {createTrackedEffect, type Accessor} from "solid-js";
+import { type Accessor, createTrackedEffect } from "solid-js";
 import type {
   ScrollAreaOrientation,
   ScrollAreaVisibility,
@@ -181,4 +181,3 @@ export const useScrollArea = (props: UseScrollAreaProps): void => {
     };
   });
 };
-

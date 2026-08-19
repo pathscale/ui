@@ -54,11 +54,6 @@
     height: 0.75rem;
   }
 
-
-
-
-
-
   .meter--disabled,
   .meter[aria-disabled="true"],
   .meter[data-disabled="true"] {

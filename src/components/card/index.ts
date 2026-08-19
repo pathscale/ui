@@ -1,8 +1,8 @@
 import {
-  CardLayout,
-  CardHeaderLayout,
   CardBodyLayout,
   CardFooterLayout,
+  CardHeaderLayout,
+  CardLayout,
 } from "./Card.generated";
 
 /**
@@ -18,6 +18,17 @@ const Card = Object.assign(CardLayout, {
   Footer: CardFooterLayout,
 });
 
-export { Card as default, Card, CardHeaderLayout as CardHeader, CardBodyLayout as CardBody, CardFooterLayout as CardFooter };
-export type { CardProps, CardSectionProps, CardMaterial, CardElevation } from "./Card.generated";
-export { card, cardHeader, cardBody, cardFooter } from "./Card.recipe";
+export type {
+  CardElevation,
+  CardMaterial,
+  CardProps,
+  CardSectionProps,
+} from "./Card.generated";
+export { card, cardBody, cardFooter, cardHeader } from "./Card.recipe";
+export {
+  Card as default,
+  Card,
+  CardBodyLayout as CardBody,
+  CardFooterLayout as CardFooter,
+  CardHeaderLayout as CardHeader,
+};

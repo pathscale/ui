@@ -13,7 +13,11 @@
     line-height: 1.25rem;
     background-color: var(--color-overlay, var(--color-base-100));
     color: var(--color-overlay-foreground, var(--color-base-content));
-    box-shadow: var(--shadow-overlay, 0 24px 48px color-mix(in oklab, rgb(var(--shadow-color, 0 0 0)) 20%, transparent));
+    box-shadow: var(
+      --shadow-overlay,
+      0 24px 48px
+        color-mix(in oklab, rgb(var(--shadow-color, 0 0 0)) 20%, transparent)
+    );
     opacity: 0;
     pointer-events: none;
     transform: translateY(-4px) scale(0.96);

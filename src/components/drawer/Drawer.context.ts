@@ -51,7 +51,9 @@ export const DrawerContext = createContext<DrawerContextValue | null>(null);
 export const useDrawerContext = () => {
   const ctx = useContext(DrawerContext);
   if (!ctx) {
-    throw new Error("Drawer compound components must be used within <Drawer.Root>.");
+    throw new Error(
+      "Drawer compound components must be used within <Drawer.Root>.",
+    );
   }
 
   return ctx;

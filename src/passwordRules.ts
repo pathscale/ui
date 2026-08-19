@@ -78,6 +78,9 @@ export const evaluatePasswordRules = (
   return results;
 };
 
-export const matchPasswordConfirmation = (password: string, confirm: string): boolean => {
+export const matchPasswordConfirmation = (
+  password: string,
+  confirm: string,
+): boolean => {
   return password === confirm;
 };

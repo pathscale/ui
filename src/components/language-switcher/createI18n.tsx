@@ -1,5 +1,10 @@
-import {createSignal, createContext, useContext, type FlowComponent} from "solid-js";
 import type { JSX } from "@solidjs/web";
+import {
+  createContext,
+  createSignal,
+  type FlowComponent,
+  useContext,
+} from "solid-js";
 
 export interface Language {
   code: string;
@@ -114,18 +119,20 @@ export function createI18n(options: I18nOptions): I18nStore {
   const supportedCodes = languages.map((l) => l.code);
   const languageNames = languages.reduce(
     (acc, lang) => ({ ...acc, [lang.code]: lang.name }),
-    {} as Record<string, string>
+    {} as Record<string, string>,
   );
 
   const [localeSignal, setLocaleSignal] = createSignal<string>(defaultLanguage);
-  const [translations, setTranslations] = createSignal<Record<string, unknown>>(initialTranslations);
+  const [translations, setTranslations] =
+    createSignal<Record<string, unknown>>(initialTranslations);
   const [isLoadingSignal, setIsLoading] = createSignal(false);
 
   const t = (key: string): string => getNestedValue(translations(), key);
 
   const setLocale = async (lang: string): Promise<void> => {
     if (!supportedCodes.includes(lang)) lang = defaultLanguage;
-    if (lang === localeSignal() && Object.keys(translations()).length > 0) return;
+    if (lang === localeSignal() && Object.keys(translations()).length > 0)
+      return;
 
     setIsLoading(true);
 
@@ -135,7 +142,10 @@ export function createI18n(options: I18nOptions): I18nStore {
 
       await minDelay;
 
-      if (lang === defaultLanguage && Object.keys(initialTranslations).length > 0) {
+      if (
+        lang === defaultLanguage &&
+        Object.keys(initialTranslations).length > 0
+      ) {
         data = initialTranslations;
       } else if (loadTranslations) {
         data = await loadTranslations(lang);
@@ -185,8 +195,12 @@ export function createI18n(options: I18nOptions): I18nStore {
 
   // Return object with getters for reactive properties (matches the i18nStore API)
   return {
-    get locale() { return localeSignal(); },
-    get isLoading() { return isLoadingSignal(); },
+    get locale() {
+      return localeSignal();
+    },
+    get isLoading() {
+      return isLoadingSignal();
+    },
     t,
     setLocale,
     init,
@@ -221,8 +235,6 @@ export interface I18nProviderProps {
  */
 export const I18nProvider: FlowComponent<I18nProviderProps> = (props) => {
   return (
-    <I18nContext value={{ i18n: props.i18n }}>
-      {props.children}
-    </I18nContext>
+    <I18nContext value={{ i18n: props.i18n }}>{props.children}</I18nContext>
   );
 };

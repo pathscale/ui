@@ -1,10 +1,10 @@
 import "./AuthMessage.css";
 import type { JSX } from "@solidjs/web";
-import {Show} from "solid-js";
+import { Show } from "solid-js";
+import type { Layout } from "../../lib/layouts";
 import Alert from "../alert";
 import type { Flavor, UIBaseProps } from "../vocabulary";
-import type { Layout } from "../../lib/layouts";
-import { authMessage } from "./AuthMessage.recipe";
+import type { authMessage } from "./AuthMessage.recipe";
 
 /* -------------------------------------------------------------------------------------------------
  * Types
@@ -22,9 +22,15 @@ export type AuthMessageProps = UIBaseProps & {
  * the right ARIA role from the state, so danger and warning interrupt while
  * success and info do not.
  * -----------------------------------------------------------------------------------------------*/
-export const AuthMessageLayout: Layout<typeof authMessage, AuthMessageProps> = () => (
+export const AuthMessageLayout: Layout<
+  typeof authMessage,
+  AuthMessageProps
+> = () => (
   <Show when={local.message != null && local.message !== ""}>
-    <Alert {...slot.root} flavor={local.flavor ?? "destructive"}>
+    <Alert
+      {...slot.root}
+      flavor={local.flavor ?? "destructive"}
+    >
       {local.message}
     </Alert>
   </Show>

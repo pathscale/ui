@@ -52,6 +52,7 @@
 
   .color-slider:focus-visible,
   .color-slider[data-focus-visible="true"] {
-    box-shadow: 0 0 0 3px color-mix(in oklab, var(--color-accent) 22%, transparent);
+    box-shadow: 0 0 0 3px
+      color-mix(in oklab, var(--color-accent) 22%, transparent);
   }
 }

@@ -1,55 +1,54 @@
-export type {
-  MotionDriver,
-  MotionDriverOptions,
-  MotionEasing,
-  MotionPreset,
-  MotionState,
-  MotionTransition,
-  MotionTokenOverrides,
-  MotionTokens,
-} from "./types";
+export { getMotionDriver, immediateDriver, setMotionDriver } from "./driver";
 export { resolveEase } from "./easing";
-export { getMotionDriver, setMotionDriver, immediateDriver } from "./driver";
 export { runMotion } from "./engine";
-export { prefersReducedMotion } from "./reduced-motion";
 export {
-  defaultMotionTokens,
-  mergeMotionTokens,
-  motionDurations,
-  motionDistances,
-  motionEasings,
-} from "./tokens";
+  createPopmotionDriver,
+  enablePopmotion,
+  type PopmotionAnimate,
+} from "./popmotion";
 export {
-  getPreset,
   createMotionPresets,
+  getPreset,
   motionPresets,
   noMotion,
   registerPreset,
   resolvePreset,
   routeTransition,
 } from "./presets";
-export { MotionDiv, type MotionDivProps } from "./solid";
+export { prefersReducedMotion } from "./reduced-motion";
 export {
-  Presence,
+  createRouteTransitionResolver,
+  type RouteTransitionResolverOptions,
+  type RouteTransitionRule,
+  type RouteTransitionRuleResult,
+} from "./route";
+export {
+  AnimatedCollapse,
+  type AnimatedCollapseProps,
+  computeCollapseStyle,
+  MotionDiv,
+  type MotionDivProps,
+  nextCollapsePhase,
   nextPresenceState,
+  Presence,
   type PresenceProps,
   type PresenceRenderProp,
 } from "./solid";
-export {
-  AnimatedCollapse,
-  nextCollapsePhase,
-  computeCollapseStyle,
-  type AnimatedCollapseProps,
-} from "./solid";
-export {
-  createPopmotionDriver,
-  enablePopmotion,
-  type PopmotionAnimate,
-} from "./popmotion";
 export { createMotionSystem, type MotionSystemConfig } from "./system";
 export {
-  createRouteTransitionResolver,
-  type RouteTransitionRule,
-  type RouteTransitionRuleResult,
-  type RouteTransitionResolverOptions,
-} from "./route";
+  defaultMotionTokens,
+  mergeMotionTokens,
+  motionDistances,
+  motionDurations,
+  motionEasings,
+} from "./tokens";
+export type {
+  MotionDriver,
+  MotionDriverOptions,
+  MotionEasing,
+  MotionPreset,
+  MotionState,
+  MotionTokenOverrides,
+  MotionTokens,
+  MotionTransition,
+} from "./types";

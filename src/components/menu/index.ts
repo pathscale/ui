@@ -1,27 +1,25 @@
 export {
   default,
   Menu,
-  MenuRoot,
   MenuItem,
-  MenuItemRoot,
   MenuItemIndicator,
+  MenuItemRoot,
+  type MenuProps,
+  MenuRoot,
+  type MenuRootProps,
   MenuSection,
   MenuSectionRoot,
-  type MenuProps,
-  type MenuRootProps,
   type MenuSelectionMode,
 } from "./Menu.generated";
-
-export { MenuItemSubmenuIndicator } from "./MenuItem.generated";
-
 export type {
-  MenuItemProps,
-  MenuItemRootProps,
   MenuItemIndicatorProps,
-  MenuItemSubmenuIndicatorProps,
+  MenuItemProps,
   MenuItemRenderProps,
+  MenuItemRootProps,
+  MenuItemSubmenuIndicatorProps,
   MenuItemVariant,
 } from "./MenuItem.generated";
+export { MenuItemSubmenuIndicator } from "./MenuItem.generated";
 
 export type {
   MenuSectionProps,

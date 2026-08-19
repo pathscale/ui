@@ -7,7 +7,11 @@
     position: relative;
     overflow: hidden;
     border-radius: var(--radius-field, 0.25rem);
-    background-color: color-mix(in oklab, var(--color-base-300) 70%, transparent);
+    background-color: color-mix(
+      in oklab,
+      var(--color-base-300) 70%,
+      transparent
+    );
   }
 
   /* -------------------------------------------------------------------------------------------------
@@ -67,7 +71,8 @@
   }
 
   @keyframes skeleton-pulse {
-    0%, 100% {
+    0%,
+    100% {
       opacity: 1;
     }
     50% {
@@ -112,33 +117,84 @@
     width: 100%;
   }
 
-  .skeleton--xs { height: 0.5rem; }
-  .skeleton--sm { height: 0.75rem; }
-  .skeleton--md { height: 1rem; }
-  .skeleton--lg { height: 1.5rem; }
-  .skeleton--xl { height: 2rem; }
+  .skeleton--xs {
+    height: 0.5rem;
+  }
+  .skeleton--sm {
+    height: 0.75rem;
+  }
+  .skeleton--md {
+    height: 1rem;
+  }
+  .skeleton--lg {
+    height: 1.5rem;
+  }
+  .skeleton--xl {
+    height: 2rem;
+  }
 
-  .skeleton--circle.skeleton--xs { width: 1.5rem; height: 1.5rem; }
-  .skeleton--circle.skeleton--sm { width: 2rem; height: 2rem; }
-  .skeleton--circle.skeleton--md { width: 2.5rem; height: 2.5rem; }
-  .skeleton--circle.skeleton--lg { width: 3rem; height: 3rem; }
-  .skeleton--circle.skeleton--xl { width: 4rem; height: 4rem; }
+  .skeleton--circle.skeleton--xs {
+    width: 1.5rem;
+    height: 1.5rem;
+  }
+  .skeleton--circle.skeleton--sm {
+    width: 2rem;
+    height: 2rem;
+  }
+  .skeleton--circle.skeleton--md {
+    width: 2.5rem;
+    height: 2.5rem;
+  }
+  .skeleton--circle.skeleton--lg {
+    width: 3rem;
+    height: 3rem;
+  }
+  .skeleton--circle.skeleton--xl {
+    width: 4rem;
+    height: 4rem;
+  }
 
-  .skeleton--rect.skeleton--xs { height: 4rem; }
-  .skeleton--rect.skeleton--sm { height: 6rem; }
-  .skeleton--rect.skeleton--md { height: 8rem; }
-  .skeleton--rect.skeleton--lg { height: 12rem; }
-  .skeleton--rect.skeleton--xl { height: 16rem; }
+  .skeleton--rect.skeleton--xs {
+    height: 4rem;
+  }
+  .skeleton--rect.skeleton--sm {
+    height: 6rem;
+  }
+  .skeleton--rect.skeleton--md {
+    height: 8rem;
+  }
+  .skeleton--rect.skeleton--lg {
+    height: 12rem;
+  }
+  .skeleton--rect.skeleton--xl {
+    height: 16rem;
+  }
 
-  .skeleton--width-full { width: 100%; }
-  .skeleton--width-fit { width: fit-content; }
-  .skeleton--width-screen { width: 100vw; }
+  .skeleton--width-full {
+    width: 100%;
+  }
+  .skeleton--width-fit {
+    width: fit-content;
+  }
+  .skeleton--width-screen {
+    width: 100vw;
+  }
 
-  .skeleton--radius-none { border-radius: 0; }
-  .skeleton--radius-sm { border-radius: 0.25rem; }
-  .skeleton--radius-md { border-radius: 0.5rem; }
-  .skeleton--radius-lg { border-radius: 0.75rem; }
-  .skeleton--radius-full { border-radius: var(--radius-pill, 9999px); }
+  .skeleton--radius-none {
+    border-radius: 0;
+  }
+  .skeleton--radius-sm {
+    border-radius: 0.25rem;
+  }
+  .skeleton--radius-md {
+    border-radius: 0.5rem;
+  }
+  .skeleton--radius-lg {
+    border-radius: 0.75rem;
+  }
+  .skeleton--radius-full {
+    border-radius: var(--radius-pill, 9999px);
+  }
 
   /* -----------------------------------------------------------------------
    * Multi-line text placeholder
@@ -156,7 +212,11 @@
     height: 1rem;
     width: 100%;
     border-radius: inherit;
-    background-color: color-mix(in oklab, var(--color-base-300) 70%, transparent);
+    background-color: color-mix(
+      in oklab,
+      var(--color-base-300) 70%,
+      transparent
+    );
   }
 
   /* A short last line is what makes a stack read as a paragraph. */

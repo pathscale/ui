@@ -11,4 +11,7 @@ export const CLASSES = {
     tertiary: "separator--tertiary",
   },
 } as const;
-export const componentRecipe = recipe({component:"separator",slots:{"root":{},"separator":{},},});
+export const componentRecipe = recipe({
+  component: "separator",
+  slots: { root: {}, separator: {} },
+});

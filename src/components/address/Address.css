@@ -47,20 +47,36 @@
     color: var(--color-success);
   }
 
-  .address--xs { font-size: 0.75rem; }
-  .address--sm { font-size: 0.8125rem; }
-  .address--md { font-size: 0.875rem; }
-  .address--lg { font-size: 1rem; }
-  .address--xl { font-size: 1.125rem; }
+  .address--xs {
+    font-size: 0.75rem;
+  }
+  .address--sm {
+    font-size: 0.8125rem;
+  }
+  .address--md {
+    font-size: 0.875rem;
+  }
+  .address--lg {
+    font-size: 1rem;
+  }
+  .address--xl {
+    font-size: 1.125rem;
+  }
 
-  .address--loading { opacity: 0.6; }
+  .address--loading {
+    opacity: 0.6;
+  }
   .address--error .address__value,
-  .address--invalid .address__value { color: var(--color-error); }
+  .address--invalid .address__value {
+    color: var(--color-error);
+  }
 
   .address--disabled {
     opacity: 0.5;
     pointer-events: none;
   }
 
-  .address--hidden { display: none; }
+  .address--hidden {
+    display: none;
+  }
 }

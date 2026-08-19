@@ -71,10 +71,6 @@
    * Fallback color modifiers
    * -----------------------------------------------------------------------------------------------*/
 
-
-
-
-
   /* -------------------------------------------------------------------------------------------------
    * Variant: soft
    * -----------------------------------------------------------------------------------------------*/
@@ -88,12 +84,20 @@
   }
 
   .avatar--soft .avatar__fallback--success {
-    background-color: color-mix(in oklab, var(--color-success) 12%, transparent);
+    background-color: color-mix(
+      in oklab,
+      var(--color-success) 12%,
+      transparent
+    );
     color: var(--color-success);
   }
 
   .avatar--soft .avatar__fallback--warning {
-    background-color: color-mix(in oklab, var(--color-warning) 12%, transparent);
+    background-color: color-mix(
+      in oklab,
+      var(--color-warning) 12%,
+      transparent
+    );
     color: var(--color-warning);
   }
 

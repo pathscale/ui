@@ -10,4 +10,7 @@ export const CLASSES = {
     content: "kbd__content",
   },
 } as const;
-export const componentRecipe = recipe({component:"kbd",slots:{"kbd":{},"kbd-abbr":{},"kbd-content":{},"root":{},},});
+export const componentRecipe = recipe({
+  component: "kbd",
+  slots: { kbd: {}, "kbd-abbr": {}, "kbd-content": {}, root: {} },
+});

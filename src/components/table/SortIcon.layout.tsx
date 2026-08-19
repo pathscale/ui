@@ -1,10 +1,10 @@
-import {type Component, Show, omit} from "solid-js";
 import type { JSX } from "@solidjs/web";
+import { type Component, omit, Show } from "solid-js";
+import type { Layout } from "../../lib/layouts";
 import { twMerge } from "../../lib/twMerge";
 import Icon from "../icon";
 import type { UIBaseProps } from "../vocabulary";
-import type { Layout } from "../../lib/layouts";
-import { tableSortIconRecipe } from "./Table.recipe";
+import type { tableSortIconRecipe } from "./Table.recipe";
 
 export type SortIconState = "asc" | "desc" | "none";
 
@@ -43,13 +43,27 @@ const SortIcon: Layout<typeof tableSortIconRecipe, SortIconProps> = () => {
   return (
     <span
       {...rest}
-      {...{ class: twMerge("inline-flex shrink-0 items-center justify-center", props.class) }}
+      {...{
+        class: twMerge(
+          "inline-flex shrink-0 items-center justify-center",
+          props.class,
+        ),
+      }}
       data-theme={props.dataTheme}
       data-slot="table-sort-icon"
       data-state={props.state}
       aria-hidden="true"
     >
-      <Show when={customIcon()} fallback={<Icon src={iconName()} width={iconSize()} height={iconSize()} />}>
+      <Show
+        when={customIcon()}
+        fallback={
+          <Icon
+            src={iconName()}
+            width={iconSize()}
+            height={iconSize()}
+          />
+        }
+      >
         {customIcon()}
       </Show>
     </span>

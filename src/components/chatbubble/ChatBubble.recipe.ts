@@ -23,4 +23,7 @@ export const CLASSES = {
     info: "chatbubble__message--flavor-info",
   },
 } as const;
-export const componentRecipe = recipe({component:"chatbubble",slots:{"root":{},},});
+export const componentRecipe = recipe({
+  component: "chatbubble",
+  slots: { root: {} },
+});

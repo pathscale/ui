@@ -1,12 +1,20 @@
 import "./ColorField.css";
 import type { JSX } from "@solidjs/web";
-import {createSignal, createTrackedEffect, omit, type Component} from "solid-js";
-import { twMerge } from "../../lib/twMerge";
-import { formatColor, parseColor, type ColorFormat } from "../color-wheel-flower/ColorUtils";
-import type { UIBaseProps, State } from "../vocabulary";
-import { CLASSES } from "./ColorField.recipe";
+import {
+  type Component,
+  createSignal,
+  createTrackedEffect,
+  omit,
+} from "solid-js";
 import type { Layout } from "../../lib/layouts";
-import { componentRecipe } from "./ColorField.recipe";
+import { twMerge } from "../../lib/twMerge";
+import {
+  type ColorFormat,
+  formatColor,
+  parseColor,
+} from "../color-wheel-flower/ColorUtils";
+import type { State, UIBaseProps } from "../vocabulary";
+import { CLASSES, type componentRecipe } from "./ColorField.recipe";
 
 const FALLBACK_COLOR = "#FFFFFF";
 
@@ -63,7 +71,8 @@ const ColorField: Layout<typeof componentRecipe, ColorFieldProps> = () => {
   );
 
   const format = () => props.format ?? "hex";
-  const isDisabled = () => Boolean((props.state === "disabled")) || Boolean(props.disabled);
+  const isDisabled = () =>
+    Boolean(props.state === "disabled") || Boolean(props.disabled);
 
   const initialValue = () => {
     const seed = props.value ?? props.defaultValue ?? FALLBACK_COLOR;
@@ -82,14 +91,16 @@ const ColorField: Layout<typeof componentRecipe, ColorFieldProps> = () => {
     if (isFocused()) return;
 
     if (nextValue !== undefined) {
-      const normalized = normalizeColor(nextValue, nextFormat) ?? lastValidValue();
+      const normalized =
+        normalizeColor(nextValue, nextFormat) ?? lastValidValue();
       setInputValue(normalized);
       setLastValidValue(normalized);
       setIsInvalid(false);
       return;
     }
 
-    const normalized = normalizeColor(lastValidValue(), nextFormat) ?? FALLBACK_COLOR;
+    const normalized =
+      normalizeColor(lastValidValue(), nextFormat) ?? FALLBACK_COLOR;
     setInputValue(normalized);
     setLastValidValue(normalized);
     setIsInvalid(false);
@@ -116,7 +127,9 @@ const ColorField: Layout<typeof componentRecipe, ColorFieldProps> = () => {
     setIsInvalid(false);
   };
 
-  const handleInput: JSX.EventHandlerUnion<HTMLInputElement, InputEvent> = (event) => {
+  const handleInput: JSX.EventHandlerUnion<HTMLInputElement, InputEvent> = (
+    event,
+  ) => {
     invokeEventHandler(props.onInput, event);
     if (event.defaultPrevented) return;
 
@@ -133,20 +146,27 @@ const ColorField: Layout<typeof componentRecipe, ColorFieldProps> = () => {
     setIsInvalid(raw.trim().length > 0);
   };
 
-  const handleBlur: JSX.EventHandlerUnion<HTMLInputElement, FocusEvent> = (event) => {
+  const handleBlur: JSX.EventHandlerUnion<HTMLInputElement, FocusEvent> = (
+    event,
+  ) => {
     invokeEventHandler(props.onBlur, event);
     setIsFocused(false);
     if (event.defaultPrevented) return;
     commit();
   };
 
-  const handleFocus: JSX.EventHandlerUnion<HTMLInputElement, FocusEvent> = (event) => {
+  const handleFocus: JSX.EventHandlerUnion<HTMLInputElement, FocusEvent> = (
+    event,
+  ) => {
     invokeEventHandler(props.onFocus, event);
     if (event.defaultPrevented) return;
     setIsFocused(true);
   };
 
-  const handleKeyDown: JSX.EventHandlerUnion<HTMLInputElement, KeyboardEvent> = (event) => {
+  const handleKeyDown: JSX.EventHandlerUnion<
+    HTMLInputElement,
+    KeyboardEvent
+  > = (event) => {
     invokeEventHandler(props.onKeyDown, event);
     if (event.defaultPrevented) return;
 
@@ -165,12 +185,14 @@ const ColorField: Layout<typeof componentRecipe, ColorFieldProps> = () => {
 
   return (
     <div
-      {...{ class: twMerge(
-        CLASSES.base,
-        props.fullWidth && CLASSES.flag.fullWidth,
-        isDisabled() && CLASSES.flag.disabled,
-        props.class,
-      ) }}
+      {...{
+        class: twMerge(
+          CLASSES.base,
+          props.fullWidth && CLASSES.flag.fullWidth,
+          isDisabled() && CLASSES.flag.disabled,
+          props.class,
+        ),
+      }}
       data-theme={props.dataTheme}
       data-slot="color-field"
       data-disabled={isDisabled() ? "true" : "false"}
@@ -178,11 +200,13 @@ const ColorField: Layout<typeof componentRecipe, ColorFieldProps> = () => {
       aria-disabled={isDisabled() ? "true" : "false"}
     >
       <div
-        {...{ class: twMerge(
-          CLASSES.slot.group,
-          isInvalid() && CLASSES.flag.groupInvalid,
-          props.fullWidth && CLASSES.flag.groupFullWidth,
-        ) }}
+        {...{
+          class: twMerge(
+            CLASSES.slot.group,
+            isInvalid() && CLASSES.flag.groupInvalid,
+            props.fullWidth && CLASSES.flag.groupFullWidth,
+          ),
+        }}
         data-slot="color-field-group"
         data-disabled={isDisabled() ? "true" : "false"}
         data-invalid={isInvalid() ? "true" : "false"}

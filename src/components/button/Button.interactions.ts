@@ -26,7 +26,8 @@ export const buttonHref = (
   // already handled that; the signature just says so now.
   href: string | false | undefined,
   inert: boolean,
-): string | undefined => (typeof href === "string" && !inert ? href : undefined);
+): string | undefined =>
+  typeof href === "string" && !inert ? href : undefined;
 
 /**
  * `rel` for a link, defaulted for new tabs.
@@ -39,4 +40,5 @@ export const buttonRel = (
   rel: string | false | undefined,
   target: string | false | undefined,
 ): string | undefined =>
-  (rel || undefined) ?? (target === "_blank" ? "noopener noreferrer" : undefined);
+  (rel || undefined) ??
+  (target === "_blank" ? "noopener noreferrer" : undefined);

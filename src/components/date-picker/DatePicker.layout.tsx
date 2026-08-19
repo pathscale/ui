@@ -1,19 +1,17 @@
 import "./DatePicker.css";
 import type { JSX } from "@solidjs/web";
-import {Show, createMemo, createUniqueId, omit} from "solid-js";
-import { twMerge } from "../../lib/twMerge";
-
+import { createMemo, createUniqueId, omit, Show } from "solid-js";
 import {
   formatDate,
   toISODate,
   useDateSelection,
   usePickerOpenState,
 } from "../../hooks/date";
-import Calendar, { type CalendarWeekdayFormat } from "../calendar";
-import type { UIBaseProps, State } from "../vocabulary";
-import { CLASSES } from "./DatePicker.recipe";
 import type { Layout } from "../../lib/layouts";
-import { componentRecipe } from "./DatePicker.recipe";
+import { twMerge } from "../../lib/twMerge";
+import Calendar, { type CalendarWeekdayFormat } from "../calendar";
+import type { State, UIBaseProps } from "../vocabulary";
+import { CLASSES, type componentRecipe } from "./DatePicker.recipe";
 
 type DatePickerBaseProps = {
   value?: Date;
@@ -64,7 +62,9 @@ const DatePicker: Layout<typeof componentRecipe, DatePickerProps> = () => {
     "disabled",
   );
 
-  const isDisabled = createMemo(() => Boolean((props.state === "disabled")) || Boolean(props.disabled));
+  const isDisabled = createMemo(
+    () => Boolean(props.state === "disabled") || Boolean(props.disabled),
+  );
 
   const selection = useDateSelection({
     value: () => props.value,
@@ -105,12 +105,14 @@ const DatePicker: Layout<typeof componentRecipe, DatePickerProps> = () => {
           props.ref(node);
         }
       }}
-      {...{ class: twMerge(
-        CLASSES.Root.base,
-        openState.isOpen() && CLASSES.Root.flag.open,
-        isDisabled() && CLASSES.Root.flag.disabled,
-        props.class,
-      ) }}
+      {...{
+        class: twMerge(
+          CLASSES.Root.base,
+          openState.isOpen() && CLASSES.Root.flag.open,
+          isDisabled() && CLASSES.Root.flag.disabled,
+          props.class,
+        ),
+      }}
       data-slot="date-picker"
       data-open={openState.isOpen() ? "true" : "false"}
       data-disabled={isDisabled() ? "true" : "false"}
@@ -139,23 +141,34 @@ const DatePicker: Layout<typeof componentRecipe, DatePickerProps> = () => {
         disabled={isDisabled()}
         onClick={() => openState.toggleOpen()}
         onKeyDown={(event) => {
-          if (event.key === "ArrowDown" || event.key === "Enter" || event.key === " ") {
+          if (
+            event.key === "ArrowDown" ||
+            event.key === "Enter" ||
+            event.key === " "
+          ) {
             event.preventDefault();
             openState.setOpen(true);
           }
         }}
       >
         <span
-          {...{ class: twMerge(
-            CLASSES.TriggerValue.base,
-            !selection.selectedDate() && CLASSES.TriggerValue.flag.placeholder,
-          ) }}
+          {...{
+            class: twMerge(
+              CLASSES.TriggerValue.base,
+              !selection.selectedDate() &&
+                CLASSES.TriggerValue.flag.placeholder,
+            ),
+          }}
           data-slot="date-picker-trigger-value"
         >
           {displayValue()}
         </span>
 
-        <span {...{ class: CLASSES.TriggerIndicator.base }} data-slot="date-picker-trigger-indicator" aria-hidden="true">
+        <span
+          {...{ class: CLASSES.TriggerIndicator.base }}
+          data-slot="date-picker-trigger-indicator"
+          aria-hidden="true"
+        >
           <svg
             {...{ class: CLASSES.TriggerIcon.base }}
             data-slot="date-picker-trigger-icon"
@@ -167,10 +180,32 @@ const DatePicker: Layout<typeof componentRecipe, DatePickerProps> = () => {
             stroke-linejoin="round"
             aria-hidden="true"
           >
-            <rect x="3" y="4" width="18" height="18" rx="2" ry="2" />
-            <line x1="16" y1="2" x2="16" y2="6" />
-            <line x1="8" y1="2" x2="8" y2="6" />
-            <line x1="3" y1="10" x2="21" y2="10" />
+            <rect
+              x="3"
+              y="4"
+              width="18"
+              height="18"
+              rx="2"
+              ry="2"
+            />
+            <line
+              x1="16"
+              y1="2"
+              x2="16"
+              y2="6"
+            />
+            <line
+              x1="8"
+              y1="2"
+              x2="8"
+              y2="6"
+            />
+            <line
+              x1="3"
+              y1="10"
+              x2="21"
+              y2="10"
+            />
           </svg>
         </span>
       </button>

@@ -1,14 +1,24 @@
 import "./Dropdown.css";
-import {Show, createContext, createSignal, createTrackedEffect, createUniqueId, onCleanup, onSettled, omit, useContext, type Accessor} from "solid-js";
-import { Portal, type JSX} from "@solidjs/web";
+import { type JSX, Portal } from "@solidjs/web";
+import {
+  type Accessor,
+  createContext,
+  createSignal,
+  createTrackedEffect,
+  createUniqueId,
+  omit,
+  onCleanup,
+  onSettled,
+  Show,
+  useContext,
+} from "solid-js";
+import type { Layout } from "../../lib/layouts";
 import { twMerge } from "../../lib/twMerge";
 import {
   createOverlayPosition,
   type OverlayPlacement,
 } from "../_shared/overlayPosition";
-import { CLASSES } from "./Dropdown.recipe";
-import type { Layout } from "../../lib/layouts";
-import { componentRecipe } from "./Dropdown.recipe";
+import { CLASSES, type componentRecipe } from "./Dropdown.recipe";
 
 type DropdownAlign = "start" | "end";
 type DropdownPlacement = OverlayPlacement;
@@ -65,7 +75,10 @@ const sortItemsByDomOrder = (items: DropdownItemRecord[]) =>
     return 0;
   });
 
-type DropdownRootProps = Omit<JSX.HTMLAttributes<HTMLDivElement>, "onChange"> & {
+type DropdownRootProps = Omit<
+  JSX.HTMLAttributes<HTMLDivElement>,
+  "onChange"
+> & {
   children: JSX.Element;
   open?: boolean;
   defaultOpen?: boolean;
@@ -95,13 +108,24 @@ const DropdownRoot: Layout<typeof componentRecipe, DropdownRootProps> = () => {
   const triggerId = `${baseId}-trigger`;
   const menuId = `${baseId}-menu`;
 
-  const [internalOpen, setInternalOpen] = createSignal(Boolean(props.defaultOpen));
+  const [internalOpen, setInternalOpen] = createSignal(
+    Boolean(props.defaultOpen),
+  );
   const [items, setItems] = createSignal<DropdownItemRecord[]>([]);
-  const [focusedKey, setFocusedKey] = createSignal<string | undefined>(undefined);
-  const [focusRequest, setFocusRequest] = createSignal<DropdownFocusRequest>(null);
-  const [triggerRef, setTriggerRefSignal] = createSignal<HTMLButtonElement | undefined>(undefined);
-  const [menuRef, setMenuRefSignal] = createSignal<HTMLDivElement | undefined>(undefined);
-  const [rootRef, setRootRefSignal] = createSignal<HTMLDivElement | undefined>(undefined);
+  const [focusedKey, setFocusedKey] = createSignal<string | undefined>(
+    undefined,
+  );
+  const [focusRequest, setFocusRequest] =
+    createSignal<DropdownFocusRequest>(null);
+  const [triggerRef, setTriggerRefSignal] = createSignal<
+    HTMLButtonElement | undefined
+  >(undefined);
+  const [menuRef, setMenuRefSignal] = createSignal<HTMLDivElement | undefined>(
+    undefined,
+  );
+  const [rootRef, setRootRefSignal] = createSignal<HTMLDivElement | undefined>(
+    undefined,
+  );
 
   const isControlled = () => props.open !== undefined;
   const isDisabled = () => Boolean(props.disabled);
@@ -152,7 +176,8 @@ const DropdownRoot: Layout<typeof componentRecipe, DropdownRootProps> = () => {
       return;
     }
 
-    const nextIndex = (currentIndex + direction + enabled.length) % enabled.length;
+    const nextIndex =
+      (currentIndex + direction + enabled.length) % enabled.length;
     focusItem(enabled[nextIndex]);
   };
 
@@ -180,7 +205,12 @@ const DropdownRoot: Layout<typeof componentRecipe, DropdownRootProps> = () => {
   };
 
   const registerItem = (item: DropdownItemRecord) => {
-    setItems((prev) => sortItemsByDomOrder([...prev.filter((entry) => entry.key !== item.key), item]));
+    setItems((prev) =>
+      sortItemsByDomOrder([
+        ...prev.filter((entry) => entry.key !== item.key),
+        item,
+      ]),
+    );
     if (!item.disabled && focusedKey() === undefined) {
       setFocusedKey(item.key);
     }
@@ -275,7 +305,10 @@ const DropdownRoot: Layout<typeof componentRecipe, DropdownRootProps> = () => {
 
 type DropdownTriggerProps = JSX.ButtonHTMLAttributes<HTMLButtonElement>;
 
-const DropdownTrigger: Layout<typeof componentRecipe, DropdownTriggerProps> = () => {
+const DropdownTrigger: Layout<
+  typeof componentRecipe,
+  DropdownTriggerProps
+> = () => {
   const ctx = useContext(DropdownContext);
   const others = omit(
     props,
@@ -290,7 +323,11 @@ const DropdownTrigger: Layout<typeof componentRecipe, DropdownTriggerProps> = ()
 
   if (!ctx) {
     return (
-      <button {...others} {...{ class: twMerge(CLASSES.slot.trigger, props.class) }} type={props.type ?? "button"}>
+      <button
+        {...others}
+        {...{ class: twMerge(CLASSES.slot.trigger, props.class) }}
+        type={props.type ?? "button"}
+      >
         {props.children}
       </button>
     );
@@ -305,14 +342,19 @@ const DropdownTrigger: Layout<typeof componentRecipe, DropdownTriggerProps> = ()
     }
   };
 
-  const handleClick: JSX.EventHandlerUnion<HTMLButtonElement, MouseEvent> = (event) => {
+  const handleClick: JSX.EventHandlerUnion<HTMLButtonElement, MouseEvent> = (
+    event,
+  ) => {
     invokeEventHandler(props.onClick, event);
     if (event.defaultPrevented) return;
     if (isDisabled()) return;
     ctx.toggleOpen();
   };
 
-  const handleKeyDown: JSX.EventHandlerUnion<HTMLButtonElement, KeyboardEvent> = (event) => {
+  const handleKeyDown: JSX.EventHandlerUnion<
+    HTMLButtonElement,
+    KeyboardEvent
+  > = (event) => {
     invokeEventHandler(props.onKeyDown, event);
     if (event.defaultPrevented) return;
     if (isDisabled()) return;
@@ -399,7 +441,10 @@ const DropdownMenu: Layout<typeof componentRecipe, DropdownMenuProps> = () => {
 
   if (!ctx) {
     return (
-      <div {...others} {...{ class: twMerge(CLASSES.slot.popover, props.class) }}>
+      <div
+        {...others}
+        {...{ class: twMerge(CLASSES.slot.popover, props.class) }}
+      >
         <div {...{ class: CLASSES.slot.menu }}>{props.children}</div>
       </div>
     );
@@ -415,7 +460,9 @@ const DropdownMenu: Layout<typeof componentRecipe, DropdownMenuProps> = () => {
     align: () => (props.align === "end" ? "end" : "start"),
   });
 
-  const handleKeyDown: JSX.EventHandlerUnion<HTMLDivElement, KeyboardEvent> = (event) => {
+  const handleKeyDown: JSX.EventHandlerUnion<HTMLDivElement, KeyboardEvent> = (
+    event,
+  ) => {
     invokeEventHandler(props.onKeyDown, event);
     if (event.defaultPrevented) return;
 
@@ -485,7 +532,10 @@ const DropdownMenu: Layout<typeof componentRecipe, DropdownMenuProps> = () => {
           style={menuStyle()}
           onKeyDown={handleKeyDown}
         >
-          <div {...{ class: CLASSES.slot.menu }} data-slot="dropdown-menu">
+          <div
+            {...{ class: CLASSES.slot.menu }}
+            data-slot="dropdown-menu"
+          >
             {props.children}
           </div>
         </div>
@@ -542,7 +592,9 @@ const DropdownItem: Layout<typeof componentRecipe, DropdownItemProps> = () => {
     }
   };
 
-  const handleClick: JSX.EventHandlerUnion<HTMLButtonElement, MouseEvent> = (event) => {
+  const handleClick: JSX.EventHandlerUnion<HTMLButtonElement, MouseEvent> = (
+    event,
+  ) => {
     invokeEventHandler(props.onClick, event);
     if (event.defaultPrevented) return;
     if (isDisabled()) return;
@@ -551,7 +603,10 @@ const DropdownItem: Layout<typeof componentRecipe, DropdownItemProps> = () => {
     }
   };
 
-  const handleMouseEnter: JSX.EventHandlerUnion<HTMLButtonElement, MouseEvent> = (event) => {
+  const handleMouseEnter: JSX.EventHandlerUnion<
+    HTMLButtonElement,
+    MouseEvent
+  > = (event) => {
     invokeEventHandler(props.onMouseEnter, event);
     if (event.defaultPrevented) return;
     if (ctx && !isDisabled()) {
@@ -559,7 +614,9 @@ const DropdownItem: Layout<typeof componentRecipe, DropdownItemProps> = () => {
     }
   };
 
-  const handleFocus: JSX.EventHandlerUnion<HTMLButtonElement, FocusEvent> = (event) => {
+  const handleFocus: JSX.EventHandlerUnion<HTMLButtonElement, FocusEvent> = (
+    event,
+  ) => {
     invokeEventHandler(props.onFocus, event);
     if (event.defaultPrevented) return;
     if (ctx && !isDisabled()) {
@@ -591,10 +648,18 @@ const DropdownItem: Layout<typeof componentRecipe, DropdownItemProps> = () => {
 
 type DropdownGroupProps = JSX.HTMLAttributes<HTMLDivElement>;
 
-const DropdownGroup: Layout<typeof componentRecipe, DropdownGroupProps> = () => {
+const DropdownGroup: Layout<
+  typeof componentRecipe,
+  DropdownGroupProps
+> = () => {
   const others = omit(props, "class", "children");
   return (
-    <div {...others} role="group" {...{ class: twMerge(CLASSES.slot.group, props.class) }} data-slot="dropdown-group">
+    <div
+      {...others}
+      role="group"
+      {...{ class: twMerge(CLASSES.slot.group, props.class) }}
+      data-slot="dropdown-group"
+    >
       {props.children}
     </div>
   );
@@ -602,7 +667,10 @@ const DropdownGroup: Layout<typeof componentRecipe, DropdownGroupProps> = () => 
 
 type DropdownSeparatorProps = JSX.HTMLAttributes<HTMLDivElement>;
 
-const DropdownSeparator: Layout<typeof componentRecipe, DropdownSeparatorProps> = () => {
+const DropdownSeparator: Layout<
+  typeof componentRecipe,
+  DropdownSeparatorProps
+> = () => {
   const others = omit(props, "class");
   return (
     <div
@@ -624,24 +692,23 @@ const Dropdown = Object.assign(DropdownRoot, {
   Separator: DropdownSeparator,
 });
 
+export type {
+  DropdownAlign,
+  DropdownGroupProps,
+  DropdownItemProps,
+  DropdownMenuProps,
+  DropdownPlacement,
+  DropdownRootProps,
+  DropdownSeparatorProps,
+  DropdownTriggerProps,
+};
 export {
   Dropdown as default,
   Dropdown,
-  DropdownRoot,
-  DropdownTrigger,
-  DropdownMenu,
-  DropdownItem,
   DropdownGroup,
+  DropdownItem,
+  DropdownMenu,
+  DropdownRoot,
   DropdownSeparator,
-};
-
-export type {
-  DropdownAlign,
-  DropdownPlacement,
-  DropdownRootProps,
-  DropdownTriggerProps,
-  DropdownMenuProps,
-  DropdownItemProps,
-  DropdownGroupProps,
-  DropdownSeparatorProps,
+  DropdownTrigger,
 };

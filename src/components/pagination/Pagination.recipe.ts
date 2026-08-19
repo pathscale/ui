@@ -10,4 +10,17 @@ export const CLASSES = {
     ellipsis: "pagination__ellipsis",
   },
 } as const;
-export const componentRecipe = recipe({component:"pagination",slots:{"pagination":{},"pagination-content":{},"pagination-ellipsis":{},"pagination-item":{},"pagination-link":{},"pagination-next":{},"pagination-previous":{},"pagination-summary":{},"root":{},},});
+export const componentRecipe = recipe({
+  component: "pagination",
+  slots: {
+    pagination: {},
+    "pagination-content": {},
+    "pagination-ellipsis": {},
+    "pagination-item": {},
+    "pagination-link": {},
+    "pagination-next": {},
+    "pagination-previous": {},
+    "pagination-summary": {},
+    root: {},
+  },
+});

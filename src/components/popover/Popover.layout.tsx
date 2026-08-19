@@ -1,22 +1,34 @@
 import "./Popover.css";
-import {Show, createContext, createMemo, createSignal, createTrackedEffect, onSettled, omit, useContext, type Component, type ParentComponent} from "solid-js";
-import { Portal, type JSX} from "@solidjs/web";
+import { type JSX, Portal } from "@solidjs/web";
+import {
+  type Component,
+  createContext,
+  createMemo,
+  createSignal,
+  createTrackedEffect,
+  omit,
+  onSettled,
+  type ParentComponent,
+  Show,
+  useContext,
+} from "solid-js";
 import { twMerge } from "../../lib/twMerge";
 
 import "../_shared/material.css";
-import type { Material, UIBaseProps } from "../vocabulary";
+import type { Layout } from "../../lib/layouts";
 import {
   createOverlayPosition,
   type OverlayAnchorRect,
   type OverlayPlacement,
 } from "../_shared/overlayPosition";
-import { CLASSES } from "./Popover.recipe";
-import type { Layout } from "../../lib/layouts";
-import { componentRecipe } from "./Popover.recipe";
+import type { Material, UIBaseProps } from "../vocabulary";
+import { CLASSES, type componentRecipe } from "./Popover.recipe";
 
 export type PopoverPlacement = OverlayPlacement;
 export type PopoverAnchorRect = OverlayAnchorRect;
-export type PopoverAnchor = PopoverAnchorRect | (() => PopoverAnchorRect | undefined);
+export type PopoverAnchor =
+  | PopoverAnchorRect
+  | (() => PopoverAnchorRect | undefined);
 
 type PopoverContextValue = {
   isOpen: () => boolean;
@@ -40,7 +52,10 @@ const PopoverContext = createContext<PopoverContextValue | null>(null);
 
 const usePopoverContext = () => {
   const ctx = useContext(PopoverContext);
-  if (!ctx) throw new Error("Popover compound components must be used within <Popover>");
+  if (!ctx)
+    throw new Error(
+      "Popover compound components must be used within <Popover>",
+    );
   return ctx;
 };
 
@@ -78,17 +93,24 @@ const PopoverRoot: Layout<typeof componentRecipe, PopoverRootProps> = () => {
     "onInteractOutside",
   );
 
-  const [internalOpen, setInternalOpen] = createSignal(Boolean(props.defaultOpen));
+  const [internalOpen, setInternalOpen] = createSignal(
+    Boolean(props.defaultOpen),
+  );
   const [triggerRef, setTriggerRef] = createSignal<HTMLElement | undefined>();
   const [contentRef, setContentRef] = createSignal<HTMLElement | undefined>();
-  const [triggerId] = createSignal(`popover-trigger-${Math.random().toString(36).slice(2, 8)}`);
-  const [contentId] = createSignal(`popover-content-${Math.random().toString(36).slice(2, 8)}`);
-  const [resolvedPlacement, setResolvedPlacement] = createSignal<PopoverPlacement>(
-    props.placement ?? "bottom",
+  const [triggerId] = createSignal(
+    `popover-trigger-${Math.random().toString(36).slice(2, 8)}`,
   );
+  const [contentId] = createSignal(
+    `popover-content-${Math.random().toString(36).slice(2, 8)}`,
+  );
+  const [resolvedPlacement, setResolvedPlacement] =
+    createSignal<PopoverPlacement>(props.placement ?? "bottom");
 
   const isControlled = createMemo(() => props.open !== undefined);
-  const isOpen = createMemo(() => (isControlled() ? Boolean(props.open) : internalOpen()));
+  const isOpen = createMemo(() =>
+    isControlled() ? Boolean(props.open) : internalOpen(),
+  );
 
   const setIsOpen = (next: boolean, options?: { focusTrigger?: boolean }) => {
     if (!isControlled()) setInternalOpen(next);
@@ -103,7 +125,9 @@ const PopoverRoot: Layout<typeof componentRecipe, PopoverRootProps> = () => {
   const offset = () => props.offset ?? 8;
   const autoFlip = () => props.autoFlip ?? true;
   const anchorRect = () =>
-    typeof props.anchorRect === "function" ? props.anchorRect() : props.anchorRect;
+    typeof props.anchorRect === "function"
+      ? props.anchorRect()
+      : props.anchorRect;
 
   onSettled(() => {
     const handlePointerDown = (event: PointerEvent) => {
@@ -172,18 +196,33 @@ export type PopoverTriggerProps = UIBaseProps &
     children: JSX.Element;
   };
 
-const PopoverTrigger: Layout<typeof componentRecipe, PopoverTriggerProps> = () => {
-  const others = omit(props, "children", "class", "dataTheme", "style", "onClick", "onKeyDown");
+const PopoverTrigger: Layout<
+  typeof componentRecipe,
+  PopoverTriggerProps
+> = () => {
+  const others = omit(
+    props,
+    "children",
+    "class",
+    "dataTheme",
+    "style",
+    "onClick",
+    "onKeyDown",
+  );
 
   const ctx = usePopoverContext();
 
-  const handleClick: JSX.EventHandlerUnion<HTMLDivElement, MouseEvent> = (event) => {
+  const handleClick: JSX.EventHandlerUnion<HTMLDivElement, MouseEvent> = (
+    event,
+  ) => {
     if (typeof props.onClick === "function") props.onClick(event);
     if (event.defaultPrevented) return;
     ctx.setIsOpen(!ctx.isOpen());
   };
 
-  const handleKeyDown: JSX.EventHandlerUnion<HTMLDivElement, KeyboardEvent> = (event) => {
+  const handleKeyDown: JSX.EventHandlerUnion<HTMLDivElement, KeyboardEvent> = (
+    event,
+  ) => {
     if (typeof props.onKeyDown === "function") props.onKeyDown(event);
     if (event.defaultPrevented) return;
     if (event.key === "Enter" || event.key === " ") {
@@ -226,8 +265,19 @@ export type PopoverContentProps = UIBaseProps &
     material?: Material;
   };
 
-const PopoverContent: Layout<typeof componentRecipe, PopoverContentProps> = () => {
-  const others = omit(props, "children", "class", "dataTheme", "style", "sideOffset", "material");
+const PopoverContent: Layout<
+  typeof componentRecipe,
+  PopoverContentProps
+> = () => {
+  const others = omit(
+    props,
+    "children",
+    "class",
+    "dataTheme",
+    "style",
+    "sideOffset",
+    "material",
+  );
 
   const ctx = usePopoverContext();
   const overlayPosition = createOverlayPosition({
@@ -276,7 +326,7 @@ const PopoverContent: Layout<typeof componentRecipe, PopoverContentProps> = () =
           {...{ class: twMerge(CLASSES.base, props.class) }}
           data-slot="popover-content"
           data-material={props.material ?? "solid"}
-      data-material-explicit={props.material ? "" : undefined}
+          data-material-explicit={props.material ? "" : undefined}
           data-open={ctx.isOpen() ? "true" : "false"}
           data-placement={ctx.placement()}
           data-theme={props.dataTheme}
@@ -296,7 +346,10 @@ export type PopoverDialogProps = UIBaseProps &
     children: JSX.Element;
   };
 
-const PopoverDialog: Layout<typeof componentRecipe, PopoverDialogProps> = () => {
+const PopoverDialog: Layout<
+  typeof componentRecipe,
+  PopoverDialogProps
+> = () => {
   const others = omit(props, "children", "class", "dataTheme", "style");
 
   return (
@@ -331,7 +384,10 @@ const PopoverArrow: Layout<typeof componentRecipe, PopoverArrowProps> = () => {
       width="12"
       xmlns="http://www.w3.org/2000/svg"
     >
-      <path d="M0 0C5.48483 8 6.5 8 12 0Z" fill="currentColor" />
+      <path
+        d="M0 0C5.48483 8 6.5 8 12 0Z"
+        fill="currentColor"
+      />
     </svg>
   );
 
@@ -355,7 +411,10 @@ export type PopoverHeadingProps = UIBaseProps &
     children: JSX.Element;
   };
 
-const PopoverHeading: Layout<typeof componentRecipe, PopoverHeadingProps> = () => {
+const PopoverHeading: Layout<
+  typeof componentRecipe,
+  PopoverHeadingProps
+> = () => {
   const others = omit(props, "children", "class", "dataTheme", "style");
 
   return (
@@ -382,10 +441,10 @@ const Popover = Object.assign(PopoverRoot, {
 
 export default Popover;
 export {
-  PopoverRoot,
-  PopoverTrigger,
+  PopoverArrow,
   PopoverContent,
   PopoverDialog,
-  PopoverArrow,
   PopoverHeading,
+  PopoverRoot,
+  PopoverTrigger,
 };

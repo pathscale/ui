@@ -12,7 +12,8 @@
     border: 0;
     background: var(--color-primary);
     color: var(--color-primary-content);
-    box-shadow: 0 10px 20px color-mix(in oklab, var(--color-base-content) 16%, transparent);
+    box-shadow: 0 10px 20px
+      color-mix(in oklab, var(--color-base-content) 16%, transparent);
     transition:
       transform 200ms ease,
       box-shadow 200ms ease,
@@ -20,7 +21,8 @@
   }
 
   .live-chat-bubble:hover {
-    box-shadow: 0 14px 28px color-mix(in oklab, var(--color-base-content) 22%, transparent);
+    box-shadow: 0 14px 28px
+      color-mix(in oklab, var(--color-base-content) 22%, transparent);
   }
 
   .live-chat-bubble:active {
@@ -28,7 +30,8 @@
   }
 
   .live-chat-bubble:focus-visible {
-    outline: var(--focus-ring-width, 2px) solid color-mix(in oklab, var(--color-primary) 72%, transparent);
+    outline: var(--focus-ring-width, 2px) solid
+      color-mix(in oklab, var(--color-primary) 72%, transparent);
     outline-offset: var(--focus-ring-offset, 2px);
   }
 
@@ -87,7 +90,8 @@
     flex-direction: column;
     overflow: hidden;
     background: var(--color-base-100);
-    box-shadow: 0 30px 70px color-mix(in oklab, var(--color-base-content) 18%, transparent);
+    box-shadow: 0 30px 70px
+      color-mix(in oklab, var(--color-base-content) 18%, transparent);
   }
 
   .live-chat-panel__header {
@@ -127,7 +131,11 @@
   }
 
   .live-chat-panel__close-button:hover {
-    background: color-mix(in oklab, var(--color-primary-content) 10%, transparent);
+    background: color-mix(
+      in oklab,
+      var(--color-primary-content) 10%,
+      transparent
+    );
   }
 
   .live-chat-panel__messages {
@@ -251,7 +259,8 @@
     height: 1rem;
     border-radius: var(--radius-pill, 9999px);
     display: inline-block;
-    border: 2px solid color-mix(in oklab, var(--color-primary-content) 30%, transparent);
+    border: 2px solid
+      color-mix(in oklab, var(--color-primary-content) 30%, transparent);
     border-top-color: var(--color-primary-content);
     animation: live-chat-spin 0.7s linear infinite;
   }

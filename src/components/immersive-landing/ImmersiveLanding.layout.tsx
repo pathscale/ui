@@ -1,23 +1,25 @@
 import "./ImmersiveLanding.css";
-import { Show, omit, type Component } from "solid-js";
-import { twMerge } from "../../lib/twMerge";
-import type {
-  ImmersiveLandingProps,
-  ImmersiveLandingContextValue,
-} from "./types";
-import { CLASSES } from "./ImmersiveLanding.recipe";
-import { useImmersiveLanding } from "./useImmersiveLanding";
-import { ImmersiveLandingContext } from "./ImmersiveLandingContext";
-import ImmersiveLandingPage from "./ImmersiveLandingPage.generated";
-import ImmersiveLandingArrows from "./ImmersiveLandingArrows.generated";
-import ImmersiveLandingNavigation from "./ImmersiveLandingNavigation.generated";
-import { PWAInstallPrompt } from "./components/PWAInstallPrompt";
-import { FirefoxPWABanner } from "./components/FirefoxPWABanner";
-import { CookieConsent } from "./components/CookieConsent";
+import { type Component, omit, Show } from "solid-js";
 import type { Layout } from "../../lib/layouts";
-import { componentRecipe } from "./ImmersiveLanding.recipe";
+import { twMerge } from "../../lib/twMerge";
+import { CookieConsent } from "./components/CookieConsent";
+import { FirefoxPWABanner } from "./components/FirefoxPWABanner";
+import { PWAInstallPrompt } from "./components/PWAInstallPrompt";
+import { CLASSES, type componentRecipe } from "./ImmersiveLanding.recipe";
+import ImmersiveLandingArrows from "./ImmersiveLandingArrows.generated";
+import { ImmersiveLandingContext } from "./ImmersiveLandingContext";
+import ImmersiveLandingNavigation from "./ImmersiveLandingNavigation.generated";
+import ImmersiveLandingPage from "./ImmersiveLandingPage.generated";
+import type {
+  ImmersiveLandingContextValue,
+  ImmersiveLandingProps,
+} from "./types";
+import { useImmersiveLanding } from "./useImmersiveLanding";
 
-const ImmersiveLanding: Layout<typeof componentRecipe, ImmersiveLandingProps> = () => {
+const ImmersiveLanding: Layout<
+  typeof componentRecipe,
+  ImmersiveLandingProps
+> = () => {
   // Don't split children - access directly from props to preserve reactivity
   const others = omit(
     props,
@@ -72,11 +74,7 @@ const ImmersiveLanding: Layout<typeof componentRecipe, ImmersiveLandingProps> = 
   const showNav = () => props.showNavigation !== false;
   const showArrowNav = () => props.showArrows !== false;
 
-  const classes = () =>
-    twMerge(
-      CLASSES.landing.base,
-      props.class,
-    );
+  const classes = () => twMerge(CLASSES.landing.base, props.class);
 
   // Render children - if it's a function, call it with context for render props pattern
   const renderChildren = () => {
@@ -94,10 +92,16 @@ const ImmersiveLanding: Layout<typeof componentRecipe, ImmersiveLandingProps> = 
   return (
     <ImmersiveLandingContext value={contextValue}>
       {/* Fixed viewport */}
-      <div {...{ class: classes() }} style={props.style} {...others}>
+      <div
+        {...{ class: classes() }}
+        style={props.style}
+        {...others}
+      >
         {/* Layered container for fade transitions */}
         <div {...{ class: CLASSES.landing.viewport }}>
-          <div {...{ class: CLASSES.landing.pageLayer }}>{renderChildren()}</div>
+          <div {...{ class: CLASSES.landing.pageLayer }}>
+            {renderChildren()}
+          </div>
         </div>
       </div>
 
@@ -105,7 +109,10 @@ const ImmersiveLanding: Layout<typeof componentRecipe, ImmersiveLandingProps> = 
         <div {...{ class: CLASSES.landing.overlay }}>
           {renderOverlay()}
           <Show when={props.appVersion}>
-            <div {...{ class: CLASSES.landing.versionWrap }} aria-hidden="true">
+            <div
+              {...{ class: CLASSES.landing.versionWrap }}
+              aria-hidden="true"
+            >
               <span {...{ class: CLASSES.landing.versionLabel }}>
                 v{props.appVersion}
               </span>

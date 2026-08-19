@@ -139,24 +139,52 @@
    * --------------------------------------------------------------------- */
   .button--solid {
     --button-bg: var(--button-accent);
-    --button-bg-hover: color-mix(in oklab, var(--button-accent), var(--shade, var(--color-base-content)) var(--shade-hover, 8%));
-    --button-bg-pressed: color-mix(in oklab, var(--button-accent), var(--shade, var(--color-base-content)) var(--shade-pressed, 12%));
+    --button-bg-hover: color-mix(
+      in oklab,
+      var(--button-accent),
+      var(--shade, var(--color-base-content)) var(--shade-hover, 8%)
+    );
+    --button-bg-pressed: color-mix(
+      in oklab,
+      var(--button-accent),
+      var(--shade, var(--color-base-content)) var(--shade-pressed, 12%)
+    );
     --button-fg: var(--button-accent-fg);
     --button-border: transparent;
   }
 
   .button--soft {
-    --button-bg: color-mix(in oklab, var(--button-accent), var(--color-base-100) 86%);
-    --button-bg-hover: color-mix(in oklab, var(--button-accent), var(--color-base-100) 80%);
-    --button-bg-pressed: color-mix(in oklab, var(--button-accent), var(--color-base-100) 74%);
+    --button-bg: color-mix(
+      in oklab,
+      var(--button-accent),
+      var(--color-base-100) 86%
+    );
+    --button-bg-hover: color-mix(
+      in oklab,
+      var(--button-accent),
+      var(--color-base-100) 80%
+    );
+    --button-bg-pressed: color-mix(
+      in oklab,
+      var(--button-accent),
+      var(--color-base-100) 74%
+    );
     --button-fg: var(--button-accent);
     --button-border: transparent;
   }
 
   .button--outline {
     --button-bg: transparent;
-    --button-bg-hover: color-mix(in oklab, var(--button-accent), transparent 88%);
-    --button-bg-pressed: color-mix(in oklab, var(--button-accent), transparent 80%);
+    --button-bg-hover: color-mix(
+      in oklab,
+      var(--button-accent),
+      transparent 88%
+    );
+    --button-bg-pressed: color-mix(
+      in oklab,
+      var(--button-accent),
+      transparent 80%
+    );
     --button-fg: var(--button-accent);
     --button-border: var(--button-accent);
   }

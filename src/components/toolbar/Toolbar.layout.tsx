@@ -1,12 +1,10 @@
 import "./Toolbar.css";
 import type { JSX } from "@solidjs/web";
-import {omit, type Component} from "solid-js";
-import { twMerge } from "../../lib/twMerge";
-
-import type { UIBaseProps } from "../vocabulary";
-import { CLASSES } from "./Toolbar.recipe";
+import { type Component, omit } from "solid-js";
 import type { Layout } from "../../lib/layouts";
-import { componentRecipe } from "./Toolbar.recipe";
+import { twMerge } from "../../lib/twMerge";
+import type { UIBaseProps } from "../vocabulary";
+import { CLASSES, type componentRecipe } from "./Toolbar.recipe";
 
 export type ToolbarOrientation = "horizontal" | "vertical";
 
@@ -17,11 +15,11 @@ export type ToolbarRootProps = UIBaseProps &
   };
 
 const FOCUSABLE_SELECTOR = [
-  'button:not([disabled])',
-  'a[href]',
-  'input:not([disabled])',
-  'select:not([disabled])',
-  'textarea:not([disabled])',
+  "button:not([disabled])",
+  "a[href]",
+  "input:not([disabled])",
+  "select:not([disabled])",
+  "textarea:not([disabled])",
   '[tabindex]:not([tabindex="-1"])',
   '[contenteditable="true"]',
 ].join(", ");
@@ -39,7 +37,9 @@ const isTypingContext = (target: EventTarget | null): boolean => {
 };
 
 const getFocusableElements = (root: HTMLDivElement): HTMLElement[] =>
-  Array.from(root.querySelectorAll<HTMLElement>(FOCUSABLE_SELECTOR)).filter(isFocusableElement);
+  Array.from(root.querySelectorAll<HTMLElement>(FOCUSABLE_SELECTOR)).filter(
+    isFocusableElement,
+  );
 
 const ToolbarRoot: Layout<typeof componentRecipe, ToolbarRootProps> = () => {
   const others = omit(
@@ -57,9 +57,12 @@ const ToolbarRoot: Layout<typeof componentRecipe, ToolbarRootProps> = () => {
 
   let rootRef: HTMLDivElement | undefined;
 
-  const orientation = (): ToolbarOrientation => props.orientation ?? "horizontal";
+  const orientation = (): ToolbarOrientation =>
+    props.orientation ?? "horizontal";
 
-  const handleKeyDown: JSX.EventHandlerUnion<HTMLDivElement, KeyboardEvent> = (event) => {
+  const handleKeyDown: JSX.EventHandlerUnion<HTMLDivElement, KeyboardEvent> = (
+    event,
+  ) => {
     if (typeof props.onKeyDown === "function") props.onKeyDown(event);
     if (event.defaultPrevented) return;
 
@@ -132,5 +135,5 @@ const Toolbar = Object.assign(ToolbarRoot, {
 });
 
 export default Toolbar;
-export { Toolbar, ToolbarRoot };
 export type { ToolbarRootProps as ToolbarProps };
+export { Toolbar, ToolbarRoot };

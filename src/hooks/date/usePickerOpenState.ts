@@ -1,4 +1,10 @@
-import {createMemo, createSignal, createTrackedEffect, onSettled, type Accessor} from "solid-js";
+import {
+  type Accessor,
+  createMemo,
+  createSignal,
+  createTrackedEffect,
+  onSettled,
+} from "solid-js";
 
 type PickerOpenStateOptions = {
   isOpen: Accessor<boolean | undefined>;
@@ -8,8 +14,12 @@ type PickerOpenStateOptions = {
 };
 
 export const usePickerOpenState = (options: PickerOpenStateOptions) => {
-  const [internalOpen, setInternalOpen] = createSignal(Boolean(options.defaultOpen()));
-  const [rootRef, setRootRef] = createSignal<HTMLElement | undefined>(undefined);
+  const [internalOpen, setInternalOpen] = createSignal(
+    Boolean(options.defaultOpen()),
+  );
+  const [rootRef, setRootRef] = createSignal<HTMLElement | undefined>(
+    undefined,
+  );
 
   const isControlled = createMemo(() => options.isOpen() !== undefined);
 

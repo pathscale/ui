@@ -14,4 +14,7 @@ export const CLASSES = {
     content: "noise-background__content",
   },
 } as const;
-export const componentRecipe = recipe({component:"noise-background",slots:{"root":{},},});
+export const componentRecipe = recipe({
+  component: "noise-background",
+  slots: { root: {} },
+});

@@ -1,9 +1,9 @@
 import "./AuthPoweredBy.css";
 import type { JSX } from "@solidjs/web";
-import {Show} from "solid-js";
-import type { UIBaseProps } from "../vocabulary";
+import { Show } from "solid-js";
 import type { Layout } from "../../lib/layouts";
-import { authPoweredBy } from "./AuthPoweredBy.recipe";
+import type { UIBaseProps } from "../vocabulary";
+import type { authPoweredBy } from "./AuthPoweredBy.recipe";
 
 /* -------------------------------------------------------------------------------------------------
  * Types
@@ -25,7 +25,10 @@ const DEFAULT_HREF = "https://honey.id/";
 /* -------------------------------------------------------------------------------------------------
  * AuthPoweredBy
  * -----------------------------------------------------------------------------------------------*/
-export const AuthPoweredByLayout: Layout<typeof authPoweredBy, AuthPoweredByProps> = () => (
+export const AuthPoweredByLayout: Layout<
+  typeof authPoweredBy,
+  AuthPoweredByProps
+> = () => (
   <div {...slot.root}>
     <a
       {...slot.link}
@@ -35,7 +38,10 @@ export const AuthPoweredByLayout: Layout<typeof authPoweredBy, AuthPoweredByProp
     >
       <span {...slot.content}>
         <Show when={local.logo}>
-          <span {...slot.logo} aria-hidden="true">
+          <span
+            {...slot.logo}
+            aria-hidden="true"
+          >
             {local.logo}
           </span>
         </Show>

@@ -1,10 +1,10 @@
-export { default, Tabs } from "./Tabs.generated";
 export type {
-  TabsRootProps,
+  TabIndicatorProps,
   TabListContainerProps,
   TabListProps,
-  TabProps,
-  TabIndicatorProps,
-  TabSeparatorProps,
   TabPanelProps,
+  TabProps,
+  TabSeparatorProps,
+  TabsRootProps,
 } from "./Tabs.generated";
+export { default, Tabs } from "./Tabs.generated";

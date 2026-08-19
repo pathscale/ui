@@ -1,15 +1,21 @@
-import {Show, createSignal, createTrackedEffect, onCleanup, untrack} from "solid-js";
 import type { JSX } from "@solidjs/web";
+import {
+  createSignal,
+  createTrackedEffect,
+  onCleanup,
+  Show,
+  untrack,
+} from "solid-js";
 import { getMotionDriver } from "../driver";
 import { resolveEase } from "../easing";
 import { prefersReducedMotion } from "../reduced-motion";
 import {
+  type CollapsePhase,
   computeCollapseStyle,
   nextCollapsePhase,
-  type CollapsePhase,
 } from "./collapseState";
 
-export { computeCollapseStyle, nextCollapsePhase, type CollapsePhase };
+export { type CollapsePhase, computeCollapseStyle, nextCollapsePhase };
 
 export interface AnimatedCollapseProps {
   /** Whether the panel is expanded. */
@@ -185,7 +191,10 @@ export const AnimatedCollapse = (props: AnimatedCollapseProps) => {
         }}
         aria-hidden={phase() === "closed" ? "true" : undefined}
       >
-        <div ref={contentEl} class={props.contentClass}>
+        <div
+          ref={contentEl}
+          class={props.contentClass}
+        >
           {props.children}
         </div>
       </div>

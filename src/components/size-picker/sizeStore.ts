@@ -1,4 +1,4 @@
-import {createSignal, createTrackedEffect} from "solid-js";
+import { createSignal, createTrackedEffect } from "solid-js";
 
 export type SizePreset = "M" | "L" | "XL";
 

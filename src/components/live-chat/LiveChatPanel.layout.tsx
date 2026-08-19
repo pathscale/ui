@@ -1,14 +1,25 @@
 import "./LiveChat.css";
 import type { JSX } from "@solidjs/web";
-import {type Component, createSignal, createTrackedEffect, onCleanup, For, Show, omit} from "solid-js";
+import {
+  type Component,
+  createSignal,
+  createTrackedEffect,
+  For,
+  omit,
+  onCleanup,
+  Show,
+} from "solid-js";
+import type { Layout } from "../../lib/layouts";
 import { twMerge } from "../../lib/twMerge";
 import Button from "../button";
 import Input from "../input";
 import type { UIBaseProps } from "../vocabulary";
-import type { ChatMessage, SendMessagePayload, SendMessageResponse } from "./types";
-import { CLASSES } from "./LiveChat.recipe";
-import type { Layout } from "../../lib/layouts";
-import { componentRecipe } from "./LiveChat.recipe";
+import { CLASSES, type componentRecipe } from "./LiveChat.recipe";
+import type {
+  ChatMessage,
+  SendMessagePayload,
+  SendMessageResponse,
+} from "./types";
 
 export interface LiveChatPanelProps extends UIBaseProps {
   /**
@@ -92,7 +103,8 @@ const getMockMessages = (): ChatMessage[] => {
     },
     {
       messageId: "sales-3",
-      content: "That sounds great! What features are included in the basic plan?",
+      content:
+        "That sounds great! What features are included in the basic plan?",
       sender: "user",
       timestamp: Date.now() - 3400000,
     },
@@ -101,7 +113,8 @@ const getMockMessages = (): ChatMessage[] => {
   const supportMessages: ChatMessage[] = [
     {
       messageId: "support-1",
-      content: "I'm having trouble connecting. It keeps showing 'Connection Failed'.",
+      content:
+        "I'm having trouble connecting. It keeps showing 'Connection Failed'.",
       sender: "user",
       timestamp: Date.now() - 7200000,
     },
@@ -127,7 +140,9 @@ const getMockMessages = (): ChatMessage[] => {
     },
   ];
 
-  return [...salesMessages, ...supportMessages].sort((a, b) => a.timestamp - b.timestamp);
+  return [...salesMessages, ...supportMessages].sort(
+    (a, b) => a.timestamp - b.timestamp,
+  );
 };
 
 const formatTime = (timestamp: number) => {
@@ -138,7 +153,10 @@ const formatTime = (timestamp: number) => {
   }).format(new Date(timestamp));
 };
 
-const LiveChatPanel: Layout<typeof componentRecipe, LiveChatPanelProps> = () => {
+const LiveChatPanel: Layout<
+  typeof componentRecipe,
+  LiveChatPanelProps
+> = () => {
   const others = omit(
     props,
     "onClose",
@@ -158,7 +176,9 @@ const LiveChatPanel: Layout<typeof componentRecipe, LiveChatPanelProps> = () => 
     "style",
   );
 
-  const [internalMessages, setInternalMessages] = createSignal<ChatMessage[]>([]);
+  const [internalMessages, setInternalMessages] = createSignal<ChatMessage[]>(
+    [],
+  );
   const [inputValue, setInputValue] = createSignal("");
   const [sending, setSending] = createSignal(false);
   let scrollContainer: HTMLDivElement | undefined;
@@ -307,7 +327,11 @@ const LiveChatPanel: Layout<typeof componentRecipe, LiveChatPanelProps> = () => 
   const classes = () => twMerge(CLASSES.panel.base, props.class);
 
   return (
-    <div {...others} {...{ class: classes() }} style={props.style}>
+    <div
+      {...others}
+      {...{ class: classes() }}
+      style={props.style}
+    >
       {/* Header */}
       <div {...{ class: CLASSES.panel.header }}>
         <div {...{ class: CLASSES.panel.headerTitleWrap }}>
@@ -325,7 +349,9 @@ const LiveChatPanel: Layout<typeof componentRecipe, LiveChatPanelProps> = () => 
               d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"
             />
           </svg>
-          <h3 {...{ class: CLASSES.panel.headerTitle }}>{props.title ?? "Chat with us"}</h3>
+          <h3 {...{ class: CLASSES.panel.headerTitle }}>
+            {props.title ?? "Chat with us"}
+          </h3>
         </div>
         <button
           onClick={props.onClose}
@@ -361,35 +387,45 @@ const LiveChatPanel: Layout<typeof componentRecipe, LiveChatPanelProps> = () => 
             const isUser = message.sender === "user";
             return (
               <div
-                {...{ class: twMerge(
-                  CLASSES.panel.row,
-                  isUser ? CLASSES.panel.rowUser : CLASSES.panel.rowAgent,
-                ) }}
+                {...{
+                  class: twMerge(
+                    CLASSES.panel.row,
+                    isUser ? CLASSES.panel.rowUser : CLASSES.panel.rowAgent,
+                  ),
+                }}
               >
                 <div
-                  {...{ class: twMerge(
-                    CLASSES.panel.avatar,
-                    isUser ? CLASSES.panel.avatarUser : CLASSES.panel.avatarAgent,
-                  ) }}
+                  {...{
+                    class: twMerge(
+                      CLASSES.panel.avatar,
+                      isUser
+                        ? CLASSES.panel.avatarUser
+                        : CLASSES.panel.avatarAgent,
+                    ),
+                  }}
                 >
                   {isUser ? "U" : "A"}
                 </div>
 
                 <div
-                  {...{ class: twMerge(
-                    CLASSES.panel.messageColumn,
-                    isUser
-                      ? CLASSES.panel.messageColumnUser
-                      : CLASSES.panel.messageColumnAgent,
-                  ) }}
+                  {...{
+                    class: twMerge(
+                      CLASSES.panel.messageColumn,
+                      isUser
+                        ? CLASSES.panel.messageColumnUser
+                        : CLASSES.panel.messageColumnAgent,
+                    ),
+                  }}
                 >
                   <div
-                    {...{ class: twMerge(
-                      CLASSES.panel.messageBubble,
-                      isUser
-                        ? CLASSES.panel.messageBubbleUser
-                        : CLASSES.panel.messageBubbleAgent,
-                    ) }}
+                    {...{
+                      class: twMerge(
+                        CLASSES.panel.messageBubble,
+                        isUser
+                          ? CLASSES.panel.messageBubbleUser
+                          : CLASSES.panel.messageBubbleAgent,
+                      ),
+                    }}
                   >
                     <p {...{ class: CLASSES.panel.messageText }}>
                       {message.content}
@@ -413,30 +449,34 @@ const LiveChatPanel: Layout<typeof componentRecipe, LiveChatPanelProps> = () => 
 
       {/* Input area */}
       <div {...{ class: CLASSES.panel.inputArea }}>
-          <Input
-            type="text"
-            value={inputValue()}
-            onInput={(e) => setInputValue(e.currentTarget.value)}
-            onKeyPress={handleKeyPress}
-            placeholder={props.placeholder ?? "Message support..."}
-            disabled={isSending()}
-            {...{ class: CLASSES.panel.input }}
-          />
-          <Button
-            onClick={handleSend}
-            state={isSending() ? "loading" : inputValue().trim() ? "default" : "disabled"}
-            {...{ class: CLASSES.panel.sendButton }}
-            flavor="primary"
+        <Input
+          type="text"
+          value={inputValue()}
+          onInput={(e) => setInputValue(e.currentTarget.value)}
+          onKeyPress={handleKeyPress}
+          placeholder={props.placeholder ?? "Message support..."}
+          disabled={isSending()}
+          {...{ class: CLASSES.panel.input }}
+        />
+        <Button
+          onClick={handleSend}
+          state={
+            isSending()
+              ? "loading"
+              : inputValue().trim()
+                ? "default"
+                : "disabled"
+          }
+          {...{ class: CLASSES.panel.sendButton }}
+          flavor="primary"
+        >
+          <Show
+            when={!isSending()}
+            fallback={<span {...{ class: CLASSES.panel.spinner }} />}
           >
-            <Show
-              when={!isSending()}
-              fallback={
-                <span {...{ class: CLASSES.panel.spinner }} />
-              }
-            >
-              {props.sendLabel ?? "Send"}
-            </Show>
-          </Button>
+            {props.sendLabel ?? "Send"}
+          </Show>
+        </Button>
       </div>
     </div>
   );

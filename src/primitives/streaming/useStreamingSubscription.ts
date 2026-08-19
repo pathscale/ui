@@ -1,4 +1,9 @@
-import {createSignal, createTrackedEffect, onCleanup, type Accessor} from "solid-js";
+import {
+  type Accessor,
+  createSignal,
+  createTrackedEffect,
+  onCleanup,
+} from "solid-js";
 
 type MaybeAccessor<T> = T | Accessor<T>;
 
@@ -11,7 +16,9 @@ const resolveOption = <T>(value: MaybeAccessor<T>): T => {
 
 const toError = (error: unknown): Error => {
   if (error instanceof Error) return error;
-  return new Error(typeof error === "string" ? error : "Unknown streaming error");
+  return new Error(
+    typeof error === "string" ? error : "Unknown streaming error",
+  );
 };
 
 export interface StreamingSubscriptionObserver<TEvent> {
@@ -94,12 +101,14 @@ export const useStreamingSubscription = <TEvent>(
 
     const observer: StreamingSubscriptionObserver<TEvent> = {
       next: (event) => {
-        if (!isRunning || token !== runToken || controller.signal.aborted) return;
+        if (!isRunning || token !== runToken || controller.signal.aborted)
+          return;
         setEventCount((count) => count + 1);
         options.onData?.(event);
       },
       error: (nextError) => {
-        if (!isRunning || token !== runToken || controller.signal.aborted) return;
+        if (!isRunning || token !== runToken || controller.signal.aborted)
+          return;
 
         const normalized = toError(nextError);
 
@@ -116,7 +125,8 @@ export const useStreamingSubscription = <TEvent>(
         options.onError?.(normalized);
       },
       open: () => {
-        if (!isRunning || token !== runToken || controller.signal.aborted) return;
+        if (!isRunning || token !== runToken || controller.signal.aborted)
+          return;
         setIsConnecting(false);
         setIsLive(true);
       },
@@ -150,7 +160,8 @@ export const useStreamingSubscription = <TEvent>(
         return;
       }
 
-      teardown = typeof maybeTeardown === "function" ? maybeTeardown : undefined;
+      teardown =
+        typeof maybeTeardown === "function" ? maybeTeardown : undefined;
 
       // If the transport does not explicitly call observer.open,
       // consider successful subscription as live.

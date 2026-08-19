@@ -1,10 +1,10 @@
 import { describe, expect, it } from "bun:test";
+import { parseColor } from "../src/components/color-wheel-flower/ColorUtils";
 import {
   COLOR_WHEEL_FLOWER_COLOR_COUNT,
   COLOR_WHEEL_FLOWER_PALETTES,
   resolveColorWheelFlowerPalette,
 } from "../src/components/color-wheel-flower/ColorWheelFlower.palette";
-import { parseColor } from "../src/components/color-wheel-flower/ColorUtils";
 
 const averageLightness = (colors: readonly string[]) =>
   colors.reduce((total, color) => total + (parseColor(color)?.hsl.l ?? 0), 0) /

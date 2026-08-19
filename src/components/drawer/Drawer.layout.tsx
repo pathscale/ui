@@ -1,31 +1,43 @@
 import "./Drawer.css";
-import {Show, createSignal, createTrackedEffect, createUniqueId, onCleanup, omit, type Component, type ParentComponent} from "solid-js";
-import { Portal, type JSX} from "@solidjs/web";
+import { type JSX, Portal } from "@solidjs/web";
+import {
+  type Component,
+  createSignal,
+  createTrackedEffect,
+  createUniqueId,
+  omit,
+  onCleanup,
+  type ParentComponent,
+  Show,
+} from "solid-js";
 import { twMerge } from "../../lib/twMerge";
 import "../_shared/material.css";
+import type { Layout } from "../../lib/layouts";
 import type { Material, UIBaseProps } from "../vocabulary";
 import {
-  focusFirst,
-  isSidePlacement,
-  isVisibleState,
-  trapFocus,
   type DrawerAnimState,
   type DrawerBackdropVariant,
   type DrawerCloseReason,
   type DrawerPlacement,
   type DrawerScrollBehavior,
   type DrawerSize,
+  focusFirst,
+  isSidePlacement,
+  isVisibleState,
+  trapFocus,
 } from "./Drawer.a11y";
-import { CLASSES } from "./Drawer.recipe";
-import { DrawerContext, useDrawerContext, type DrawerContextValue } from "./Drawer.context";
-import type { Layout } from "../../lib/layouts";
-import { componentRecipe } from "./Drawer.recipe";
+import {
+  DrawerContext,
+  type DrawerContextValue,
+  useDrawerContext,
+} from "./Drawer.context";
+import { CLASSES, type componentRecipe } from "./Drawer.recipe";
 
 export type {
-  DrawerPlacement,
-  DrawerSize,
   DrawerBackdropVariant,
+  DrawerPlacement,
   DrawerScrollBehavior,
+  DrawerSize,
 } from "./Drawer.a11y";
 
 /* --------------------------- body-scroll locking -------------------------- */
@@ -38,7 +50,8 @@ const lockBodyScroll = () => {
   if (bodyLockCount === 0) {
     prevBodyOverflow = document.body.style.overflow;
     prevBodyPaddingRight = document.body.style.paddingRight;
-    const scrollbarWidth = window.innerWidth - document.documentElement.clientWidth;
+    const scrollbarWidth =
+      window.innerWidth - document.documentElement.clientWidth;
     if (scrollbarWidth > 0) {
       document.body.style.paddingRight = `${scrollbarWidth}px`;
     }
@@ -58,7 +71,10 @@ const unlockBodyScroll = () => {
 
 /* --------------------------------- props --------------------------------- */
 
-export type DrawerRootProps = Omit<JSX.HTMLAttributes<HTMLDivElement>, "children"> &
+export type DrawerRootProps = Omit<
+  JSX.HTMLAttributes<HTMLDivElement>,
+  "children"
+> &
   UIBaseProps & {
     children: JSX.Element;
     open?: boolean;
@@ -83,7 +99,10 @@ export type DrawerTriggerProps = Omit<
     children: JSX.Element;
   };
 
-export type DrawerBackdropProps = Omit<JSX.HTMLAttributes<HTMLDivElement>, "children"> &
+export type DrawerBackdropProps = Omit<
+  JSX.HTMLAttributes<HTMLDivElement>,
+  "children"
+> &
   UIBaseProps & {
     children: JSX.Element;
     variant?: DrawerBackdropVariant;
@@ -93,7 +112,10 @@ export type DrawerBackdropProps = Omit<JSX.HTMLAttributes<HTMLDivElement>, "chil
     shouldCloseOnBackdropClick?: boolean;
   };
 
-export type DrawerContentProps = Omit<JSX.HTMLAttributes<HTMLDivElement>, "children"> &
+export type DrawerContentProps = Omit<
+  JSX.HTMLAttributes<HTMLDivElement>,
+  "children"
+> &
   UIBaseProps & {
     children: JSX.Element;
     /** @deprecated Configure placement at Drawer.Root `placement` */
@@ -105,7 +127,10 @@ export type DrawerContentProps = Omit<JSX.HTMLAttributes<HTMLDivElement>, "child
 
 export type DrawerDialogSide = "left" | "right";
 
-export type DrawerDialogProps = Omit<JSX.HTMLAttributes<HTMLDivElement>, "children"> &
+export type DrawerDialogProps = Omit<
+  JSX.HTMLAttributes<HTMLDivElement>,
+  "children"
+> &
   UIBaseProps & {
     children: JSX.Element;
     side?: DrawerDialogSide;
@@ -118,29 +143,42 @@ export type DrawerDialogProps = Omit<JSX.HTMLAttributes<HTMLDivElement>, "childr
     size?: DrawerSize;
   };
 
-export type DrawerHeaderProps = Omit<JSX.HTMLAttributes<HTMLDivElement>, "children"> &
+export type DrawerHeaderProps = Omit<
+  JSX.HTMLAttributes<HTMLDivElement>,
+  "children"
+> &
   UIBaseProps & {
     children: JSX.Element;
   };
 
-export type DrawerHeadingProps = Omit<JSX.HTMLAttributes<HTMLHeadingElement>, "children"> &
+export type DrawerHeadingProps = Omit<
+  JSX.HTMLAttributes<HTMLHeadingElement>,
+  "children"
+> &
   UIBaseProps & {
     children: JSX.Element;
     id?: string;
   };
 
-export type DrawerBodyProps = Omit<JSX.HTMLAttributes<HTMLDivElement>, "children"> &
+export type DrawerBodyProps = Omit<
+  JSX.HTMLAttributes<HTMLDivElement>,
+  "children"
+> &
   UIBaseProps & {
     children: JSX.Element;
     id?: string;
   };
 
-export type DrawerFooterProps = Omit<JSX.HTMLAttributes<HTMLDivElement>, "children"> &
+export type DrawerFooterProps = Omit<
+  JSX.HTMLAttributes<HTMLDivElement>,
+  "children"
+> &
   UIBaseProps & {
     children: JSX.Element;
   };
 
-export type DrawerHandleProps = JSX.HTMLAttributes<HTMLDivElement> & UIBaseProps;
+export type DrawerHandleProps = JSX.HTMLAttributes<HTMLDivElement> &
+  UIBaseProps;
 
 export type DrawerCloseTriggerProps = Omit<
   JSX.ButtonHTMLAttributes<HTMLButtonElement>,
@@ -181,24 +219,24 @@ const DrawerRoot: Layout<typeof componentRecipe, DrawerRootProps> = () => {
     "restoreFocus",
   );
 
-  const [internalOpen, setInternalOpen] = createSignal(Boolean(props.defaultOpen));
+  const [internalOpen, setInternalOpen] = createSignal(
+    Boolean(props.defaultOpen),
+  );
   const [animState, setAnimState] = createSignal<DrawerAnimState>(
-    props.open ?? props.defaultOpen ? "open" : "closed",
+    (props.open ?? props.defaultOpen) ? "open" : "closed",
   );
 
   const [dialogRef, setDialogRef] = createSignal<HTMLDivElement | undefined>();
   const [labelledBy, setLabelledBy] = createSignal<string | undefined>();
   const [describedBy, setDescribedBy] = createSignal<string | undefined>();
 
-  const [placementOverride, setPlacementOverride] = createSignal<DrawerPlacement | undefined>(
-    undefined,
-  );
-  const [backdropDismissableOverride, setBackdropDismissableOverride] = createSignal<
-    boolean | undefined
+  const [placementOverride, setPlacementOverride] = createSignal<
+    DrawerPlacement | undefined
   >(undefined);
-  const [backdropCloseOnClickOverride, setBackdropCloseOnClickOverride] = createSignal<
-    boolean | undefined
-  >(undefined);
+  const [backdropDismissableOverride, setBackdropDismissableOverride] =
+    createSignal<boolean | undefined>(undefined);
+  const [backdropCloseOnClickOverride, setBackdropCloseOnClickOverride] =
+    createSignal<boolean | undefined>(undefined);
 
   const isControlled = () => props.open !== undefined;
   const isOpen = () => (isControlled() ? Boolean(props.open) : internalOpen());
@@ -207,7 +245,8 @@ const DrawerRoot: Layout<typeof componentRecipe, DrawerRootProps> = () => {
   const size = () => props.size ?? "md";
   const backdrop = () => props.backdrop ?? "opaque";
   const scrollBehavior = () => props.scrollBehavior ?? "inside";
-  const isDismissable = () => backdropDismissableOverride() ?? props.isDismissable ?? true;
+  const isDismissable = () =>
+    backdropDismissableOverride() ?? props.isDismissable ?? true;
   const shouldCloseOnEsc = () => props.shouldCloseOnEsc ?? true;
   const shouldCloseOnBackdropClick = () =>
     backdropCloseOnClickOverride() ?? props.shouldCloseOnBackdropClick ?? true;
@@ -365,12 +404,24 @@ const DrawerRoot: Layout<typeof componentRecipe, DrawerRootProps> = () => {
   );
 };
 
-const DrawerTrigger: Layout<typeof componentRecipe, DrawerTriggerProps> = () => {
-  const others = omit(props, "children", "class", "dataTheme", "style", "onClick");
+const DrawerTrigger: Layout<
+  typeof componentRecipe,
+  DrawerTriggerProps
+> = () => {
+  const others = omit(
+    props,
+    "children",
+    "class",
+    "dataTheme",
+    "style",
+    "onClick",
+  );
 
   const ctx = useDrawerContext();
 
-  const handleClick: JSX.EventHandlerUnion<HTMLButtonElement, MouseEvent> = (event) => {
+  const handleClick: JSX.EventHandlerUnion<HTMLButtonElement, MouseEvent> = (
+    event,
+  ) => {
     ctx.setIsOpen(true);
     if (typeof props.onClick === "function") props.onClick(event);
   };
@@ -390,7 +441,10 @@ const DrawerTrigger: Layout<typeof componentRecipe, DrawerTriggerProps> = () => 
   );
 };
 
-const DrawerContent: Layout<typeof componentRecipe, DrawerContentProps> = () => {
+const DrawerContent: Layout<
+  typeof componentRecipe,
+  DrawerContentProps
+> = () => {
   const others = omit(
     props,
     "children",
@@ -438,7 +492,10 @@ const DrawerContent: Layout<typeof componentRecipe, DrawerContentProps> = () => 
   );
 };
 
-const DrawerBackdrop: Layout<typeof componentRecipe, DrawerBackdropProps> = () => {
+const DrawerBackdrop: Layout<
+  typeof componentRecipe,
+  DrawerBackdropProps
+> = () => {
   const others = omit(
     props,
     "children",
@@ -466,7 +523,9 @@ const DrawerBackdrop: Layout<typeof componentRecipe, DrawerBackdropProps> = () =
     return () => ctx.setBackdropCloseOnClickOverride(undefined);
   });
 
-  const handleClick: JSX.EventHandlerUnion<HTMLDivElement, MouseEvent> = (event) => {
+  const handleClick: JSX.EventHandlerUnion<HTMLDivElement, MouseEvent> = (
+    event,
+  ) => {
     if (event.target === event.currentTarget) {
       ctx.requestClose("backdrop");
     }
@@ -532,13 +591,16 @@ const DrawerDialog: Layout<typeof componentRecipe, DrawerDialogProps> = () => {
 
   const mergedStyle = (): JSX.CSSProperties => {
     const s: JSX.CSSProperties = {};
-    if (typeof props.style === "object" && props.style) Object.assign(s, props.style);
+    if (typeof props.style === "object" && props.style)
+      Object.assign(s, props.style);
     if (props.width) s["--drawer-dialog-width"] = props.width;
     if (props.maxWidth) s["--drawer-dialog-max-width"] = props.maxWidth;
     if (props.bg) s["--drawer-dialog-bg"] = props.bg;
     if (props.padding) s["--drawer-dialog-padding"] = props.padding;
-    if (props.borderWidth) s["--drawer-dialog-border-width"] = props.borderWidth;
-    if (props.borderColor) s["--drawer-dialog-border-color"] = props.borderColor;
+    if (props.borderWidth)
+      s["--drawer-dialog-border-width"] = props.borderWidth;
+    if (props.borderColor)
+      s["--drawer-dialog-border-color"] = props.borderColor;
     return s;
   };
 
@@ -597,7 +659,10 @@ const DrawerHeader: Layout<typeof componentRecipe, DrawerHeaderProps> = () => {
   );
 };
 
-const DrawerHeading: Layout<typeof componentRecipe, DrawerHeadingProps> = () => {
+const DrawerHeading: Layout<
+  typeof componentRecipe,
+  DrawerHeadingProps
+> = () => {
   const others = omit(props, "children", "class", "dataTheme", "style", "id");
   const ctx = useDrawerContext();
   const uid = createUniqueId();
@@ -681,12 +746,18 @@ const DrawerHandle: Layout<typeof componentRecipe, DrawerHandleProps> = () => {
       data-theme={props.dataTheme}
       style={props.style}
     >
-      <div class={CLASSES.Handle.bar} data-slot="drawer-handle-bar" />
+      <div
+        class={CLASSES.Handle.bar}
+        data-slot="drawer-handle-bar"
+      />
     </div>
   );
 };
 
-const DrawerCloseTrigger: Layout<typeof componentRecipe, DrawerCloseTriggerProps> = () => {
+const DrawerCloseTrigger: Layout<
+  typeof componentRecipe,
+  DrawerCloseTriggerProps
+> = () => {
   const others = omit(
     props,
     "children",
@@ -701,7 +772,9 @@ const DrawerCloseTrigger: Layout<typeof componentRecipe, DrawerCloseTriggerProps
 
   const ctx = useDrawerContext();
 
-  const handleClick: JSX.EventHandlerUnion<HTMLButtonElement, MouseEvent> = (event) => {
+  const handleClick: JSX.EventHandlerUnion<HTMLButtonElement, MouseEvent> = (
+    event,
+  ) => {
     ctx.requestClose("trigger");
     if (typeof props.onClick === "function") props.onClick(event);
   };
@@ -718,13 +791,23 @@ const DrawerCloseTrigger: Layout<typeof componentRecipe, DrawerCloseTriggerProps
       onClick={handleClick}
     >
       {props.startIcon ? (
-        <span class={twMerge(CLASSES.CloseTrigger.icon, CLASSES.CloseTrigger.iconStart)}>
+        <span
+          class={twMerge(
+            CLASSES.CloseTrigger.icon,
+            CLASSES.CloseTrigger.iconStart,
+          )}
+        >
           {props.startIcon}
         </span>
       ) : null}
       {props.children}
       {props.endIcon ? (
-        <span class={twMerge(CLASSES.CloseTrigger.icon, CLASSES.CloseTrigger.iconEnd)}>
+        <span
+          class={twMerge(
+            CLASSES.CloseTrigger.icon,
+            CLASSES.CloseTrigger.iconEnd,
+          )}
+        >
           {props.endIcon}
         </span>
       ) : null}
@@ -740,7 +823,10 @@ const DrawerClose: Layout<typeof componentRecipe, DrawerCloseProps> = () => {
   };
 
   return (
-    <span data-slot="drawer-close" onClick={handleClick}>
+    <span
+      data-slot="drawer-close"
+      onClick={handleClick}
+    >
       {props.children}
     </span>
   );
@@ -763,16 +849,16 @@ const Drawer = Object.assign(DrawerRoot, {
 
 export default Drawer;
 export {
-  DrawerRoot,
-  DrawerTrigger,
   DrawerBackdrop,
+  DrawerBody,
+  DrawerClose,
+  DrawerCloseTrigger,
   DrawerContent,
   DrawerDialog,
-  DrawerHeader,
-  DrawerHeading,
-  DrawerBody,
   DrawerFooter,
   DrawerHandle,
-  DrawerCloseTrigger,
-  DrawerClose,
+  DrawerHeader,
+  DrawerHeading,
+  DrawerRoot,
+  DrawerTrigger,
 };

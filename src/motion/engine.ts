@@ -18,7 +18,7 @@ export const runMotion = (
   from: MotionState,
   to: MotionState,
   transition?: MotionTransition,
-  onComplete?: () => void
+  onComplete?: () => void,
 ) => {
   const duration = resolveDuration(transition);
   const delay = resolveDelay(transition);
@@ -85,10 +85,10 @@ export const runMotion = (
 
       const fromValue =
         key === "scale"
-          ? from.scale ?? 1
+          ? (from.scale ?? 1)
           : key === "x"
-            ? from.x ?? 0
-            : from.y ?? 0;
+            ? (from.x ?? 0)
+            : (from.y ?? 0);
       const toValue = to[key] ?? fromValue;
 
       const control = driver({

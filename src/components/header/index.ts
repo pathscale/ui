@@ -1,7 +1,7 @@
 export {
   default,
   Header,
-  HeaderRoot,
   type HeaderProps,
+  HeaderRoot,
   type HeaderRootProps,
 } from "./Header.generated";

@@ -1,11 +1,10 @@
 import "./Switch.css";
 import type { JSX } from "@solidjs/web";
-import {Show, createSignal, omit, type Component} from "solid-js";
-import { twMerge } from "../../lib/twMerge";
-import type { UIBaseProps, Flavor, State } from "../vocabulary";
-import { CLASSES } from "./Switch.recipe";
+import { type Component, createSignal, omit, Show } from "solid-js";
 import type { Layout } from "../../lib/layouts";
-import { componentRecipe } from "./Switch.recipe";
+import { twMerge } from "../../lib/twMerge";
+import type { Flavor, State, UIBaseProps } from "../vocabulary";
+import { CLASSES, type componentRecipe } from "./Switch.recipe";
 
 const invokeEventHandler = (handler: unknown, event: Event) => {
   if (typeof handler === "function") {
@@ -18,10 +17,18 @@ const invokeEventHandler = (handler: unknown, event: Event) => {
   }
 };
 
-export type ToggleColor = "default" | "accent" | "success" | "warning" | "danger";
+export type ToggleColor =
+  | "default"
+  | "accent"
+  | "success"
+  | "warning"
+  | "danger";
 export type ToggleSize = "sm" | "md" | "lg";
 
-export type ToggleProps = Omit<JSX.InputHTMLAttributes<HTMLInputElement>, "type" | "children" | "color"> &
+export type ToggleProps = Omit<
+  JSX.InputHTMLAttributes<HTMLInputElement>,
+  "type" | "children" | "color"
+> &
   UIBaseProps & {
     defaultChecked?: boolean;
     children?: JSX.Element;
@@ -49,16 +56,22 @@ const Switch: Layout<typeof componentRecipe, ToggleProps> = () => {
     "dataTheme",
   );
 
-  const [internalSelected, setInternalSelected] = createSignal(Boolean(props.defaultChecked));
+  const [internalSelected, setInternalSelected] = createSignal(
+    Boolean(props.defaultChecked),
+  );
 
   const isControlled = () => props.checked !== undefined;
-  const isSelected = () => (isControlled() ? Boolean(props.checked) : internalSelected());
-  const isDisabled = () => Boolean((props.state === "disabled")) || Boolean(props.disabled);
+  const isSelected = () =>
+    isControlled() ? Boolean(props.checked) : internalSelected();
+  const isDisabled = () =>
+    Boolean(props.state === "disabled") || Boolean(props.disabled);
   const color = () => props.flavor ?? "accent";
   const size = () => props.size ?? "md";
   const hasContent = () => props.children != null || props.description != null;
 
-  const handleChange: JSX.EventHandlerUnion<HTMLInputElement, Event> = (event) => {
+  const handleChange: JSX.EventHandlerUnion<HTMLInputElement, Event> = (
+    event,
+  ) => {
     invokeEventHandler(props.onChange, event);
     if (event.defaultPrevented) return;
     if (isDisabled()) return;
@@ -70,13 +83,16 @@ const Switch: Layout<typeof componentRecipe, ToggleProps> = () => {
 
   return (
     <label
-      {...{ class: twMerge(
-        CLASSES.base,
-        CLASSES.size[size()],
-        (CLASSES.flavor[color() as keyof typeof CLASSES.flavor] ?? `switch--flavor-${color()}`),
-        isDisabled() && CLASSES.flag.disabled,
-        props.class,
-      ) }}
+      {...{
+        class: twMerge(
+          CLASSES.base,
+          CLASSES.size[size()],
+          CLASSES.flavor[color() as keyof typeof CLASSES.flavor] ??
+            `switch--flavor-${color()}`,
+          isDisabled() && CLASSES.flag.disabled,
+          props.class,
+        ),
+      }}
       data-theme={props.dataTheme}
       data-slot="switch"
       data-selected={isSelected() ? "true" : "false"}
@@ -94,10 +110,20 @@ const Switch: Layout<typeof componentRecipe, ToggleProps> = () => {
         onChange={handleChange}
       />
 
-      <span {...{ class: CLASSES.slot.control }} data-slot="switch-control" aria-hidden="true">
-        <span {...{ class: CLASSES.slot.thumb }} data-slot="switch-thumb">
+      <span
+        {...{ class: CLASSES.slot.control }}
+        data-slot="switch-control"
+        aria-hidden="true"
+      >
+        <span
+          {...{ class: CLASSES.slot.thumb }}
+          data-slot="switch-thumb"
+        >
           <Show when={props.icon}>
-            <span {...{ class: CLASSES.slot.icon }} data-slot="switch-icon">
+            <span
+              {...{ class: CLASSES.slot.icon }}
+              data-slot="switch-icon"
+            >
               {props.icon}
             </span>
           </Show>
@@ -105,12 +131,18 @@ const Switch: Layout<typeof componentRecipe, ToggleProps> = () => {
       </span>
 
       <Show when={hasContent()}>
-        <span {...{ class: CLASSES.slot.content }} data-slot="switch-content">
+        <span
+          {...{ class: CLASSES.slot.content }}
+          data-slot="switch-content"
+        >
           <Show when={props.children}>
             <span data-slot="label">{props.children}</span>
           </Show>
           <Show when={props.description}>
-            <span {...{ class: CLASSES.slot.description }} data-slot="description">
+            <span
+              {...{ class: CLASSES.slot.description }}
+              data-slot="description"
+            >
               {props.description}
             </span>
           </Show>

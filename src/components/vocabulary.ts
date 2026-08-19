@@ -82,7 +82,13 @@ export type Flavor =
  * `hidden` pairs with `keepMounted`: with it, `display: none`; without it,
  * the content unmounts.
  */
-export type State = "default" | "loading" | "error" | "invalid" | "disabled" | "hidden";
+export type State =
+  | "default"
+  | "loading"
+  | "error"
+  | "invalid"
+  | "disabled"
+  | "hidden";
 
 /** How much emphasis, and what shape. */
 export type Variant = "solid" | "soft" | "outline" | "ghost" | "plain";
@@ -170,10 +176,25 @@ export interface IconSlotProps {
  * chose, this carries a thing that was thrown. A caller wants to retry, log or
  * surface a toast, none of which is what you do with a validation issue.
  */
-export type ErrorHandler = (error: unknown, context?: { retry?: () => void }) => void;
+export type ErrorHandler = (
+  error: unknown,
+  context?: { retry?: () => void },
+) => void;
 
-export type OpenChangeReason = "escape" | "backdrop" | "trigger" | "api" | "select" | "submit";
-export type ChangeReason = "input" | "paste" | "clear" | "step" | "select" | "api";
+export type OpenChangeReason =
+  | "escape"
+  | "backdrop"
+  | "trigger"
+  | "api"
+  | "select"
+  | "submit";
+export type ChangeReason =
+  | "input"
+  | "paste"
+  | "clear"
+  | "step"
+  | "select"
+  | "api";
 
 /**
  * A validation result, not a validation message.
@@ -289,12 +310,23 @@ export interface CapabilityProps {
 
 /** The built-in flavors. A theme may define more; these are the ones the library styles. */
 export const FLAVORS = [
-  "neutral", "primary", "secondary", "accent",
-  "destructive", "success", "warning", "info",
+  "neutral",
+  "primary",
+  "secondary",
+  "accent",
+  "destructive",
+  "success",
+  "warning",
+  "info",
 ] as const;
 
 export const STATES: readonly State[] = [
-  "default", "loading", "error", "invalid", "disabled", "hidden",
+  "default",
+  "loading",
+  "error",
+  "invalid",
+  "disabled",
+  "hidden",
 ] as const;
 
 /**
@@ -316,7 +348,10 @@ export const isInvalid = (issues: Issue[] | undefined): boolean =>
  * So "what state is an input with invalid input?" has one answer: `invalid`,
  * on the same prop and readable from `data-state`.
  */
-export const resolveState = (state: State | undefined, issues?: Issue[]): State => {
+export const resolveState = (
+  state: State | undefined,
+  issues?: Issue[],
+): State => {
   if (state) return state;
   return isInvalid(issues) ? "invalid" : "default";
 };
@@ -327,9 +362,20 @@ export interface Failable {
 }
 
 export const VARIANTS: readonly Variant[] = [
-  "solid", "soft", "outline", "ghost", "plain",
+  "solid",
+  "soft",
+  "outline",
+  "ghost",
+  "plain",
 ] as const;
 
 export const SIZES: readonly Size[] = ["xs", "sm", "md", "lg", "xl"] as const;
 
-export const SPACES: readonly Space[] = ["none", "xs", "sm", "md", "lg", "xl"] as const;
+export const SPACES: readonly Space[] = [
+  "none",
+  "xs",
+  "sm",
+  "md",
+  "lg",
+  "xl",
+] as const;

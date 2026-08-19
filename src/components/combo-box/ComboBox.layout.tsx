@@ -1,13 +1,25 @@
 import "./ComboBox.css";
 import type { JSX } from "@solidjs/web";
-import {For, Show, createContext, createMemo, createSignal, createTrackedEffect, createUniqueId, onSettled, omit, useContext, type Accessor, type Component, type ParentComponent} from "solid-js";
-import { twMerge } from "../../lib/twMerge";
-
-import type { UIBaseProps, State, Issue } from "../vocabulary";
-import { CLASSES } from "./ComboBox.recipe";
+import {
+  type Accessor,
+  type Component,
+  createContext,
+  createMemo,
+  createSignal,
+  createTrackedEffect,
+  createUniqueId,
+  For,
+  omit,
+  onSettled,
+  type ParentComponent,
+  Show,
+  useContext,
+} from "solid-js";
 import type { Layout } from "../../lib/layouts";
-import { componentRecipe } from "./ComboBox.recipe";
+import { twMerge } from "../../lib/twMerge";
+import type { Issue, State, UIBaseProps } from "../vocabulary";
 import { resolveState } from "../vocabulary";
+import { CLASSES, type componentRecipe } from "./ComboBox.recipe";
 
 export type ComboBoxVariant = "primary" | "secondary";
 export type ComboBoxMenuTrigger = "focus" | "input" | "manual";
@@ -238,11 +250,15 @@ const ComboBoxRoot: Layout<typeof componentRecipe, ComboBoxRootProps> = () => {
   );
 
   const listBoxId = `${createUniqueId()}-listbox`;
-  const [internalSelectedKey, setInternalSelectedKey] = createSignal<string | null>(
-    normalizeKey(props.defaultSelectedKey),
+  const [internalSelectedKey, setInternalSelectedKey] = createSignal<
+    string | null
+  >(normalizeKey(props.defaultSelectedKey));
+  const [internalInputValue, setInternalInputValue] = createSignal(
+    props.defaultInputValue ?? "",
   );
-  const [internalInputValue, setInternalInputValue] = createSignal(props.defaultInputValue ?? "");
-  const [internalOpen, setInternalOpen] = createSignal(Boolean(props.defaultOpen));
+  const [internalOpen, setInternalOpen] = createSignal(
+    Boolean(props.defaultOpen),
+  );
   const [activeKey, setActiveKeySignal] = createSignal<string | null>(null);
 
   let rootRef: HTMLDivElement | undefined;
@@ -251,12 +267,17 @@ const ComboBoxRoot: Layout<typeof componentRecipe, ComboBoxRootProps> = () => {
   const variant = () => props.variant ?? "primary";
   const menuTrigger = () => props.menuTrigger ?? "focus";
   const fullWidth = () => Boolean(props.fullWidth);
-  const isDisabled = () => Boolean((props.state === "disabled")) || Boolean(props.disabled);
-  const isInvalid = () => Boolean((resolveState(props.state, props.issues) === "invalid"));
+  const isDisabled = () =>
+    Boolean(props.state === "disabled") || Boolean(props.disabled);
+  const isInvalid = () =>
+    Boolean(resolveState(props.state, props.issues) === "invalid");
   const isRequired = () => Boolean(props.required) || Boolean(props.required);
-  const isOpen = () => (props.open !== undefined ? Boolean(props.open) : internalOpen());
+  const isOpen = () =>
+    props.open !== undefined ? Boolean(props.open) : internalOpen();
   const selectedKey = createMemo(() =>
-    props.selectedKey !== undefined ? normalizeKey(props.selectedKey) : internalSelectedKey(),
+    props.selectedKey !== undefined
+      ? normalizeKey(props.selectedKey)
+      : internalSelectedKey(),
   );
   const inputValue = createMemo(() =>
     props.inputValue !== undefined ? props.inputValue : internalInputValue(),
@@ -275,7 +296,9 @@ const ComboBoxRoot: Layout<typeof componentRecipe, ComboBoxRootProps> = () => {
           : extractItemText(item, baseKey);
 
       const disabled =
-        props.itemDisabled != null ? Boolean(props.itemDisabled(item, index)) : extractItemDisabled(item);
+        props.itemDisabled != null
+          ? Boolean(props.itemDisabled(item, index))
+          : extractItemDisabled(item);
 
       return {
         key: baseKey,
@@ -299,7 +322,8 @@ const ComboBoxRoot: Layout<typeof componentRecipe, ComboBoxRootProps> = () => {
     return normalizedItems().filter((item) => filter(item.textValue, query));
   });
 
-  const getEnabledItems = () => filteredItems().filter((item) => !item.disabled);
+  const getEnabledItems = () =>
+    filteredItems().filter((item) => !item.disabled);
 
   const setSelectedKey = (nextKey: string | null) => {
     if (props.selectedKey === undefined) {
@@ -346,7 +370,11 @@ const ComboBoxRoot: Layout<typeof componentRecipe, ComboBoxRootProps> = () => {
       return;
     }
 
-    setActiveKeySignal(target === "first" ? enabledItems[0].key : enabledItems[enabledItems.length - 1].key);
+    setActiveKeySignal(
+      target === "first"
+        ? enabledItems[0].key
+        : enabledItems[enabledItems.length - 1].key,
+    );
   };
 
   const focusNext = (direction: 1 | -1) => {
@@ -364,7 +392,8 @@ const ComboBoxRoot: Layout<typeof componentRecipe, ComboBoxRootProps> = () => {
       return;
     }
 
-    const nextIndex = (currentIndex + direction + enabledItems.length) % enabledItems.length;
+    const nextIndex =
+      (currentIndex + direction + enabledItems.length) % enabledItems.length;
     setActiveKeySignal(enabledItems[nextIndex].key);
   };
 
@@ -388,7 +417,9 @@ const ComboBoxRoot: Layout<typeof componentRecipe, ComboBoxRootProps> = () => {
     }
   };
 
-  const handleFocusOut: JSX.EventHandlerUnion<HTMLDivElement, FocusEvent> = (event) => {
+  const handleFocusOut: JSX.EventHandlerUnion<HTMLDivElement, FocusEvent> = (
+    event,
+  ) => {
     invokeEventHandler(props.onFocusOut, event);
 
     if (event.defaultPrevented) return;
@@ -425,7 +456,8 @@ const ComboBoxRoot: Layout<typeof componentRecipe, ComboBoxRootProps> = () => {
 
     const currentKey = activeKey();
 
-    if (currentKey && enabledItems.some((item) => item.key === currentKey)) return;
+    if (currentKey && enabledItems.some((item) => item.key === currentKey))
+      return;
 
     const selected = enabledItems.find((item) => item.key === selectedKey());
     setActiveKeySignal((selected ?? enabledItems[0]).key);
@@ -492,12 +524,14 @@ const ComboBoxRoot: Layout<typeof componentRecipe, ComboBoxRootProps> = () => {
             props.ref(node);
           }
         }}
-        {...{ class: twMerge(
-          CLASSES.Root.base,
-          CLASSES.Root.variant[variant()],
-          fullWidth() && CLASSES.Root.flag.fullWidth,
-          props.class,
-        ) }}
+        {...{
+          class: twMerge(
+            CLASSES.Root.base,
+            CLASSES.Root.variant[variant()],
+            fullWidth() && CLASSES.Root.flag.fullWidth,
+            props.class,
+          ),
+        }}
         data-slot="combobox"
         data-open={isOpen() ? "true" : "false"}
         data-invalid={isInvalid() ? "true" : undefined}
@@ -509,7 +543,11 @@ const ComboBoxRoot: Layout<typeof componentRecipe, ComboBoxRootProps> = () => {
         onFocusOut={handleFocusOut}
       >
         <Show when={props.name}>
-          <input name={props.name} type="hidden" value={hiddenValue()} />
+          <input
+            name={props.name}
+            type="hidden"
+            value={hiddenValue()}
+          />
         </Show>
 
         {props.children ?? (
@@ -523,7 +561,10 @@ const ComboBoxRoot: Layout<typeof componentRecipe, ComboBoxRootProps> = () => {
                   {props.startIcon}
                 </span>
               </Show>
-              <ComboBoxInput placeholder={props.placeholder} required={isRequired()} />
+              <ComboBoxInput
+                placeholder={props.placeholder}
+                required={isRequired()}
+              />
               <ComboBoxTrigger endIcon={props.endIcon} />
             </ComboBoxInputGroup>
             <ComboBoxPopover>
@@ -536,18 +577,23 @@ const ComboBoxRoot: Layout<typeof componentRecipe, ComboBoxRootProps> = () => {
   );
 };
 
-const ComboBoxInputGroup: Layout<typeof componentRecipe, ComboBoxInputGroupProps> = () => {
+const ComboBoxInputGroup: Layout<
+  typeof componentRecipe,
+  ComboBoxInputGroupProps
+> = () => {
   const context = useContext(ComboBoxContext);
   const others = omit(props, "children", "class", "dataTheme", "style");
 
   return (
     <div
       {...others}
-      {...{ class: twMerge(
-        CLASSES.InputGroup.base,
-        context?.fullWidth() && CLASSES.InputGroup.flag.fullWidth,
-        props.class,
-      ) }}
+      {...{
+        class: twMerge(
+          CLASSES.InputGroup.base,
+          context?.fullWidth() && CLASSES.InputGroup.flag.fullWidth,
+          props.class,
+        ),
+      }}
       data-slot="combobox-input-group"
       data-disabled={context?.isDisabled() ? "true" : undefined}
       data-invalid={context?.isInvalid() ? "true" : undefined}
@@ -559,7 +605,10 @@ const ComboBoxInputGroup: Layout<typeof componentRecipe, ComboBoxInputGroupProps
   );
 };
 
-const ComboBoxInput: Layout<typeof componentRecipe, ComboBoxInputProps> = () => {
+const ComboBoxInput: Layout<
+  typeof componentRecipe,
+  ComboBoxInputProps
+> = () => {
   const context = useContext(ComboBoxContext);
   const others = omit(
     props,
@@ -574,7 +623,9 @@ const ComboBoxInput: Layout<typeof componentRecipe, ComboBoxInputProps> = () => 
     "required",
   );
 
-  const handleInput: JSX.EventHandlerUnion<HTMLInputElement, InputEvent> = (event) => {
+  const handleInput: JSX.EventHandlerUnion<HTMLInputElement, InputEvent> = (
+    event,
+  ) => {
     invokeEventHandler(props.onInput, event);
     if (event.defaultPrevented) return;
 
@@ -591,7 +642,9 @@ const ComboBoxInput: Layout<typeof componentRecipe, ComboBoxInputProps> = () => 
     }
   };
 
-  const handleFocus: JSX.EventHandlerUnion<HTMLInputElement, FocusEvent> = (event) => {
+  const handleFocus: JSX.EventHandlerUnion<HTMLInputElement, FocusEvent> = (
+    event,
+  ) => {
     invokeEventHandler(props.onFocus, event);
     if (event.defaultPrevented) return;
 
@@ -600,7 +653,10 @@ const ComboBoxInput: Layout<typeof componentRecipe, ComboBoxInputProps> = () => 
     }
   };
 
-  const handleKeyDown: JSX.EventHandlerUnion<HTMLInputElement, KeyboardEvent> = (event) => {
+  const handleKeyDown: JSX.EventHandlerUnion<
+    HTMLInputElement,
+    KeyboardEvent
+  > = (event) => {
     invokeEventHandler(props.onKeyDown, event);
     if (event.defaultPrevented) return;
 
@@ -698,7 +754,10 @@ const ComboBoxInput: Layout<typeof componentRecipe, ComboBoxInputProps> = () => 
   );
 };
 
-const ComboBoxTrigger: Layout<typeof componentRecipe, ComboBoxTriggerProps> = () => {
+const ComboBoxTrigger: Layout<
+  typeof componentRecipe,
+  ComboBoxTriggerProps
+> = () => {
   const context = useContext(ComboBoxContext);
   const others = omit(
     props,
@@ -711,7 +770,9 @@ const ComboBoxTrigger: Layout<typeof componentRecipe, ComboBoxTriggerProps> = ()
     "onClick",
   );
 
-  const handleClick: JSX.EventHandlerUnion<HTMLButtonElement, MouseEvent> = (event) => {
+  const handleClick: JSX.EventHandlerUnion<HTMLButtonElement, MouseEvent> = (
+    event,
+  ) => {
     invokeEventHandler(props.onClick, event);
     if (event.defaultPrevented) return;
     context?.toggleOpen();
@@ -745,7 +806,13 @@ const ComboBoxTrigger: Layout<typeof componentRecipe, ComboBoxTriggerProps> = ()
       {props.children}
       {props.endIcon ? (
         <span
-          {...{ class: twMerge(CLASSES.Icon.base, CLASSES.Icon.end, CLASSES.Trigger.icon) }}
+          {...{
+            class: twMerge(
+              CLASSES.Icon.base,
+              CLASSES.Icon.end,
+              CLASSES.Trigger.icon,
+            ),
+          }}
           data-slot="combobox-trigger-end-icon"
         >
           {props.endIcon}
@@ -755,7 +822,10 @@ const ComboBoxTrigger: Layout<typeof componentRecipe, ComboBoxTriggerProps> = ()
   );
 };
 
-const ComboBoxPopover: Layout<typeof componentRecipe, ComboBoxPopoverProps> = () => {
+const ComboBoxPopover: Layout<
+  typeof componentRecipe,
+  ComboBoxPopoverProps
+> = () => {
   const context = useContext(ComboBoxContext);
   const others = omit(props, "children", "class", "dataTheme", "style");
 
@@ -775,7 +845,15 @@ const ComboBoxPopover: Layout<typeof componentRecipe, ComboBoxPopoverProps> = ()
 
 const ComboBoxList: Layout<typeof componentRecipe, ComboBoxListProps> = () => {
   const context = useContext(ComboBoxContext);
-  const others = omit(props, "children", "class", "dataTheme", "style", "renderEmpty", "endIcon");
+  const others = omit(
+    props,
+    "children",
+    "class",
+    "dataTheme",
+    "style",
+    "renderEmpty",
+    "endIcon",
+  );
 
   const items = () => context?.filteredItems() ?? [];
 
@@ -793,7 +871,10 @@ const ComboBoxList: Layout<typeof componentRecipe, ComboBoxListProps> = () => {
         when={items().length > 0}
         fallback={
           props.renderEmpty?.() ?? (
-            <div {...{ class: CLASSES.List.empty }} data-slot="combobox-empty-state">
+            <div
+              {...{ class: CLASSES.List.empty }}
+              data-slot="combobox-empty-state"
+            >
               No matching options
             </div>
           )
@@ -836,12 +917,19 @@ const ComboBoxList: Layout<typeof componentRecipe, ComboBoxListProps> = () => {
                 }}
               >
                 <span {...{ class: CLASSES.Option.label }}>
-                  {typeof props.children === "function" ? props.children(state) : item.textValue}
+                  {typeof props.children === "function"
+                    ? props.children(state)
+                    : item.textValue}
                 </span>
                 {props.endIcon ? (
-                  <span {...{ class: CLASSES.Option.indicator }} aria-hidden="true">
+                  <span
+                    {...{ class: CLASSES.Option.indicator }}
+                    aria-hidden="true"
+                  >
                     <span
-                      {...{ class: twMerge(CLASSES.Icon.base, CLASSES.Icon.end) }}
+                      {...{
+                        class: twMerge(CLASSES.Icon.base, CLASSES.Icon.end),
+                      }}
                       data-slot="combobox-option-end-icon"
                     >
                       {props.endIcon}
@@ -867,13 +955,13 @@ const ComboBox = Object.assign(ComboBoxRoot, {
 });
 
 export default ComboBox;
+export type { ComboBoxRootProps as ComboBoxProps };
 export {
   ComboBox,
-  ComboBoxRoot,
-  ComboBoxInputGroup,
   ComboBoxInput,
-  ComboBoxTrigger,
-  ComboBoxPopover,
+  ComboBoxInputGroup,
   ComboBoxList,
+  ComboBoxPopover,
+  ComboBoxRoot,
+  ComboBoxTrigger,
 };
-export type { ComboBoxRootProps as ComboBoxProps };

@@ -140,10 +140,18 @@
      * way to know which it is sitting on.
      */
     --shadow-color: 0 0 0;
-    --shadow-sm: 0 1px 2px rgb(var(--shadow-color) / 5%), 0 1px 3px rgb(var(--shadow-color) / 10%);
-    --shadow-md: 0 4px 6px -1px rgb(var(--shadow-color) / 10%), 0 2px 4px -2px rgb(var(--shadow-color) / 10%);
-    --shadow-lg: 0 10px 15px -3px rgb(var(--shadow-color) / 10%), 0 4px 6px -4px rgb(var(--shadow-color) / 10%);
-    --shadow-xl: 0 20px 25px -5px rgb(var(--shadow-color) / 10%), 0 8px 10px -6px rgb(var(--shadow-color) / 10%);
+    --shadow-sm:
+      0 1px 2px rgb(var(--shadow-color) / 5%),
+      0 1px 3px rgb(var(--shadow-color) / 10%);
+    --shadow-md:
+      0 4px 6px -1px rgb(var(--shadow-color) / 10%),
+      0 2px 4px -2px rgb(var(--shadow-color) / 10%);
+    --shadow-lg:
+      0 10px 15px -3px rgb(var(--shadow-color) / 10%),
+      0 4px 6px -4px rgb(var(--shadow-color) / 10%);
+    --shadow-xl:
+      0 20px 25px -5px rgb(var(--shadow-color) / 10%),
+      0 8px 10px -6px rgb(var(--shadow-color) / 10%);
 
     /* --------------------------------------------------------- Focus ring */
     --focus-ring-width: 2px;

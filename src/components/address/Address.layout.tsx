@@ -1,16 +1,16 @@
 import "./Address.css";
 import type { JSX } from "@solidjs/web";
-import {Show, createSignal, onCleanup} from "solid-js";
+import { createSignal, onCleanup, Show } from "solid-js";
 import type { Layout } from "../../lib/layouts";
 import type { Size, State, UIBaseProps } from "../vocabulary";
-import { address } from "./Address.recipe";
 import {
   copyAddress,
-  scheduleCopyReset,
-  truncateAddress,
   DEFAULT_LEAD,
   DEFAULT_TAIL,
+  scheduleCopyReset,
+  truncateAddress,
 } from "./Address.interactions";
+import type { address } from "./Address.recipe";
 
 /* -------------------------------------------------------------------------------------------------
  * Types
@@ -78,9 +78,18 @@ export const AddressLayout: Layout<typeof address, AddressProps> = () => {
   };
 
   return (
-    <span {...slot.root} data-state={local.state ?? "default"}>
-      <span {...slot.value} title={local.value}>
-        <Show when={local.name} fallback={shown()}>
+    <span
+      {...slot.root}
+      data-state={local.state ?? "default"}
+    >
+      <span
+        {...slot.value}
+        title={local.value}
+      >
+        <Show
+          when={local.name}
+          fallback={shown()}
+        >
           {local.name}
         </Show>
       </span>
@@ -91,10 +100,20 @@ export const AddressLayout: Layout<typeof address, AddressProps> = () => {
           type="button"
           onClick={copy}
           disabled={local.state === "disabled"}
-          aria-label={copied() ? undefined : (local.copyLabel as string) ?? "Copy address"}
+          aria-label={
+            copied()
+              ? undefined
+              : ((local.copyLabel as string) ?? "Copy address")
+          }
         >
-          <Show when={copied()} fallback={local.copyLabel ?? "Copy"}>
-            <span {...slot.feedback} role="status">
+          <Show
+            when={copied()}
+            fallback={local.copyLabel ?? "Copy"}
+          >
+            <span
+              {...slot.feedback}
+              role="status"
+            >
               {local.copiedLabel ?? "Copied"}
             </span>
           </Show>

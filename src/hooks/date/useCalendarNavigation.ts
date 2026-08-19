@@ -1,4 +1,4 @@
-import { createMemo, createSignal, type Accessor } from "solid-js";
+import { type Accessor, createMemo, createSignal } from "solid-js";
 
 import {
   addDays,
@@ -20,7 +20,9 @@ export const useCalendarNavigation = (options: CalendarNavigationOptions) => {
   const [visibleMonth, setVisibleMonth] = createSignal(
     startOfMonth(options.initialFocusedDate()),
   );
-  const [focusedDate, setFocusedDate] = createSignal(options.initialFocusedDate());
+  const [focusedDate, setFocusedDate] = createSignal(
+    options.initialFocusedDate(),
+  );
 
   const clampVisibleMonth = (nextVisibleMonth: Date) => {
     const min = options.minDate();

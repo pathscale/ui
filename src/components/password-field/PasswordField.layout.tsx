@@ -1,12 +1,11 @@
 import "./PasswordField.css";
 import type { JSX } from "@solidjs/web";
-import {createSignal} from "solid-js";
+import { createSignal } from "solid-js";
+import type { Layout } from "../../lib/layouts";
 import Button from "../button";
 import Icon from "../icon";
 import Input from "../input";
 import type { UIBaseProps } from "../vocabulary";
-import type { Layout } from "../../lib/layouts";
-import { passwordField } from "./PasswordField.recipe";
 import {
   capturePasswordToggleSnapshot,
   createPasswordFieldInputContract,
@@ -14,6 +13,7 @@ import {
   schedulePasswordFieldRestore,
   selectPasswordToggleIcon,
 } from "./PasswordField.interactions";
+import type { passwordField } from "./PasswordField.recipe";
 
 /* -------------------------------------------------------------------------------------------------
  * Types
@@ -51,7 +51,10 @@ export type PasswordFieldProps = UIBaseProps & {
  * the toggle restores focus, selection and value: swapping `type` makes some
  * browsers and password managers treat the field as replaced.
  * -----------------------------------------------------------------------------------------------*/
-export const PasswordFieldLayout: Layout<typeof passwordField, PasswordFieldProps> = () => {
+export const PasswordFieldLayout: Layout<
+  typeof passwordField,
+  PasswordFieldProps
+> = () => {
   const [isVisible, setIsVisible] = createSignal(false);
   let fieldRef: HTMLInputElement | undefined;
 
@@ -87,7 +90,10 @@ export const PasswordFieldLayout: Layout<typeof passwordField, PasswordFieldProp
   };
 
   return (
-    <div {...slot.root} data-visible={isVisible() ? "true" : "false"}>
+    <div
+      {...slot.root}
+      data-visible={isVisible() ? "true" : "false"}
+    >
       <Input
         {...createPasswordFieldInputContract({
           id: local.id,

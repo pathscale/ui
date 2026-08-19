@@ -4,10 +4,10 @@ import {
   capturePasswordToggleSnapshot,
   createPasswordFieldInputContract,
   getPasswordInputType,
+  type PasswordToggleSnapshot,
   preventPasswordTogglePointerDown,
   restorePasswordFieldAfterToggle,
   selectPasswordToggleIcon,
-  type PasswordToggleSnapshot,
 } from "../../../src/components/password-field/PasswordField.interactions";
 
 type MockField = {
@@ -39,7 +39,10 @@ describe("PasswordField helpers", () => {
 
   it("captures focus/selection/value snapshot", () => {
     const field = createMockField();
-    const snapshot = capturePasswordToggleSnapshot(field, field as unknown as EventTarget);
+    const snapshot = capturePasswordToggleSnapshot(
+      field,
+      field as unknown as EventTarget,
+    );
 
     expect(snapshot.hadFocus).toBeTrue();
     expect(snapshot.selectionStart).toBe(2);
@@ -112,9 +115,15 @@ describe("PasswordField helpers", () => {
     const visible = h("span", { "data-icon": "visible" }, "visible");
     const fallback = h("span", { "data-icon": "fallback" }, "fallback");
 
-    expect(selectPasswordToggleIcon(false, visible, hidden, fallback)).toBe(hidden);
-    expect(selectPasswordToggleIcon(true, visible, hidden, fallback)).toBe(visible);
-    expect(selectPasswordToggleIcon(true, undefined, undefined, fallback)).toBe(fallback);
+    expect(selectPasswordToggleIcon(false, visible, hidden, fallback)).toBe(
+      hidden,
+    );
+    expect(selectPasswordToggleIcon(true, visible, hidden, fallback)).toBe(
+      visible,
+    );
+    expect(selectPasswordToggleIcon(true, undefined, undefined, fallback)).toBe(
+      fallback,
+    );
   });
 });
 

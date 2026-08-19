@@ -1,12 +1,10 @@
 import "./NoiseBackground.css";
 import type { JSX } from "@solidjs/web";
-import {onCleanup, onSettled, omit} from "solid-js";
-import { twMerge } from "../../lib/twMerge";
-
-import type { UIBaseProps } from "../vocabulary";
-import { CLASSES } from "./NoiseBackground.recipe";
+import { omit, onCleanup, onSettled } from "solid-js";
 import type { Layout } from "../../lib/layouts";
-import { componentRecipe } from "./NoiseBackground.recipe";
+import { twMerge } from "../../lib/twMerge";
+import type { UIBaseProps } from "../vocabulary";
+import { CLASSES, type componentRecipe } from "./NoiseBackground.recipe";
 
 /* ------------------------------------------------------------------ */
 /*  Props                                                             */
@@ -43,8 +41,12 @@ function createSpring(initial: number, stiffness = 100, damping = 30) {
   let velocity = 0;
   let target = initial;
   return {
-    set(v: number) { target = v; },
-    get() { return current; },
+    set(v: number) {
+      target = v;
+    },
+    get() {
+      return current;
+    },
     step(dt: number) {
       velocity += (-stiffness * (current - target) - damping * velocity) * dt;
       current += velocity * dt;
@@ -56,7 +58,10 @@ function createSpring(initial: number, stiffness = 100, damping = 30) {
 /*  Component                                                         */
 /* ------------------------------------------------------------------ */
 
-const NoiseBackground: Layout<typeof componentRecipe, NoiseBackgroundProps> = () => {
+const NoiseBackground: Layout<
+  typeof componentRecipe,
+  NoiseBackgroundProps
+> = () => {
   const others = omit(
     rawProps,
     "children",
@@ -113,7 +118,10 @@ const NoiseBackground: Layout<typeof componentRecipe, NoiseBackgroundProps> = ()
     const cy = initRect.height / 2;
     springX.set(cx);
     springY.set(cy);
-    for (let i = 0; i < 60; i++) { springX.step(1 / 60); springY.step(1 / 60); }
+    for (let i = 0; i < 60; i++) {
+      springX.step(1 / 60);
+      springY.step(1 / 60);
+    }
 
     const v = randomVelocity();
     vx = v.x;
@@ -125,7 +133,10 @@ const NoiseBackground: Layout<typeof componentRecipe, NoiseBackgroundProps> = ()
     let h = initRect.height;
 
     const tick = (time: number) => {
-      if (!containerRef) { rafId = requestAnimationFrame(tick); return; }
+      if (!containerRef) {
+        rafId = requestAnimationFrame(tick);
+        return;
+      }
 
       const dt = prevTime ? Math.min((time - prevTime) / 1000, 0.05) : 1 / 60;
       prevTime = time;
@@ -138,7 +149,8 @@ const NoiseBackground: Layout<typeof componentRecipe, NoiseBackgroundProps> = ()
 
         if (time - lastDirectionChange > 1500 + Math.random() * 1500) {
           const nv = randomVelocity();
-          vx = nv.x; vy = nv.y;
+          vx = nv.x;
+          vy = nv.y;
           lastDirectionChange = time;
         }
 
@@ -146,9 +158,15 @@ const NoiseBackground: Layout<typeof componentRecipe, NoiseBackgroundProps> = ()
         let nx = rawX + vx * frameDt;
         let ny = rawY + vy * frameDt;
 
-        if (nx < padding || nx > w - padding || ny < padding || ny > h - padding) {
+        if (
+          nx < padding ||
+          nx > w - padding ||
+          ny < padding ||
+          ny > h - padding
+        ) {
           const nv = randomVelocity();
-          vx = nv.x; vy = nv.y;
+          vx = nv.x;
+          vy = nv.y;
           lastDirectionChange = time;
           nx = Math.max(padding, Math.min(w - padding, nx));
           ny = Math.max(padding, Math.min(h - padding, ny));
@@ -179,16 +197,13 @@ const NoiseBackground: Layout<typeof componentRecipe, NoiseBackgroundProps> = ()
       const ly = (m: number) => hh + (sy - hh) * m;
 
       if (layer0) {
-        layer0.style.background =
-          `radial-gradient(${radius}px circle at ${sx}px ${sy}px, ${c[0]} 0%, transparent 50%)`;
+        layer0.style.background = `radial-gradient(${radius}px circle at ${sx}px ${sy}px, ${c[0]} 0%, transparent 50%)`;
       }
       if (layer1) {
-        layer1.style.background =
-          `radial-gradient(${radius}px circle at ${lx(0.7)}px ${ly(0.7)}px, ${c[1]} 0%, transparent 50%)`;
+        layer1.style.background = `radial-gradient(${radius}px circle at ${lx(0.7)}px ${ly(0.7)}px, ${c[1]} 0%, transparent 50%)`;
       }
       if (layer2) {
-        layer2.style.background =
-          `radial-gradient(${radius}px circle at ${lx(1.3)}px ${ly(1.3)}px, ${c[2] || c[0]} 0%, transparent 50%)`;
+        layer2.style.background = `radial-gradient(${radius}px circle at ${lx(1.3)}px ${ly(1.3)}px, ${c[2] || c[0]} 0%, transparent 50%)`;
       }
       if (stripEl) {
         stripEl.style.transform = animating()
@@ -213,8 +228,7 @@ const NoiseBackground: Layout<typeof componentRecipe, NoiseBackgroundProps> = ()
       rawProps.containerClass,
     );
 
-  const contentClasses = () =>
-    twMerge(CLASSES.slot.content, rawProps.class);
+  const contentClasses = () => twMerge(CLASSES.slot.content, rawProps.class);
 
   return (
     <div
@@ -229,9 +243,18 @@ const NoiseBackground: Layout<typeof componentRecipe, NoiseBackgroundProps> = ()
       {...others}
     >
       {/* Moving gradient layers */}
-      <div ref={layer0} {...{ class: CLASSES.slot.layer0 }} />
-      <div ref={layer1} {...{ class: CLASSES.slot.layer1 }} />
-      <div ref={layer2} {...{ class: CLASSES.slot.layer2 }} />
+      <div
+        ref={layer0}
+        {...{ class: CLASSES.slot.layer0 }}
+      />
+      <div
+        ref={layer1}
+        {...{ class: CLASSES.slot.layer1 }}
+      />
+      <div
+        ref={layer2}
+        {...{ class: CLASSES.slot.layer2 }}
+      />
 
       {/* Top gradient strip */}
       <div

@@ -1,6 +1,12 @@
-import {type Accessor, createMemo, createSignal, getOwner} from "solid-js";
 import type { JSX } from "@solidjs/web";
-import { createStore, flush } from "solid-js";
+import {
+  type Accessor,
+  createMemo,
+  createSignal,
+  createStore,
+  flush,
+  getOwner,
+} from "solid-js";
 
 /**
  * The imperative grid model.

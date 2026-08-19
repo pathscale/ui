@@ -11,14 +11,13 @@ const Badge = Object.assign(BadgeRoot, {
 
 export default Badge;
 
+export type {
+  BadgeAnchorProps,
+  BadgeLabelProps,
+  BadgeRootProps,
+  BadgeRootProps as BadgeProps,
+} from "./Badge.generated";
 /* -------------------------------------------------------------------------------------------------
  * Named Exports
  * -----------------------------------------------------------------------------------------------*/
-export { Badge, BadgeRoot, BadgeLabel, BadgeAnchor };
-
-export type {
-  BadgeRootProps,
-  BadgeRootProps as BadgeProps,
-  BadgeLabelProps,
-  BadgeAnchorProps,
-} from "./Badge.generated";
+export { Badge, BadgeAnchor, BadgeLabel, BadgeRoot };

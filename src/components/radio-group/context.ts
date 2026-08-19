@@ -1,4 +1,4 @@
-import { createContext, type Accessor } from "solid-js";
+import { type Accessor, createContext } from "solid-js";
 
 export type RadioGroupContextValue = {
   name: Accessor<string>;
@@ -21,4 +21,6 @@ export type RadioGroupContextValue = {
  * A truthy default such as `{}` would silence the throw and be worse: the
  * optional chain would then call methods that do not exist.
  */
-export const RadioGroupContext = createContext<RadioGroupContextValue | null>(null);
+export const RadioGroupContext = createContext<RadioGroupContextValue | null>(
+  null,
+);

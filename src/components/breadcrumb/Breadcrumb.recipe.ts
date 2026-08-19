@@ -20,4 +20,13 @@ export const CLASSES = {
     base: ["breadcrumb__item", "breadcrumb__link", "breadcrumb__separator"],
   },
 } as const;
-export const componentRecipe = recipe({component:"breadcrumb",slots:{"breadcrumb":{},"breadcrumb-item":{},"breadcrumb-link":{},"breadcrumb-separator":{},"root":{},},});
+export const componentRecipe = recipe({
+  component: "breadcrumb",
+  slots: {
+    breadcrumb: {},
+    "breadcrumb-item": {},
+    "breadcrumb-link": {},
+    "breadcrumb-separator": {},
+    root: {},
+  },
+});

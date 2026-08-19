@@ -7,4 +7,7 @@ export const CLASSES = {
     field: "color-picker__field",
   },
 } as const;
-export const componentRecipe = recipe({component:"color-picker",slots:{"color-picker":{},"root":{},},});
+export const componentRecipe = recipe({
+  component: "color-picker",
+  slots: { "color-picker": {}, root: {} },
+});

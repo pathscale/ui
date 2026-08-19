@@ -1,5 +1,5 @@
-import type {Accessor} from "solid-js";
 import type { JSX } from "@solidjs/web";
+import type { Accessor } from "solid-js";
 import type { UIBaseProps } from "../vocabulary";
 
 export interface UseImmersiveLandingOptions {
@@ -51,8 +51,12 @@ export interface ImmersiveLandingProps extends UIBaseProps {
   showNavigation?: boolean;
   showArrows?: boolean;
   appVersion?: string;
-  overlay?: JSX.Element | ((context: ImmersiveLandingContextValue) => JSX.Element);
-  children: JSX.Element | ((context: ImmersiveLandingContextValue) => JSX.Element);
+  overlay?:
+    | JSX.Element
+    | ((context: ImmersiveLandingContextValue) => JSX.Element);
+  children:
+    | JSX.Element
+    | ((context: ImmersiveLandingContextValue) => JSX.Element);
   pwaConfig?: PWAInstallPromptProps;
   cookieConfig?: CookieConsentProps;
   firefoxPWAConfig?: FirefoxPWABannerProps;
@@ -120,7 +124,6 @@ export interface CookieConsentProps {
   }) => void;
 }
 
-
 export type BrowserType = "firefox" | "safari" | "other" | "supported";
 
 export interface FirefoxPWABannerTexts {
@@ -138,7 +141,6 @@ export interface FirefoxPWABannerProps {
   onInstall?: () => void;
   onDismiss?: () => void;
 }
-
 
 export interface PWAInstallPromptTexts {
   title?: string;
