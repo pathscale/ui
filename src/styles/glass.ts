@@ -60,8 +60,18 @@ export const GLASS_LIMITS = {
   controlTint: { min: 0, max: 1 },
 } as const;
 
-/** What the shipped themes use. Both land on the same numbers. */
-export const GLASS_DEFAULTS: Record<GlassMode, GlassTuning> = {
+/**
+ * What the shipped themes use. Both land on the same numbers.
+ *
+ * Typed with every axis required, unlike `GlassTuning` itself. A theme may
+ * leave `controlTint` unset, but the defaults are what an unset axis resolves
+ * *to*, so there is nothing left to be undefined here. Typed as a plain
+ * `GlassTuning` it read back as `number | undefined` for callers that index it
+ * by a computed axis - `GLASS_DEFAULTS[mode][axis]`, which is exactly how a
+ * settings panel drives one slider per axis - and every one of those call sites
+ * broke on a value this object never contains.
+ */
+export const GLASS_DEFAULTS: Record<GlassMode, Required<GlassTuning>> = {
   light: { blur: 9, refraction: 0.31, depth: 24, controlTint: 0 },
   dark: { blur: 9, refraction: 0.31, depth: 24, controlTint: 0 },
 };
