@@ -8,4 +8,7 @@ export const CLASSES = {
   item: "language-switcher__item",
   itemSelected: "language-switcher__item--selected",
 } as const;
-export const componentRecipe = recipe({component:"language-switcher",slots:{"root":{},},});
+export const componentRecipe = recipe({
+  component: "language-switcher",
+  slots: { root: {} },
+});

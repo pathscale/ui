@@ -143,7 +143,11 @@
     border-radius: var(--radius-box);
     width: var(--tabs-indicator-width, 0px);
     height: var(--tabs-indicator-height, 0px);
-    transform: translate3d(var(--tabs-indicator-x, 0px), var(--tabs-indicator-y, 0px), 0);
+    transform: translate3d(
+      var(--tabs-indicator-x, 0px),
+      var(--tabs-indicator-y, 0px),
+      0
+    );
     opacity: 0;
     pointer-events: none;
     background-color: var(--color-base-100);
@@ -175,7 +179,8 @@
     scrollbar-width: none;
   }
 
-  .tabs--secondary .tabs__list[data-orientation="horizontal"]::-webkit-scrollbar {
+  .tabs--secondary
+    .tabs__list[data-orientation="horizontal"]::-webkit-scrollbar {
     display: none;
   }
 

@@ -1,16 +1,25 @@
 import "./Spinner.css";
 import type { JSX } from "@solidjs/web";
-import {createUniqueId, type Component} from "solid-js";
-import type { Flavor, Size, UIBaseProps } from "../vocabulary";
+import { type Component, createUniqueId } from "solid-js";
 import type { Layout } from "../../lib/layouts";
-import { spinner } from "./Spinner.recipe";
+import type { Flavor, Size, UIBaseProps } from "../vocabulary";
+import type { spinner } from "./Spinner.recipe";
 
 /* -------------------------------------------------------------------------------------------------
  * Types
  * -----------------------------------------------------------------------------------------------*/
-export type SpinnerShape = "spinner" | "dots" | "ring" | "ball" | "bars" | "infinity";
+export type SpinnerShape =
+  | "spinner"
+  | "dots"
+  | "ring"
+  | "ball"
+  | "bars"
+  | "infinity";
 
-export type SpinnerProps = Omit<JSX.HTMLAttributes<HTMLSpanElement>, "children"> &
+export type SpinnerProps = Omit<
+  JSX.HTMLAttributes<HTMLSpanElement>,
+  "children"
+> &
   UIBaseProps & {
     size?: Size;
     /* No `state`. A spinner is always loading; that is what it is for. */
@@ -33,13 +42,40 @@ const SpinnerSVG: Component = () => {
       viewBox="0 0 24 24"
     >
       <defs>
-        <linearGradient id={`spinner-grad1-${id}`} x1="50%" x2="50%" y1="5.271%" y2="91.793%">
-          <stop offset="0%" stop-color="currentColor" />
-          <stop offset="100%" stop-color="currentColor" stop-opacity="0.55" />
+        <linearGradient
+          id={`spinner-grad1-${id}`}
+          x1="50%"
+          x2="50%"
+          y1="5.271%"
+          y2="91.793%"
+        >
+          <stop
+            offset="0%"
+            stop-color="currentColor"
+          />
+          <stop
+            offset="100%"
+            stop-color="currentColor"
+            stop-opacity="0.55"
+          />
         </linearGradient>
-        <linearGradient id={`spinner-grad2-${id}`} x1="50%" x2="50%" y1="15.24%" y2="87.15%">
-          <stop offset="0%" stop-color="currentColor" stop-opacity="0" />
-          <stop offset="100%" stop-color="currentColor" stop-opacity="0.55" />
+        <linearGradient
+          id={`spinner-grad2-${id}`}
+          x1="50%"
+          x2="50%"
+          y1="15.24%"
+          y2="87.15%"
+        >
+          <stop
+            offset="0%"
+            stop-color="currentColor"
+            stop-opacity="0"
+          />
+          <stop
+            offset="100%"
+            stop-color="currentColor"
+            stop-opacity="0.55"
+          />
         </linearGradient>
       </defs>
       <g fill="none">

@@ -34,7 +34,9 @@ const LAYOUT = readFileSync(
  * and reads as a completely unrelated bug.
  */
 describe("input context default", () => {
-  const declaration = LAYOUT.match(/const InputContext = createContext<[^>]*>\((.*)\);/);
+  const declaration = LAYOUT.match(
+    /const InputContext = createContext<[^>]*>\((.*)\);/,
+  );
 
   it("declares the context with an explicit default", () => {
     expect(declaration).not.toBeNull();

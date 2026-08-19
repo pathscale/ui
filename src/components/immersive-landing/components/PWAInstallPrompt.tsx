@@ -1,15 +1,16 @@
 import {
   type Component,
   createSignal,
-  onSettled,
   onCleanup,
+  onSettled,
   Show,
 } from "solid-js";
-import { PWAInstallPromptProps } from "../types";
 import Button from "../../button";
 import Card from "../../card";
 import Flex from "../../flex";
 import { CLASSES } from "../ImmersiveLanding.recipe";
+import type { PWAInstallPromptProps } from "../types";
+
 const DISMISS_DURATION = 7 * 24 * 60 * 60 * 1000; // 7 days in milliseconds
 
 const defaultTexts = {
@@ -21,9 +22,9 @@ const defaultTexts = {
 };
 
 export const PWAInstallPrompt: Component<PWAInstallPromptProps> = (props) => {
-    const STORAGE_KEY = () => props.storageKey ?? "app_pwa_dismissed";
-    const appName = () => props.appName ?? "My App";
-    const appIcon = () => props.appIcon ?? "/icon-192.png";
+  const STORAGE_KEY = () => props.storageKey ?? "app_pwa_dismissed";
+  const appName = () => props.appName ?? "My App";
+  const appIcon = () => props.appIcon ?? "/icon-192.png";
 
   const texts = () => ({
     title: props.texts?.title ?? defaultTexts.title,
@@ -93,7 +94,7 @@ export const PWAInstallPrompt: Component<PWAInstallPromptProps> = (props) => {
   onSettled(() => {
     window.addEventListener(
       "beforeinstallprompt",
-      handleBeforeInstallPrompt as EventListener
+      handleBeforeInstallPrompt as EventListener,
     );
     window.addEventListener("appinstalled", handleAppInstalled);
   });
@@ -101,7 +102,7 @@ export const PWAInstallPrompt: Component<PWAInstallPromptProps> = (props) => {
   onCleanup(() => {
     window.removeEventListener(
       "beforeinstallprompt",
-      handleBeforeInstallPrompt as EventListener
+      handleBeforeInstallPrompt as EventListener,
     );
     window.removeEventListener("appinstalled", handleAppInstalled);
   });
@@ -114,7 +115,10 @@ export const PWAInstallPrompt: Component<PWAInstallPromptProps> = (props) => {
         aria-labelledby="pwa-install-title"
         {...{ class: CLASSES.pwaPrompt.dialog }}
       >
-        <Card elevation="md" {...{ class: CLASSES.pwaPrompt.card }}>
+        <Card
+          elevation="md"
+          {...{ class: CLASSES.pwaPrompt.card }}
+        >
           <Button
             size="sm"
             variant="ghost"
@@ -127,7 +131,11 @@ export const PWAInstallPrompt: Component<PWAInstallPromptProps> = (props) => {
           </Button>
 
           <Card.Body {...{ class: CLASSES.pwaPrompt.body }}>
-            <Flex align="start" gap="md" {...{ class: CLASSES.pwaPrompt.media }}>
+            <Flex
+              align="start"
+              gap="md"
+              {...{ class: CLASSES.pwaPrompt.media }}
+            >
               <div {...{ class: CLASSES.pwaPrompt.appIconWrap }}>
                 <img
                   src={appIcon()}
@@ -136,8 +144,15 @@ export const PWAInstallPrompt: Component<PWAInstallPromptProps> = (props) => {
                 />
               </div>
 
-              <Flex direction="col" gap="sm" {...{ class: CLASSES.pwaPrompt.textWrap }}>
-                <h3 id="pwa-install-title" {...{ class: CLASSES.pwaPrompt.title }}>
+              <Flex
+                direction="col"
+                gap="sm"
+                {...{ class: CLASSES.pwaPrompt.textWrap }}
+              >
+                <h3
+                  id="pwa-install-title"
+                  {...{ class: CLASSES.pwaPrompt.title }}
+                >
                   {texts().title}
                 </h3>
                 <p {...{ class: CLASSES.pwaPrompt.description }}>
@@ -147,10 +162,18 @@ export const PWAInstallPrompt: Component<PWAInstallPromptProps> = (props) => {
             </Flex>
           </Card.Body>
           <Card.Footer {...{ class: CLASSES.pwaPrompt.footer }}>
-            <Button flavor="primary" {...{ class: CLASSES.pwaPrompt.action }} onClick={handleInstall}>
+            <Button
+              flavor="primary"
+              {...{ class: CLASSES.pwaPrompt.action }}
+              onClick={handleInstall}
+            >
               {texts().installButton}
             </Button>
-            <Button variant="ghost" {...{ class: CLASSES.pwaPrompt.action }} onClick={handleDismiss}>
+            <Button
+              variant="ghost"
+              {...{ class: CLASSES.pwaPrompt.action }}
+              onClick={handleDismiss}
+            >
               {texts().notNowButton}
             </Button>
           </Card.Footer>

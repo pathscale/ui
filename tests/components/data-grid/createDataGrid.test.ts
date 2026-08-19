@@ -58,7 +58,10 @@ describe("createDataGrid: the builder", () => {
   it("inserts at an index when given one, and appends when not", () => {
     createRoot((dispose) => {
       const grid = build();
-      grid.addRow({ id: 5, firstName: "Alan", lastName: "Turing", age: 41, color: "Red" }, 0);
+      grid.addRow(
+        { id: 5, firstName: "Alan", lastName: "Turing", age: 41, color: "Red" },
+        0,
+      );
       expect(grid.rows()[0].firstName).toBe("Alan");
       grid.deleteRow(0);
       expect(grid.rows()[0].firstName).toBe("John");
@@ -132,7 +135,10 @@ describe("createDataGrid: searching", () => {
     createRoot((dispose) => {
       const grid = build();
       grid.searchColumn("firstName", "j");
-      expect(grid.pageRows().map((row) => row.firstName)).toEqual(["John", "Jane"]);
+      expect(grid.pageRows().map((row) => row.firstName)).toEqual([
+        "John",
+        "Jane",
+      ]);
 
       grid.searchColumn("lastName", "roe");
       expect(grid.pageRows().map((row) => row.firstName)).toEqual(["Jane"]);
@@ -208,7 +214,9 @@ describe("createDataGrid: column visibility", () => {
       const grid = build();
       grid.toggleColumn("color");
       expect(grid.columns()).toHaveLength(5);
-      expect(grid.visibleColumns().map((column) => column.name)).not.toContain("color");
+      expect(grid.visibleColumns().map((column) => column.name)).not.toContain(
+        "color",
+      );
       grid.toggleColumn("color", true);
       expect(grid.visibleColumns()).toHaveLength(5);
       dispose();
@@ -245,7 +253,10 @@ describe("createDataGrid: selection", () => {
       const grid = build({ selection: "multiple" });
       grid.searchColumn("color", "blue");
       grid.toggleCheckAll(true);
-      expect(grid.selectedRows().map((row) => row.color)).toEqual(["Blue", "Blue"]);
+      expect(grid.selectedRows().map((row) => row.color)).toEqual([
+        "Blue",
+        "Blue",
+      ]);
       grid.toggleCheckAll(false);
       expect(grid.selectedRows()).toHaveLength(0);
       dispose();
@@ -265,7 +276,9 @@ describe("createDataGrid: grouping", () => {
   it("buckets the rendered rows once a groupBy is set", () => {
     createRoot((dispose) => {
       const grid = build({ groupBy: "color" });
-      expect(grid.groupedRows().map((group) => [group.value, group.rows.length])).toEqual([
+      expect(
+        grid.groupedRows().map((group) => [group.value, group.rows.length]),
+      ).toEqual([
         ["Blue", 2],
         ["Red", 1],
         ["Green", 1],
@@ -286,7 +299,9 @@ describe("createDataGrid: grouping", () => {
   it("filterRows narrows to one value, as vue3's did", () => {
     createRoot((dispose) => {
       const grid = build();
-      expect(grid.filterRows("color", "Blue").map((row) => row.id)).toEqual([1, 3]);
+      expect(grid.filterRows("color", "Blue").map((row) => row.id)).toEqual([
+        1, 3,
+      ]);
       dispose();
     });
   });

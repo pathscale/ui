@@ -3,12 +3,27 @@
     --combobox-bg: var(--color-field, var(--color-base-100));
     --combobox-bg-hover: var(--color-field-hover, var(--color-base-200));
     --combobox-bg-focus: var(--color-field-focus, var(--color-base-100));
-    --combobox-border: var(--color-field-border, color-mix(in oklab, var(--color-base-content) 16%, transparent));
-    --combobox-border-hover: var(--color-field-border-hover, color-mix(in oklab, var(--color-base-content) 22%, transparent));
-    --combobox-border-focus: var(--color-field-border-focus, var(--color-accent));
-    --combobox-border-invalid: var(--color-field-border-invalid, var(--color-danger));
+    --combobox-border: var(
+      --color-field-border,
+      color-mix(in oklab, var(--color-base-content) 16%, transparent)
+    );
+    --combobox-border-hover: var(
+      --color-field-border-hover,
+      color-mix(in oklab, var(--color-base-content) 22%, transparent)
+    );
+    --combobox-border-focus: var(
+      --color-field-border-focus,
+      var(--color-accent)
+    );
+    --combobox-border-invalid: var(
+      --color-field-border-invalid,
+      var(--color-danger)
+    );
     --combobox-fg: var(--color-field-foreground, var(--color-base-content));
-    --combobox-placeholder: var(--color-field-placeholder, color-mix(in oklab, var(--color-base-content) 45%, transparent));
+    --combobox-placeholder: var(
+      --color-field-placeholder,
+      color-mix(in oklab, var(--color-base-content) 45%, transparent)
+    );
 
     position: relative;
     display: flex;
@@ -66,7 +81,9 @@
   }
 
   @media (hover: hover) {
-    .combo-box__input-group:hover:not(:focus-within):not([data-disabled="true"]):not([data-invalid="true"]) {
+    .combo-box__input-group:hover:not(:focus-within):not(
+        [data-disabled="true"]
+      ):not([data-invalid="true"]) {
       background-color: var(--combobox-bg-hover);
       border-color: var(--combobox-border-hover);
     }
@@ -202,7 +219,8 @@
     overflow-y: auto;
     overscroll-behavior: contain;
     border-radius: 1.5rem;
-    border: var(--border, 1px) solid color-mix(in oklch, var(--color-base-content) 8%, transparent);
+    border: var(--border, 1px) solid
+      color-mix(in oklch, var(--color-base-content) 8%, transparent);
     background-color: var(--color-base-100);
     box-shadow:
       0 20px 32px rgb(var(--shadow-color, 0 0 0) / 16%),
@@ -316,9 +334,10 @@
   }
 
   @media (hover: hover) {
-    .combo-box--secondary .combo-box__input-group:hover:not(:focus-within):not([data-disabled="true"]):not(
-        [data-invalid="true"]
-      ) {
+    .combo-box--secondary
+      .combo-box__input-group:hover:not(:focus-within):not(
+        [data-disabled="true"]
+      ):not([data-invalid="true"]) {
       background-color: var(--color-base-300);
     }
   }

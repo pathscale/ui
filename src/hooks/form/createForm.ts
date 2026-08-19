@@ -1,5 +1,5 @@
-import { createStore, flush } from "solid-js";
 import type { StandardSchemaV1 } from "@standard-schema/spec";
+import { createStore, flush } from "solid-js";
 import { getFirstFieldError } from "./getFirstFieldError";
 
 // biome-ignore lint/suspicious/noExplicitAny: a form's values are the caller's shape
@@ -59,7 +59,10 @@ export type FormApi<TValues extends AnyValues = AnyValues> = {
   /** Write a value and re-run the synchronous schema. */
   setFieldValue: (name: string, value: unknown) => void;
   /** Mark touched and validate, which is what a blur means. */
-  validateField: (name: string, cause: "change" | "blur") => void | Promise<void>;
+  validateField: (
+    name: string,
+    cause: "change" | "blur",
+  ) => void | Promise<void>;
   /** Validate everything, run async validators, then `onSubmit` if clean. */
   submit: () => Promise<void>;
   /** True while `submit()` is awaiting. */
@@ -78,12 +81,16 @@ export type FormApi<TValues extends AnyValues = AnyValues> = {
  * this form is flat, and a nested path would key an error to a field name that
  * does not exist rather than to its parent.
  */
-const issuesToErrors = (issues: readonly StandardSchemaV1.Issue[]): Record<string, string[]> => {
+const issuesToErrors = (
+  issues: readonly StandardSchemaV1.Issue[],
+): Record<string, string[]> => {
   const errors: Record<string, string[]> = {};
   for (const issue of issues) {
     const head = issue.path?.[0];
     const name =
-      typeof head === "object" && head !== null && "key" in head ? String(head.key) : String(head ?? "");
+      typeof head === "object" && head !== null && "key" in head
+        ? String(head.key)
+        : String(head ?? "");
     if (!name) continue;
     (errors[name] ??= []).push(issue.message);
   }
@@ -113,18 +120,25 @@ export const createForm = <TValues extends AnyValues = AnyValues>(
 ): FormApi<TValues> => {
   // `NoFn` rejects a callable initial value, which a generic `TValues` cannot
   // prove it is not. The values are a plain object by construction.
-  const [values, setValues] = createStore<TValues>(
-    { ...options.defaultValues } as never,
-  );
+  const [values, setValues] = createStore<TValues>({
+    ...options.defaultValues,
+  } as never);
   const [meta, setMeta] = createStore<Record<string, FieldMeta>>({});
   const [status, setStatus] = createStore({ isSubmitting: false });
 
-  const metaFor = (name: string): FieldMeta => meta[name] ?? { isTouched: false, errors: [] };
+  const metaFor = (name: string): FieldMeta =>
+    meta[name] ?? { isTouched: false, errors: [] };
 
   /** Replace every field's errors with the schema's verdict, keeping touched. */
-  const applyErrors = (errors: Record<string, string[]>, touchAll: boolean): void => {
+  const applyErrors = (
+    errors: Record<string, string[]>,
+    touchAll: boolean,
+  ): void => {
     setMeta((draft) => {
-      for (const name of new Set([...Object.keys(draft), ...Object.keys(errors)])) {
+      for (const name of new Set([
+        ...Object.keys(draft),
+        ...Object.keys(errors),
+      ])) {
         draft[name] = {
           isTouched: touchAll || (draft[name]?.isTouched ?? false),
           errors: errors[name] ?? [],
@@ -153,9 +167,11 @@ export const createForm = <TValues extends AnyValues = AnyValues>(
     // Cast at the boundary: the store is typed by the caller's values, and a
     // field name is a string the caller chose, so this is the one place the two
     // cannot be related without making `name` a keyof and losing dotted paths.
-    (setValues as unknown as (fn: (draft: AnyValues) => void) => void)((draft) => {
-      draft[name] = value;
-    });
+    (setValues as unknown as (fn: (draft: AnyValues) => void) => void)(
+      (draft) => {
+        draft[name] = value;
+      },
+    );
     // Solid 2 batches writes and flushes on a microtask, so the schema would
     // otherwise validate the value from before this call. The form's whole job
     // is to answer "is this valid now", which means now rather than next tick.
@@ -192,7 +208,10 @@ export const createForm = <TValues extends AnyValues = AnyValues>(
       const result = schema["~standard"].validate(values as TValues);
       if (result instanceof Promise) {
         const resolved = await result;
-        applyErrors(resolved.issues ? issuesToErrors(resolved.issues) : {}, true);
+        applyErrors(
+          resolved.issues ? issuesToErrors(resolved.issues) : {},
+          true,
+        );
         ok = !resolved.issues?.length;
       }
     }
@@ -232,7 +251,8 @@ export const createForm = <TValues extends AnyValues = AnyValues>(
     validateField,
     submit,
     isSubmitting: () => status.isSubmitting,
-    isValid: () => Object.values(meta).every((m) => (m?.errors.length ?? 0) === 0),
+    isValid: () =>
+      Object.values(meta).every((m) => (m?.errors.length ?? 0) === 0),
   };
 };
 

@@ -1,20 +1,34 @@
-import {type Component, Show, For, createSignal, createMemo, createTrackedEffect, omit} from "solid-js";
-import { Portal, type JSX} from "@solidjs/web";
+import { type JSX, Portal } from "@solidjs/web";
+import {
+  type Component,
+  createMemo,
+  createSignal,
+  createTrackedEffect,
+  For,
+  omit,
+  Show,
+} from "solid-js";
+import type { Layout } from "../../lib/layouts";
 import { twMerge } from "../../lib/twMerge";
-import type { ColorValue, ColorPickerContextType, ColorFormat } from "../color-wheel-flower";
-import { ColorPickerContext, ColorWheelFlower } from "../color-wheel-flower";
-import { createColorFromHsl, parseColor } from "../color-wheel-flower/ColorUtils";
-import Button from "../button";
-import Icon from "../icon";
-import type { UIBaseProps } from "../vocabulary";
 import {
   createOverlayPosition,
   type OverlayPlacement,
 } from "../_shared/overlayPosition";
+import Button from "../button";
+import type {
+  ColorFormat,
+  ColorPickerContextType,
+  ColorValue,
+} from "../color-wheel-flower";
+import { ColorPickerContext, ColorWheelFlower } from "../color-wheel-flower";
+import {
+  createColorFromHsl,
+  parseColor,
+} from "../color-wheel-flower/ColorUtils";
+import Icon from "../icon";
+import type { UIBaseProps } from "../vocabulary";
 import { createHueShiftStore, type HueShiftStore } from "./hueShift";
-import { CLASSES } from "./ThemeColorPicker.recipe";
-import type { Layout } from "../../lib/layouts";
-import { componentRecipe } from "./ThemeColorPicker.recipe";
+import { CLASSES, type componentRecipe } from "./ThemeColorPicker.recipe";
 
 export type ThemeColorPickerAlign = "start" | "end";
 export type ThemeColorPickerPlacement = OverlayPlacement;
@@ -69,7 +83,10 @@ function hexToColorValue(hex: string | null): ColorValue {
   return parseColor(hex) ?? createColorFromHsl(0, 0, 100, 1);
 }
 
-const ThemeColorPicker: Layout<typeof componentRecipe, ThemeColorPickerProps> = () => {
+const ThemeColorPicker: Layout<
+  typeof componentRecipe,
+  ThemeColorPickerProps
+> = () => {
   const others = omit(
     props,
     "storagePrefix",
@@ -87,10 +104,16 @@ const ThemeColorPicker: Layout<typeof componentRecipe, ThemeColorPickerProps> = 
 
   const [isOpen, setIsOpen] = createSignal(false);
   const [featureAvailable, setFeatureAvailable] = createSignal(true);
-  const [containerRef, setContainerRef] = createSignal<HTMLDivElement | undefined>();
-  const [popoverRef, setPopoverRef] = createSignal<HTMLDivElement | undefined>();
+  const [containerRef, setContainerRef] = createSignal<
+    HTMLDivElement | undefined
+  >();
+  const [popoverRef, setPopoverRef] = createSignal<
+    HTMLDivElement | undefined
+  >();
 
-  const store: HueShiftStore = createHueShiftStore(props.storagePrefix ?? "theme");
+  const store: HueShiftStore = createHueShiftStore(
+    props.storagePrefix ?? "theme",
+  );
 
   const colorValue = createMemo(() => hexToColorValue(store.themeColor()));
 
@@ -214,7 +237,10 @@ const ThemeColorPicker: Layout<typeof componentRecipe, ThemeColorPickerProps> = 
               src="icon-[mdi--palette]"
               width={16}
               height={16}
-              {...{ class: store.themeColor() !== null ? CLASSES.iconActive : undefined }}
+              {...{
+                class:
+                  store.themeColor() !== null ? CLASSES.iconActive : undefined,
+              }}
             />
           )}
         </Button>

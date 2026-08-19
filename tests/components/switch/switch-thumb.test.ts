@@ -2,7 +2,10 @@ import { describe, expect, it } from "bun:test";
 import { readFileSync } from "node:fs";
 import { join } from "node:path";
 
-const CSS = readFileSync(join(import.meta.dir, "../../../src/components/switch/Switch.css"), "utf8");
+const CSS = readFileSync(
+  join(import.meta.dir, "../../../src/components/switch/Switch.css"),
+  "utf8",
+);
 
 /**
  * The thumb slides on the compositor, not through layout.
@@ -15,7 +18,10 @@ const CSS = readFileSync(join(import.meta.dir, "../../../src/components/switch/S
  */
 describe("switch thumb", () => {
   it("animates transform rather than margin", () => {
-    const thumb = CSS.slice(CSS.indexOf(".switch__thumb {"), CSS.indexOf(".switch__icon"));
+    const thumb = CSS.slice(
+      CSS.indexOf(".switch__thumb {"),
+      CSS.indexOf(".switch__icon"),
+    );
     expect(thumb).toContain("transform 300ms");
     expect(thumb).not.toMatch(/transition:[^}]*\bmargin\b/);
   });

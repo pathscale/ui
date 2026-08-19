@@ -102,7 +102,10 @@
     text-align: center;
     font-size: 0.75rem;
     font-weight: 500;
-    color: var(--color-muted, color-mix(in oklab, var(--color-base-content) 45%, transparent));
+    color: var(
+      --color-muted,
+      color-mix(in oklab, var(--color-base-content) 45%, transparent)
+    );
   }
 
   .calendar__day-wrapper {
@@ -208,24 +211,34 @@
   }
 
   .calendar__cell:active:not(:disabled):not(.calendar__cell--selected),
-  .calendar__cell[data-pressed="true"]:not(:disabled):not(.calendar__cell--selected) {
+  .calendar__cell[data-pressed="true"]:not(:disabled):not(
+    .calendar__cell--selected
+  ) {
     background-color: var(--color-default, var(--color-base-200));
   }
 
   .calendar__cell:active.calendar__cell--selected:not(:disabled),
   .calendar__cell[data-pressed="true"].calendar__cell--selected:not(:disabled) {
-    background-color: var(--color-accent-hover, color-mix(in oklab, var(--color-accent) 88%, black));
+    background-color: var(
+      --color-accent-hover,
+      color-mix(in oklab, var(--color-accent) 88%, black)
+    );
   }
 
   @media (hover: hover) {
     .calendar__cell:hover:not(:disabled):not(.calendar__cell--selected),
-    .calendar__cell[data-hovered="true"]:not(:disabled):not(.calendar__cell--selected) {
+    .calendar__cell[data-hovered="true"]:not(:disabled):not(
+        .calendar__cell--selected
+      ) {
       background-color: var(--color-default, var(--color-base-200));
     }
   }
 
   .calendar__cell--outside-month {
-    color: var(--color-muted, color-mix(in oklab, var(--color-base-content) 45%, transparent));
+    color: var(
+      --color-muted,
+      color-mix(in oklab, var(--color-base-content) 45%, transparent)
+    );
     opacity: 0.5;
   }
 

@@ -8,4 +8,7 @@ export const CLASSES = {
     vertical: "footer--vertical",
   },
 } as const;
-export const componentRecipe = recipe({component:"footer",slots:{"root":{},},});
+export const componentRecipe = recipe({
+  component: "footer",
+  slots: { root: {} },
+});

@@ -15,7 +15,12 @@ export interface Tween {
   done: boolean;
 }
 
-export function tween(from: number, to: number, dur: number, e: EaseFn = ease.linear): Tween {
+export function tween(
+  from: number,
+  to: number,
+  dur: number,
+  e: EaseFn = ease.linear,
+): Tween {
   return { from, to, dur, ease: e, startMs: -1, val: from, done: false };
 }
 

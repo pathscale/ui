@@ -56,7 +56,8 @@
   }
 
   .navbar__row--bordered {
-    border-bottom: var(--border, 1px) solid color-mix(in oklab, var(--color-base-content) 16%, transparent);
+    border-bottom: var(--border, 1px) solid
+      color-mix(in oklab, var(--color-base-content) 16%, transparent);
   }
 
   .navbar__row--padded {

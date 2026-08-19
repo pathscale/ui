@@ -1,15 +1,19 @@
 import "./Text.css";
 import type { JSX } from "@solidjs/web";
-import {omit, type Component} from "solid-js";
-import { twMerge } from "../../lib/twMerge";
-
-import type { UIBaseProps } from "../vocabulary";
-import { CLASSES } from "./Text.recipe";
+import { type Component, omit } from "solid-js";
 import type { Layout } from "../../lib/layouts";
-import { componentRecipe } from "./Text.recipe";
+import { twMerge } from "../../lib/twMerge";
+import type { UIBaseProps } from "../vocabulary";
+import { CLASSES, type componentRecipe } from "./Text.recipe";
 
 export type TextSize = "xs" | "sm" | "base" | "lg" | "xl";
-export type TextVariant = "default" | "muted" | "subtle" | "success" | "warning" | "danger";
+export type TextVariant =
+  | "default"
+  | "muted"
+  | "subtle"
+  | "success"
+  | "warning"
+  | "danger";
 export type TextWeight = "normal" | "medium" | "semibold" | "bold";
 export type TextTransform = "none" | "uppercase" | "lowercase" | "capitalize";
 export type TextTracking = "normal" | "wide";
@@ -72,5 +76,5 @@ const Text = Object.assign(TextRoot, {
 });
 
 export default Text;
-export { Text, TextRoot };
 export type { TextRootProps as TextProps };
+export { Text, TextRoot };

@@ -1,16 +1,15 @@
-import {Show, omit, type Component} from "solid-js";
 import type { JSX } from "@solidjs/web";
-import { twMerge } from "../../lib/twMerge";
-
-import Input from "../input";
-import type { InputFieldProps } from "../input";
-import Label from "../label";
+import { type Component, omit, Show } from "solid-js";
+import type { AnyFormApi } from "../../hooks/form/FormContext";
 import { useFormContext } from "../../hooks/form/FormContext";
 import { getFirstFieldError } from "../../hooks/form/getFirstFieldError";
-import { FieldErrorMessage } from "./FieldErrorMessage.generated";
-import type { AnyFormApi } from "../../hooks/form/FormContext";
 import type { Layout } from "../../lib/layouts";
-import { componentRecipe } from "./Form.recipe";
+import { twMerge } from "../../lib/twMerge";
+import type { InputFieldProps } from "../input";
+import Input from "../input";
+import Label from "../label";
+import { FieldErrorMessage } from "./FieldErrorMessage.generated";
+import type { componentRecipe } from "./Form.recipe";
 
 // ---------------------------------------------------------------------------
 // Types
@@ -32,7 +31,10 @@ export type FormFieldProps = {
    * Props forwarded to the underlying `<Input.Field>` element.
    * Use this to set `type`, `placeholder`, `autocomplete`, `startIcon`, etc.
    */
-  inputProps?: Omit<InputFieldProps, "name" | "value" | "onInput" | "onBlur" | "aria-invalid" | "isInvalid">;
+  inputProps?: Omit<
+    InputFieldProps,
+    "name" | "value" | "onInput" | "onBlur" | "aria-invalid" | "isInvalid"
+  >;
   /** Container class override. */
   class?: string;
   /**
@@ -78,9 +80,15 @@ const FormField: Layout<typeof componentRecipe, FormFieldProps> = () => {
     meta().isTouched ? getFirstFieldError(meta().errors) : undefined;
 
   return (
-    <div {...{ class: twMerge("flex flex-col gap-1", props.class) }} data-slot="form-field">
+    <div
+      {...{ class: twMerge("flex flex-col gap-1", props.class) }}
+      data-slot="form-field"
+    >
       <Show when={props.label}>
-        <Label for={props.name} data-invalid={errorMessage() ? "true" : undefined}>
+        <Label
+          for={props.name}
+          data-invalid={errorMessage() ? "true" : undefined}
+        >
           {props.label}
         </Label>
       </Show>
@@ -95,7 +103,11 @@ const FormField: Layout<typeof componentRecipe, FormFieldProps> = () => {
         }}
         onBlur={() => form.validateField(props.name, "blur")}
         aria-invalid={errorMessage() ? "true" : undefined}
-        issues={errorMessage() ? [{ code: "invalid", message: String(errorMessage()) }] : undefined}
+        issues={
+          errorMessage()
+            ? [{ code: "invalid", message: String(errorMessage()) }]
+            : undefined
+        }
       />
 
       <FieldErrorMessage message={errorMessage()} />

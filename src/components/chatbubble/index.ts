@@ -1,1 +1,1 @@
-export { default, type ChatBubbleProps } from "./ChatBubble.generated";
+export { type ChatBubbleProps, default } from "./ChatBubble.generated";

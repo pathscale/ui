@@ -1,10 +1,10 @@
 import "./Icon.css";
 import type { JSX } from "@solidjs/web";
-import {Show} from "solid-js";
+import { Show } from "solid-js";
 import type { Layout } from "../../lib/layouts";
 import type { Flavor, UIBaseProps } from "../vocabulary";
-import { icon } from "./Icon.recipe";
 import { preloadClasses } from "./Icon.interactions";
+import type { icon } from "./Icon.recipe";
 
 /* -------------------------------------------------------------------------------------------------
  * Types
@@ -61,7 +61,10 @@ export const IconLayout: Layout<typeof icon, IconProps> = () => (
         `classList` is gone in 2.0: `class` takes the same record and applies
         the truthy keys, which is what this was always doing with one of them.
       */}
-      <span {...slot.glyph} class={preloadClasses(local.src as string)} />
+      <span
+        {...slot.glyph}
+        class={preloadClasses(local.src as string)}
+      />
     </Show>
   </span>
 );

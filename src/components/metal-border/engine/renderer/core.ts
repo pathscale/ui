@@ -40,7 +40,7 @@ export interface MetalFxInstance {
   cssWidth: number;
   cssHeight: number;
   cornerRadius: number;
-  kind: 'pill' | 'circle';
+  kind: "pill" | "circle";
   ringCssPx: number;
   shaderScale: number;
   opacityMul: number;
@@ -157,7 +157,8 @@ function buildGLPipeline(gl: WebGLRenderingContext): {
   gl.vertexAttribPointer(posLoc, 2, gl.FLOAT, false, 0, 0);
 
   const uniforms: Record<string, WebGLUniformLocation | null> = {};
-  for (const n of UNIFORM_NAMES) uniforms[n] = gl.getUniformLocation(program, n);
+  for (const n of UNIFORM_NAMES)
+    uniforms[n] = gl.getUniformLocation(program, n);
 
   return { program, buffer, uniforms };
 }

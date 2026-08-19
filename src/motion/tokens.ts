@@ -1,4 +1,4 @@
-import type { MotionEasing, MotionTokens, MotionTokenOverrides } from "./types";
+import type { MotionEasing, MotionTokenOverrides, MotionTokens } from "./types";
 
 export const motionDurations: Record<string, number> = {
   route: 0.18,
@@ -28,7 +28,7 @@ export const defaultMotionTokens: MotionTokens = {
 
 const mergeDefined = <T extends Record<string, unknown>>(
   base: T,
-  overrides?: Partial<T>
+  overrides?: Partial<T>,
 ): T => {
   const next = { ...base };
   if (!overrides) return next;
@@ -42,7 +42,7 @@ const mergeDefined = <T extends Record<string, unknown>>(
 
 export const mergeMotionTokens = (
   base: MotionTokens,
-  overrides?: MotionTokenOverrides
+  overrides?: MotionTokenOverrides,
 ): MotionTokens => {
   return {
     durations: mergeDefined(base.durations, overrides?.durations),

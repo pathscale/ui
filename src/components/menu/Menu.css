@@ -86,14 +86,18 @@
 
   .menu-item[aria-checked="true"] [data-slot="menu-item-indicator--checkmark"],
   .menu-item[aria-selected="true"] [data-slot="menu-item-indicator--checkmark"],
-  .menu-item[data-selected="true"] [data-slot="menu-item-indicator--checkmark"] {
+  .menu-item[data-selected="true"]
+    [data-slot="menu-item-indicator--checkmark"] {
     transition: stroke-dashoffset 100ms linear;
   }
 
   @media (prefers-reduced-motion: reduce) {
-    .menu-item[aria-checked="true"] [data-slot="menu-item-indicator--checkmark"],
-    .menu-item[aria-selected="true"] [data-slot="menu-item-indicator--checkmark"],
-    .menu-item[data-selected="true"] [data-slot="menu-item-indicator--checkmark"] {
+    .menu-item[aria-checked="true"]
+      [data-slot="menu-item-indicator--checkmark"],
+    .menu-item[aria-selected="true"]
+      [data-slot="menu-item-indicator--checkmark"],
+    .menu-item[data-selected="true"]
+      [data-slot="menu-item-indicator--checkmark"] {
       transition: none;
     }
   }
@@ -122,7 +126,10 @@
     transform: translateY(-50%);
     align-items: center;
     justify-content: center;
-    color: var(--color-muted, color-mix(in oklab, var(--color-base-content) 55%, transparent));
+    color: var(
+      --color-muted,
+      color-mix(in oklab, var(--color-base-content) 55%, transparent)
+    );
     transition: all 250ms ease;
   }
 
@@ -142,12 +149,16 @@
     height: 0.625rem;
   }
 
-  .menu-item[data-selection-mode="multiple"] .menu-item__indicator [data-slot="menu-item-indicator--checkmark"] {
+  .menu-item[data-selection-mode="multiple"]
+    .menu-item__indicator
+    [data-slot="menu-item-indicator--checkmark"] {
     transition: all 300ms ease;
   }
 
   @media (prefers-reduced-motion: reduce) {
-    .menu-item[data-selection-mode="multiple"] .menu-item__indicator [data-slot="menu-item-indicator--checkmark"] {
+    .menu-item[data-selection-mode="multiple"]
+      .menu-item__indicator
+      [data-slot="menu-item-indicator--checkmark"] {
       transition: none;
     }
   }
@@ -159,18 +170,25 @@
     opacity: 0;
   }
 
-  .menu-item[data-selection-mode="multiple"] .menu-item__indicator [data-slot="menu-item-indicator--dot"] {
+  .menu-item[data-selection-mode="multiple"]
+    .menu-item__indicator
+    [data-slot="menu-item-indicator--dot"] {
     transition: all 250ms ease;
   }
 
   @media (prefers-reduced-motion: reduce) {
-    .menu-item[data-selection-mode="multiple"] .menu-item__indicator [data-slot="menu-item-indicator--dot"] {
+    .menu-item[data-selection-mode="multiple"]
+      .menu-item__indicator
+      [data-slot="menu-item-indicator--dot"] {
       transition: none;
     }
   }
 
   .menu-item__indicator--submenu {
-    color: var(--color-muted, color-mix(in oklab, var(--color-base-content) 55%, transparent));
+    color: var(
+      --color-muted,
+      color-mix(in oklab, var(--color-base-content) 55%, transparent)
+    );
   }
 
   .menu-item__indicator--submenu svg {

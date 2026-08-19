@@ -1,5 +1,5 @@
-import {createSignal, createTrackedEffect, type Accessor} from "solid-js";
 import type { JSX } from "@solidjs/web";
+import { type Accessor, createSignal, createTrackedEffect } from "solid-js";
 
 export interface UseAnchoredOverlayPositionOptions {
   isOpen: Accessor<boolean>;
@@ -48,16 +48,17 @@ export const useAnchoredOverlayPosition = (
     const widthForBounds = desiredWidth ?? desiredMinWidth ?? measuredWidth;
 
     let left =
-      options.align === "start"
-        ? rect.left
-        : rect.right - widthForBounds;
+      options.align === "start" ? rect.left : rect.right - widthForBounds;
     left = Math.max(
       viewportPadding,
       Math.min(left, window.innerWidth - widthForBounds - viewportPadding),
     );
 
     let top = rect.bottom + offset;
-    if (measuredHeight > 0 && top + measuredHeight > window.innerHeight - viewportPadding) {
+    if (
+      measuredHeight > 0 &&
+      top + measuredHeight > window.innerHeight - viewportPadding
+    ) {
       const above = rect.top - measuredHeight - offset;
       if (above >= viewportPadding) {
         top = above;

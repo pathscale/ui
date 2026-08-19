@@ -1,14 +1,16 @@
-import type { UIBaseProps } from "../vocabulary";
 import type { JSX } from "@solidjs/web";
-import {type ParentComponent, omit} from "solid-js";
-import { twMerge } from "../../lib/twMerge";
-import { CLASSES } from "./Footer.recipe";
+import { omit, type ParentComponent } from "solid-js";
 import type { Layout } from "../../lib/layouts";
-import { componentRecipe } from "./Footer.recipe";
+import { twMerge } from "../../lib/twMerge";
+import type { UIBaseProps } from "../vocabulary";
+import { CLASSES, type componentRecipe } from "./Footer.recipe";
 
 export type FooterTitleProps = UIBaseProps & { children?: JSX.Element };
 
-export const FooterTitle: Layout<typeof componentRecipe, FooterTitleProps> = () => {
+export const FooterTitle: Layout<
+  typeof componentRecipe,
+  FooterTitleProps
+> = () => {
   const others = omit(props, "children", "class", "dataTheme");
 
   const classes = () => twMerge(CLASSES.title, props.class);

@@ -1,11 +1,11 @@
-export { default, Dropdown } from "./Dropdown.generated";
 export type {
   DropdownAlign,
+  DropdownGroupProps,
+  DropdownItemProps,
+  DropdownMenuProps,
   DropdownPlacement,
   DropdownRootProps,
-  DropdownTriggerProps,
-  DropdownMenuProps,
-  DropdownItemProps,
-  DropdownGroupProps,
   DropdownSeparatorProps,
+  DropdownTriggerProps,
 } from "./Dropdown.generated";
+export { Dropdown, default } from "./Dropdown.generated";

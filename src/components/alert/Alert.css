@@ -73,7 +73,11 @@
   }
 
   .alert--soft {
-    --alert-bg: color-mix(in oklab, var(--alert-accent), var(--color-base-100) 86%);
+    --alert-bg: color-mix(
+      in oklab,
+      var(--alert-accent),
+      var(--color-base-100) 86%
+    );
     --alert-fg: var(--color-base-content);
     --alert-border: transparent;
   }
@@ -154,7 +158,9 @@
     color: inherit;
     cursor: pointer;
     opacity: 0.6;
-    transition: opacity 100ms ease, background-color 100ms ease;
+    transition:
+      opacity 100ms ease,
+      background-color 100ms ease;
   }
 
   .alert__dismiss:hover {

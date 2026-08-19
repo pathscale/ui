@@ -1,12 +1,18 @@
 import "./Dock.css";
-import {type Component, For, Show, createSignal, onCleanup, onSettled, omit} from "solid-js";
-import { Portal, type JSX} from "@solidjs/web";
-import { twMerge } from "../../lib/twMerge";
-
-import type { UIBaseProps } from "../vocabulary";
-import { CLASSES } from "./Dock.recipe";
+import { type JSX, Portal } from "@solidjs/web";
+import {
+  type Component,
+  createSignal,
+  For,
+  omit,
+  onCleanup,
+  onSettled,
+  Show,
+} from "solid-js";
 import type { Layout } from "../../lib/layouts";
-import { componentRecipe } from "./Dock.recipe";
+import { twMerge } from "../../lib/twMerge";
+import type { UIBaseProps } from "../vocabulary";
+import { CLASSES, type componentRecipe } from "./Dock.recipe";
 
 /* ------------------------------------------------------------------ */
 /*  Types                                                             */
@@ -88,11 +94,21 @@ function createSpring(
   let velocity = 0;
   let target = initial;
   return {
-    set(v: number) { target = v; },
-    get() { return current; },
-    settled() { return current === target && velocity === 0; },
+    set(v: number) {
+      target = v;
+    },
+    get() {
+      return current;
+    },
+    settled() {
+      return current === target && velocity === 0;
+    },
     step(dt: number) {
-      if (prefersReducedMotion) { current = target; velocity = 0; return; }
+      if (prefersReducedMotion) {
+        current = target;
+        velocity = 0;
+        return;
+      }
       const substeps = Math.ceil(dt / 0.004);
       const subDt = dt / substeps;
       for (let i = 0; i < substeps; i++) {
@@ -102,7 +118,8 @@ function createSpring(
         current += velocity * subDt;
       }
       if (Math.abs(current - target) < 0.01 && Math.abs(velocity) < 0.01) {
-        current = target; velocity = 0;
+        current = target;
+        velocity = 0;
       }
     },
   };
@@ -110,7 +127,13 @@ function createSpring(
 
 type Spring = ReturnType<typeof createSpring>;
 
-function mapRange(value: number, inMin: number, inMax: number, outMin: number, outMax: number): number {
+function mapRange(
+  value: number,
+  inMin: number,
+  inMax: number,
+  outMin: number,
+  outMax: number,
+): number {
   const t = Math.max(0, Math.min(1, (value - inMin) / (inMax - inMin)));
   return outMin + t * (outMax - outMin);
 }
@@ -133,14 +156,21 @@ type ItemSprings = {
 
 const TOOLTIP_OFFSET = 8;
 
-function computeTooltipPos(rect: DOMRect, dir: DockDirection): { top: string; left: string } {
+function computeTooltipPos(
+  rect: DOMRect,
+  dir: DockDirection,
+): { top: string; left: string } {
   const cx = rect.left + rect.width / 2;
   const cy = rect.top + rect.height / 2;
   switch (dir) {
-    case "top": return { left: `${cx}px`, top: `${rect.top - TOOLTIP_OFFSET}px` };
-    case "bottom": return { left: `${cx}px`, top: `${rect.bottom + TOOLTIP_OFFSET}px` };
-    case "left": return { left: `${rect.left - TOOLTIP_OFFSET}px`, top: `${cy}px` };
-    case "right": return { left: `${rect.right + TOOLTIP_OFFSET}px`, top: `${cy}px` };
+    case "top":
+      return { left: `${cx}px`, top: `${rect.top - TOOLTIP_OFFSET}px` };
+    case "bottom":
+      return { left: `${cx}px`, top: `${rect.bottom + TOOLTIP_OFFSET}px` };
+    case "left":
+      return { left: `${rect.left - TOOLTIP_OFFSET}px`, top: `${cy}px` };
+    case "right":
+      return { left: `${rect.right + TOOLTIP_OFFSET}px`, top: `${cy}px` };
   }
 }
 
@@ -151,16 +181,22 @@ const TOOLTIP_TRANSFORM: Record<DockDirection, string> = {
   right: "translate(0, -50%)",
 };
 
-const DockItem: Layout<typeof componentRecipe, {
-  item: DockItem;
-  cfg: ResolvedConfig;
-  registerRefs: (wrap: HTMLDivElement, icon: HTMLDivElement) => void;
-}> = () => {
+const DockItem: Layout<
+  typeof componentRecipe,
+  {
+    item: DockItem;
+    cfg: ResolvedConfig;
+    registerRefs: (wrap: HTMLDivElement, icon: HTMLDivElement) => void;
+  }
+> = () => {
   let wrapRef: HTMLDivElement | undefined;
   let iconRef: HTMLDivElement | undefined;
 
   const [hovered, setHovered] = createSignal(false);
-  const [tooltipStyle, setTooltipStyle] = createSignal<{ top: string; left: string }>({ top: "0", left: "0" });
+  const [tooltipStyle, setTooltipStyle] = createSignal<{
+    top: string;
+    left: string;
+  }>({ top: "0", left: "0" });
   const cfg = props.cfg;
 
   onSettled(() => {
@@ -169,13 +205,18 @@ const DockItem: Layout<typeof componentRecipe, {
 
   const handleMouseEnter = () => {
     if (wrapRef) {
-      setTooltipStyle(computeTooltipPos(wrapRef.getBoundingClientRect(), cfg.tooltipDir));
+      setTooltipStyle(
+        computeTooltipPos(wrapRef.getBoundingClientRect(), cfg.tooltipDir),
+      );
     }
     setHovered(true);
   };
 
   const handleClick = (e: MouseEvent) => {
-    if (props.item.onClick) { e.preventDefault(); props.item.onClick(e); }
+    if (props.item.onClick) {
+      e.preventDefault();
+      props.item.onClick(e);
+    }
   };
 
   const inner = (
@@ -200,7 +241,10 @@ const DockItem: Layout<typeof componentRecipe, {
           </div>
         </Portal>
       </Show>
-      <div ref={iconRef} {...{ class: CLASSES.icon }}>
+      <div
+        ref={iconRef}
+        {...{ class: CLASSES.icon }}
+      >
         {props.item.icon}
       </div>
     </div>
@@ -210,8 +254,16 @@ const DockItem: Layout<typeof componentRecipe, {
     <Show
       when={props.item.onClick}
       fallback={
-        <Show when={props.item.href} fallback={inner}>
-          <a href={props.item.href} aria-label={props.item.title}>{inner}</a>
+        <Show
+          when={props.item.href}
+          fallback={inner}
+        >
+          <a
+            href={props.item.href}
+            aria-label={props.item.title}
+          >
+            {inner}
+          </a>
         </Show>
       }
     >
@@ -231,12 +283,15 @@ const DockItem: Layout<typeof componentRecipe, {
 /*  Desktop dock                                                      */
 /* ------------------------------------------------------------------ */
 
-const DockDesktop: Layout<typeof componentRecipe, {
-  items: DockItem[];
-  class?: string;
-  cfg: ResolvedConfig;
-  showContainer: boolean;
-}> = () => {
+const DockDesktop: Layout<
+  typeof componentRecipe,
+  {
+    items: DockItem[];
+    class?: string;
+    cfg: ResolvedConfig;
+    showContainer: boolean;
+  }
+> = () => {
   const [mousePos, setMousePos] = createSignal(Infinity);
   const isH = () => props.cfg.orientation === "horizontal";
   const cfg = props.cfg;
@@ -290,8 +345,26 @@ const DockDesktop: Layout<typeof componentRecipe, {
         const absDist = Math.abs(dist);
 
         // Scale targets
-        const ts = mp === Infinity ? cfg.baseSize : mapRange(absDist, 0, cfg.magnifyRange, cfg.hoverSize, cfg.baseSize);
-        const ti = mp === Infinity ? cfg.iconSize : mapRange(absDist, 0, cfg.magnifyRange, cfg.hoverIconSize, cfg.iconSize);
+        const ts =
+          mp === Infinity
+            ? cfg.baseSize
+            : mapRange(
+                absDist,
+                0,
+                cfg.magnifyRange,
+                cfg.hoverSize,
+                cfg.baseSize,
+              );
+        const ti =
+          mp === Infinity
+            ? cfg.iconSize
+            : mapRange(
+                absDist,
+                0,
+                cfg.magnifyRange,
+                cfg.hoverIconSize,
+                cfg.iconSize,
+              );
         s.sScale.set(ts);
         s.sIconScale.set(ti);
 
@@ -299,7 +372,13 @@ const DockDesktop: Layout<typeof componentRecipe, {
         if (mp === Infinity || absDist > cfg.magnifyRange) {
           s.sNudge.set(0);
         } else {
-          const scale = mapRange(absDist, 0, cfg.magnifyRange, cfg.hoverSize / cfg.baseSize, 1);
+          const scale = mapRange(
+            absDist,
+            0,
+            cfg.magnifyRange,
+            cfg.hoverSize / cfg.baseSize,
+            1,
+          );
           const nudgeAmount = (-dist / cfg.magnifyRange) * cfg.nudge * scale;
           s.sNudge.set(nudgeAmount);
         }
@@ -310,8 +389,13 @@ const DockDesktop: Layout<typeof componentRecipe, {
     let allSettled = true;
     for (let i = 0; i < itemSprings.length; i++) {
       const s = itemSprings[i];
-      s.sScale.step(dt); s.sIconScale.step(dt); s.sNudge.step(dt);
-      if (allSettled && !(s.sScale.settled() && s.sIconScale.settled() && s.sNudge.settled())) {
+      s.sScale.step(dt);
+      s.sIconScale.step(dt);
+      s.sNudge.step(dt);
+      if (
+        allSettled &&
+        !(s.sScale.settled() && s.sIconScale.settled() && s.sNudge.settled())
+      ) {
         allSettled = false;
       }
     }
@@ -322,7 +406,10 @@ const DockDesktop: Layout<typeof componentRecipe, {
     for (let i = 0; i < itemSprings.length; i++) {
       const s = itemSprings[i];
       if (s.wrapRef) {
-        const scale = Math.max(0.8, Math.min(s.sScale.get() / cfg.baseSize, maxScale));
+        const scale = Math.max(
+          0.8,
+          Math.min(s.sScale.get() / cfg.baseSize, maxScale),
+        );
         const nudge = s.sNudge.get();
         if (isH()) {
           s.wrapRef.style.transform = `translateX(${nudge}px) scale(${scale})`;
@@ -331,7 +418,10 @@ const DockDesktop: Layout<typeof componentRecipe, {
         }
       }
       if (s.iconRef) {
-        const iconScale = Math.max(0.8, Math.min(s.sIconScale.get() / cfg.iconSize, maxIconScale));
+        const iconScale = Math.max(
+          0.8,
+          Math.min(s.sIconScale.get() / cfg.iconSize, maxIconScale),
+        );
         s.iconRef.style.transform = `scale(${iconScale})`;
       }
     }
@@ -360,32 +450,56 @@ const DockDesktop: Layout<typeof componentRecipe, {
       }
     }
 
-    if (allSettled) { stopLoop(); return; }
+    if (allSettled) {
+      stopLoop();
+      return;
+    }
     rafId = requestAnimationFrame(tick);
   };
 
-  onCleanup(() => { stopLoop(); });
+  onCleanup(() => {
+    stopLoop();
+  });
 
   return (
     <div
       role="toolbar"
       aria-label="Actions"
       onMouseEnter={captureAnchors}
-      onMouseMove={(e) => { setMousePos(isH() ? e.clientX : e.clientY); startLoop(); }}
-      onMouseLeave={() => { setMousePos(Infinity); startLoop(); }}
-      {...{ class: twMerge(
-        CLASSES.bar,
-        isH() ? CLASSES.barOrientation.horizontal : CLASSES.barOrientation.vertical,
-        props.class,
-      ) }}
+      onMouseMove={(e) => {
+        setMousePos(isH() ? e.clientX : e.clientY);
+        startLoop();
+      }}
+      onMouseLeave={() => {
+        setMousePos(Infinity);
+        startLoop();
+      }}
+      {...{
+        class: twMerge(
+          CLASSES.bar,
+          isH()
+            ? CLASSES.barOrientation.horizontal
+            : CLASSES.barOrientation.vertical,
+          props.class,
+        ),
+      }}
       style={{
         gap: `${cfg.gap}px`,
-        padding: props.showContainer ? (isH() ? "0.5rem 1rem" : "1rem 0.5rem") : undefined,
-        ...(isH() ? { height: `${cfg.baseSize + 16}px` } : { width: `${cfg.baseSize + 16}px` }),
+        padding: props.showContainer
+          ? isH()
+            ? "0.5rem 1rem"
+            : "1rem 0.5rem"
+          : undefined,
+        ...(isH()
+          ? { height: `${cfg.baseSize + 16}px` }
+          : { width: `${cfg.baseSize + 16}px` }),
       }}
     >
       <Show when={props.showContainer}>
-        <div ref={bgRef} {...{ class: CLASSES.bg }} />
+        <div
+          ref={bgRef}
+          {...{ class: CLASSES.bg }}
+        />
       </Show>
       <For each={props.items}>
         {(item, idx) => {
@@ -416,17 +530,23 @@ const DockDesktop: Layout<typeof componentRecipe, {
 /*  Mobile dock                                                       */
 /* ------------------------------------------------------------------ */
 
-const DockMobile: Layout<typeof componentRecipe, {
-  items: DockItem[];
-  class?: string;
-  toggleIcon?: JSX.Element;
-  popupDirection: DockDirection;
-  cfg: ResolvedConfig;
-}> = () => {
+const DockMobile: Layout<
+  typeof componentRecipe,
+  {
+    items: DockItem[];
+    class?: string;
+    toggleIcon?: JSX.Element;
+    popupDirection: DockDirection;
+    cfg: ResolvedConfig;
+  }
+> = () => {
   const [open, setOpen] = createSignal(false);
 
   const handleItemClick = (item: DockItem, e: MouseEvent) => {
-    if (item.onClick) { e.preventDefault(); item.onClick(e); }
+    if (item.onClick) {
+      e.preventDefault();
+      item.onClick(e);
+    }
     setOpen(false);
   };
 
@@ -434,10 +554,12 @@ const DockMobile: Layout<typeof componentRecipe, {
     <div {...{ class: twMerge(CLASSES.mobile, props.class) }}>
       <Show when={open()}>
         <div
-          {...{ class: twMerge(
-            CLASSES.mobilePopup,
-            CLASSES.mobilePopupDirection[props.popupDirection],
-          ) }}
+          {...{
+            class: twMerge(
+              CLASSES.mobilePopup,
+              CLASSES.mobilePopupDirection[props.popupDirection],
+            ),
+          }}
         >
           <For each={props.items}>
             {(item, idx) => (
@@ -455,7 +577,10 @@ const DockMobile: Layout<typeof componentRecipe, {
                       fallback={
                         <div
                           {...{ class: CLASSES.item }}
-                          style={{ width: `${props.cfg.baseSize}px`, height: `${props.cfg.baseSize}px` }}
+                          style={{
+                            width: `${props.cfg.baseSize}px`,
+                            height: `${props.cfg.baseSize}px`,
+                          }}
                           title={item.title}
                         >
                           {item.icon}
@@ -465,7 +590,10 @@ const DockMobile: Layout<typeof componentRecipe, {
                       <a
                         href={item.href}
                         {...{ class: CLASSES.item }}
-                        style={{ width: `${props.cfg.baseSize}px`, height: `${props.cfg.baseSize}px` }}
+                        style={{
+                          width: `${props.cfg.baseSize}px`,
+                          height: `${props.cfg.baseSize}px`,
+                        }}
                         title={item.title}
                       >
                         {item.icon}
@@ -477,7 +605,10 @@ const DockMobile: Layout<typeof componentRecipe, {
                     type="button"
                     onClick={(e) => handleItemClick(item, e)}
                     {...{ class: CLASSES.mobileToggle }}
-                    style={{ width: `${props.cfg.baseSize}px`, height: `${props.cfg.baseSize}px` }}
+                    style={{
+                      width: `${props.cfg.baseSize}px`,
+                      height: `${props.cfg.baseSize}px`,
+                    }}
                     title={item.title}
                   >
                     {item.icon}
@@ -492,7 +623,10 @@ const DockMobile: Layout<typeof componentRecipe, {
         type="button"
         onClick={() => setOpen(!open())}
         {...{ class: CLASSES.mobileToggle }}
-        style={{ width: `${props.cfg.baseSize}px`, height: `${props.cfg.baseSize}px` }}
+        style={{
+          width: `${props.cfg.baseSize}px`,
+          height: `${props.cfg.baseSize}px`,
+        }}
       >
         {props.toggleIcon ?? (
           <svg
@@ -505,7 +639,9 @@ const DockMobile: Layout<typeof componentRecipe, {
             stroke-linecap="round"
             stroke-linejoin="round"
           >
-            <path d="M4 6h16" /><path d="M4 12h16" /><path d="M4 18h16" />
+            <path d="M4 6h16" />
+            <path d="M4 12h16" />
+            <path d="M4 18h16" />
           </svg>
         )}
       </button>
@@ -571,7 +707,12 @@ const Dock: Layout<typeof componentRecipe, DockProps> = () => {
   });
 
   return (
-    <div {...{ class: CLASSES.base }} data-theme={rawProps.dataTheme} style={rawProps.style} {...others}>
+    <div
+      {...{ class: CLASSES.base }}
+      data-theme={rawProps.dataTheme}
+      style={rawProps.style}
+      {...others}
+    >
       <Show when={rawProps.showDesktop !== false}>
         <DockDesktop
           items={rawProps.items}
@@ -586,7 +727,9 @@ const Dock: Layout<typeof componentRecipe, DockProps> = () => {
           fallback={
             <DockDesktop
               items={rawProps.items}
-              {...{ class: twMerge(CLASSES.barMobileDock, rawProps.mobileClass) }}
+              {...{
+                class: twMerge(CLASSES.barMobileDock, rawProps.mobileClass),
+              }}
               cfg={cfg()}
               showContainer={rawProps.showContainer !== false}
             />

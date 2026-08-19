@@ -223,16 +223,18 @@ export const FRAG_SHADER_SRC = /* glsl */ `
 export function compileShader(
   gl: WebGLRenderingContext,
   type: number,
-  source: string
+  source: string,
 ): WebGLShader {
   const shader = gl.createShader(type);
-  if (!shader) throw new Error('metal-fx: gl.createShader returned null');
+  if (!shader) throw new Error("metal-fx: gl.createShader returned null");
   gl.shaderSource(shader, source);
   gl.compileShader(shader);
   if (!gl.getShaderParameter(shader, gl.COMPILE_STATUS)) {
     const info = gl.getShaderInfoLog(shader);
     gl.deleteShader(shader);
-    throw new Error(`metal-fx: shader compile failed: ${info ?? '(no info log)'}`);
+    throw new Error(
+      `metal-fx: shader compile failed: ${info ?? "(no info log)"}`,
+    );
   }
   return shader;
 }
@@ -241,17 +243,19 @@ export function compileShader(
 export function linkProgram(
   gl: WebGLRenderingContext,
   vert: WebGLShader,
-  frag: WebGLShader
+  frag: WebGLShader,
 ): WebGLProgram {
   const program = gl.createProgram();
-  if (!program) throw new Error('metal-fx: gl.createProgram returned null');
+  if (!program) throw new Error("metal-fx: gl.createProgram returned null");
   gl.attachShader(program, vert);
   gl.attachShader(program, frag);
   gl.linkProgram(program);
   if (!gl.getProgramParameter(program, gl.LINK_STATUS)) {
     const info = gl.getProgramInfoLog(program);
     gl.deleteProgram(program);
-    throw new Error(`metal-fx: program link failed: ${info ?? '(no info log)'}`);
+    throw new Error(
+      `metal-fx: program link failed: ${info ?? "(no info log)"}`,
+    );
   }
   return program;
 }

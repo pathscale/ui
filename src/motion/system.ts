@@ -1,11 +1,7 @@
-import { prefersReducedMotion } from "./reduced-motion";
 import { createMotionPresets, noMotion } from "./presets";
+import { prefersReducedMotion } from "./reduced-motion";
 import { defaultMotionTokens, mergeMotionTokens } from "./tokens";
-import type {
-  MotionPreset,
-  MotionTokenOverrides,
-  MotionTokens,
-} from "./types";
+import type { MotionPreset, MotionTokenOverrides, MotionTokens } from "./types";
 
 export type MotionSystemConfig = {
   tokens?: MotionTokenOverrides;
@@ -17,7 +13,7 @@ export type MotionSystemConfig = {
 export const createMotionSystem = (config?: MotionSystemConfig) => {
   let tokens: MotionTokens = mergeMotionTokens(
     defaultMotionTokens,
-    config?.tokens
+    config?.tokens,
   );
   let customPresets = { ...(config?.presets ?? {}) };
   let basePresets = createMotionPresets(tokens);
@@ -47,7 +43,7 @@ export const createMotionSystem = (config?: MotionSystemConfig) => {
 
   const resolvePreset = (
     name: string,
-    options?: { reduceMotion?: boolean }
+    options?: { reduceMotion?: boolean },
   ) => {
     const reduce = options?.reduceMotion ?? reduceMotion();
     if (reduce) return noMotionPreset;

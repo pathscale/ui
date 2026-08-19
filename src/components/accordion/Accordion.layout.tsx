@@ -1,12 +1,20 @@
 import "./Accordion.css";
 import type { JSX } from "@solidjs/web";
-import {Show, createContext, createMemo, createSignal, createUniqueId, omit, useContext, type Component, type ParentComponent} from "solid-js";
-import { twMerge } from "../../lib/twMerge";
-
-import type { UIBaseProps, State } from "../vocabulary";
-import { CLASSES } from "./Accordion.recipe";
+import {
+  type Component,
+  createContext,
+  createMemo,
+  createSignal,
+  createUniqueId,
+  omit,
+  type ParentComponent,
+  Show,
+  useContext,
+} from "solid-js";
 import type { Layout } from "../../lib/layouts";
-import { componentRecipe } from "./Accordion.recipe";
+import { twMerge } from "../../lib/twMerge";
+import type { State, UIBaseProps } from "../vocabulary";
+import { CLASSES, type componentRecipe } from "./Accordion.recipe";
 
 export type AccordionSelectionMode = "single" | "multiple";
 export type AccordionVariant = "default" | "surface";
@@ -84,9 +92,14 @@ type AccordionItemContextValue = {
  * A truthy default such as `{}` would silence the throw and be worse: the
  * optional chain would then call methods that do not exist.
  */
-const AccordionItemContext = createContext<AccordionItemContextValue | null>(null);
+const AccordionItemContext = createContext<AccordionItemContextValue | null>(
+  null,
+);
 
-export type AccordionRootProps = Omit<JSX.HTMLAttributes<HTMLDivElement>, "children"> &
+export type AccordionRootProps = Omit<
+  JSX.HTMLAttributes<HTMLDivElement>,
+  "children"
+> &
   UIBaseProps & {
     children?: JSX.Element;
     selectionMode?: AccordionSelectionMode;
@@ -99,7 +112,10 @@ export type AccordionRootProps = Omit<JSX.HTMLAttributes<HTMLDivElement>, "child
     disabled?: boolean;
   };
 
-export type AccordionItemProps = Omit<JSX.HTMLAttributes<HTMLDivElement>, "children"> &
+export type AccordionItemProps = Omit<
+  JSX.HTMLAttributes<HTMLDivElement>,
+  "children"
+> &
   UIBaseProps & {
     value?: string;
     children?: JSX.Element;
@@ -117,18 +133,27 @@ export type AccordionTriggerProps = Omit<
     indicator?: JSX.Element;
   };
 
-export type AccordionContentProps = Omit<JSX.HTMLAttributes<HTMLDivElement>, "children"> &
+export type AccordionContentProps = Omit<
+  JSX.HTMLAttributes<HTMLDivElement>,
+  "children"
+> &
   UIBaseProps & {
     children?: JSX.Element;
     keepMounted?: boolean;
   };
 
-export type AccordionIndicatorProps = Omit<JSX.HTMLAttributes<HTMLSpanElement>, "children"> &
+export type AccordionIndicatorProps = Omit<
+  JSX.HTMLAttributes<HTMLSpanElement>,
+  "children"
+> &
   UIBaseProps & {
     children?: JSX.Element;
   };
 
-const AccordionRoot: Layout<typeof componentRecipe, AccordionRootProps> = () => {
+const AccordionRoot: Layout<
+  typeof componentRecipe,
+  AccordionRootProps
+> = () => {
   const others = omit(
     props,
     "children",
@@ -149,7 +174,8 @@ const AccordionRoot: Layout<typeof componentRecipe, AccordionRootProps> = () => 
   const selectionMode = () => props.selectionMode ?? "single";
   const variant = () => props.variant ?? "default";
   const hideSeparator = () => Boolean(props.hideSeparator);
-  const isDisabled = () => Boolean((props.state === "disabled")) || Boolean(props.disabled);
+  const isDisabled = () =>
+    Boolean(props.state === "disabled") || Boolean(props.disabled);
 
   const [internalValue, setInternalValue] = createSignal<string[]>(
     normalizeAccordionValue(props.defaultValue, selectionMode()),
@@ -164,7 +190,10 @@ const AccordionRoot: Layout<typeof componentRecipe, AccordionRootProps> = () => 
   const isItemExpanded = (value: string) => selectedValues().includes(value);
 
   const setSelectedValues = (nextValues: string[]) => {
-    const normalizedNextValues = normalizeAccordionValue(nextValues, selectionMode());
+    const normalizedNextValues = normalizeAccordionValue(
+      nextValues,
+      selectionMode(),
+    );
 
     if (props.value === undefined) {
       setInternalValue(normalizedNextValues);
@@ -212,7 +241,9 @@ const AccordionRoot: Layout<typeof componentRecipe, AccordionRootProps> = () => 
     if (!rootRef) return;
 
     const triggers = Array.from(
-      rootRef.querySelectorAll<HTMLButtonElement>('[data-slot="accordion-trigger"]'),
+      rootRef.querySelectorAll<HTMLButtonElement>(
+        '[data-slot="accordion-trigger"]',
+      ),
     ).filter(
       (trigger) =>
         !trigger.disabled && trigger.getAttribute("aria-disabled") !== "true",
@@ -261,11 +292,13 @@ const AccordionRoot: Layout<typeof componentRecipe, AccordionRootProps> = () => 
             props.ref(node);
           }
         }}
-        {...{ class: twMerge(
-          CLASSES.Root.base,
-          CLASSES.Root.variant[variant()],
-          props.class,
-        ) }}
+        {...{
+          class: twMerge(
+            CLASSES.Root.base,
+            CLASSES.Root.variant[variant()],
+            props.class,
+          ),
+        }}
         data-slot="accordion"
         data-selection-mode={selectionMode()}
         data-hide-separator={hideSeparator() ? "true" : undefined}
@@ -281,7 +314,10 @@ const AccordionRoot: Layout<typeof componentRecipe, AccordionRootProps> = () => 
   );
 };
 
-const AccordionItem: Layout<typeof componentRecipe, AccordionItemProps> = () => {
+const AccordionItem: Layout<
+  typeof componentRecipe,
+  AccordionItemProps
+> = () => {
   const accordion = useContext(AccordionContext);
   const others = omit(
     props,
@@ -299,10 +335,9 @@ const AccordionItem: Layout<typeof componentRecipe, AccordionItemProps> = () => 
   const triggerId = () => `accordion-trigger-${uniqueId}`;
   const contentId = () => `accordion-content-${uniqueId}`;
 
-  const isExpanded = () =>
-    accordion?.isItemExpanded(itemValue()) ?? false;
+  const isExpanded = () => accordion?.isItemExpanded(itemValue()) ?? false;
   const isDisabled = () =>
-    Boolean((props.state === "disabled")) ||
+    Boolean(props.state === "disabled") ||
     Boolean(props.disabled) ||
     Boolean(accordion?.isDisabled());
 
@@ -324,13 +359,15 @@ const AccordionItem: Layout<typeof componentRecipe, AccordionItemProps> = () => 
     <AccordionItemContext value={itemContextValue}>
       <div
         {...others}
-        {...{ class: twMerge(
-          CLASSES.Item.base,
-          isExpanded() && CLASSES.Item.flag.expanded,
-          isDisabled() && CLASSES.Item.flag.disabled,
-          accordion?.hideSeparator() && CLASSES.Item.flag.hideSeparator,
-          props.class,
-        ) }}
+        {...{
+          class: twMerge(
+            CLASSES.Item.base,
+            isExpanded() && CLASSES.Item.flag.expanded,
+            isDisabled() && CLASSES.Item.flag.disabled,
+            accordion?.hideSeparator() && CLASSES.Item.flag.hideSeparator,
+            props.class,
+          ),
+        }}
         data-slot="accordion-item"
         data-expanded={isExpanded() ? "true" : "false"}
         data-disabled={isDisabled() ? "true" : "false"}
@@ -343,7 +380,10 @@ const AccordionItem: Layout<typeof componentRecipe, AccordionItemProps> = () => 
   );
 };
 
-const AccordionTrigger: Layout<typeof componentRecipe, AccordionTriggerProps> = () => {
+const AccordionTrigger: Layout<
+  typeof componentRecipe,
+  AccordionTriggerProps
+> = () => {
   const accordion = useContext(AccordionContext);
   const item = useContext(AccordionItemContext);
 
@@ -362,13 +402,18 @@ const AccordionTrigger: Layout<typeof componentRecipe, AccordionTriggerProps> = 
 
   const isDisabled = () => Boolean(item?.isDisabled());
 
-  const handleClick: JSX.EventHandlerUnion<HTMLButtonElement, MouseEvent> = (event) => {
+  const handleClick: JSX.EventHandlerUnion<HTMLButtonElement, MouseEvent> = (
+    event,
+  ) => {
     invokeEventHandler(props.onClick, event);
     if (event.defaultPrevented || isDisabled()) return;
     item?.toggle();
   };
 
-  const handleKeyDown: JSX.EventHandlerUnion<HTMLButtonElement, KeyboardEvent> = (event) => {
+  const handleKeyDown: JSX.EventHandlerUnion<
+    HTMLButtonElement,
+    KeyboardEvent
+  > = (event) => {
     invokeEventHandler(props.onKeyDown, event);
     if (event.defaultPrevented || isDisabled()) return;
 
@@ -406,9 +451,19 @@ const AccordionTrigger: Layout<typeof componentRecipe, AccordionTriggerProps> = 
   );
 };
 
-const AccordionContent: Layout<typeof componentRecipe, AccordionContentProps> = () => {
+const AccordionContent: Layout<
+  typeof componentRecipe,
+  AccordionContentProps
+> = () => {
   const item = useContext(AccordionItemContext);
-  const others = omit(props, "children", "class", "dataTheme", "style", "keepMounted");
+  const others = omit(
+    props,
+    "children",
+    "class",
+    "dataTheme",
+    "style",
+    "keepMounted",
+  );
 
   const expanded = () => Boolean(item?.isExpanded());
   const keepMounted = () => props.keepMounted ?? true;
@@ -422,11 +477,13 @@ const AccordionContent: Layout<typeof componentRecipe, AccordionContentProps> = 
       {...others}
       id={item?.contentId()}
       role="region"
-      {...{ class: twMerge(
-        CLASSES.Content.base,
-        expanded() && CLASSES.Content.flag.expanded,
-        props.class,
-      ) }}
+      {...{
+        class: twMerge(
+          CLASSES.Content.base,
+          expanded() && CLASSES.Content.flag.expanded,
+          props.class,
+        ),
+      }}
       data-slot="accordion-content"
       data-expanded={expanded() ? "true" : "false"}
       data-theme={props.dataTheme}
@@ -434,8 +491,14 @@ const AccordionContent: Layout<typeof componentRecipe, AccordionContentProps> = 
       aria-hidden={expanded() ? "false" : "true"}
       aria-labelledby={item?.triggerId()}
     >
-      <div {...{ class: CLASSES.Body.base }} data-slot="accordion-body">
-        <div {...{ class: CLASSES.BodyInner.base }} data-slot="accordion-body-inner">
+      <div
+        {...{ class: CLASSES.Body.base }}
+        data-slot="accordion-body"
+      >
+        <div
+          {...{ class: CLASSES.BodyInner.base }}
+          data-slot="accordion-body-inner"
+        >
           {props.children}
         </div>
       </div>
@@ -443,7 +506,10 @@ const AccordionContent: Layout<typeof componentRecipe, AccordionContentProps> = 
   );
 };
 
-const AccordionIndicator: Layout<typeof componentRecipe, AccordionIndicatorProps> = () => {
+const AccordionIndicator: Layout<
+  typeof componentRecipe,
+  AccordionIndicatorProps
+> = () => {
   const item = useContext(AccordionItemContext);
   const others = omit(props, "children", "class", "dataTheme", "style");
 
@@ -453,11 +519,13 @@ const AccordionIndicator: Layout<typeof componentRecipe, AccordionIndicatorProps
     <span
       {...others}
       aria-hidden="true"
-      {...{ class: twMerge(
-        CLASSES.Indicator.base,
-        expanded() && CLASSES.Indicator.flag.expanded,
-        props.class,
-      ) }}
+      {...{
+        class: twMerge(
+          CLASSES.Indicator.base,
+          expanded() && CLASSES.Indicator.flag.expanded,
+          props.class,
+        ),
+      }}
       data-slot="accordion-indicator"
       data-expanded={expanded() ? "true" : "false"}
       data-theme={props.dataTheme}
@@ -493,12 +561,12 @@ const Accordion = Object.assign(AccordionRoot, {
 });
 
 export default Accordion;
+export type { AccordionRootProps as AccordionProps };
 export {
   Accordion,
-  AccordionRoot,
-  AccordionItem,
-  AccordionTrigger,
   AccordionContent,
   AccordionIndicator,
+  AccordionItem,
+  AccordionRoot,
+  AccordionTrigger,
 };
-export type { AccordionRootProps as AccordionProps };

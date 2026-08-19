@@ -1,1 +1,6 @@
-export { default, type ToggleProps, type ToggleColor, type ToggleSize } from "./Switch.generated";
+export {
+  default,
+  type ToggleColor,
+  type ToggleProps,
+  type ToggleSize,
+} from "./Switch.generated";

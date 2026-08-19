@@ -1,5 +1,5 @@
-import { prefersReducedMotion } from "./reduced-motion";
 import { motionPresets, noMotion, routeTransition } from "./presets";
+import { prefersReducedMotion } from "./reduced-motion";
 import type { MotionPreset } from "./types";
 
 export type RouteTransitionRuleResult =
@@ -10,7 +10,7 @@ export type RouteTransitionRuleResult =
 
 export type RouteTransitionRule = (
   from: string,
-  to: string
+  to: string,
 ) => RouteTransitionRuleResult;
 
 export type RouteTransitionResolverOptions = {
@@ -22,7 +22,7 @@ export type RouteTransitionResolverOptions = {
 };
 
 export const createRouteTransitionResolver = (
-  options: RouteTransitionResolverOptions
+  options: RouteTransitionResolverOptions,
 ) => {
   const resolvePreset =
     options.resolvePreset ?? ((name: string) => motionPresets[name]);

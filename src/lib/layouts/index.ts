@@ -16,13 +16,13 @@
  */
 export {
   compound,
-  defineComponent,
-  recipe,
   type DefineComponentConfig,
+  defineComponent,
   type Layout,
   type PropsOf,
   type Recipe,
   type RecipeConfig,
+  recipe,
   type SlotAttrs,
   type SlotsOf,
   type StateOf,

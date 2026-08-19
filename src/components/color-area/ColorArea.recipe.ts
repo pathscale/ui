@@ -5,4 +5,7 @@ export const CLASSES = {
     thumb: "color-area__thumb",
   },
 } as const;
-export const componentRecipe = recipe({component:"color-area",slots:{"color-area":{},"color-area-thumb":{},"root":{},},});
+export const componentRecipe = recipe({
+  component: "color-area",
+  slots: { "color-area": {}, "color-area-thumb": {}, root: {} },
+});

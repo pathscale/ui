@@ -10,4 +10,7 @@ export const CLASSES = {
     invalid: "checkbox-group--invalid",
   },
 } as const;
-export const componentRecipe = recipe({component:"checkbox-group",slots:{"checkbox-group":{},"root":{},},});
+export const componentRecipe = recipe({
+  component: "checkbox-group",
+  slots: { "checkbox-group": {}, root: {} },
+});

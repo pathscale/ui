@@ -1,12 +1,12 @@
 import { setMotionDriver } from "./driver";
 import type { MotionDriver, MotionDriverOptions } from "./types";
 
-export type PopmotionAnimate = (
-  options: MotionDriverOptions
-) => { stop: () => void };
+export type PopmotionAnimate = (options: MotionDriverOptions) => {
+  stop: () => void;
+};
 
 export const createPopmotionDriver = (
-  animate: PopmotionAnimate
+  animate: PopmotionAnimate,
 ): MotionDriver => {
   return (options) => animate(options);
 };

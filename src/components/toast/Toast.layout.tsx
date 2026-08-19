@@ -1,14 +1,24 @@
 import "./Toast.css";
 import type { JSX } from "@solidjs/web";
-import {For, Show, createContext, createMemo, createSignal, createTrackedEffect, omit, useContext, type Accessor, type Component, type ParentComponent} from "solid-js";
+import {
+  type Accessor,
+  type Component,
+  createContext,
+  createMemo,
+  createSignal,
+  createTrackedEffect,
+  For,
+  omit,
+  type ParentComponent,
+  Show,
+  useContext,
+} from "solid-js";
+import type { Layout } from "../../lib/layouts";
 import { twMerge } from "../../lib/twMerge";
-
 import Button, { type ButtonProps } from "../button";
 import CloseButton, { type CloseButtonProps } from "../close-button";
-import type { UIBaseProps, State } from "../vocabulary";
-import { CLASSES } from "./Toast.recipe";
-import type { Layout } from "../../lib/layouts";
-import { componentRecipe } from "./Toast.recipe";
+import type { State, UIBaseProps } from "../vocabulary";
+import { CLASSES, type componentRecipe } from "./Toast.recipe";
 
 export const DEFAULT_GAP = 12;
 export const DEFAULT_MAX_VISIBLE_TOAST = 3;
@@ -51,7 +61,12 @@ export type ToastVariant =
   | "info"
   | "error";
 
-type ResolvedToastVariant = "default" | "accent" | "success" | "warning" | "danger";
+type ResolvedToastVariant =
+  | "default"
+  | "accent"
+  | "success"
+  | "warning"
+  | "danger";
 type PlacementKey = keyof typeof CLASSES.Provider.placement;
 
 const normalizeVariant = (variant?: ToastVariant): ResolvedToastVariant => {
@@ -85,7 +100,8 @@ const normalizePlacement = (placement?: ToastPlacement): PlacementKey => {
   }
 };
 
-const isBottomPlacement = (placement: PlacementKey) => placement.startsWith("bottom");
+const isBottomPlacement = (placement: PlacementKey) =>
+  placement.startsWith("bottom");
 
 export type ToastActionProps = Omit<ButtonProps, "variant" | "size">;
 
@@ -127,13 +143,18 @@ type ToastTimerMeta = {
 export class ToastQueue<T extends object = ToastContentValue> {
   private readonly readToasts: Accessor<ToastQueueItem<T>[]>;
   private readonly setToasts: (
-    value: ToastQueueItem<T>[] | ((prev: ToastQueueItem<T>[]) => ToastQueueItem<T>[]),
+    value:
+      | ToastQueueItem<T>[]
+      | ((prev: ToastQueueItem<T>[]) => ToastQueueItem<T>[]),
   ) => ToastQueueItem<T>[];
 
   private readonly listeners = new Set<() => void>();
   private readonly closeCallbacks = new Map<string, (() => void) | undefined>();
   private readonly timeoutMeta = new Map<string, ToastTimerMeta>();
-  private readonly exitTimers = new Map<string, ReturnType<typeof setTimeout>>();
+  private readonly exitTimers = new Map<
+    string,
+    ReturnType<typeof setTimeout>
+  >();
 
   readonly maxVisibleToasts?: number;
 
@@ -155,7 +176,9 @@ export class ToastQueue<T extends object = ToastContentValue> {
     }
   };
 
-  private updateToasts = (updater: (prev: ToastQueueItem<T>[]) => ToastQueueItem<T>[]) => {
+  private updateToasts = (
+    updater: (prev: ToastQueueItem<T>[]) => ToastQueueItem<T>[],
+  ) => {
     this.setToasts((prev) => updater(prev));
     this.emit();
   };
@@ -221,7 +244,9 @@ export class ToastQueue<T extends object = ToastContentValue> {
     queueMicrotask(() => {
       this.updateToasts((prev) =>
         prev.map((toast) =>
-          toast.key === key && toast.isEntering ? { ...toast, isEntering: false } : toast,
+          toast.key === key && toast.isEntering
+            ? { ...toast, isEntering: false }
+            : toast,
         ),
       );
     });
@@ -401,7 +426,11 @@ const InfoIcon = () => (
     stroke-linejoin="round"
     aria-hidden="true"
   >
-    <circle cx="12" cy="12" r="10" />
+    <circle
+      cx="12"
+      cy="12"
+      r="10"
+    />
     <path d="M12 16v-4" />
     <path d="M12 8h.01" />
   </svg>
@@ -418,7 +447,11 @@ const SuccessIcon = () => (
     stroke-linejoin="round"
     aria-hidden="true"
   >
-    <circle cx="12" cy="12" r="10" />
+    <circle
+      cx="12"
+      cy="12"
+      r="10"
+    />
     <path d="m9 12 2 2 4-4" />
   </svg>
 );
@@ -451,7 +484,11 @@ const DangerIcon = () => (
     stroke-linejoin="round"
     aria-hidden="true"
   >
-    <circle cx="12" cy="12" r="10" />
+    <circle
+      cx="12"
+      cy="12"
+      r="10"
+    />
     <path d="m15 9-6 6" />
     <path d="m9 9 6 6" />
   </svg>
@@ -473,9 +510,17 @@ const CloseIcon = () => (
   </svg>
 );
 
-const DefaultIndicator: Layout<typeof componentRecipe, { variant: ResolvedToastVariant; isLoading: boolean }> = () => {
-  if ((props.state === "loading")) {
-    return <span {...{ class: CLASSES.Spinner.base }} aria-hidden="true" />;
+const DefaultIndicator: Layout<
+  typeof componentRecipe,
+  { variant: ResolvedToastVariant; isLoading: boolean }
+> = () => {
+  if (props.state === "loading") {
+    return (
+      <span
+        {...{ class: CLASSES.Spinner.base }}
+        aria-hidden="true"
+      />
+    );
   }
 
   switch (props.variant) {
@@ -493,7 +538,10 @@ const DefaultIndicator: Layout<typeof componentRecipe, { variant: ResolvedToastV
   }
 };
 
-export type ToastRootProps = Omit<JSX.HTMLAttributes<HTMLDivElement>, "children" | "title"> &
+export type ToastRootProps = Omit<
+  JSX.HTMLAttributes<HTMLDivElement>,
+  "children" | "title"
+> &
   UIBaseProps & {
     children?: JSX.Element;
     title?: JSX.Element;
@@ -509,23 +557,35 @@ export type ToastRootProps = Omit<JSX.HTMLAttributes<HTMLDivElement>, "children"
     isExiting?: boolean;
   };
 
-export type ToastContentProps = Omit<JSX.HTMLAttributes<HTMLDivElement>, "children"> &
+export type ToastContentProps = Omit<
+  JSX.HTMLAttributes<HTMLDivElement>,
+  "children"
+> &
   UIBaseProps & {
     children?: JSX.Element;
   };
 
-export type ToastIndicatorProps = Omit<JSX.HTMLAttributes<HTMLDivElement>, "children"> &
+export type ToastIndicatorProps = Omit<
+  JSX.HTMLAttributes<HTMLDivElement>,
+  "children"
+> &
   UIBaseProps & {
     children?: JSX.Element;
     variant?: ToastVariant;
   };
 
-export type ToastTitleProps = Omit<JSX.HTMLAttributes<HTMLParagraphElement>, "children"> &
+export type ToastTitleProps = Omit<
+  JSX.HTMLAttributes<HTMLParagraphElement>,
+  "children"
+> &
   UIBaseProps & {
     children?: JSX.Element;
   };
 
-export type ToastDescriptionProps = Omit<JSX.HTMLAttributes<HTMLParagraphElement>, "children"> &
+export type ToastDescriptionProps = Omit<
+  JSX.HTMLAttributes<HTMLParagraphElement>,
+  "children"
+> &
   UIBaseProps & {
     children?: JSX.Element;
   };
@@ -554,11 +614,23 @@ const ToastContent: Layout<typeof componentRecipe, ToastContentProps> = () => {
   );
 };
 
-const ToastIndicator: Layout<typeof componentRecipe, ToastIndicatorProps> = () => {
+const ToastIndicator: Layout<
+  typeof componentRecipe,
+  ToastIndicatorProps
+> = () => {
   const ctx = useToastItemContext();
-  const others = omit(props, "children", "class", "dataTheme", "style", "variant");
+  const others = omit(
+    props,
+    "children",
+    "class",
+    "dataTheme",
+    "style",
+    "variant",
+  );
 
-  const variant = createMemo(() => normalizeVariant(props.variant ?? ctx.variant()));
+  const variant = createMemo(() =>
+    normalizeVariant(props.variant ?? ctx.variant()),
+  );
 
   return (
     <div
@@ -570,7 +642,12 @@ const ToastIndicator: Layout<typeof componentRecipe, ToastIndicatorProps> = () =
     >
       <Show
         when={props.children}
-        fallback={<DefaultIndicator variant={variant()} isLoading={ctx.isLoading()} />}
+        fallback={
+          <DefaultIndicator
+            variant={variant()}
+            isLoading={ctx.isLoading()}
+          />
+        }
       >
         {props.children}
       </Show>
@@ -594,7 +671,10 @@ const ToastTitle: Layout<typeof componentRecipe, ToastTitleProps> = () => {
   );
 };
 
-const ToastDescription: Layout<typeof componentRecipe, ToastDescriptionProps> = () => {
+const ToastDescription: Layout<
+  typeof componentRecipe,
+  ToastDescriptionProps
+> = () => {
   const others = omit(props, "children", "class", "dataTheme", "style");
 
   return (
@@ -610,7 +690,10 @@ const ToastDescription: Layout<typeof componentRecipe, ToastDescriptionProps> = 
   );
 };
 
-const ToastActionButton: Layout<typeof componentRecipe, ToastActionButtonProps> = () => {
+const ToastActionButton: Layout<
+  typeof componentRecipe,
+  ToastActionButtonProps
+> = () => {
   const others = omit(props, "class");
 
   return (
@@ -618,7 +701,9 @@ const ToastActionButton: Layout<typeof componentRecipe, ToastActionButtonProps> 
       {...others}
       variant="outline"
       size="sm"
-      {...{ class: twMerge(CLASSES.Action.base, props.class as string | undefined) }}
+      {...{
+        class: twMerge(CLASSES.Action.base, props.class as string | undefined),
+      }}
       data-slot="toast-action"
     >
       {props.children}
@@ -626,11 +711,23 @@ const ToastActionButton: Layout<typeof componentRecipe, ToastActionButtonProps> 
   );
 };
 
-const ToastCloseButton: Layout<typeof componentRecipe, ToastCloseButtonProps> = () => {
+const ToastCloseButton: Layout<
+  typeof componentRecipe,
+  ToastCloseButtonProps
+> = () => {
   const ctx = useToastItemContext();
-  const others = omit(props, "class", "aria-label", "dataTheme", "style", "onClick");
+  const others = omit(
+    props,
+    "class",
+    "aria-label",
+    "dataTheme",
+    "style",
+    "onClick",
+  );
 
-  const handleClick: JSX.EventHandlerUnion<HTMLButtonElement, MouseEvent> = (event) => {
+  const handleClick: JSX.EventHandlerUnion<HTMLButtonElement, MouseEvent> = (
+    event,
+  ) => {
     invokeEventHandler(props.onClick, event);
     if (event.defaultPrevented) return;
     ctx.onClose?.();
@@ -671,7 +768,7 @@ const ToastRoot: Layout<typeof componentRecipe, ToastRootProps> = () => {
   );
 
   const variant = createMemo(() => normalizeVariant(props.variant));
-  const isLoading = createMemo(() => Boolean((props.state === "loading")));
+  const isLoading = createMemo(() => Boolean(props.state === "loading"));
   const isFrontmost = createMemo(() => props.isFrontmost ?? true);
   const isHidden = createMemo(() => props.isHidden ?? false);
 
@@ -682,21 +779,25 @@ const ToastRoot: Layout<typeof componentRecipe, ToastRootProps> = () => {
   };
 
   const role = createMemo(() => (variant() === "danger" ? "alert" : "status"));
-  const ariaLive = createMemo(() => (variant() === "danger" ? "assertive" : "polite"));
+  const ariaLive = createMemo(() =>
+    variant() === "danger" ? "assertive" : "polite",
+  );
 
   return (
     <ToastItemContext value={contextValue}>
       <div
         {...others}
-        {...{ class: twMerge(
-          CLASSES.Item.base,
-          CLASSES.Item.variant[variant()],
-          isFrontmost() && CLASSES.Item.state.frontmost,
-          isHidden() && CLASSES.Item.state.hidden,
-          props.isEntering && CLASSES.Item.state.entering,
-          props.isExiting && CLASSES.Item.state.exiting,
-          props.class,
-        ) }}
+        {...{
+          class: twMerge(
+            CLASSES.Item.base,
+            CLASSES.Item.variant[variant()],
+            isFrontmost() && CLASSES.Item.state.frontmost,
+            isHidden() && CLASSES.Item.state.hidden,
+            props.isEntering && CLASSES.Item.state.entering,
+            props.isExiting && CLASSES.Item.state.exiting,
+            props.class,
+          ),
+        }}
         role={role()}
         aria-live={ariaLive()}
         data-slot="toast"
@@ -744,7 +845,10 @@ export type ToastRenderFn = (
   dismiss: () => void,
 ) => JSX.Element;
 
-export type ToastProviderProps = Omit<JSX.HTMLAttributes<HTMLDivElement>, "children"> &
+export type ToastProviderProps = Omit<
+  JSX.HTMLAttributes<HTMLDivElement>,
+  "children"
+> &
   UIBaseProps & {
     children?: JSX.Element;
     placement?: ToastPlacement;
@@ -756,7 +860,10 @@ export type ToastProviderProps = Omit<JSX.HTMLAttributes<HTMLDivElement>, "child
     renderToast?: ToastRenderFn;
   };
 
-const ToastProvider: Layout<typeof componentRecipe, ToastProviderProps> = () => {
+const ToastProvider: Layout<
+  typeof componentRecipe,
+  ToastProviderProps
+> = () => {
   const others = omit(
     props,
     "children",
@@ -775,10 +882,14 @@ const ToastProvider: Layout<typeof componentRecipe, ToastProviderProps> = () => 
     "onMouseLeave",
   );
 
-  const queue = createMemo(() => (props.queue === undefined ? toastQueue : props.queue));
+  const queue = createMemo(() =>
+    props.queue === undefined ? toastQueue : props.queue,
+  );
   const placement = createMemo(() => normalizePlacement(props.placement));
   const gap = createMemo(() => props.gap ?? DEFAULT_GAP);
-  const scaleFactor = createMemo(() => props.scaleFactor ?? DEFAULT_SCALE_FACTOR);
+  const scaleFactor = createMemo(
+    () => props.scaleFactor ?? DEFAULT_SCALE_FACTOR,
+  );
   const maxVisible = createMemo(
     () =>
       props.maxVisibleToasts ??
@@ -802,7 +913,9 @@ const ToastProvider: Layout<typeof componentRecipe, ToastProviderProps> = () => 
 
   createTrackedEffect(() => {
     const frontmostToast = toasts()[0];
-    const frontmostNode = frontmostToast ? itemRefs.get(frontmostToast.key) : undefined;
+    const frontmostNode = frontmostToast
+      ? itemRefs.get(frontmostToast.key)
+      : undefined;
 
     if (!frontmostNode) {
       setFrontHeight(0);
@@ -837,15 +950,21 @@ const ToastProvider: Layout<typeof componentRecipe, ToastProviderProps> = () => 
   const providerStyle = createMemo<JSX.CSSProperties>(() => ({
     "--toast-width": widthValue(),
     // `style` is `CSSProperties | string` in 2.0 and a string cannot be spread.
-    ...(typeof props.style === "object" && props.style !== null ? props.style : {}),
+    ...(typeof props.style === "object" && props.style !== null
+      ? props.style
+      : {}),
   }));
 
-  const handleMouseEnter: JSX.EventHandlerUnion<HTMLDivElement, MouseEvent> = (event) => {
+  const handleMouseEnter: JSX.EventHandlerUnion<HTMLDivElement, MouseEvent> = (
+    event,
+  ) => {
     invokeEventHandler(props.onMouseEnter, event);
     queue()?.pauseAll();
   };
 
-  const handleMouseLeave: JSX.EventHandlerUnion<HTMLDivElement, MouseEvent> = (event) => {
+  const handleMouseLeave: JSX.EventHandlerUnion<HTMLDivElement, MouseEvent> = (
+    event,
+  ) => {
     invokeEventHandler(props.onMouseLeave, event);
     queue()?.resumeAll();
   };
@@ -854,11 +973,13 @@ const ToastProvider: Layout<typeof componentRecipe, ToastProviderProps> = () => 
     <div
       {...others}
       ref={props.ref}
-      {...{ class: twMerge(
-        CLASSES.Provider.base,
-        CLASSES.Provider.placement[placement()],
-        props.class,
-      ) }}
+      {...{
+        class: twMerge(
+          CLASSES.Provider.base,
+          CLASSES.Provider.placement[placement()],
+          props.class,
+        ),
+      }}
       data-slot="toast-region"
       data-placement={placement()}
       data-theme={props.dataTheme}
@@ -866,7 +987,10 @@ const ToastProvider: Layout<typeof componentRecipe, ToastProviderProps> = () => 
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
     >
-      <div {...{ class: CLASSES.Provider.stack }} data-slot="toast-stack">
+      <div
+        {...{ class: CLASSES.Provider.stack }}
+        data-slot="toast-stack"
+      >
         {props.children}
 
         <For each={toasts()}>
@@ -893,11 +1017,13 @@ const ToastProvider: Layout<typeof componentRecipe, ToastProviderProps> = () => 
             return (
               <div
                 ref={(node) => setItemRef(queuedToast.key, node)}
-                {...{ class: twMerge(
-                  CLASSES.Provider.item.base,
-                  CLASSES.Provider.item.placement[placement()],
-                  hidden() && CLASSES.Provider.item.state.hidden,
-                ) }}
+                {...{
+                  class: twMerge(
+                    CLASSES.Provider.item.base,
+                    CLASSES.Provider.item.placement[placement()],
+                    hidden() && CLASSES.Provider.item.state.hidden,
+                  ),
+                }}
                 data-slot="toast-region-item"
                 data-index={index()}
                 data-hidden={hidden() ? "true" : "false"}
@@ -949,12 +1075,30 @@ export interface ToastPromiseOptions<T = unknown> {
   error: ((error: Error) => JSX.Element) | JSX.Element;
 }
 
-type ToastFunction = ((message: JSX.Element, options?: HeroUIToastOptions) => string) & {
-  success: (message: JSX.Element, options?: Omit<HeroUIToastOptions, "variant">) => string;
-  danger: (message: JSX.Element, options?: Omit<HeroUIToastOptions, "variant">) => string;
-  error: (message: JSX.Element, options?: Omit<HeroUIToastOptions, "variant">) => string;
-  info: (message: JSX.Element, options?: Omit<HeroUIToastOptions, "variant">) => string;
-  warning: (message: JSX.Element, options?: Omit<HeroUIToastOptions, "variant">) => string;
+type ToastFunction = ((
+  message: JSX.Element,
+  options?: HeroUIToastOptions,
+) => string) & {
+  success: (
+    message: JSX.Element,
+    options?: Omit<HeroUIToastOptions, "variant">,
+  ) => string;
+  danger: (
+    message: JSX.Element,
+    options?: Omit<HeroUIToastOptions, "variant">,
+  ) => string;
+  error: (
+    message: JSX.Element,
+    options?: Omit<HeroUIToastOptions, "variant">,
+  ) => string;
+  info: (
+    message: JSX.Element,
+    options?: Omit<HeroUIToastOptions, "variant">,
+  ) => string;
+  warning: (
+    message: JSX.Element,
+    options?: Omit<HeroUIToastOptions, "variant">,
+  ) => string;
   promise: <T>(
     promise: Promise<T> | (() => Promise<T>),
     options: ToastPromiseOptions<T>,
@@ -966,7 +1110,9 @@ type ToastFunction = ((message: JSX.Element, options?: HeroUIToastOptions) => st
   getQueue: () => ToastQueue<ToastContentValue>;
 };
 
-const createToastFunction = (queue: ToastQueue<ToastContentValue>): ToastFunction => {
+const createToastFunction = (
+  queue: ToastQueue<ToastContentValue>,
+): ToastFunction => {
   const toastFn = ((message: JSX.Element, options?: HeroUIToastOptions) => {
     const timeout = options?.timeout ?? DEFAULT_TOAST_TIMEOUT;
 
@@ -986,11 +1132,16 @@ const createToastFunction = (queue: ToastQueue<ToastContentValue>): ToastFunctio
     );
   }) as ToastFunction;
 
-  toastFn.success = (message, options) => toastFn(message, { ...options, variant: "success" });
-  toastFn.danger = (message, options) => toastFn(message, { ...options, variant: "danger" });
-  toastFn.error = (message, options) => toastFn(message, { ...options, variant: "error" });
-  toastFn.info = (message, options) => toastFn(message, { ...options, variant: "accent" });
-  toastFn.warning = (message, options) => toastFn(message, { ...options, variant: "warning" });
+  toastFn.success = (message, options) =>
+    toastFn(message, { ...options, variant: "success" });
+  toastFn.danger = (message, options) =>
+    toastFn(message, { ...options, variant: "danger" });
+  toastFn.error = (message, options) =>
+    toastFn(message, { ...options, variant: "error" });
+  toastFn.info = (message, options) =>
+    toastFn(message, { ...options, variant: "accent" });
+  toastFn.warning = (message, options) =>
+    toastFn(message, { ...options, variant: "warning" });
 
   toastFn.promise = <T,>(
     promise: Promise<T> | (() => Promise<T>),
@@ -1023,9 +1174,13 @@ const createToastFunction = (queue: ToastQueue<ToastContentValue>): ToastFunctio
         const error =
           rawError instanceof Error
             ? rawError
-            : new Error(typeof rawError === "string" ? rawError : "Unknown error");
+            : new Error(
+                typeof rawError === "string" ? rawError : "Unknown error",
+              );
         const errorMessage =
-          typeof options.error === "function" ? options.error(error) : options.error;
+          typeof options.error === "function"
+            ? options.error(error)
+            : options.error;
         toastFn.danger(errorMessage);
       });
 
@@ -1085,17 +1240,16 @@ const Toast = Object.assign(ToastRoot, {
 
 export default Toast;
 
+export type { ToastFunction };
 export {
-  ToastRoot,
-  ToastProvider,
-  ToastContent,
-  ToastIndicator,
-  ToastTitle,
-  ToastDescription,
   ToastActionButton,
   ToastCloseButton,
+  ToastContent,
+  ToastDescription,
+  ToastIndicator,
+  ToastProvider,
+  ToastRoot,
+  ToastTitle,
   toast,
   toastQueue,
 };
-
-export type { ToastFunction };

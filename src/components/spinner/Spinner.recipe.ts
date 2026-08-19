@@ -42,5 +42,10 @@ export const spinner = recipe({
     },
     label: {},
   },
-  defaults: { size: "md", flavor: "current", shape: "spinner", label: "Loading" },
+  defaults: {
+    size: "md",
+    flavor: "current",
+    shape: "spinner",
+    label: "Loading",
+  },
 });

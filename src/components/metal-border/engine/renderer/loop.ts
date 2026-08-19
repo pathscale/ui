@@ -3,15 +3,15 @@ import { hexToRgb } from "../color";
 import { FRAME_INTERVAL_MS, GLOW_SKIP_FRAMES } from "../perfConfig";
 import { PRESETS, type PresetName, type PresetTheme } from "../presets";
 import {
-  SHARED,
-  CANONICAL_PILL_W,
   CANONICAL_PILL_H,
+  CANONICAL_PILL_W,
   CIRCLE_SHADER_SCALE,
-  PILL_SHADER_SCALE,
   ensureSharedRenderer,
+  type MetalFxInstance,
+  PILL_SHADER_SCALE,
+  SHARED,
   setContextRestoredCallback,
   teardownSharedRenderer,
-  type MetalFxInstance,
 } from "./core";
 import { refreshGlowPixels } from "./sampling";
 
@@ -168,7 +168,10 @@ export function updateInstance(
   if (dirty) resizeInstanceCanvas(inst);
 }
 
-export function setInstanceVisible(inst: MetalFxInstance, visible: boolean): void {
+export function setInstanceVisible(
+  inst: MetalFxInstance,
+  visible: boolean,
+): void {
   inst.visible = visible;
   if (
     visible &&
@@ -183,7 +186,11 @@ export function setInstanceVisible(inst: MetalFxInstance, visible: boolean): voi
 
 function syncRendererPreset(name: PresetName, theme: PresetTheme): void {
   const shared = ensureSharedRenderer();
-  if (shared.presetName === name && shared.presetTheme === theme && !shared.presetDirty) {
+  if (
+    shared.presetName === name &&
+    shared.presetTheme === theme &&
+    !shared.presetDirty
+  ) {
     return;
   }
   shared.preset = PRESETS[name].modes[theme];
@@ -279,7 +286,8 @@ function copyShaderToInstance(inst: MetalFxInstance): void {
 function uploadPresetUniforms(): void {
   if (!SHARED) return;
   const { gl, uniforms, preset, glCanvas } = SHARED;
-  if (uniforms.u_resolution) gl.uniform2f(uniforms.u_resolution, glCanvas.width, glCanvas.height);
+  if (uniforms.u_resolution)
+    gl.uniform2f(uniforms.u_resolution, glCanvas.width, glCanvas.height);
   for (let i = 0; i < 7; i++) {
     const cLoc = uniforms[`u_color${i + 1}`];
     if (cLoc) {
@@ -289,17 +297,23 @@ function uploadPresetUniforms(): void {
     const aLoc = uniforms[`u_alpha${i + 1}`];
     if (aLoc) gl.uniform1f(aLoc, preset.alphas[i]);
   }
-  if (uniforms.u_intensity) gl.uniform1f(uniforms.u_intensity, preset.intensity);
+  if (uniforms.u_intensity)
+    gl.uniform1f(uniforms.u_intensity, preset.intensity);
   if (uniforms.u_scale) gl.uniform1f(uniforms.u_scale, preset.scale);
-  if (uniforms.u_direction) gl.uniform1f(uniforms.u_direction, (preset.direction * Math.PI) / 180);
+  if (uniforms.u_direction)
+    gl.uniform1f(uniforms.u_direction, (preset.direction * Math.PI) / 180);
   if (uniforms.u_softness) gl.uniform1f(uniforms.u_softness, preset.softness);
-  if (uniforms.u_distortion) gl.uniform1f(uniforms.u_distortion, preset.distortion);
-  if (uniforms.u_complexity) gl.uniform1f(uniforms.u_complexity, preset.complexity);
+  if (uniforms.u_distortion)
+    gl.uniform1f(uniforms.u_distortion, preset.distortion);
+  if (uniforms.u_complexity)
+    gl.uniform1f(uniforms.u_complexity, preset.complexity);
   if (uniforms.u_shape) gl.uniform1f(uniforms.u_shape, preset.shape);
   if (uniforms.u_vignette) gl.uniform1f(uniforms.u_vignette, preset.vignette);
-  if (uniforms.u_vigOpacity) gl.uniform1f(uniforms.u_vigOpacity, preset.vigOpacity);
+  if (uniforms.u_vigOpacity)
+    gl.uniform1f(uniforms.u_vigOpacity, preset.vigOpacity);
   if (uniforms.u_blur) gl.uniform1f(uniforms.u_blur, preset.blur);
-  if (uniforms.u_shaderOpacity) gl.uniform1f(uniforms.u_shaderOpacity, preset.shaderOpacity);
+  if (uniforms.u_shaderOpacity)
+    gl.uniform1f(uniforms.u_shaderOpacity, preset.shaderOpacity);
   SHARED.presetDirty = false;
 }
 

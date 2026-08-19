@@ -7,9 +7,12 @@
   }
 
   .label--required::after,
-  [data-required="true"]:not([role="group"]):not([role="radiogroup"]):not([role="checkboxgroup"])
+  [data-required="true"]:not([role="group"]):not([role="radiogroup"]):not(
+      [role="checkboxgroup"]
+    )
     > .label::after,
-  [data-required="true"]:not([data-slot="radio"]):not([data-slot="checkbox"]) > .label::after {
+  [data-required="true"]:not([data-slot="radio"]):not([data-slot="checkbox"])
+    > .label::after {
     margin-inline-start: 0.125rem;
     color: var(--color-danger);
     content: "*";

@@ -1,34 +1,40 @@
 import "./ColorWheelFlower.css";
 import type { JSX } from "@solidjs/web";
-import {For, createMemo, createSignal, createTrackedEffect, onCleanup, omit} from "solid-js";
 import { clsx } from "clsx";
+import {
+  createMemo,
+  createSignal,
+  createTrackedEffect,
+  For,
+  omit,
+  onCleanup,
+} from "solid-js";
+import type { Layout } from "../../lib/layouts";
 import { twMerge } from "../../lib/twMerge";
-import ColorSwatch from "../color-swatch";
-import ColorSwatchPicker from "../color-swatch-picker";
-import { useColorPickerContext } from "./colorWheelFlowerContext";
 import {
-  createColorFromHsl,
-  parseColor,
-  rgbToHex,
-  rgbToHsl,
-  type ColorValue,
-} from "./ColorUtils";
-import {
-  type ColorWheelFlowerMode,
-  resolveColorWheelFlowerPalette,
-} from "./ColorWheelFlower.palette";
-import {
+  type MotionState,
+  type MotionTransition,
   motionDistances,
   motionDurations,
   motionEasings,
   prefersReducedMotion,
   runMotion,
-  type MotionState,
-  type MotionTransition,
 } from "../../motion";
-import { CLASSES } from "./ColorWheelFlower.recipe";
-import type { Layout } from "../../lib/layouts";
-import { componentRecipe } from "./ColorWheelFlower.recipe";
+import ColorSwatch from "../color-swatch";
+import ColorSwatchPicker from "../color-swatch-picker";
+import {
+  type ColorValue,
+  createColorFromHsl,
+  parseColor,
+  rgbToHex,
+  rgbToHsl,
+} from "./ColorUtils";
+import {
+  type ColorWheelFlowerMode,
+  resolveColorWheelFlowerPalette,
+} from "./ColorWheelFlower.palette";
+import { CLASSES, type componentRecipe } from "./ColorWheelFlower.recipe";
+import { useColorPickerContext } from "./colorWheelFlowerContext";
 
 export interface ColorWheelFlowerProps {
   class?: string;
@@ -234,8 +240,10 @@ const MAX_RADIUS = Math.max(
 const MAX_WAVE_DISTANCE = MAX_RADIUS * 2;
 const MAX_WAVE_DELAY = 0.12;
 
-const ColorWheelFlower: Layout<typeof componentRecipe, ColorWheelFlowerProps> = () => {
-
+const ColorWheelFlower: Layout<
+  typeof componentRecipe,
+  ColorWheelFlowerProps
+> = () => {
   const context = useColorPickerContext();
 
   const [selectedIndex, setSelectedIndex] = createSignal<number | null>(null);

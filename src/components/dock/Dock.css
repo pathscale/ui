@@ -34,7 +34,11 @@
     inset: 0;
     z-index: -1;
     border-radius: 1rem;
-    background-color: color-mix(in srgb, var(--color-base-100) 55%, transparent);
+    background-color: color-mix(
+      in srgb,
+      var(--color-base-100) 55%,
+      transparent
+    );
     -webkit-backdrop-filter: blur(12px) saturate(160%);
     backdrop-filter: blur(12px) saturate(160%);
     box-shadow:
@@ -97,7 +101,11 @@
     white-space: pre;
     border-radius: var(--radius-field, 0.375rem);
     border: var(--border, 1px) solid var(--color-base-300);
-    background-color: color-mix(in srgb, var(--color-base-100) 75%, transparent);
+    background-color: color-mix(
+      in srgb,
+      var(--color-base-100) 75%,
+      transparent
+    );
     -webkit-backdrop-filter: blur(8px) saturate(160%);
     backdrop-filter: blur(8px) saturate(160%);
     color: var(--color-base-content);

@@ -8,4 +8,14 @@ export const CLASSES = {
     actions: "empty__actions",
   },
 } as const;
-export const componentRecipe = recipe({component:"empty",slots:{"empty":{},"empty-actions":{},"empty-description":{},"empty-icon":{},"empty-title":{},"root":{},},});
+export const componentRecipe = recipe({
+  component: "empty",
+  slots: {
+    empty: {},
+    "empty-actions": {},
+    "empty-description": {},
+    "empty-icon": {},
+    "empty-title": {},
+    root: {},
+  },
+});

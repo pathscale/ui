@@ -1,14 +1,13 @@
 import "./Grid.css";
-import {omit, merge, children as resolveChildren} from "solid-js";
-import { Dynamic, type JSX} from "@solidjs/web";
-import { twMerge } from "../../lib/twMerge";
-import type { UIBaseProps } from "../vocabulary";
+import { Dynamic, type JSX } from "@solidjs/web";
 import clsx from "clsx";
+import { merge, omit, children as resolveChildren } from "solid-js";
+import type { Layout } from "../../lib/layouts";
+import { twMerge } from "../../lib/twMerge";
 import type { ResponsiveProp } from "../types";
 import { mapResponsiveProp } from "../utils";
-import { CLASSES } from "./Grid.recipe";
-import type { Layout } from "../../lib/layouts";
-import { componentRecipe } from "./Grid.recipe";
+import type { UIBaseProps } from "../vocabulary";
+import { CLASSES, type componentRecipe } from "./Grid.recipe";
 
 type GridFlow = "row" | "col" | "row-dense" | "col-dense";
 type GridSize =

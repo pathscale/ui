@@ -1,15 +1,14 @@
 import "./Navbar.css";
-import {omit} from "solid-js";
-import { Dynamic, type JSX} from "@solidjs/web";
+import { Dynamic, type JSX } from "@solidjs/web";
+import { omit } from "solid-js";
 import { twMerge } from "../../lib/twMerge";
+import NavbarRow from "./NavbarRow.generated";
 import NavbarSection from "./NavbarSection.generated";
 import NavbarStack from "./NavbarStack.generated";
-import NavbarRow from "./NavbarRow.generated";
 import "../_shared/material.css";
-import type { Material, UIBaseProps } from "../vocabulary";
-import { CLASSES } from "./Navbar.recipe";
 import type { Layout } from "../../lib/layouts";
-import { componentRecipe } from "./Navbar.recipe";
+import type { Material, UIBaseProps } from "../vocabulary";
+import { CLASSES, type componentRecipe } from "./Navbar.recipe";
 
 export type NavbarProps = JSX.HTMLAttributes<HTMLElement> &
   UIBaseProps & {
@@ -20,7 +19,15 @@ export type NavbarProps = JSX.HTMLAttributes<HTMLElement> &
   };
 
 const Navbar: Layout<typeof componentRecipe, NavbarProps> = () => {
-  const others = omit(props, "as", "class", "style", "children", "dataTheme", "material");
+  const others = omit(
+    props,
+    "as",
+    "class",
+    "style",
+    "children",
+    "dataTheme",
+    "material",
+  );
 
   const Tag = (props.as || "div") as keyof JSX.IntrinsicElements;
   const classes = () => twMerge(CLASSES.navbar.base, props.class);
@@ -42,21 +49,30 @@ const Navbar: Layout<typeof componentRecipe, NavbarProps> = () => {
   );
 };
 
-const NavbarStart: Layout<typeof componentRecipe, JSX.HTMLAttributes<HTMLDivElement>> = () => (
+const NavbarStart: Layout<
+  typeof componentRecipe,
+  JSX.HTMLAttributes<HTMLDivElement>
+> = () => (
   <NavbarSection
     section="start"
     {...props}
   />
 );
 
-const NavbarCenter: Layout<typeof componentRecipe, JSX.HTMLAttributes<HTMLDivElement>> = () => (
+const NavbarCenter: Layout<
+  typeof componentRecipe,
+  JSX.HTMLAttributes<HTMLDivElement>
+> = () => (
   <NavbarSection
     section="center"
     {...props}
   />
 );
 
-const NavbarEnd: Layout<typeof componentRecipe, JSX.HTMLAttributes<HTMLDivElement>> = () => (
+const NavbarEnd: Layout<
+  typeof componentRecipe,
+  JSX.HTMLAttributes<HTMLDivElement>
+> = () => (
   <NavbarSection
     section="end"
     {...props}

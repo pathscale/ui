@@ -79,7 +79,8 @@
   .radio__input:focus-visible + .radio__control,
   .radio[data-focus-visible="true"] .radio__control {
     border-color: var(--color-accent);
-    box-shadow: 0 0 0 3px color-mix(in oklab, var(--color-accent) 22%, transparent);
+    box-shadow: 0 0 0 3px
+      color-mix(in oklab, var(--color-accent) 22%, transparent);
   }
 
   /*
@@ -99,14 +100,26 @@
    * it reads on a petal whose entire surface is already a colour.
    */
   @media (hover: hover) {
-    .radio:hover:not([data-selected="true"]):not([data-disabled="true"]) .radio__control,
-    .radio[data-hovered="true"]:not([data-selected="true"]):not([data-disabled="true"]) .radio__control {
-      border-color: color-mix(in oklab, var(--color-base-content) 24%, transparent);
+    .radio:hover:not([data-selected="true"]):not([data-disabled="true"])
+      .radio__control,
+    .radio[data-hovered="true"]:not([data-selected="true"]):not(
+        [data-disabled="true"]
+      )
+      .radio__control {
+      border-color: color-mix(
+        in oklab,
+        var(--color-base-content) 24%,
+        transparent
+      );
       transform: scale(1.12);
     }
 
-    .radio:hover:not([data-selected="true"]):not([data-disabled="true"]) .radio__indicator:empty::before,
-    .radio[data-hovered="true"]:not([data-selected="true"]):not([data-disabled="true"]) .radio__indicator:empty::before {
+    .radio:hover:not([data-selected="true"]):not([data-disabled="true"])
+      .radio__indicator:empty::before,
+    .radio[data-hovered="true"]:not([data-selected="true"]):not(
+        [data-disabled="true"]
+      )
+      .radio__indicator:empty::before {
       background-color: var(--color-base-200);
     }
   }
@@ -126,7 +139,8 @@
     transform: scale(0.4286);
   }
 
-  .radio[data-selected="true"][data-pressed="true"] .radio__indicator:empty::before {
+  .radio[data-selected="true"][data-pressed="true"]
+    .radio__indicator:empty::before {
     transform: scale(0.5714);
   }
 
@@ -136,7 +150,8 @@
 
   .radio[data-invalid="true"]:focus-within .radio__control,
   .radio[data-invalid="true"] .radio__input:focus-visible + .radio__control {
-    box-shadow: 0 0 0 3px color-mix(in oklab, var(--color-error) 22%, transparent);
+    box-shadow: 0 0 0 3px
+      color-mix(in oklab, var(--color-error) 22%, transparent);
   }
 
   .radio[data-disabled="true"] {

@@ -1,6 +1,12 @@
-import { createMemo, createSignal, type Accessor } from "solid-js";
+import { type Accessor, createMemo, createSignal } from "solid-js";
 
-import { compareDates, createPreviewRange, normalizeDate, normalizeRange, type DateRangeValue } from "./date.utils";
+import {
+  compareDates,
+  createPreviewRange,
+  type DateRangeValue,
+  normalizeDate,
+  normalizeRange,
+} from "./date.utils";
 
 export type ControlledDateRangeValue = DateRangeValue | null;
 
@@ -10,7 +16,9 @@ type RangeSelectionOptions = {
   onChange: Accessor<((value: ControlledDateRangeValue) => void) | undefined>;
 };
 
-const normalizeCompleteRange = (value: ControlledDateRangeValue | undefined) => {
+const normalizeCompleteRange = (
+  value: ControlledDateRangeValue | undefined,
+) => {
   if (!value) return null;
 
   const normalized = normalizeRange(value.start, value.end);
@@ -26,8 +34,12 @@ const normalizeCompleteRange = (value: ControlledDateRangeValue | undefined) => 
 
 export const useRangeSelection = (options: RangeSelectionOptions) => {
   const [internalCommittedRange, setInternalCommittedRange] =
-    createSignal<ControlledDateRangeValue>(normalizeCompleteRange(options.defaultValue()));
-  const [pendingStartDate, setPendingStartDate] = createSignal<Date | null>(null);
+    createSignal<ControlledDateRangeValue>(
+      normalizeCompleteRange(options.defaultValue()),
+    );
+  const [pendingStartDate, setPendingStartDate] = createSignal<Date | null>(
+    null,
+  );
   const [hoveredDate, setHoveredDate] = createSignal<Date | null>(null);
 
   const isControlled = createMemo(() => options.value() !== undefined);
@@ -42,10 +54,12 @@ export const useRangeSelection = (options: RangeSelectionOptions) => {
 
   const isSelectingEnd = createMemo(() => pendingStartDate() !== null);
 
-  const rangeStart = createMemo(() => pendingStartDate() ?? committedRange()?.start ?? null);
+  const rangeStart = createMemo(
+    () => pendingStartDate() ?? committedRange()?.start ?? null,
+  );
 
   const rangeEnd = createMemo(() =>
-    pendingStartDate() ? null : committedRange()?.end ?? null,
+    pendingStartDate() ? null : (committedRange()?.end ?? null),
   );
 
   const previewRange = createMemo(() =>

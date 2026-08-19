@@ -1,8 +1,7 @@
-export { default } from "./ScrollArea.generated";
 export type {
-  ScrollAreaProps,
-  ScrollAreaVisibility,
   ScrollAreaOrientation,
+  ScrollAreaProps,
   ScrollAreaVariant,
+  ScrollAreaVisibility,
 } from "./ScrollArea.generated";
-
+export { default } from "./ScrollArea.generated";

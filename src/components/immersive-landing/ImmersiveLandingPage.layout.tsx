@@ -1,13 +1,15 @@
-import {omit, useContext, createMemo} from "solid-js";
 import type { JSX } from "@solidjs/web";
-import { twMerge } from "../../lib/twMerge";
-import type { ImmersiveLandingPageProps } from "./types";
-import { ImmersiveLandingContext } from "./ImmersiveLandingContext";
-import { CLASSES } from "./ImmersiveLanding.recipe";
+import { createMemo, omit, useContext } from "solid-js";
 import type { Layout } from "../../lib/layouts";
-import { componentRecipe } from "./ImmersiveLanding.recipe";
+import { twMerge } from "../../lib/twMerge";
+import { CLASSES, type componentRecipe } from "./ImmersiveLanding.recipe";
+import { ImmersiveLandingContext } from "./ImmersiveLandingContext";
+import type { ImmersiveLandingPageProps } from "./types";
 
-const ImmersiveLandingPage: Layout<typeof componentRecipe, ImmersiveLandingPageProps> = () => {
+const ImmersiveLandingPage: Layout<
+  typeof componentRecipe,
+  ImmersiveLandingPageProps
+> = () => {
   const others = omit(props, "id", "children", "class", "style");
 
   const context = useContext(ImmersiveLandingContext);

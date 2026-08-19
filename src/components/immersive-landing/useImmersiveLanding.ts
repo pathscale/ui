@@ -1,7 +1,17 @@
-import {createSignal, createTrackedEffect, onSettled, onCleanup} from "solid-js";
-import type { UseImmersiveLandingOptions, UseImmersiveLandingReturn } from "./types";
+import {
+  createSignal,
+  createTrackedEffect,
+  onCleanup,
+  onSettled,
+} from "solid-js";
+import type {
+  UseImmersiveLandingOptions,
+  UseImmersiveLandingReturn,
+} from "./types";
 
-export function useImmersiveLanding(options: UseImmersiveLandingOptions): UseImmersiveLandingReturn {
+export function useImmersiveLanding(
+  options: UseImmersiveLandingOptions,
+): UseImmersiveLandingReturn {
   const {
     pages,
     initialPage = pages[0],
@@ -145,7 +155,11 @@ export function useImmersiveLanding(options: UseImmersiveLandingOptions): UseImm
 
       // Don't capture if user is in an input field
       const target = e.target as HTMLElement;
-      if (target.tagName === "INPUT" || target.tagName === "TEXTAREA" || target.isContentEditable) {
+      if (
+        target.tagName === "INPUT" ||
+        target.tagName === "TEXTAREA" ||
+        target.isContentEditable
+      ) {
         return;
       }
 

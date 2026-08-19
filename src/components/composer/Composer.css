@@ -9,17 +9,41 @@
     border: var(--border, 1px) solid var(--color-base-300);
   }
 
-  .composer--solid { background: var(--color-base-200); border-color: transparent; }
-  .composer--soft { background: var(--color-base-200); }
-  .composer--outline { background: transparent; }
-  .composer--ghost { background: transparent; border-color: transparent; }
-  .composer--plain { background: none; border: 0; padding: 0; }
+  .composer--solid {
+    background: var(--color-base-200);
+    border-color: transparent;
+  }
+  .composer--soft {
+    background: var(--color-base-200);
+  }
+  .composer--outline {
+    background: transparent;
+  }
+  .composer--ghost {
+    background: transparent;
+    border-color: transparent;
+  }
+  .composer--plain {
+    background: none;
+    border: 0;
+    padding: 0;
+  }
 
-  .composer--radius-none { border-radius: 0; }
-  .composer--radius-sm { border-radius: var(--radius-field, 0.25rem); }
-  .composer--radius-md { border-radius: 0.5rem; }
-  .composer--radius-lg { border-radius: 0.75rem; }
-  .composer--radius-full { border-radius: 1.5rem; }
+  .composer--radius-none {
+    border-radius: 0;
+  }
+  .composer--radius-sm {
+    border-radius: var(--radius-field, 0.25rem);
+  }
+  .composer--radius-md {
+    border-radius: 0.5rem;
+  }
+  .composer--radius-lg {
+    border-radius: 0.75rem;
+  }
+  .composer--radius-full {
+    border-radius: 1.5rem;
+  }
 
   .composer:focus-within {
     border-color: var(--color-primary);
@@ -84,26 +108,46 @@
     font-size: 0.8125rem;
   }
 
-  .composer__issues [data-severity="error"] { color: var(--color-error); }
-  .composer__issues [data-severity="warning"] { color: var(--color-warning); }
+  .composer__issues [data-severity="error"] {
+    color: var(--color-error);
+  }
+  .composer__issues [data-severity="warning"] {
+    color: var(--color-warning);
+  }
 
-  .composer--xs { font-size: 0.75rem; }
-  .composer--sm { font-size: 0.8125rem; }
-  .composer--md { font-size: 0.875rem; }
-  .composer--lg { font-size: 1rem; }
-  .composer--xl { font-size: 1.125rem; }
+  .composer--xs {
+    font-size: 0.75rem;
+  }
+  .composer--sm {
+    font-size: 0.8125rem;
+  }
+  .composer--md {
+    font-size: 0.875rem;
+  }
+  .composer--lg {
+    font-size: 1rem;
+  }
+  .composer--xl {
+    font-size: 1.125rem;
+  }
 
   /* Sending keeps the text readable: a greyed-out box during a send reads as
      "your message was lost" to anyone who looks away and back. */
-  .composer--loading .composer__field { opacity: 0.85; }
+  .composer--loading .composer__field {
+    opacity: 0.85;
+  }
 
   .composer--error,
-  .composer--invalid { border-color: var(--color-error); }
+  .composer--invalid {
+    border-color: var(--color-error);
+  }
 
   .composer--disabled {
     opacity: 0.5;
     pointer-events: none;
   }
 
-  .composer--hidden { display: none; }
+  .composer--hidden {
+    display: none;
+  }
 }

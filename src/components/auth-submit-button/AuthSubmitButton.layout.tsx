@@ -1,9 +1,16 @@
 import "./AuthSubmitButton.css";
 import type { JSX } from "@solidjs/web";
-import Button from "../button";
 import type { Layout } from "../../lib/layouts";
-import { authSubmitButton } from "./AuthSubmitButton.recipe";
-import type { Flavor, Size, State, Variant, Width, UIBaseProps } from "../vocabulary";
+import Button from "../button";
+import type {
+  Flavor,
+  Size,
+  State,
+  UIBaseProps,
+  Variant,
+  Width,
+} from "../vocabulary";
+import type { authSubmitButton } from "./AuthSubmitButton.recipe";
 
 /* -------------------------------------------------------------------------------------------------
  * Types

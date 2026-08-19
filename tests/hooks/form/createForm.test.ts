@@ -1,6 +1,6 @@
-import { createRoot } from "solid-js";
 import { describe, expect, it, mock } from "bun:test";
 import type { StandardSchemaV1 } from "@standard-schema/spec";
+import { createRoot } from "solid-js";
 import { createForm } from "../../../src/hooks/form/createForm";
 
 type PasswordValues = {
@@ -13,7 +13,8 @@ const minPasswordSchema: StandardSchemaV1<PasswordValues> = {
     vendor: "local-test",
     validate: (value) => {
       const formValue = value as PasswordValues;
-      const password = typeof formValue.password === "string" ? formValue.password : "";
+      const password =
+        typeof formValue.password === "string" ? formValue.password : "";
 
       if (password.length >= 4) {
         return { value: formValue };
@@ -31,7 +32,9 @@ const minPasswordSchema: StandardSchemaV1<PasswordValues> = {
   },
 };
 
-const createPasswordForm = (onSubmit?: (value: PasswordValues) => void | Promise<void>) =>
+const createPasswordForm = (
+  onSubmit?: (value: PasswordValues) => void | Promise<void>,
+) =>
   createRoot((dispose) => {
     const form = createForm<PasswordValues>({
       defaultValues: {

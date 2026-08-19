@@ -1,7 +1,7 @@
 export {
   default,
   Label,
-  LabelRoot,
   type LabelProps,
+  LabelRoot,
   type LabelRootProps,
 } from "./Label.generated";

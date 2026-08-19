@@ -23,8 +23,13 @@ const FOCUSABLE_SELECTOR = [
 ].join(",");
 
 export const getFocusable = (container: HTMLElement) =>
-  Array.from(container.querySelectorAll<HTMLElement>(FOCUSABLE_SELECTOR)).filter(
-    (el) => !el.hidden && el.tabIndex >= 0 && el.getAttribute("aria-hidden") !== "true",
+  Array.from(
+    container.querySelectorAll<HTMLElement>(FOCUSABLE_SELECTOR),
+  ).filter(
+    (el) =>
+      !el.hidden &&
+      el.tabIndex >= 0 &&
+      el.getAttribute("aria-hidden") !== "true",
   );
 
 export const focusFirst = (container: HTMLElement) => {

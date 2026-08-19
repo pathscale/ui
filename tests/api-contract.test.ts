@@ -29,11 +29,16 @@ const NEED_BUILD =
  * regressed, so a future rewrite of the extractor fails here by name instead
  * of quietly emptying the document.
  */
-const MUST_RESOLVE: Array<{ component: string; props: string[]; shape: string }> = [
+const MUST_RESOLVE: Array<{
+  component: string;
+  props: string[];
+  shape: string;
+}> = [
   {
     component: "Slider",
     props: ["min", "max", "step", "value", "onChange", "onChangeEnd"],
-    shape: "SliderBaseProps & UIBaseProps & Omit<JSX.…> - no literal of its own",
+    shape:
+      "SliderBaseProps & UIBaseProps & Omit<JSX.…> - no literal of its own",
   },
   {
     component: "Calendar",
@@ -84,36 +89,45 @@ describe("API contract", () => {
         continue;
       }
       for (const p of props) {
-        if (!promised.includes(p)) drift.push(`${name}.${p} ships but is undocumented`);
+        if (!promised.includes(p))
+          drift.push(`${name}.${p} ships but is undocumented`);
       }
       for (const p of promised) {
-        if (!props.includes(p)) drift.push(`${name}.${p} is documented but not exported`);
+        if (!props.includes(p))
+          drift.push(`${name}.${p} is documented but not exported`);
       }
     }
     for (const name of documented.keys()) {
-      if (!built.has(name)) drift.push(`${name} is documented but not exported`);
+      if (!built.has(name))
+        drift.push(`${name} is documented but not exported`);
     }
 
-    expect(drift, "run `bun run check:api -- --write` and commit the diff").toEqual([]);
+    expect(
+      drift,
+      "run `bun run check:api -- --write` and commit the diff",
+    ).toEqual([]);
   });
 
-  it.each(MUST_RESOLVE)(
-    "resolves $component's props through: $shape",
-    ({ component, props }) => {
-      expect(HAS_BUILD, NEED_BUILD).toBeTrue();
-      const built = readBuiltApi().get(component);
-      expect(built, `${component} is not in the built API at all`).toBeDefined();
-      for (const prop of props) {
-        expect(built, `${component}.${prop} was not extracted`).toContain(prop);
-      }
-    },
-  );
+  it.each(MUST_RESOLVE)("resolves $component's props through: $shape", ({
+    component,
+    props,
+  }) => {
+    expect(HAS_BUILD, NEED_BUILD).toBeTrue();
+    const built = readBuiltApi().get(component);
+    expect(built, `${component} is not in the built API at all`).toBeDefined();
+    for (const prop of props) {
+      expect(built, `${component}.${prop} was not extracted`).toContain(prop);
+    }
+  });
 
   it("does not invent props for components that only take HTML attributes", () => {
     expect(HAS_BUILD, NEED_BUILD).toBeTrue();
     const built = readBuiltApi();
     for (const name of MUST_STAY_EMPTY) {
-      expect(built.get(name), `${name} should resolve to no props of its own`).toEqual([]);
+      expect(
+        built.get(name),
+        `${name} should resolve to no props of its own`,
+      ).toEqual([]);
     }
   });
 

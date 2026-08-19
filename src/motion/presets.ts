@@ -1,9 +1,9 @@
-import type { MotionPreset, MotionTokens } from "./types";
 import { prefersReducedMotion } from "./reduced-motion";
 import { defaultMotionTokens } from "./tokens";
+import type { MotionPreset, MotionTokens } from "./types";
 
 export const createMotionPresets = (
-  tokens: MotionTokens
+  tokens: MotionTokens,
 ): Record<string, MotionPreset> => {
   const durations = tokens.durations;
   const easings = tokens.easings;
@@ -117,7 +117,7 @@ export const registerPreset = (name: string, preset: MotionPreset) => {
 
 export const resolvePreset = (
   name: string,
-  options?: { reduceMotion?: boolean }
+  options?: { reduceMotion?: boolean },
 ) => {
   const reduce = options?.reduceMotion ?? prefersReducedMotion();
   if (reduce) return noMotion;

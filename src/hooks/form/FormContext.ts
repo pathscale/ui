@@ -33,7 +33,7 @@ export const useFormContext = (): AnyFormApi => {
   if (ctx === null) {
     throw new Error(
       "[pathscale/ui] useFormContext() was called outside of a <Form> component.\n" +
-      "Make sure this component is rendered as a descendant of <Form form={...}>.",
+        "Make sure this component is rendered as a descendant of <Form form={...}>.",
     );
   }
 

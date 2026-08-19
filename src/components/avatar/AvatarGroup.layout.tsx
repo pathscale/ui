@@ -1,11 +1,9 @@
-import {omit} from "solid-js";
-import { Dynamic, type JSX} from "@solidjs/web";
-import { twMerge } from "../../lib/twMerge";
-
-import type { UIBaseProps } from "../vocabulary";
-import { CLASSES } from "./Avatar.recipe";
+import { Dynamic, type JSX } from "@solidjs/web";
+import { omit } from "solid-js";
 import type { Layout } from "../../lib/layouts";
-import { componentRecipe } from "./Avatar.recipe";
+import { twMerge } from "../../lib/twMerge";
+import type { UIBaseProps } from "../vocabulary";
+import { CLASSES, type componentRecipe } from "./Avatar.recipe";
 
 type ElementType = keyof JSX.IntrinsicElements;
 
@@ -81,4 +79,6 @@ const AvatarGroup: Layout<typeof componentRecipe, AvatarGroupProps> = () => {
   );
 };
 
-export default AvatarGroup as <E extends ElementType = "div">(props: AvatarGroupProps<E>) => JSX.Element;
+export default AvatarGroup as <E extends ElementType = "div">(
+  props: AvatarGroupProps<E>,
+) => JSX.Element;

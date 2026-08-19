@@ -1,8 +1,8 @@
 export {
   default,
   Textarea,
-  TextareaRoot,
   type TextareaProps,
+  TextareaRoot,
   type TextareaRootProps,
   type TextareaVariant,
 } from "./Textarea.generated";

@@ -1,10 +1,9 @@
-import {omit, createMemo, children as resolveChildren} from "solid-js";
 import type { JSX } from "@solidjs/web";
+import { createMemo, omit, children as resolveChildren } from "solid-js";
+import type { Layout } from "../../lib/layouts";
 import { twMerge } from "../../lib/twMerge";
 import type { UIBaseProps } from "../vocabulary";
-import { CLASSES } from "./Navbar.recipe";
-import type { Layout } from "../../lib/layouts";
-import { componentRecipe } from "./Navbar.recipe";
+import { CLASSES, type componentRecipe } from "./Navbar.recipe";
 
 export type NavbarStackProps = JSX.HTMLAttributes<HTMLDivElement> &
   UIBaseProps & {
@@ -14,7 +13,15 @@ export type NavbarStackProps = JSX.HTMLAttributes<HTMLDivElement> &
   };
 
 const NavbarStack: Layout<typeof componentRecipe, NavbarStackProps> = () => {
-  const others = omit(props, "children", "sticky", "container", "class", "style", "dataTheme");
+  const others = omit(
+    props,
+    "children",
+    "sticky",
+    "container",
+    "class",
+    "style",
+    "dataTheme",
+  );
 
   const resolvedChildren = resolveChildren(() => props.children);
 

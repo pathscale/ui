@@ -8,14 +8,21 @@ export type DateRangeValue = {
   end: Date;
 };
 
-export const createCalendarDate = (year: number, monthIndex: number, day: number) =>
-  new Date(year, monthIndex, day, 12, 0, 0, 0);
+export const createCalendarDate = (
+  year: number,
+  monthIndex: number,
+  day: number,
+) => new Date(year, monthIndex, day, 12, 0, 0, 0);
 
 export const normalizeDate = (value: Date | null | undefined): Date | null => {
   if (!(value instanceof Date)) return null;
   if (Number.isNaN(value.getTime())) return null;
 
-  return createCalendarDate(value.getFullYear(), value.getMonth(), value.getDate());
+  return createCalendarDate(
+    value.getFullYear(),
+    value.getMonth(),
+    value.getDate(),
+  );
 };
 
 export const getToday = () => {
@@ -33,7 +40,11 @@ export const parseDate = (value: string | null | undefined): Date | null => {
   const month = Number(match[2]);
   const day = Number(match[3]);
 
-  if (!Number.isFinite(year) || !Number.isFinite(month) || !Number.isFinite(day)) {
+  if (
+    !Number.isFinite(year) ||
+    !Number.isFinite(month) ||
+    !Number.isFinite(day)
+  ) {
     return null;
   }
 
@@ -80,32 +91,48 @@ export const compareDates = (left: Date, right: Date) =>
   toDateKey(left) - toDateKey(right);
 
 export const compareMonths = (left: Date, right: Date) =>
-  (left.getFullYear() - right.getFullYear()) * 12 + (left.getMonth() - right.getMonth());
+  (left.getFullYear() - right.getFullYear()) * 12 +
+  (left.getMonth() - right.getMonth());
 
-export const isSameDay = (left: Date, right: Date) => compareDates(left, right) === 0;
+export const isSameDay = (left: Date, right: Date) =>
+  compareDates(left, right) === 0;
 
 export const isSameMonth = (left: Date, right: Date) =>
-  left.getFullYear() === right.getFullYear() && left.getMonth() === right.getMonth();
+  left.getFullYear() === right.getFullYear() &&
+  left.getMonth() === right.getMonth();
 
 export const startOfMonth = (date: Date) =>
   createCalendarDate(date.getFullYear(), date.getMonth(), 1);
 
 export const addDays = (date: Date, amount: number) =>
-  createCalendarDate(date.getFullYear(), date.getMonth(), date.getDate() + amount);
+  createCalendarDate(
+    date.getFullYear(),
+    date.getMonth(),
+    date.getDate() + amount,
+  );
 
 export const addMonths = (date: Date, amount: number) =>
   createCalendarDate(date.getFullYear(), date.getMonth() + amount, 1);
 
 export const shiftDateByMonths = (date: Date, amount: number) => {
-  const base = createCalendarDate(date.getFullYear(), date.getMonth() + amount, 1);
+  const base = createCalendarDate(
+    date.getFullYear(),
+    date.getMonth() + amount,
+    1,
+  );
   const maxDay = new Date(base.getFullYear(), base.getMonth() + 1, 0).getDate();
 
-  return createCalendarDate(base.getFullYear(), base.getMonth(), Math.min(date.getDate(), maxDay));
+  return createCalendarDate(
+    base.getFullYear(),
+    base.getMonth(),
+    Math.min(date.getDate(), maxDay),
+  );
 };
 
 export const buildCalendarGrid = (monthStart: Date, weekStartsOn = 0) => {
   const monthFirstDay = startOfMonth(monthStart);
-  const offset = (monthFirstDay.getDay() - weekStartsOn + DAYS_PER_WEEK) % DAYS_PER_WEEK;
+  const offset =
+    (monthFirstDay.getDay() - weekStartsOn + DAYS_PER_WEEK) % DAYS_PER_WEEK;
   const gridStart = addDays(monthFirstDay, -offset);
 
   return Array.from({ length: CALENDAR_GRID_DAYS }, (_, index) =>
@@ -113,7 +140,7 @@ export const buildCalendarGrid = (monthStart: Date, weekStartsOn = 0) => {
   );
 };
 
-export const splitWeeks = <T,>(items: T[], daysPerWeek = DAYS_PER_WEEK) => {
+export const splitWeeks = <T>(items: T[], daysPerWeek = DAYS_PER_WEEK) => {
   const weeks: T[][] = [];
 
   for (let index = 0; index < items.length; index += daysPerWeek) {

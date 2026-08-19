@@ -1,11 +1,11 @@
 export {
-  default,
-  AvatarRoot,
-  AvatarImage,
   AvatarFallback,
+  type AvatarFallbackProps,
+  AvatarImage,
+  type AvatarImageProps,
+  AvatarRoot,
+  type AvatarRootProps,
   type AvatarSize,
   type AvatarVariant,
-  type AvatarRootProps,
-  type AvatarImageProps,
-  type AvatarFallbackProps,
+  default,
 } from "./Avatar.generated";

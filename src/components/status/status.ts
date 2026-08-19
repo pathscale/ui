@@ -175,24 +175,42 @@ export function summarizeStatus(input: StatusItem[]): StatusSummary {
   // A declared health of `flapping` wins; otherwise enough recent flips is
   // what flapping *means*, so it is derived rather than left to the caller.
   const items = input.map((i) => {
-    if (i.health === "flapping" || i.health === "reconnecting" || i.health === "connecting") {
+    if (
+      i.health === "flapping" ||
+      i.health === "reconnecting" ||
+      i.health === "connecting"
+    ) {
       return i;
     }
     // Enough recent flips is what flapping means, so derive rather than ask.
-    if ((i.recentChanges ?? 0) >= FLAPPING_THRESHOLD) return { ...i, health: "flapping" as const };
+    if ((i.recentChanges ?? 0) >= FLAPPING_THRESHOLD)
+      return { ...i, health: "flapping" as const };
     // Trying, and whether it ever worked is the whole distinction.
     if (i.transitioning && isUnhealthy(i)) {
-      return { ...i, health: i.everHealthy ? ("reconnecting" as const) : ("connecting" as const) };
+      return {
+        ...i,
+        health: i.everHealthy
+          ? ("reconnecting" as const)
+          : ("connecting" as const),
+      };
     }
     return i;
   });
   const byId = new Map(items.map((i) => [i.id, i]));
-  const unhealthy = items.filter(isUnhealthy).sort((a, b) => RANK[b.health] - RANK[a.health]);
+  const unhealthy = items
+    .filter(isUnhealthy)
+    .sort((a, b) => RANK[b.health] - RANK[a.health]);
 
   const worstQuality = (list: StatusItem[]): Quality => {
-    const rank: Record<Quality, number> = { poor: 3, fair: 2, unknown: 1, good: 0 };
+    const rank: Record<Quality, number> = {
+      poor: 3,
+      fair: 2,
+      unknown: 1,
+      good: 0,
+    };
     return list.reduce<Quality>(
-      (worst, i) => (i.quality && rank[i.quality] > rank[worst] ? i.quality : worst),
+      (worst, i) =>
+        i.quality && rank[i.quality] > rank[worst] ? i.quality : worst,
       "good",
     );
   };
@@ -219,7 +237,10 @@ export function summarizeStatus(input: StatusItem[]): StatusSummary {
     };
   }
 
-  const explainedByUpstream = (item: StatusItem, seen = new Set<string>()): boolean => {
+  const explainedByUpstream = (
+    item: StatusItem,
+    seen = new Set<string>(),
+  ): boolean => {
     if (seen.has(item.id)) return false; // cycle: treat as its own cause
     seen.add(item.id);
     return (item.dependsOn ?? []).some((id) => {
@@ -236,7 +257,8 @@ export function summarizeStatus(input: StatusItem[]): StatusSummary {
   const ranked = [...causes].sort((a, b) => {
     const byHealth = RANK[b.health] - RANK[a.health];
     if (byHealth !== 0) return byHealth;
-    const actionable = (i: StatusItem) => (i.scope === "local" ? 1 : 0) + (i.onRetry ? 1 : 0);
+    const actionable = (i: StatusItem) =>
+      (i.scope === "local" ? 1 : 0) + (i.onRetry ? 1 : 0);
     return actionable(b) - actionable(a);
   });
 
@@ -246,7 +268,9 @@ export function summarizeStatus(input: StatusItem[]): StatusSummary {
     // reconnecting" would report the consequence and hide the fact that
     // something is actively recovering.
     health: ranked[0]?.health ?? unhealthy[0].health,
-    quality: flapping ? "poor" : worstQuality(items.filter((i) => !isUnhealthy(i))),
+    quality: flapping
+      ? "poor"
+      : worstQuality(items.filter((i) => !isUnhealthy(i))),
     attempting: attempting(unhealthy),
     flapping,
     // Only claim recovery when every failure can recover and something is trying.
@@ -288,7 +312,12 @@ export interface StatusTransition {
   qualityChanged: boolean;
 }
 
-const QUALITY_RANK: Record<Quality, number> = { poor: 3, fair: 2, unknown: 1, good: 0 };
+const QUALITY_RANK: Record<Quality, number> = {
+  poor: 3,
+  fair: 2,
+  unknown: 1,
+  good: 0,
+};
 
 /**
  * Diff two summaries into the transition between them.
@@ -304,15 +333,24 @@ export function diffStatus(
   current: StatusSummary,
   items: { previous: StatusItem[]; current: StatusItem[] },
 ): StatusTransition {
-  const wasUnhealthy = new Set(items.previous.filter(isUnhealthy).map((i) => i.id));
-  const isNowUnhealthy = new Set(items.current.filter(isUnhealthy).map((i) => i.id));
+  const wasUnhealthy = new Set(
+    items.previous.filter(isUnhealthy).map((i) => i.id),
+  );
+  const isNowUnhealthy = new Set(
+    items.current.filter(isUnhealthy).map((i) => i.id),
+  );
 
   return {
     previous,
     current,
-    degraded: items.current.filter((i) => isNowUnhealthy.has(i.id) && !wasUnhealthy.has(i.id)),
-    recovered: items.current.filter((i) => !isNowUnhealthy.has(i.id) && wasUnhealthy.has(i.id)),
+    degraded: items.current.filter(
+      (i) => isNowUnhealthy.has(i.id) && !wasUnhealthy.has(i.id),
+    ),
+    recovered: items.current.filter(
+      (i) => !isNowUnhealthy.has(i.id) && wasUnhealthy.has(i.id),
+    ),
     healthChanged: previous.health !== current.health,
-    qualityChanged: QUALITY_RANK[previous.quality] !== QUALITY_RANK[current.quality],
+    qualityChanged:
+      QUALITY_RANK[previous.quality] !== QUALITY_RANK[current.quality],
   };
 }

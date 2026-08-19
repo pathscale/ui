@@ -34,7 +34,8 @@ describe("optional contexts carry a default", () => {
       if (statSync(path).isDirectory()) walk(path);
       // Generated twins mirror their layout source; checking both would report
       // every finding twice and fix neither.
-      else if (/\.(ts|tsx)$/.test(entry) && !entry.includes(".generated.")) sources.push(path);
+      else if (/\.(ts|tsx)$/.test(entry) && !entry.includes(".generated."))
+        sources.push(path);
     }
   };
   walk(SRC);
@@ -65,12 +66,16 @@ describe("optional contexts carry a default", () => {
   const directlyRead = new Set<string>();
   for (const file of sources) {
     const text = readFileSync(file, "utf8");
-    for (const use of text.matchAll(/const (\w+) = useContext\((\w*Context)\)/g)) {
+    for (const use of text.matchAll(
+      /const (\w+) = useContext\((\w*Context)\)/g,
+    )) {
       const [, variable, context] = use;
-      if (new RegExp(`\\b${variable}\\?\\.`).test(text)) optionallyRead.add(context);
+      if (new RegExp(`\\b${variable}\\?\\.`).test(text))
+        optionallyRead.add(context);
       // A guarded call reads as direct here, which is the safe way to be wrong:
       // it keeps the context out of the automatic set.
-      if (new RegExp(`\\b${variable}\\.[a-zA-Z]`).test(text)) directlyRead.add(context);
+      if (new RegExp(`\\b${variable}\\.[a-zA-Z]`).test(text))
+        directlyRead.add(context);
     }
   }
   for (const name of directlyRead) optionallyRead.delete(name);
@@ -82,8 +87,13 @@ describe("optional contexts carry a default", () => {
 
   it("gives every optionally-read context a default", () => {
     const missing = [...optionallyRead]
-      .filter((name) => declarations.has(name) && !declarations.get(name)?.defaulted)
-      .map((name) => `${name} (${declarations.get(name)?.file.replace(SRC, "src")})`);
+      .filter(
+        (name) => declarations.has(name) && !declarations.get(name)?.defaulted,
+      )
+      .map(
+        (name) =>
+          `${name} (${declarations.get(name)?.file.replace(SRC, "src")})`,
+      );
     expect(missing).toEqual([]);
   });
 });

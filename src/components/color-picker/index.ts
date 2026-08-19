@@ -1,14 +1,14 @@
-export {
-  default,
-  ColorPicker,
-  ColorPickerRoot,
-  ColorPickerArea,
-  ColorPickerSlider,
-  ColorPickerField,
-} from "./ColorPicker.generated";
 export type {
-  ColorPickerProps,
   ColorPickerAreaProps,
-  ColorPickerSliderProps,
   ColorPickerFieldProps,
+  ColorPickerProps,
+  ColorPickerSliderProps,
+} from "./ColorPicker.generated";
+export {
+  ColorPicker,
+  ColorPickerArea,
+  ColorPickerField,
+  ColorPickerRoot,
+  ColorPickerSlider,
+  default,
 } from "./ColorPicker.generated";

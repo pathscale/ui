@@ -1,10 +1,10 @@
 export {
-  default,
   ButtonGroup,
-  ButtonGroupRoot,
-  ButtonGroupSeparator,
-  type ButtonGroupProps,
-  type ButtonGroupRootProps,
-  type ButtonGroupSeparatorProps,
   type ButtonGroupOrientation,
+  type ButtonGroupProps,
+  ButtonGroupRoot,
+  type ButtonGroupRootProps,
+  ButtonGroupSeparator,
+  type ButtonGroupSeparatorProps,
+  default,
 } from "./ButtonGroup.generated";

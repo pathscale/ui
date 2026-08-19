@@ -1,16 +1,16 @@
-import { createMemo, type Accessor } from "solid-js";
+import { type Accessor, createMemo } from "solid-js";
 
 import {
   addDays,
   buildCalendarGrid,
   compareDates,
   createPreviewRange,
+  type DateRangeValue,
   getToday,
   isSameDay,
   isSameMonth,
   normalizeRange,
   splitWeeks,
-  type DateRangeValue,
 } from "./date.utils";
 
 export type CalendarSelectionMode = "single" | "range";
@@ -46,7 +46,11 @@ export type CalendarCellState = {
 
 export const useCalendarState = (options: CalendarStateOptions) => {
   const monthFormatter = createMemo(
-    () => new Intl.DateTimeFormat(options.locale(), { month: "long", year: "numeric" }),
+    () =>
+      new Intl.DateTimeFormat(options.locale(), {
+        month: "long",
+        year: "numeric",
+      }),
   );
 
   const dayLabelFormatter = createMemo(
@@ -54,7 +58,10 @@ export const useCalendarState = (options: CalendarStateOptions) => {
   );
 
   const weekdayFormatter = createMemo(
-    () => new Intl.DateTimeFormat(options.locale(), { weekday: options.weekdayFormat() }),
+    () =>
+      new Intl.DateTimeFormat(options.locale(), {
+        weekday: options.weekdayFormat(),
+      }),
   );
 
   const weekdayLabels = createMemo(() => {
@@ -89,9 +96,18 @@ export const useCalendarState = (options: CalendarStateOptions) => {
     const preview = previewRange();
 
     const isOutsideMonth = !isSameMonth(date, options.visibleMonth());
-    const isSelected = mode === "single" && selectedDate !== null && isSameDay(date, selectedDate);
-    const isRangeStart = mode === "range" && normalized.start !== null && isSameDay(date, normalized.start);
-    const isRangeEnd = mode === "range" && normalized.end !== null && isSameDay(date, normalized.end);
+    const isSelected =
+      mode === "single" &&
+      selectedDate !== null &&
+      isSameDay(date, selectedDate);
+    const isRangeStart =
+      mode === "range" &&
+      normalized.start !== null &&
+      isSameDay(date, normalized.start);
+    const isRangeEnd =
+      mode === "range" &&
+      normalized.end !== null &&
+      isSameDay(date, normalized.end);
 
     const isInCommittedRange =
       mode === "range" &&

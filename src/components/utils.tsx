@@ -1,7 +1,8 @@
 import type { JSX } from "@solidjs/web";
 import { Dynamic } from "@solidjs/web";
-import { breakpoints } from "./types";
 import type { ResponsiveProp } from "./types";
+import { breakpoints } from "./types";
+
 export { useDesktop } from "../hooks/layout";
 
 function isJSXElement(node: unknown): node is JSX.Element {

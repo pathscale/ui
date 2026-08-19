@@ -69,9 +69,9 @@
     .accordion__trigger:hover:not([aria-expanded="true"]):not(:disabled):not(
         [aria-disabled="true"]
       ),
-    .accordion__trigger[data-hovered="true"]:not(
-        [aria-expanded="true"]
-      ):not(:disabled):not([aria-disabled="true"]) {
+    .accordion__trigger[data-hovered="true"]:not([aria-expanded="true"]):not(
+        :disabled
+      ):not([aria-disabled="true"]) {
       background-color: color-mix(
         in oklab,
         var(--color-base-content),

@@ -1,1 +1,5 @@
-export { default, type CheckboxProps, type CheckboxVariant } from "./Checkbox.generated";
+export {
+  type CheckboxProps,
+  type CheckboxVariant,
+  default,
+} from "./Checkbox.generated";

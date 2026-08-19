@@ -1,10 +1,10 @@
 import { type Component, createSignal, onSettled, Show } from "solid-js";
-import { BrowserType, FirefoxPWABannerProps } from "../types";
 import Button from "../../button";
 import Card from "../../card";
 import Flex from "../../flex";
 import Icon from "../../icon";
 import { CLASSES } from "../ImmersiveLanding.recipe";
+import type { BrowserType, FirefoxPWABannerProps } from "../types";
 
 const defaultTexts = {
   title: "Install App on Firefox",
@@ -42,7 +42,7 @@ const detectBrowser = (): BrowserType => {
  */
 const isMobile = (): boolean => {
   return /android|webos|iphone|ipad|ipod|blackberry|iemobile|opera mini/i.test(
-    navigator.userAgent.toLowerCase()
+    navigator.userAgent.toLowerCase(),
   );
 };
 
@@ -122,7 +122,10 @@ export const FirefoxPWABanner: Component<FirefoxPWABannerProps> = (props) => {
         aria-labelledby="pwa-unsupported-title"
         {...{ class: CLASSES.firefoxBanner.dialog }}
       >
-        <Card elevation="md" {...{ class: CLASSES.firefoxBanner.card }}>
+        <Card
+          elevation="md"
+          {...{ class: CLASSES.firefoxBanner.card }}
+        >
           <Button
             size="sm"
             variant="ghost"
@@ -131,11 +134,19 @@ export const FirefoxPWABanner: Component<FirefoxPWABannerProps> = (props) => {
             onClick={handleDismiss}
             aria-label={texts().closeLabel}
           >
-            <Icon src="icon-[mdi--close]" width={16} height={16} />
+            <Icon
+              src="icon-[mdi--close]"
+              width={16}
+              height={16}
+            />
           </Button>
 
           <Card.Body {...{ class: CLASSES.firefoxBanner.body }}>
-            <Flex align="start" gap="md" {...{ class: CLASSES.firefoxBanner.media }}>
+            <Flex
+              align="start"
+              gap="md"
+              {...{ class: CLASSES.firefoxBanner.media }}
+            >
               <div {...{ class: CLASSES.firefoxBanner.iconWrap }}>
                 <Show when={browser() === "firefox"}>
                   <Icon
@@ -147,8 +158,15 @@ export const FirefoxPWABanner: Component<FirefoxPWABannerProps> = (props) => {
                 </Show>
               </div>
 
-              <Flex direction="col" gap="sm" {...{ class: CLASSES.firefoxBanner.textWrap }}>
-                <h3 id="pwa-unsupported-title" {...{ class: CLASSES.firefoxBanner.title }}>
+              <Flex
+                direction="col"
+                gap="sm"
+                {...{ class: CLASSES.firefoxBanner.textWrap }}
+              >
+                <h3
+                  id="pwa-unsupported-title"
+                  {...{ class: CLASSES.firefoxBanner.title }}
+                >
                   {texts().title}
                 </h3>
                 <p {...{ class: CLASSES.firefoxBanner.description }}>
@@ -158,10 +176,18 @@ export const FirefoxPWABanner: Component<FirefoxPWABannerProps> = (props) => {
             </Flex>
           </Card.Body>
           <Card.Footer {...{ class: CLASSES.firefoxBanner.footer }}>
-            <Button flavor="primary" {...{ class: CLASSES.firefoxBanner.action }} onClick={handleAction}>
+            <Button
+              flavor="primary"
+              {...{ class: CLASSES.firefoxBanner.action }}
+              onClick={handleAction}
+            >
               {texts().installButton}
             </Button>
-            <Button variant="ghost" {...{ class: CLASSES.firefoxBanner.action }} onClick={handleDismiss}>
+            <Button
+              variant="ghost"
+              {...{ class: CLASSES.firefoxBanner.action }}
+              onClick={handleDismiss}
+            >
               {texts().dismissButton}
             </Button>
           </Card.Footer>

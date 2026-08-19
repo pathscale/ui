@@ -94,7 +94,8 @@
     border-inline-start-width: 0;
   }
 
-  .button-group--horizontal .button--outline:not(:first-child):not(:last-child) {
+  .button-group--horizontal
+    .button--outline:not(:first-child):not(:last-child) {
     border-inline-width: 0;
   }
 

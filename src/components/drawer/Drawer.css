@@ -57,11 +57,19 @@
   }
 
   .drawer__backdrop--opaque {
-    background-color: color-mix(in oklab, rgb(var(--shadow-color, 0 0 0)) 40%, transparent);
+    background-color: color-mix(
+      in oklab,
+      rgb(var(--shadow-color, 0 0 0)) 40%,
+      transparent
+    );
   }
 
   .drawer__backdrop--blur {
-    background-color: color-mix(in oklab, rgb(var(--shadow-color, 0 0 0)) 40%, transparent);
+    background-color: color-mix(
+      in oklab,
+      rgb(var(--shadow-color, 0 0 0)) 40%,
+      transparent
+    );
     backdrop-filter: blur(12px);
   }
 
@@ -277,13 +285,19 @@
   .drawer__dialog--side-left {
     border-right-width: var(--drawer-dialog-border-width, 1px);
     border-right-style: solid;
-    border-right-color: var(--drawer-dialog-border-color, color-mix(in oklab, var(--color-base-content) 10%, transparent));
+    border-right-color: var(
+      --drawer-dialog-border-color,
+      color-mix(in oklab, var(--color-base-content) 10%, transparent)
+    );
   }
 
   .drawer__dialog--side-right {
     border-left-width: var(--drawer-dialog-border-width, 1px);
     border-left-style: solid;
-    border-left-color: var(--drawer-dialog-border-color, color-mix(in oklab, var(--color-base-content) 10%, transparent));
+    border-left-color: var(
+      --drawer-dialog-border-color,
+      color-mix(in oklab, var(--color-base-content) 10%, transparent)
+    );
   }
 
   /* -------------------------------------------------------------------------------------------------
@@ -389,7 +403,11 @@
     height: 0.25rem;
     width: 2.25rem;
     border-radius: var(--radius-pill, 9999px);
-    background-color: color-mix(in oklab, var(--color-base-content) 25%, transparent);
+    background-color: color-mix(
+      in oklab,
+      var(--color-base-content) 25%,
+      transparent
+    );
   }
 
   /* -------------------------------------------------------------------------------------------------
@@ -409,13 +427,19 @@
     border-radius: var(--radius-field, 0.375rem);
     cursor: pointer;
     color: color-mix(in oklab, var(--color-base-content) 50%, transparent);
-    transition: color 150ms ease, background-color 150ms ease;
+    transition:
+      color 150ms ease,
+      background-color 150ms ease;
     padding: 0;
   }
 
   .drawer__close-trigger:hover {
     color: var(--color-base-content);
-    background-color: color-mix(in oklab, var(--color-base-content) 8%, transparent);
+    background-color: color-mix(
+      in oklab,
+      var(--color-base-content) 8%,
+      transparent
+    );
   }
 
   .drawer__close-trigger:focus-visible {

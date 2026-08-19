@@ -35,12 +35,28 @@
     fill: currentColor;
   }
 
-  .icon--flavor-neutral { --icon-accent: var(--color-base-content); }
-  .icon--flavor-primary { --icon-accent: var(--color-primary); }
-  .icon--flavor-secondary { --icon-accent: var(--color-secondary); }
-  .icon--flavor-accent { --icon-accent: var(--color-accent); }
-  .icon--flavor-destructive { --icon-accent: var(--color-error); }
-  .icon--flavor-success { --icon-accent: var(--color-success); }
-  .icon--flavor-warning { --icon-accent: var(--color-warning); }
-  .icon--flavor-info { --icon-accent: var(--color-info); }
+  .icon--flavor-neutral {
+    --icon-accent: var(--color-base-content);
+  }
+  .icon--flavor-primary {
+    --icon-accent: var(--color-primary);
+  }
+  .icon--flavor-secondary {
+    --icon-accent: var(--color-secondary);
+  }
+  .icon--flavor-accent {
+    --icon-accent: var(--color-accent);
+  }
+  .icon--flavor-destructive {
+    --icon-accent: var(--color-error);
+  }
+  .icon--flavor-success {
+    --icon-accent: var(--color-success);
+  }
+  .icon--flavor-warning {
+    --icon-accent: var(--color-warning);
+  }
+  .icon--flavor-info {
+    --icon-accent: var(--color-info);
+  }
 }

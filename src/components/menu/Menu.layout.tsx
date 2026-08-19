@@ -1,24 +1,23 @@
 import "./Menu.css";
 import type { JSX } from "@solidjs/web";
-import {For, createMemo, createSignal, omit, type Component} from "solid-js";
+import { type Component, createMemo, createSignal, For, omit } from "solid-js";
 import { twMerge } from "../../lib/twMerge";
 
 import "../_shared/material.css";
+import type { Layout } from "../../lib/layouts";
 import type { Material, State, UIBaseProps } from "../vocabulary";
-import { CLASSES } from "./Menu.recipe";
 import {
   MenuContext,
   type MenuFocusTarget,
   type MenuItemRecord,
   type MenuSelectionMode,
 } from "./context";
+import { CLASSES, type componentRecipe } from "./Menu.recipe";
 import MenuItem, {
   MenuItemIndicator,
   MenuItemRoot,
 } from "./MenuItem.generated";
 import MenuSection, { MenuSectionRoot } from "./MenuSection.generated";
-import type { Layout } from "../../lib/layouts";
-import { componentRecipe } from "./Menu.recipe";
 
 const normalizeKeys = (keys?: Iterable<string | number>): Set<string> => {
   if (!keys) return new Set();
@@ -93,11 +92,14 @@ const MenuRoot: Layout<typeof componentRecipe, MenuRootProps> = () => {
     normalizeKeys(props.defaultSelectedKeys),
   );
   const [focusedKey, setFocusedKey] = createSignal<string | undefined>();
-  const [registeredItems, setRegisteredItems] = createSignal<MenuItemRecord[]>([]);
+  const [registeredItems, setRegisteredItems] = createSignal<MenuItemRecord[]>(
+    [],
+  );
 
   const selectionMode = () => props.selectionMode ?? "none";
   const isControlled = () => props.selectedKeys !== undefined;
-  const isDisabled = () => Boolean((props.state === "disabled")) || Boolean(props.disabled);
+  const isDisabled = () =>
+    Boolean(props.state === "disabled") || Boolean(props.disabled);
   const selectedKeys = createMemo(() =>
     isControlled() ? normalizeKeys(props.selectedKeys) : internalSelectedKeys(),
   );
@@ -105,7 +107,8 @@ const MenuRoot: Layout<typeof componentRecipe, MenuRootProps> = () => {
 
   const getEnabledItems = () =>
     registeredItems().filter(
-      (item) => !item.disabled && !disabledKeys().has(item.key) && !isDisabled(),
+      (item) =>
+        !item.disabled && !disabledKeys().has(item.key) && !isDisabled(),
     );
 
   const focusItem = (item: MenuItemRecord | undefined) => {
@@ -119,12 +122,18 @@ const MenuRoot: Layout<typeof componentRecipe, MenuRootProps> = () => {
     if (!enabledItems.length) return;
 
     if (target === "selected") {
-      const selectedItem = enabledItems.find((item) => selectedKeys().has(item.key));
+      const selectedItem = enabledItems.find((item) =>
+        selectedKeys().has(item.key),
+      );
       focusItem(selectedItem ?? enabledItems[0]);
       return;
     }
 
-    focusItem(target === "first" ? enabledItems[0] : enabledItems[enabledItems.length - 1]);
+    focusItem(
+      target === "first"
+        ? enabledItems[0]
+        : enabledItems[enabledItems.length - 1],
+    );
   };
 
   const focusNext = (direction: 1 | -1) => {
@@ -132,10 +141,14 @@ const MenuRoot: Layout<typeof componentRecipe, MenuRootProps> = () => {
     if (!enabledItems.length) return;
 
     const activeElement = document.activeElement;
-    let currentIndex = enabledItems.findIndex((item) => item.ref === activeElement);
+    let currentIndex = enabledItems.findIndex(
+      (item) => item.ref === activeElement,
+    );
 
     if (currentIndex < 0 && focusedKey()) {
-      currentIndex = enabledItems.findIndex((item) => item.key === focusedKey());
+      currentIndex = enabledItems.findIndex(
+        (item) => item.key === focusedKey(),
+      );
     }
 
     if (currentIndex < 0) {
@@ -143,7 +156,8 @@ const MenuRoot: Layout<typeof componentRecipe, MenuRootProps> = () => {
       return;
     }
 
-    const nextIndex = (currentIndex + direction + enabledItems.length) % enabledItems.length;
+    const nextIndex =
+      (currentIndex + direction + enabledItems.length) % enabledItems.length;
     focusItem(enabledItems[nextIndex]);
   };
 
@@ -192,7 +206,10 @@ const MenuRoot: Layout<typeof componentRecipe, MenuRootProps> = () => {
 
   const registerItem = (item: MenuItemRecord) => {
     setRegisteredItems((current) =>
-      sortItemsByDomOrder([...current.filter((entry) => entry.key !== item.key), item]),
+      sortItemsByDomOrder([
+        ...current.filter((entry) => entry.key !== item.key),
+        item,
+      ]),
     );
   };
 
@@ -220,7 +237,9 @@ const MenuRoot: Layout<typeof componentRecipe, MenuRootProps> = () => {
     return -1;
   };
 
-  const handleKeyDown: JSX.EventHandlerUnion<HTMLDivElement, KeyboardEvent> = (event) => {
+  const handleKeyDown: JSX.EventHandlerUnion<HTMLDivElement, KeyboardEvent> = (
+    event,
+  ) => {
     invokeEventHandler(props.onKeyDown, event);
 
     if (event.defaultPrevented) return;
@@ -300,7 +319,7 @@ const MenuRoot: Layout<typeof componentRecipe, MenuRootProps> = () => {
         aria-disabled={isDisabled() ? "true" : undefined}
         data-slot="menu"
         data-material={props.material ?? "solid"}
-      data-material-explicit={props.material ? "" : undefined}
+        data-material-explicit={props.material ? "" : undefined}
         data-theme={props.dataTheme}
         data-selection-mode={selectionMode()}
         data-disabled={isDisabled() ? "true" : "false"}
@@ -322,5 +341,13 @@ const Menu = Object.assign(MenuRoot, {
 });
 
 export default Menu;
-export { Menu, MenuRoot, MenuItem, MenuItemRoot, MenuItemIndicator, MenuSection, MenuSectionRoot };
 export type { MenuRootProps as MenuProps, MenuSelectionMode };
+export {
+  Menu,
+  MenuItem,
+  MenuItemIndicator,
+  MenuItemRoot,
+  MenuRoot,
+  MenuSection,
+  MenuSectionRoot,
+};

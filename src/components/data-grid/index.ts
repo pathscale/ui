@@ -19,9 +19,9 @@ export type {
 } from "./DataGrid.generated";
 
 import type { JSX } from "@solidjs/web";
-import GeneratedDataGrid from "./DataGrid.generated";
-import type { DataGridProps as Props } from "./DataGrid.generated";
 import type { DataGridRow as Row } from "./createDataGrid";
+import type { DataGridProps as Props } from "./DataGrid.generated";
+import GeneratedDataGrid from "./DataGrid.generated";
 
 /* The compiler emits `declare const DataGrid: __LayoutComponent<DataGridProps>`,
    which erases the row type: `DataGridProps` falls back to its default and a
@@ -34,4 +34,3 @@ const DataGrid = GeneratedDataGrid as <R extends Row = Row>(
 ) => JSX.Element;
 
 export default DataGrid;
-

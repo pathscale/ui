@@ -36,7 +36,11 @@ export type AutosizeMemo = {
   ceiling: number;
 };
 
-export const newAutosizeMemo = (): AutosizeMemo => ({ length: -1, height: -1, ceiling: -1 });
+export const newAutosizeMemo = (): AutosizeMemo => ({
+  length: -1,
+  height: -1,
+  ceiling: -1,
+});
 
 /**
  * Grow with the content up to a ceiling, then scroll.
@@ -69,7 +73,10 @@ export const autosize = (
 
   // A retained or just-restored view can briefly report scrollHeight = 0.
   // Falling back to the floor keeps one writable line rather than collapsing.
-  const height = Math.max(bounds.floor, Math.min(field.scrollHeight || bounds.floor, bounds.ceiling));
+  const height = Math.max(
+    bounds.floor,
+    Math.min(field.scrollHeight || bounds.floor, bounds.ceiling),
+  );
   if (height !== memo.height) {
     field.style.height = `${height}px`;
     memo.height = height;
@@ -93,8 +100,14 @@ export const boundsFromRows = (
   fraction = 0.45,
 ): AutosizeBounds => {
   const floor = Math.max(1, minRows) * ROW_HEIGHT;
-  const viewportCeiling = Math.max(floor, Math.floor(viewportHeight * fraction));
-  return { floor, ceiling: Math.min(Math.max(1, maxRows) * ROW_HEIGHT, viewportCeiling) };
+  const viewportCeiling = Math.max(
+    floor,
+    Math.floor(viewportHeight * fraction),
+  );
+  return {
+    floor,
+    ceiling: Math.min(Math.max(1, maxRows) * ROW_HEIGHT, viewportCeiling),
+  };
 };
 
 export type SubmitKey = {
@@ -115,7 +128,10 @@ export type SubmitKey = {
  * message. Skipping that check sends half a word in Japanese, Chinese and
  * Korean and looks like the app is broken to everyone who uses one.
  */
-export const shouldSubmit = (event: SubmitKey, submitOnEnter: boolean): boolean => {
+export const shouldSubmit = (
+  event: SubmitKey,
+  submitOnEnter: boolean,
+): boolean => {
   if (!submitOnEnter) return false;
   if (event.key !== "Enter") return false;
   if (event.isComposing) return false;
@@ -123,7 +139,8 @@ export const shouldSubmit = (event: SubmitKey, submitOnEnter: boolean): boolean 
 };
 
 /** Nothing but whitespace is not a message, so it never submits. */
-export const isSubmittable = (value: string): boolean => value.trim().length > 0;
+export const isSubmittable = (value: string): boolean =>
+  value.trim().length > 0;
 
 /**
  * Run after the pending value has landed in the field.

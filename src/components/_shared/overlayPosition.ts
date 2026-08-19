@@ -1,5 +1,5 @@
-import {createSignal, createTrackedEffect, type Accessor} from "solid-js";
 import type { JSX } from "@solidjs/web";
+import { type Accessor, createSignal, createTrackedEffect } from "solid-js";
 
 export type OverlayPlacement = "top" | "bottom" | "left" | "right";
 export type OverlayAlign = "start" | "center" | "end";
@@ -39,8 +39,10 @@ const clamp = (value: number, min: number, max: number) => {
   return Math.min(Math.max(value, min), max);
 };
 
-const getMainAxisSize = (placement: OverlayPlacement, rect: OverlayAnchorRect) =>
-  placement === "top" || placement === "bottom" ? rect.height : rect.width;
+const getMainAxisSize = (
+  placement: OverlayPlacement,
+  rect: OverlayAnchorRect,
+) => (placement === "top" || placement === "bottom" ? rect.height : rect.width);
 
 const getAvailableSpace = (
   rect: OverlayAnchorRect,
@@ -126,7 +128,10 @@ export const createOverlayPosition = (
     let frame = 0;
 
     const update = () => {
-      const triggerRect = resolveOverlayAnchorRect(trigger, options.anchorRect?.());
+      const triggerRect = resolveOverlayAnchorRect(
+        trigger,
+        options.anchorRect?.(),
+      );
       if (!triggerRect) return;
       const overlayRect = overlay.getBoundingClientRect();
       const viewportWidth = window.innerWidth;

@@ -7,4 +7,7 @@ export const CLASSES = {
     responsive: "join-vertical lg:join-horizontal",
   },
 } as const;
-export const componentRecipe = recipe({component:"join",slots:{"root":{},},});
+export const componentRecipe = recipe({
+  component: "join",
+  slots: { root: {} },
+});

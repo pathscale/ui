@@ -53,4 +53,7 @@ export const CLASSES = {
     fr: "auto-rows-fr",
   },
 } as const;
-export const componentRecipe = recipe({component:"grid",slots:{"root":{},},});
+export const componentRecipe = recipe({
+  component: "grid",
+  slots: { root: {} },
+});

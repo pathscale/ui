@@ -1,17 +1,15 @@
 import "./RangeCalendar.css";
 import type { JSX } from "@solidjs/web";
-import {createMemo, omit} from "solid-js";
-import { twMerge } from "../../lib/twMerge";
-
+import { createMemo, omit } from "solid-js";
 import {
-  useRangeSelection,
   type ControlledDateRangeValue,
+  useRangeSelection,
 } from "../../hooks/date";
-import Calendar, { type CalendarWeekdayFormat } from "../calendar";
-import type { UIBaseProps, State } from "../vocabulary";
-import { CLASSES } from "./RangeCalendar.recipe";
 import type { Layout } from "../../lib/layouts";
-import { componentRecipe } from "./RangeCalendar.recipe";
+import { twMerge } from "../../lib/twMerge";
+import Calendar, { type CalendarWeekdayFormat } from "../calendar";
+import type { State, UIBaseProps } from "../vocabulary";
+import { CLASSES, type componentRecipe } from "./RangeCalendar.recipe";
 
 export type RangeCalendarValue = ControlledDateRangeValue;
 
@@ -38,7 +36,10 @@ export type RangeCalendarProps = Omit<
   UIBaseProps &
   RangeCalendarBaseProps;
 
-const RangeCalendar: Layout<typeof componentRecipe, RangeCalendarProps> = () => {
+const RangeCalendar: Layout<
+  typeof componentRecipe,
+  RangeCalendarProps
+> = () => {
   const others = omit(
     props,
     "class",
@@ -60,7 +61,9 @@ const RangeCalendar: Layout<typeof componentRecipe, RangeCalendarProps> = () => 
     "onDayHover",
   );
 
-  const isDisabled = createMemo(() => Boolean((props.state === "disabled")) || Boolean(props.disabled));
+  const isDisabled = createMemo(
+    () => Boolean(props.state === "disabled") || Boolean(props.disabled),
+  );
 
   const rangeSelection = useRangeSelection({
     value: () => props.value,

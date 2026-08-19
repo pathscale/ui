@@ -1,17 +1,15 @@
 import "./ChatBubble.css";
 import type { JSX } from "@solidjs/web";
-import {createMemo, omit} from "solid-js";
-import { twMerge } from "../../lib/twMerge";
-
-import type { UIBaseProps } from "../vocabulary";
-import ChatBubbleHeader from "./ChatBubbleHeader.generated";
-import ChatBubbleTime from "./ChatBubbleTime.generated";
-import ChatBubbleAvatar from "./ChatBubbleAvatar.generated";
-import ChatBubbleMessage from "./ChatBubbleMessage.generated";
-import ChatBubbleFooter from "./ChatBubbleFooter.generated";
-import { CLASSES } from "./ChatBubble.recipe";
+import { createMemo, omit } from "solid-js";
 import type { Layout } from "../../lib/layouts";
-import { componentRecipe } from "./ChatBubble.recipe";
+import { twMerge } from "../../lib/twMerge";
+import type { UIBaseProps } from "../vocabulary";
+import { CLASSES, type componentRecipe } from "./ChatBubble.recipe";
+import ChatBubbleAvatar from "./ChatBubbleAvatar.generated";
+import ChatBubbleFooter from "./ChatBubbleFooter.generated";
+import ChatBubbleHeader from "./ChatBubbleHeader.generated";
+import ChatBubbleMessage from "./ChatBubbleMessage.generated";
+import ChatBubbleTime from "./ChatBubbleTime.generated";
 
 export type ChatBubbleProps = UIBaseProps &
   JSX.HTMLAttributes<HTMLDivElement> & {

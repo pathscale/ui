@@ -10,4 +10,12 @@ export const CLASSES = {
     iconEnd: "close-button__icon--end",
   },
 } as const;
-export const componentRecipe = recipe({component:"close-button",slots:{"close-button":{},"close-button-end-icon":{},"close-button-start-icon":{},"root":{},},});
+export const componentRecipe = recipe({
+  component: "close-button",
+  slots: {
+    "close-button": {},
+    "close-button-end-icon": {},
+    "close-button-start-icon": {},
+    root: {},
+  },
+});

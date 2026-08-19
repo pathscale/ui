@@ -13,4 +13,16 @@ export const CLASSES = {
     secondary: "tabs--secondary",
   },
 } as const;
-export const componentRecipe = recipe({component:"tabs",slots:{"root":{},"tabs":{},"tabs-indicator":{},"tabs-list":{},"tabs-list-container":{},"tabs-panel":{},"tabs-separator":{},"tabs-tab":{},},});
+export const componentRecipe = recipe({
+  component: "tabs",
+  slots: {
+    root: {},
+    tabs: {},
+    "tabs-indicator": {},
+    "tabs-list": {},
+    "tabs-list-container": {},
+    "tabs-panel": {},
+    "tabs-separator": {},
+    "tabs-tab": {},
+  },
+});

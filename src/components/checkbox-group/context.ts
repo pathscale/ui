@@ -1,4 +1,4 @@
-import { createContext, type Accessor } from "solid-js";
+import { type Accessor, createContext } from "solid-js";
 
 import type { CheckboxVariant } from "../checkbox";
 
@@ -24,4 +24,5 @@ export type CheckboxGroupContextValue = {
  * A truthy default such as `{}` would silence the throw and be worse: the
  * optional chain would then call methods that do not exist.
  */
-export const CheckboxGroupContext = createContext<CheckboxGroupContextValue | null>(null);
+export const CheckboxGroupContext =
+  createContext<CheckboxGroupContextValue | null>(null);

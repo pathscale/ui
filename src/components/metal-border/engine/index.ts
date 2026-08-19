@@ -1,17 +1,17 @@
 export {
+  type GlowHandles,
+  injectGlow,
+  resizeGlow,
+  updateGlow,
+} from "./glow/glow";
+export type { PresetName, PresetTheme } from "./presets";
+export type { MetalFxInstance } from "./renderer/core";
+export {
   createInstance,
   destroyInstance,
-  updateInstance,
-  setInstanceVisible,
   registerGlowInstance,
-  unregisterGlowInstance,
   setGlowCallback,
+  setInstanceVisible,
+  unregisterGlowInstance,
+  updateInstance,
 } from "./renderer/loop";
-export {
-  injectGlow,
-  updateGlow,
-  resizeGlow,
-  type GlowHandles,
-} from "./glow/glow";
-export type { MetalFxInstance } from "./renderer/core";
-export type { PresetName, PresetTheme } from "./presets";

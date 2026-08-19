@@ -1,16 +1,15 @@
 import {
   type Component,
-  createSignal,
   createEffect,
-  onSettled,
+  createSignal,
   onCleanup,
+  onSettled,
   Show,
 } from "solid-js";
-
-import { ConsentType, CookieConsentProps } from "../types";
 import Button from "../../button";
 import Flex from "../../flex";
 import { CLASSES } from "../ImmersiveLanding.recipe";
+import type { ConsentType, CookieConsentProps } from "../types";
 
 /**
  * CookieConsent Component
@@ -93,20 +92,19 @@ import { CLASSES } from "../ImmersiveLanding.recipe";
  */
 
 const defaultTexts = {
-    message:
-      "We use cookies to improve your experience. You can accept all cookies or manage your preferences.",
-    acceptAll: "Accept all",
-    decline: "Decline",
-    manage: "Manage",
-    manageTitle: "Manage cookie preferences",
-    essential: "Essential (required)",
-    analytics: "Analytics",
-    marketing: "Marketing",
-    cancel: "Cancel",
-    save: "Save",
-    closeLabel: "Close",
-  };
-  
+  message:
+    "We use cookies to improve your experience. You can accept all cookies or manage your preferences.",
+  acceptAll: "Accept all",
+  decline: "Decline",
+  manage: "Manage",
+  manageTitle: "Manage cookie preferences",
+  essential: "Essential (required)",
+  analytics: "Analytics",
+  marketing: "Marketing",
+  cancel: "Cancel",
+  save: "Save",
+  closeLabel: "Close",
+};
 
 export const CookieConsent: Component<CookieConsentProps> = (props) => {
   const [showBanner, setShowBanner] = createSignal(false);
@@ -119,10 +117,10 @@ export const CookieConsent: Component<CookieConsentProps> = (props) => {
 
   const CONSENT_KEY = () =>
     props.storageKeys?.consentKey ?? "app_cookie_consent";
-  
+
   const ANALYTICS_KEY = () =>
     props.storageKeys?.analyticsKey ?? "app_cookie_analytics";
-  
+
   const MARKETING_KEY = () =>
     props.storageKeys?.marketingKey ?? "app_cookie_marketing";
 
@@ -139,8 +137,6 @@ export const CookieConsent: Component<CookieConsentProps> = (props) => {
     save: props.texts?.save ?? defaultTexts.save,
     closeLabel: props.texts?.closeLabel ?? defaultTexts.closeLabel,
   });
-  
-  
 
   const checkConsent = (): boolean => {
     const consent = localStorage.getItem(CONSENT_KEY());
@@ -298,8 +294,15 @@ export const CookieConsent: Component<CookieConsentProps> = (props) => {
             {...{ class: CLASSES.cookie.modalCard }}
             onClick={(e) => e.stopPropagation()}
           >
-            <Flex justify="between" align="center" {...{ class: CLASSES.cookie.modalHeader }}>
-              <h2 id="cookie-manage-title" {...{ class: CLASSES.cookie.modalTitle }}>
+            <Flex
+              justify="between"
+              align="center"
+              {...{ class: CLASSES.cookie.modalHeader }}
+            >
+              <h2
+                id="cookie-manage-title"
+                {...{ class: CLASSES.cookie.modalTitle }}
+              >
                 {texts().manageTitle}
               </h2>
               <Button
@@ -313,8 +316,16 @@ export const CookieConsent: Component<CookieConsentProps> = (props) => {
               </Button>
             </Flex>
 
-            <Flex direction="col" gap="md" {...{ class: CLASSES.cookie.preferences }}>
-              <label {...{ class: `${CLASSES.cookie.preferenceRow} ${CLASSES.cookie.preferenceRowLocked}` }}>
+            <Flex
+              direction="col"
+              gap="md"
+              {...{ class: CLASSES.cookie.preferences }}
+            >
+              <label
+                {...{
+                  class: `${CLASSES.cookie.preferenceRow} ${CLASSES.cookie.preferenceRowLocked}`,
+                }}
+              >
                 <span {...{ class: CLASSES.cookie.preferenceLabel }}>
                   {texts().essential}
                 </span>
@@ -328,7 +339,9 @@ export const CookieConsent: Component<CookieConsentProps> = (props) => {
 
               {/* Analytics */}
               <label {...{ class: CLASSES.cookie.preferenceRow }}>
-                <span {...{ class: CLASSES.cookie.preferenceLabel }}>{texts().analytics}</span>
+                <span {...{ class: CLASSES.cookie.preferenceLabel }}>
+                  {texts().analytics}
+                </span>
                 <input
                   type="checkbox"
                   checked={analyticsEnabled()}
@@ -339,7 +352,9 @@ export const CookieConsent: Component<CookieConsentProps> = (props) => {
 
               {/* Marketing */}
               <label {...{ class: CLASSES.cookie.preferenceRow }}>
-                <span {...{ class: CLASSES.cookie.preferenceLabel }}>{texts().marketing}</span>
+                <span {...{ class: CLASSES.cookie.preferenceLabel }}>
+                  {texts().marketing}
+                </span>
                 <input
                   type="checkbox"
                   checked={marketingEnabled()}
@@ -349,8 +364,16 @@ export const CookieConsent: Component<CookieConsentProps> = (props) => {
               </label>
             </Flex>
 
-            <Flex gap="sm" justify="end" {...{ class: CLASSES.cookie.modalFooter }}>
-              <Button variant="ghost" size="sm" onClick={handleManageClose}>
+            <Flex
+              gap="sm"
+              justify="end"
+              {...{ class: CLASSES.cookie.modalFooter }}
+            >
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={handleManageClose}
+              >
                 {texts().cancel}
               </Button>
               <Button

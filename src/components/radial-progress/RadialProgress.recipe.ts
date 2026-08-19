@@ -24,4 +24,7 @@ export const CLASSES = {
     disabled: "radial-progress--disabled",
   },
 } as const;
-export const componentRecipe = recipe({component:"radial-progress",slots:{"root":{},},});
+export const componentRecipe = recipe({
+  component: "radial-progress",
+  slots: { root: {} },
+});

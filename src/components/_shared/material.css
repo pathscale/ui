@@ -45,6 +45,29 @@
    * matching, so that form would have been dead CSS and the flip would have
    * looked broken rather than unsupported.
    */
+  /*
+   * The flip tints. It does not add a backdrop filter, and that is the whole
+   * difference between a material and a hang.
+   *
+   * A `backdrop-filter` is not a paint property: it cuts the frame in two. The
+   * renderer has to stop, rasterise everything drawn so far to a texture, copy
+   * that into an atlas, blur it, and then draw the full-frame result back
+   * before continuing - per boundary, per frame. Giving the filter to *every*
+   * component that never set `material` turns each one into such a boundary.
+   *
+   * Measured, not guessed. With the filter here, a profile of the consuming
+   * app showed 3156 of 3157 main-thread samples inside
+   * `wgpu_hal::metal::Device::wait`, under `anyrender_vello::backdrop::execute`
+   * - a synchronous GPU wait on the UI thread - and its frame log reported
+   * `renderer_avg_ms=13.24` against an 8.3 ms budget at 120 Hz. That is a
+   * beachball, and it was reported as one twice.
+   *
+   * An explicit `material="glass"` still gets the real thing, because that is
+   * a deliberate choice about one surface. The flip is a global default, and a
+   * global default cannot buy a full-frame pass per element. The tint alone is
+   * what reads as glass on a translucent window anyway: the blur behind the
+   * *window* comes from the compositor, not from here.
+   */
   :root.glass [data-material="solid"]:not([data-material-explicit]) {
     background-color: color-mix(
       in oklab,
@@ -56,12 +79,6 @@
       var(--glass-border-color, white),
       transparent calc(100% - var(--glass-border-opacity, 12%))
     );
-    -webkit-backdrop-filter: blur(var(--glass-blur, 9px))
-      saturate(var(--glass-saturation, 1.2))
-      brightness(var(--glass-brightness, 1));
-    backdrop-filter: blur(var(--glass-blur, 9px))
-      saturate(var(--glass-saturation, 1.2))
-      brightness(var(--glass-brightness, 1));
   }
 
   :root.glass [data-material="solid"]:not([data-material-explicit])::before {

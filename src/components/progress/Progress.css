@@ -46,7 +46,8 @@
 
   .progress--indeterminate .progress__indicator {
     width: 40%;
-    animation: progress-indeterminate 1.5s cubic-bezier(0.65, 0, 0.35, 1) infinite;
+    animation: progress-indeterminate 1.5s cubic-bezier(0.65, 0, 0.35, 1)
+      infinite;
   }
 
   .progress--disabled,
@@ -62,11 +63,6 @@
   .progress--lg .progress__track {
     height: 0.75rem;
   }
-
-
-
-
-
 
   @keyframes progress-indeterminate {
     0% {

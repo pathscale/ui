@@ -8,6 +8,9 @@
     font-size: 0.75rem;
     line-height: 1rem;
     font-weight: 500;
-    color: var(--color-muted, color-mix(in oklab, var(--color-base-content) 55%, transparent));
+    color: var(
+      --color-muted,
+      color-mix(in oklab, var(--color-base-content) 55%, transparent)
+    );
   }
 }

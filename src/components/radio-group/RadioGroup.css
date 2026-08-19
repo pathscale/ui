@@ -45,9 +45,17 @@
   }
 
   @media (hover: hover) {
-    .radio-group--secondary .radio:not([data-selected="true"]):hover .radio__control,
-    .radio-group--secondary .radio:not([data-selected="true"])[data-hovered="true"] .radio__control {
-      border-color: color-mix(in oklab, var(--color-base-content) 24%, transparent);
+    .radio-group--secondary
+      .radio:not([data-selected="true"]):hover
+      .radio__control,
+    .radio-group--secondary
+      .radio:not([data-selected="true"])[data-hovered="true"]
+      .radio__control {
+      border-color: color-mix(
+        in oklab,
+        var(--color-base-content) 24%,
+        transparent
+      );
       background-color: var(--color-base-200);
     }
   }

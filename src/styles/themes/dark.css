@@ -138,10 +138,18 @@
      * the same and the theme carries the difference.
      */
     --shadow-color: 0 0 0;
-    --shadow-sm: 0 1px 2px rgb(var(--shadow-color) / 20%), 0 1px 3px rgb(var(--shadow-color) / 30%);
-    --shadow-md: 0 4px 6px -1px rgb(var(--shadow-color) / 30%), 0 2px 4px -2px rgb(var(--shadow-color) / 30%);
-    --shadow-lg: 0 10px 15px -3px rgb(var(--shadow-color) / 35%), 0 4px 6px -4px rgb(var(--shadow-color) / 35%);
-    --shadow-xl: 0 20px 25px -5px rgb(var(--shadow-color) / 40%), 0 8px 10px -6px rgb(var(--shadow-color) / 40%);
+    --shadow-sm:
+      0 1px 2px rgb(var(--shadow-color) / 20%),
+      0 1px 3px rgb(var(--shadow-color) / 30%);
+    --shadow-md:
+      0 4px 6px -1px rgb(var(--shadow-color) / 30%),
+      0 2px 4px -2px rgb(var(--shadow-color) / 30%);
+    --shadow-lg:
+      0 10px 15px -3px rgb(var(--shadow-color) / 35%),
+      0 4px 6px -4px rgb(var(--shadow-color) / 35%);
+    --shadow-xl:
+      0 20px 25px -5px rgb(var(--shadow-color) / 40%),
+      0 8px 10px -6px rgb(var(--shadow-color) / 40%);
 
     /* --------------------------------------------------------- Focus ring */
     --focus-ring-width: 2px;

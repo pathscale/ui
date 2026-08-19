@@ -1,10 +1,10 @@
 export {
   default,
-  LinkRoot,
   LinkIcon,
-  type LinkProps,
-  type LinkRootProps,
   type LinkIconProps,
-  type LinkVariant,
+  type LinkProps,
+  LinkRoot,
+  type LinkRootProps,
   type LinkUnderline,
+  type LinkVariant,
 } from "./Link.generated";

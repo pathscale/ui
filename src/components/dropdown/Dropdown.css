@@ -79,7 +79,8 @@
     overflow-y: auto;
     overscroll-behavior: contain;
     border-radius: 0.75rem;
-    border: var(--border, 1px) solid color-mix(in oklab, var(--color-base-content), transparent 94%);
+    border: var(--border, 1px) solid
+      color-mix(in oklab, var(--color-base-content), transparent 94%);
     background-color: var(--color-base-100);
     box-shadow:
       0 4px 16px rgb(var(--shadow-color, 0 0 0) / 8%),

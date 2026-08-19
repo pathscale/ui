@@ -1,4 +1,4 @@
-import {createSignal, createTrackedEffect} from "solid-js";
+import { createSignal, createTrackedEffect } from "solid-js";
 
 // CSP detection: Test if inline styles are allowed
 let cspAllowsInlineStyles: boolean | null = null;
@@ -24,7 +24,9 @@ const checkCspAllowsInlineStyles = (): boolean => {
   }
 
   if (cspAllowsInlineStyles === false) {
-    console.info("[themeColor] CSP blocks inline styles - theme color customization disabled");
+    console.info(
+      "[themeColor] CSP blocks inline styles - theme color customization disabled",
+    );
   }
 
   return cspAllowsInlineStyles ?? true;
@@ -86,7 +88,10 @@ function parseHex(hex: string): { r: number; g: number; b: number } | null {
   let h = hex.trim();
   if (h.startsWith("#")) h = h.slice(1);
   if (h.length === 3) {
-    h = h.split("").map((c) => c + c).join("");
+    h = h
+      .split("")
+      .map((c) => c + c)
+      .join("");
   }
   if (h.length !== 6) return null;
   const r = Number.parseInt(h.slice(0, 2), 16);
@@ -202,7 +207,9 @@ export function createHueShiftStore(storagePrefix: string): HueShiftStore {
   // function, and a call expression in argument position resolves to the
   // compute overload, which types the accessor as `never`.
   const initialThemeColor: string | null = getInitial();
-  const [themeColor, setThemeColorInternal] = createSignal<string | null>(initialThemeColor);
+  const [themeColor, setThemeColorInternal] = createSignal<string | null>(
+    initialThemeColor,
+  );
   /*
    * The accessor, held at its declared type.
    *

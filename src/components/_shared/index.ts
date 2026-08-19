@@ -1,6 +1,6 @@
 export {
-  createOverlayPosition,
-  type OverlayPlacement,
-  type OverlayAlign,
   type CreateOverlayPositionOptions,
+  createOverlayPosition,
+  type OverlayAlign,
+  type OverlayPlacement,
 } from "./overlayPosition";

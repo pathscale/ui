@@ -7,13 +7,12 @@ const Chip = Object.assign(ChipRoot, {
 
 export default Chip;
 
-export { Chip, ChipRoot, ChipLabel };
-
 export type {
+  ChipColor,
+  ChipLabelProps,
   ChipRootProps,
   ChipRootProps as ChipProps,
-  ChipLabelProps,
-  ChipVariant,
-  ChipColor,
   ChipSize,
+  ChipVariant,
 } from "./Chip.generated";
+export { Chip, ChipLabel, ChipRoot };

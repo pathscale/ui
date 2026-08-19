@@ -1,7 +1,7 @@
 export {
   default,
   Separator,
-  type SeparatorProps,
   type SeparatorOrientation,
+  type SeparatorProps,
   type SeparatorVariant,
 } from "./Separator.generated";

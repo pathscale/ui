@@ -83,4 +83,7 @@ export const CLASSES = {
   },
 } as const;
 
-export const componentRecipe = recipe({component:"immersive-landing",slots:{"root":{},},});
+export const componentRecipe = recipe({
+  component: "immersive-landing",
+  slots: { root: {} },
+});

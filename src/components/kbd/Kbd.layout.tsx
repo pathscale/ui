@@ -1,12 +1,10 @@
 import "./Kbd.css";
 import type { JSX } from "@solidjs/web";
-import {omit, type Component} from "solid-js";
-import { twMerge } from "../../lib/twMerge";
-
-import type { UIBaseProps } from "../vocabulary";
-import { CLASSES } from "./Kbd.recipe";
+import { type Component, omit } from "solid-js";
 import type { Layout } from "../../lib/layouts";
-import { componentRecipe } from "./Kbd.recipe";
+import { twMerge } from "../../lib/twMerge";
+import type { UIBaseProps } from "../vocabulary";
+import { CLASSES, type componentRecipe } from "./Kbd.recipe";
 
 export type KbdVariant = "default" | "light";
 export type KbdKey =
@@ -94,24 +92,32 @@ export type KbdAbbrProps = Omit<JSX.HTMLAttributes<HTMLElement>, "children"> &
     keyValue: KbdKey;
   };
 
-export type KbdContentProps = Omit<JSX.HTMLAttributes<HTMLSpanElement>, "children"> &
+export type KbdContentProps = Omit<
+  JSX.HTMLAttributes<HTMLSpanElement>,
+  "children"
+> &
   UIBaseProps & {
     children?: JSX.Element;
   };
 
 const KbdRoot: Layout<typeof componentRecipe, KbdRootProps> = () => {
-  const others = omit(props, "class", "dataTheme", "style", "children", "variant");
+  const others = omit(
+    props,
+    "class",
+    "dataTheme",
+    "style",
+    "children",
+    "variant",
+  );
 
   const variant = () => props.variant ?? "default";
 
   return (
     <kbd
       {...others}
-      {...{ class: twMerge(
-        CLASSES.base,
-        CLASSES.variant[variant()],
-        props.class,
-      ) }}
+      {...{
+        class: twMerge(CLASSES.base, CLASSES.variant[variant()], props.class),
+      }}
       data-slot="kbd"
       data-variant={variant()}
       data-theme={props.dataTheme}
@@ -123,7 +129,14 @@ const KbdRoot: Layout<typeof componentRecipe, KbdRootProps> = () => {
 };
 
 const KbdAbbr: Layout<typeof componentRecipe, KbdAbbrProps> = () => {
-  const others = omit(props, "class", "dataTheme", "style", "keyValue", "title");
+  const others = omit(
+    props,
+    "class",
+    "dataTheme",
+    "style",
+    "keyValue",
+    "title",
+  );
 
   return (
     <abbr
@@ -169,5 +182,5 @@ const Kbd = Object.assign(KbdRoot, {
 }) as KbdComponent;
 
 export type KbdProps = KbdRootProps;
-export { KbdRoot, KbdAbbr, KbdContent };
+export { KbdAbbr, KbdContent, KbdRoot };
 export default Kbd;

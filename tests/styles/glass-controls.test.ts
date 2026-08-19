@@ -153,6 +153,43 @@ describe("glass is one flip", () => {
   });
 });
 
+describe("the flip does not buy a backdrop pass per component", () => {
+  /*
+   * A `backdrop-filter` is not a paint property: it cuts the frame. The
+   * renderer stops, rasterises what has been drawn, copies it to an atlas,
+   * blurs it and draws the full-frame result back - per boundary, per frame.
+   *
+   * Applied to every component that never set `material`, that is a full-frame
+   * pass each. Measured in the consuming app when it was: 3156 of 3157
+   * main-thread samples inside `wgpu_hal::metal::Device::wait` under
+   * `anyrender_vello::backdrop::execute`, and `renderer_avg_ms=13.24` against
+   * an 8.3 ms budget at 120 Hz. The window beachballed.
+   *
+   * An explicit `material="glass"` keeps the filter, because that is a choice
+   * about one surface. The default cannot be.
+   */
+  it("tints flipped components without filtering behind them", () => {
+    const flip = MATERIAL_CSS.slice(
+      MATERIAL_CSS.indexOf(
+        ':root.glass [data-material="solid"]:not([data-material-explicit]) {',
+      ),
+    );
+    const rule = flip.slice(0, flip.indexOf("}") + 1);
+
+    expect(rule).toContain("background-color");
+    expect(rule).not.toContain("backdrop-filter");
+  });
+
+  it("still gives an explicitly glassed component its filter", () => {
+    const explicit = MATERIAL_CSS.slice(
+      MATERIAL_CSS.indexOf('[data-material="glass"] {'),
+    );
+    expect(explicit.slice(0, explicit.indexOf("}") + 1)).toContain(
+      "backdrop-filter",
+    );
+  });
+});
+
 describe("glass inside glass does not stack a second film", () => {
   /*
    * Two surfaces at 55% composite to 1 - 0.45^2 = 79.75%, which reads as a

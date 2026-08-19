@@ -1,11 +1,11 @@
-import {For, Show, omit} from "solid-js";
 import type { JSX } from "@solidjs/web";
+import { For, omit, Show } from "solid-js";
+import type { Layout } from "../../lib/layouts";
 import { twMerge } from "../../lib/twMerge";
 import { Empty } from "../empty";
 import Icon from "../icon";
 import type { UIBaseProps } from "../vocabulary";
-import type { Layout } from "../../lib/layouts";
-import { tableMobileListViewRecipe } from "./Table.recipe";
+import type { tableMobileListViewRecipe } from "./Table.recipe";
 
 export type MobileListViewProps<TRow> = UIBaseProps & {
   rows: TRow[];
@@ -18,7 +18,10 @@ export type MobileListViewProps<TRow> = UIBaseProps & {
   emptyIcon?: string;
 };
 
-const MobileListView: Layout<typeof tableMobileListViewRecipe, MobileListViewProps<unknown>> = () => {
+const MobileListView: Layout<
+  typeof tableMobileListViewRecipe,
+  MobileListViewProps<unknown>
+> = () => {
   const rest = omit(
     props,
     "rows",
@@ -62,14 +65,19 @@ const MobileListView: Layout<typeof tableMobileListViewRecipe, MobileListViewPro
       data-slot="table-mobile-list-view"
     >
       <ul
-        {...{ class: twMerge("divide-y divide-base-content/10", props.listClass) }}
+        {...{
+          class: twMerge("divide-y divide-base-content/10", props.listClass),
+        }}
         data-slot="table-mobile-list-view-list"
       >
         <Show
           when={props.rows.length > 0}
           fallback={
             <Show when={emptyContent()}>
-              <li class="py-8" data-slot="table-mobile-list-view-empty">
+              <li
+                class="py-8"
+                data-slot="table-mobile-list-view-empty"
+              >
                 {emptyContent()}
               </li>
             </Show>
@@ -78,7 +86,10 @@ const MobileListView: Layout<typeof tableMobileListViewRecipe, MobileListViewPro
           <For each={props.rows}>
             {(row, index) =>
               props.renderRow ? (
-                <li {...{ class: props.itemClass }} data-slot="table-mobile-list-view-item">
+                <li
+                  {...{ class: props.itemClass }}
+                  data-slot="table-mobile-list-view-item"
+                >
                   {renderRow(row, index())}
                 </li>
               ) : (
@@ -92,4 +103,6 @@ const MobileListView: Layout<typeof tableMobileListViewRecipe, MobileListViewPro
   );
 };
 
-export default MobileListView as <TRow>(props: MobileListViewProps<TRow>) => JSX.Element;
+export default MobileListView as <TRow>(
+  props: MobileListViewProps<TRow>,
+) => JSX.Element;

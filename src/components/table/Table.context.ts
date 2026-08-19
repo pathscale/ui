@@ -1,5 +1,5 @@
-import {type Accessor, createContext, useContext} from "solid-js";
 import type { JSX } from "@solidjs/web";
+import { type Accessor, createContext, useContext } from "solid-js";
 
 export type TableVariant = "primary" | "secondary";
 export type TableSortDirection = "ascending" | "descending";
@@ -41,7 +41,8 @@ export const TableContentContext = createContext<TableContentContextValue>({
   sortDescriptor: () => undefined,
 });
 
-export const useTableContext = (): TableContextValue => useContext(TableContext);
+export const useTableContext = (): TableContextValue =>
+  useContext(TableContext);
 
 export const useTableContentContext = (): TableContentContextValue =>
   useContext(TableContentContext);

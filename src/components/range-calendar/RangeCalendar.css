@@ -28,8 +28,10 @@
     border-radius: 0.5rem;
   }
 
-  .range-calendar__calendar .calendar__cell--range-start.calendar__cell--in-range,
-  .range-calendar__calendar .calendar__cell--range-start.calendar__cell--in-preview-range {
+  .range-calendar__calendar
+    .calendar__cell--range-start.calendar__cell--in-range,
+  .range-calendar__calendar
+    .calendar__cell--range-start.calendar__cell--in-preview-range {
     border-top-left-radius: 9999px;
     border-bottom-left-radius: 9999px;
     border-top-right-radius: 0.5rem;
@@ -37,15 +39,16 @@
   }
 
   .range-calendar__calendar .calendar__cell--range-end.calendar__cell--in-range,
-  .range-calendar__calendar .calendar__cell--range-end.calendar__cell--in-preview-range {
+  .range-calendar__calendar
+    .calendar__cell--range-end.calendar__cell--in-preview-range {
     border-top-right-radius: 9999px;
     border-bottom-right-radius: 9999px;
     border-top-left-radius: 0.5rem;
     border-bottom-left-radius: 0.5rem;
   }
 
-  .range-calendar__calendar .calendar__cell--range-start.calendar__cell--range-end {
+  .range-calendar__calendar
+    .calendar__cell--range-start.calendar__cell--range-end {
     border-radius: var(--radius-pill, 9999px);
   }
 }
-

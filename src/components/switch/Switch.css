@@ -11,11 +11,23 @@
     -webkit-tap-highlight-color: transparent;
 
     --switch-control-bg: var(--color-default);
-    --switch-control-bg-hover: color-mix(in oklab, var(--switch-control-bg), transparent 20%);
+    --switch-control-bg-hover: color-mix(
+      in oklab,
+      var(--switch-control-bg),
+      transparent 20%
+    );
     --switch-control-bg-pressed: var(--switch-control-bg-hover);
     --switch-control-bg-checked: var(--color-accent);
-    --switch-control-bg-checked-hover: color-mix(in oklab, var(--switch-control-bg-checked), var(--shade, var(--color-base-content)) var(--shade-hover, 8%));
-    --switch-control-border: color-mix(in oklab, var(--color-base-content) 24%, transparent);
+    --switch-control-bg-checked-hover: color-mix(
+      in oklab,
+      var(--switch-control-bg-checked),
+      var(--shade, var(--color-base-content)) var(--shade-hover, 8%)
+    );
+    --switch-control-border: color-mix(
+      in oklab,
+      var(--color-base-content) 24%,
+      transparent
+    );
     --switch-control-border-checked: color-mix(
       in oklab,
       var(--switch-control-bg-checked) 74%,
@@ -106,7 +118,8 @@
   .switch:focus-within .switch__control,
   .switch__input:focus-visible + .switch__control,
   .switch[data-focus-visible="true"] .switch__control {
-    box-shadow: 0 0 0 3px color-mix(in oklab, var(--switch-control-bg-checked) 22%, transparent);
+    box-shadow: 0 0 0 3px
+      color-mix(in oklab, var(--switch-control-bg-checked) 22%, transparent);
   }
 
   /* ── Hover state ── */
@@ -196,18 +209,13 @@
 
   /* ── Color: default ── */
 
-
   /* ── Color: accent (default) ── */
-
 
   /* ── Color: success ── */
 
-
   /* ── Color: warning ── */
 
-
   /* ── Color: danger ── */
-
 
   /* ── Disabled state ── */
 
@@ -219,7 +227,11 @@
 
   .switch--disabled .switch__thumb,
   .switch[data-disabled="true"] .switch__thumb {
-    background-color: color-mix(in oklab, var(--color-default-foreground) 20%, transparent);
+    background-color: color-mix(
+      in oklab,
+      var(--color-default-foreground) 20%,
+      transparent
+    );
   }
 
   .switch--disabled[data-selected="true"] .switch__thumb,
@@ -229,41 +241,73 @@
 
   .switch--flavor-neutral {
     --switch-control-bg-checked: var(--color-default-foreground);
-    --switch-control-bg-checked-hover: color-mix(in oklab, var(--switch-control-bg-checked), var(--shade, var(--color-base-content)) var(--shade-hover, 8%));
+    --switch-control-bg-checked-hover: color-mix(
+      in oklab,
+      var(--switch-control-bg-checked),
+      var(--shade, var(--color-base-content)) var(--shade-hover, 8%)
+    );
   }
 
   .switch--flavor-primary {
     --switch-control-bg-checked: var(--color-primary);
-    --switch-control-bg-checked-hover: color-mix(in oklab, var(--switch-control-bg-checked), var(--shade, var(--color-base-content)) var(--shade-hover, 8%));
+    --switch-control-bg-checked-hover: color-mix(
+      in oklab,
+      var(--switch-control-bg-checked),
+      var(--shade, var(--color-base-content)) var(--shade-hover, 8%)
+    );
   }
 
   .switch--flavor-secondary {
     --switch-control-bg-checked: var(--color-secondary);
-    --switch-control-bg-checked-hover: color-mix(in oklab, var(--switch-control-bg-checked), var(--shade, var(--color-base-content)) var(--shade-hover, 8%));
+    --switch-control-bg-checked-hover: color-mix(
+      in oklab,
+      var(--switch-control-bg-checked),
+      var(--shade, var(--color-base-content)) var(--shade-hover, 8%)
+    );
   }
 
   .switch--flavor-accent {
     --switch-control-bg-checked: var(--color-accent);
-    --switch-control-bg-checked-hover: color-mix(in oklab, var(--switch-control-bg-checked), var(--shade, var(--color-base-content)) var(--shade-hover, 8%));
+    --switch-control-bg-checked-hover: color-mix(
+      in oklab,
+      var(--switch-control-bg-checked),
+      var(--shade, var(--color-base-content)) var(--shade-hover, 8%)
+    );
   }
 
   .switch--flavor-destructive {
     --switch-control-bg-checked: var(--color-danger);
-    --switch-control-bg-checked-hover: color-mix(in oklab, var(--switch-control-bg-checked), var(--shade, var(--color-base-content)) var(--shade-hover, 8%));
+    --switch-control-bg-checked-hover: color-mix(
+      in oklab,
+      var(--switch-control-bg-checked),
+      var(--shade, var(--color-base-content)) var(--shade-hover, 8%)
+    );
   }
 
   .switch--flavor-success {
     --switch-control-bg-checked: var(--color-success);
-    --switch-control-bg-checked-hover: color-mix(in oklab, var(--switch-control-bg-checked), var(--shade, var(--color-base-content)) var(--shade-hover, 8%));
+    --switch-control-bg-checked-hover: color-mix(
+      in oklab,
+      var(--switch-control-bg-checked),
+      var(--shade, var(--color-base-content)) var(--shade-hover, 8%)
+    );
   }
 
   .switch--flavor-warning {
     --switch-control-bg-checked: var(--color-warning);
-    --switch-control-bg-checked-hover: color-mix(in oklab, var(--switch-control-bg-checked), var(--shade, var(--color-base-content)) var(--shade-hover, 8%));
+    --switch-control-bg-checked-hover: color-mix(
+      in oklab,
+      var(--switch-control-bg-checked),
+      var(--shade, var(--color-base-content)) var(--shade-hover, 8%)
+    );
   }
 
   .switch--flavor-info {
     --switch-control-bg-checked: var(--color-info);
-    --switch-control-bg-checked-hover: color-mix(in oklab, var(--switch-control-bg-checked), var(--shade, var(--color-base-content)) var(--shade-hover, 8%));
+    --switch-control-bg-checked-hover: color-mix(
+      in oklab,
+      var(--switch-control-bg-checked),
+      var(--shade, var(--color-base-content)) var(--shade-hover, 8%)
+    );
   }
 }

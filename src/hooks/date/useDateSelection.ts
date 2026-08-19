@@ -1,4 +1,4 @@
-import { createMemo, createSignal, type Accessor } from "solid-js";
+import { type Accessor, createMemo, createSignal } from "solid-js";
 
 import { normalizeDate } from "./date.utils";
 

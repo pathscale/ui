@@ -118,14 +118,18 @@
     }
   }
 
-  .list-box-item[aria-selected="true"] [data-slot="listbox-item-indicator--checkmark"],
-  .list-box-item[data-selected="true"] [data-slot="listbox-item-indicator--checkmark"] {
+  .list-box-item[aria-selected="true"]
+    [data-slot="listbox-item-indicator--checkmark"],
+  .list-box-item[data-selected="true"]
+    [data-slot="listbox-item-indicator--checkmark"] {
     transition: stroke-dashoffset 250ms linear;
   }
 
   @media (prefers-reduced-motion: reduce) {
-    .list-box-item[aria-selected="true"] [data-slot="listbox-item-indicator--checkmark"],
-    .list-box-item[data-selected="true"] [data-slot="listbox-item-indicator--checkmark"] {
+    .list-box-item[aria-selected="true"]
+      [data-slot="listbox-item-indicator--checkmark"],
+    .list-box-item[data-selected="true"]
+      [data-slot="listbox-item-indicator--checkmark"] {
       transition: none;
     }
   }

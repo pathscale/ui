@@ -1,17 +1,18 @@
 import "./ButtonGroup.css";
 import type { JSX } from "@solidjs/web";
-import {omit, type Component, type ParentComponent} from "solid-js";
-import { twMerge } from "../../lib/twMerge";
-
-import { CLASSES } from "./ButtonGroup.recipe";
-import { ButtonGroupContext } from "./context";
+import { type Component, omit, type ParentComponent } from "solid-js";
 import type { Layout } from "../../lib/layouts";
-import { componentRecipe } from "./ButtonGroup.recipe";
-import type { Size, Variant, State, UIBaseProps } from "../vocabulary";
+import { twMerge } from "../../lib/twMerge";
+import type { Size, State, UIBaseProps, Variant } from "../vocabulary";
+import { CLASSES, type componentRecipe } from "./ButtonGroup.recipe";
+import { ButtonGroupContext } from "./context";
 
 export type ButtonGroupOrientation = "horizontal" | "vertical";
 
-export type ButtonGroupRootProps = Omit<JSX.HTMLAttributes<HTMLDivElement>, "children"> &
+export type ButtonGroupRootProps = Omit<
+  JSX.HTMLAttributes<HTMLDivElement>,
+  "children"
+> &
   UIBaseProps & {
     children?: JSX.Element;
     orientation?: ButtonGroupOrientation;
@@ -21,10 +22,16 @@ export type ButtonGroupRootProps = Omit<JSX.HTMLAttributes<HTMLDivElement>, "chi
     fullWidth?: boolean;
   };
 
-export type ButtonGroupSeparatorProps = Omit<JSX.HTMLAttributes<HTMLSpanElement>, "children"> &
+export type ButtonGroupSeparatorProps = Omit<
+  JSX.HTMLAttributes<HTMLSpanElement>,
+  "children"
+> &
   UIBaseProps;
 
-const ButtonGroupRoot: Layout<typeof componentRecipe, ButtonGroupRootProps> = () => {
+const ButtonGroupRoot: Layout<
+  typeof componentRecipe,
+  ButtonGroupRootProps
+> = () => {
   const others = omit(
     props,
     "children",
@@ -46,24 +53,26 @@ const ButtonGroupRoot: Layout<typeof componentRecipe, ButtonGroupRootProps> = ()
       value={{
         size: () => props.size,
         variant: () => props.variant,
-        isDisabled: () => (props.state === "disabled"),
+        isDisabled: () => props.state === "disabled",
         fullWidth: () => props.fullWidth,
       }}
     >
       <div
         {...others}
-        {...{ class: twMerge(
-          CLASSES.Root.base,
-          CLASSES.Root.orientation[orientation()],
-          props.fullWidth && CLASSES.Root.flag.fullWidth,
-          props.class,
-        ) }}
+        {...{
+          class: twMerge(
+            CLASSES.Root.base,
+            CLASSES.Root.orientation[orientation()],
+            props.fullWidth && CLASSES.Root.flag.fullWidth,
+            props.class,
+          ),
+        }}
         data-slot="button-group"
         data-orientation={orientation()}
         data-theme={props.dataTheme}
         style={props.style}
         role={props.role ?? "group"}
-        aria-disabled={(props.state === "disabled") ? "true" : undefined}
+        aria-disabled={props.state === "disabled" ? "true" : undefined}
       >
         {props.children}
       </div>
@@ -71,7 +80,10 @@ const ButtonGroupRoot: Layout<typeof componentRecipe, ButtonGroupRootProps> = ()
   );
 };
 
-const ButtonGroupSeparator: Layout<typeof componentRecipe, ButtonGroupSeparatorProps> = () => {
+const ButtonGroupSeparator: Layout<
+  typeof componentRecipe,
+  ButtonGroupSeparatorProps
+> = () => {
   const others = omit(props, "class", "dataTheme", "style");
 
   return (
@@ -92,5 +104,5 @@ const ButtonGroup = Object.assign(ButtonGroupRoot, {
 });
 
 export default ButtonGroup;
-export { ButtonGroup, ButtonGroupRoot, ButtonGroupSeparator };
 export type { ButtonGroupRootProps as ButtonGroupProps };
+export { ButtonGroup, ButtonGroupRoot, ButtonGroupSeparator };

@@ -41,11 +41,6 @@
     height: 2.25rem;
   }
 
-
-
-
-
-
   @keyframes radial-progress-spin {
     from {
       transform: rotate(0deg);

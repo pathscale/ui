@@ -14,12 +14,15 @@ import type { ImmersiveLandingContextValue } from "./types";
  * A truthy default such as `{}` would silence the throw and be worse: the
  * optional chain would then call methods that do not exist.
  */
-export const ImmersiveLandingContext = createContext<ImmersiveLandingContextValue | null>(null);
+export const ImmersiveLandingContext =
+  createContext<ImmersiveLandingContextValue | null>(null);
 
 export function useImmersiveLandingContext() {
   const context = useContext(ImmersiveLandingContext);
   if (!context) {
-    throw new Error("useImmersiveLandingContext must be used within an ImmersiveLanding component");
+    throw new Error(
+      "useImmersiveLandingContext must be used within an ImmersiveLanding component",
+    );
   }
   return context;
 }

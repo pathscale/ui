@@ -3,10 +3,7 @@ import { nextPresenceState } from "../../src/motion/solid/presenceState";
 
 describe("nextPresenceState", () => {
   it("mounts and shows the child when when=true from cold start", () => {
-    const next = nextPresenceState(
-      { mounted: false, isExiting: false },
-      true,
-    );
+    const next = nextPresenceState({ mounted: false, isExiting: false }, true);
     expect(next).toEqual({ mounted: true, isExiting: false });
   });
 
