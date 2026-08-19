@@ -569,6 +569,7 @@ const DialogContent: Layout<typeof componentRecipe, DialogContentProps> = () => 
               ) }}
               data-slot="dialog-content"
               data-material={props.material ?? "solid"}
+      data-material-explicit={props.material ? "" : undefined}
               data-placement={placement()}
               data-size={size()}
               data-scroll={scrollBehavior()}

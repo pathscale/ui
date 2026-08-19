@@ -276,6 +276,7 @@ const PopoverContent: Layout<typeof componentRecipe, PopoverContentProps> = () =
           {...{ class: twMerge(CLASSES.base, props.class) }}
           data-slot="popover-content"
           data-material={props.material ?? "solid"}
+      data-material-explicit={props.material ? "" : undefined}
           data-open={ctx.isOpen() ? "true" : "false"}
           data-placement={ctx.placement()}
           data-theme={props.dataTheme}

@@ -300,6 +300,7 @@ const MenuRoot: Layout<typeof componentRecipe, MenuRootProps> = () => {
         aria-disabled={isDisabled() ? "true" : undefined}
         data-slot="menu"
         data-material={props.material ?? "solid"}
+      data-material-explicit={props.material ? "" : undefined}
         data-theme={props.dataTheme}
         data-selection-mode={selectionMode()}
         data-disabled={isDisabled() ? "true" : "false"}

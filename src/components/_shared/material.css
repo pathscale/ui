@@ -24,7 +24,68 @@
  */
 
 @layer components {
-  [data-material="solid"] {
+  /*
+   * Glass is one flip, not one flip per component.
+   *
+   * Every component here emits `data-material="solid"` when its prop is unset,
+   * so glass used to mean visiting each call site and passing `material="glass"`
+   * by hand. That is backwards: an app choosing glass is choosing a material for
+   * its whole surface vocabulary, not for one card. Put `glass` on the root
+   * element and every unset component becomes glass; take it off and they are
+   * all solid again. Nothing else changes and no call site is touched.
+   *
+   * `data-material` still wins where it is given explicitly, because "this one
+   * stays solid" is a real requirement inside a glassed app. The distinction is
+   * between a component that was never told and one that was, which is what
+   * `data-material-explicit` records.
+   *
+   * A root class rather than a style query on a token, which is the more
+   * natural expression and cannot be used. Verified by rendering rather than
+   * assumed: the engine's own `container_style_query.rs` shows the query never
+   * matching, so that form would have been dead CSS and the flip would have
+   * looked broken rather than unsupported.
+   */
+  :root.glass [data-material="solid"]:not([data-material-explicit]) {
+    background-color: color-mix(
+      in oklab,
+      var(--glass-background-color, white),
+      transparent calc(100% - var(--glass-background-opacity, 55%))
+    );
+    border-color: color-mix(
+      in oklab,
+      var(--glass-border-color, white),
+      transparent calc(100% - var(--glass-border-opacity, 12%))
+    );
+    -webkit-backdrop-filter: blur(var(--glass-blur, 50px))
+      saturate(var(--glass-saturation, 1.2))
+      brightness(var(--glass-brightness, 1));
+    backdrop-filter: blur(var(--glass-blur, 50px))
+      saturate(var(--glass-saturation, 1.2))
+      brightness(var(--glass-brightness, 1));
+  }
+
+  :root.glass [data-material="solid"]:not([data-material-explicit])::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    pointer-events: none;
+    box-shadow: inset 0 var(--border, 1px) 0 0
+      color-mix(
+        in oklab,
+        var(--glass-highlight-color, white),
+        transparent calc(100% - var(--glass-highlight-opacity, 18%))
+      );
+  }
+
+  /*
+   * Solid, either because the app never flipped glass on or because this
+   * component was told to stay solid inside one that did. The `:not()` keeps
+   * this from overriding the flip above, which sits earlier in the file and
+   * would otherwise lose to it on source order alone.
+   */
+  :root:not(.glass) [data-material="solid"],
+  [data-material="solid"][data-material-explicit] {
     -webkit-backdrop-filter: none;
     backdrop-filter: none;
   }
@@ -40,9 +101,11 @@
       var(--glass-border-color, white),
       transparent calc(100% - var(--glass-border-opacity, 12%))
     );
-    -webkit-backdrop-filter: blur(var(--glass-blur, 50px)) saturate(var(--glass-saturation, 1.2))
+    -webkit-backdrop-filter: blur(var(--glass-blur, 50px))
+      saturate(var(--glass-saturation, 1.2))
       brightness(var(--glass-brightness, 1));
-    backdrop-filter: blur(var(--glass-blur, 50px)) saturate(var(--glass-saturation, 1.2))
+    backdrop-filter: blur(var(--glass-blur, 50px))
+      saturate(var(--glass-saturation, 1.2))
       brightness(var(--glass-brightness, 1));
   }
 
@@ -74,10 +137,95 @@
    * A backdrop filter reads the pixels behind it, so nesting one inside another
    * blurs already-blurred output. That is muddy rather than deeper, and it
    * costs a second render pass to get there.
+   *
+   * The fill has to go with the filter, and dropping only the filter was a bug.
+   * Alpha stacks multiplicatively: two surfaces at 55% composite to 1 - 0.45²,
+   * which is 79.75%, and a pane that opaque reads as a flat slab rather than as
+   * glass. Turning the opacity axis down does not rescue it, because the inner
+   * fill keeps its own share of whatever the axis says. The inner surface
+   * therefore contributes nothing: the outer pane already painted the film they
+   * are both meant to share.
+   *
+   * The highlight goes too. It is the lit top edge of *a pane*, and an inner
+   * surface that is not its own pane drawing one puts a stray line across the
+   * middle of the outer one.
    */
   [data-material="glass"] [data-material="glass"] {
+    background-color: transparent;
     -webkit-backdrop-filter: none;
     backdrop-filter: none;
+  }
+
+  [data-material="glass"] [data-material="glass"]::before {
+    box-shadow: none;
+  }
+
+  /*
+   * Controls, when the surface around them is glass.
+   *
+   * Not scoped under `[data-material="glass"]`, and that is the point rather
+   * than an oversight. An app does not have to glass its panels with this
+   * library's attribute to have glass panels: the application that drove this
+   * work glasses its own surfaces with its own class, so an ancestor selector
+   * would have matched nothing there and every control would have kept the
+   * fill this block exists to change. The token is the contract instead. One
+   * value in one file decides it, which is what makes glass a setting rather
+   * than a migration.
+   *
+   * `--glass-control-opacity` defaults to 100%, so a theme that never sets it
+   * gets exactly what it renders today. Flipping glass on therefore cannot
+   * make a control unreadable, which is what lets the flip be safe to throw.
+   *
+   * The bug this fixes is the other side of it: in a light palette `base-100`
+   * is white, so a control taking it raw paints a bright slab on a dark glass
+   * panel. Five separate screenshots of "some elements are not getting glass"
+   * were all this one rule.
+   *
+   * A surface and a control cannot share one opacity token. Audited in that
+   * same application: of 38 uses of its inset colour, 30 were surfaces and 8
+   * were controls. Surfaces want the alpha. A control does not, because a
+   * translucent switch track, checkbox box or select trigger reads as disabled
+   * and its label stops being legible against whatever the glass admits from
+   * behind. Chrome stays solid to say it is live.
+   */
+  :is(
+    .checkbox__control,
+    .radio__control,
+    .input-control,
+    .ui-select__trigger,
+    .language-switcher__trigger,
+    .dropdown__trigger,
+    .toggle__track,
+    [data-control-material="solid"]
+  ):not([data-control-material="glass"]) {
+    background-color: rgb(
+      from var(--color-base-100) r g b /
+      var(--glass-control-opacity, 100%)
+    );
+  }
+
+  /*
+   * The exception: a control that *displays* a value rather than framing one.
+   *
+   * A colour wheel, a swatch or a gradient stop is showing you the thing it is
+   * filled with, so an opaque fill is a lie about the value rather than a cue
+   * that the control is live. Held solid, a light theme's colour wheel paints
+   * a white disc and the swatches on it stop being readable as swatches.
+   *
+   * Opted into per component, because which controls belong in this set is a
+   * judgement that can reasonably go either way, and a data attribute keeps it
+   * a token flip rather than a rewrite.
+   */
+  [data-control-material="glass"] {
+    background-color: color-mix(
+      in oklab,
+      var(--glass-background-color, white),
+      transparent
+        calc(
+          100% -
+          var(--glass-control-opacity, var(--glass-background-opacity, 55%))
+        )
+    );
   }
 
   /*
@@ -87,7 +235,10 @@
    * happens to be behind it, because the tint alone is unreadable. The
    * highlight goes too: it reads as a stray line without the material.
    */
-  @supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+  @supports not (
+      (backdrop-filter: blur(1px)) or
+      (-webkit-backdrop-filter: blur(1px))
+    ) {
     [data-material="glass"] {
       background-color: color-mix(
         in oklab,

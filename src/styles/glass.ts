@@ -40,21 +40,38 @@ export type GlassTuning = {
   refraction: number;
   /** How far off the page it sits, 0 to 30. Drives glows, sheen and shadow. */
   depth: number;
+  /**
+   * How much of the glass film a *control* takes, 0 to 1. Defaults to 0.
+   *
+   * Separate from `refraction` on purpose. Surfaces and controls cannot share
+   * one opacity: a translucent switch track or checkbox reads as disabled and
+   * its label stops being legible against whatever the glass admits. So glass
+   * cascades to surfaces only, and this is the deliberate opt-in for apps that
+   * want their chrome to pick some of it up. At 0 controls stay fully opaque,
+   * which is why turning glass on cannot make anything unreadable.
+   */
+  controlTint?: number;
 };
 
 export const GLASS_LIMITS = {
   blur: { min: 0, max: 50 },
   refraction: { min: 0, max: 0.4 },
   depth: { min: 0, max: 30 },
+  controlTint: { min: 0, max: 1 },
 } as const;
 
 /** What the shipped themes use. Both land on the same numbers. */
 export const GLASS_DEFAULTS: Record<GlassMode, GlassTuning> = {
-  light: { blur: 9, refraction: 0.31, depth: 24 },
-  dark: { blur: 9, refraction: 0.31, depth: 24 },
+  light: { blur: 9, refraction: 0.31, depth: 24, controlTint: 0 },
+  dark: { blur: 9, refraction: 0.31, depth: 24, controlTint: 0 },
 };
 
-const clamp = (value: unknown, min: number, max: number, fallback: number): number => {
+const clamp = (
+  value: unknown,
+  min: number,
+  max: number,
+  fallback: number,
+): number => {
   const n = Number(value);
   return Number.isFinite(n) ? Math.min(max, Math.max(min, n)) : fallback;
 };
@@ -74,19 +91,36 @@ const px = (v: number, places = 2) => `${round(v, places)}px`;
  */
 function normalise(tuning: Partial<GlassTuning>, mode: GlassMode) {
   const base = GLASS_DEFAULTS[mode];
-  const blur = clamp(tuning.blur, GLASS_LIMITS.blur.min, GLASS_LIMITS.blur.max, base.blur);
+  const blur = clamp(
+    tuning.blur,
+    GLASS_LIMITS.blur.min,
+    GLASS_LIMITS.blur.max,
+    base.blur,
+  );
   const refraction = clamp(
     tuning.refraction,
     GLASS_LIMITS.refraction.min,
     GLASS_LIMITS.refraction.max,
     base.refraction,
   );
-  const depth = clamp(tuning.depth, GLASS_LIMITS.depth.min, GLASS_LIMITS.depth.max, base.depth);
+  const depth = clamp(
+    tuning.depth,
+    GLASS_LIMITS.depth.min,
+    GLASS_LIMITS.depth.max,
+    base.depth,
+  );
+  const controlTint = clamp(
+    tuning.controlTint,
+    GLASS_LIMITS.controlTint.min,
+    GLASS_LIMITS.controlTint.max,
+    base.controlTint ?? 0,
+  );
 
   const r = refraction / GLASS_LIMITS.refraction.max;
   const d = depth / GLASS_LIMITS.depth.max;
   return {
     blur,
+    controlTint,
     light: mode === "light",
     /** Surface response: how strongly edges and highlights read. */
     rs: r === 0 ? 0 : r ** 0.82,
@@ -114,6 +148,7 @@ export function resolveGlassTokens(
   const v = normalise(tuning, mode);
   const { rs, rv, ds, light } = v;
   const zero = v.r === 0;
+  const controlTint = v.controlTint;
 
   const background = light ? (zero ? 0 : 18 + 30 * rv) : 7 * rv;
   const border = light ? (zero ? 0 : 18 + 18 * rs) : 26 * rs;
@@ -123,22 +158,39 @@ export function resolveGlassTokens(
       ? 0
       : 10 + 14 * rs + 5 * ds
     : 3.5 * rs + 3 * rs * ds;
-  const edgeHighlight = light ? (zero ? 0 : 20 + 22 * rs + 4 * ds) : 18 * rs + 4 * ds;
-  const rimStart = light ? (zero ? 0 : 14 + 18 * rs + 4 * ds) : 17 * rs + 3 * ds;
+  const edgeHighlight = light
+    ? zero
+      ? 0
+      : 20 + 22 * rs + 4 * ds
+    : 18 * rs + 4 * ds;
+  const rimStart = light
+    ? zero
+      ? 0
+      : 14 + 18 * rs + 4 * ds
+    : 17 * rs + 3 * ds;
   const rimEnd = light ? (zero ? 0 : 18 + 22 * rs + 4 * ds) : 23 * rs + 5 * ds;
   const innerGlow = light
     ? 0.035 * rs + 0.045 * rs * ds + 0.012 * ds
     : 0.055 * rs * ds + 0.018 * ds;
-  const topGlow = light ? 8 * ds * (0.4 + 0.6 * rs) : 6 * ds * (0.35 + 0.65 * rs);
-  const bottomGlow = light ? 9 * ds * (0.25 + 0.65 * rs) : 5 * ds * (0.2 + 0.55 * rs);
-  const sheen = light ? 14 * ds * (0.25 + 0.75 * rs) : 10 * ds * (0.25 + 0.75 * rs);
+  const topGlow = light
+    ? 8 * ds * (0.4 + 0.6 * rs)
+    : 6 * ds * (0.35 + 0.65 * rs);
+  const bottomGlow = light
+    ? 9 * ds * (0.25 + 0.65 * rs)
+    : 5 * ds * (0.2 + 0.55 * rs);
+  const sheen = light
+    ? 14 * ds * (0.25 + 0.75 * rs)
+    : 10 * ds * (0.25 + 0.75 * rs);
 
   /*
    * What a browser without `backdrop-filter` falls back to. It has to be far
    * more opaque than the blurred version, because without the blur the text
    * behind it shows through as noise rather than as depth.
    */
-  const fallbackBackground = Math.min(70, light ? background + 10 * rs : background * 8 + 12 * rs);
+  const fallbackBackground = Math.min(
+    70,
+    light ? background + 10 * rs : background * 8 + 12 * rs,
+  );
 
   const shadow =
     ds > 0
@@ -170,6 +222,19 @@ export function resolveGlassTokens(
     "--glass-liquid-inner-blur": px(6 + 12 * rs),
     "--glass-shadow-depth": shadow,
     "--glass-fallback-background-opacity": pct(fallbackBackground),
+    /*
+     * How opaque a control is, as opposed to a surface.
+     *
+     * An opacity rather than a colour, so this stays a number like every other
+     * derived token and the component CSS decides which colour it applies to.
+     *
+     * 100% at the default `controlTint` of 0: exactly what a control renders
+     * without glass, so flipping glass on cannot make a switch, a radio or a
+     * select trigger unreadable. At 1 it matches the surface film. In between
+     * it takes that fraction of the way, for an app that wants its chrome to
+     * pick some of the material up.
+     */
+    "--glass-control-opacity": pct(100 - controlTint * (100 - background)),
   };
 }
 
@@ -188,9 +253,12 @@ export function applyGlassTokens(
   target?: { style: { setProperty(name: string, value: string): void } },
 ): void {
   const element =
-    target ?? (typeof document === "undefined" ? undefined : document.documentElement);
+    target ??
+    (typeof document === "undefined" ? undefined : document.documentElement);
   if (!element) return;
-  for (const [name, value] of Object.entries(resolveGlassTokens(tuning, mode))) {
+  for (const [name, value] of Object.entries(
+    resolveGlassTokens(tuning, mode),
+  )) {
     element.style.setProperty(name, value);
   }
 }
@@ -203,7 +271,10 @@ export function applyGlassTokens(
  * theme file beside its six colours and glass is part of that theme, with no
  * JavaScript involved.
  */
-export function glassTokensToCss(tuning: Partial<GlassTuning>, mode: GlassMode): string {
+export function glassTokensToCss(
+  tuning: Partial<GlassTuning>,
+  mode: GlassMode,
+): string {
   return Object.entries(resolveGlassTokens(tuning, mode))
     .map(([name, value]) => `  ${name}: ${value};`)
     .join("\n");
