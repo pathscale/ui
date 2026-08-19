@@ -33,6 +33,7 @@ const Navbar: Layout<typeof componentRecipe, NavbarProps> = () => {
       {...others}
       data-theme={props.dataTheme}
       data-material={props.material ?? "solid"}
+      data-material-explicit={props.material ? "" : undefined}
       {...{ class: classes() }}
       style={props.style}
     >

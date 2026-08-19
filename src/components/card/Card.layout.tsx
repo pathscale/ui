@@ -74,6 +74,7 @@ export const CardLayout: Layout<typeof card, CardProps> = () => {
       onKeyDown={handleKeyDown}
       data-flavor={local.flavor ?? "neutral"}
       data-material={local.material ?? "solid"}
+      data-material-explicit={local.material ? "" : undefined}
     >
       <Show when={local.header}>
         <CardHeaderLayout>{local.header}</CardHeaderLayout>

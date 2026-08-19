@@ -425,6 +425,7 @@ const DrawerContent: Layout<typeof componentRecipe, DrawerContentProps> = () => 
       )}
       data-slot="drawer-content"
       data-material={props.material ?? "solid"}
+      data-material-explicit={props.material ? "" : undefined}
       data-placement={placement()}
       data-scroll={scrollBehavior()}
       data-entering={ctx.animState() === "entering" ? "true" : undefined}
