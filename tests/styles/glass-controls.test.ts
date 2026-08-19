@@ -2,7 +2,7 @@ import { describe, expect, it } from "bun:test";
 import { readFileSync } from "node:fs";
 import { join } from "node:path";
 
-import { GLASS_DEFAULTS, resolveGlassTokens } from "../../src/styles/glass";
+import { GLASS_DEFAULTS, GLASS_LIMITS, resolveGlassTokens } from "../../src/styles/glass";
 
 /**
  * Glass reaches surfaces, and controls decide separately.
@@ -203,5 +203,57 @@ describe("glass inside glass does not stack a second film", () => {
 
     expect(nested).toContain("background-color: transparent");
     expect(nested).toContain("backdrop-filter: none");
+  });
+});
+
+describe("the dark curves move enough to see", () => {
+  /*
+   * Both axes were reported as broken, and neither was: they were producing
+   * changes below what anyone can perceive on a near-black desk.
+   *
+   * Measured before this: refraction moved the film across its *entire* range
+   * from 0% to 7%, against light mode's 18% to 48%, and depth's largest sheen
+   * was 8.59% with a shadow of 10% black over a desk at 10% lightness. A slider
+   * whose full travel is invisible reads as a dead control, and the consuming
+   * app worked around the first by overriding the token from a slider of its
+   * own.
+   *
+   * Asserted as a span rather than as specific values, so the curves stay
+   * tunable and only the property that made them useless is pinned.
+   */
+  const at = (axis: "refraction" | "depth", value: number, token: string) =>
+    Number.parseFloat(
+      resolveGlassTokens(
+        { ...GLASS_DEFAULTS.dark, [axis]: value },
+        "dark",
+      )[token],
+    );
+
+  it("gives refraction a film worth looking at", () => {
+    const top = at("refraction", GLASS_LIMITS.refraction.max, "--glass-background-opacity");
+    expect(top).toBeGreaterThanOrEqual(20);
+  });
+
+  it("moves refraction monotonically across its range", () => {
+    const low = at("refraction", 0.1, "--glass-background-opacity");
+    const high = at("refraction", 0.4, "--glass-background-opacity");
+    expect(high).toBeGreaterThan(low);
+    // The step across the useful middle has to be visible on its own.
+    expect(high - low).toBeGreaterThan(8);
+  });
+
+  it("gives depth a sheen and a shadow that register on a dark desk", () => {
+    expect(at("depth", GLASS_LIMITS.depth.max, "--glass-depth-sheen-opacity")).toBeGreaterThan(12);
+    const shadow = resolveGlassTokens(
+      { ...GLASS_DEFAULTS.dark, depth: GLASS_LIMITS.depth.max },
+      "dark",
+    )["--glass-shadow-depth"];
+    const alpha = Number.parseFloat(shadow.match(/\/\s*([\d.]+)%/)?.[1] ?? "0");
+    expect(alpha).toBeGreaterThan(20);
+  });
+
+  it("still resolves every axis to zero at zero", () => {
+    expect(at("refraction", 0, "--glass-background-opacity")).toBe(0);
+    expect(at("depth", 0, "--glass-depth-sheen-opacity")).toBe(0);
   });
 });
