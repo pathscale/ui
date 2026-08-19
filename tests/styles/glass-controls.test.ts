@@ -97,6 +97,29 @@ describe("the control axis defaults to opaque", () => {
   });
 });
 
+describe("the defaults are fully resolved", () => {
+  /*
+   * A settings panel drives one slider per axis, so it indexes the defaults by
+   * a computed key: `GLASS_DEFAULTS[mode][axis]`. Typed as a plain GlassTuning
+   * that reads back as `number | undefined` the moment any axis is optional,
+   * and every such call site fails to compile on a value this object never
+   * actually contains. `Required<GlassTuning>` is what keeps it a number.
+   */
+  it("gives every axis a number in both modes", () => {
+    for (const mode of ["light", "dark"] as const) {
+      for (const axis of [
+        "blur",
+        "refraction",
+        "depth",
+        "controlTint",
+      ] as const) {
+        const value: number = GLASS_DEFAULTS[mode][axis];
+        expect(Number.isFinite(value)).toBe(true);
+      }
+    }
+  });
+});
+
 describe("glass is one flip", () => {
   /*
    * The whole point of the exercise: an app sets glass in one place and every
