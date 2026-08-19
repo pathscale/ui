@@ -56,10 +56,10 @@
       var(--glass-border-color, white),
       transparent calc(100% - var(--glass-border-opacity, 12%))
     );
-    -webkit-backdrop-filter: blur(var(--glass-blur, 50px))
+    -webkit-backdrop-filter: blur(var(--glass-blur, 9px))
       saturate(var(--glass-saturation, 1.2))
       brightness(var(--glass-brightness, 1));
-    backdrop-filter: blur(var(--glass-blur, 50px))
+    backdrop-filter: blur(var(--glass-blur, 9px))
       saturate(var(--glass-saturation, 1.2))
       brightness(var(--glass-brightness, 1));
   }
@@ -101,10 +101,10 @@
       var(--glass-border-color, white),
       transparent calc(100% - var(--glass-border-opacity, 12%))
     );
-    -webkit-backdrop-filter: blur(var(--glass-blur, 50px))
+    -webkit-backdrop-filter: blur(var(--glass-blur, 9px))
       saturate(var(--glass-saturation, 1.2))
       brightness(var(--glass-brightness, 1));
-    backdrop-filter: blur(var(--glass-blur, 50px))
+    backdrop-filter: blur(var(--glass-blur, 9px))
       saturate(var(--glass-saturation, 1.2))
       brightness(var(--glass-brightness, 1));
   }
