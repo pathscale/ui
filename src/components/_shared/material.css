@@ -195,7 +195,7 @@
     .ui-select__trigger,
     .language-switcher__trigger,
     .dropdown__trigger,
-    .toggle__track,
+    .switch__control,
     [data-control-material="solid"]
   ):not([data-control-material="glass"]) {
     background-color: rgb(
