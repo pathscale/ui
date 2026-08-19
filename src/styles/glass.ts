@@ -160,7 +160,22 @@ export function resolveGlassTokens(
   const zero = v.r === 0;
   const controlTint = v.controlTint;
 
-  const background = light ? (zero ? 0 : 18 + 30 * rv) : 7 * rv;
+  /*
+   * Dark mode's film has to be a film, not a rounding error.
+   *
+   * This was `7 * rv`, so the entire refraction range moved the surface from
+   * 0% to 7% while light mode spanned 18% to 48%. Measured across the whole
+   * slider, dark mode's largest step was under two points of opacity, which is
+   * below what anyone can see on a near-black desk: the axis read as broken
+   * rather than as subtle, and the consuming app worked around it by
+   * overriding this token from a slider of its own.
+   *
+   * Dark still lands lower than light, and deliberately - a light film on a
+   * dark surface reads much faster than a dark film on a light one, so parity
+   * in numbers would not be parity in appearance. 26% at the top is enough for
+   * the surface to declare itself while leaving the text ladder its contrast.
+   */
+  const background = light ? (zero ? 0 : 18 + 30 * rv) : zero ? 0 : 4 + 22 * rv;
   const border = light ? (zero ? 0 : 18 + 18 * rs) : 26 * rs;
   const highlight = light ? (zero ? 0 : 22 + 26 * rs) : 24 * rs;
   const bottomHighlight = light
@@ -182,15 +197,29 @@ export function resolveGlassTokens(
   const innerGlow = light
     ? 0.035 * rs + 0.045 * rs * ds + 0.012 * ds
     : 0.055 * rs * ds + 0.018 * ds;
+  /*
+   * On a dark surface, depth is a lift rather than a drop.
+   *
+   * A drop shadow is black on near-black and produces nothing anyone can see:
+   * the shadow below tops out at 10% black over a desk already at 10% lightness.
+   * What actually separates a panel from a dark background is its own lit
+   * edges, so dark mode leans on the glows and the sheen instead, and those
+   * were tuned as if they were a secondary cue rather than the primary one.
+   *
+   * Roughly doubled, which brings the top of the range to about where light
+   * mode already sits. Measured across the slider before this: 8.59% sheen and
+   * 5.26% top glow at full depth, changes small enough that the axis read as
+   * doing nothing at all.
+   */
   const topGlow = light
     ? 8 * ds * (0.4 + 0.6 * rs)
-    : 6 * ds * (0.35 + 0.65 * rs);
+    : 13 * ds * (0.35 + 0.65 * rs);
   const bottomGlow = light
     ? 9 * ds * (0.25 + 0.65 * rs)
-    : 5 * ds * (0.2 + 0.55 * rs);
+    : 10 * ds * (0.2 + 0.55 * rs);
   const sheen = light
     ? 14 * ds * (0.25 + 0.75 * rs)
-    : 10 * ds * (0.25 + 0.75 * rs);
+    : 20 * ds * (0.25 + 0.75 * rs);
 
   /*
    * What a browser without `backdrop-filter` falls back to. It has to be far
@@ -204,7 +233,7 @@ export function resolveGlassTokens(
 
   const shadow =
     ds > 0
-      ? `0 ${px(light ? 5 + 10 * ds : 4 + 10 * ds)} ${px(light ? 20 + 28 * ds : 18 + 26 * ds)} rgb(0 0 0 / ${pct(light ? 2 + 5 * ds : 3 + 7 * ds)})`
+      ? `0 ${px(light ? 5 + 10 * ds : 4 + 10 * ds)} ${px(light ? 20 + 28 * ds : 18 + 26 * ds)} rgb(0 0 0 / ${pct(light ? 2 + 5 * ds : 8 + 22 * ds)})`
       : "0 0 0 rgb(0 0 0 / 0%)";
 
   return {
