@@ -1,10 +1,11 @@
+import {omit, createMemo, children as resolveChildren} from "solid-js";
 import type { JSX } from "@solidjs/web";
-import { createMemo, omit, children as resolveChildren } from "solid-js";
-import type { Layout } from "../../lib/layouts";
 import { twMerge } from "../../lib/twMerge";
+import type { UIBaseProps, Flavor, Variant } from "../vocabulary";
 import type { ComponentColor } from "../types";
-import type { Flavor, UIBaseProps, Variant } from "../vocabulary";
-import { CLASSES, type componentRecipe } from "./Navbar.recipe";
+import { CLASSES } from "./Navbar.recipe";
+import type { Layout } from "../../lib/layouts";
+import { componentRecipe } from "./Navbar.recipe";
 
 export type NavbarRowProps = JSX.HTMLAttributes<HTMLDivElement> &
   UIBaseProps & {
@@ -32,9 +33,8 @@ const NavbarRow: Layout<typeof componentRecipe, NavbarRowProps> = () => {
 
   /* Ghost was a colour and is a variant: it is transparent chrome, not a tint. */
   const flavorClass = () =>
-    CLASSES.row.flavor[
-      (props.flavor ?? "neutral") as keyof typeof CLASSES.row.flavor
-    ] ?? `navbar__row--flavor-${props.flavor}`;
+    CLASSES.row.flavor[(props.flavor ?? "neutral") as keyof typeof CLASSES.row.flavor] ??
+    `navbar__row--flavor-${props.flavor}`;
 
   const classes = createMemo(() =>
     twMerge(

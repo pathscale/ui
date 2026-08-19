@@ -29,16 +29,4 @@ export const CLASSES = {
     base: "date-picker__calendar",
   },
 } as const;
-export const componentRecipe = recipe({
-  component: "date-picker",
-  slots: {
-    "date-picker": {},
-    "date-picker-calendar": {},
-    "date-picker-popover": {},
-    "date-picker-trigger": {},
-    "date-picker-trigger-icon": {},
-    "date-picker-trigger-indicator": {},
-    "date-picker-trigger-value": {},
-    root: {},
-  },
-});
+export const componentRecipe = recipe({component:"date-picker",slots:{"date-picker":{},"date-picker-calendar":{},"date-picker-popover":{},"date-picker-trigger":{},"date-picker-trigger-icon":{},"date-picker-trigger-indicator":{},"date-picker-trigger-value":{},"root":{},},});

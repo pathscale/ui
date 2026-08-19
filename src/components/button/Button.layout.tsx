@@ -1,7 +1,6 @@
 import "./Button.css";
-import { Dynamic, type JSX } from "@solidjs/web";
-import { Show } from "solid-js";
-import type { Layout } from "../../lib/layouts";
+import {Show} from "solid-js";
+import { Dynamic, type JSX} from "@solidjs/web";
 import type {
   Flavor,
   IconSlotProps,
@@ -12,8 +11,9 @@ import type {
   Variant,
   Width,
 } from "../vocabulary";
+import type { Layout } from "../../lib/layouts";
+import { button } from "./Button.recipe";
 import { buttonElement, buttonHref, buttonRel } from "./Button.interactions";
-import type { button } from "./Button.recipe";
 
 /* -------------------------------------------------------------------------------------------------
  * Types
@@ -67,8 +67,7 @@ export type ButtonProps = Omit<
  * -----------------------------------------------------------------------------------------------*/
 export const ButtonLayout: Layout<typeof button, ButtonProps> = () => {
   const loading = () => local.state === "loading";
-  const inert = () =>
-    loading() || local.state === "disabled" || Boolean(local.disabled);
+  const inert = () => loading() || local.state === "disabled" || Boolean(local.disabled);
   const element = () => buttonElement(local.href);
 
   /*
@@ -96,10 +95,7 @@ export const ButtonLayout: Layout<typeof button, ButtonProps> = () => {
       data-flavor={local.flavor ?? "primary"}
     >
       <Show when={loading()}>
-        <span
-          {...slot.spinner}
-          aria-hidden="true"
-        />
+        <span {...slot.spinner} aria-hidden="true" />
       </Show>
       <Show when={local.startIcon}>
         <span {...slot.startIcon}>{local.startIcon}</span>

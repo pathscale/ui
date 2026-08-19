@@ -1,24 +1,15 @@
 import "./Tooltip.css";
-import { type JSX, Portal } from "@solidjs/web";
-import {
-  type Component,
-  createContext,
-  createSignal,
-  createTrackedEffect,
-  omit,
-  onCleanup,
-  type ParentComponent,
-  Show,
-  useContext,
-} from "solid-js";
-import type { Layout } from "../../lib/layouts";
+import {createContext, createSignal, createTrackedEffect, onCleanup, omit, useContext, Show, type Component, type ParentComponent} from "solid-js";
+import { Portal, type JSX} from "@solidjs/web";
 import { twMerge } from "../../lib/twMerge";
 import {
   createOverlayPosition,
   type OverlayPlacement,
 } from "../_shared/overlayPosition";
 import type { UIBaseProps } from "../vocabulary";
-import { CLASSES, type componentRecipe } from "./Tooltip.recipe";
+import { CLASSES } from "./Tooltip.recipe";
+import type { Layout } from "../../lib/layouts";
+import { componentRecipe } from "./Tooltip.recipe";
 
 /* -------------------------------------------------------------------------------------------------
  * Tooltip Context
@@ -123,7 +114,8 @@ const TooltipRoot: Layout<typeof componentRecipe, TooltipRootProps> = () => {
   let closeTimer: ReturnType<typeof setTimeout> | undefined;
 
   const isControlled = () => props.open !== undefined;
-  const isOpen = () => (isControlled() ? Boolean(props.open) : internalOpen());
+  const isOpen = () =>
+    isControlled() ? Boolean(props.open) : internalOpen();
 
   const setIsOpen = (v: boolean) => {
     if (!isControlled()) setInternalOpen(v);
@@ -182,10 +174,7 @@ const TooltipRoot: Layout<typeof componentRecipe, TooltipRootProps> = () => {
 /* -------------------------------------------------------------------------------------------------
  * Tooltip Trigger
  * -----------------------------------------------------------------------------------------------*/
-const TooltipTrigger: Layout<
-  typeof componentRecipe,
-  TooltipTriggerProps
-> = () => {
+const TooltipTrigger: Layout<typeof componentRecipe, TooltipTriggerProps> = () => {
   const others = omit(
     props,
     "children",
@@ -251,10 +240,7 @@ const TooltipTrigger: Layout<
 /* -------------------------------------------------------------------------------------------------
  * Tooltip Content
  * -----------------------------------------------------------------------------------------------*/
-const TooltipContent: Layout<
-  typeof componentRecipe,
-  TooltipContentProps
-> = () => {
+const TooltipContent: Layout<typeof componentRecipe, TooltipContentProps> = () => {
   const others = omit(
     props,
     "children",
@@ -394,4 +380,4 @@ const Tooltip = Object.assign(TooltipRoot, {
 });
 
 export default Tooltip;
-export { TooltipArrow, TooltipContent, TooltipRoot, TooltipTrigger };
+export { TooltipRoot, TooltipTrigger, TooltipContent, TooltipArrow };

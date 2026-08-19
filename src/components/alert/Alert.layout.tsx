@@ -1,19 +1,16 @@
 import "./Alert.css";
-import { Dynamic, type JSX } from "@solidjs/web";
-import { type Component, Show } from "solid-js";
-import type { Layout } from "../../lib/layouts";
+import {Show, type Component} from "solid-js";
+import { Dynamic, type JSX} from "@solidjs/web";
 import type { Flavor, UIBaseProps, Variant } from "../vocabulary";
-import type { alert } from "./Alert.recipe";
+import type { Layout } from "../../lib/layouts";
+import { alert } from "./Alert.recipe";
 
 /* -------------------------------------------------------------------------------------------------
  * Types
  * -----------------------------------------------------------------------------------------------*/
 export type AlertPlacement = "inline" | "banner";
 
-export type AlertProps = Omit<
-  JSX.HTMLAttributes<HTMLDivElement>,
-  "children" | "title"
-> &
+export type AlertProps = Omit<JSX.HTMLAttributes<HTMLDivElement>, "children" | "title"> &
   UIBaseProps & {
     flavor?: Flavor;
     variant?: Variant;
@@ -45,32 +42,15 @@ const svg = (paths: JSX.Element) => (
 const InfoIcon: Component = () =>
   svg(
     <>
-      <circle
-        cx="12"
-        cy="12"
-        r="10"
-        stroke="currentColor"
-        stroke-width="2"
-      />
-      <path
-        d="M12 16v-4M12 8h.01"
-        stroke="currentColor"
-        stroke-linecap="round"
-        stroke-width="2"
-      />
+      <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2" />
+      <path d="M12 16v-4M12 8h.01" stroke="currentColor" stroke-linecap="round" stroke-width="2" />
     </>,
   );
 
 const SuccessIcon: Component = () =>
   svg(
     <>
-      <circle
-        cx="12"
-        cy="12"
-        r="10"
-        stroke="currentColor"
-        stroke-width="2"
-      />
+      <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2" />
       <path
         d="M9 12l2 2 4-4"
         stroke="currentColor"
@@ -89,31 +69,15 @@ const WarningIcon: Component = () =>
         stroke="currentColor"
         stroke-width="2"
       />
-      <path
-        d="M12 9v4M12 17h.01"
-        stroke="currentColor"
-        stroke-linecap="round"
-        stroke-width="2"
-      />
+      <path d="M12 9v4M12 17h.01" stroke="currentColor" stroke-linecap="round" stroke-width="2" />
     </>,
   );
 
 const DangerIcon: Component = () =>
   svg(
     <>
-      <circle
-        cx="12"
-        cy="12"
-        r="10"
-        stroke="currentColor"
-        stroke-width="2"
-      />
-      <path
-        d="M15 9l-6 6M9 9l6 6"
-        stroke="currentColor"
-        stroke-linecap="round"
-        stroke-width="2"
-      />
+      <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2" />
+      <path d="M15 9l-6 6M9 9l6 6" stroke="currentColor" stroke-linecap="round" stroke-width="2" />
     </>,
   );
 
@@ -154,14 +118,7 @@ export const AlertLayout: Layout<typeof alert, AlertProps> = () => {
     >
       <Show when={local.icon !== false}>
         <span {...slot.indicator}>
-          <Show
-            when={local.icon}
-            fallback={
-              <Dynamic
-                component={FLAVOR_ICON[String(local.flavor)] ?? InfoIcon}
-              />
-            }
-          >
+          <Show when={local.icon} fallback={<Dynamic component={FLAVOR_ICON[String(local.flavor)] ?? InfoIcon} />}>
             {local.icon}
           </Show>
         </span>

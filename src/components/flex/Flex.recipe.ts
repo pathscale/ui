@@ -90,7 +90,4 @@ export const CLASSES = {
     xl: "basis-32",
   },
 } as const;
-export const componentRecipe = recipe({
-  component: "flex",
-  slots: { root: {} },
-});
+export const componentRecipe = recipe({component:"flex",slots:{"root":{},},});

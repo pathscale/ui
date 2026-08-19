@@ -7,14 +7,4 @@ export const CLASSES = {
     arrow: "tooltip__arrow",
   },
 } as const;
-export const componentRecipe = recipe({
-  component: "tooltip",
-  slots: {
-    root: {},
-    "tooltip-arrow": {},
-    "tooltip-arrow-svg": {},
-    "tooltip-content": {},
-    "tooltip-root": {},
-    "tooltip-trigger": {},
-  },
-});
+export const componentRecipe = recipe({component:"tooltip",slots:{"root":{},"tooltip-arrow":{},"tooltip-arrow-svg":{},"tooltip-content":{},"tooltip-root":{},"tooltip-trigger":{},},});

@@ -1,22 +1,12 @@
 import "./Tabs.css";
 import type { JSX } from "@solidjs/web";
-import {
-  type Accessor,
-  createContext,
-  createMemo,
-  createSignal,
-  createTrackedEffect,
-  createUniqueId,
-  omit,
-  onCleanup,
-  onSettled,
-  useContext,
-} from "solid-js";
-import type { Layout } from "../../lib/layouts";
+import {createContext, createMemo, createSignal, createTrackedEffect, createUniqueId, onCleanup, onSettled, omit, useContext, type Accessor} from "solid-js";
 import { twMerge } from "../../lib/twMerge";
+import { CLASSES } from "./Tabs.recipe";
+import type { Layout } from "../../lib/layouts";
+import { componentRecipe } from "./Tabs.recipe";
 import type { State } from "../vocabulary";
 import { observeTabIndicator } from "./Tabs.measurement";
-import { CLASSES, type componentRecipe } from "./Tabs.recipe";
 
 type TabsOrientation = "horizontal" | "vertical";
 type TabsVariant = "primary" | "secondary";
@@ -78,14 +68,13 @@ const TabsRoot: Layout<typeof componentRecipe, TabsRootProps> = () => {
   );
 
   const baseId = createUniqueId();
-  const [internalSelectedKey, setInternalSelectedKey] = createSignal<
-    TabKey | undefined
-  >(props.defaultSelectedKey);
+  const [internalSelectedKey, setInternalSelectedKey] = createSignal<TabKey | undefined>(
+    props.defaultSelectedKey,
+  );
   const [tabs, setTabs] = createSignal<TabInfo[]>([]);
 
   const isControlled = () => props.selectedKey !== undefined;
-  const selectedKey = () =>
-    isControlled() ? props.selectedKey : internalSelectedKey();
+  const selectedKey = () => (isControlled() ? props.selectedKey : internalSelectedKey());
 
   const setSelectedKey = (key: TabKey) => {
     if (isControlled()) {
@@ -150,10 +139,7 @@ const TabsRoot: Layout<typeof componentRecipe, TabsRootProps> = () => {
 
 type TabListContainerProps = JSX.HTMLAttributes<HTMLDivElement>;
 
-const TabListContainer: Layout<
-  typeof componentRecipe,
-  TabListContainerProps
-> = () => {
+const TabListContainer: Layout<typeof componentRecipe, TabListContainerProps> = () => {
   const others = omit(props, "class", "children");
   return (
     <div
@@ -297,31 +283,20 @@ type TabProps = Omit<JSX.ButtonHTMLAttributes<HTMLButtonElement>, "id"> & {
 
 const Tab: Layout<typeof componentRecipe, TabProps> = () => {
   const ctx = useContext(TabsContext);
-  const others = omit(
-    props,
-    "class",
-    "children",
-    "id",
-    "state",
-    "onClick",
-    "onKeyDown",
-  );
+  const others = omit(props, "class", "children", "id", "state", "onClick", "onKeyDown");
 
   let tabRef: HTMLButtonElement | undefined;
 
   if (!ctx) {
     return (
-      <button
-        {...others}
-        {...{ class: twMerge(CLASSES.slot.tab, props.class) }}
-      >
+      <button {...others} {...{ class: twMerge(CLASSES.slot.tab, props.class) }}>
         {props.children}
       </button>
     );
   }
 
   const isSelected = createMemo(() => ctx.selectedKey() === props.id);
-  const isDisabled = () => Boolean(props.state === "disabled");
+  const isDisabled = () => Boolean((props.state === "disabled"));
 
   onSettled(() => {
     if (tabRef) {
@@ -347,10 +322,7 @@ const Tab: Layout<typeof componentRecipe, TabProps> = () => {
     focusTab(list[nextIndex]);
   };
 
-  const handleKeyDown: JSX.EventHandlerUnion<
-    HTMLButtonElement,
-    KeyboardEvent
-  > = (event) => {
+  const handleKeyDown: JSX.EventHandlerUnion<HTMLButtonElement, KeyboardEvent> = (event) => {
     invokeEventHandler(props.onKeyDown, event);
     if (event.defaultPrevented) return;
 
@@ -380,9 +352,7 @@ const Tab: Layout<typeof componentRecipe, TabProps> = () => {
     }
   };
 
-  const handleClick: JSX.EventHandlerUnion<HTMLButtonElement, MouseEvent> = (
-    event,
-  ) => {
+  const handleClick: JSX.EventHandlerUnion<HTMLButtonElement, MouseEvent> = (event) => {
     invokeEventHandler(props.onClick, event);
     if (event.defaultPrevented) return;
     if (isDisabled()) return;
@@ -474,23 +444,24 @@ const Tabs = Object.assign(TabsRoot, {
   Panel: TabPanel,
 });
 
-export type {
-  TabIndicatorProps,
-  TabListContainerProps,
-  TabListProps,
-  TabPanelProps,
-  TabProps,
-  TabSeparatorProps,
-  TabsRootProps,
-};
 export {
-  Tab,
-  TabIndicator,
-  TabList,
-  TabListContainer,
-  TabPanel,
-  TabSeparator,
   Tabs as default,
   Tabs,
   TabsRoot,
+  TabListContainer,
+  TabList,
+  Tab,
+  TabIndicator,
+  TabSeparator,
+  TabPanel,
+};
+
+export type {
+  TabsRootProps,
+  TabListContainerProps,
+  TabListProps,
+  TabProps,
+  TabIndicatorProps,
+  TabSeparatorProps,
+  TabPanelProps,
 };

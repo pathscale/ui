@@ -11,7 +11,4 @@ export const CLASSES = {
   },
 } as const;
 
-export const componentRecipe = recipe({
-  component: "range-calendar",
-  slots: { "range-calendar": {}, root: {} },
-});
+export const componentRecipe = recipe({component:"range-calendar",slots:{"range-calendar":{},"root":{},},});

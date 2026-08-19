@@ -1,11 +1,12 @@
 import "./footer.css";
 import type { JSX } from "@solidjs/web";
-import { omit, type ParentComponent } from "solid-js";
-import type { Layout } from "../../lib/layouts";
+import {type ParentComponent, omit} from "solid-js";
 import { twMerge } from "../../lib/twMerge";
 import type { UIBaseProps } from "../vocabulary";
-import { CLASSES, type componentRecipe } from "./Footer.recipe";
 import { FooterTitle } from "./FooterTitle.generated";
+import { CLASSES } from "./Footer.recipe";
+import type { Layout } from "../../lib/layouts";
+import { componentRecipe } from "./Footer.recipe";
 
 export type FooterProps = UIBaseProps & {
   children?: JSX.Element;
@@ -15,15 +16,7 @@ export type FooterProps = UIBaseProps & {
 };
 
 const Footer: Layout<typeof componentRecipe, FooterProps> = () => {
-  const others = omit(
-    props,
-    "children",
-    "class",
-    "dataTheme",
-    "center",
-    "horizontal",
-    "vertical",
-  );
+  const others = omit(props, "children", "class", "dataTheme", "center", "horizontal", "vertical");
 
   const classes = () =>
     twMerge(

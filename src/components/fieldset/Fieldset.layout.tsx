@@ -1,29 +1,23 @@
 import "./Fieldset.css";
 import type { JSX } from "@solidjs/web";
-import { type Component, omit, type ParentComponent } from "solid-js";
-import type { Layout } from "../../lib/layouts";
+import {omit, type Component, type ParentComponent} from "solid-js";
 import { twMerge } from "../../lib/twMerge";
+
 import type { UIBaseProps } from "../vocabulary";
-import { CLASSES, type componentRecipe } from "./Fieldset.recipe";
+import { CLASSES } from "./Fieldset.recipe";
+import type { Layout } from "../../lib/layouts";
+import { componentRecipe } from "./Fieldset.recipe";
 
-export type FieldsetRootProps =
-  JSX.FieldsetHTMLAttributes<HTMLFieldSetElement> & UIBaseProps;
+export type FieldsetRootProps = JSX.FieldsetHTMLAttributes<HTMLFieldSetElement> & UIBaseProps;
 
-export type FieldsetLegendProps = JSX.HTMLAttributes<HTMLLegendElement> &
-  UIBaseProps;
+export type FieldsetLegendProps = JSX.HTMLAttributes<HTMLLegendElement> & UIBaseProps;
 
-export type FieldGroupProps = Omit<
-  JSX.HTMLAttributes<HTMLDivElement>,
-  "children"
-> &
+export type FieldGroupProps = Omit<JSX.HTMLAttributes<HTMLDivElement>, "children"> &
   UIBaseProps & {
     children?: JSX.Element;
   };
 
-export type FieldsetActionsProps = Omit<
-  JSX.HTMLAttributes<HTMLDivElement>,
-  "children"
-> &
+export type FieldsetActionsProps = Omit<JSX.HTMLAttributes<HTMLDivElement>, "children"> &
   UIBaseProps & {
     children?: JSX.Element;
   };
@@ -44,10 +38,7 @@ const FieldsetRoot: Layout<typeof componentRecipe, FieldsetRootProps> = () => {
   );
 };
 
-const FieldsetLegend: Layout<
-  typeof componentRecipe,
-  FieldsetLegendProps
-> = () => {
+const FieldsetLegend: Layout<typeof componentRecipe, FieldsetLegendProps> = () => {
   const others = omit(props, "children", "class", "dataTheme", "style");
 
   return (
@@ -79,10 +70,7 @@ const FieldGroup: Layout<typeof componentRecipe, FieldGroupProps> = () => {
   );
 };
 
-const FieldsetActions: Layout<
-  typeof componentRecipe,
-  FieldsetActionsProps
-> = () => {
+const FieldsetActions: Layout<typeof componentRecipe, FieldsetActionsProps> = () => {
   const others = omit(props, "children", "class", "dataTheme", "style");
 
   return (
@@ -106,5 +94,5 @@ const Fieldset = Object.assign(FieldsetRoot, {
 });
 
 export default Fieldset;
+export { Fieldset, FieldsetRoot, FieldsetLegend, FieldGroup, FieldsetActions };
 export type { FieldsetRootProps as FieldsetProps };
-export { FieldGroup, Fieldset, FieldsetActions, FieldsetLegend, FieldsetRoot };

@@ -85,21 +85,4 @@ export const CLASSES = {
     icon: "dialog__close-trigger-icon",
   },
 } as const;
-export const componentRecipe = recipe({
-  component: "dialog",
-  slots: {
-    "dialog-backdrop": {},
-    "dialog-body": {},
-    "dialog-close-trigger": {},
-    "dialog-close-trigger-icon": {},
-    "dialog-container": {},
-    "dialog-content": {},
-    "dialog-footer": {},
-    "dialog-header": {},
-    "dialog-heading": {},
-    "dialog-icon": {},
-    "dialog-root": {},
-    "dialog-trigger": {},
-    root: {},
-  },
-});
+export const componentRecipe = recipe({component:"dialog",slots:{"dialog-backdrop":{},"dialog-body":{},"dialog-close-trigger":{},"dialog-close-trigger-icon":{},"dialog-container":{},"dialog-content":{},"dialog-footer":{},"dialog-header":{},"dialog-heading":{},"dialog-icon":{},"dialog-root":{},"dialog-trigger":{},"root":{},},});

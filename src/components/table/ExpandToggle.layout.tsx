@@ -1,15 +1,12 @@
+import {type Component, Show, omit} from "solid-js";
 import type { JSX } from "@solidjs/web";
-import { type Component, omit, Show } from "solid-js";
-import type { Layout } from "../../lib/layouts";
 import { twMerge } from "../../lib/twMerge";
 import Icon from "../icon";
 import type { UIBaseProps } from "../vocabulary";
-import type { tableExpandToggleRecipe } from "./Table.recipe";
+import type { Layout } from "../../lib/layouts";
+import { tableExpandToggleRecipe } from "./Table.recipe";
 
-export type ExpandToggleProps = Omit<
-  JSX.ButtonHTMLAttributes<HTMLButtonElement>,
-  "onToggle"
-> &
+export type ExpandToggleProps = Omit<JSX.ButtonHTMLAttributes<HTMLButtonElement>, "onToggle"> &
   UIBaseProps & {
     expanded: boolean;
     onToggle?: () => void;
@@ -18,10 +15,7 @@ export type ExpandToggleProps = Omit<
     disabled?: boolean;
   };
 
-const ExpandToggle: Layout<
-  typeof tableExpandToggleRecipe,
-  ExpandToggleProps
-> = () => {
+const ExpandToggle: Layout<typeof tableExpandToggleRecipe, ExpandToggleProps> = () => {
   const rest = omit(
     props,
     "expanded",
@@ -38,15 +32,10 @@ const ExpandToggle: Layout<
   const ariaLabel = () => props.label ?? "Toggle row details";
   const isDisabled = () => Boolean(props.disabled);
 
-  const handleClick: JSX.EventHandlerUnion<HTMLButtonElement, MouseEvent> = (
-    event,
-  ) => {
+  const handleClick: JSX.EventHandlerUnion<HTMLButtonElement, MouseEvent> = (event) => {
     if (typeof props.onClick === "function") {
       props.onClick(event);
-    } else if (
-      Array.isArray(props.onClick) &&
-      typeof props.onClick[0] === "function"
-    ) {
+    } else if (Array.isArray(props.onClick) && typeof props.onClick[0] === "function") {
       props.onClick[0](props.onClick[1], event);
     }
     if (event.defaultPrevented) return;
@@ -58,14 +47,12 @@ const ExpandToggle: Layout<
     <button
       {...rest}
       type={rest.type ?? "button"}
-      {...{
-        class: twMerge(
-          "inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-md border border-base-300 bg-base-100 text-base-content transition-colors hover:bg-base-200",
-          "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/60",
-          isDisabled() && "cursor-not-allowed opacity-60 hover:bg-base-100",
-          props.class,
-        ),
-      }}
+      {...{ class: twMerge(
+        "inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-md border border-base-300 bg-base-100 text-base-content transition-colors hover:bg-base-200",
+        "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/60",
+        isDisabled() && "cursor-not-allowed opacity-60 hover:bg-base-100",
+        props.class,
+      ) }}
       data-theme={props.dataTheme}
       data-slot="table-expand-toggle"
       data-expanded={props.expanded ? "true" : "false"}
@@ -76,21 +63,9 @@ const ExpandToggle: Layout<
     >
       <Show
         when={props.expanded}
-        fallback={
-          <Icon
-            src="icon-[lucide--chevron-right]"
-            width={iconSize()}
-            height={iconSize()}
-            aria-hidden="true"
-          />
-        }
+        fallback={<Icon src="icon-[lucide--chevron-right]" width={iconSize()} height={iconSize()} aria-hidden="true" />}
       >
-        <Icon
-          src="icon-[lucide--chevron-down]"
-          width={iconSize()}
-          height={iconSize()}
-          aria-hidden="true"
-        />
+        <Icon src="icon-[lucide--chevron-down]" width={iconSize()} height={iconSize()} aria-hidden="true" />
       </Show>
     </button>
   );

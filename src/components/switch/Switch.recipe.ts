@@ -28,17 +28,4 @@ export const CLASSES = {
     disabled: "switch--disabled",
   },
 } as const;
-export const componentRecipe = recipe({
-  component: "switch",
-  slots: {
-    description: {},
-    label: {},
-    root: {},
-    switch: {},
-    "switch-content": {},
-    "switch-control": {},
-    "switch-icon": {},
-    "switch-input": {},
-    "switch-thumb": {},
-  },
-});
+export const componentRecipe = recipe({component:"switch",slots:{"description":{},"label":{},"root":{},"switch":{},"switch-content":{},"switch-control":{},"switch-icon":{},"switch-input":{},"switch-thumb":{},},});

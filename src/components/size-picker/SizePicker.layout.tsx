@@ -1,11 +1,12 @@
-import { clsx } from "clsx";
-import { type Component, createMemo, For, omit } from "solid-js";
-import type { Layout } from "../../lib/layouts";
+import { type Component, For, createMemo, omit } from "solid-js";
 import { twMerge } from "../../lib/twMerge";
+import { clsx } from "clsx";
 import Button from "../button";
 import type { UIBaseProps } from "../vocabulary";
-import { CLASSES, type componentRecipe } from "./SizePicker.recipe";
-import { createSizeStore, type SizePreset, type SizeStore } from "./sizeStore";
+import { createSizeStore, type SizeStore, type SizePreset } from "./sizeStore";
+import { CLASSES } from "./SizePicker.recipe";
+import type { Layout } from "../../lib/layouts";
+import { componentRecipe } from "./SizePicker.recipe";
 
 const PRESETS: SizePreset[] = ["M", "L", "XL"];
 
@@ -27,7 +28,7 @@ const SizePicker: Layout<typeof componentRecipe, SizePickerProps> = () => {
   );
 
   const store = createMemo<SizeStore>(() =>
-    createSizeStore(props.storagePrefix ?? "theme"),
+    createSizeStore(props.storagePrefix ?? "theme")
   );
 
   const handleClick = (preset: SizePreset) => {
@@ -35,7 +36,8 @@ const SizePicker: Layout<typeof componentRecipe, SizePickerProps> = () => {
     props.onSizeChange?.(preset);
   };
 
-  const classes = () => twMerge(CLASSES.base, clsx(props.class));
+  const classes = () =>
+    twMerge(CLASSES.base, clsx(props.class));
 
   return (
     <div
@@ -50,8 +52,7 @@ const SizePicker: Layout<typeof componentRecipe, SizePickerProps> = () => {
           <Button
             type="button"
             size="sm"
-            variant={store().size() === preset ? "solid" : "ghost"}
-            flavor={store().size() === preset ? "primary" : "neutral"}
+            variant={store().size() === preset ? "solid" : "ghost"} flavor={store().size() === preset ? "primary" : "neutral"}
             onClick={() => handleClick(preset)}
             role="radio"
             aria-checked={store().size() === preset ? "true" : "false"}

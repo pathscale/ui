@@ -1,13 +1,14 @@
 import "./Flex.css";
-import { Dynamic, type JSX } from "@solidjs/web";
+import {omit, children as resolveChildren, createMemo} from "solid-js";
+import { Dynamic, type JSX} from "@solidjs/web";
 import clsx from "clsx";
-import { createMemo, omit, children as resolveChildren } from "solid-js";
-import type { Layout } from "../../lib/layouts";
 import { twMerge } from "../../lib/twMerge";
+import type { UIBaseProps } from "../vocabulary";
 import type { ResponsiveProp } from "../types";
 import { mapResponsiveProp } from "../utils";
-import type { UIBaseProps } from "../vocabulary";
-import { CLASSES, type componentRecipe } from "./Flex.recipe";
+import { CLASSES } from "./Flex.recipe";
+import type { Layout } from "../../lib/layouts";
+import { componentRecipe } from "./Flex.recipe";
 
 export type FlexProps = UIBaseProps &
   Omit<JSX.HTMLAttributes<HTMLElement>, "ref"> & {

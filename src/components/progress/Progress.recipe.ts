@@ -25,7 +25,4 @@ export const CLASSES = {
     disabled: "progress--disabled",
   },
 } as const;
-export const componentRecipe = recipe({
-  component: "progress",
-  slots: { root: {} },
-});
+export const componentRecipe = recipe({component:"progress",slots:{"root":{},},});

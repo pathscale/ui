@@ -1,31 +1,22 @@
+import {omit} from "solid-js";
 import type { JSX } from "@solidjs/web";
-import { clsx } from "clsx";
-import { omit } from "solid-js";
 import { twMerge } from "../../lib/twMerge";
+import { clsx } from "clsx";
 
 import type { UIBaseProps } from "../vocabulary";
 import "./GlowCard.css";
+import { CLASSES, componentRecipe } from "./GlowCard.recipe";
 import type { Layout } from "../../lib/layouts";
-import { CLASSES, type componentRecipe } from "./GlowCard.recipe";
 
-export type GlowCardProps = UIBaseProps & JSX.HTMLAttributes<HTMLDivElement>;
+export type GlowCardProps = UIBaseProps &
+  JSX.HTMLAttributes<HTMLDivElement>;
 
 const GlowCard: Layout<typeof componentRecipe, GlowCardProps> = () => {
-  const others = omit(
-    props,
-    "children",
-    "class",
-    "dataTheme",
-    "onMouseMove",
-    "style",
-  );
+  const others = omit(props, "children", "class", "dataTheme", "onMouseMove", "style");
 
   const handleMouseMove: JSX.EventHandler<HTMLDivElement, MouseEvent> = (e) => {
     const rect = e.currentTarget.getBoundingClientRect();
-    e.currentTarget.style.setProperty(
-      "--mouse-x",
-      `${e.clientX - rect.left}px`,
-    );
+    e.currentTarget.style.setProperty("--mouse-x", `${e.clientX - rect.left}px`);
     e.currentTarget.style.setProperty("--mouse-y", `${e.clientY - rect.top}px`);
 
     if (Array.isArray(props.onMouseMove)) {
@@ -40,7 +31,9 @@ const GlowCard: Layout<typeof componentRecipe, GlowCardProps> = () => {
     <div
       {...others}
       data-theme={props.dataTheme}
-      class={twMerge(clsx(CLASSES.base, CLASSES.isolate, props.class))}
+      class={twMerge(
+        clsx(CLASSES.base, CLASSES.isolate, props.class),
+      )}
       style={props.style}
       onMouseMove={handleMouseMove}
       onMouseLeave={(e) => {

@@ -1,19 +1,11 @@
 import "./Avatar.css";
 import type { JSX } from "@solidjs/web";
-import {
-  type Component,
-  createContext,
-  createSignal,
-  omit,
-  onSettled,
-  type ParentComponent,
-  Show,
-  useContext,
-} from "solid-js";
-import type { Layout } from "../../lib/layouts";
+import {createContext, createSignal, omit, useContext, Show, onSettled, type Component, type ParentComponent} from "solid-js";
 import { twMerge } from "../../lib/twMerge";
-import type { Flavor, UIBaseProps } from "../vocabulary";
-import { CLASSES, type componentRecipe } from "./Avatar.recipe";
+import type { UIBaseProps, Flavor } from "../vocabulary";
+import { CLASSES } from "./Avatar.recipe";
+import type { Layout } from "../../lib/layouts";
+import { componentRecipe } from "./Avatar.recipe";
 
 /* -------------------------------------------------------------------------------------------------
  * Avatar Context
@@ -33,18 +25,14 @@ const AvatarContext = createContext<AvatarContextValue | null>(null);
 
 const useAvatarContext = () => {
   const ctx = useContext(AvatarContext);
-  if (!ctx)
-    throw new Error("Avatar compound components must be used within <Avatar>");
+  if (!ctx) throw new Error("Avatar compound components must be used within <Avatar>");
   return ctx;
 };
 
 /* -------------------------------------------------------------------------------------------------
  * Types
  * -----------------------------------------------------------------------------------------------*/
-export type AvatarRootProps = Omit<
-  JSX.HTMLAttributes<HTMLSpanElement>,
-  "children"
-> &
+export type AvatarRootProps = Omit<JSX.HTMLAttributes<HTMLSpanElement>, "children"> &
   UIBaseProps & {
     children: JSX.Element;
     size?: AvatarSize;
@@ -52,16 +40,10 @@ export type AvatarRootProps = Omit<
     variant?: AvatarVariant;
   };
 
-export type AvatarImageProps = Omit<
-  JSX.ImgHTMLAttributes<HTMLImageElement>,
-  "children"
-> &
+export type AvatarImageProps = Omit<JSX.ImgHTMLAttributes<HTMLImageElement>, "children"> &
   UIBaseProps;
 
-export type AvatarFallbackProps = Omit<
-  JSX.HTMLAttributes<HTMLSpanElement>,
-  "children"
-> &
+export type AvatarFallbackProps = Omit<JSX.HTMLAttributes<HTMLSpanElement>, "children"> &
   UIBaseProps & {
     children?: JSX.Element;
     delayMs?: number;
@@ -99,14 +81,12 @@ const AvatarRoot: Layout<typeof componentRecipe, AvatarRootProps> = () => {
     <AvatarContext value={ctx}>
       <span
         {...others}
-        {...{
-          class: twMerge(
-            CLASSES.base,
-            CLASSES.size[size()],
-            CLASSES.variant[variant()],
-            props.class,
-          ),
-        }}
+        {...{ class: twMerge(
+          CLASSES.base,
+          CLASSES.size[size()],
+          CLASSES.variant[variant()],
+          props.class,
+        ) }}
         data-slot="avatar-root"
         data-theme={props.dataTheme}
         style={props.style}
@@ -121,16 +101,7 @@ const AvatarRoot: Layout<typeof componentRecipe, AvatarRootProps> = () => {
  * Avatar Image
  * -----------------------------------------------------------------------------------------------*/
 const AvatarImage: Layout<typeof componentRecipe, AvatarImageProps> = () => {
-  const others = omit(
-    props,
-    "class",
-    "dataTheme",
-    "style",
-    "src",
-    "alt",
-    "onLoad",
-    "onError",
-  );
+  const others = omit(props, "class", "dataTheme", "style", "src", "alt", "onLoad", "onError");
 
   const ctx = useAvatarContext();
 
@@ -141,8 +112,7 @@ const AvatarImage: Layout<typeof componentRecipe, AvatarImageProps> = () => {
 
   const handleError = (e: Event & { currentTarget: HTMLImageElement }) => {
     ctx.setImageLoaded(false);
-    if (typeof props.onError === "function")
-      (props.onError as (e: Event) => void)(e);
+    if (typeof props.onError === "function") (props.onError as (e: Event) => void)(e);
   };
 
   return (
@@ -162,18 +132,8 @@ const AvatarImage: Layout<typeof componentRecipe, AvatarImageProps> = () => {
 /* -------------------------------------------------------------------------------------------------
  * Avatar Fallback
  * -----------------------------------------------------------------------------------------------*/
-const AvatarFallback: Layout<
-  typeof componentRecipe,
-  AvatarFallbackProps
-> = () => {
-  const others = omit(
-    props,
-    "children",
-    "class",
-    "dataTheme",
-    "style",
-    "delayMs",
-  );
+const AvatarFallback: Layout<typeof componentRecipe, AvatarFallbackProps> = () => {
+  const others = omit(props, "children", "class", "dataTheme", "style", "delayMs");
 
   const ctx = useAvatarContext();
   const [showFallback, setShowFallback] = createSignal(!props.delayMs);
@@ -189,14 +149,11 @@ const AvatarFallback: Layout<
     <Show when={showFallback() && !ctx.imageLoaded()}>
       <span
         {...others}
-        {...{
-          class: twMerge(
-            CLASSES.slot.fallback,
-            CLASSES.flavor[ctx.flavor() as keyof typeof CLASSES.flavor] ??
-              `avatar__fallback--flavor-${ctx.flavor()}`,
-            props.class,
-          ),
-        }}
+        {...{ class: twMerge(
+          CLASSES.slot.fallback,
+          (CLASSES.flavor[ctx.flavor() as keyof typeof CLASSES.flavor] ?? `avatar__fallback--flavor-${ctx.flavor()}`),
+          props.class,
+        ) }}
         data-slot="avatar-fallback"
         data-theme={props.dataTheme}
         style={props.style}
@@ -217,4 +174,4 @@ const Avatar = Object.assign(AvatarRoot, {
 });
 
 export default Avatar;
-export { AvatarFallback, AvatarImage, AvatarRoot };
+export { AvatarRoot, AvatarImage, AvatarFallback };

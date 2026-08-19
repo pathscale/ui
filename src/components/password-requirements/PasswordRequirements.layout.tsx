@@ -1,19 +1,16 @@
 import "./PasswordRequirements.css";
 import type { JSX } from "@solidjs/web";
-import { For, Show } from "solid-js";
-import type { Layout } from "../../lib/layouts";
-import type { PasswordRuleResult } from "../../passwordRules";
+import {For, Show} from "solid-js";
 import Icon from "../icon";
 import type { UIBaseProps } from "../vocabulary";
-import type { passwordRequirements } from "./PasswordRequirements.recipe";
+import type { PasswordRuleResult } from "../../passwordRules";
+import type { Layout } from "../../lib/layouts";
+import { passwordRequirements } from "./PasswordRequirements.recipe";
 
 /* -------------------------------------------------------------------------------------------------
  * Types
  * -----------------------------------------------------------------------------------------------*/
-export type PasswordRequirementsProps = Omit<
-  JSX.HTMLAttributes<HTMLDivElement>,
-  "children"
-> &
+export type PasswordRequirementsProps = Omit<JSX.HTMLAttributes<HTMLDivElement>, "children"> &
   UIBaseProps & {
     title?: JSX.Element;
     results: PasswordRuleResult[];
@@ -44,21 +41,14 @@ export const PasswordRequirementsLayout: Layout<
             data-rule={rule.key}
             data-passed={rule.passed ? "true" : "false"}
           >
-            <span
-              {...slot.icon}
-              aria-hidden="true"
-            >
+            <span {...slot.icon} aria-hidden="true">
               <Show
                 when={rule.passed ? local.metIcon : local.unmetIcon}
                 fallback={
                   <Icon
                     width={14}
                     height={14}
-                    src={
-                      rule.passed
-                        ? "icon-[lucide--check]"
-                        : "icon-[lucide--minus]"
-                    }
+                    src={rule.passed ? "icon-[lucide--check]" : "icon-[lucide--minus]"}
                   />
                 }
               >

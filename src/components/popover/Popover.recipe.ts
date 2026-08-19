@@ -9,16 +9,4 @@ export const CLASSES = {
     heading: "popover__heading",
   },
 } as const;
-export const componentRecipe = recipe({
-  component: "popover",
-  slots: {
-    "popover-arrow": {},
-    "popover-arrow-svg": {},
-    "popover-content": {},
-    "popover-dialog": {},
-    "popover-heading": {},
-    "popover-root": {},
-    "popover-trigger": {},
-    root: {},
-  },
-});
+export const componentRecipe = recipe({component:"popover",slots:{"popover-arrow":{},"popover-arrow-svg":{},"popover-content":{},"popover-dialog":{},"popover-heading":{},"popover-root":{},"popover-trigger":{},"root":{},},});

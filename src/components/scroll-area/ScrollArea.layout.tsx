@@ -1,15 +1,16 @@
 import "./ScrollArea.css";
 import type { JSX } from "@solidjs/web";
-import { createMemo, createTrackedEffect, omit } from "solid-js";
-import type { Layout } from "../../lib/layouts";
+import {createMemo, createTrackedEffect, omit} from "solid-js";
 import { twMerge } from "../../lib/twMerge";
 import type { UIBaseProps } from "../vocabulary";
-import { CLASSES, type componentRecipe } from "./ScrollArea.recipe";
+import { CLASSES } from "./ScrollArea.recipe";
 import {
   applyControlledScrollAreaVisibility,
   clearScrollAreaDataAttributes,
   useScrollArea,
 } from "./useScrollArea";
+import type { Layout } from "../../lib/layouts";
+import { componentRecipe } from "./ScrollArea.recipe";
 
 export type ScrollAreaVisibility =
   | "auto"
@@ -130,3 +131,4 @@ const ScrollArea: Layout<typeof componentRecipe, ScrollAreaProps> = () => {
 };
 
 export default ScrollArea;
+

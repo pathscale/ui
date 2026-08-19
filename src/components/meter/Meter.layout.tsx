@@ -1,25 +1,15 @@
 import "./Meter.css";
 import type { JSX } from "@solidjs/web";
-import {
-  type Accessor,
-  type Component,
-  createContext,
-  createMemo,
-  omit,
-  useContext,
-} from "solid-js";
-import type { Layout } from "../../lib/layouts";
+import {createContext, createMemo, omit, useContext, type Accessor, type Component} from "solid-js";
 import { twMerge } from "../../lib/twMerge";
-import type { Flavor, State, UIBaseProps } from "../vocabulary";
-import { CLASSES, type componentRecipe } from "./Meter.recipe";
+
+import type { UIBaseProps, Flavor, State } from "../vocabulary";
+import { CLASSES } from "./Meter.recipe";
+import type { Layout } from "../../lib/layouts";
+import { componentRecipe } from "./Meter.recipe";
 
 export type MeterSize = "sm" | "md" | "lg";
-export type MeterColor =
-  | "default"
-  | "accent"
-  | "success"
-  | "warning"
-  | "danger";
+export type MeterColor = "default" | "accent" | "success" | "warning" | "danger";
 
 export type MeterRenderState = {
   value: number;
@@ -43,14 +33,10 @@ export type MeterRootProps = UIBaseProps &
     size?: MeterSize;
     flavor?: Flavor;
     formatOptions?: Intl.NumberFormatOptions;
-    formatValue?: (
-      value: number,
-      state: Omit<MeterRenderState, "valueText">,
-    ) => string;
+    formatValue?: (value: number, state: Omit<MeterRenderState, "valueText">) => string;
   };
 
-export type MeterOutputProps = UIBaseProps &
-  JSX.HTMLAttributes<HTMLSpanElement>;
+export type MeterOutputProps = UIBaseProps & JSX.HTMLAttributes<HTMLSpanElement>;
 export type MeterTrackProps = UIBaseProps & JSX.HTMLAttributes<HTMLDivElement>;
 export type MeterFillProps = UIBaseProps & JSX.HTMLAttributes<HTMLDivElement>;
 
@@ -81,8 +67,7 @@ const useMeterContext = (): MeterContextValue => {
   return context;
 };
 
-const clamp = (value: number, min: number, max: number): number =>
-  Math.min(Math.max(value, min), max);
+const clamp = (value: number, min: number, max: number): number => Math.min(Math.max(value, min), max);
 
 const MeterRoot: Layout<typeof componentRecipe, MeterRootProps> = () => {
   const others = omit(
@@ -111,9 +96,7 @@ const MeterRoot: Layout<typeof componentRecipe, MeterRootProps> = () => {
     return resolvedMax > resolvedMin ? resolvedMax : resolvedMin + 1;
   });
 
-  const clampedValue = createMemo(() =>
-    clamp(props.value ?? minValue(), minValue(), maxValue()),
-  );
+  const clampedValue = createMemo(() => clamp(props.value ?? minValue(), minValue(), maxValue()));
 
   const percentage = createMemo(
     () => ((clampedValue() - minValue()) / (maxValue() - minValue())) * 100,
@@ -134,12 +117,12 @@ const MeterRoot: Layout<typeof componentRecipe, MeterRootProps> = () => {
       minValue: minValue(),
       maxValue: maxValue(),
       percentage: percentage(),
-      isDisabled: Boolean(props.state === "disabled"),
+      isDisabled: Boolean((props.state === "disabled")),
     };
 
     const valueText = props.formatValue
       ? props.formatValue(base.value, base)
-      : (formatter()?.format(base.value) ?? `${Math.round(base.percentage)}%`);
+      : formatter()?.format(base.value) ?? `${Math.round(base.percentage)}%`;
 
     return {
       ...base,
@@ -151,10 +134,8 @@ const MeterRoot: Layout<typeof componentRecipe, MeterRootProps> = () => {
     twMerge(
       CLASSES.base,
       CLASSES.size[props.size ?? "md"],
-      CLASSES.flavor[
-        (props.flavor ?? "accent") as keyof typeof CLASSES.flavor
-      ] ?? `meter--flavor-${props.flavor ?? "accent"}`,
-      props.state === "disabled" && CLASSES.state.disabled,
+      (CLASSES.flavor[(props.flavor ?? "accent") as keyof typeof CLASSES.flavor] ?? `meter--flavor-${props.flavor ?? "accent"}`),
+      (props.state === "disabled") && CLASSES.state.disabled,
       props.class,
     ),
   );
@@ -168,8 +149,8 @@ const MeterRoot: Layout<typeof componentRecipe, MeterRootProps> = () => {
         aria-valuemax={maxValue()}
         aria-valuenow={state().value}
         aria-valuetext={state().valueText}
-        aria-disabled={props.state === "disabled" ? "true" : undefined}
-        data-disabled={props.state === "disabled" ? "true" : undefined}
+        aria-disabled={(props.state === "disabled") ? "true" : undefined}
+        data-disabled={(props.state === "disabled") ? "true" : undefined}
         data-slot="meter"
         data-theme={props.dataTheme}
         data-low-value={props.lowValue}
@@ -178,9 +159,7 @@ const MeterRoot: Layout<typeof componentRecipe, MeterRootProps> = () => {
         style={props.style}
         {...{ class: rootClasses() }}
       >
-        {typeof props.children === "function"
-          ? props.children(state())
-          : props.children}
+        {typeof props.children === "function" ? props.children(state()) : props.children}
       </div>
     </MeterContext>
   );
@@ -255,5 +234,6 @@ const Meter = Object.assign(MeterRoot, {
 });
 
 export default Meter;
+export { Meter, MeterRoot, MeterOutput, MeterTrack, MeterFill };
 export type { MeterRootProps as MeterProps };
-export { Meter, MeterFill, MeterOutput, MeterRoot, MeterTrack };
+

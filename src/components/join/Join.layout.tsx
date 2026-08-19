@@ -1,10 +1,11 @@
+import {omit, createMemo, children as resolveChildren} from "solid-js";
 import type { JSX } from "@solidjs/web";
 import { clsx } from "clsx";
-import { createMemo, omit, children as resolveChildren } from "solid-js";
-import type { Layout } from "../../lib/layouts";
 import { twMerge } from "../../lib/twMerge";
 import type { UIBaseProps } from "../vocabulary";
-import { CLASSES, type componentRecipe } from "./Join.recipe";
+import { CLASSES } from "./Join.recipe";
+import type { Layout } from "../../lib/layouts";
+import { componentRecipe } from "./Join.recipe";
 
 export type JoinProps = UIBaseProps &
   JSX.HTMLAttributes<HTMLDivElement> & {

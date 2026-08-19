@@ -1,33 +1,28 @@
 import "./MetalBorder.css";
 import type { JSX } from "@solidjs/web";
-import {
-  createSignal,
-  createTrackedEffect,
-  omit,
-  onCleanup,
-  onSettled,
-} from "solid-js";
-import type { Layout } from "../../lib/layouts";
+import {createSignal, createTrackedEffect, onCleanup, onSettled, omit} from "solid-js";
 import { twMerge } from "../../lib/twMerge";
+
 import { prefersReducedMotion } from "../../motion/reduced-motion";
 import type { UIBaseProps } from "../vocabulary";
+import { CLASSES, componentRecipe } from "./MetalBorder.recipe";
+import type { Layout } from "../../lib/layouts";
 import {
   createInstance,
   destroyInstance,
-  type GlowHandles,
   injectGlow,
-  type MetalFxInstance,
-  type PresetName,
-  type PresetTheme,
   registerGlowInstance,
   resizeGlow,
   setGlowCallback,
   setInstanceVisible,
+  type GlowHandles,
+  type MetalFxInstance,
+  type PresetName,
+  type PresetTheme,
   unregisterGlowInstance,
   updateGlow,
   updateInstance,
 } from "./engine";
-import { CLASSES, type componentRecipe } from "./MetalBorder.recipe";
 
 export type MetalBorderPreset = PresetName;
 export type MetalBorderKind = "pill" | "circle";
@@ -53,8 +48,7 @@ const DEFAULT_KIND: MetalBorderKind = "pill";
 const DEFAULT_THEME: MetalBorderTheme = "auto";
 
 const clampStrength = (value?: number) => {
-  if (typeof value !== "number" || Number.isNaN(value))
-    return DEFAULT_STRENGTH / 100;
+  if (typeof value !== "number" || Number.isNaN(value)) return DEFAULT_STRENGTH / 100;
   return Math.min(100, Math.max(0, value)) / 100;
 };
 
@@ -88,17 +82,16 @@ const resolveThemeValue = (
   dataTheme: string | undefined,
   host: HTMLDivElement | undefined,
 ) => {
-  if (explicitTheme === "dark" || explicitTheme === "light")
-    return explicitTheme;
+  if (explicitTheme === "dark" || explicitTheme === "light") return explicitTheme;
   if (dataTheme === "dark" || dataTheme === "light") return dataTheme;
 
-  const themeRoot = host?.closest("[data-theme]") ?? document.documentElement;
+  const themeRoot =
+    host?.closest("[data-theme]") ??
+    document.documentElement;
   const themeAttr = themeRoot?.getAttribute("data-theme")?.toLowerCase();
   if (themeAttr?.includes("light")) return "light";
   if (themeAttr?.includes("dark")) return "dark";
-  return window.matchMedia?.("(prefers-color-scheme: dark)")?.matches
-    ? "dark"
-    : "light";
+  return window.matchMedia?.("(prefers-color-scheme: dark)")?.matches ? "dark" : "light";
 };
 
 const getGlowOptions = (
@@ -115,10 +108,7 @@ const getGlowOptions = (
   };
 };
 
-const glowMap = new Map<
-  MetalFxInstance,
-  { handles: GlowHandles; theme: PresetTheme }
->();
+const glowMap = new Map<MetalFxInstance, { handles: GlowHandles; theme: PresetTheme }>();
 let glowCallbackSet = false;
 
 const ensureGlowCallback = () => {
@@ -126,14 +116,7 @@ const ensureGlowCallback = () => {
   glowCallbackSet = true;
   setGlowCallback((instance, nowMs) => {
     const entry = glowMap.get(instance);
-    if (entry)
-      updateGlow(
-        entry.handles,
-        instance,
-        nowMs,
-        instance.opacityMul,
-        entry.theme,
-      );
+    if (entry) updateGlow(entry.handles, instance, nowMs, instance.opacityMul, entry.theme);
   });
 };
 
@@ -200,10 +183,7 @@ const MetalBorder: Layout<typeof componentRecipe, MetalBorderProps> = () => {
     if (!instance || !hostRef) return;
     updateInstance(instance, {
       cssWidth: Math.max(1, Math.round(hostRef.getBoundingClientRect().width)),
-      cssHeight: Math.max(
-        1,
-        Math.round(hostRef.getBoundingClientRect().height),
-      ),
+      cssHeight: Math.max(1, Math.round(hostRef.getBoundingClientRect().height)),
       cornerRadius: readCornerRadius(),
     });
 
@@ -243,16 +223,14 @@ const MetalBorder: Layout<typeof componentRecipe, MetalBorderProps> = () => {
     setPrefersReduced(prefersReducedMotion());
     syncResolvedTheme();
 
-    mediaQueryList =
-      window.matchMedia?.("(prefers-reduced-motion: reduce)") ?? null;
+    mediaQueryList = window.matchMedia?.("(prefers-reduced-motion: reduce)") ?? null;
     const handleMotionChange = () => {
       setPrefersReduced(prefersReducedMotion());
     };
     mediaQueryList?.addEventListener?.("change", handleMotionChange);
 
     if (hostRef) {
-      const themeRoot =
-        hostRef.closest("[data-theme]") ?? document.documentElement;
+      const themeRoot = hostRef.closest("[data-theme]") ?? document.documentElement;
       mutationObserver = new MutationObserver(() => {
         syncResolvedTheme();
       });
@@ -278,14 +256,8 @@ const MetalBorder: Layout<typeof componentRecipe, MetalBorderProps> = () => {
     try {
       instance = createInstance({
         hostCanvas: canvasRef,
-        cssWidth: Math.max(
-          1,
-          Math.round(hostRef.getBoundingClientRect().width),
-        ),
-        cssHeight: Math.max(
-          1,
-          Math.round(hostRef.getBoundingClientRect().height),
-        ),
+        cssWidth: Math.max(1, Math.round(hostRef.getBoundingClientRect().width)),
+        cssHeight: Math.max(1, Math.round(hostRef.getBoundingClientRect().height)),
         cornerRadius: readCornerRadius(),
         kind: kind(),
         opacityMul: strength(),
@@ -334,8 +306,7 @@ const MetalBorder: Layout<typeof componentRecipe, MetalBorderProps> = () => {
       presetName: preset(),
       presetTheme: resolvedTheme(),
     });
-    if (glowHandles)
-      glowMap.set(instance, { handles: glowHandles, theme: resolvedTheme() });
+    if (glowHandles) glowMap.set(instance, { handles: glowHandles, theme: resolvedTheme() });
   });
 
   createTrackedEffect(() => {
@@ -393,9 +364,7 @@ const MetalBorder: Layout<typeof componentRecipe, MetalBorderProps> = () => {
         // `style` is `CSSProperties | string` in 2.0, and a string cannot be
         // spread. A caller passing one keeps it; the custom property below is
         // what this component actually needs to set.
-        ...(typeof props.style === "object" && props.style !== null
-          ? props.style
-          : {}),
+        ...(typeof props.style === "object" && props.style !== null ? props.style : {}),
         "--metal-border-radius": radiusCssValue(),
       }}
     >

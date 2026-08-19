@@ -1,17 +1,16 @@
 import "./CloseButton.css";
 import type { JSX } from "@solidjs/web";
-import { type Component, omit } from "solid-js";
-import type { Layout } from "../../lib/layouts";
+import {omit, type Component} from "solid-js";
 import { twMerge } from "../../lib/twMerge";
-import type { State, UIBaseProps } from "../vocabulary";
-import { CLASSES, type componentRecipe } from "./CloseButton.recipe";
+
+import type { UIBaseProps, State } from "../vocabulary";
+import { CLASSES } from "./CloseButton.recipe";
+import type { Layout } from "../../lib/layouts";
+import { componentRecipe } from "./CloseButton.recipe";
 
 export type CloseButtonVariant = "default";
 
-export type CloseButtonProps = Omit<
-  JSX.ButtonHTMLAttributes<HTMLButtonElement>,
-  "disabled"
-> &
+export type CloseButtonProps = Omit<JSX.ButtonHTMLAttributes<HTMLButtonElement>, "disabled"> &
   UIBaseProps & {
     variant?: CloseButtonVariant;
     state?: State;
@@ -37,17 +36,18 @@ const CloseButton: Layout<typeof componentRecipe, CloseButtonProps> = () => {
   );
 
   const variant = () => props.variant ?? "default";
-  const disabled = () =>
-    Boolean(props.state === "disabled") || Boolean(props.isPending);
+  const disabled = () => Boolean((props.state === "disabled")) || Boolean(props.isPending);
 
   return (
     <button
       {...others}
       type={props.type ?? "button"}
       aria-label={local["aria-label"] ?? "Close"}
-      {...{
-        class: twMerge(CLASSES.base, CLASSES.variant[variant()], props.class),
-      }}
+      {...{ class: twMerge(
+        CLASSES.base,
+        CLASSES.variant[variant()],
+        props.class,
+      ) }}
       data-slot="close-button"
       data-pending={props.isPending ? "true" : "false"}
       data-theme={props.dataTheme}

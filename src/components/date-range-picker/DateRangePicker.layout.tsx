@@ -1,24 +1,20 @@
 import "./DateRangePicker.css";
 import type { JSX } from "@solidjs/web";
+import {Show, createMemo, createTrackedEffect, createUniqueId, omit} from "solid-js";
+import { twMerge } from "../../lib/twMerge";
+
 import {
-  createMemo,
-  createTrackedEffect,
-  createUniqueId,
-  omit,
-  Show,
-} from "solid-js";
-import {
-  type ControlledDateRangeValue,
   formatDate,
   toISODate,
   usePickerOpenState,
   useRangeSelection,
+  type ControlledDateRangeValue,
 } from "../../hooks/date";
-import type { Layout } from "../../lib/layouts";
-import { twMerge } from "../../lib/twMerge";
 import Calendar, { type CalendarWeekdayFormat } from "../calendar";
-import type { State, UIBaseProps } from "../vocabulary";
-import { CLASSES, type componentRecipe } from "./DateRangePicker.recipe";
+import type { UIBaseProps, State } from "../vocabulary";
+import { CLASSES } from "./DateRangePicker.recipe";
+import type { Layout } from "../../lib/layouts";
+import { componentRecipe } from "./DateRangePicker.recipe";
 
 export type DateRangeValue = ControlledDateRangeValue;
 
@@ -49,10 +45,7 @@ export type DateRangePickerProps = Omit<
   UIBaseProps &
   DateRangePickerBaseProps;
 
-const DateRangePicker: Layout<
-  typeof componentRecipe,
-  DateRangePickerProps
-> = () => {
+const DateRangePicker: Layout<typeof componentRecipe, DateRangePickerProps> = () => {
   const others = omit(
     props,
     "class",
@@ -78,9 +71,7 @@ const DateRangePicker: Layout<
     "disabled",
   );
 
-  const isDisabled = createMemo(
-    () => Boolean(props.state === "disabled") || Boolean(props.disabled),
-  );
+  const isDisabled = createMemo(() => Boolean((props.state === "disabled")) || Boolean(props.disabled));
 
   const rangeSelection = useRangeSelection({
     value: () => props.value,
@@ -137,14 +128,12 @@ const DateRangePicker: Layout<
           props.ref(node);
         }
       }}
-      {...{
-        class: twMerge(
-          CLASSES.Root.base,
-          openState.isOpen() && CLASSES.Root.flag.open,
-          isDisabled() && CLASSES.Root.flag.disabled,
-          props.class,
-        ),
-      }}
+      {...{ class: twMerge(
+        CLASSES.Root.base,
+        openState.isOpen() && CLASSES.Root.flag.open,
+        isDisabled() && CLASSES.Root.flag.disabled,
+        props.class,
+      ) }}
       data-slot="date-range-picker"
       data-open={openState.isOpen() ? "true" : "false"}
       data-disabled={isDisabled() ? "true" : "false"}
@@ -181,53 +170,37 @@ const DateRangePicker: Layout<
         disabled={isDisabled()}
         onClick={() => openState.toggleOpen()}
         onKeyDown={(event) => {
-          if (
-            event.key === "ArrowDown" ||
-            event.key === "Enter" ||
-            event.key === " "
-          ) {
+          if (event.key === "ArrowDown" || event.key === "Enter" || event.key === " ") {
             event.preventDefault();
             openState.setOpen(true);
           }
         }}
       >
         <span
-          {...{
-            class: twMerge(
-              CLASSES.TriggerSegment.base,
-              !startValue() && CLASSES.TriggerSegment.flag.placeholder,
-            ),
-          }}
+          {...{ class: twMerge(
+            CLASSES.TriggerSegment.base,
+            !startValue() && CLASSES.TriggerSegment.flag.placeholder,
+          ) }}
           data-slot="date-range-picker-start"
         >
           {startDisplay()}
         </span>
 
-        <span
-          {...{ class: CLASSES.RangeSeparator.base }}
-          data-slot="date-range-picker-range-separator"
-          aria-hidden="true"
-        >
+        <span {...{ class: CLASSES.RangeSeparator.base }} data-slot="date-range-picker-range-separator" aria-hidden="true">
           -
         </span>
 
         <span
-          {...{
-            class: twMerge(
-              CLASSES.TriggerSegment.base,
-              !endValue() && CLASSES.TriggerSegment.flag.placeholder,
-            ),
-          }}
+          {...{ class: twMerge(
+            CLASSES.TriggerSegment.base,
+            !endValue() && CLASSES.TriggerSegment.flag.placeholder,
+          ) }}
           data-slot="date-range-picker-end"
         >
           {endDisplay()}
         </span>
 
-        <span
-          {...{ class: CLASSES.TriggerIndicator.base }}
-          data-slot="date-range-picker-trigger-indicator"
-          aria-hidden="true"
-        >
+        <span {...{ class: CLASSES.TriggerIndicator.base }} data-slot="date-range-picker-trigger-indicator" aria-hidden="true">
           <svg
             {...{ class: CLASSES.TriggerIcon.base }}
             data-slot="date-range-picker-trigger-icon"
@@ -239,32 +212,10 @@ const DateRangePicker: Layout<
             stroke-linejoin="round"
             aria-hidden="true"
           >
-            <rect
-              x="3"
-              y="4"
-              width="18"
-              height="18"
-              rx="2"
-              ry="2"
-            />
-            <line
-              x1="16"
-              y1="2"
-              x2="16"
-              y2="6"
-            />
-            <line
-              x1="8"
-              y1="2"
-              x2="8"
-              y2="6"
-            />
-            <line
-              x1="3"
-              y1="10"
-              x2="21"
-              y2="10"
-            />
+            <rect x="3" y="4" width="18" height="18" rx="2" ry="2" />
+            <line x1="16" y1="2" x2="16" y2="6" />
+            <line x1="8" y1="2" x2="8" y2="6" />
+            <line x1="3" y1="10" x2="21" y2="10" />
           </svg>
         </span>
       </button>

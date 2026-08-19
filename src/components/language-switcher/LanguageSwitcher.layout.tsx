@@ -1,12 +1,13 @@
 import "./LanguageSwitcher.css";
-import { type Component, For, omit, Show } from "solid-js";
-import type { Layout } from "../../lib/layouts";
+import { type Component, For, Show, omit } from "solid-js";
 import { twMerge } from "../../lib/twMerge";
 import Dropdown, { type DropdownAlign } from "../dropdown";
 import Icon from "../icon";
 import type { UIBaseProps } from "../vocabulary";
 import type { I18nStore } from "./createI18n";
-import { CLASSES, type componentRecipe } from "./LanguageSwitcher.recipe";
+import { CLASSES } from "./LanguageSwitcher.recipe";
+import type { Layout } from "../../lib/layouts";
+import { componentRecipe } from "./LanguageSwitcher.recipe";
 
 export interface LanguageSwitcherProps extends UIBaseProps {
   /**
@@ -40,10 +41,7 @@ export interface LanguageSwitcherProps extends UIBaseProps {
   onLanguageChange?: (lang: string) => void;
 }
 
-const LanguageSwitcher: Layout<
-  typeof componentRecipe,
-  LanguageSwitcherProps
-> = () => {
+const LanguageSwitcher: Layout<typeof componentRecipe, LanguageSwitcherProps> = () => {
   const others = omit(
     props,
     "i18n",
@@ -91,10 +89,7 @@ const LanguageSwitcher: Layout<
             />
           }
         >
-          <span
-            {...{ class: CLASSES.locale }}
-            aria-hidden="true"
-          >
+          <span {...{ class: CLASSES.locale }} aria-hidden="true">
             {props.i18n.locale.toUpperCase()}
           </span>
         </Show>
@@ -109,12 +104,7 @@ const LanguageSwitcher: Layout<
           {(lang) => (
             <Dropdown.Item
               onClick={() => handleSelect(lang.code)}
-              {...{
-                class: twMerge(
-                  CLASSES.item,
-                  isSelected(lang.code) && CLASSES.itemSelected,
-                ),
-              }}
+              {...{ class: twMerge(CLASSES.item, isSelected(lang.code) && CLASSES.itemSelected) }}
               aria-current={isSelected(lang.code) ? "true" : undefined}
             >
               {lang.name}

@@ -40,7 +40,4 @@ export const CLASSES = {
     "bottom-left": "badge--bottom-left",
   },
 } as const;
-export const componentRecipe = recipe({
-  component: "badge",
-  slots: { badge: {}, "badge-anchor": {}, "badge-label": {}, root: {} },
-});
+export const componentRecipe = recipe({component:"badge",slots:{"badge":{},"badge-anchor":{},"badge-label":{},"root":{},},});

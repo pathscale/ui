@@ -44,11 +44,5 @@ export const skeleton = recipe({
       none: "skeleton--none",
     },
   },
-  defaults: {
-    shape: "line",
-    width: "full",
-    size: "md",
-    radius: "sm",
-    animation: "shimmer",
-  },
+  defaults: { shape: "line", width: "full", size: "md", radius: "sm", animation: "shimmer" },
 });

@@ -22,15 +22,4 @@ export const CLASSES = {
     title: "list-box-section__title",
   },
 } as const;
-export const componentRecipe = recipe({
-  component: "list-box",
-  slots: {
-    heading: {},
-    listbox: {},
-    "listbox-item": {},
-    "listbox-item-indicator": {},
-    "listbox-item-indicator--checkmark": {},
-    "listbox-section": {},
-    root: {},
-  },
-});
+export const componentRecipe = recipe({component:"list-box",slots:{"heading":{},"listbox":{},"listbox-item":{},"listbox-item-indicator":{},"listbox-item-indicator--checkmark":{},"listbox-section":{},"root":{},},});

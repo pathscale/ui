@@ -1,20 +1,12 @@
 import "./Input.css";
 import type { JSX } from "@solidjs/web";
-import {
-  type Accessor,
-  type Component,
-  createContext,
-  createUniqueId,
-  omit,
-  Show,
-  useContext,
-} from "solid-js";
-import type { Layout } from "../../lib/layouts";
+import {Show, createContext, createUniqueId, omit, useContext, type Accessor, type Component} from "solid-js";
 import { twMerge } from "../../lib/twMerge";
-import type { Issue, State } from "../vocabulary";
+import { CLASSES } from "./Input.recipe";
+import type { Layout } from "../../lib/layouts";
+import { componentRecipe } from "./Input.recipe";
+import type { State, Issue } from "../vocabulary";
 import { resolveState } from "../vocabulary";
-import { CLASSES, type componentRecipe } from "./Input.recipe";
-
 type InputSize = "sm" | "md" | "lg";
 
 type InputContextValue = {
@@ -65,9 +57,8 @@ const InputRoot: Layout<typeof componentRecipe, InputRootProps> = () => {
   const baseId = createUniqueId();
 
   const size = () => props.size ?? "md";
-  const isDisabled = () => Boolean(props.state === "disabled");
-  const isInvalid = () =>
-    Boolean(resolveState(props.state, props.issues) === "invalid");
+  const isDisabled = () => Boolean((props.state === "disabled"));
+  const isInvalid = () => Boolean((resolveState(props.state, props.issues) === "invalid"));
   const fullWidth = () => Boolean(props.fullWidth);
 
   return (
@@ -83,13 +74,11 @@ const InputRoot: Layout<typeof componentRecipe, InputRootProps> = () => {
     >
       <div
         {...others}
-        {...{
-          class: twMerge(
-            CLASSES.base,
-            fullWidth() && CLASSES.flag.fullWidthRoot,
-            props.class,
-          ),
-        }}
+        {...{ class: twMerge(
+          CLASSES.base,
+          fullWidth() && CLASSES.flag.fullWidthRoot,
+          props.class,
+        ) }}
         data-theme={props.dataTheme}
         data-slot="input-root"
       >
@@ -99,10 +88,7 @@ const InputRoot: Layout<typeof componentRecipe, InputRootProps> = () => {
   );
 };
 
-type InputFieldProps = Omit<
-  JSX.InputHTMLAttributes<HTMLInputElement>,
-  "size" | "children" | "disabled"
-> & {
+type InputFieldProps = Omit<JSX.InputHTMLAttributes<HTMLInputElement>, "size" | "children" | "disabled"> & {
   size?: InputSize;
   state?: State;
   disabled?: boolean;
@@ -131,18 +117,12 @@ const InputField: Layout<typeof componentRecipe, InputFieldProps> = () => {
   );
 
   const size = () => props.size ?? ctx?.size() ?? "md";
-  const isDisabled = () =>
-    Boolean(props.state === "disabled") ||
-    Boolean(props.disabled) ||
-    Boolean(ctx?.isDisabled());
+  const isDisabled = () => Boolean((props.state === "disabled")) || Boolean(props.disabled) || Boolean(ctx?.isDisabled());
   const isInvalid = () =>
-    Boolean(resolveState(props.state, props.issues) === "invalid") ||
-    Boolean(local["aria-invalid"]) ||
-    Boolean(ctx?.isInvalid());
+    Boolean((resolveState(props.state, props.issues) === "invalid")) || Boolean(local["aria-invalid"]) || Boolean(ctx?.isInvalid());
   const fullWidth = () => Boolean(props.fullWidth) || Boolean(ctx?.fullWidth());
   const inputId = () => props.id ?? ctx?.fieldId();
-  const ariaInvalid = () =>
-    local["aria-invalid"] ?? (isInvalid() ? true : undefined);
+  const ariaInvalid = () => local["aria-invalid"] ?? (isInvalid() ? true : undefined);
 
   const controlClasses = () =>
     twMerge(
@@ -191,7 +171,8 @@ const InputField: Layout<typeof componentRecipe, InputFieldProps> = () => {
   );
 };
 
-type InputLabelProps = JSX.LabelHTMLAttributes<HTMLLabelElement> & {};
+type InputLabelProps = JSX.LabelHTMLAttributes<HTMLLabelElement> & {
+};
 
 const InputLabel: Layout<typeof componentRecipe, InputLabelProps> = () => {
   const ctx = useContext(InputContext);
@@ -223,13 +204,11 @@ const InputHelper: Layout<typeof componentRecipe, InputHelperProps> = () => {
     <p
       {...others}
       id={props.id ?? ctx?.helperId()}
-      {...{
-        class: twMerge(
-          CLASSES.slot.helper,
-          invalid() && CLASSES.flag.helperInvalid,
-          props.class,
-        ),
-      }}
+      {...{ class: twMerge(
+        CLASSES.slot.helper,
+        invalid() && CLASSES.flag.helperInvalid,
+        props.class,
+      ) }}
       data-slot="input-helper"
     >
       {props.children}
@@ -263,12 +242,9 @@ const InputBase: Layout<typeof componentRecipe, InputProps> = () => {
   );
 
   const inputId = () => props.id ?? `${generatedId}-input`;
-  const isDisabled = () =>
-    Boolean(props.state === "disabled") || Boolean(props.disabled);
+  const isDisabled = () => Boolean((props.state === "disabled")) || Boolean(props.disabled);
   const isInvalid = () =>
-    Boolean(resolveState(props.state, props.issues) === "invalid") ||
-    Boolean(local["aria-invalid"]) ||
-    props.errorMessage != null;
+    Boolean((resolveState(props.state, props.issues) === "invalid")) || Boolean(local["aria-invalid"]) || props.errorMessage != null;
 
   const helperContent = () => props.errorMessage ?? props.helperText;
   const hasHelper = () => helperContent() != null;
@@ -297,10 +273,7 @@ const InputBase: Layout<typeof componentRecipe, InputProps> = () => {
           dataTheme={props.dataTheme}
         />
         <Show when={hasHelper()}>
-          <InputHelper
-            id={helperId()}
-            invalid={isInvalid()}
-          >
+          <InputHelper id={helperId()} invalid={isInvalid()}>
             {helperContent()}
           </InputHelper>
         </Show>
@@ -325,10 +298,10 @@ const Input = Object.assign(InputBase, {
 
 export default Input;
 export type {
-  InputFieldProps,
-  InputHelperProps,
-  InputLabelProps,
   InputProps,
-  InputRootProps,
   InputSize,
+  InputRootProps,
+  InputFieldProps,
+  InputLabelProps,
+  InputHelperProps,
 };

@@ -1,8 +1,8 @@
 import "./DataGrid.css";
 import type { JSX } from "@solidjs/web";
-import { For, omit, Show } from "solid-js";
-import type { Layout } from "../../lib/layouts";
+import {For, Show, omit} from "solid-js";
 import { twMerge } from "../../lib/twMerge";
+import type { Layout } from "../../lib/layouts";
 import Button from "../button";
 import Checkbox from "../checkbox";
 import {
@@ -31,7 +31,7 @@ import {
   readInputValue,
   searchPlaceholder,
 } from "./DataGrid.interactions";
-import { CLASSES, type componentRecipe } from "./DataGrid.recipe";
+import { CLASSES, componentRecipe } from "./DataGrid.recipe";
 
 export type DataGridBorders = "none" | "rows" | "cols" | "both";
 export type DataGridStriping = "none" | "rows" | "cols";

@@ -1,19 +1,16 @@
 import { omit, type ParentComponent } from "solid-js";
-import type { AnyFormApi } from "../../hooks/form/FormContext";
-import { useFormContext } from "../../hooks/form/FormContext";
-import type { Layout } from "../../lib/layouts";
-import type { ButtonProps } from "../button";
 import Button from "../button";
-import type { componentRecipe } from "./Form.recipe";
+import type { ButtonProps } from "../button";
+import { useFormContext } from "../../hooks/form/FormContext";
+import type { AnyFormApi } from "../../hooks/form/FormContext";
+import type { Layout } from "../../lib/layouts";
+import { componentRecipe } from "./Form.recipe";
 
 // ---------------------------------------------------------------------------
 // Types
 // ---------------------------------------------------------------------------
 
-export type FormSubmitButtonProps = Omit<
-  ButtonProps,
-  "type" | "isDisabled" | "isLoading"
-> & {
+export type FormSubmitButtonProps = Omit<ButtonProps, "type" | "isDisabled" | "isLoading"> & {
   /**
    * Escape hatch: explicit form override for Portal / out-of-tree usage.
    * When provided, the component does NOT read from context.
@@ -39,10 +36,7 @@ export type FormSubmitButtonProps = Omit<
  * </Form>
  * ```
  */
-const FormSubmitButton: Layout<
-  typeof componentRecipe,
-  FormSubmitButtonProps
-> = () => {
+const FormSubmitButton: Layout<typeof componentRecipe, FormSubmitButtonProps> = () => {
   const others = omit(props, "form", "children");
 
   const resolveForm = (): AnyFormApi => {
@@ -59,13 +53,7 @@ const FormSubmitButton: Layout<
     <Button
       {...others}
       type="submit"
-      state={
-        form.isSubmitting()
-          ? "loading"
-          : form.isValid()
-            ? "default"
-            : "disabled"
-      }
+      state={form.isSubmitting() ? "loading" : form.isValid() ? "default" : "disabled"}
     >
       {props.children}
     </Button>

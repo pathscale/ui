@@ -13,7 +13,4 @@ export const CLASSES = {
   },
 } as const;
 
-export const componentRecipe = recipe({
-  component: "scroll-area",
-  slots: { root: {} },
-});
+export const componentRecipe = recipe({component:"scroll-area",slots:{"root":{},},});

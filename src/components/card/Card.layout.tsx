@@ -1,18 +1,10 @@
 import "../_shared/material.css";
 import type { JSX } from "@solidjs/web";
 import "./Card.css";
-import { Show } from "solid-js";
+import {Show} from "solid-js";
+import type { Flavor, Material, Radius, Space, State, UIBaseProps, Variant } from "../vocabulary";
 import type { Layout } from "../../lib/layouts";
-import type {
-  Flavor,
-  Material,
-  Radius,
-  Space,
-  State,
-  UIBaseProps,
-  Variant,
-} from "../vocabulary";
-import type { card, cardBody, cardFooter, cardHeader } from "./Card.recipe";
+import { card, cardBody, cardFooter, cardHeader } from "./Card.recipe";
 
 /* -------------------------------------------------------------------------------------------------
  * Types
@@ -41,25 +33,20 @@ export type CardProps = Omit<JSX.HTMLAttributes<HTMLDivElement>, "children"> &
     children: JSX.Element;
   };
 
-export type CardSectionProps = Omit<
-  JSX.HTMLAttributes<HTMLDivElement>,
-  "children"
-> &
+export type CardSectionProps = Omit<JSX.HTMLAttributes<HTMLDivElement>, "children"> &
   UIBaseProps & { children: JSX.Element };
 
-export const CardHeaderLayout: Layout<
-  typeof cardHeader,
-  CardSectionProps
-> = () => <div {...slot.root}>{children}</div>;
+export const CardHeaderLayout: Layout<typeof cardHeader, CardSectionProps> = () => (
+  <div {...slot.root}>{children}</div>
+);
 
 export const CardBodyLayout: Layout<typeof cardBody, CardSectionProps> = () => (
   <div {...slot.root}>{children}</div>
 );
 
-export const CardFooterLayout: Layout<
-  typeof cardFooter,
-  CardSectionProps
-> = () => <div {...slot.root}>{children}</div>;
+export const CardFooterLayout: Layout<typeof cardFooter, CardSectionProps> = () => (
+  <div {...slot.root}>{children}</div>
+);
 
 /* -------------------------------------------------------------------------------------------------
  * Card
@@ -71,9 +58,7 @@ export const CardFooterLayout: Layout<
  * div that responds to click and nothing else is unreachable by keyboard.
  * -----------------------------------------------------------------------------------------------*/
 export const CardLayout: Layout<typeof card, CardProps> = () => {
-  const handleKeyDown: JSX.EventHandlerUnion<HTMLDivElement, KeyboardEvent> = (
-    event,
-  ) => {
+  const handleKeyDown: JSX.EventHandlerUnion<HTMLDivElement, KeyboardEvent> = (event) => {
     if (!local.isInteractive) return;
     if (event.key !== "Enter" && event.key !== " ") return;
     if (event.target !== event.currentTarget) return;
@@ -103,3 +88,4 @@ export const CardLayout: Layout<typeof card, CardProps> = () => {
     </div>
   );
 };
+

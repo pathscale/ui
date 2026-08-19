@@ -14,16 +14,4 @@ export const CLASSES = {
     disabled: "collapsible--disabled",
   },
 } as const;
-export const componentRecipe = recipe({
-  component: "collapsible",
-  slots: {
-    collapsible: {},
-    "collapsible-body": {},
-    "collapsible-body-inner": {},
-    "collapsible-content": {},
-    "collapsible-heading": {},
-    "collapsible-indicator": {},
-    "collapsible-trigger": {},
-    root: {},
-  },
-});
+export const componentRecipe = recipe({component:"collapsible",slots:{"collapsible":{},"collapsible-body":{},"collapsible-body-inner":{},"collapsible-content":{},"collapsible-heading":{},"collapsible-indicator":{},"collapsible-trigger":{},"root":{},},});

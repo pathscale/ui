@@ -1,16 +1,11 @@
+import {type Accessor, type Component, Show, createTrackedEffect, onCleanup, omit} from "solid-js";
 import type { JSX } from "@solidjs/web";
-import {
-  type Accessor,
-  type Component,
-  createTrackedEffect,
-  omit,
-  onCleanup,
-  Show,
-} from "solid-js";
-import type { Layout } from "../../lib/layouts";
 import { twMerge } from "../../lib/twMerge";
+
 import type { UIBaseProps } from "../vocabulary";
-import { CLASSES, type componentRecipe } from "./VideoPreview.recipe";
+import { CLASSES } from "./VideoPreview.recipe";
+import type { Layout } from "../../lib/layouts";
+import { componentRecipe } from "./VideoPreview.recipe";
 
 type VideoPreviewBaseProps = {
   /**
@@ -35,19 +30,8 @@ export type VideoPreviewProps = VideoPreviewBaseProps &
   UIBaseProps &
   Omit<JSX.VideoHTMLAttributes<HTMLVideoElement>, keyof VideoPreviewBaseProps>;
 
-export const VideoPreview: Layout<
-  typeof componentRecipe,
-  VideoPreviewProps
-> = () => {
-  const others = omit(
-    props,
-    "stream",
-    "muted",
-    "mirror",
-    "dataTheme",
-    "class",
-    "style",
-  );
+export const VideoPreview: Layout<typeof componentRecipe, VideoPreviewProps> = () => {
+  const others = omit(props, "stream", "muted", "mirror", "dataTheme", "class", "style");
 
   const muted = () => props.muted ?? true;
   const mirror = () => props.mirror ?? false;

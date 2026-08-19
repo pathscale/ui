@@ -1,14 +1,13 @@
+import {Show, type Component} from "solid-js";
 import type { JSX } from "@solidjs/web";
-import { type Component, Show } from "solid-js";
-import type { Layout } from "../../lib/layouts";
 import { twMerge } from "../../lib/twMerge";
-import type { componentRecipe } from "./Form.recipe";
+import type { Layout } from "../../lib/layouts";
+import { componentRecipe } from "./Form.recipe";
 
-export type FieldErrorMessageProps =
-  JSX.HTMLAttributes<HTMLParagraphElement> & {
-    /** Pre-normalized error string. Renders nothing when undefined or empty. */
-    message?: string;
-  };
+export type FieldErrorMessageProps = JSX.HTMLAttributes<HTMLParagraphElement> & {
+  /** Pre-normalized error string. Renders nothing when undefined or empty. */
+  message?: string;
+};
 
 /**
  * Displays a single field error string.
@@ -18,16 +17,16 @@ export type FieldErrorMessageProps =
  *
  * Hidden (returns null) when `message` is undefined or empty.
  */
-const FieldErrorMessage: Layout<
-  typeof componentRecipe,
-  FieldErrorMessageProps
-> = () => {
+const FieldErrorMessage: Layout<typeof componentRecipe, FieldErrorMessageProps> = () => {
   return (
     <Show when={props.message}>
       <p
         {...props}
         {...{
-          class: twMerge("text-xs text-error mt-0.5", props.class),
+          class: twMerge(
+            "text-xs text-error mt-0.5",
+            props.class,
+          ),
         }}
         data-slot="field-error-message"
         role="alert"

@@ -1,26 +1,15 @@
 import "./Select.css";
-import { type JSX, Portal } from "@solidjs/web";
-import {
-  type Accessor,
-  type Component,
-  createContext,
-  createMemo,
-  createSignal,
-  createTrackedEffect,
-  createUniqueId,
-  omit,
-  onCleanup,
-  onSettled,
-  useContext,
-} from "solid-js";
-import type { Layout } from "../../lib/layouts";
+import {createContext, createMemo, createSignal, createTrackedEffect, createUniqueId, onCleanup, onSettled, omit, useContext, type Accessor, type Component} from "solid-js";
+import { Portal, type JSX} from "@solidjs/web";
 import { twMerge } from "../../lib/twMerge";
 import {
   createOverlayPosition,
   type OverlayPlacement,
 } from "../_shared/overlayPosition";
-import type { State, UIBaseProps } from "../vocabulary";
-import { CLASSES, type componentRecipe } from "./Select.recipe";
+import type { UIBaseProps, State } from "../vocabulary";
+import { CLASSES } from "./Select.recipe";
+import type { Layout } from "../../lib/layouts";
+import { componentRecipe } from "./Select.recipe";
 
 type SelectKey = string | number;
 export type SelectValueType = SelectKey | SelectKey[] | null;
@@ -82,10 +71,7 @@ const invokeEventHandler = (handler: unknown, event: Event) => {
 
 const isIterableValue = (value: unknown): value is Iterable<SelectKey> => {
   if (value == null || typeof value === "string") return false;
-  return (
-    typeof (value as { [Symbol.iterator]?: unknown })[Symbol.iterator] ===
-    "function"
-  );
+  return typeof (value as { [Symbol.iterator]?: unknown })[Symbol.iterator] === "function";
 };
 
 const normalizeSelection = (
@@ -124,10 +110,7 @@ const sortOptionsByDomOrder = (options: SelectOptionRecord[]) =>
     return 0;
   });
 
-export type SelectRootProps = Omit<
-  JSX.HTMLAttributes<HTMLDivElement>,
-  "onChange"
-> &
+export type SelectRootProps = Omit<JSX.HTMLAttributes<HTMLDivElement>, "onChange"> &
   UIBaseProps & {
     children: JSX.Element;
     placeholder?: string;
@@ -182,37 +165,23 @@ const SelectRoot: Layout<typeof componentRecipe, SelectRootProps> = () => {
   const selectionMode = () => props.selectionMode ?? "single";
   const variant = () => props.variant ?? "primary";
   const fullWidth = () => Boolean(props.fullWidth);
-  const disabled = () =>
-    Boolean(props.state === "disabled") || Boolean(props.disabled);
+  const disabled = () => Boolean((props.state === "disabled")) || Boolean(props.disabled);
 
   const initialSelected = normalizeSelection(
     selectionMode(),
     props.defaultSelectedKeys ?? props.defaultValue,
   );
-  const [internalSelectedKeys, setInternalSelectedKeys] =
-    createSignal<string[]>(initialSelected);
-  const [internalOpen, setInternalOpen] = createSignal(
-    Boolean(props.defaultOpen),
-  );
+  const [internalSelectedKeys, setInternalSelectedKeys] = createSignal<string[]>(initialSelected);
+  const [internalOpen, setInternalOpen] = createSignal(Boolean(props.defaultOpen));
   const [options, setOptions] = createSignal<SelectOptionRecord[]>([]);
-  const [optionTextByKey, setOptionTextByKey] = createSignal(
-    new Map<string, string>(),
-  );
+  const [optionTextByKey, setOptionTextByKey] = createSignal(new Map<string, string>());
   const [focusedKey, setFocusedKey] = createSignal<string | undefined>();
-  const [focusRequest, setFocusRequest] =
-    createSignal<SelectFocusRequest>(null);
-  const [triggerRef, setTriggerRefSignal] = createSignal<
-    HTMLButtonElement | undefined
-  >();
-  const [popoverRef, setPopoverRefSignal] = createSignal<
-    HTMLDivElement | undefined
-  >();
-  const [rootRef, setRootRefSignal] = createSignal<
-    HTMLDivElement | undefined
-  >();
+  const [focusRequest, setFocusRequest] = createSignal<SelectFocusRequest>(null);
+  const [triggerRef, setTriggerRefSignal] = createSignal<HTMLButtonElement | undefined>();
+  const [popoverRef, setPopoverRefSignal] = createSignal<HTMLDivElement | undefined>();
+  const [rootRef, setRootRefSignal] = createSignal<HTMLDivElement | undefined>();
 
-  const open = () =>
-    props.open !== undefined ? Boolean(props.open) : internalOpen();
+  const open = () => (props.open !== undefined ? Boolean(props.open) : internalOpen());
   const placement = () => props.placement ?? "bottom";
   const autoFlip = () => props.autoFlip ?? true;
 
@@ -235,8 +204,7 @@ const SelectRoot: Layout<typeof componentRecipe, SelectRootProps> = () => {
       .join(selectionMode() === "multiple" ? ", " : "");
   });
 
-  const getEnabledOptions = () =>
-    options().filter((option) => !option.disabled);
+  const getEnabledOptions = () => options().filter((option) => !option.disabled);
 
   const focusOption = (option: SelectOptionRecord | undefined) => {
     if (!option) return;
@@ -271,8 +239,7 @@ const SelectRoot: Layout<typeof componentRecipe, SelectRootProps> = () => {
       return;
     }
 
-    const nextIndex =
-      (currentIndex + direction + enabled.length) % enabled.length;
+    const nextIndex = (currentIndex + direction + enabled.length) % enabled.length;
     focusOption(enabled[nextIndex]);
   };
 
@@ -377,21 +344,14 @@ const SelectRoot: Layout<typeof componentRecipe, SelectRootProps> = () => {
     const currentFocused = focusedKey();
     const currentOptions = options();
 
-    if (
-      currentFocused &&
-      !currentOptions.some((option) => option.key === currentFocused)
-    ) {
+    if (currentFocused && !currentOptions.some((option) => option.key === currentFocused)) {
       setFocusedKey(undefined);
       return;
     }
 
     if (open() && !currentFocused) {
-      const selected = currentOptions.find(
-        (option) => selectedSet().has(option.key) && !option.disabled,
-      );
-      setFocusedKey(
-        selected?.key ?? currentOptions.find((option) => !option.disabled)?.key,
-      );
+      const selected = currentOptions.find((option) => selectedSet().has(option.key) && !option.disabled);
+      setFocusedKey(selected?.key ?? currentOptions.find((option) => !option.disabled)?.key);
     }
   });
 
@@ -447,14 +407,12 @@ const SelectRoot: Layout<typeof componentRecipe, SelectRootProps> = () => {
       <div
         {...others}
         ref={setRootRef}
-        {...{
-          class: twMerge(
-            CLASSES.base,
-            CLASSES.variant[variant()],
-            fullWidth() && CLASSES.flag.fullWidth,
-            props.class,
-          ),
-        }}
+        {...{ class: twMerge(
+          CLASSES.base,
+          CLASSES.variant[variant()],
+          fullWidth() && CLASSES.flag.fullWidth,
+          props.class,
+        ) }}
         data-theme={props.dataTheme}
         data-slot="ui-select"
         data-open={open() ? "true" : "false"}
@@ -473,10 +431,7 @@ export type SelectTriggerProps = JSX.ButtonHTMLAttributes<HTMLButtonElement> &
     endIcon?: JSX.Element;
   };
 
-const SelectTrigger: Layout<
-  typeof componentRecipe,
-  SelectTriggerProps
-> = () => {
+const SelectTrigger: Layout<typeof componentRecipe, SelectTriggerProps> = () => {
   const ctx = useContext(SelectContext);
   const others = omit(
     props,
@@ -501,19 +456,13 @@ const SelectTrigger: Layout<
         type={props.type ?? "button"}
       >
         {props.startIcon ? (
-          <span
-            {...{ class: twMerge(CLASSES.slot.icon, CLASSES.slot.iconStart) }}
-            data-slot="ui-select-trigger-start-icon"
-          >
+          <span {...{ class: twMerge(CLASSES.slot.icon, CLASSES.slot.iconStart) }} data-slot="ui-select-trigger-start-icon">
             {props.startIcon}
           </span>
         ) : null}
         {props.children}
         {props.endIcon ? (
-          <span
-            {...{ class: twMerge(CLASSES.slot.icon, CLASSES.slot.iconEnd) }}
-            data-slot="ui-select-trigger-end-icon"
-          >
+          <span {...{ class: twMerge(CLASSES.slot.icon, CLASSES.slot.iconEnd) }} data-slot="ui-select-trigger-end-icon">
             {props.endIcon}
           </span>
         ) : null}
@@ -530,19 +479,14 @@ const SelectTrigger: Layout<
     }
   };
 
-  const handleClick: JSX.EventHandlerUnion<HTMLButtonElement, MouseEvent> = (
-    event,
-  ) => {
+  const handleClick: JSX.EventHandlerUnion<HTMLButtonElement, MouseEvent> = (event) => {
     invokeEventHandler(props.onClick, event);
     if (event.defaultPrevented) return;
     if (isDisabled()) return;
     ctx.toggleOpen();
   };
 
-  const handleKeyDown: JSX.EventHandlerUnion<
-    HTMLButtonElement,
-    KeyboardEvent
-  > = (event) => {
+  const handleKeyDown: JSX.EventHandlerUnion<HTMLButtonElement, KeyboardEvent> = (event) => {
     invokeEventHandler(props.onKeyDown, event);
     if (event.defaultPrevented) return;
     if (isDisabled()) return;
@@ -588,13 +532,11 @@ const SelectTrigger: Layout<
       ref={setRef}
       id={ctx.triggerId}
       type={props.type ?? "button"}
-      {...{
-        class: twMerge(
-          CLASSES.slot.trigger,
-          ctx.fullWidth() && CLASSES.slot.triggerFullWidth,
-          props.class,
-        ),
-      }}
+      {...{ class: twMerge(
+        CLASSES.slot.trigger,
+        ctx.fullWidth() && CLASSES.slot.triggerFullWidth,
+        props.class,
+      ) }}
       data-theme={props.dataTheme}
       data-slot="ui-select-trigger"
       data-open={ctx.open() ? "true" : "false"}
@@ -607,19 +549,13 @@ const SelectTrigger: Layout<
       onKeyDown={handleKeyDown}
     >
       {props.startIcon ? (
-        <span
-          {...{ class: twMerge(CLASSES.slot.icon, CLASSES.slot.iconStart) }}
-          data-slot="ui-select-trigger-start-icon"
-        >
+        <span {...{ class: twMerge(CLASSES.slot.icon, CLASSES.slot.iconStart) }} data-slot="ui-select-trigger-start-icon">
           {props.startIcon}
         </span>
       ) : null}
       {props.children}
       {props.endIcon ? (
-        <span
-          {...{ class: twMerge(CLASSES.slot.icon, CLASSES.slot.iconEnd) }}
-          data-slot="ui-select-trigger-end-icon"
-        >
+        <span {...{ class: twMerge(CLASSES.slot.icon, CLASSES.slot.iconEnd) }} data-slot="ui-select-trigger-end-icon">
           {props.endIcon}
         </span>
       ) : null}
@@ -657,19 +593,9 @@ export type SelectIndicatorProps = JSX.HTMLAttributes<HTMLSpanElement> &
     endIcon?: JSX.Element;
   };
 
-const SelectIndicator: Layout<
-  typeof componentRecipe,
-  SelectIndicatorProps
-> = () => {
+const SelectIndicator: Layout<typeof componentRecipe, SelectIndicatorProps> = () => {
   const ctx = useContext(SelectContext);
-  const others = omit(
-    props,
-    "children",
-    "class",
-    "dataTheme",
-    "startIcon",
-    "endIcon",
-  );
+  const others = omit(props, "children", "class", "dataTheme", "startIcon", "endIcon");
 
   return (
     <span
@@ -681,19 +607,13 @@ const SelectIndicator: Layout<
       aria-hidden="true"
     >
       {props.startIcon ? (
-        <span
-          {...{ class: twMerge(CLASSES.slot.icon, CLASSES.slot.iconStart) }}
-          data-slot="ui-select-indicator-start-icon"
-        >
+        <span {...{ class: twMerge(CLASSES.slot.icon, CLASSES.slot.iconStart) }} data-slot="ui-select-indicator-start-icon">
           {props.startIcon}
         </span>
       ) : null}
       {props.children}
       {props.endIcon ? (
-        <span
-          {...{ class: twMerge(CLASSES.slot.icon, CLASSES.slot.iconEnd) }}
-          data-slot="ui-select-indicator-end-icon"
-        >
+        <span {...{ class: twMerge(CLASSES.slot.icon, CLASSES.slot.iconEnd) }} data-slot="ui-select-indicator-end-icon">
           {props.endIcon}
         </span>
       ) : null}
@@ -704,19 +624,9 @@ const SelectIndicator: Layout<
 export type SelectPopoverProps = JSX.HTMLAttributes<HTMLDivElement> &
   UIBaseProps;
 
-const SelectPopover: Layout<
-  typeof componentRecipe,
-  SelectPopoverProps
-> = () => {
+const SelectPopover: Layout<typeof componentRecipe, SelectPopoverProps> = () => {
   const ctx = useContext(SelectContext);
-  const others = omit(
-    props,
-    "children",
-    "class",
-    "dataTheme",
-    "style",
-    "onPointerDown",
-  );
+  const others = omit(props, "children", "class", "dataTheme", "style", "onPointerDown");
 
   const overlayPosition = createOverlayPosition({
     open: () => ctx?.open() ?? false,
@@ -778,10 +688,7 @@ const SelectPopover: Layout<
 export type SelectListboxProps = JSX.HTMLAttributes<HTMLDivElement> &
   UIBaseProps;
 
-const SelectListbox: Layout<
-  typeof componentRecipe,
-  SelectListboxProps
-> = () => {
+const SelectListbox: Layout<typeof componentRecipe, SelectListboxProps> = () => {
   const ctx = useContext(SelectContext);
   const others = omit(props, "children", "class", "dataTheme");
 
@@ -793,9 +700,7 @@ const SelectListbox: Layout<
       data-theme={props.dataTheme}
       data-slot="ui-select-listbox"
       role="listbox"
-      aria-multiselectable={
-        ctx?.selectionMode() === "multiple" ? "true" : undefined
-      }
+      aria-multiselectable={ctx?.selectionMode() === "multiple" ? "true" : undefined}
       tabindex={-1}
     >
       {props.children}
@@ -803,10 +708,7 @@ const SelectListbox: Layout<
   );
 };
 
-export type SelectOptionProps = Omit<
-  JSX.ButtonHTMLAttributes<HTMLButtonElement>,
-  "value"
-> &
+export type SelectOptionProps = Omit<JSX.ButtonHTMLAttributes<HTMLButtonElement>, "value"> &
   UIBaseProps & {
     value: SelectKey;
     textValue?: string;
@@ -844,24 +746,14 @@ const SelectOption: Layout<typeof componentRecipe, SelectOptionProps> = () => {
         type={props.type ?? "button"}
       >
         {props.startIcon ? (
-          <span
-            {...{ class: twMerge(CLASSES.slot.icon, CLASSES.slot.iconStart) }}
-            data-slot="ui-select-option-start-icon"
-          >
+          <span {...{ class: twMerge(CLASSES.slot.icon, CLASSES.slot.iconStart) }} data-slot="ui-select-option-start-icon">
             {props.startIcon}
           </span>
         ) : null}
         {props.children}
         {props.endIcon ? (
-          <span
-            {...{ class: CLASSES.slot.optionIndicator }}
-            data-slot="ui-select-option-indicator"
-            aria-hidden="true"
-          >
-            <span
-              {...{ class: twMerge(CLASSES.slot.icon, CLASSES.slot.iconEnd) }}
-              data-slot="ui-select-option-end-icon"
-            >
+          <span {...{ class: CLASSES.slot.optionIndicator }} data-slot="ui-select-option-indicator" aria-hidden="true">
+            <span {...{ class: twMerge(CLASSES.slot.icon, CLASSES.slot.iconEnd) }} data-slot="ui-select-option-end-icon">
               {props.endIcon}
             </span>
           </span>
@@ -871,10 +763,7 @@ const SelectOption: Layout<typeof componentRecipe, SelectOptionProps> = () => {
   }
 
   const key = () => String(props.value);
-  const isDisabled = () =>
-    Boolean(props.state === "disabled") ||
-    Boolean(props.disabled) ||
-    ctx.disabled();
+  const isDisabled = () => Boolean((props.state === "disabled")) || Boolean(props.disabled) || ctx.disabled();
   const isSelected = () => ctx.isSelected(key());
   const isFocused = () => ctx.focusedKey() === key();
   let optionRef: HTMLButtonElement | undefined;
@@ -910,29 +799,21 @@ const SelectOption: Layout<typeof componentRecipe, SelectOptionProps> = () => {
     ctx.unregisterOption(key());
   });
 
-  const handleClick: JSX.EventHandlerUnion<HTMLButtonElement, MouseEvent> = (
-    event,
-  ) => {
+  const handleClick: JSX.EventHandlerUnion<HTMLButtonElement, MouseEvent> = (event) => {
     invokeEventHandler(props.onClick, event);
     if (event.defaultPrevented) return;
     if (isDisabled()) return;
     ctx.selectKey(key());
   };
 
-  const handleMouseEnter: JSX.EventHandlerUnion<
-    HTMLButtonElement,
-    MouseEvent
-  > = (event) => {
+  const handleMouseEnter: JSX.EventHandlerUnion<HTMLButtonElement, MouseEvent> = (event) => {
     invokeEventHandler(props.onMouseEnter, event);
     if (event.defaultPrevented) return;
     if (isDisabled()) return;
     ctx.setFocusedKey(key());
   };
 
-  const handleKeyDown: JSX.EventHandlerUnion<
-    HTMLButtonElement,
-    KeyboardEvent
-  > = (event) => {
+  const handleKeyDown: JSX.EventHandlerUnion<HTMLButtonElement, KeyboardEvent> = (event) => {
     invokeEventHandler(props.onKeyDown, event);
     if (event.defaultPrevented) return;
     if (isDisabled()) return;
@@ -1000,29 +881,16 @@ const SelectOption: Layout<typeof componentRecipe, SelectOptionProps> = () => {
       onKeyDown={handleKeyDown}
     >
       {props.startIcon ? (
-        <span
-          {...{ class: twMerge(CLASSES.slot.icon, CLASSES.slot.iconStart) }}
-          data-slot="ui-select-option-start-icon"
-        >
+        <span {...{ class: twMerge(CLASSES.slot.icon, CLASSES.slot.iconStart) }} data-slot="ui-select-option-start-icon">
           {props.startIcon}
         </span>
       ) : null}
-      <span
-        {...{ class: CLASSES.slot.optionLabel }}
-        data-slot="ui-select-option-label"
-      >
+      <span {...{ class: CLASSES.slot.optionLabel }} data-slot="ui-select-option-label">
         {props.children}
       </span>
       {props.endIcon ? (
-        <span
-          {...{ class: CLASSES.slot.optionIndicator }}
-          data-slot="ui-select-option-indicator"
-          aria-hidden="true"
-        >
-          <span
-            {...{ class: twMerge(CLASSES.slot.icon, CLASSES.slot.iconEnd) }}
-            data-slot="ui-select-option-end-icon"
-          >
+        <span {...{ class: CLASSES.slot.optionIndicator }} data-slot="ui-select-option-indicator" aria-hidden="true">
+          <span {...{ class: twMerge(CLASSES.slot.icon, CLASSES.slot.iconEnd) }} data-slot="ui-select-option-end-icon">
             {props.endIcon}
           </span>
         </span>

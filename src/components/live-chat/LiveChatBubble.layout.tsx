@@ -1,12 +1,13 @@
 import "./LiveChat.css";
 import type { JSX } from "@solidjs/web";
-import { type Component, createSignal, omit, Show } from "solid-js";
-import type { Layout } from "../../lib/layouts";
+import {type Component, createSignal, Show, omit} from "solid-js";
 import { twMerge } from "../../lib/twMerge";
 import type { UIBaseProps } from "../vocabulary";
-import { CLASSES, type componentRecipe } from "./LiveChat.recipe";
-import type { LiveChatPanelProps } from "./LiveChatPanel.generated";
 import LiveChatPanel from "./LiveChatPanel.generated";
+import type { LiveChatPanelProps } from "./LiveChatPanel.generated";
+import { CLASSES } from "./LiveChat.recipe";
+import type { Layout } from "../../lib/layouts";
+import { componentRecipe } from "./LiveChat.recipe";
 
 export interface LiveChatBubbleProps extends UIBaseProps {
   /**
@@ -57,10 +58,7 @@ export interface LiveChatBubbleProps extends UIBaseProps {
   children?: JSX.Element;
 }
 
-const LiveChatBubble: Layout<
-  typeof componentRecipe,
-  LiveChatBubbleProps
-> = () => {
+const LiveChatBubble: Layout<typeof componentRecipe, LiveChatBubbleProps> = () => {
   const others = omit(
     props,
     "position",
@@ -78,9 +76,7 @@ const LiveChatBubble: Layout<
   );
 
   const [isOpen, setIsOpen] = createSignal(false);
-  const [internalUnread, setInternalUnread] = createSignal(
-    props.unreadCount ?? 0,
-  );
+  const [internalUnread, setInternalUnread] = createSignal(props.unreadCount ?? 0);
 
   const unreadCount = () => props.unreadCount ?? internalUnread();
 
@@ -109,7 +105,11 @@ const LiveChatBubble: Layout<
   };
 
   const buttonClasses = () =>
-    twMerge(CLASSES.bubble.base, positionClasses(), props.class);
+    twMerge(
+      CLASSES.bubble.base,
+      positionClasses(),
+      props.class,
+    );
 
   return (
     <>
@@ -172,15 +172,13 @@ const LiveChatBubble: Layout<
         <LiveChatPanel
           {...(props.panelProps ?? {})}
           autoScrollOnNewMessage={
-            props.panelProps?.autoScrollOnNewMessage ??
-            props.autoScrollOnNewMessage
+            props.panelProps?.autoScrollOnNewMessage ?? props.autoScrollOnNewMessage
           }
           autoScrollBehavior={
             props.panelProps?.autoScrollBehavior ?? props.autoScrollBehavior
           }
           stickToBottomThreshold={
-            props.panelProps?.stickToBottomThreshold ??
-            props.stickToBottomThreshold
+            props.panelProps?.stickToBottomThreshold ?? props.stickToBottomThreshold
           }
           onClose={handleClose}
         />

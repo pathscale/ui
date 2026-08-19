@@ -1,14 +1,12 @@
+import {For, omit} from "solid-js";
 import type { JSX } from "@solidjs/web";
-import { For, omit } from "solid-js";
-import type { Layout } from "../../lib/layouts";
 import { twMerge } from "../../lib/twMerge";
-import { CLASSES, type componentRecipe } from "./ImmersiveLanding.recipe";
 import type { ImmersiveLandingNavigationProps } from "./types";
+import { CLASSES } from "./ImmersiveLanding.recipe";
+import type { Layout } from "../../lib/layouts";
+import { componentRecipe } from "./ImmersiveLanding.recipe";
 
-const ImmersiveLandingNavigation: Layout<
-  typeof componentRecipe,
-  ImmersiveLandingNavigationProps
-> = () => {
+const ImmersiveLandingNavigation: Layout<typeof componentRecipe, ImmersiveLandingNavigationProps> = () => {
   const others = omit(
     props,
     "pages",
@@ -34,10 +32,7 @@ const ImmersiveLandingNavigation: Layout<
         class: twMerge(CLASSES.navigation.base, props.class),
       }}
       aria-label="Page navigation"
-      style={{
-        bottom: "calc(0.75rem + env(safe-area-inset-bottom))",
-        ...props.style,
-      }}
+      style={{ bottom: "calc(0.75rem + env(safe-area-inset-bottom))", ...props.style }}
       {...others}
     >
       <div {...{ class: CLASSES.navigation.shell }}>
@@ -57,11 +52,7 @@ const ImmersiveLandingNavigation: Layout<
               stroke="currentColor"
               stroke-width="2"
             >
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                d="M15 19l-7-7 7-7"
-              />
+              <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7" />
             </svg>
           </button>
 
@@ -76,14 +67,11 @@ const ImmersiveLandingNavigation: Layout<
                     {...{
                       class: twMerge(
                         CLASSES.navigation.dot,
-                        index() === props.currentPageIndex &&
-                          CLASSES.navigation.dotActive,
+                        index() === props.currentPageIndex && CLASSES.navigation.dotActive,
                       ),
                     }}
                     aria-label={`Go to page ${index() + 1} of ${props.pages.length}`}
-                    aria-current={
-                      index() === props.currentPageIndex ? "step" : undefined
-                    }
+                    aria-current={index() === props.currentPageIndex ? "step" : undefined}
                   />
                 )}
               </For>
@@ -112,11 +100,7 @@ const ImmersiveLandingNavigation: Layout<
               stroke="currentColor"
               stroke-width="2"
             >
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                d="M9 5l7 7-7 7"
-              />
+              <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" />
             </svg>
           </button>
         </div>

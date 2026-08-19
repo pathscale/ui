@@ -24,7 +24,4 @@ export const CLASSES = {
   buttonReset: "dock__button-reset",
   menuIcon: "dock__menu-icon",
 } as const;
-export const componentRecipe = recipe({
-  component: "dock",
-  slots: { root: {} },
-});
+export const componentRecipe = recipe({component:"dock",slots:{"root":{},},});

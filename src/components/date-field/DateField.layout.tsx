@@ -1,19 +1,13 @@
 import "./DateField.css";
 import type { JSX } from "@solidjs/web";
-import {
-  type Accessor,
-  type Component,
-  createContext,
-  createSignal,
-  omit,
-  type ParentComponent,
-  useContext,
-} from "solid-js";
-import type { Layout } from "../../lib/layouts";
+import {createContext, createSignal, omit, useContext, type Accessor, type Component, type ParentComponent} from "solid-js";
 import { twMerge } from "../../lib/twMerge";
-import type { Issue, State, UIBaseProps } from "../vocabulary";
+
+import type { UIBaseProps, State, Issue } from "../vocabulary";
+import { CLASSES } from "./DateField.recipe";
+import type { Layout } from "../../lib/layouts";
+import { componentRecipe } from "./DateField.recipe";
 import { resolveState } from "../vocabulary";
-import { CLASSES, type componentRecipe } from "./DateField.recipe";
 
 export type DateFieldVariant = "primary" | "secondary";
 
@@ -25,9 +19,7 @@ type DateFieldContextValue = {
   isDisabled: Accessor<boolean>;
   isInvalid: Accessor<boolean>;
   isRequired: Accessor<boolean>;
-  onBlur: Accessor<
-    JSX.EventHandlerUnion<HTMLInputElement, FocusEvent> | undefined
-  >;
+  onBlur: Accessor<JSX.EventHandlerUnion<HTMLInputElement, FocusEvent> | undefined>;
   setValue: (nextValue: string) => void;
 };
 
@@ -64,10 +56,7 @@ export type DateFieldRenderProps = {
   isRequired: boolean;
 };
 
-export type DateFieldRootProps = Omit<
-  JSX.HTMLAttributes<HTMLDivElement>,
-  "children" | "onChange" | "onBlur"
-> &
+export type DateFieldRootProps = Omit<JSX.HTMLAttributes<HTMLDivElement>, "children" | "onChange" | "onBlur"> &
   UIBaseProps & {
     children?: JSX.Element | ((props: DateFieldRenderProps) => JSX.Element);
     name?: string;
@@ -83,10 +72,7 @@ export type DateFieldRootProps = Omit<
     required?: boolean;
   };
 
-export type DateFieldGroupProps = Omit<
-  JSX.HTMLAttributes<HTMLDivElement>,
-  "children"
-> &
+export type DateFieldGroupProps = Omit<JSX.HTMLAttributes<HTMLDivElement>, "children"> &
   UIBaseProps & {
     children?: JSX.Element | ((props: DateFieldRenderProps) => JSX.Element);
   };
@@ -99,8 +85,7 @@ export type DateFieldInputProps = Omit<
     onInput?: JSX.EventHandlerUnion<HTMLInputElement, InputEvent>;
   };
 
-export type DateFieldInputContainerProps = JSX.HTMLAttributes<HTMLDivElement> &
-  UIBaseProps;
+export type DateFieldInputContainerProps = JSX.HTMLAttributes<HTMLDivElement> & UIBaseProps;
 
 export type DateFieldSegmentValue = {
   type?: string;
@@ -116,15 +101,10 @@ export type DateFieldSegmentProps = JSX.HTMLAttributes<HTMLSpanElement> &
     segment?: DateFieldSegmentValue;
   };
 
-export type DateFieldPrefixProps = JSX.HTMLAttributes<HTMLDivElement> &
-  UIBaseProps;
-export type DateFieldSuffixProps = JSX.HTMLAttributes<HTMLDivElement> &
-  UIBaseProps;
+export type DateFieldPrefixProps = JSX.HTMLAttributes<HTMLDivElement> & UIBaseProps;
+export type DateFieldSuffixProps = JSX.HTMLAttributes<HTMLDivElement> & UIBaseProps;
 
-const DateFieldRoot: Layout<
-  typeof componentRecipe,
-  DateFieldRootProps
-> = () => {
+const DateFieldRoot: Layout<typeof componentRecipe, DateFieldRootProps> = () => {
   const others = omit(
     props,
     "children",
@@ -144,18 +124,14 @@ const DateFieldRoot: Layout<
     "required",
   );
 
-  const [internalValue, setInternalValue] = createSignal(
-    props.defaultValue ?? "",
-  );
+  const [internalValue, setInternalValue] = createSignal(props.defaultValue ?? "");
 
   const isControlled = () => props.value !== undefined;
-  const value = () => (isControlled() ? (props.value ?? "") : internalValue());
+  const value = () => (isControlled() ? props.value ?? "" : internalValue());
   const variant = () => props.variant ?? "primary";
   const fullWidth = () => Boolean(props.fullWidth);
-  const isDisabled = () =>
-    Boolean(props.state === "disabled") || Boolean(props.disabled);
-  const isInvalid = () =>
-    Boolean(resolveState(props.state, props.issues) === "invalid");
+  const isDisabled = () => Boolean((props.state === "disabled")) || Boolean(props.disabled);
+  const isInvalid = () => Boolean((resolveState(props.state, props.issues) === "invalid"));
   const isRequired = () => Boolean(props.required) || Boolean(props.required);
 
   const setValue = (nextValue: string) => {
@@ -188,14 +164,12 @@ const DateFieldRoot: Layout<
     <DateFieldContext value={contextValue}>
       <div
         {...others}
-        {...{
-          class: twMerge(
-            CLASSES.Root.base,
-            CLASSES.Root.variant[variant()],
-            fullWidth() && CLASSES.Root.flag.fullWidth,
-            props.class,
-          ),
-        }}
+        {...{ class: twMerge(
+          CLASSES.Root.base,
+          CLASSES.Root.variant[variant()],
+          fullWidth() && CLASSES.Root.flag.fullWidth,
+          props.class,
+        ) }}
         data-slot="date-field"
         data-invalid={isInvalid() ? "true" : undefined}
         data-disabled={isDisabled() ? "true" : undefined}
@@ -219,10 +193,7 @@ const DateFieldRoot: Layout<
   );
 };
 
-const DateFieldGroup: Layout<
-  typeof componentRecipe,
-  DateFieldGroupProps
-> = () => {
+const DateFieldGroup: Layout<typeof componentRecipe, DateFieldGroupProps> = () => {
   const context = useContext(DateFieldContext);
   const others = omit(props, "children", "class", "dataTheme", "style");
 
@@ -236,53 +207,34 @@ const DateFieldGroup: Layout<
   return (
     <div
       {...others}
-      {...{
-        class: twMerge(
-          CLASSES.Group.base,
-          CLASSES.Group.variant[context?.variant() ?? "primary"],
-          context?.fullWidth() && CLASSES.Group.flag.fullWidth,
-          props.class,
-        ),
-      }}
+      {...{ class: twMerge(
+        CLASSES.Group.base,
+        CLASSES.Group.variant[context?.variant() ?? "primary"],
+        context?.fullWidth() && CLASSES.Group.flag.fullWidth,
+        props.class,
+      ) }}
       data-slot="date-input-group"
       data-invalid={context?.isInvalid() ? "true" : undefined}
       data-disabled={context?.isDisabled() ? "true" : undefined}
       data-theme={props.dataTheme}
       style={props.style}
     >
-      {typeof props.children === "function"
-        ? props.children(renderProps())
-        : props.children}
+      {typeof props.children === "function" ? props.children(renderProps()) : props.children}
     </div>
   );
 };
 
-const DateFieldInput: Layout<
-  typeof componentRecipe,
-  DateFieldInputProps
-> = () => {
+const DateFieldInput: Layout<typeof componentRecipe, DateFieldInputProps> = () => {
   const context = useContext(DateFieldContext);
-  const others = omit(
-    props,
-    "class",
-    "dataTheme",
-    "style",
-    "onInput",
-    "onBlur",
-    "name",
-  );
+  const others = omit(props, "class", "dataTheme", "style", "onInput", "onBlur", "name");
 
-  const handleInput: JSX.EventHandlerUnion<HTMLInputElement, InputEvent> = (
-    event,
-  ) => {
+  const handleInput: JSX.EventHandlerUnion<HTMLInputElement, InputEvent> = (event) => {
     invokeEventHandler(props.onInput, event);
     if (event.defaultPrevented) return;
     context?.setValue(event.currentTarget.value);
   };
 
-  const handleBlur: JSX.EventHandlerUnion<HTMLInputElement, FocusEvent> = (
-    event,
-  ) => {
+  const handleBlur: JSX.EventHandlerUnion<HTMLInputElement, FocusEvent> = (event) => {
     invokeEventHandler(props.onBlur, event);
     invokeEventHandler(context?.onBlur(), event);
   };
@@ -307,10 +259,7 @@ const DateFieldInput: Layout<
   );
 };
 
-const DateFieldInputContainer: Layout<
-  typeof componentRecipe,
-  DateFieldInputContainerProps
-> = () => {
+const DateFieldInputContainer: Layout<typeof componentRecipe, DateFieldInputContainerProps> = () => {
   const others = omit(props, "children", "class", "dataTheme", "style");
 
   return (
@@ -326,18 +275,8 @@ const DateFieldInputContainer: Layout<
   );
 };
 
-const DateFieldSegment: Layout<
-  typeof componentRecipe,
-  DateFieldSegmentProps
-> = () => {
-  const others = omit(
-    props,
-    "children",
-    "class",
-    "dataTheme",
-    "style",
-    "segment",
-  );
+const DateFieldSegment: Layout<typeof componentRecipe, DateFieldSegmentProps> = () => {
+  const others = omit(props, "children", "class", "dataTheme", "style", "segment");
 
   return (
     <span
@@ -357,10 +296,7 @@ const DateFieldSegment: Layout<
   );
 };
 
-const DateFieldPrefix: Layout<
-  typeof componentRecipe,
-  DateFieldPrefixProps
-> = () => {
+const DateFieldPrefix: Layout<typeof componentRecipe, DateFieldPrefixProps> = () => {
   const others = omit(props, "children", "class", "dataTheme", "style");
 
   return (
@@ -376,10 +312,7 @@ const DateFieldPrefix: Layout<
   );
 };
 
-const DateFieldSuffix: Layout<
-  typeof componentRecipe,
-  DateFieldSuffixProps
-> = () => {
+const DateFieldSuffix: Layout<typeof componentRecipe, DateFieldSuffixProps> = () => {
   const others = omit(props, "children", "class", "dataTheme", "style");
 
   return (
@@ -406,14 +339,14 @@ const DateField = Object.assign(DateFieldRoot, {
 });
 
 export default DateField;
-export type { DateFieldRootProps as DateFieldProps };
 export {
   DateField,
+  DateFieldRoot,
   DateFieldGroup,
   DateFieldInput,
   DateFieldInputContainer,
-  DateFieldPrefix,
-  DateFieldRoot,
   DateFieldSegment,
+  DateFieldPrefix,
   DateFieldSuffix,
 };
+export type { DateFieldRootProps as DateFieldProps };

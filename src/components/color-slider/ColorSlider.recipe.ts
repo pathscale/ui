@@ -10,12 +10,4 @@ export const CLASSES = {
     dragging: "color-slider--dragging",
   },
 } as const;
-export const componentRecipe = recipe({
-  component: "color-slider",
-  slots: {
-    "color-slider": {},
-    "color-slider-thumb": {},
-    "color-slider-track": {},
-    root: {},
-  },
-});
+export const componentRecipe = recipe({component:"color-slider",slots:{"color-slider":{},"color-slider-thumb":{},"color-slider-track":{},"root":{},},});

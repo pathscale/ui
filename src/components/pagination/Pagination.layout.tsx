@@ -1,17 +1,15 @@
 import "./Pagination.css";
 import type { JSX } from "@solidjs/web";
-import { For, omit } from "solid-js";
-import type { Layout } from "../../lib/layouts";
+import {For, omit} from "solid-js";
 import { twMerge } from "../../lib/twMerge";
-import type { State, UIBaseProps } from "../vocabulary";
-import { CLASSES, type componentRecipe } from "./Pagination.recipe";
+import type { UIBaseProps, State } from "../vocabulary";
+import { CLASSES } from "./Pagination.recipe";
+import type { Layout } from "../../lib/layouts";
+import { componentRecipe } from "./Pagination.recipe";
 
 type PaginationToken = number | "ellipsis-left" | "ellipsis-right";
 
-export type PaginationProps = Omit<
-  JSX.HTMLAttributes<HTMLElement>,
-  "onChange"
-> &
+export type PaginationProps = Omit<JSX.HTMLAttributes<HTMLElement>, "onChange"> &
   UIBaseProps & {
     page: number;
     total: number;
@@ -24,10 +22,7 @@ const clampPage = (page: number, total: number) => {
   return Math.min(Math.max(1, Math.floor(page)), total);
 };
 
-const getPaginationTokens = (
-  page: number,
-  total: number,
-): PaginationToken[] => {
+const getPaginationTokens = (page: number, total: number): PaginationToken[] => {
   if (total <= 0) return [];
   if (total <= 7) {
     return Array.from({ length: total }, (_, index) => index + 1);
@@ -38,43 +33,19 @@ const getPaginationTokens = (
   }
 
   if (page >= total - 3) {
-    return [
-      1,
-      "ellipsis-left",
-      total - 4,
-      total - 3,
-      total - 2,
-      total - 1,
-      total,
-    ];
+    return [1, "ellipsis-left", total - 4, total - 3, total - 2, total - 1, total];
   }
 
-  return [
-    1,
-    "ellipsis-left",
-    page - 1,
-    page,
-    page + 1,
-    "ellipsis-right",
-    total,
-  ];
+  return [1, "ellipsis-left", page - 1, page, page + 1, "ellipsis-right", total];
 };
 
 const Pagination: Layout<typeof componentRecipe, PaginationProps> = () => {
-  const others = omit(
-    props,
-    "class",
-    "dataTheme",
-    "page",
-    "total",
-    "onChange",
-    "state",
-  );
+  const others = omit(props, "class", "dataTheme", "page", "total", "onChange", "state");
 
   const safeTotal = () => Math.max(1, Math.floor(props.total || 0));
   const currentPage = () => clampPage(props.page, safeTotal());
   const tokens = () => getPaginationTokens(currentPage(), safeTotal());
-  const disabled = () => Boolean(props.state === "disabled");
+  const disabled = () => Boolean((props.state === "disabled"));
 
   const handleChange = (nextPage: number) => {
     if (disabled()) return;
@@ -92,21 +63,12 @@ const Pagination: Layout<typeof componentRecipe, PaginationProps> = () => {
       data-theme={props.dataTheme}
       data-slot="pagination"
     >
-      <div
-        {...{ class: CLASSES.slot.summary }}
-        data-slot="pagination-summary"
-      >
+      <div {...{ class: CLASSES.slot.summary }} data-slot="pagination-summary">
         Page {currentPage()} of {safeTotal()}
       </div>
 
-      <ul
-        {...{ class: CLASSES.slot.content }}
-        data-slot="pagination-content"
-      >
-        <li
-          {...{ class: CLASSES.slot.item }}
-          data-slot="pagination-item"
-        >
+      <ul {...{ class: CLASSES.slot.content }} data-slot="pagination-content">
+        <li {...{ class: CLASSES.slot.item }} data-slot="pagination-item">
           <button
             type="button"
             {...{ class: twMerge(CLASSES.slot.link, CLASSES.slot.linkNav) }}
@@ -122,10 +84,7 @@ const Pagination: Layout<typeof componentRecipe, PaginationProps> = () => {
 
         <For each={tokens()}>
           {(token) => (
-            <li
-              {...{ class: CLASSES.slot.item }}
-              data-slot="pagination-item"
-            >
+            <li {...{ class: CLASSES.slot.item }} data-slot="pagination-item">
               {typeof token === "number" ? (
                 <button
                   type="button"
@@ -152,10 +111,7 @@ const Pagination: Layout<typeof componentRecipe, PaginationProps> = () => {
           )}
         </For>
 
-        <li
-          {...{ class: CLASSES.slot.item }}
-          data-slot="pagination-item"
-        >
+        <li {...{ class: CLASSES.slot.item }} data-slot="pagination-item">
           <button
             type="button"
             {...{ class: twMerge(CLASSES.slot.link, CLASSES.slot.linkNav) }}

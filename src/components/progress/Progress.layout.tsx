@@ -1,18 +1,14 @@
 import "./Progress.css";
 import type { JSX } from "@solidjs/web";
-import { createMemo, omit } from "solid-js";
-import type { Layout } from "../../lib/layouts";
+import {createMemo, omit} from "solid-js";
 import { twMerge } from "../../lib/twMerge";
-import type { Flavor, State, UIBaseProps } from "../vocabulary";
-import { CLASSES, type componentRecipe } from "./Progress.recipe";
+import type { UIBaseProps, Flavor, State } from "../vocabulary";
+import { CLASSES } from "./Progress.recipe";
+import type { Layout } from "../../lib/layouts";
+import { componentRecipe } from "./Progress.recipe";
 
 export type ProgressSize = "sm" | "md" | "lg";
-export type ProgressColor =
-  | "default"
-  | "accent"
-  | "success"
-  | "warning"
-  | "danger";
+export type ProgressColor = "default" | "accent" | "success" | "warning" | "danger";
 
 export type ProgressProps = UIBaseProps &
   Omit<JSX.HTMLAttributes<HTMLDivElement>, "children"> & {
@@ -48,8 +44,7 @@ const Progress: Layout<typeof componentRecipe, ProgressProps> = () => {
 
   const min = () => props.minValue ?? 0;
   const max = () => props.maxValue ?? 100;
-  const isIndeterminate = () =>
-    Boolean(props.isIndeterminate) || props.value === undefined;
+  const isIndeterminate = () => Boolean(props.isIndeterminate) || props.value === undefined;
 
   const percentage = createMemo(() => {
     if (isIndeterminate()) return 0;
@@ -71,11 +66,9 @@ const Progress: Layout<typeof componentRecipe, ProgressProps> = () => {
     twMerge(
       CLASSES.base,
       CLASSES.size[props.size ?? "md"],
-      CLASSES.flavor[
-        (props.flavor ?? "accent") as keyof typeof CLASSES.flavor
-      ] ?? `progress--flavor-${props.flavor ?? "accent"}`,
+      (CLASSES.flavor[(props.flavor ?? "accent") as keyof typeof CLASSES.flavor] ?? `progress--flavor-${props.flavor ?? "accent"}`),
       isIndeterminate() && CLASSES.state.indeterminate,
-      props.state === "disabled" && CLASSES.state.disabled,
+      (props.state === "disabled") && CLASSES.state.disabled,
       props.class,
     ),
   );
@@ -92,13 +85,11 @@ const Progress: Layout<typeof componentRecipe, ProgressProps> = () => {
       aria-valuemax={max()}
       aria-valuetext={isIndeterminate() ? undefined : valueText()}
       aria-label={props.label}
-      aria-disabled={props.state === "disabled" ? "true" : undefined}
-      data-disabled={props.state === "disabled" ? "true" : undefined}
+      aria-disabled={(props.state === "disabled") ? "true" : undefined}
+      data-disabled={(props.state === "disabled") ? "true" : undefined}
     >
       {props.label && <span {...{ class: CLASSES.label }}>{props.label}</span>}
-      {shouldShowValue() && (
-        <span {...{ class: CLASSES.output }}>{valueText()}</span>
-      )}
+      {shouldShowValue() && <span {...{ class: CLASSES.output }}>{valueText()}</span>}
       <div {...{ class: CLASSES.track }}>
         <div
           {...{ class: CLASSES.indicator }}

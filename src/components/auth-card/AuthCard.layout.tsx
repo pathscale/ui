@@ -1,10 +1,10 @@
 import "./AuthCard.css";
 import type { JSX } from "@solidjs/web";
-import { Show } from "solid-js";
-import type { Layout } from "../../lib/layouts";
+import {Show} from "solid-js";
 import Card from "../card";
 import type { UIBaseProps } from "../vocabulary";
-import type { authCard } from "./AuthCard.recipe";
+import type { Layout } from "../../lib/layouts";
+import { authCard } from "./AuthCard.recipe";
 
 /* -------------------------------------------------------------------------------------------------
  * Types
@@ -24,10 +24,7 @@ export type AuthCardProps = UIBaseProps & {
  * only a form does not carry a stray flex row that contributes gap.
  * -----------------------------------------------------------------------------------------------*/
 export const AuthCardLayout: Layout<typeof authCard, AuthCardProps> = () => (
-  <Card
-    {...slot.root}
-    elevation="md"
-  >
+  <Card {...slot.root} elevation="md">
     <Card.Body {...slot.body}>
       <Show when={local.title || local.description || local.brandingSlot}>
         <div {...slot.header}>

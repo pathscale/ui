@@ -1,33 +1,24 @@
 import "./Separator.css";
 import type { JSX } from "@solidjs/web";
-import { type Component, omit } from "solid-js";
-import type { Layout } from "../../lib/layouts";
+import {omit, type Component} from "solid-js";
 import { twMerge } from "../../lib/twMerge";
+
 import type { UIBaseProps } from "../vocabulary";
-import { CLASSES, type componentRecipe } from "./Separator.recipe";
+import { CLASSES } from "./Separator.recipe";
+import type { Layout } from "../../lib/layouts";
+import { componentRecipe } from "./Separator.recipe";
 
 export type SeparatorOrientation = "horizontal" | "vertical";
 export type SeparatorVariant = "default" | "secondary" | "tertiary";
 
-export type SeparatorProps = Omit<
-  JSX.HTMLAttributes<HTMLDivElement>,
-  "children"
-> &
+export type SeparatorProps = Omit<JSX.HTMLAttributes<HTMLDivElement>, "children"> &
   UIBaseProps & {
     orientation?: SeparatorOrientation;
     variant?: SeparatorVariant;
   };
 
 const Separator: Layout<typeof componentRecipe, SeparatorProps> = () => {
-  const others = omit(
-    props,
-    "class",
-    "dataTheme",
-    "style",
-    "orientation",
-    "variant",
-    "role",
-  );
+  const others = omit(props, "class", "dataTheme", "style", "orientation", "variant", "role");
 
   const orientation = () => props.orientation ?? "horizontal";
   const variant = () => props.variant ?? "default";

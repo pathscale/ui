@@ -1,7 +1,7 @@
+import {omit} from "solid-js";
 import type { JSX } from "@solidjs/web";
-import { omit } from "solid-js";
-import type { Layout } from "../../lib/layouts";
 import { twMerge } from "../../lib/twMerge";
+import type { Layout } from "../../lib/layouts";
 import type { UIBaseProps } from "../vocabulary";
 import {
   invokeEventHandler,
@@ -10,7 +10,7 @@ import {
   type TableSortDirection,
   useTableContentContext,
 } from "./Table.context";
-import { CLASSES, type tableColumnRecipe } from "./Table.recipe";
+import { CLASSES, tableColumnRecipe } from "./Table.recipe";
 
 export type TableColumnProps = Omit<
   JSX.ThHTMLAttributes<HTMLTableCellElement>,

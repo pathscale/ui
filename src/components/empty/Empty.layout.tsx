@@ -1,50 +1,36 @@
 import "./Empty.css";
 import type { JSX } from "@solidjs/web";
-import { type Component, omit, type ParentComponent } from "solid-js";
-import type { Layout } from "../../lib/layouts";
+import {omit, type Component, type ParentComponent} from "solid-js";
 import { twMerge } from "../../lib/twMerge";
 import type { UIBaseProps } from "../vocabulary";
-import { CLASSES, type componentRecipe } from "./Empty.recipe";
+import { CLASSES } from "./Empty.recipe";
+import type { Layout } from "../../lib/layouts";
+import { componentRecipe } from "./Empty.recipe";
 
 /* -------------------------------------------------------------------------------------------------
  * Types
  * -----------------------------------------------------------------------------------------------*/
-export type EmptyRootProps = Omit<
-  JSX.HTMLAttributes<HTMLDivElement>,
-  "children"
-> &
+export type EmptyRootProps = Omit<JSX.HTMLAttributes<HTMLDivElement>, "children"> &
   UIBaseProps & {
     children: JSX.Element;
   };
 
-export type EmptyIconProps = Omit<
-  JSX.HTMLAttributes<HTMLDivElement>,
-  "children"
-> &
+export type EmptyIconProps = Omit<JSX.HTMLAttributes<HTMLDivElement>, "children"> &
   UIBaseProps & {
     children: JSX.Element;
   };
 
-export type EmptyTitleProps = Omit<
-  JSX.HTMLAttributes<HTMLHeadingElement>,
-  "children"
-> &
+export type EmptyTitleProps = Omit<JSX.HTMLAttributes<HTMLHeadingElement>, "children"> &
   UIBaseProps & {
     children: JSX.Element;
   };
 
-export type EmptyDescriptionProps = Omit<
-  JSX.HTMLAttributes<HTMLParagraphElement>,
-  "children"
-> &
+export type EmptyDescriptionProps = Omit<JSX.HTMLAttributes<HTMLParagraphElement>, "children"> &
   UIBaseProps & {
     children: JSX.Element;
   };
 
-export type EmptyActionsProps = Omit<
-  JSX.HTMLAttributes<HTMLDivElement>,
-  "children"
-> &
+export type EmptyActionsProps = Omit<JSX.HTMLAttributes<HTMLDivElement>, "children"> &
   UIBaseProps & {
     children: JSX.Element;
   };
@@ -111,10 +97,7 @@ const EmptyTitle: Layout<typeof componentRecipe, EmptyTitleProps> = () => {
 /* -------------------------------------------------------------------------------------------------
  * Empty Description
  * -----------------------------------------------------------------------------------------------*/
-const EmptyDescription: Layout<
-  typeof componentRecipe,
-  EmptyDescriptionProps
-> = () => {
+const EmptyDescription: Layout<typeof componentRecipe, EmptyDescriptionProps> = () => {
   const others = omit(props, "children", "class", "dataTheme", "style");
 
   return (
@@ -161,4 +144,4 @@ const Empty = Object.assign(EmptyRoot, {
 });
 
 export default Empty;
-export { EmptyActions, EmptyDescription, EmptyIcon, EmptyRoot, EmptyTitle };
+export { EmptyRoot, EmptyIcon, EmptyTitle, EmptyDescription, EmptyActions };

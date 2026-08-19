@@ -1,9 +1,9 @@
+import {omit} from "solid-js";
 import type { JSX } from "@solidjs/web";
-import { omit } from "solid-js";
-import type { Layout } from "../../lib/layouts";
 import { twMerge } from "../../lib/twMerge";
+import type { Layout } from "../../lib/layouts";
 import type { UIBaseProps } from "../vocabulary";
-import { CLASSES, type tableHeaderRecipe } from "./Table.recipe";
+import { CLASSES, tableHeaderRecipe } from "./Table.recipe";
 
 export type TableHeaderProps = JSX.HTMLAttributes<HTMLTableSectionElement> &
   UIBaseProps;

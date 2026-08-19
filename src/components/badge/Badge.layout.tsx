@@ -1,17 +1,13 @@
-import type { JSX } from "@solidjs/web";
 import { clsx } from "clsx";
-import { omit } from "solid-js";
+import type { JSX } from "@solidjs/web";
+import {omit} from "solid-js";
 import { twMerge } from "../../lib/twMerge";
 
 import "./Badge.css";
+import { CLASSES } from "./Badge.recipe";
 import type { Layout } from "../../lib/layouts";
-import {
-  type Flavor,
-  resolveState,
-  type State,
-  type Variant,
-} from "../vocabulary";
-import { CLASSES, type componentRecipe } from "./Badge.recipe";
+import { componentRecipe } from "./Badge.recipe";
+import { resolveState, type Flavor, type State, type Variant } from "../vocabulary";
 
 /* -------------------------------------------------------------------------------------------------
  * Badge Anchor
@@ -41,8 +37,7 @@ const BadgeAnchor: Layout<typeof componentRecipe, BadgeAnchorProps> = () => {
 type BadgeSize = "sm" | "md" | "lg";
 type BadgePlacement = "top-right" | "top-left" | "bottom-right" | "bottom-left";
 
-interface BadgeRootProps
-  extends Omit<JSX.HTMLAttributes<HTMLSpanElement>, "color"> {
+interface BadgeRootProps extends Omit<JSX.HTMLAttributes<HTMLSpanElement>, "color"> {
   class?: string;
   children?: JSX.Element;
   flavor?: Flavor;
@@ -70,8 +65,7 @@ const BadgeRoot: Layout<typeof componentRecipe, BadgeRootProps> = () => {
        class an app can style, rather than silently rendering unflavoured. */
     const flavor = props.flavor ?? "neutral";
     const flavorClass =
-      CLASSES.flavor[flavor as keyof typeof CLASSES.flavor] ??
-      `badge--flavor-${flavor}`;
+      CLASSES.flavor[flavor as keyof typeof CLASSES.flavor] ?? `badge--flavor-${flavor}`;
     const variant = props.variant ?? "solid";
     const state = resolveState(props.state);
     const placement = props.placement ?? "top-right";
@@ -98,11 +92,7 @@ const BadgeRoot: Layout<typeof componentRecipe, BadgeRootProps> = () => {
   };
 
   return (
-    <span
-      {...others}
-      {...{ class: classes() }}
-      data-slot="badge"
-    >
+    <span {...others} {...{ class: classes() }} data-slot="badge">
       {badgeChildren()}
     </span>
   );
@@ -129,8 +119,9 @@ const BadgeLabel: Layout<typeof componentRecipe, BadgeLabelProps> = () => {
   );
 };
 
-export type { BadgeAnchorProps, BadgeLabelProps, BadgeRootProps };
 /* -------------------------------------------------------------------------------------------------
  * Exports
  * -----------------------------------------------------------------------------------------------*/
-export { BadgeAnchor, BadgeLabel, BadgeRoot };
+export { BadgeRoot, BadgeLabel, BadgeAnchor };
+
+export type { BadgeRootProps, BadgeLabelProps, BadgeAnchorProps };

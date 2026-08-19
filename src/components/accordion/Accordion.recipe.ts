@@ -37,16 +37,4 @@ export const CLASSES = {
     base: "accordion__body-inner",
   },
 } as const;
-export const componentRecipe = recipe({
-  component: "accordion",
-  slots: {
-    accordion: {},
-    "accordion-body": {},
-    "accordion-body-inner": {},
-    "accordion-content": {},
-    "accordion-indicator": {},
-    "accordion-item": {},
-    "accordion-trigger": {},
-    root: {},
-  },
-});
+export const componentRecipe = recipe({component:"accordion",slots:{"accordion":{},"accordion-body":{},"accordion-body-inner":{},"accordion-content":{},"accordion-indicator":{},"accordion-item":{},"accordion-trigger":{},"root":{},},});

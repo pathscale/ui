@@ -1,9 +1,9 @@
 import "./AuthFooterLinks.css";
 import type { JSX } from "@solidjs/web";
-import { For } from "solid-js";
-import type { Layout } from "../../lib/layouts";
+import {For} from "solid-js";
 import type { UIBaseProps } from "../vocabulary";
-import type { authFooterLinks } from "./AuthFooterLinks.recipe";
+import type { Layout } from "../../lib/layouts";
+import { authFooterLinks } from "./AuthFooterLinks.recipe";
 
 /* -------------------------------------------------------------------------------------------------
  * Types
@@ -18,10 +18,7 @@ export type AuthFooterLinkItem = {
 
 export type AuthFooterLinksAlign = "left" | "center" | "right";
 
-export type AuthFooterLinksProps = Omit<
-  JSX.HTMLAttributes<HTMLDivElement>,
-  "children"
-> &
+export type AuthFooterLinksProps = Omit<JSX.HTMLAttributes<HTMLDivElement>, "children"> &
   UIBaseProps & {
     items: AuthFooterLinkItem[];
     align?: AuthFooterLinksAlign;
@@ -36,10 +33,7 @@ export type AuthFooterLinksProps = Omit<
  * Disabled state is mirrored to `data-disabled` rather than composed into the
  * class string, so the recipe keeps ownership of presentation.
  * -----------------------------------------------------------------------------------------------*/
-export const AuthFooterLinksLayout: Layout<
-  typeof authFooterLinks,
-  AuthFooterLinksProps
-> = () => (
+export const AuthFooterLinksLayout: Layout<typeof authFooterLinks, AuthFooterLinksProps> = () => (
   <div {...slot.root}>
     <For each={local.items}>
       {(item) =>

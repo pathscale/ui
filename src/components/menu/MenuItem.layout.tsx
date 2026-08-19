@@ -1,24 +1,12 @@
+import {createContext, createMemo, createTrackedEffect, createUniqueId, onCleanup, omit, useContext, type Component, type ParentComponent} from "solid-js";
 import type { JSX } from "@solidjs/web";
-import {
-  type Component,
-  createContext,
-  createMemo,
-  createTrackedEffect,
-  createUniqueId,
-  omit,
-  onCleanup,
-  type ParentComponent,
-  useContext,
-} from "solid-js";
-import type { Layout } from "../../lib/layouts";
 import { twMerge } from "../../lib/twMerge";
-import type { State, UIBaseProps } from "../vocabulary";
-import {
-  MenuContext,
-  type MenuItemVariant,
-  type MenuSelectionMode,
-} from "./context";
-import { CLASSES, type componentRecipe } from "./Menu.recipe";
+
+import type { UIBaseProps, State } from "../vocabulary";
+import { MenuContext, type MenuItemVariant, type MenuSelectionMode } from "./context";
+import { CLASSES } from "./Menu.recipe";
+import type { Layout } from "../../lib/layouts";
+import { componentRecipe } from "./Menu.recipe";
 
 type MenuItemRenderProps = {
   isSelected: boolean;
@@ -69,10 +57,7 @@ const extractTextValue = (nodes: unknown[]): string | undefined => {
   return undefined;
 };
 
-export type MenuItemRootProps = Omit<
-  JSX.HTMLAttributes<HTMLDivElement>,
-  "children"
-> &
+export type MenuItemRootProps = Omit<JSX.HTMLAttributes<HTMLDivElement>, "children"> &
   UIBaseProps & {
     id?: string | number;
     textValue?: string;
@@ -86,10 +71,7 @@ export type MenuItemRootProps = Omit<
 
 export type MenuItemIndicatorType = "checkmark" | "dot";
 
-export type MenuItemIndicatorProps = Omit<
-  JSX.HTMLAttributes<HTMLSpanElement>,
-  "children"
-> &
+export type MenuItemIndicatorProps = Omit<JSX.HTMLAttributes<HTMLSpanElement>, "children"> &
   UIBaseProps & {
     type?: MenuItemIndicatorType;
     children?: JSX.Element | ((props: MenuItemRenderProps) => JSX.Element);
@@ -135,8 +117,7 @@ const MenuItemRoot: Layout<typeof componentRecipe, MenuItemRootProps> = () => {
     if (props.id != null) return String(props.id);
     if (props.textValue) return toSlug(props.textValue);
 
-    const staticChildren =
-      typeof props.children === "function" ? [] : [props.children];
+    const staticChildren = typeof props.children === "function" ? [] : [props.children];
     const textValue = extractTextValue(staticChildren);
 
     if (textValue) return toSlug(textValue);
@@ -148,11 +129,8 @@ const MenuItemRoot: Layout<typeof componentRecipe, MenuItemRootProps> = () => {
   const isSelected = () => menu?.isSelected(key()) ?? false;
   const isFocused = () => menu?.focusedKey() === key();
   const isDisabled = () =>
-    menu?.isItemDisabled(
-      key(),
-      Boolean(props.state === "disabled") || Boolean(props.disabled),
-    ) ??
-    (Boolean(props.state === "disabled") || Boolean(props.disabled));
+    menu?.isItemDisabled(key(), Boolean((props.state === "disabled")) || Boolean(props.disabled)) ??
+    (Boolean((props.state === "disabled")) || Boolean(props.disabled));
 
   const renderState = createMemo<MenuItemRenderProps>(() => ({
     isSelected: isSelected(),
@@ -181,16 +159,12 @@ const MenuItemRoot: Layout<typeof componentRecipe, MenuItemRootProps> = () => {
     props.onAction?.(key());
   };
 
-  const handleClick: JSX.EventHandlerUnion<HTMLDivElement, MouseEvent> = (
-    event,
-  ) => {
+  const handleClick: JSX.EventHandlerUnion<HTMLDivElement, MouseEvent> = (event) => {
     invokeEventHandler(props.onClick, event);
     handleActivate(event);
   };
 
-  const handleKeyDown: JSX.EventHandlerUnion<HTMLDivElement, KeyboardEvent> = (
-    event,
-  ) => {
+  const handleKeyDown: JSX.EventHandlerUnion<HTMLDivElement, KeyboardEvent> = (event) => {
     invokeEventHandler(props.onKeyDown, event);
     if (event.defaultPrevented || isDisabled()) return;
 
@@ -224,17 +198,13 @@ const MenuItemRoot: Layout<typeof componentRecipe, MenuItemRootProps> = () => {
     }
   };
 
-  const handleFocus: JSX.EventHandlerUnion<HTMLDivElement, FocusEvent> = (
-    event,
-  ) => {
+  const handleFocus: JSX.EventHandlerUnion<HTMLDivElement, FocusEvent> = (event) => {
     invokeEventHandler(props.onFocus, event);
     if (event.defaultPrevented) return;
     menu?.setFocusedKey(key());
   };
 
-  const handleBlur: JSX.EventHandlerUnion<HTMLDivElement, FocusEvent> = (
-    event,
-  ) => {
+  const handleBlur: JSX.EventHandlerUnion<HTMLDivElement, FocusEvent> = (event) => {
     invokeEventHandler(props.onBlur, event);
     if (event.defaultPrevented) return;
 
@@ -248,7 +218,7 @@ const MenuItemRoot: Layout<typeof componentRecipe, MenuItemRootProps> = () => {
 
     menu.registerItem({
       key: key(),
-      disabled: Boolean(props.state === "disabled") || Boolean(props.disabled),
+      disabled: Boolean((props.state === "disabled")) || Boolean(props.disabled),
       ref: itemRef,
     });
   });
@@ -270,20 +240,8 @@ const MenuItemRoot: Layout<typeof componentRecipe, MenuItemRootProps> = () => {
         }}
         role={resolvedRole()}
         tabindex={resolvedTabIndex()}
-        aria-selected={
-          selectionMode() === "none"
-            ? undefined
-            : isSelected()
-              ? "true"
-              : "false"
-        }
-        aria-checked={
-          selectionMode() === "none"
-            ? undefined
-            : isSelected()
-              ? "true"
-              : "false"
-        }
+        aria-selected={selectionMode() === "none" ? undefined : (isSelected() ? "true" : "false")}
+        aria-checked={selectionMode() === "none" ? undefined : (isSelected() ? "true" : "false")}
         aria-disabled={isDisabled() ? "true" : undefined}
         data-slot="menu-item"
         data-theme={props.dataTheme}
@@ -293,13 +251,11 @@ const MenuItemRoot: Layout<typeof componentRecipe, MenuItemRootProps> = () => {
         data-has-submenu={props.hasSubmenu ? "true" : undefined}
         data-selection-mode={selectionMode()}
         data-key={key()}
-        {...{
-          class: twMerge(
-            CLASSES.Item.base,
-            CLASSES.Item.variant[variant()],
-            props.class,
-          ),
-        }}
+        {...{ class: twMerge(
+          CLASSES.Item.base,
+          CLASSES.Item.variant[variant()],
+          props.class,
+        ) }}
         style={props.style}
         onClick={handleClick}
         onKeyDown={handleKeyDown}
@@ -312,19 +268,14 @@ const MenuItemRoot: Layout<typeof componentRecipe, MenuItemRootProps> = () => {
           the union to be inferred.
         */}
         {typeof props.children === "function"
-          ? (props.children as (props: MenuItemRenderProps) => JSX.Element)(
-              renderState(),
-            )
+          ? (props.children as (props: MenuItemRenderProps) => JSX.Element)(renderState())
           : (props.children as JSX.Element)}
       </div>
     </MenuItemStateContext>
   );
 };
 
-const MenuItemIndicator: Layout<
-  typeof componentRecipe,
-  MenuItemIndicatorProps
-> = () => {
+const MenuItemIndicator: Layout<typeof componentRecipe, MenuItemIndicatorProps> = () => {
   const context = useContext(MenuItemStateContext);
   const others = omit(props, "children", "class", "dataTheme", "style", "type");
 
@@ -351,9 +302,7 @@ const MenuItemIndicator: Layout<
       style={props.style}
     >
       {typeof props.children === "function" ? (
-        (props.children as (props: MenuItemRenderProps) => JSX.Element)(
-          renderState(),
-        )
+        (props.children as (props: MenuItemRenderProps) => JSX.Element)(renderState())
       ) : props.children ? (
         props.children
       ) : type() === "dot" ? (
@@ -366,11 +315,7 @@ const MenuItemIndicator: Layout<
           viewBox="0 0 16 16"
           xmlns="http://www.w3.org/2000/svg"
         >
-          <path
-            clip-rule="evenodd"
-            d="M8 15A7 7 0 1 0 8 1a7 7 0 0 0 0 14"
-            fill-rule="evenodd"
-          />
+          <path clip-rule="evenodd" d="M8 15A7 7 0 1 0 8 1a7 7 0 0 0 0 14" fill-rule="evenodd" />
         </svg>
       ) : (
         <svg
@@ -393,10 +338,7 @@ const MenuItemIndicator: Layout<
   );
 };
 
-const MenuItemSubmenuIndicator: Layout<
-  typeof componentRecipe,
-  MenuItemSubmenuIndicatorProps
-> = () => {
+const MenuItemSubmenuIndicator: Layout<typeof componentRecipe, MenuItemSubmenuIndicatorProps> = () => {
   const context = useContext(MenuItemStateContext);
   const others = omit(props, "children", "class", "dataTheme", "style");
 
@@ -410,13 +352,7 @@ const MenuItemSubmenuIndicator: Layout<
       aria-hidden="true"
       data-slot="submenu-indicator"
       data-theme={props.dataTheme}
-      {...{
-        class: twMerge(
-          CLASSES.ItemIndicator.base,
-          CLASSES.ItemIndicator.submenu,
-          props.class,
-        ),
-      }}
+      {...{ class: twMerge(CLASSES.ItemIndicator.base, CLASSES.ItemIndicator.submenu, props.class) }}
       style={props.style}
     >
       {props.children ?? (
@@ -444,10 +380,10 @@ const MenuItem = Object.assign(MenuItemRoot, {
 });
 
 export default MenuItem;
+export { MenuItem, MenuItemRoot, MenuItemIndicator, MenuItemSubmenuIndicator };
 export type {
-  MenuItemRenderProps,
   MenuItemRootProps as MenuItemProps,
-  MenuItemVariant,
+  MenuItemRenderProps,
   MenuSelectionMode,
+  MenuItemVariant,
 };
-export { MenuItem, MenuItemIndicator, MenuItemRoot, MenuItemSubmenuIndicator };

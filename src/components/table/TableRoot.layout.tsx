@@ -1,11 +1,11 @@
 import "./Table.css";
 import type { JSX } from "@solidjs/web";
-import { omit } from "solid-js";
-import type { Layout } from "../../lib/layouts";
+import {omit} from "solid-js";
 import { twMerge } from "../../lib/twMerge";
+import type { Layout } from "../../lib/layouts";
 import type { UIBaseProps } from "../vocabulary";
 import { TableContext, type TableVariant } from "./Table.context";
-import { CLASSES, type componentRecipe } from "./Table.recipe";
+import { CLASSES, componentRecipe } from "./Table.recipe";
 
 export type TableRootProps = JSX.HTMLAttributes<HTMLDivElement> &
   UIBaseProps & {

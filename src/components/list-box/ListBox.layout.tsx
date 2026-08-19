@@ -1,9 +1,10 @@
 import "./ListBox.css";
 import type { JSX } from "@solidjs/web";
-import { type Component, createMemo, createSignal, For, omit } from "solid-js";
-import type { Layout } from "../../lib/layouts";
+import {For, createMemo, createSignal, omit, type Component} from "solid-js";
 import { twMerge } from "../../lib/twMerge";
-import type { State, UIBaseProps } from "../vocabulary";
+
+import type { UIBaseProps, State } from "../vocabulary";
+import { CLASSES } from "./ListBox.recipe";
 import {
   ListBoxContext,
   type ListBoxFocusTarget,
@@ -11,7 +12,8 @@ import {
   type ListBoxSelectionMode,
   type ListBoxVariant,
 } from "./context";
-import { CLASSES, type componentRecipe } from "./ListBox.recipe";
+import type { Layout } from "../../lib/layouts";
+import { componentRecipe } from "./ListBox.recipe";
 
 const normalizeKeys = (keys?: Iterable<string | number>): Set<string> => {
   if (!keys) return new Set();
@@ -85,15 +87,12 @@ const ListBoxRoot: Layout<typeof componentRecipe, ListBoxRootProps> = () => {
     normalizeKeys(props.defaultSelectedKeys),
   );
   const [focusedKey, setFocusedKey] = createSignal<string | undefined>();
-  const [registeredItems, setRegisteredItems] = createSignal<
-    ListBoxItemRecord[]
-  >([]);
+  const [registeredItems, setRegisteredItems] = createSignal<ListBoxItemRecord[]>([]);
 
   const variant = () => props.variant ?? "default";
   const selectionMode = () => props.selectionMode ?? "none";
   const isControlled = () => props.selectedKeys !== undefined;
-  const isDisabled = () =>
-    Boolean(props.state === "disabled") || Boolean(props.disabled);
+  const isDisabled = () => Boolean((props.state === "disabled")) || Boolean(props.disabled);
   const selectedKeys = createMemo(() =>
     isControlled() ? normalizeKeys(props.selectedKeys) : internalSelectedKeys(),
   );
@@ -116,18 +115,12 @@ const ListBoxRoot: Layout<typeof componentRecipe, ListBoxRootProps> = () => {
     if (!enabledItems.length) return;
 
     if (target === "selected") {
-      const selectedItem = enabledItems.find((item) =>
-        selectedKeys().has(item.key),
-      );
+      const selectedItem = enabledItems.find((item) => selectedKeys().has(item.key));
       focusItem(selectedItem ?? enabledItems[0]);
       return;
     }
 
-    focusItem(
-      target === "first"
-        ? enabledItems[0]
-        : enabledItems[enabledItems.length - 1],
-    );
+    focusItem(target === "first" ? enabledItems[0] : enabledItems[enabledItems.length - 1]);
   };
 
   const focusNext = (direction: 1 | -1) => {
@@ -135,14 +128,10 @@ const ListBoxRoot: Layout<typeof componentRecipe, ListBoxRootProps> = () => {
     if (!enabledItems.length) return;
 
     const activeElement = document.activeElement;
-    let currentIndex = enabledItems.findIndex(
-      (item) => item.ref === activeElement,
-    );
+    let currentIndex = enabledItems.findIndex((item) => item.ref === activeElement);
 
     if (currentIndex < 0 && focusedKey()) {
-      currentIndex = enabledItems.findIndex(
-        (item) => item.key === focusedKey(),
-      );
+      currentIndex = enabledItems.findIndex((item) => item.key === focusedKey());
     }
 
     if (currentIndex < 0) {
@@ -150,8 +139,7 @@ const ListBoxRoot: Layout<typeof componentRecipe, ListBoxRootProps> = () => {
       return;
     }
 
-    const nextIndex =
-      (currentIndex + direction + enabledItems.length) % enabledItems.length;
+    const nextIndex = (currentIndex + direction + enabledItems.length) % enabledItems.length;
     focusItem(enabledItems[nextIndex]);
   };
 
@@ -200,10 +188,7 @@ const ListBoxRoot: Layout<typeof componentRecipe, ListBoxRootProps> = () => {
 
   const registerItem = (item: ListBoxItemRecord) => {
     setRegisteredItems((current) =>
-      sortItemsByDomOrder([
-        ...current.filter((entry) => entry.key !== item.key),
-        item,
-      ]),
+      sortItemsByDomOrder([...current.filter((entry) => entry.key !== item.key), item]),
     );
   };
 
@@ -226,9 +211,7 @@ const ListBoxRoot: Layout<typeof componentRecipe, ListBoxRootProps> = () => {
       const enabledItems = getEnabledItems();
       if (!enabledItems.length) return -1;
 
-      const selectedItem = enabledItems.find((item) =>
-        selectedKeys().has(item.key),
-      );
+      const selectedItem = enabledItems.find((item) => selectedKeys().has(item.key));
       const fallback = selectedItem ?? enabledItems[0];
 
       return fallback?.key === key ? 0 : -1;
@@ -237,9 +220,7 @@ const ListBoxRoot: Layout<typeof componentRecipe, ListBoxRootProps> = () => {
     return -1;
   };
 
-  const handleKeyDown: JSX.EventHandlerUnion<HTMLDivElement, KeyboardEvent> = (
-    event,
-  ) => {
+  const handleKeyDown: JSX.EventHandlerUnion<HTMLDivElement, KeyboardEvent> = (event) => {
     invokeEventHandler(props.onKeyDown, event);
 
     if (event.defaultPrevented) return;
@@ -268,8 +249,7 @@ const ListBoxRoot: Layout<typeof componentRecipe, ListBoxRootProps> = () => {
 
   const renderChildren = (): JSX.Element => {
     const isItemRenderer =
-      typeof props.children === "function" &&
-      (props.children as (...args: unknown[]) => unknown).length > 0;
+      typeof props.children === "function" && (props.children as (...args: unknown[]) => unknown).length > 0;
     const resolvedStaticChildren =
       typeof props.children === "function"
         ? isItemRenderer
@@ -316,9 +296,7 @@ const ListBoxRoot: Layout<typeof componentRecipe, ListBoxRootProps> = () => {
       <div
         {...others}
         role={props.role ?? "listbox"}
-        aria-multiselectable={
-          selectionMode() === "multiple" ? "true" : undefined
-        }
+        aria-multiselectable={selectionMode() === "multiple" ? "true" : undefined}
         aria-disabled={isDisabled() ? "true" : undefined}
         data-slot="listbox"
         data-theme={props.dataTheme}
@@ -339,9 +317,5 @@ const ListBoxRoot: Layout<typeof componentRecipe, ListBoxRootProps> = () => {
 };
 
 export default ListBoxRoot;
-export type {
-  ListBoxRootProps as ListBoxProps,
-  ListBoxSelectionMode,
-  ListBoxVariant,
-};
 export { ListBoxRoot };
+export type { ListBoxRootProps as ListBoxProps, ListBoxSelectionMode, ListBoxVariant };

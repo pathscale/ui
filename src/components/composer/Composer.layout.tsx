@@ -1,12 +1,6 @@
 import "./Composer.css";
 import type { JSX } from "@solidjs/web";
-import {
-  createSignal,
-  createTrackedEffect,
-  For,
-  onSettled,
-  Show,
-} from "solid-js";
+import {For, Show, createSignal, createTrackedEffect, onSettled} from "solid-js";
 import type { Layout } from "../../lib/layouts";
 import type {
   ChangeReason,
@@ -18,6 +12,7 @@ import type {
   Variant,
 } from "../vocabulary";
 import { isInvalid, resolveState } from "../vocabulary";
+import { composer } from "./Composer.recipe";
 import {
   afterValueLands,
   autosize,
@@ -27,7 +22,6 @@ import {
   shouldSubmit,
   viewportHeight,
 } from "./Composer.interactions";
-import type { composer } from "./Composer.recipe";
 
 /* -------------------------------------------------------------------------------------------------
  * Types
@@ -130,10 +124,7 @@ export const ComposerLayout: Layout<typeof composer, ComposerProps> = () => {
   };
 
   return (
-    <div
-      {...slot.root}
-      data-state={state()}
-    >
+    <div {...slot.root} data-state={state()}>
       <textarea
         {...slot.field}
         ref={field}
@@ -180,9 +171,7 @@ export const ComposerLayout: Layout<typeof composer, ComposerProps> = () => {
         <ul {...slot.issues}>
           <For each={local.issues}>
             {(issue) => (
-              <li data-severity={issue.severity ?? "error"}>
-                {issue.message ?? issue.code}
-              </li>
+              <li data-severity={issue.severity ?? "error"}>{issue.message ?? issue.code}</li>
             )}
           </For>
         </ul>

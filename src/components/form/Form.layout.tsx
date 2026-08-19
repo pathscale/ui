@@ -1,14 +1,15 @@
 import "./Form.css";
 import type { JSX } from "@solidjs/web";
-import { type Component, omit } from "solid-js";
-import { type AnyFormApi, FormContext } from "../../hooks/form/FormContext";
-import type { Layout } from "../../lib/layouts";
+import {omit, type Component} from "solid-js";
 import { twMerge } from "../../lib/twMerge";
-import type { UIBaseProps } from "../vocabulary";
-import { CLASSES, type componentRecipe } from "./Form.recipe";
 
-export type FormRootProps = JSX.FormHTMLAttributes<HTMLFormElement> &
-  UIBaseProps;
+import type { UIBaseProps } from "../vocabulary";
+import { CLASSES } from "./Form.recipe";
+import { FormContext, type AnyFormApi } from "../../hooks/form/FormContext";
+import type { Layout } from "../../lib/layouts";
+import { componentRecipe } from "./Form.recipe";
+
+export type FormRootProps = JSX.FormHTMLAttributes<HTMLFormElement> & UIBaseProps;
 
 const FormRoot: Layout<typeof componentRecipe, FormRootProps> = () => {
   const others = omit(props, "class", "dataTheme", "style");
@@ -24,10 +25,7 @@ const FormRoot: Layout<typeof componentRecipe, FormRootProps> = () => {
   );
 };
 
-export type FormWithContextProps = Omit<
-  JSX.FormHTMLAttributes<HTMLFormElement>,
-  "onSubmit"
-> &
+export type FormWithContextProps = Omit<JSX.FormHTMLAttributes<HTMLFormElement>, "onSubmit"> &
   UIBaseProps & {
     /**
      * The form API returned by `createForm()`.
@@ -43,23 +41,10 @@ export type FormWithContextProps = Omit<
     onSubmit?: JSX.EventHandlerUnion<HTMLFormElement, SubmitEvent>;
   };
 
-const FormWithContext: Layout<
-  typeof componentRecipe,
-  FormWithContextProps
-> = () => {
-  const others = omit(
-    props,
-    "form",
-    "class",
-    "dataTheme",
-    "style",
-    "onSubmit",
-    "children",
-  );
+const FormWithContext: Layout<typeof componentRecipe, FormWithContextProps> = () => {
+  const others = omit(props, "form", "class", "dataTheme", "style", "onSubmit", "children");
 
-  const handleSubmit: JSX.EventHandlerUnion<HTMLFormElement, SubmitEvent> = (
-    e,
-  ) => {
+  const handleSubmit: JSX.EventHandlerUnion<HTMLFormElement, SubmitEvent> = (e) => {
     e.preventDefault();
     e.stopPropagation();
     void props.form.submit();
@@ -99,10 +84,7 @@ const FormWithContext: Layout<
  * <Form form={form} class="space-y-4">{...}</Form>
  * ```
  */
-const Form: Layout<
-  typeof componentRecipe,
-  FormRootProps | FormWithContextProps
-> = () => {
+const Form: Layout<typeof componentRecipe, FormRootProps | FormWithContextProps> = () => {
   if ("form" in props && props.form != null) {
     return <FormWithContext {...(props as FormWithContextProps)} />;
   }
@@ -113,5 +95,5 @@ const Form: Layout<
 (Form as unknown as Record<string, unknown>).WithContext = FormWithContext;
 
 export default Form;
-export type { FormRootProps as FormProps };
 export { Form, FormRoot, FormWithContext };
+export type { FormRootProps as FormProps };

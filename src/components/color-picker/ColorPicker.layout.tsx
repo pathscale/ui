@@ -1,33 +1,15 @@
 import "./ColorPicker.css";
 import type { JSX } from "@solidjs/web";
-import {
-  type Accessor,
-  type Component,
-  createContext,
-  createMemo,
-  createSignal,
-  createTrackedEffect,
-  omit,
-  useContext,
-} from "solid-js";
-import type { Layout } from "../../lib/layouts";
+import {createContext, createMemo, createSignal, createTrackedEffect, omit, useContext, type Accessor, type Component} from "solid-js";
 import { twMerge } from "../../lib/twMerge";
-import ColorArea, {
-  type ColorAreaProps,
-  type ColorAreaValue,
-} from "../color-area";
+import ColorArea, { type ColorAreaProps, type ColorAreaValue } from "../color-area";
 import ColorField, { type ColorFieldProps } from "../color-field";
-import ColorSlider, {
-  type ColorSliderProps,
-  type ColorSliderType,
-} from "../color-slider";
-import {
-  formatColor,
-  parseColor,
-  rgbToHex,
-} from "../color-wheel-flower/ColorUtils";
-import type { State, UIBaseProps } from "../vocabulary";
-import { CLASSES, type componentRecipe } from "./ColorPicker.recipe";
+import ColorSlider, { type ColorSliderProps, type ColorSliderType } from "../color-slider";
+import { formatColor, parseColor, rgbToHex } from "../color-wheel-flower/ColorUtils";
+import type { UIBaseProps, State } from "../vocabulary";
+import { CLASSES } from "./ColorPicker.recipe";
+import type { Layout } from "../../lib/layouts";
+import { componentRecipe } from "./ColorPicker.recipe";
 
 const DEFAULT_COLOR = "#3B82F6";
 
@@ -47,8 +29,7 @@ type ColorPickerContextValue = {
 
 const ColorPickerContext = createContext<ColorPickerContextValue | null>(null);
 
-const clamp = (value: number, min: number, max: number) =>
-  Math.min(max, Math.max(min, value));
+const clamp = (value: number, min: number, max: number) => Math.min(max, Math.max(min, value));
 
 const normalizeHue = (value: number) => ((value % 360) + 360) % 360;
 
@@ -172,17 +153,11 @@ const fallbackState = (): NormalizedColorState => {
   };
 };
 
-export type ColorPickerAreaProps = Omit<
-  ColorAreaProps,
-  "value" | "onChange" | "isDisabled"
-> & {
+export type ColorPickerAreaProps = Omit<ColorAreaProps, "value" | "onChange" | "isDisabled"> & {
   onChange?: (value: ColorAreaValue) => void;
 };
 
-const ColorPickerArea: Layout<
-  typeof componentRecipe,
-  ColorPickerAreaProps
-> = () => {
+const ColorPickerArea: Layout<typeof componentRecipe, ColorPickerAreaProps> = () => {
   const ctx = useContext(ColorPickerContext);
   const others = omit(props, "class", "onChange", "dataTheme");
 
@@ -214,17 +189,11 @@ const ColorPickerArea: Layout<
   );
 };
 
-export type ColorPickerSliderProps = Omit<
-  ColorSliderProps,
-  "value" | "onChange" | "isDisabled"
-> & {
+export type ColorPickerSliderProps = Omit<ColorSliderProps, "value" | "onChange" | "isDisabled"> & {
   onChange?: (value: number) => void;
 };
 
-const ColorPickerSlider: Layout<
-  typeof componentRecipe,
-  ColorPickerSliderProps
-> = () => {
+const ColorPickerSlider: Layout<typeof componentRecipe, ColorPickerSliderProps> = () => {
   const ctx = useContext(ColorPickerContext);
   const others = omit(props, "class", "onChange", "type", "style", "dataTheme");
 
@@ -243,8 +212,7 @@ const ColorPickerSlider: Layout<
     );
   }
 
-  const value = () =>
-    sliderType() === "alpha" ? ctx.value().alpha : ctx.value().hsv.h;
+  const value = () => (sliderType() === "alpha" ? ctx.value().alpha : ctx.value().hsv.h);
 
   const handleChange = (next: number) => {
     ctx.setFromSlider(sliderType(), next);
@@ -258,11 +226,7 @@ const ColorPickerSlider: Layout<
       return { ...userStyle };
     }
 
-    const rgb = hsvToRgb(
-      ctx.value().hsv.h,
-      ctx.value().hsv.s,
-      ctx.value().hsv.v,
-    );
+    const rgb = hsvToRgb(ctx.value().hsv.h, ctx.value().hsv.s, ctx.value().hsv.v);
 
     return {
       "--color-slider-alpha-color": `rgb(${rgb.r} ${rgb.g} ${rgb.b})`,
@@ -284,26 +248,13 @@ const ColorPickerSlider: Layout<
   );
 };
 
-export type ColorPickerFieldProps = Omit<
-  ColorFieldProps,
-  "value" | "onChange" | "isDisabled"
-> & {
+export type ColorPickerFieldProps = Omit<ColorFieldProps, "value" | "onChange" | "isDisabled"> & {
   onChange?: (value: string) => void;
 };
 
-const ColorPickerField: Layout<
-  typeof componentRecipe,
-  ColorPickerFieldProps
-> = () => {
+const ColorPickerField: Layout<typeof componentRecipe, ColorPickerFieldProps> = () => {
   const ctx = useContext(ColorPickerContext);
-  const others = omit(
-    props,
-    "class",
-    "onChange",
-    "fullWidth",
-    "format",
-    "dataTheme",
-  );
+  const others = omit(props, "class", "onChange", "fullWidth", "format", "dataTheme");
 
   if (!ctx) {
     return (
@@ -337,10 +288,7 @@ const ColorPickerField: Layout<
   );
 };
 
-export type ColorPickerProps = Omit<
-  JSX.HTMLAttributes<HTMLDivElement>,
-  "children" | "onChange"
-> &
+export type ColorPickerProps = Omit<JSX.HTMLAttributes<HTMLDivElement>, "children" | "onChange"> &
   UIBaseProps & {
     children?: JSX.Element;
     value?: string;
@@ -349,10 +297,7 @@ export type ColorPickerProps = Omit<
     state?: State;
   };
 
-const ColorPickerRoot: Layout<
-  typeof componentRecipe,
-  ColorPickerProps
-> = () => {
+const ColorPickerRoot: Layout<typeof componentRecipe, ColorPickerProps> = () => {
   const others = omit(
     props,
     "class",
@@ -433,7 +378,7 @@ const ColorPickerRoot: Layout<
 
   const context = createMemo<ColorPickerContextValue>(() => ({
     value: currentState,
-    isDisabled: () => Boolean(props.state === "disabled"),
+    isDisabled: () => Boolean((props.state === "disabled")),
     setFromArea,
     setFromField,
     setFromSlider,
@@ -446,7 +391,7 @@ const ColorPickerRoot: Layout<
         {...{ class: twMerge(CLASSES.base, props.class) }}
         data-theme={props.dataTheme}
         data-slot="color-picker"
-        data-disabled={props.state === "disabled" ? "true" : "false"}
+        data-disabled={(props.state === "disabled") ? "true" : "false"}
       >
         {props.children ?? (
           <>
@@ -470,8 +415,8 @@ const ColorPicker = Object.assign(ColorPickerRoot, {
 export {
   ColorPicker as default,
   ColorPicker,
-  ColorPickerArea,
-  ColorPickerField,
   ColorPickerRoot,
+  ColorPickerArea,
   ColorPickerSlider,
+  ColorPickerField,
 };

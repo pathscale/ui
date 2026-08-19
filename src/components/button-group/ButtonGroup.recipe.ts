@@ -14,7 +14,4 @@ export const CLASSES = {
     base: "button-group__separator",
   },
 } as const;
-export const componentRecipe = recipe({
-  component: "button-group",
-  slots: { "button-group": {}, "button-group-separator": {}, root: {} },
-});
+export const componentRecipe = recipe({component:"button-group",slots:{"button-group":{},"button-group-separator":{},"root":{},},});

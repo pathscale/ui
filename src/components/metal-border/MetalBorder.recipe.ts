@@ -25,7 +25,4 @@ export const CLASSES = {
     base: "metal-border__content",
   },
 } as const;
-export const componentRecipe = recipe({
-  component: "metal-border",
-  slots: { root: {} },
-});
+export const componentRecipe = recipe({component:"metal-border",slots:{"root":{},},});

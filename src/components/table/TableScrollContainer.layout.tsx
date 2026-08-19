@@ -1,9 +1,9 @@
+import {omit} from "solid-js";
 import type { JSX } from "@solidjs/web";
-import { omit } from "solid-js";
-import type { Layout } from "../../lib/layouts";
 import { twMerge } from "../../lib/twMerge";
+import type { Layout } from "../../lib/layouts";
 import type { UIBaseProps } from "../vocabulary";
-import { CLASSES, type tableScrollContainerRecipe } from "./Table.recipe";
+import { CLASSES, tableScrollContainerRecipe } from "./Table.recipe";
 
 export type TableScrollContainerProps = JSX.HTMLAttributes<HTMLDivElement> &
   UIBaseProps;

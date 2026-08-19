@@ -1,18 +1,17 @@
 import "./Textarea.css";
 import type { JSX } from "@solidjs/web";
-import { type Component, omit } from "solid-js";
-import type { Layout } from "../../lib/layouts";
+import {omit, type Component} from "solid-js";
 import { twMerge } from "../../lib/twMerge";
-import type { Issue, State, UIBaseProps } from "../vocabulary";
+
+import type { UIBaseProps, State, Issue } from "../vocabulary";
+import { CLASSES } from "./Textarea.recipe";
+import type { Layout } from "../../lib/layouts";
+import { componentRecipe } from "./Textarea.recipe";
 import { resolveState } from "../vocabulary";
-import { CLASSES, type componentRecipe } from "./Textarea.recipe";
 
 export type TextareaVariant = "primary" | "secondary";
 
-export type TextareaRootProps = Omit<
-  JSX.TextareaHTMLAttributes<HTMLTextAreaElement>,
-  "children"
-> &
+export type TextareaRootProps = Omit<JSX.TextareaHTMLAttributes<HTMLTextAreaElement>, "children"> &
   UIBaseProps & {
     variant?: TextareaVariant;
     fullWidth?: boolean;
@@ -36,10 +35,8 @@ const TextareaRoot: Layout<typeof componentRecipe, TextareaRootProps> = () => {
 
   const variant = () => props.variant ?? "primary";
   const fullWidth = () => Boolean(props.fullWidth);
-  const isInvalid = () =>
-    Boolean(resolveState(props.state, props.issues) === "invalid");
-  const isDisabled = () =>
-    Boolean(props.state === "disabled") || Boolean(props.disabled);
+  const isInvalid = () => Boolean((resolveState(props.state, props.issues) === "invalid"));
+  const isDisabled = () => Boolean((props.state === "disabled")) || Boolean(props.disabled);
 
   return (
     <textarea
@@ -67,5 +64,5 @@ const Textarea = Object.assign(TextareaRoot, {
 });
 
 export default Textarea;
-export type { TextareaRootProps as TextareaProps };
 export { Textarea, TextareaRoot };
+export type { TextareaRootProps as TextareaProps };

@@ -1,19 +1,13 @@
 import "./TimeField.css";
 import type { JSX } from "@solidjs/web";
-import {
-  type Accessor,
-  type Component,
-  createContext,
-  createSignal,
-  omit,
-  type ParentComponent,
-  useContext,
-} from "solid-js";
-import type { Layout } from "../../lib/layouts";
+import {createContext, createSignal, omit, useContext, type Accessor, type Component, type ParentComponent} from "solid-js";
 import { twMerge } from "../../lib/twMerge";
-import type { Issue, State, UIBaseProps } from "../vocabulary";
+
+import type { UIBaseProps, State, Issue } from "../vocabulary";
+import { CLASSES } from "./TimeField.recipe";
+import type { Layout } from "../../lib/layouts";
+import { componentRecipe } from "./TimeField.recipe";
 import { resolveState } from "../vocabulary";
-import { CLASSES, type componentRecipe } from "./TimeField.recipe";
 
 export type TimeFieldVariant = "primary" | "secondary";
 
@@ -25,9 +19,7 @@ type TimeFieldContextValue = {
   isDisabled: Accessor<boolean>;
   isInvalid: Accessor<boolean>;
   isRequired: Accessor<boolean>;
-  onBlur: Accessor<
-    JSX.EventHandlerUnion<HTMLInputElement, FocusEvent> | undefined
-  >;
+  onBlur: Accessor<JSX.EventHandlerUnion<HTMLInputElement, FocusEvent> | undefined>;
   setValue: (nextValue: string) => void;
 };
 
@@ -64,10 +56,7 @@ export type TimeFieldRenderProps = {
   isRequired: boolean;
 };
 
-export type TimeFieldRootProps = Omit<
-  JSX.HTMLAttributes<HTMLDivElement>,
-  "children" | "onChange" | "onBlur"
-> &
+export type TimeFieldRootProps = Omit<JSX.HTMLAttributes<HTMLDivElement>, "children" | "onChange" | "onBlur"> &
   UIBaseProps & {
     children?: JSX.Element | ((props: TimeFieldRenderProps) => JSX.Element);
     name?: string;
@@ -83,10 +72,7 @@ export type TimeFieldRootProps = Omit<
     required?: boolean;
   };
 
-export type TimeFieldGroupProps = Omit<
-  JSX.HTMLAttributes<HTMLDivElement>,
-  "children"
-> &
+export type TimeFieldGroupProps = Omit<JSX.HTMLAttributes<HTMLDivElement>, "children"> &
   UIBaseProps & {
     children?: JSX.Element | ((props: TimeFieldRenderProps) => JSX.Element);
   };
@@ -99,8 +85,7 @@ export type TimeFieldInputProps = Omit<
     onInput?: JSX.EventHandlerUnion<HTMLInputElement, InputEvent>;
   };
 
-export type TimeFieldInputContainerProps = JSX.HTMLAttributes<HTMLDivElement> &
-  UIBaseProps;
+export type TimeFieldInputContainerProps = JSX.HTMLAttributes<HTMLDivElement> & UIBaseProps;
 
 export type TimeFieldSegmentValue = {
   type?: string;
@@ -116,15 +101,10 @@ export type TimeFieldSegmentProps = JSX.HTMLAttributes<HTMLSpanElement> &
     segment?: TimeFieldSegmentValue;
   };
 
-export type TimeFieldPrefixProps = JSX.HTMLAttributes<HTMLDivElement> &
-  UIBaseProps;
-export type TimeFieldSuffixProps = JSX.HTMLAttributes<HTMLDivElement> &
-  UIBaseProps;
+export type TimeFieldPrefixProps = JSX.HTMLAttributes<HTMLDivElement> & UIBaseProps;
+export type TimeFieldSuffixProps = JSX.HTMLAttributes<HTMLDivElement> & UIBaseProps;
 
-const TimeFieldRoot: Layout<
-  typeof componentRecipe,
-  TimeFieldRootProps
-> = () => {
+const TimeFieldRoot: Layout<typeof componentRecipe, TimeFieldRootProps> = () => {
   const others = omit(
     props,
     "children",
@@ -144,18 +124,14 @@ const TimeFieldRoot: Layout<
     "required",
   );
 
-  const [internalValue, setInternalValue] = createSignal(
-    props.defaultValue ?? "",
-  );
+  const [internalValue, setInternalValue] = createSignal(props.defaultValue ?? "");
 
   const isControlled = () => props.value !== undefined;
-  const value = () => (isControlled() ? (props.value ?? "") : internalValue());
+  const value = () => (isControlled() ? props.value ?? "" : internalValue());
   const variant = () => props.variant ?? "primary";
   const fullWidth = () => Boolean(props.fullWidth);
-  const isDisabled = () =>
-    Boolean(props.state === "disabled") || Boolean(props.disabled);
-  const isInvalid = () =>
-    Boolean(resolveState(props.state, props.issues) === "invalid");
+  const isDisabled = () => Boolean((props.state === "disabled")) || Boolean(props.disabled);
+  const isInvalid = () => Boolean((resolveState(props.state, props.issues) === "invalid"));
   const isRequired = () => Boolean(props.required) || Boolean(props.required);
 
   const setValue = (nextValue: string) => {
@@ -188,14 +164,12 @@ const TimeFieldRoot: Layout<
     <TimeFieldContext value={contextValue}>
       <div
         {...others}
-        {...{
-          class: twMerge(
-            CLASSES.Root.base,
-            CLASSES.Root.variant[variant()],
-            fullWidth() && CLASSES.Root.flag.fullWidth,
-            props.class,
-          ),
-        }}
+        {...{ class: twMerge(
+          CLASSES.Root.base,
+          CLASSES.Root.variant[variant()],
+          fullWidth() && CLASSES.Root.flag.fullWidth,
+          props.class,
+        ) }}
         data-slot="time-field"
         data-invalid={isInvalid() ? "true" : undefined}
         data-disabled={isDisabled() ? "true" : undefined}
@@ -219,10 +193,7 @@ const TimeFieldRoot: Layout<
   );
 };
 
-const TimeFieldGroup: Layout<
-  typeof componentRecipe,
-  TimeFieldGroupProps
-> = () => {
+const TimeFieldGroup: Layout<typeof componentRecipe, TimeFieldGroupProps> = () => {
   const context = useContext(TimeFieldContext);
   const others = omit(props, "children", "class", "dataTheme", "style");
 
@@ -236,53 +207,34 @@ const TimeFieldGroup: Layout<
   return (
     <div
       {...others}
-      {...{
-        class: twMerge(
-          CLASSES.Group.base,
-          CLASSES.Group.variant[context?.variant() ?? "primary"],
-          context?.fullWidth() && CLASSES.Group.flag.fullWidth,
-          props.class,
-        ),
-      }}
+      {...{ class: twMerge(
+        CLASSES.Group.base,
+        CLASSES.Group.variant[context?.variant() ?? "primary"],
+        context?.fullWidth() && CLASSES.Group.flag.fullWidth,
+        props.class,
+      ) }}
       data-slot="date-input-group"
       data-invalid={context?.isInvalid() ? "true" : undefined}
       data-disabled={context?.isDisabled() ? "true" : undefined}
       data-theme={props.dataTheme}
       style={props.style}
     >
-      {typeof props.children === "function"
-        ? props.children(renderProps())
-        : props.children}
+      {typeof props.children === "function" ? props.children(renderProps()) : props.children}
     </div>
   );
 };
 
-const TimeFieldInput: Layout<
-  typeof componentRecipe,
-  TimeFieldInputProps
-> = () => {
+const TimeFieldInput: Layout<typeof componentRecipe, TimeFieldInputProps> = () => {
   const context = useContext(TimeFieldContext);
-  const others = omit(
-    props,
-    "class",
-    "dataTheme",
-    "style",
-    "onInput",
-    "onBlur",
-    "name",
-  );
+  const others = omit(props, "class", "dataTheme", "style", "onInput", "onBlur", "name");
 
-  const handleInput: JSX.EventHandlerUnion<HTMLInputElement, InputEvent> = (
-    event,
-  ) => {
+  const handleInput: JSX.EventHandlerUnion<HTMLInputElement, InputEvent> = (event) => {
     invokeEventHandler(props.onInput, event);
     if (event.defaultPrevented) return;
     context?.setValue(event.currentTarget.value);
   };
 
-  const handleBlur: JSX.EventHandlerUnion<HTMLInputElement, FocusEvent> = (
-    event,
-  ) => {
+  const handleBlur: JSX.EventHandlerUnion<HTMLInputElement, FocusEvent> = (event) => {
     invokeEventHandler(props.onBlur, event);
     invokeEventHandler(context?.onBlur(), event);
   };
@@ -307,10 +259,7 @@ const TimeFieldInput: Layout<
   );
 };
 
-const TimeFieldInputContainer: Layout<
-  typeof componentRecipe,
-  TimeFieldInputContainerProps
-> = () => {
+const TimeFieldInputContainer: Layout<typeof componentRecipe, TimeFieldInputContainerProps> = () => {
   const others = omit(props, "children", "class", "dataTheme", "style");
 
   return (
@@ -326,18 +275,8 @@ const TimeFieldInputContainer: Layout<
   );
 };
 
-const TimeFieldSegment: Layout<
-  typeof componentRecipe,
-  TimeFieldSegmentProps
-> = () => {
-  const others = omit(
-    props,
-    "children",
-    "class",
-    "dataTheme",
-    "style",
-    "segment",
-  );
+const TimeFieldSegment: Layout<typeof componentRecipe, TimeFieldSegmentProps> = () => {
+  const others = omit(props, "children", "class", "dataTheme", "style", "segment");
 
   return (
     <span
@@ -357,10 +296,7 @@ const TimeFieldSegment: Layout<
   );
 };
 
-const TimeFieldPrefix: Layout<
-  typeof componentRecipe,
-  TimeFieldPrefixProps
-> = () => {
+const TimeFieldPrefix: Layout<typeof componentRecipe, TimeFieldPrefixProps> = () => {
   const others = omit(props, "children", "class", "dataTheme", "style");
 
   return (
@@ -376,10 +312,7 @@ const TimeFieldPrefix: Layout<
   );
 };
 
-const TimeFieldSuffix: Layout<
-  typeof componentRecipe,
-  TimeFieldSuffixProps
-> = () => {
+const TimeFieldSuffix: Layout<typeof componentRecipe, TimeFieldSuffixProps> = () => {
   const others = omit(props, "children", "class", "dataTheme", "style");
 
   return (
@@ -406,14 +339,14 @@ const TimeField = Object.assign(TimeFieldRoot, {
 });
 
 export default TimeField;
-export type { TimeFieldRootProps as TimeFieldProps };
 export {
   TimeField,
+  TimeFieldRoot,
   TimeFieldGroup,
   TimeFieldInput,
   TimeFieldInputContainer,
-  TimeFieldPrefix,
-  TimeFieldRoot,
   TimeFieldSegment,
+  TimeFieldPrefix,
   TimeFieldSuffix,
 };
+export type { TimeFieldRootProps as TimeFieldProps };

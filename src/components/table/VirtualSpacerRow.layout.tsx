@@ -1,18 +1,15 @@
 import { type Component, omit } from "solid-js";
-import type { Layout } from "../../lib/layouts";
 import { twMerge } from "../../lib/twMerge";
 import type { UIBaseProps } from "../vocabulary";
-import type { tableVirtualSpacerRowRecipe } from "./Table.recipe";
+import type { Layout } from "../../lib/layouts";
+import { tableVirtualSpacerRowRecipe } from "./Table.recipe";
 
 export type VirtualSpacerRowProps = UIBaseProps & {
   height: number;
   colspan: number;
 };
 
-const VirtualSpacerRow: Layout<
-  typeof tableVirtualSpacerRowRecipe,
-  VirtualSpacerRowProps
-> = () => {
+const VirtualSpacerRow: Layout<typeof tableVirtualSpacerRowRecipe, VirtualSpacerRowProps> = () => {
   const rest = omit(props, "height", "colspan", "class", "dataTheme");
 
   return (

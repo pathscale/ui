@@ -20,14 +20,4 @@ export const CLASSES = {
     invalid: "radio-group--invalid",
   },
 } as const;
-export const componentRecipe = recipe({
-  component: "radio-group",
-  slots: {
-    description: {},
-    "error-message": {},
-    label: {},
-    "radio-group": {},
-    "radio-group-items": {},
-    root: {},
-  },
-});
+export const componentRecipe = recipe({component:"radio-group",slots:{"description":{},"error-message":{},"label":{},"radio-group":{},"radio-group-items":{},"root":{},},});

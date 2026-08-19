@@ -1,22 +1,13 @@
+import {Show, omit} from "solid-js";
 import type { JSX } from "@solidjs/web";
-import { omit, Show } from "solid-js";
-import type { Layout } from "../../lib/layouts";
 import { twMerge } from "../../lib/twMerge";
-import { CLASSES, type componentRecipe } from "./ImmersiveLanding.recipe";
 import type { ImmersiveLandingArrowsProps } from "./types";
+import { CLASSES } from "./ImmersiveLanding.recipe";
+import type { Layout } from "../../lib/layouts";
+import { componentRecipe } from "./ImmersiveLanding.recipe";
 
-const ImmersiveLandingArrows: Layout<
-  typeof componentRecipe,
-  ImmersiveLandingArrowsProps
-> = () => {
-  const others = omit(
-    props,
-    "onPrev",
-    "onNext",
-    "isFirstPage",
-    "isLastPage",
-    "class",
-  );
+const ImmersiveLandingArrows: Layout<typeof componentRecipe, ImmersiveLandingArrowsProps> = () => {
+  const others = omit(props, "onPrev", "onNext", "isFirstPage", "isLastPage", "class");
 
   const handleNext = () => {
     if (props.onNext) {
@@ -54,11 +45,7 @@ const ImmersiveLandingArrows: Layout<
             stroke="currentColor"
             stroke-width="2"
           >
-            <path
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              d="M15 19l-7-7 7-7"
-            />
+            <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7" />
           </svg>
         </button>
       </Show>
@@ -85,11 +72,7 @@ const ImmersiveLandingArrows: Layout<
             stroke="currentColor"
             stroke-width="2"
           >
-            <path
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              d="M9 5l7 7-7 7"
-            />
+            <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" />
           </svg>
         </button>
       </Show>

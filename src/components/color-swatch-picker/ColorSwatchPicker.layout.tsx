@@ -1,17 +1,11 @@
 import "./ColorSwatchPicker.css";
 import type { JSX } from "@solidjs/web";
-import {
-  type Accessor,
-  type Component,
-  createContext,
-  createMemo,
-  createSignal,
-  omit,
-} from "solid-js";
-import type { Layout } from "../../lib/layouts";
+import {createContext, createMemo, createSignal, omit, type Accessor, type Component} from "solid-js";
 import { twMerge } from "../../lib/twMerge";
-import type { State, UIBaseProps } from "../vocabulary";
-import { CLASSES, type componentRecipe } from "./ColorSwatchPicker.recipe";
+import type { UIBaseProps, State } from "../vocabulary";
+import { CLASSES } from "./ColorSwatchPicker.recipe";
+import type { Layout } from "../../lib/layouts";
+import { componentRecipe } from "./ColorSwatchPicker.recipe";
 
 const invokeEventHandler = (handler: unknown, event: Event) => {
   if (typeof handler === "function") {
@@ -30,13 +24,9 @@ export type ColorSwatchPickerContextValue = {
   select: (value: string) => void;
 };
 
-export const ColorSwatchPickerContext =
-  createContext<ColorSwatchPickerContextValue | null>(null);
+export const ColorSwatchPickerContext = createContext<ColorSwatchPickerContextValue | null>(null);
 
-export type ColorSwatchPickerProps = Omit<
-  JSX.HTMLAttributes<HTMLDivElement>,
-  "onChange"
-> &
+export type ColorSwatchPickerProps = Omit<JSX.HTMLAttributes<HTMLDivElement>, "onChange"> &
   UIBaseProps & {
     children: JSX.Element;
     value?: string;
@@ -45,10 +35,7 @@ export type ColorSwatchPickerProps = Omit<
     state?: State;
   };
 
-const ColorSwatchPicker: Layout<
-  typeof componentRecipe,
-  ColorSwatchPickerProps
-> = () => {
+const ColorSwatchPicker: Layout<typeof componentRecipe, ColorSwatchPickerProps> = () => {
   const others = omit(
     props,
     "class",
@@ -62,14 +49,12 @@ const ColorSwatchPicker: Layout<
     "onKeyDown",
   );
 
-  const [internalValue, setInternalValue] = createSignal<string | undefined>(
-    props.defaultValue,
-  );
+  const [internalValue, setInternalValue] = createSignal<string | undefined>(props.defaultValue);
   let rootRef: HTMLDivElement | undefined;
 
   const isControlled = () => props.value !== undefined;
   const currentValue = () => (isControlled() ? props.value : internalValue());
-  const isDisabled = () => Boolean(props.state === "disabled");
+  const isDisabled = () => Boolean((props.state === "disabled"));
 
   const setValue = (next: string) => {
     if (isDisabled()) return;
@@ -100,15 +85,11 @@ const ColorSwatchPicker: Layout<
     const selected = currentValue();
     if (!selected) return 0;
 
-    const selectedIndex = items.findIndex(
-      (item) => item.dataset.colorValue === selected,
-    );
+    const selectedIndex = items.findIndex((item) => item.dataset.colorValue === selected);
     return selectedIndex >= 0 ? selectedIndex : 0;
   };
 
-  const handleKeyDown: JSX.EventHandlerUnion<HTMLDivElement, KeyboardEvent> = (
-    event,
-  ) => {
+  const handleKeyDown: JSX.EventHandlerUnion<HTMLDivElement, KeyboardEvent> = (event) => {
     invokeEventHandler(props.onKeyDown, event);
     if (event.defaultPrevented || isDisabled()) return;
 

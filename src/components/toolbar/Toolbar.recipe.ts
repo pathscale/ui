@@ -10,7 +10,4 @@ export const CLASSES = {
   },
 } as const;
 
-export const componentRecipe = recipe({
-  component: "toolbar",
-  slots: { root: {}, toolbar: {} },
-});
+export const componentRecipe = recipe({component:"toolbar",slots:{"root":{},"toolbar":{},},});

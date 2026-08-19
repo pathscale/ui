@@ -12,16 +12,4 @@ export const CLASSES = {
     disabled: "radio--disabled",
   },
 } as const;
-export const componentRecipe = recipe({
-  component: "radio",
-  slots: {
-    description: {},
-    label: {},
-    radio: {},
-    "radio-content": {},
-    "radio-control": {},
-    "radio-indicator": {},
-    "radio-input": {},
-    root: {},
-  },
-});
+export const componentRecipe = recipe({component:"radio",slots:{"description":{},"label":{},"radio":{},"radio-content":{},"radio-control":{},"radio-indicator":{},"radio-input":{},"root":{},},});

@@ -9,7 +9,4 @@ export const CLASSES = {
     fullWidth: "textarea--full-width",
   },
 } as const;
-export const componentRecipe = recipe({
-  component: "textarea",
-  slots: { root: {}, textarea: {} },
-});
+export const componentRecipe = recipe({component:"textarea",slots:{"root":{},"textarea":{},},});

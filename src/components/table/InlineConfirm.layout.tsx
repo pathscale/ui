@@ -1,9 +1,9 @@
 import { type Component, omit } from "solid-js";
-import type { Layout } from "../../lib/layouts";
 import { twMerge } from "../../lib/twMerge";
 import Button from "../button";
 import type { UIBaseProps } from "../vocabulary";
-import type { tableInlineConfirmRecipe } from "./Table.recipe";
+import type { Layout } from "../../lib/layouts";
+import { tableInlineConfirmRecipe } from "./Table.recipe";
 
 export type InlineConfirmVariant = "primary" | "danger" | "warning";
 
@@ -24,10 +24,7 @@ const toButtonFlavor = (variant: InlineConfirmVariant) => {
   return undefined;
 };
 
-const InlineConfirm: Layout<
-  typeof tableInlineConfirmRecipe,
-  InlineConfirmProps
-> = () => {
+const InlineConfirm: Layout<typeof tableInlineConfirmRecipe, InlineConfirmProps> = () => {
   const rest = omit(
     props,
     "prompt",
@@ -49,22 +46,14 @@ const InlineConfirm: Layout<
   return (
     <div
       {...rest}
-      {...{
-        class: twMerge("inline-flex flex-wrap items-center gap-2", props.class),
-      }}
+      {...{ class: twMerge("inline-flex flex-wrap items-center gap-2", props.class) }}
       data-theme={props.dataTheme}
       data-slot="table-inline-confirm"
     >
-      <span
-        class="text-sm text-base-content/70"
-        data-slot="table-inline-confirm-prompt"
-      >
+      <span class="text-sm text-base-content/70" data-slot="table-inline-confirm-prompt">
         {props.prompt}
       </span>
-      <div
-        class="inline-flex items-center gap-2"
-        data-slot="table-inline-confirm-actions"
-      >
+      <div class="inline-flex items-center gap-2" data-slot="table-inline-confirm-actions">
         <Button
           size="sm"
           flavor={confirmFlavor()}
