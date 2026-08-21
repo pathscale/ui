@@ -1,0 +1,36 @@
+/*
+ * FlexGrid: a list that starts short and grows.
+ *
+ * Deliberately almost bare. The rows are the consumer's, and the one thing this
+ * component owns visually is the scroll container that `onScroll` reads: it has
+ * to actually scroll, or the reveal never triggers.
+ */
+
+.flex-grid {
+  display: flex;
+  min-height: 0;
+  flex-direction: column;
+}
+
+/*
+ * `overflow-y: auto` is load-bearing, not decoration. `onScroll` measures
+ * `scrollTop` against `scrollHeight` on this element, and an element that does
+ * not scroll reports the two as equal forever, so nothing is ever revealed.
+ */
+.flex-grid__list {
+  display: flex;
+  min-height: 0;
+  flex: 1;
+  flex-direction: column;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}
+
+.flex-grid__more {
+  flex: none;
+  align-self: center;
+}
+
+.flex-grid__status {
+  flex: none;
+}

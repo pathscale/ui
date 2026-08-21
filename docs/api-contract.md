@@ -11,7 +11,7 @@ invisible for a day behind a doc that looked correct the whole time.
 When an API change is intentional, run `bun run check:api -- --write`, read the
 diff, and commit it. The diff is the review.
 
-180 components. An empty list means the component adds nothing beyond
+181 components. An empty list means the component adds nothing beyond
 HTML attributes and `UIBaseProps`; that is an assertion, not a gap.
 
 ---
@@ -375,6 +375,10 @@ HTML attributes and `UIBaseProps`; that is an assertion, not a gap.
 ### Flex
 
 `align as basis direction gap gapX gapY grow height justify minHeight minWidth paddingBlock paddingInline shrink width wrap`
+
+### FlexGrid
+
+`autoLoad children class count empty fromEnd more pageSize remaining reveal rows`
 
 ### Footer
 

@@ -132,7 +132,7 @@ the shared fallback. This works with PathScale Fonts and application-owned font 
 - **Dates**: Calendar, RangeCalendar, DatePicker, DateRangePicker (internal date engine); DateField, TimeField (separate segmented editors)
 - **Color**: ColorPicker, ColorArea, ColorSlider, ColorSwatch(+Picker), ColorWheelFlower, ThemeColorPicker
 - **Overlays**: Modal, Drawer, Popover, Dropdown, Menu, Toast, Disclosure(+Group), Accordion
-- **Data**: DataGrid (assembled, `createDataGrid` model), Table (headless compound + hooks), plus primitives `useVirtualRows`, `useStreamingBuffer`, `useStreamingSubscription`
+- **Data**: DataGrid (assembled, `createDataGrid` model), FlexGrid (incremental reveal, `createFlexGrid` model), Table (headless compound + hooks), plus primitives `useVirtualRows`, `useStreamingBuffer`, `useStreamingSubscription`
 - **Auth kit**: AuthForm, AuthCard, AuthFieldGroup, AuthSubmitButton, AuthFooterLinks, AuthPoweredBy, AuthErrorMessage, AuthSuccessMessage — Layouts composing Button/Card/fields. Their spacing, alignment and tone are recipe parameters (`gap`, `align`, `variant`), so a consumer asks for the presentation it wants rather than restating utility classes. AuthCard exposes `header`, `headings`, `title`, `description`, `branding`, `body` and `footer` as `data-slot` targets.
 - **Visual FX**: MetalBorder (WebGL liquid-metal border; presets `chromatic|silver|gold`, `kind="pill"|"circle"`, `glow`, `strength` 0-100, `theme="dark"|"light"|"auto"`), GlowCard (mouse-tracking glow), NoiseBackground (animated gradient blobs), ImmersiveLanding (full mini-app w/ PWA widgets), VideoPreview, LiveChat, ChatBubble, LanguageSwitcher
 
@@ -230,6 +230,53 @@ accumulate across columns instead of replacing the last one. `resetFilters()`
 clears them all.
 
 Drag reordering is not ported. Cell editing is deferred.
+
+## FlexGrid (a long list, a page at a time)
+
+Not a smaller `DataGrid`. That one is discrete pagination — page 3 of 12, the
+reader moving between fixed windows. This is the other shape: one continuous
+list that starts short and grows, which is what a feed, a task log or an item
+list wants. Neither can be spelled as the other without lying about where the
+reader is.
+
+```tsx
+import { FlexGrid } from "@pathscale/ui";
+
+<FlexGrid
+  rows={entries()}
+  pageSize={20}
+  fromEnd
+  more={({ count, reveal }) => (
+    <Button onClick={reveal}>Show {count} earlier</Button>
+  )}
+>
+  {(entry) => <LogRow entry={entry} />}
+</FlexGrid>
+```
+
+The cost it removes is **construction, not data**. A list of 700 rows where 20
+are visible still builds 700 subtrees, and a row made of library components is a
+handful of instances rather than one element. The application this came from
+measured a 40-row log at 122-178ms of a 203-339ms panel build for exactly that
+reason, and had seven separate hand-rolled versions of the same limit signal and
+"show more" button — the lists that had *not* been given one were the slow ones.
+
+`fromEnd` is for anything read newest-first: the first page is the tail, "more"
+means *earlier*, and the control moves above the rows so it does not sit under
+the reader's eye. `autoLoad` (on by default) reveals as they scroll; `more` adds
+an explicit control, and you can have either or both.
+
+**It listens for `scroll`, not `IntersectionObserver`.** That is deliberate, not
+dated: not every consumer runs in an engine that has observers. One renders
+through Blitz, where `IntersectionObserver`, `ResizeObserver` and
+`MutationObserver` are all absent, so a sentinel would never intersect and the
+list would silently stop at its first page with no error to explain it. One
+consequence for you: the list slot owns the scrollbar, so do not put
+`overflow: auto` on an ancestor and expect reveals to fire.
+
+`createFlexGrid` is the same logic without the markup, for a list that wants its
+own container: `visible`, `total`, `remaining`, `hasMore`, `nextCount`,
+`revealMore`, `revealAll`, `reset`, `onScroll`.
 
 ## Table (headless assembly)
 
