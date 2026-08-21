@@ -62,6 +62,44 @@ Barrel export pattern:
 export { default as ComponentName, type ComponentNameProps } from "./ComponentName";
 ```
 
+### The recipe is a value import, never `import type`
+
+A `.layout.tsx` uses its recipe only in a type position — `Layout<typeof
+componentRecipe, Props>` — so a type-only import looks correct and typechecks.
+It is not: the generator emits `defineComponent({ recipe: componentRecipe, … })`
+into the `.generated.tsx` beside it, and that is a **value** use. Narrowing the
+import breaks the declaration build with a message that names the generated
+file, which is gitignored and easy to mistake for a stale artefact:
+
+```
+error TS1361: 'componentRecipe' cannot be used as a value because it was
+imported using 'import type'.
+```
+
+Two things enforce this so it cannot be reintroduced:
+
+- `tests/layouts/recipe-imports.test.ts` fails on any layout that type-imports a
+  symbol it also passes to `Layout<typeof …>`.
+- `biome.json` turns **`style/useImportType` off**. That rule is otherwise
+  reasonable, but it only ever sees the `.layout.tsx` source, so it "fixes" the
+  import to `import type` and breaks the build every time someone runs
+  `biome check --write`. It has done so more than once. Do not turn it back on
+  without teaching it about the generated file.
+
+### `bun run check` regenerates every layout
+
+`check` runs `layouts:generate` first, which rewrites **all** `.generated.tsx`
+from their `.layout.tsx` sources — not just the one you are working on. They are
+gitignored, so a clean tree stays clean, but two consequences are worth knowing:
+
+- Adding one component makes the generator process the whole library, so a
+  contract violation anywhere surfaces on *your* branch. Check whether it
+  reproduces on `master` before treating it as yours.
+- A `.generated.tsx` with no `.layout.tsx` beside it is a hard contract error
+  (`stale-generated`). Switching branches leaves these behind, because git does
+  not clean ignored files: `git status` is silent and `check` fails with a
+  component you have never heard of. Delete the orphan directory.
+
 ### Props
 
 - [ ] Extend `IComponentBaseProps` when the component needs `dataTheme` support. All components should accept `class` and `style` at minimum.
@@ -108,6 +146,32 @@ A component does NOT belong in this library if:
 - [ ] Every component MUST have a showcase page in js.software
 - [ ] Showcase includes: default, variants, sizes, interactive examples, Props table
 - [ ] Follow the existing pattern in `src/components/*Showcase.tsx`
+
+### Exporting something new fails the suite until it is documented
+
+`tests/api-contract.test.ts` compares the root barrel against
+[`docs/api-contract.md`](docs/api-contract.md) in **both** directions, so adding
+an export without documenting it fails with:
+
+```
+FlexGrid is exported but documented nowhere
+```
+
+That is the check working, not a broken test. The fix is one command:
+
+```sh
+bun run check:api -- --write   # regenerates docs/api-contract.md
+git diff docs/api-contract.md  # read it: the diff is the review
+```
+
+The list is committed on purpose. It exists because a component can ship,
+publish and still be invisible to consumers for a day behind a doc that looked
+correct the whole time — so the doc is enforced rather than trusted.
+
+Documenting the *export* is the minimum. A component anyone is expected to reach
+for also belongs in [`docs/ui-usage.md`](docs/ui-usage.md), which is the source
+of truth every consuming app links to, and per `AGENTS.md` a public API change
+must update it in the same commit.
 
 ## Proposing a New Component
 
