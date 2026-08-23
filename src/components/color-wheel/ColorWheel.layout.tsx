@@ -1,15 +1,17 @@
+import "./ColorWheel.css";
 import type { JSX } from "@solidjs/web";
 import { createMemo, omit } from "solid-js";
-import { twMerge } from "../../lib/twMerge";
+import type { Layout } from "../../lib/layouts";
 import {
-  ColorPickerContext,
-  ColorWheelFlower,
-  type ColorWheelFlowerMode,
   type ColorFormat,
+  ColorPickerContext,
   type ColorPickerContextType,
   type ColorValue,
+  ColorWheelFlower,
+  type ColorWheelFlowerMode,
 } from "../color-wheel-flower";
 import { parseColor } from "../color-wheel-flower/ColorUtils";
+import { colorWheel } from "./ColorWheel.recipe";
 
 interface ColorWheelBaseProps {
   /** The literal selected colour. */
@@ -27,19 +29,18 @@ interface ColorWheelBaseProps {
 }
 
 export type ColorWheelProps = ColorWheelBaseProps &
-  Omit<JSX.FieldsetHTMLAttributes<HTMLFieldSetElement>, keyof ColorWheelBaseProps | "onChange">;
+  Omit<
+    JSX.FieldsetHTMLAttributes<HTMLFieldSetElement>,
+    keyof ColorWheelBaseProps | "onChange"
+  >;
 
 const FALLBACK = parseColor("#ffffff") as ColorValue;
 
-/**
- * A controlled literal colour wheel.
- *
- * `ColorWheelFlower` remains the low-level context consumer. This is the
- * ordinary application surface: value in, normalized value out, no private
- * picker context for every consumer to recreate.
- */
-export function ColorWheel(props: ColorWheelProps): JSX.Element {
-  const local = props;
+/** A controlled literal colour wheel. */
+export const ColorWheelLayout: Layout<
+  typeof colorWheel,
+  ColorWheelProps
+> = () => {
   const others = omit(
     props,
     "value",
@@ -63,9 +64,8 @@ export function ColorWheel(props: ColorWheelProps): JSX.Element {
   return (
     <fieldset
       {...others}
-      class={twMerge("color-wheel", local.class)}
+      {...slot.root}
       aria-label={local["aria-label"] ?? "Colour"}
-      data-slot="color-wheel"
       data-disabled={local.isDisabled ? "" : undefined}
     >
       <ColorPickerContext value={context()}>
@@ -77,5 +77,4 @@ export function ColorWheel(props: ColorWheelProps): JSX.Element {
       </ColorPickerContext>
     </fieldset>
   );
-}
-import "./ColorWheel.css";
+};
