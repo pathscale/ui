@@ -78,7 +78,8 @@
 .complex-color-wheel__preview {
   width: 1.5rem;
   height: 1.5rem;
-  border: 1px solid color-mix(in srgb, var(--color-base-content) 16%, transparent);
+  border: 1px solid
+    color-mix(in srgb, var(--color-base-content) 16%, transparent);
   border-radius: 9999px;
   box-shadow: inset 0 1px 0 rgb(255 255 255 / 12%);
 }

@@ -124,6 +124,8 @@ writeFileSync(
   `import {
   Button,
   Card,
+  ColorWheel,
+  ComplexColorWheel,
   Dialog,
   Flex,
   Icon,
@@ -155,6 +157,11 @@ export const App = () => (
     <Card>
       <Card.Body>body</Card.Body>
     </Card>
+    <ComplexColorWheel
+      value="#ffffff"
+      onChange={() => {}}
+      adjustments={[]}
+    />
   </Flex>
 );
 
@@ -170,7 +177,7 @@ grid.addRow({ id: 1, firstName: "John" });
 export const Grid = () => <DataGrid model={grid} borders="rows" />;
 
 // Values must exist, not just types.
-export const used = [Dialog, Select, Table, Toast, toast, createForm, runMotion];
+export const used = [ColorWheel, Dialog, Select, Table, Toast, toast, createForm, runMotion];
 `,
 );
 
@@ -181,6 +188,8 @@ writeFileSync(
 import {
   Button,
   Card,
+  ColorWheel,
+  ComplexColorWheel,
   Dialog,
   Flex,
   Icon,
@@ -190,7 +199,7 @@ import {
 } from "${pkgJson.name}";
 import { runMotion } from "${pkgJson.name}/motion";
 
-export const used = [Button, Card, Dialog, Flex, Icon, toast, createDataGrid, createForm, runMotion];
+export const used = [Button, Card, ColorWheel, ComplexColorWheel, Dialog, Flex, Icon, toast, createDataGrid, createForm, runMotion];
 `,
 );
 
@@ -231,6 +240,20 @@ console.log(
 step("install the tarball into a fresh consumer", () =>
   run("bun install", fixture),
 );
+step("publish every exercised Layout in the manifest", () => {
+  const packageRoot = join(fixture, "node_modules", pkgJson.name);
+  const installed = JSON.parse(
+    readFileSync(join(packageRoot, "package.json"), "utf8"),
+  );
+  const manifest = JSON.parse(
+    readFileSync(join(packageRoot, installed.solidLayouts), "utf8"),
+  );
+  for (const name of ["ColorWheel", "ComplexColorWheel"]) {
+    if (!manifest.components?.[name])
+      throw new Error(`missing Layout manifest entry: ${name}`);
+  }
+  return "ColorWheel and ComplexColorWheel are registered";
+});
 step("typecheck with moduleResolution: bundler", () =>
   run("./node_modules/.bin/tsc --noEmit", fixture),
 );
