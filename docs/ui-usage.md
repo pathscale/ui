@@ -81,7 +81,7 @@ to a more opaque fill.
   the progress components take `color`. Read the component's own props before assuming.
 - Both `class` and `className` remain compatibility escape hatches. Prefer semantic component parameters; `solid-layouts-lint --porting --layouts @pathscale/ui` reports overrides that should move into recipes.
 - Controlled/uncontrolled triples: `isOpen/defaultOpen/onOpenChange`, `value/defaultValue/onChange`, `selectedKey/defaultSelectedKey/onSelectionChange`. Event callbacks pass **values, not events**.
-- `Slider.onChange` reports continuous values. Optional `Slider.onChangeEnd` reports the final changed value once on pointer release, pointer cancellation, keyboard release, or blur fallback.
+- `Slider.onChange` reports continuous values. Optional `Slider.onChangeEnd` reports the final changed value once on pointer release, pointer cancellation, keyboard release, or blur fallback. Its visible `label` is also copied to the semantic slider's `aria-label`, because not every renderer resolves `aria-labelledby` across a visually hidden label.
 - `Collapsible.Content` retains closed content by default. Set `keepMounted={false}` to mount it only while expanded; the check is reactive, so it mounts and unmounts as the state changes.
 - `Popover` accepts `anchorRect` as a rectangle or rectangle accessor when content must be positioned without a trigger element.
 - Compound components: `Modal.Trigger`, `Tabs.List`, `Select.Option`, etc. (`Object.assign` statics; also exported flat: `AccordionRoot`, `AlertTitle`, …). Parts are styleable/testable via `data-slot="..."` and state attrs (`data-open`, `data-selected`, `data-invalid`).
@@ -130,7 +130,7 @@ the shared fallback. This works with PathScale Fonts and application-owned font 
 - **Typography/misc**: Text, Link, Kbd, Badge, Chip, Tag/TagGroup, Avatar, Icon, Tooltip, Breadcrumbs, Pagination, Meter, ProgressBar, ProgressCircle, Spinner (alias: Loading)
 - **Inputs**: Input, InputGroup, InputOTP, TextField, TextArea (and textarea), NumberField, SearchField, PasswordField (+ password-requirements/rules, `passwordRules.ts`), ColorField, Checkbox(+Group), Radio(+Group), Toggle, Slider, Select, ComboBox, ListBox, SizePicker, Form pieces (Label, Description, ErrorMessage, FieldError, Fieldset)
 - **Dates**: Calendar, RangeCalendar, DatePicker, DateRangePicker (internal date engine); DateField, TimeField (separate segmented editors)
-- **Color**: ColorPicker, ColorArea, ColorSlider, ColorSwatch(+Picker), ColorWheelFlower, ThemeColorPicker
+- **Color**: ColorPicker, ColorArea, ColorSlider, ColorSwatch(+Picker), ColorWheel, ComplexColorWheel, ColorWheelFlower, ThemeColorPicker
 - **Overlays**: Modal, Drawer, Popover, Dropdown, Menu, Toast, Disclosure(+Group), Accordion
 - **Data**: DataGrid (assembled, `createDataGrid` model), FlexGrid (incremental reveal, `createFlexGrid` model), Table (headless compound + hooks), plus primitives `useVirtualRows`, `useStreamingBuffer`, `useStreamingSubscription`
 - **Auth kit**: AuthForm, AuthCard, AuthFieldGroup, AuthSubmitButton, AuthFooterLinks, AuthPoweredBy, AuthErrorMessage, AuthSuccessMessage — Layouts composing Button/Card/fields. Their spacing, alignment and tone are recipe parameters (`gap`, `align`, `variant`), so a consumer asks for the presentation it wants rather than restating utility classes. AuthCard exposes `header`, `headings`, `title`, `description`, `branding`, `body` and `footer` as `data-slot` targets.
@@ -145,6 +145,36 @@ palettes share hue positions, while dark mode uses genuinely darker values. Pass
 the same normalized hex that it displays. Surface strength, softness and accent mixing
 remain consumer theme concerns; use the literal selected hex as their input rather than
 making the wheel silently transform it.
+
+Use `ColorWheel` for the ordinary controlled surface: it owns the picker context and
+accepts `value`, `onChange`, `mode`, and an optional literal 31-colour palette.
+`ColorWheelFlower` is the low-level context consumer and normally stays an implementation
+detail.
+
+`ComplexColorWheel` puts standard, accessible slider axes beside the controlled wheel on
+a glass card. Supply explicit adjustments for the application's strength, softness, blur,
+refraction, depth, or other numeric theme controls:
+
+```tsx
+<ComplexColorWheel
+  aria-label="Surface colour"
+  value={theme.surface}
+  onChange={setSurface}
+  palette={surfacePalette}
+  adjustments={[
+    { id: "strength", label: "Strength", value: theme.strength, min: 0, max: 100, onChange: setStrength },
+    { id: "softness", label: "Softness", value: theme.softness, min: 0, max: 10, onChange: setSoftness },
+    { id: "glass-blur", label: "Glass blur", value: glass.blur, min: 0, max: 50, onChange: setBlur },
+  ]}
+/>
+```
+
+The composition standardizes layout, glass, labels, semantic slider values, and keyboard
+interaction. The application still owns its colour math: an adjustment may provide
+`preview(value, selectedColour)` without hiding a token transformation inside the wheel.
+Pass `stops` for a curated discrete axis; it renders named, pressed-state choices instead
+of approximating a non-uniform palette with a continuous slider. `ink` adds a foreground
+sample for a text-brightness axis.
 
 ## Forms (built in, plus Standard Schema)
 

@@ -103,7 +103,7 @@ gitignored, so a clean tree stays clean, but two consequences are worth knowing:
 ### Props
 
 - [ ] Extend `IComponentBaseProps` when the component needs `dataTheme` support. All components should accept `class` and `style` at minimum.
-- [ ] Use `splitProps` to separate component props from HTML pass-through
+- [ ] Use Solid 2's `omit` (or legacy `splitProps`) to separate component props from HTML pass-through
 - [ ] Use `twMerge()` for class merging — never string concatenation. Add `clsx()` inside only when you have conditional classes (e.g., `twMerge(clsx({"btn-active": isActive}), local.class)`)
 - [ ] Boolean props default to `false`
 - [ ] Use `ComponentSize` for sizes (`xs | sm | md | lg | xl`)
