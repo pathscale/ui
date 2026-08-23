@@ -119,6 +119,13 @@ export type {
   ColorSwatchSize,
 } from "./components/color-swatch";
 export { default as ColorSwatch } from "./components/color-swatch";
+export {
+  ColorWheel,
+  ComplexColorWheel,
+  type ColorWheelAdjustment,
+  type ColorWheelProps,
+  type ComplexColorWheelProps,
+} from "./components/color-wheel";
 export type { ComposerProps } from "./components/composer";
 export {
   autosize,

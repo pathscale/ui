@@ -219,6 +219,7 @@ const Slider: Layout<typeof componentRecipe, SliderProps> = () => {
           aria-valuemax={max()}
           aria-valuenow={props.value}
           aria-valuetext={formattedValue()}
+          aria-label={props["aria-label"] ?? props.label}
           aria-labelledby={props.label ? labelId : undefined}
           aria-disabled={isDisabled() ? "true" : undefined}
           onKeyDown={interactions.onKeyDown}

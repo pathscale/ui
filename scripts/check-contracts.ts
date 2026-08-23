@@ -60,9 +60,10 @@ for (const entry of entries) {
 
   // --- Props rules ---
 
-  // Must use splitProps
-  if (!source.includes("splitProps")) {
-    fail(dir, "props", "must use splitProps to separate component props from HTML pass-through", "Props");
+  // Solid 2 replaced splitProps with omit; both separate component props from
+  // the attributes deliberately passed through to the rendered element.
+  if (!source.includes("splitProps") && !source.includes("omit(")) {
+    fail(dir, "props", "must use omit() or splitProps() to separate component props from HTML pass-through", "Props");
   }
 
   // Must use twMerge for class merging
