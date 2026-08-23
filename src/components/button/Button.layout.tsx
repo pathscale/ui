@@ -1,6 +1,6 @@
 import "./Button.css";
-import {Show} from "solid-js";
-import { Dynamic, type JSX} from "@solidjs/web";
+import { Show } from "solid-js";
+import type { JSX } from "@solidjs/web";
 import type {
   Flavor,
   IconSlotProps,
@@ -67,8 +67,27 @@ export type ButtonProps = Omit<
  * -----------------------------------------------------------------------------------------------*/
 export const ButtonLayout: Layout<typeof button, ButtonProps> = () => {
   const loading = () => local.state === "loading";
-  const inert = () => loading() || local.state === "disabled" || Boolean(local.disabled);
+  const inert = () =>
+    loading() || local.state === "disabled" || Boolean(local.disabled);
   const element = () => buttonElement(local.href);
+
+  const content = () => (
+    <>
+      <Show when={loading()}>
+        <span
+          {...slot.spinner}
+          aria-hidden="true"
+        />
+      </Show>
+      <Show when={local.startIcon}>
+        <span {...slot.startIcon}>{local.startIcon}</span>
+      </Show>
+      {children}
+      <Show when={local.endIcon}>
+        <span {...slot.endIcon}>{local.endIcon}</span>
+      </Show>
+    </>
+  );
 
   /*
    * An inert link drops its `href` rather than keeping it and refusing the
@@ -79,31 +98,42 @@ export const ButtonLayout: Layout<typeof button, ButtonProps> = () => {
    *
    * `rel` is filled in for `target="_blank"` unless the caller said otherwise:
    * a new tab without `noopener` hands the opener to the destination.
+   *
+   * Keep the ordinary control as a literal `<button>`. The previous Dynamic
+   * string element painted correctly under Blitz but dropped a nested
+   * consumer's event binding, leaving an enabled button that acknowledged
+   * semantic activation without running its handler. The anchor is also
+   * literal so both public forms use the same event-forwarding path.
    */
   return (
-    <Dynamic
-      component={element()}
-      {...slot.root}
-      type={element() === "a" ? undefined : (local.type ?? "button")}
-      href={buttonHref(local.href, inert())}
-      target={element() === "a" ? local.target : undefined}
-      rel={element() === "a" ? buttonRel(local.rel, local.target) : undefined}
-      disabled={element() === "a" ? undefined : inert()}
-      aria-disabled={inert() ? "true" : "false"}
-      aria-busy={loading() ? "true" : undefined}
-      data-state={local.state ?? "default"}
-      data-flavor={local.flavor ?? "primary"}
+    <Show
+      when={element() === "a"}
+      fallback={
+        <button
+          {...slot.root}
+          type={local.type ?? "button"}
+          disabled={inert()}
+          aria-disabled={inert() ? "true" : "false"}
+          aria-busy={loading() ? "true" : undefined}
+          data-state={local.state ?? "default"}
+          data-flavor={local.flavor ?? "primary"}
+        >
+          {content()}
+        </button>
+      }
     >
-      <Show when={loading()}>
-        <span {...slot.spinner} aria-hidden="true" />
-      </Show>
-      <Show when={local.startIcon}>
-        <span {...slot.startIcon}>{local.startIcon}</span>
-      </Show>
-      {children}
-      <Show when={local.endIcon}>
-        <span {...slot.endIcon}>{local.endIcon}</span>
-      </Show>
-    </Dynamic>
+      <a
+        {...slot.root}
+        href={buttonHref(local.href, inert())}
+        target={local.target}
+        rel={buttonRel(local.rel, local.target)}
+        aria-disabled={inert() ? "true" : "false"}
+        aria-busy={loading() ? "true" : undefined}
+        data-state={local.state ?? "default"}
+        data-flavor={local.flavor ?? "primary"}
+      >
+        {content()}
+      </a>
+    </Show>
   );
 };
