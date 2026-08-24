@@ -58,7 +58,12 @@ const toRadiusCssValue = (value?: number | string) => {
 };
 
 const readRadiusPx = (element: HTMLElement | undefined) => {
-  if (!element || typeof window === "undefined") return 0;
+  if (
+    !element ||
+    typeof window === "undefined" ||
+    typeof window.getComputedStyle !== "function"
+  )
+    return 0;
 
   const computed = window.getComputedStyle(element);
   const candidates = [
