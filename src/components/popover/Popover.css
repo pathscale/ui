@@ -81,6 +81,12 @@
   .popover__trigger {
     display: inline-flex;
     cursor: pointer;
+    margin: 0;
+    border: 0;
+    padding: 0;
+    background: none;
+    color: inherit;
+    font: inherit;
   }
 
   .popover__trigger:focus-visible,
