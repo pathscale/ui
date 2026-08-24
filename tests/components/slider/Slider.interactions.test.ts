@@ -21,6 +21,7 @@ const setup = (initialValue = 0, disabled = false) => {
   const changes: number[] = [];
   const commits: number[] = [];
   const dragging: boolean[] = [];
+  const focusThumb = mock(() => {});
   const setPointerCapture = mock(() => {});
   const releasePointerCapture = mock(() => {});
   const target = {
@@ -31,6 +32,7 @@ const setup = (initialValue = 0, disabled = false) => {
   const handlers = createSliderInteractionHandlers({
     isDisabled: () => disabled,
     value: () => initialValue,
+    focusThumb,
     valueFromPosition: (clientX) => clientX,
     valueFromKey: (key, currentValue) => {
       if (key === "ArrowRight") return currentValue + 1;
@@ -48,6 +50,7 @@ const setup = (initialValue = 0, disabled = false) => {
     changes,
     commits,
     dragging,
+    focusThumb,
     setPointerCapture,
     releasePointerCapture,
   };
@@ -65,6 +68,7 @@ describe("Slider interactions", () => {
     expect(result.changes).toEqual([10, 20]);
     expect(result.commits).toEqual([20]);
     expect(result.dragging).toEqual([true, false]);
+    expect(result.focusThumb).toHaveBeenCalledTimes(1);
     expect(result.setPointerCapture).toHaveBeenCalledWith(7);
     expect(result.releasePointerCapture).toHaveBeenCalledWith(7);
   });
@@ -119,5 +123,6 @@ describe("Slider interactions", () => {
     expect(disabled.changes).toEqual([]);
     expect(disabled.commits).toEqual([]);
     expect(disabled.setPointerCapture).not.toHaveBeenCalled();
+    expect(disabled.focusThumb).not.toHaveBeenCalled();
   });
 });
