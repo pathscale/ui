@@ -107,6 +107,7 @@ const LanguageSwitcher: Layout<typeof componentRecipe, LanguageSwitcherProps> = 
           {(lang) => (
             <Dropdown.Item
               onClick={() => handleSelect(lang.code)}
+              aria-label={lang.name}
               {...{ class: twMerge(CLASSES.item, isSelected(lang.code) && CLASSES.itemSelected) }}
               aria-current={isSelected(lang.code) ? "true" : undefined}
             >
