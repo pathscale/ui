@@ -20,6 +20,7 @@ import {
   type OverlayPlacement,
 } from "../_shared/overlayPosition";
 import type { Material, UIBaseProps } from "../vocabulary";
+import { applyBooleanStateRequest } from "../_shared/controlledState";
 import { CLASSES, componentRecipe } from "./Popover.recipe";
 
 export type PopoverPlacement = OverlayPlacement;
@@ -111,8 +112,13 @@ const PopoverRoot: Layout<typeof componentRecipe, PopoverRootProps> = () => {
   );
 
   const setIsOpen = (next: boolean, options?: { focusTrigger?: boolean }) => {
-    if (!isControlled()) setInternalOpen(next);
-    if (isOpen() !== next) props.onOpenChange?.(next);
+    applyBooleanStateRequest({
+      current: isOpen(),
+      next,
+      controlled: isControlled(),
+      setInternal: setInternalOpen,
+      onChange: props.onOpenChange,
+    });
     if (!next && options?.focusTrigger) {
       triggerRef()?.focus();
     }
