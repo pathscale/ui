@@ -702,8 +702,10 @@ const ColorWheelFlower: Layout<typeof componentRecipe, ColorWheelFlowerProps> = 
               <div
                 {...{ class: CLASSES.dot.base }}
                 style={{
-                  left: `calc(50% + ${item.offsetX}px)`,
-                  top: `calc(50% + ${item.offsetY}px)`,
+                  left: "50%",
+                  top: "50%",
+                  "margin-left": `${item.offsetX}px`,
+                  "margin-top": `${item.offsetY}px`,
                 }}
               >
                 <div {...{ class: CLASSES.dot.frame }}>
