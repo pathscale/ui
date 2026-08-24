@@ -29,6 +29,7 @@ import {
 import { CLASSES } from "./ColorWheelFlower.recipe";
 import type { Layout } from "../../lib/layouts";
 import { componentRecipe } from "./ColorWheelFlower.recipe";
+import { flowerPetalPosition } from "./ColorWheelFlower.geometry";
 
 export interface ColorWheelFlowerProps {
   class?: string;
@@ -701,12 +702,7 @@ const ColorWheelFlower: Layout<typeof componentRecipe, ColorWheelFlowerProps> = 
             return (
               <div
                 {...{ class: CLASSES.dot.base }}
-                style={{
-                  left: "50%",
-                  top: "50%",
-                  "margin-left": `${item.offsetX}px`,
-                  "margin-top": `${item.offsetY}px`,
-                }}
+                style={flowerPetalPosition(item.offsetX, item.offsetY)}
               >
                 <div {...{ class: CLASSES.dot.frame }}>
                   <div
