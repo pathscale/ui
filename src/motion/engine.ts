@@ -9,6 +9,7 @@ const resolveDelay = (transition?: MotionTransition) =>
   Math.max(0, (transition?.delay ?? 0) * 1000);
 
 const readOpacity = (el: HTMLElement) => {
+  if (typeof getComputedStyle === "undefined") return 1;
   const value = Number.parseFloat(getComputedStyle(el).opacity);
   return Number.isFinite(value) ? value : 1;
 };

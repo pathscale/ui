@@ -100,6 +100,9 @@ const createColorItem = (
 };
 
 const readMotionState = (el: HTMLElement): MotionState => {
+  if (typeof getComputedStyle === "undefined") {
+    return { opacity: 1, x: 0, y: 0, scale: 1 };
+  }
   const styles = getComputedStyle(el);
   const opacityValue = Number.parseFloat(styles.opacity);
   const opacity = Number.isFinite(opacityValue) ? opacityValue : 1;
