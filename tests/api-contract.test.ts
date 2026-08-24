@@ -145,6 +145,6 @@ describe("API contract", () => {
     expect(
       empty.length,
       `components resolving to no props: ${empty.join(", ")}. If one genuinely lost its last prop, lower this number in the same commit.`,
-    ).toBeLessThanOrEqual(19);
+    ).toBeLessThanOrEqual(18);
   });
 });

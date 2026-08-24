@@ -1,9 +1,8 @@
-import { omit } from "solid-js";
+import {omit} from "solid-js";
 import type { JSX } from "@solidjs/web";
 import { twMerge } from "../../lib/twMerge";
 import type { Layout } from "../../lib/layouts";
 import type { UIBaseProps } from "../vocabulary";
-import NativeSelect from "../native-select";
 import { CLASSES, tablePageSizeRecipe } from "./Table.recipe";
 
 export type TablePageSizeProps = Omit<
@@ -47,7 +46,7 @@ const TablePageSize: Layout<
       >
         {props.label ?? "Rows"}
       </span>
-      <NativeSelect
+      <select
         {...rest}
         {...{
           class: twMerge(
@@ -62,7 +61,7 @@ const TablePageSize: Layout<
         {props.options.map((option) => (
           <option value={option}>{option}</option>
         ))}
-      </NativeSelect>
+      </select>
     </label>
   );
 };
