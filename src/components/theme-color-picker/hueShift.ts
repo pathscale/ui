@@ -254,7 +254,13 @@ export function createHueShiftStore(storagePrefix: string): HueShiftStore {
   // microtask so any concurrent setThemeColor(null) has a chance to flush
   // its null signal first — otherwise we'd race with grayscale buttons
   // that clear the color *and* switch the theme in one click.
-  if (typeof window !== "undefined") {
+  // MutationObserver is optional in non-browser DOM renderers. The store still
+  // applies explicit colour changes there; only automatic attribute watching
+  // is unavailable.
+  if (
+    typeof window !== "undefined" &&
+    typeof MutationObserver !== "undefined"
+  ) {
     const observer = new MutationObserver((mutations) => {
       for (const mutation of mutations) {
         if (
