@@ -14,13 +14,13 @@ import { twMerge } from "../../lib/twMerge";
 
 import "../_shared/material.css";
 import type { Layout } from "../../lib/layouts";
+import { applyBooleanStateRequest } from "../_shared/controlledState";
 import {
   createOverlayPosition,
   type OverlayAnchorRect,
   type OverlayPlacement,
 } from "../_shared/overlayPosition";
 import type { Material, UIBaseProps } from "../vocabulary";
-import { applyBooleanStateRequest } from "../_shared/controlledState";
 import { CLASSES, componentRecipe } from "./Popover.recipe";
 
 export type PopoverPlacement = OverlayPlacement;
