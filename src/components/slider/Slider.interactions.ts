@@ -6,6 +6,8 @@ export type SliderInteractionOptions = {
   onDragGeometry?: (active: boolean) => void;
   /** Whether a press landed on the thumb rather than on the bare track. */
   isThumb?: (target: EventTarget | null) => boolean;
+  /** Focus the keyboard-operable thumb before pointer default is suppressed. */
+  focusThumb: () => void;
   valueFromKey: (key: string, currentValue: number) => number | undefined;
   onChange: (value: number) => void;
   onChangeEnd: (value: number) => void;
@@ -89,6 +91,7 @@ export const createSliderInteractionHandlers = (
     onPointerDown(event: PointerEvent) {
       if (options.isDisabled() || pointerId !== undefined) return;
 
+      options.focusThumb();
       event.preventDefault();
       const target = event.currentTarget as Element & {
         setPointerCapture: (id: number) => void;

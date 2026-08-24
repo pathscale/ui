@@ -1,12 +1,11 @@
 import "./Slider.css";
 import type { JSX } from "@solidjs/web";
-import {Show, createSignal, createUniqueId, omit, type Component} from "solid-js";
+import { createSignal, createUniqueId, Show } from "solid-js";
+import type { Layout } from "../../lib/layouts";
 import { twMerge } from "../../lib/twMerge";
 import type { UIBaseProps } from "../vocabulary";
-import { CLASSES } from "./Slider.recipe";
-import type { Layout } from "../../lib/layouts";
-import { componentRecipe } from "./Slider.recipe";
 import { createSliderInteractionHandlers } from "./Slider.interactions";
+import { CLASSES, componentRecipe } from "./Slider.recipe";
 
 export type SliderSize = "sm" | "md" | "lg";
 
@@ -42,8 +41,6 @@ function snapToStep(val: number, min: number, max: number, step: number) {
 const Slider: Layout<typeof componentRecipe, SliderProps> = () => {
   let trackRef: HTMLDivElement | undefined;
   let thumbRef: HTMLDivElement | undefined;
-
-
 
   const min = () => props.min ?? 0;
   const max = () => props.max ?? 100;
@@ -91,7 +88,10 @@ const Slider: Layout<typeof componentRecipe, SliderProps> = () => {
    */
   const centreInset = () => {
     if (!trackRef || !thumbRef) return 0;
-    const pad = Math.max(0, (trackRef.offsetHeight - thumbRef.offsetHeight) / 2);
+    const pad = Math.max(
+      0,
+      (trackRef.offsetHeight - thumbRef.offsetHeight) / 2,
+    );
     return thumbRef.offsetWidth / 2 + pad;
   };
 
@@ -115,7 +115,11 @@ const Slider: Layout<typeof componentRecipe, SliderProps> = () => {
     if (!trackRef) return props.value;
     const geometry = dragGeometry ?? measureTrack();
     if (!geometry || geometry.usable <= 0) return props.value;
-    const frac = clamp((clientX - geometry.left - geometry.inset) / geometry.usable, 0, 1);
+    const frac = clamp(
+      (clientX - geometry.left - geometry.inset) / geometry.usable,
+      0,
+      1,
+    );
     const raw = min() + frac * (max() - min());
     return snapToStep(raw, min(), max(), step());
   };
@@ -162,6 +166,7 @@ const Slider: Layout<typeof componentRecipe, SliderProps> = () => {
       dragGeometry = active ? measureTrack() : undefined;
     },
     isThumb: (target) => Boolean(thumbRef && target === thumbRef),
+    focusThumb: () => thumbRef?.focus(),
     onChange: (value) => props.onChange(value),
     onChangeEnd: (value) => props.onChangeEnd?.(value),
     onDraggingChange: setDragging,
@@ -172,21 +177,25 @@ const Slider: Layout<typeof componentRecipe, SliderProps> = () => {
 
   return (
     <div
-      {...{ class: twMerge(
-        CLASSES.base,
-        CLASSES.size[size()],
-        props.class,
-      ) }}
+      {...{ class: twMerge(CLASSES.base, CLASSES.size[size()], props.class) }}
       data-theme={props.dataTheme}
       data-slot="slider"
       data-disabled={isDisabled() ? "true" : "false"}
       style={props.style}
     >
       <Show when={props.label}>
-        <span id={labelId} {...{ class: CLASSES.label }} data-slot="label">
+        <span
+          id={labelId}
+          {...{ class: CLASSES.label }}
+          data-slot="label"
+        >
           {props.label}
         </span>
-        <span {...{ class: CLASSES.output }} data-slot="slider-output" aria-live="polite">
+        <span
+          {...{ class: CLASSES.output }}
+          data-slot="slider-output"
+          aria-live="polite"
+        >
           {formattedValue()}
         </span>
       </Show>
@@ -205,6 +214,7 @@ const Slider: Layout<typeof componentRecipe, SliderProps> = () => {
           data-slot="slider-fill"
           style={{ width: fillWidth() }}
         />
+        {/* biome-ignore lint/a11y/useFocusableInteractive: Solid's JSX DOM typing requires lowercase tabindex, supplied below. */}
         <div
           ref={thumbRef}
           {...{ class: CLASSES.thumb }}
@@ -214,7 +224,7 @@ const Slider: Layout<typeof componentRecipe, SliderProps> = () => {
           data-focus-visible={focusVisible() ? "true" : "false"}
           style={{ left: thumbLeft() }}
           role="slider"
-          tabindex={isDisabled() ? -1 : 0}
+          {...{ tabindex: isDisabled() ? -1 : 0 }}
           aria-valuemin={min()}
           aria-valuemax={max()}
           aria-valuenow={props.value}
