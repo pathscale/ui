@@ -1,5 +1,5 @@
 import "./LanguageSwitcher.css";
-import { type Component, For, Show, omit } from "solid-js";
+import { type Component, createSignal, For, Show, omit } from "solid-js";
 import { twMerge } from "../../lib/twMerge";
 import Dropdown, { type DropdownAlign } from "../dropdown";
 import Icon from "../icon";
@@ -57,6 +57,7 @@ const LanguageSwitcher: Layout<typeof componentRecipe, LanguageSwitcherProps> = 
 
   const currentLanguageName = () => props.i18n.languageNames[props.i18n.locale];
   const isSelected = (lang: string) => props.i18n.locale === lang;
+  const [open, setOpen] = createSignal(false);
 
   const handleSelect = async (lang: string) => {
     await props.i18n.setLocale(lang);
@@ -69,6 +70,8 @@ const LanguageSwitcher: Layout<typeof componentRecipe, LanguageSwitcherProps> = 
     <Dropdown.Root
       {...others}
       {...{ class: classes() }}
+      open={open()}
+      onOpenChange={setOpen}
       style={props.style}
       role={undefined}
       aria-label={local["aria-label"] ?? "Language selector"}
