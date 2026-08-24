@@ -4,7 +4,7 @@
 agents alike, and for every consuming application. Those apps link here rather than
 keeping their own copy — one library, one set of conventions, no drift.
 
-SolidJS component library, HeroUI-parity API, daisyUI-style theming. ~104 components.
+SolidJS component library, HeroUI-parity API, daisyUI-style theming. 93 public components.
 
 This file is **how to USE the library** (as a consumer, or when writing demos and
 examples). For **modifying the library itself**, read
@@ -85,6 +85,7 @@ to a more opaque fill.
 - `Collapsible.Content` retains closed content by default. Set `keepMounted={false}` to mount it only while expanded; the check is reactive, so it mounts and unmounts as the state changes.
 - `Popover` accepts `anchorRect` as a rectangle or rectangle accessor when content must be positioned without a trigger element.
 - Compound components: `Modal.Trigger`, `Tabs.List`, `Select.Option`, etc. (`Object.assign` statics; also exported flat: `AccordionRoot`, `AlertTitle`, …). Parts are styleable/testable via `data-slot="..."` and state attrs (`data-open`, `data-selected`, `data-invalid`).
+- `NativeSelect` preserves the browser's real `<select>`/`<option>` semantics for simple single-choice controls. Use `Select` only when the custom popover or compound option surface is required.
 - `Tabs` does not require `ResizeObserver`. When it is unavailable, selection and keyboard behavior remain active and the indicator is measured on selection, mount, and window resize.
 - No polymorphic `as` prop.
 

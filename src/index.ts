@@ -236,7 +236,11 @@ export {
   FieldsetLegend,
 } from "./components/fieldset";
 export { default as Flex } from "./components/flex";
-export type { CreateFlexGridOptions, FlexGridModel, FlexGridProps } from "./components/flex-grid";
+export type {
+  CreateFlexGridOptions,
+  FlexGridModel,
+  FlexGridProps,
+} from "./components/flex-grid";
 export { createFlexGrid, default as FlexGrid } from "./components/flex-grid";
 export type { FooterProps, FooterTitleProps } from "./components/footer";
 export { default as Footer } from "./components/footer";
@@ -398,6 +402,10 @@ export type {
 } from "./components/progress";
 export { default as Progress } from "./components/progress";
 export { default as Radio } from "./components/radio";
+export {
+  default as NativeSelect,
+  type NativeSelectProps,
+} from "./components/native-select";
 export {
   RadioGroup,
   type RadioGroupOrientation,

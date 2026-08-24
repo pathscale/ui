@@ -2,6 +2,7 @@ import "./LanguageSwitcher.css";
 import { type Component, For, omit } from "solid-js";
 import { twMerge } from "../../lib/twMerge";
 import type { DropdownAlign } from "../dropdown";
+import NativeSelect from "../native-select";
 import type { UIBaseProps } from "../vocabulary";
 import type { I18nStore } from "./createI18n";
 import { CLASSES } from "./LanguageSwitcher.recipe";
@@ -40,7 +41,10 @@ export interface LanguageSwitcherProps extends UIBaseProps {
   onLanguageChange?: (lang: string) => void;
 }
 
-const LanguageSwitcher: Layout<typeof componentRecipe, LanguageSwitcherProps> = () => {
+const LanguageSwitcher: Layout<
+  typeof componentRecipe,
+  LanguageSwitcherProps
+> = () => {
   const others = omit(
     props,
     "i18n",
@@ -64,14 +68,17 @@ const LanguageSwitcher: Layout<typeof componentRecipe, LanguageSwitcherProps> = 
 
   const move = (direction: -1 | 1): void => {
     const languages = props.i18n.languages;
-    const current = languages.findIndex((language) => language.code === props.i18n.locale);
-    const next = (Math.max(0, current) + direction + languages.length) % languages.length;
+    const current = languages.findIndex(
+      (language) => language.code === props.i18n.locale,
+    );
+    const next =
+      (Math.max(0, current) + direction + languages.length) % languages.length;
     const language = languages[next];
     if (language) void handleSelect(language.code);
   };
 
   return (
-    <select
+    <NativeSelect
       {...others}
       {...{ class: classes() }}
       style={props.style}
@@ -94,7 +101,7 @@ const LanguageSwitcher: Layout<typeof componentRecipe, LanguageSwitcherProps> = 
       <For each={props.i18n.languages}>
         {(lang) => <option value={lang.code}>{lang.name}</option>}
       </For>
-    </select>
+    </NativeSelect>
   );
 };
 
