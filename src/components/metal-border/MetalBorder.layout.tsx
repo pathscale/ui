@@ -229,7 +229,9 @@ const MetalBorder: Layout<typeof componentRecipe, MetalBorderProps> = () => {
     };
     mediaQueryList?.addEventListener?.("change", handleMotionChange);
 
-    if (hostRef) {
+    // The border still renders without attribute observation; consumers in a
+    // smaller DOM runtime can update it by rerendering explicit theme props.
+    if (hostRef && typeof MutationObserver !== "undefined") {
       const themeRoot = hostRef.closest("[data-theme]") ?? document.documentElement;
       mutationObserver = new MutationObserver(() => {
         syncResolvedTheme();

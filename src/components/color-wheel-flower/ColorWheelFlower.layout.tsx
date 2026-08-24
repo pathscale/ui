@@ -255,7 +255,12 @@ const ColorWheelFlower: Layout<typeof componentRecipe, ColorWheelFlowerProps> = 
       : "light",
   );
 
-  if (typeof window !== "undefined") {
+  // Consumers can pass `mode` directly. Attribute observation is only the
+  // browser fallback and must not make the component crash in another renderer.
+  if (
+    typeof window !== "undefined" &&
+    typeof MutationObserver !== "undefined"
+  ) {
     const observer = new MutationObserver(() => {
       const t = document.documentElement.getAttribute("data-theme");
       setCurrentTheme(t === "dark" ? "dark" : "light");
