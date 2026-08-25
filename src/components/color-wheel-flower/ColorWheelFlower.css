@@ -24,10 +24,6 @@
     inset: 0;
   }
 
-  .color-wheel-flower__ring-shell--outer {
-    transform: scale(1.1);
-  }
-
   .color-wheel-flower__ring-shell--inner {
     transform: scale(0.9);
   }
@@ -36,10 +32,6 @@
     position: absolute;
     inset: 0;
     border-radius: var(--radius-pill, 9999px);
-  }
-
-  .color-wheel-flower__ring--outer {
-    will-change: transform, opacity, box-shadow, background;
   }
 
   .color-wheel-flower__ring--inner {

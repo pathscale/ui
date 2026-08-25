@@ -178,11 +178,11 @@ HTML attributes and `UIBaseProps`; that is an assertion, not a gap.
 
 ### ColorWheel
 
-`aria-label class isDisabled mode onChange palette ring value wheelClass`
+`aria-label class isDisabled mode onChange palette value wheelClass`
 
 ### ColorWheelFlower
 
-`class mode palette ring`
+`class mode palette`
 
 ### ComboBox
 

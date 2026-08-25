@@ -25,8 +25,6 @@ interface ColorWheelBaseProps {
   isDisabled?: boolean;
   class?: string;
   wheelClass?: string;
-  /** Draw the halo around the petals. On by default. */
-  ring?: boolean;
   "aria-label"?: string;
 }
 
@@ -52,7 +50,6 @@ export const ColorWheelLayout: Layout<
     "isDisabled",
     "class",
     "wheelClass",
-    "ring",
     "aria-label",
   );
   const color = createMemo(() => parseColor(local.value) ?? FALLBACK);
@@ -74,7 +71,6 @@ export const ColorWheelLayout: Layout<
       <ColorPickerContext value={context()}>
         <ColorWheelFlower
           class={local.wheelClass}
-          ring={local.ring}
           mode={local.mode}
           palette={local.palette}
         />
