@@ -65,7 +65,6 @@ export const ComplexColorWheelLayout: Layout<
       isDisabled={local.isDisabled}
       class={local.class}
       wheelClass={local.wheelClass}
-      ring={local.ring}
       aria-label={local["aria-label"]}
     />
 

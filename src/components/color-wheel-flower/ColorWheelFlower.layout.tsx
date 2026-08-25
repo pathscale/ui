@@ -37,16 +37,6 @@ export interface ColorWheelFlowerProps {
   mode?: ColorWheelFlowerMode;
   /** Exactly 31 literal colors, ordered outer ring, middle ring, inner ring, center. */
   palette?: readonly string[];
-  /**
-   * Draw the halo around the petals.
-   *
-   * On by default, and it is a rainbow until something is picked, then the
-   * picked colour. It reads as chrome rather than as state: the selected petal
-   * already carries a highlight, so the ring repeats that at the size of the
-   * whole control and takes a tenth of the width to do it. Turn it off where
-   * the wheel sits in a panel that has its own edge.
-   */
-  ring?: boolean;
 }
 
 type ColorItem = {
@@ -312,8 +302,6 @@ const ColorWheelFlower: Layout<typeof componentRecipe, ColorWheelFlowerProps> = 
   let containerRef: HTMLDivElement | undefined;
   let pointerTimeout: number | undefined;
   let pulseTimeout: number | undefined;
-  let outerRingRef: HTMLDivElement | undefined;
-  let outerRingControl: { stop: () => void } | null = null;
 
   const closestIndex = createMemo(() => {
     const current = context.color();
@@ -453,56 +441,10 @@ const ColorWheelFlower: Layout<typeof componentRecipe, ColorWheelFlowerProps> = 
     }
   };
 
-  const outerRingBackground = () => {
-    const selected = selectedIndex();
-    if (selected === null) return rainbowGradient();
 
-    const color = colors()[selected];
-    return `conic-gradient(${color.rgb}, ${color.rgb})`;
-  };
 
-  const outerRingTarget = createMemo<MotionState>(() => {
-    if (context.disabled()) {
-      return { opacity: 0.5, scale: 1 };
-    }
-    if (selectedIndex() !== null) {
-      return { opacity: 1, scale: 1 };
-    }
-    if (hoveredIndex() !== null) {
-      return { opacity: 0.98, scale: 0.84 };
-    }
-    return { opacity: 0.92, scale: 0.84 };
-  });
-
-  const outerRingGlow = createMemo(() => {
-    if (context.disabled()) return "none";
-
-    const index = hoveredIndex() ?? selectedIndex();
-    if (index === null) {
-      return "0 0 10px rgba(255,255,255,0.08)";
-    }
-
-    const color = colors()[index].rgb;
-    return `0 0 10px rgba(255,255,255,0.16), 0 0 20px ${toRgba(color, 0.35)}`;
-  });
-
-  createTrackedEffect(() => {
-    // Bound to a const so the guard narrows across the closure boundary.
-    const node = outerRingRef;
-    if (!node) return;
-
-    const target = outerRingTarget();
-    outerRingControl?.stop();
-    outerRingControl = runMotion(
-      node,
-      readMotionState(node),
-      target,
-      ringTransition,
-    );
-  });
 
   onCleanup(() => {
-    outerRingControl?.stop();
 
     if (pulseTimeout !== undefined) {
       clearTimeout(pulseTimeout);
@@ -532,30 +474,6 @@ const ColorWheelFlower: Layout<typeof componentRecipe, ColorWheelFlowerProps> = 
       data-disabled={context.disabled() ? "true" : "false"}
     >
       <div {...{ class: CLASSES.rings }}>
-        {/*
-          The inner shell stays either way: it is the dark disc the petals sit
-          on, not decoration. Only the outer halo answers to `ring`.
-        */}
-        <Show when={props.ring !== false}>
-        <div
-          {...{
-            class: twMerge(CLASSES.ringShell.base, CLASSES.ringShell.outer),
-          }}
-        >
-          <div
-            ref={outerRingRef}
-            {...{ class: twMerge(CLASSES.ring.base, CLASSES.ring.outer) }}
-            style={{
-              background: outerRingBackground(),
-              "box-shadow": outerRingGlow(),
-              transition: reduceMotion
-                ? "none"
-                : "background 450ms ease-in-out, box-shadow 300ms ease-out",
-            }}
-          />
-        </div>
-        </Show>
-
         <div
           {...{
             class: twMerge(CLASSES.ringShell.base, CLASSES.ringShell.inner),

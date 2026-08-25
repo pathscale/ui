@@ -7,12 +7,10 @@ export const CLASSES = {
   rings: "color-wheel-flower__rings",
   ringShell: {
     base: "color-wheel-flower__ring-shell",
-    outer: "color-wheel-flower__ring-shell--outer",
     inner: "color-wheel-flower__ring-shell--inner",
   },
   ring: {
     base: "color-wheel-flower__ring",
-    outer: "color-wheel-flower__ring--outer",
     inner: "color-wheel-flower__ring--inner",
   },
   picker: "color-wheel-flower__picker",
