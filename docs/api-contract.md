@@ -11,7 +11,7 @@ invisible for a day behind a doc that looked correct the whole time.
 When an API change is intentional, run `bun run check:api -- --write`, read the
 diff, and commit it. The diff is the review.
 
-183 components. An empty list means the component adds nothing beyond
+184 components. An empty list means the component adds nothing beyond
 HTML attributes and `UIBaseProps`; that is an assertion, not a gap.
 
 ---
@@ -427,6 +427,10 @@ HTML attributes and `UIBaseProps`; that is an assertion, not a gap.
 ### ImmersiveLanding
 
 `appVersion children cookieConfig currentPage enableScrollNavigation firefoxPWAConfig initialPage onNavigate onNavigationComplete overlay pages pwaConfig showArrows showCookieConsent showFirefoxBanner showNavigation showPWAPrompt transitionDuration`
+
+### InlineEdit
+
+`children disabled fieldClass fullWidth label onCommit trigger value`
 
 ### Input
 

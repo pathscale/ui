@@ -308,6 +308,49 @@ consequence for you: the list slot owns the scrollbar, so do not put
 own container: `visible`, `total`, `remaining`, `hasMore`, `nextCount`,
 `revealMore`, `revealAll`, `reset`, `onScroll`.
 
+## InlineEdit (a value edited where it is read)
+
+A name, a title, a label: something shown as text until someone chooses to
+change it, without a dialog or a separate form. The trigger swaps the value for
+a field holding a draft of it.
+
+```tsx
+import { InlineEdit } from "@pathscale/ui";
+
+<InlineEdit
+  value={project.name}
+  onCommit={(name) => rename(project.id, name)}
+  label={`Rename ${project.name}`}
+  trigger={<Icon name="pencil" />}
+/>
+```
+
+`onCommit` receives the trimmed draft and is not called when it is empty or
+unchanged. Enter commits, Escape abandons, and moving focus away commits, so the
+mode has an exit for a reader who never touches the keyboard. Pass `children` to
+render the value as something other than plain text, such as a link that opens
+what it names.
+
+**Two things it does that a hand-rolled version usually gets wrong**, both of
+which shipped as bugs in the application this came from:
+
+The open state is a plain variable and the swap is written to the elements, not
+held in a signal. A `createSignal` setter called from a click handler does not
+take effect within that handler in the Solid version this targets: the write
+lands a microtask later, after the handler that would have read it has finished.
+A component whose whole job is "this click changes what is on screen" cannot be
+built on that, and the failure is silent - the trigger looks dead.
+
+The field ignores the blur that arrives before it has focus. Revealing the field
+moves focus, and that first blur reaches the field's own handler while the mode
+is still opening; committing on it closes the editor inside the click that
+opened it. Same symptom, and it survives a tab switch because the state belongs
+to the component rather than the surface.
+
+Every part is a declared slot - `inline-edit-trigger`, `inline-edit-field`,
+`inline-edit-read`, `inline-edit-edit`, `inline-edit-value` - so a test harness
+can address the trigger and the field by name instead of guessing at the markup.
+
 ## Table (headless assembly)
 
 ```tsx
