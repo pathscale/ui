@@ -3,6 +3,12 @@
   align-items: flex-start;
   gap: 1rem;
   padding: 0.875rem;
+  /*
+   * Named, so the `auto` rules below measure this component rather than the
+   * window. The wheel usually sits in a side panel, and a panel narrow enough
+   * to need stacking is common on a wide screen.
+   */
+  container: complex-color-wheel / inline-size;
 }
 
 .complex-color-wheel__adjustments {
@@ -11,6 +17,49 @@
   flex: 1;
   flex-direction: column;
   gap: 0.875rem;
+}
+
+/* Stacked: the wheel above, every axis in one column under it. */
+.complex-color-wheel--layout-stacked {
+  flex-direction: column;
+  align-items: stretch;
+}
+
+/*
+ * Beside: the rows sit next to the wheel and pack two to a line. `auto-fit`
+ * rather than a fixed two, so the last row spans the full width instead of
+ * leaving a hole, and a container too narrow for two columns gets one.
+ */
+.complex-color-wheel--layout-beside .complex-color-wheel__adjustments {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(13rem, 1fr));
+  gap: 0.875rem 1.25rem;
+  align-content: start;
+}
+
+/* The action sits alone on its own line above the axes it resets. */
+.complex-color-wheel--layout-beside .complex-color-wheel__action {
+  grid-column: 1 / -1;
+}
+
+@container complex-color-wheel (min-width: 30rem) {
+  .complex-color-wheel--layout-auto .complex-color-wheel__adjustments {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(13rem, 1fr));
+    gap: 0.875rem 1.25rem;
+    align-content: start;
+  }
+
+  .complex-color-wheel--layout-auto .complex-color-wheel__action {
+    grid-column: 1 / -1;
+  }
+}
+
+@container complex-color-wheel (max-width: 30rem) {
+  .complex-color-wheel--layout-auto {
+    flex-direction: column;
+    align-items: stretch;
+  }
 }
 
 .complex-color-wheel__action {

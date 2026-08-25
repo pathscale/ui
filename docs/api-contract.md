@@ -210,7 +210,7 @@ HTML attributes and `UIBaseProps`; that is an assertion, not a gap.
 
 ### ComplexColorWheel
 
-`action adjustments adjustmentsClass material`
+`action adjustments adjustmentsClass layout material`
 
 ### Composer
 
