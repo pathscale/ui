@@ -37,6 +37,15 @@ export interface ComplexColorWheelProps extends ColorWheelProps {
   material?: CardMaterial;
   action?: JSX.Element;
   adjustmentsClass?: string;
+  /**
+   * Where the axes sit: `beside` the wheel and two to a line, `stacked` in one
+   * column under it, or `auto` to choose by the width this component is given.
+   *
+   * `auto` measures the component rather than the viewport, because the wheel
+   * is usually in a side panel and a narrow panel on a wide screen still wants
+   * the stacked reading.
+   */
+  layout?: "auto" | "beside" | "stacked";
 }
 
 /** A colour wheel with standard value axes beside it. */
