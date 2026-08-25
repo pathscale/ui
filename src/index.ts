@@ -287,6 +287,8 @@ export {
   useImmersiveLanding,
   useImmersiveLandingContext,
 } from "./components/immersive-landing";
+export type { InlineEditProps } from "./components/inline-edit";
+export { default as InlineEdit } from "./components/inline-edit";
 export { default as Input } from "./components/input";
 export type {
   InputOTPGroupProps,
