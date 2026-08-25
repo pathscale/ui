@@ -1,6 +1,6 @@
 import "./ColorWheelFlower.css";
 import type { JSX } from "@solidjs/web";
-import {For, createMemo, createSignal, createTrackedEffect, onCleanup, omit} from "solid-js";
+import {For, Show, createMemo, createSignal, createTrackedEffect, onCleanup, omit} from "solid-js";
 import { clsx } from "clsx";
 import { twMerge } from "../../lib/twMerge";
 import ColorSwatch from "../color-swatch";
@@ -37,6 +37,16 @@ export interface ColorWheelFlowerProps {
   mode?: ColorWheelFlowerMode;
   /** Exactly 31 literal colors, ordered outer ring, middle ring, inner ring, center. */
   palette?: readonly string[];
+  /**
+   * Draw the halo around the petals.
+   *
+   * On by default, and it is a rainbow until something is picked, then the
+   * picked colour. It reads as chrome rather than as state: the selected petal
+   * already carries a highlight, so the ring repeats that at the size of the
+   * whole control and takes a tenth of the width to do it. Turn it off where
+   * the wheel sits in a panel that has its own edge.
+   */
+  ring?: boolean;
 }
 
 type ColorItem = {
@@ -522,6 +532,11 @@ const ColorWheelFlower: Layout<typeof componentRecipe, ColorWheelFlowerProps> = 
       data-disabled={context.disabled() ? "true" : "false"}
     >
       <div {...{ class: CLASSES.rings }}>
+        {/*
+          The inner shell stays either way: it is the dark disc the petals sit
+          on, not decoration. Only the outer halo answers to `ring`.
+        */}
+        <Show when={props.ring !== false}>
         <div
           {...{
             class: twMerge(CLASSES.ringShell.base, CLASSES.ringShell.outer),
@@ -539,6 +554,7 @@ const ColorWheelFlower: Layout<typeof componentRecipe, ColorWheelFlowerProps> = 
             }}
           />
         </div>
+        </Show>
 
         <div
           {...{
