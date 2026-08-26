@@ -1,6 +1,6 @@
 import "./Select.css";
 import {createContext, createMemo, createSignal, createTrackedEffect, createUniqueId, onCleanup, onSettled, omit, useContext, type Accessor, type Component} from "solid-js";
-import { Portal, type JSX} from "@solidjs/web";
+import type { JSX} from "@solidjs/web";
 import { twMerge } from "../../lib/twMerge";
 import {
   createOverlayPosition,
@@ -660,28 +660,34 @@ const SelectPopover: Layout<typeof componentRecipe, SelectPopoverProps> = () => 
     } as JSX.CSSProperties;
   };
 
+  /*
+    Keep the fixed overlay owned by the Select subtree, for the same reason
+    Dropdown does. Reparenting it through Portal makes Blitz allocate a
+    transient semantic subtree: an option can paint for one frame and
+    disappear before the next sibling Select opens, so the listbox never
+    reaches the renderer as a stable node. Fixed positioning already uses
+    viewport coordinates, so a body-level parent buys nothing here.
+  */
   return (
-    <Portal>
-      <div
-        {...others}
-        ref={ctx?.setPopoverRef}
-        {...{ class: twMerge(CLASSES.slot.popover, props.class) }}
-        data-theme={props.dataTheme}
-        data-slot="ui-select-popover"
-        data-open={ctx?.open() ? "true" : "false"}
-        data-placement={overlayPosition.placement()}
-        style={popoverStyle()}
-        // `on:pointerdown` was the 1.x escape hatch for a non-delegated
-        // listener. 2.0 dropped the namespace; the ordinary prop is what is
-        // left, and the stopPropagation below is what mattered here anyway.
-        onPointerDown={(event) => {
-          invokeEventHandler(props.onPointerDown, event);
-          if (!event.defaultPrevented) event.stopPropagation();
-        }}
-      >
-        {props.children}
-      </div>
-    </Portal>
+    <div
+      {...others}
+      ref={ctx?.setPopoverRef}
+      {...{ class: twMerge(CLASSES.slot.popover, props.class) }}
+      data-theme={props.dataTheme}
+      data-slot="ui-select-popover"
+      data-open={ctx?.open() ? "true" : "false"}
+      data-placement={overlayPosition.placement()}
+      style={popoverStyle()}
+      // `on:pointerdown` was the 1.x escape hatch for a non-delegated
+      // listener. 2.0 dropped the namespace; the ordinary prop is what is
+      // left, and the stopPropagation below is what mattered here anyway.
+      onPointerDown={(event) => {
+        invokeEventHandler(props.onPointerDown, event);
+        if (!event.defaultPrevented) event.stopPropagation();
+      }}
+    >
+      {props.children}
+    </div>
   );
 };
 
