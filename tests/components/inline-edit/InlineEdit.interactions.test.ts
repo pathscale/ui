@@ -1,6 +1,6 @@
 import { describe, expect, it, mock } from "bun:test";
 import {
-  bindInlineEditWindowDismissal,
+  bindInlineEditDismissals,
   createInlineEditInteractions,
 } from "../../../src/components/inline-edit/InlineEdit.interactions";
 
@@ -11,9 +11,11 @@ const setup = (disabled = false) => {
   const focus = mock(() => {});
   const select = mock(() => {});
   const field = { value: "", focus, select };
+  const root = { contains: (target: Node) => target === root };
   const interactions = createInlineEditInteractions({
     value: () => value,
     disabled: () => disabled,
+    root: () => root,
     field: () => field,
     onOpenChange: (open) => openChanges.push(open),
     onCommit: (next) => commits.push(next),
@@ -120,8 +122,16 @@ describe("InlineEdit interactions", () => {
     expect(openingBlur.commits).toEqual(["Should stay open"]);
   });
 
-  it("binds window defocus without relying on document-global events", () => {
+  it("binds bubbled pointer-away and window defocus without focus traps", () => {
     const listeners = new Map<string, (event: Event) => void>();
+    const addEventListener = mock((type: string, next: (event: Event) => void) => {
+      listeners.set(type, next);
+    });
+    const removeEventListener = mock(() => {});
+    const documentSource = {
+      addEventListener,
+      removeEventListener,
+    } as unknown as Pick<Document, "addEventListener" | "removeEventListener">;
     const windowAddEventListener = mock((type: string, next: (event: Event) => void) => {
       listeners.set(`window:${type}`, next);
     });
@@ -134,18 +144,23 @@ describe("InlineEdit interactions", () => {
     result.interactions.start();
     result.interactions.input("Window title");
 
-    const cleanup = bindInlineEditWindowDismissal(
+    const cleanup = bindInlineEditDismissals(
+      documentSource,
       windowSource,
+      result.interactions.outside,
       result.interactions.windowBlur,
     );
-    listeners.get("window:blur")?.(new Event("blur"));
+    listeners.get("pointerdown")?.({ target: {} as Node } as PointerEvent);
 
+    expect(addEventListener).toHaveBeenCalledTimes(1);
+    expect(addEventListener.mock.calls[0]?.[0]).toBe("pointerdown");
     expect(windowAddEventListener).toHaveBeenCalledTimes(1);
     expect(windowAddEventListener.mock.calls[0]?.[0]).toBe("blur");
     expect(result.interactions.isOpen()).toBeFalse();
     expect(result.commits).toEqual(["Window title"]);
 
     cleanup();
+    expect(removeEventListener).toHaveBeenCalledTimes(1);
     expect(windowRemoveEventListener).toHaveBeenCalledTimes(1);
   });
 

@@ -1,11 +1,18 @@
 export type InlineEditField = Pick<HTMLInputElement, "focus" | "select" | "value">;
 
-export function bindInlineEditWindowDismissal(
+export function bindInlineEditDismissals(
+  documentSource: Pick<Document, "addEventListener" | "removeEventListener">,
   windowSource: Pick<Window, "addEventListener" | "removeEventListener">,
+  outside: (target: EventTarget | null) => void,
   windowBlur: () => void,
 ): () => void {
+  const pointerDown = (event: PointerEvent): void => {
+    outside(event.target);
+  };
+  documentSource.addEventListener("pointerdown", pointerDown);
   windowSource.addEventListener("blur", windowBlur);
   return () => {
+    documentSource.removeEventListener("pointerdown", pointerDown);
     windowSource.removeEventListener("blur", windowBlur);
   };
 }
@@ -13,6 +20,7 @@ export function bindInlineEditWindowDismissal(
 export type InlineEditInteractionOptions = {
   value: () => string;
   disabled: () => boolean;
+  root: () => Pick<HTMLElement, "contains"> | undefined;
   field: () => InlineEditField | undefined;
   onOpenChange: (open: boolean) => void;
   onCommit?: (value: string) => void | Promise<unknown>;
@@ -82,6 +90,10 @@ export function createInlineEditInteractions(
     },
     blur: () => {
       if (focused && open) commit();
+    },
+    outside: (target: EventTarget | null) => {
+      const root = options.root();
+      if (open && root && !root.contains(target as Node)) commit();
     },
     windowBlur: () => {
       if (open) commit();
