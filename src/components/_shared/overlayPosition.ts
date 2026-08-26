@@ -103,16 +103,18 @@ export const resolveOverlayAnchorRect = (
 export const createOverlayPosition = (
   options: CreateOverlayPositionOptions,
 ) => {
-  const [style, setStyle] = createSignal<JSX.CSSProperties>({
-    visibility: "hidden",
-  });
+  // Visibility belongs to each overlay component's `data-open` CSS contract.
+  // Positioning must never write an inline visibility override: portal refs can
+  // settle after the open signal, and an override left behind here makes a
+  // semantically open Select or Popover impossible to see or operate.
+  const [style, setStyle] = createSignal<JSX.CSSProperties>({});
   const [resolvedPlacement, setResolvedPlacement] =
     createSignal<OverlayPlacement>(options.placement());
 
   createTrackedEffect(() => {
     if (!options.open()) {
       setResolvedPlacement(options.placement());
-      setStyle({ visibility: "hidden" });
+      setStyle({});
       return;
     }
 
@@ -215,10 +217,8 @@ export const createOverlayPosition = (
       frame = requestAnimationFrame(update);
     };
 
-    // Opening must make the overlay paint in the same reactive turn. Keeping
-    // the initial inline `visibility: hidden` until requestAnimationFrame
-    // overrides the component's `[data-open="true"]` CSS and leaves a valid
-    // select or popover invisible whenever the next frame is delayed.
+    // Opening must position the overlay in the same reactive turn. Visibility
+    // is intentionally absent from this style object; data-open CSS owns it.
     update();
 
     window.addEventListener("resize", schedule);

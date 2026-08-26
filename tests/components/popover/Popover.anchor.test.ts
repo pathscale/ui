@@ -49,7 +49,7 @@ describe("Popover virtual anchoring", () => {
     expect(resolveOverlayAnchorRect(trigger, undefined)).toBe(triggerRect);
   });
 
-  it("removes the hidden inline style before the next animation frame", async () => {
+  it("never overrides the component visibility contract", async () => {
     const requestFrame = mock(() => 1);
     Object.defineProperty(globalThis, "window", {
       configurable: true,
@@ -90,7 +90,7 @@ describe("Popover virtual anchoring", () => {
         offset: () => 6,
       });
 
-      expect(position.style()).toEqual({ visibility: "hidden" });
+      expect(position.style()).toEqual({});
       setOpen(true);
       await Promise.resolve();
       expect(position.style()).toMatchObject({
@@ -100,6 +100,63 @@ describe("Popover virtual anchoring", () => {
       });
       expect(position.style()).not.toHaveProperty("visibility");
       expect(requestFrame).not.toHaveBeenCalled();
+      dispose();
+    });
+  });
+
+  it("stays visibility-safe while a portal ref settles after opening", async () => {
+    Object.defineProperty(globalThis, "window", {
+      configurable: true,
+      value: {
+        innerWidth: 800,
+        innerHeight: 600,
+        addEventListener: mock(() => {}),
+        removeEventListener: mock(() => {}),
+      },
+    });
+    Object.defineProperty(globalThis, "requestAnimationFrame", {
+      configurable: true,
+      value: mock(() => 1),
+    });
+    Object.defineProperty(globalThis, "cancelAnimationFrame", {
+      configurable: true,
+      value: mock(() => {}),
+    });
+
+    await createRoot(async (dispose) => {
+      const [open, setOpen] = createSignal(false);
+      const [overlay, setOverlay] = createSignal<HTMLElement>();
+      const position = createOverlayPosition({
+        open,
+        triggerRef: () => undefined,
+        anchorRect: () => virtualRect,
+        overlayRef: overlay,
+        placement: () => "bottom",
+        offset: () => 6,
+      });
+
+      setOpen(true);
+      await Promise.resolve();
+      expect(position.style()).toEqual({});
+
+      setOverlay({
+        getBoundingClientRect: () => ({
+          top: 0,
+          left: 0,
+          width: 160,
+          height: 120,
+          right: 160,
+          bottom: 120,
+        }),
+      } as HTMLElement);
+      await Promise.resolve();
+
+      expect(position.style()).toMatchObject({
+        position: "fixed",
+        top: "56px",
+        left: "8px",
+      });
+      expect(position.style()).not.toHaveProperty("visibility");
       dispose();
     });
   });
