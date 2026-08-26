@@ -5,7 +5,7 @@ import type { Layout } from "../../lib/layouts";
 import { twMerge } from "../../lib/twMerge";
 import type { UIBaseProps } from "../vocabulary";
 import {
-  bindInlineEditDismissals,
+  bindInlineEditWindowDismissal,
   createInlineEditInteractions,
 } from "./InlineEdit.interactions";
 import { CLASSES, componentRecipe } from "./InlineEdit.recipe";
@@ -77,12 +77,7 @@ const InlineEdit: Layout<typeof componentRecipe, InlineEditProps> = () => {
   });
 
   onSettled(() => {
-    return bindInlineEditDismissals(
-      document,
-      window,
-      interactions.outside,
-      interactions.windowBlur,
-    );
+    return bindInlineEditWindowDismissal(window, interactions.windowBlur);
   });
 
   return (
@@ -95,6 +90,12 @@ const InlineEdit: Layout<typeof componentRecipe, InlineEditProps> = () => {
       class={rootClasses()}
       data-slot="root"
     >
+      <span
+        aria-hidden="true"
+        onPointerDown={interactions.commit}
+        class={CLASSES.slot.dismiss}
+        data-slot="inline-edit-dismiss"
+      />
       <span class={CLASSES.slot.read} data-slot="inline-edit-read">
         <span class={CLASSES.slot.value} data-slot="inline-edit-value">
           {props.children ?? props.value}

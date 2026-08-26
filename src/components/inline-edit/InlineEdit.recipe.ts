@@ -3,6 +3,7 @@ import { recipe } from "../../lib/layouts";
 export const CLASSES = {
   base: "inline-edit",
   slot: {
+    dismiss: "inline-edit__dismiss",
     read: "inline-edit__read",
     value: "inline-edit__value",
     trigger: "inline-edit__trigger",
@@ -20,6 +21,7 @@ export const componentRecipe = recipe({
   component: "inline-edit",
   slots: {
     root: {},
+    "inline-edit-dismiss": {},
     "inline-edit-read": {},
     "inline-edit-value": {},
     "inline-edit-trigger": {},

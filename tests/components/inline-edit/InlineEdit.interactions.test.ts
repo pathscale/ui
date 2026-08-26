@@ -1,6 +1,6 @@
 import { describe, expect, it, mock } from "bun:test";
 import {
-  bindInlineEditDismissals,
+  bindInlineEditWindowDismissal,
   createInlineEditInteractions,
 } from "../../../src/components/inline-edit/InlineEdit.interactions";
 
@@ -11,7 +11,6 @@ const setup = (disabled = false) => {
   const focus = mock(() => {});
   const select = mock(() => {});
   const field = { value: "", focus, select };
-  const inside = {} as Node;
   const interactions = createInlineEditInteractions({
     value: () => value,
     disabled: () => disabled,
@@ -22,7 +21,6 @@ const setup = (disabled = false) => {
           return Boolean(force);
         },
       } as DOMTokenList,
-      contains: (target: Node | null) => target === inside,
     }),
     field: () => field,
     editingClass: "inline-edit--editing",
@@ -36,7 +34,6 @@ const setup = (disabled = false) => {
     select,
     toggles,
     commits,
-    inside,
     setValue: (next: string) => {
       value = next;
     },
@@ -131,33 +128,8 @@ describe("InlineEdit interactions", () => {
     expect(openingBlur.commits).toEqual(["Should stay open"]);
   });
 
-  it("commits on an outside pointer even when the destination does not take focus", () => {
-    const result = setup();
-    result.interactions.start();
-    result.interactions.input("Pointer title");
-
-    result.interactions.outside(result.inside);
-
-    expect(result.interactions.isOpen()).toBeTrue();
-    expect(result.commits).toEqual([]);
-
-    result.interactions.outside({} as Node);
-
-    expect(result.interactions.isOpen()).toBeFalse();
-    expect(result.commits).toEqual(["Pointer title"]);
-    expect(result.toggles.at(-1)).toEqual(["inline-edit--editing", false]);
-  });
-
-  it("binds only pointer-away through document bubbling", () => {
+  it("binds window defocus without relying on document-global events", () => {
     const listeners = new Map<string, (event: Event) => void>();
-    const addEventListener = mock((type: string, next: (event: Event) => void) => {
-      listeners.set(type, next);
-    });
-    const removeEventListener = mock(() => {});
-    const documentSource = {
-      addEventListener,
-      removeEventListener,
-    } as unknown as Pick<Document, "addEventListener" | "removeEventListener">;
     const windowAddEventListener = mock((type: string, next: (event: Event) => void) => {
       listeners.set(`window:${type}`, next);
     });
@@ -168,24 +140,20 @@ describe("InlineEdit interactions", () => {
     } as unknown as Pick<Window, "addEventListener" | "removeEventListener">;
     const result = setup();
     result.interactions.start();
-    result.interactions.input("Pointer title");
+    result.interactions.input("Window title");
 
-    const cleanup = bindInlineEditDismissals(
-      documentSource,
+    const cleanup = bindInlineEditWindowDismissal(
       windowSource,
-      result.interactions.outside,
       result.interactions.windowBlur,
     );
-    listeners.get("pointerdown")?.({ target: {} as Node } as PointerEvent);
+    listeners.get("window:blur")?.(new Event("blur"));
 
-    expect(addEventListener).toHaveBeenCalledTimes(1);
-    expect(addEventListener.mock.calls[0]?.[0]).toBe("pointerdown");
-    expect(addEventListener.mock.calls[0]?.length).toBe(2);
+    expect(windowAddEventListener).toHaveBeenCalledTimes(1);
+    expect(windowAddEventListener.mock.calls[0]?.[0]).toBe("blur");
     expect(result.interactions.isOpen()).toBeFalse();
-    expect(result.commits).toEqual(["Pointer title"]);
+    expect(result.commits).toEqual(["Window title"]);
 
     cleanup();
-    expect(removeEventListener).toHaveBeenCalledTimes(1);
     expect(windowRemoveEventListener).toHaveBeenCalledTimes(1);
   });
 
