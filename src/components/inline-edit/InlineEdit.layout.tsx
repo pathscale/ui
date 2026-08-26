@@ -1,11 +1,11 @@
 import "./InlineEdit.css";
 import type { JSX } from "@solidjs/web";
-import { createSignal, createTrackedEffect, onSettled, omit } from "solid-js";
+import { createEffect, createSignal, onSettled, omit } from "solid-js";
 import type { Layout } from "../../lib/layouts";
 import { twMerge } from "../../lib/twMerge";
 import type { UIBaseProps } from "../vocabulary";
 import {
-  bindInlineEditWindowDismissal,
+  bindInlineEditDismissals,
   createInlineEditInteractions,
 } from "./InlineEdit.interactions";
 import { CLASSES, componentRecipe } from "./InlineEdit.recipe";
@@ -57,6 +57,7 @@ const InlineEdit: Layout<typeof componentRecipe, InlineEditProps> = () => {
   const interactions = createInlineEditInteractions({
     value: () => props.value,
     disabled: () => Boolean(props.disabled),
+    root: () => root,
     field: () => field,
     onOpenChange: setIsOpen,
     onCommit: (value) => props.onCommit?.(value),
@@ -71,14 +72,20 @@ const InlineEdit: Layout<typeof componentRecipe, InlineEditProps> = () => {
       props.class,
     );
 
-  // Track the controlled value with Solid 2's single-callback lifecycle. A
-  // reused InlineEdit must close as soon as its owner supplies a new value.
-  createTrackedEffect(() => {
-    interactions.syncValue(props.value);
-  });
+  // Solid 2 separates dependency computation from the effect callback. This
+  // closes a reused editor when its owner supplies another project's value.
+  createEffect(
+    () => props.value,
+    (nextValue) => interactions.syncValue(nextValue),
+  );
 
   onSettled(() => {
-    return bindInlineEditWindowDismissal(window, interactions.windowBlur);
+    return bindInlineEditDismissals(
+      document,
+      window,
+      interactions.outside,
+      interactions.windowBlur,
+    );
   });
 
   return (
@@ -91,13 +98,6 @@ const InlineEdit: Layout<typeof componentRecipe, InlineEditProps> = () => {
       class={rootClasses()}
       data-slot="root"
     >
-      <span
-        aria-hidden="true"
-        onPointerDown={interactions.commit}
-        onClick={interactions.commit}
-        class={CLASSES.slot.dismiss}
-        data-slot="inline-edit-dismiss"
-      />
       <span class={CLASSES.slot.read} data-slot="inline-edit-read">
         <span class={CLASSES.slot.value} data-slot="inline-edit-value">
           {props.children ?? props.value}
