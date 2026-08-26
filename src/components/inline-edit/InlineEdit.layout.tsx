@@ -1,6 +1,6 @@
 import "./InlineEdit.css";
 import type { JSX } from "@solidjs/web";
-import { createTrackedEffect, onSettled, omit } from "solid-js";
+import { createSignal, createTrackedEffect, onSettled, omit } from "solid-js";
 import type { Layout } from "../../lib/layouts";
 import { twMerge } from "../../lib/twMerge";
 import type { UIBaseProps } from "../vocabulary";
@@ -53,19 +53,19 @@ const InlineEdit: Layout<typeof componentRecipe, InlineEditProps> = () => {
 
   let root: HTMLSpanElement | undefined;
   let field: HTMLInputElement | undefined;
+  const [isOpen, setIsOpen] = createSignal(false);
   const interactions = createInlineEditInteractions({
     value: () => props.value,
     disabled: () => Boolean(props.disabled),
-    root: () => root,
     field: () => field,
-    editingClass: CLASSES.flag.editing,
+    onOpenChange: setIsOpen,
     onCommit: (value) => props.onCommit?.(value),
   });
 
   const rootClasses = (): string =>
     twMerge(
       CLASSES.base,
-      interactions.isOpen() && CLASSES.flag.editing,
+      isOpen() && CLASSES.flag.editing,
       props.fullWidth && CLASSES.flag.fullWidth,
       props.disabled && CLASSES.flag.disabled,
       props.class,

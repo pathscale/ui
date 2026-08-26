@@ -13,9 +13,8 @@ export function bindInlineEditWindowDismissal(
 export type InlineEditInteractionOptions = {
   value: () => string;
   disabled: () => boolean;
-  root: () => Pick<HTMLElement, "classList"> | undefined;
   field: () => InlineEditField | undefined;
-  editingClass: string;
+  onOpenChange: (open: boolean) => void;
   onCommit?: (value: string) => void | Promise<unknown>;
 };
 
@@ -36,7 +35,7 @@ export function createInlineEditInteractions(
 
   const apply = (next: boolean): void => {
     open = next;
-    options.root()?.classList.toggle(options.editingClass, next);
+    options.onOpenChange(next);
   };
 
   const resetDraft = (): void => {

@@ -12,16 +12,16 @@
 
   .inline-edit--editing .inline-edit__dismiss {
     position: fixed;
-    z-index: var(--z-overlay, 70);
+    z-index: 9999;
     inset: 0;
     display: block;
-    background: rgb(0 0 0 / 0.001);
+    background-color: rgba(0, 0, 0, 0.001);
     pointer-events: auto;
   }
 
   .inline-edit--editing .inline-edit__edit {
     position: relative;
-    z-index: calc(var(--z-overlay, 70) + 1);
+    z-index: 10000;
   }
 
   .inline-edit--full-width {
