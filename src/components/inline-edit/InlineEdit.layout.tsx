@@ -1,6 +1,6 @@
 import "./InlineEdit.css";
 import type { JSX } from "@solidjs/web";
-import { createEffect, onSettled, omit } from "solid-js";
+import { createTrackedEffect, onSettled, omit } from "solid-js";
 import type { Layout } from "../../lib/layouts";
 import { twMerge } from "../../lib/twMerge";
 import type { UIBaseProps } from "../vocabulary";
@@ -71,9 +71,11 @@ const InlineEdit: Layout<typeof componentRecipe, InlineEditProps> = () => {
       props.class,
     );
 
-  // `createEffect` is the public reactive lifecycle for a controlled prop.
-  // A reused InlineEdit must close as soon as its owner supplies a new value.
-  createEffect(() => interactions.syncValue(props.value));
+  // Track the controlled value with Solid 2's single-callback lifecycle. A
+  // reused InlineEdit must close as soon as its owner supplies a new value.
+  createTrackedEffect(() => {
+    interactions.syncValue(props.value);
+  });
 
   onSettled(() => {
     return bindInlineEditWindowDismissal(window, interactions.windowBlur);
