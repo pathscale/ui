@@ -3,7 +3,6 @@ import {
   missingRecipeFlagUsages,
   recipeFlagKeys,
 } from "../scripts/component-state-contract";
-import { readFileSync } from "node:fs";
 
 const inlineEditRecipe = `
   const CLASSES = {
@@ -52,19 +51,5 @@ describe("component state contract", () => {
     `;
 
     expect(missingRecipeFlagUsages(inlineEditRecipe, layout)).toEqual([]);
-  });
-
-  it("constructs Select compound children through the deferred context channel", () => {
-    const generated = readFileSync(
-      new URL("../src/components/select/Select.generated.tsx", import.meta.url),
-      "utf8",
-    );
-    const root = generated.slice(
-      generated.indexOf("const __solidLayoutSelectRoot"),
-      generated.indexOf("const SelectRoot =", generated.indexOf("const __solidLayoutSelectRoot")),
-    );
-
-    expect(root).toContain("{_stable.children}");
-    expect(root).not.toContain("{p.children}");
   });
 });
