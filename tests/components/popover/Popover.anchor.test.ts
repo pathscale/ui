@@ -1,5 +1,7 @@
-import { describe, expect, it } from "bun:test";
+import { afterEach, describe, expect, it, mock } from "bun:test";
+import { createRoot, createSignal } from "solid-js";
 import {
+  createOverlayPosition,
   type OverlayAnchorRect,
   resolveOverlayAnchorRect,
 } from "../../../src/components/_shared/overlayPosition";
@@ -12,6 +14,25 @@ const virtualRect: OverlayAnchorRect = {
   right: 50,
   bottom: 50,
 };
+
+const originalWindow = globalThis.window;
+const originalRequestAnimationFrame = globalThis.requestAnimationFrame;
+const originalCancelAnimationFrame = globalThis.cancelAnimationFrame;
+
+afterEach(() => {
+  Object.defineProperty(globalThis, "window", {
+    configurable: true,
+    value: originalWindow,
+  });
+  Object.defineProperty(globalThis, "requestAnimationFrame", {
+    configurable: true,
+    value: originalRequestAnimationFrame,
+  });
+  Object.defineProperty(globalThis, "cancelAnimationFrame", {
+    configurable: true,
+    value: originalCancelAnimationFrame,
+  });
+});
 
 describe("Popover virtual anchoring", () => {
   it("positions from an anchor rectangle without a trigger element", () => {
@@ -26,5 +47,60 @@ describe("Popover virtual anchoring", () => {
 
     expect(resolveOverlayAnchorRect(trigger, virtualRect)).toBe(virtualRect);
     expect(resolveOverlayAnchorRect(trigger, undefined)).toBe(triggerRect);
+  });
+
+  it("removes the hidden inline style before the next animation frame", async () => {
+    const requestFrame = mock(() => 1);
+    Object.defineProperty(globalThis, "window", {
+      configurable: true,
+      value: {
+        innerWidth: 800,
+        innerHeight: 600,
+        addEventListener: mock(() => {}),
+        removeEventListener: mock(() => {}),
+      },
+    });
+    Object.defineProperty(globalThis, "requestAnimationFrame", {
+      configurable: true,
+      value: requestFrame,
+    });
+    Object.defineProperty(globalThis, "cancelAnimationFrame", {
+      configurable: true,
+      value: mock(() => {}),
+    });
+
+    await createRoot(async (dispose) => {
+      const [open, setOpen] = createSignal(false);
+      const position = createOverlayPosition({
+        open,
+        triggerRef: () => undefined,
+        anchorRect: () => virtualRect,
+        overlayRef: () =>
+          ({
+            getBoundingClientRect: () => ({
+              top: 0,
+              left: 0,
+              width: 160,
+              height: 120,
+              right: 160,
+              bottom: 120,
+            }),
+          }) as HTMLElement,
+        placement: () => "bottom",
+        offset: () => 6,
+      });
+
+      expect(position.style()).toEqual({ visibility: "hidden" });
+      setOpen(true);
+      await Promise.resolve();
+      expect(position.style()).toMatchObject({
+        position: "fixed",
+        top: "56px",
+        left: "8px",
+      });
+      expect(position.style()).not.toHaveProperty("visibility");
+      expect(requestFrame).not.toHaveBeenCalled();
+      dispose();
+    });
   });
 });

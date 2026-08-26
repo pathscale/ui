@@ -215,7 +215,11 @@ export const createOverlayPosition = (
       frame = requestAnimationFrame(update);
     };
 
-    schedule();
+    // Opening must make the overlay paint in the same reactive turn. Keeping
+    // the initial inline `visibility: hidden` until requestAnimationFrame
+    // overrides the component's `[data-open="true"]` CSS and leaves a valid
+    // select or popover invisible whenever the next frame is delayed.
+    update();
 
     window.addEventListener("resize", schedule);
     window.addEventListener("scroll", schedule, true);
