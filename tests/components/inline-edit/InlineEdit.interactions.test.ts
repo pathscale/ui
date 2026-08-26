@@ -150,17 +150,18 @@ describe("InlineEdit interactions", () => {
       result.interactions.outside,
       result.interactions.windowBlur,
     );
-    listeners.get("pointerdown")?.({ target: {} as Node } as PointerEvent);
+    listeners.get("click")?.({ target: {} as Node } as MouseEvent);
 
-    expect(addEventListener).toHaveBeenCalledTimes(1);
+    expect(addEventListener).toHaveBeenCalledTimes(2);
     expect(addEventListener.mock.calls[0]?.[0]).toBe("pointerdown");
+    expect(addEventListener.mock.calls[1]?.[0]).toBe("click");
     expect(windowAddEventListener).toHaveBeenCalledTimes(1);
     expect(windowAddEventListener.mock.calls[0]?.[0]).toBe("blur");
     expect(result.interactions.isOpen()).toBeFalse();
     expect(result.commits).toEqual(["Window title"]);
 
     cleanup();
-    expect(removeEventListener).toHaveBeenCalledTimes(1);
+    expect(removeEventListener).toHaveBeenCalledTimes(2);
     expect(windowRemoveEventListener).toHaveBeenCalledTimes(1);
   });
 
