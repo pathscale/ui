@@ -9,17 +9,15 @@ export function bindInlineEditDismissals(
   const pointerDown = (event: PointerEvent): void => {
     outside(event.target);
   };
-  const focusIn = (event: FocusEvent): void => {
-    outside(event.target);
-  };
   // Blitz delivers document-level pointer events through the normal bubbling
   // path. Capture listeners are not portable across every supported renderer.
+  // Keyboard focus-away stays on the field's blur handler: Blitz does not
+  // preserve the leaf target on every document-level focus event, so treating
+  // document focusin as authoritative can close the editor on its own focus.
   documentSource.addEventListener("pointerdown", pointerDown);
-  documentSource.addEventListener("focusin", focusIn);
   windowSource.addEventListener("blur", windowBlur);
   return () => {
     documentSource.removeEventListener("pointerdown", pointerDown);
-    documentSource.removeEventListener("focusin", focusIn);
     windowSource.removeEventListener("blur", windowBlur);
   };
 }

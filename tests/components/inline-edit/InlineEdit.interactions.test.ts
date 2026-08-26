@@ -148,7 +148,7 @@ describe("InlineEdit interactions", () => {
     expect(result.toggles.at(-1)).toEqual(["inline-edit--editing", false]);
   });
 
-  it("binds pointer and keyboard focus-away through document bubbling", () => {
+  it("binds only pointer-away through document bubbling", () => {
     const listeners = new Map<string, (event: Event) => void>();
     const addEventListener = mock((type: string, next: (event: Event) => void) => {
       listeners.set(type, next);
@@ -168,7 +168,7 @@ describe("InlineEdit interactions", () => {
     } as unknown as Pick<Window, "addEventListener" | "removeEventListener">;
     const result = setup();
     result.interactions.start();
-    result.interactions.input("Keyboard focus title");
+    result.interactions.input("Pointer title");
 
     const cleanup = bindInlineEditDismissals(
       documentSource,
@@ -176,16 +176,16 @@ describe("InlineEdit interactions", () => {
       result.interactions.outside,
       result.interactions.windowBlur,
     );
-    listeners.get("focusin")?.({ target: {} as Node } as FocusEvent);
+    listeners.get("pointerdown")?.({ target: {} as Node } as PointerEvent);
 
-    expect(addEventListener).toHaveBeenCalledTimes(2);
+    expect(addEventListener).toHaveBeenCalledTimes(1);
+    expect(addEventListener.mock.calls[0]?.[0]).toBe("pointerdown");
     expect(addEventListener.mock.calls[0]?.length).toBe(2);
-    expect(addEventListener.mock.calls[1]?.length).toBe(2);
     expect(result.interactions.isOpen()).toBeFalse();
-    expect(result.commits).toEqual(["Keyboard focus title"]);
+    expect(result.commits).toEqual(["Pointer title"]);
 
     cleanup();
-    expect(removeEventListener).toHaveBeenCalledTimes(2);
+    expect(removeEventListener).toHaveBeenCalledTimes(1);
     expect(windowRemoveEventListener).toHaveBeenCalledTimes(1);
   });
 
