@@ -101,12 +101,19 @@ const InlineEdit: Layout<typeof componentRecipe, InlineEditProps> = () => {
       <Show when={isOpen()}>
         <Portal>
           <button
+            ref={(element: HTMLButtonElement) => {
+              // Portals live outside Solid's ordinary delegated-event root in
+              // native renderers. Bind the dismissal control itself so both
+              // physical pointer input and semantic button activation close
+              // the editor on every renderer.
+              const commit = () => interactions.commit();
+              element.addEventListener("pointerdown", commit);
+              element.addEventListener("mousedown", commit);
+              element.addEventListener("click", commit);
+            }}
             type="button"
             tabindex={-1}
             aria-label="Finish editing"
-            onPointerDown={interactions.commit}
-            onMouseDown={interactions.commit}
-            onClick={interactions.commit}
             class={CLASSES.slot.dismiss}
             data-slot="inline-edit-dismiss"
           />
