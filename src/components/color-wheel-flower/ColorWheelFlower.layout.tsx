@@ -135,6 +135,11 @@ const readMotionState = (el: HTMLElement): MotionState => {
   };
 };
 
+const applyMotionState = (el: HTMLElement, state: MotionState) => {
+  el.style.opacity = String(state.opacity ?? 1);
+  el.style.transform = `translate3d(${state.x ?? 0}px, ${state.y ?? 0}px, 0) scale(${state.scale ?? 1})`;
+};
+
 const getLiftOffset = (item: ColorItem, distance: number) => {
   const radius = Math.sqrt(item.offsetX ** 2 + item.offsetY ** 2);
   if (!Number.isFinite(radius) || radius === 0) {
@@ -494,6 +499,7 @@ const ColorWheelFlower: Layout<typeof componentRecipe, ColorWheelFlowerProps> = 
           {(item, index) => {
             let motionRef: HTMLDivElement | undefined;
             let dotControl: { stop: () => void } | null = null;
+            let hasPaintedFinalState = false;
 
             const isHovered = () => hoveredIndex() === index();
             const isPressed = () => pressedIndex() === index();
@@ -619,6 +625,12 @@ const ColorWheelFlower: Layout<typeof componentRecipe, ColorWheelFlowerProps> = 
               if (!motionRef) return;
 
               const target = dotTarget();
+              if (!hasPaintedFinalState) {
+                applyMotionState(motionRef, target);
+                hasPaintedFinalState = true;
+                return;
+              }
+
               const transition = dotTransition();
               dotControl?.stop();
               dotControl = runMotion(
