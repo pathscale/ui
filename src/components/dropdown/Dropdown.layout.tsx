@@ -1,6 +1,6 @@
 import "./Dropdown.css";
 import {Show, createContext, createSignal, createTrackedEffect, createUniqueId, onCleanup, onSettled, omit, useContext, type Accessor} from "solid-js";
-import { Portal, type JSX} from "@solidjs/web";
+import type { JSX} from "@solidjs/web";
 import { twMerge } from "../../lib/twMerge";
 import {
   createOverlayPosition,
@@ -470,26 +470,31 @@ const DropdownMenu: Layout<typeof componentRecipe, DropdownMenuProps> = () => {
 
   return (
     <Show when={ctx.open()}>
-      <Portal>
-        <div
-          {...others}
-          ref={ctx.setMenuRef}
-          id={ctx.menuId}
-          {...{ class: twMerge(CLASSES.slot.popover, props.class) }}
-          role={props.role ?? "menu"}
-          data-slot="dropdown-popover"
-          data-open={ctx.open() ? "true" : "false"}
-          data-align={props.align ?? "start"}
-          data-placement={overlayPosition.placement()}
-          aria-hidden={ctx.open() ? "false" : "true"}
-          style={menuStyle()}
-          onKeyDown={handleKeyDown}
-        >
-          <div {...{ class: CLASSES.slot.menu }} data-slot="dropdown-menu">
-            {props.children}
-          </div>
+      {/*
+        Keep the fixed overlay owned by the Dropdown subtree. Reparenting it
+        through Portal makes Blitz allocate a transient semantic subtree: an
+        option can paint for one frame and disappear before the next sibling
+        Dropdown opens. Fixed positioning already uses viewport coordinates,
+        so a body-level parent is unnecessary here.
+      */}
+      <div
+        {...others}
+        ref={ctx.setMenuRef}
+        id={ctx.menuId}
+        {...{ class: twMerge(CLASSES.slot.popover, props.class) }}
+        role={props.role ?? "menu"}
+        data-slot="dropdown-popover"
+        data-open={ctx.open() ? "true" : "false"}
+        data-align={props.align ?? "start"}
+        data-placement={overlayPosition.placement()}
+        aria-hidden={ctx.open() ? "false" : "true"}
+        style={menuStyle()}
+        onKeyDown={handleKeyDown}
+      >
+        <div {...{ class: CLASSES.slot.menu }} data-slot="dropdown-menu">
+          {props.children}
         </div>
-      </Portal>
+      </div>
     </Show>
   );
 };
