@@ -1,10 +1,13 @@
 import "./InlineEdit.css";
 import type { JSX } from "@solidjs/web";
-import { onSettled, omit } from "solid-js";
+import { createTrackedEffect, onSettled, omit } from "solid-js";
 import type { Layout } from "../../lib/layouts";
 import { twMerge } from "../../lib/twMerge";
 import type { UIBaseProps } from "../vocabulary";
-import { createInlineEditInteractions } from "./InlineEdit.interactions";
+import {
+  bindInlineEditDismissals,
+  createInlineEditInteractions,
+} from "./InlineEdit.interactions";
 import { CLASSES, componentRecipe } from "./InlineEdit.recipe";
 
 /**
@@ -68,14 +71,18 @@ const InlineEdit: Layout<typeof componentRecipe, InlineEditProps> = () => {
       props.class,
     );
 
+  createTrackedEffect(() => {
+    props.value;
+    interactions.syncValue();
+  });
+
   onSettled(() => {
-    const pointerDown = (event: PointerEvent): void => {
-      interactions.pointerDown(event.target);
-    };
-    document.addEventListener("pointerdown", pointerDown, true);
-    return () => {
-      document.removeEventListener("pointerdown", pointerDown, true);
-    };
+    return bindInlineEditDismissals(
+      document,
+      window,
+      interactions.outside,
+      interactions.windowBlur,
+    );
   });
 
   return (

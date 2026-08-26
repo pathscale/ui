@@ -1,5 +1,29 @@
 export type InlineEditField = Pick<HTMLInputElement, "focus" | "select" | "value">;
 
+export function bindInlineEditDismissals(
+  documentSource: Pick<Document, "addEventListener" | "removeEventListener">,
+  windowSource: Pick<Window, "addEventListener" | "removeEventListener">,
+  outside: (target: EventTarget | null) => void,
+  windowBlur: () => void,
+): () => void {
+  const pointerDown = (event: PointerEvent): void => {
+    outside(event.target);
+  };
+  const focusIn = (event: FocusEvent): void => {
+    outside(event.target);
+  };
+  // Blitz delivers document-level pointer events through the normal bubbling
+  // path. Capture listeners are not portable across every supported renderer.
+  documentSource.addEventListener("pointerdown", pointerDown);
+  documentSource.addEventListener("focusin", focusIn);
+  windowSource.addEventListener("blur", windowBlur);
+  return () => {
+    documentSource.removeEventListener("pointerdown", pointerDown);
+    documentSource.removeEventListener("focusin", focusIn);
+    windowSource.removeEventListener("blur", windowBlur);
+  };
+}
+
 export type InlineEditInteractionOptions = {
   value: () => string;
   disabled: () => boolean;
@@ -22,6 +46,7 @@ export function createInlineEditInteractions(
   let open = false;
   let focused = false;
   let draft = "";
+  let sourceValue = options.value();
 
   const apply = (next: boolean): void => {
     open = next;
@@ -36,6 +61,7 @@ export function createInlineEditInteractions(
 
   const start = (): void => {
     if (options.disabled()) return;
+    sourceValue = options.value();
     resetDraft();
     apply(true);
     queueMicrotask(() => {
@@ -72,9 +98,15 @@ export function createInlineEditInteractions(
     blur: () => {
       if (focused && open) commit();
     },
-    pointerDown: (target: EventTarget | null) => {
+    outside: (target: EventTarget | null) => {
       const root = options.root();
       if (open && root && !root.contains(target as Node)) commit();
+    },
+    windowBlur: () => {
+      if (open) commit();
+    },
+    syncValue: () => {
+      if (open && options.value() !== sourceValue) cancel();
     },
     keyDown: (key: string, preventDefault: () => void) => {
       if (key === "Enter") {
