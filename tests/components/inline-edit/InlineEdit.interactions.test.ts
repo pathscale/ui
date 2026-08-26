@@ -6,7 +6,7 @@ import {
 
 const setup = (disabled = false) => {
   let value = "Original title";
-  const toggles: Array<[string, boolean | undefined]> = [];
+  const openChanges: boolean[] = [];
   const commits: string[] = [];
   const focus = mock(() => {});
   const select = mock(() => {});
@@ -14,16 +14,8 @@ const setup = (disabled = false) => {
   const interactions = createInlineEditInteractions({
     value: () => value,
     disabled: () => disabled,
-    root: () => ({
-      classList: {
-        toggle: (name: string, force?: boolean) => {
-          toggles.push([name, force]);
-          return Boolean(force);
-        },
-      } as DOMTokenList,
-    }),
     field: () => field,
-    editingClass: "inline-edit--editing",
+    onOpenChange: (open) => openChanges.push(open),
     onCommit: (next) => commits.push(next),
   });
 
@@ -32,7 +24,7 @@ const setup = (disabled = false) => {
     field,
     focus,
     select,
-    toggles,
+    openChanges,
     commits,
     setValue: (next: string) => {
       value = next;
@@ -49,7 +41,7 @@ describe("InlineEdit interactions", () => {
 
     expect(result.interactions.isOpen()).toBeTrue();
     expect(result.field.value).toBe("Original title");
-    expect(result.toggles).toEqual([["inline-edit--editing", true]]);
+    expect(result.openChanges).toEqual([true]);
     expect(result.focus).toHaveBeenCalledTimes(1);
     expect(result.select).toHaveBeenCalledTimes(1);
   });
@@ -61,7 +53,7 @@ describe("InlineEdit interactions", () => {
     await Promise.resolve();
 
     expect(result.interactions.isOpen()).toBeFalse();
-    expect(result.toggles).toEqual([]);
+    expect(result.openChanges).toEqual([]);
     expect(result.focus).not.toHaveBeenCalled();
   });
 
@@ -78,7 +70,7 @@ describe("InlineEdit interactions", () => {
     expect(result.interactions.isOpen()).toBeFalse();
     expect(result.commits).toEqual([]);
     expect(preventDefault).toHaveBeenCalledTimes(1);
-    expect(result.toggles.at(-1)).toEqual(["inline-edit--editing", false]);
+    expect(result.openChanges.at(-1)).toBe(false);
   });
 
   it("closes blank and unchanged drafts without committing", () => {
@@ -109,7 +101,7 @@ describe("InlineEdit interactions", () => {
     expect(result.commits).toEqual(["Renamed title"]);
     expect(result.interactions.isOpen()).toBeFalse();
     expect(preventDefault).toHaveBeenCalledTimes(1);
-    expect(result.toggles.at(-1)).toEqual(["inline-edit--editing", false]);
+    expect(result.openChanges.at(-1)).toBe(false);
   });
 
   it("commits on blur only after the field received focus", () => {
@@ -168,7 +160,7 @@ describe("InlineEdit interactions", () => {
     expect(result.interactions.isOpen()).toBeFalse();
     expect(result.field.value).toBe("Second project");
     expect(result.commits).toEqual([]);
-    expect(result.toggles.at(-1)).toEqual(["inline-edit--editing", false]);
+    expect(result.openChanges.at(-1)).toBe(false);
   });
 
   it("closes on window defocus", () => {
