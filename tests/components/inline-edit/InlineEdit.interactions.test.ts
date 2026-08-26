@@ -135,7 +135,7 @@ describe("InlineEdit interactions", () => {
     expect(openingBlur.commits).toEqual(["Should stay open"]);
   });
 
-  it("binds bubbled pointer-away and window defocus without focus traps", () => {
+  it("captures pointer-away and window defocus without focus traps", () => {
     const listeners = new Map<string, (event: Event) => void>();
     const addEventListener = mock((type: string, next: (event: Event) => void) => {
       listeners.set(type, next);
@@ -167,7 +167,9 @@ describe("InlineEdit interactions", () => {
 
     expect(addEventListener).toHaveBeenCalledTimes(2);
     expect(addEventListener.mock.calls[0]?.[0]).toBe("pointerdown");
+    expect(addEventListener.mock.calls[0]?.[2]).toBe(true);
     expect(addEventListener.mock.calls[1]?.[0]).toBe("click");
+    expect(addEventListener.mock.calls[1]?.[2]).toBe(true);
     expect(windowAddEventListener).toHaveBeenCalledTimes(1);
     expect(windowAddEventListener.mock.calls[0]?.[0]).toBe("blur");
     expect(result.interactions.isOpen()).toBeFalse();
@@ -175,6 +177,8 @@ describe("InlineEdit interactions", () => {
 
     cleanup();
     expect(removeEventListener).toHaveBeenCalledTimes(2);
+    expect(removeEventListener.mock.calls[0]?.[2]).toBe(true);
+    expect(removeEventListener.mock.calls[1]?.[2]).toBe(true);
     expect(windowRemoveEventListener).toHaveBeenCalledTimes(1);
   });
 
