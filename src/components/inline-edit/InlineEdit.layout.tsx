@@ -100,7 +100,10 @@ const InlineEdit: Layout<typeof componentRecipe, InlineEditProps> = () => {
     >
       <Show when={isOpen()}>
         <Portal>
-          <span
+          <button
+            type="button"
+            tabindex={-1}
+            aria-label="Finish editing"
             onPointerDown={interactions.commit}
             onMouseDown={interactions.commit}
             onClick={interactions.commit}
