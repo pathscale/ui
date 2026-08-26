@@ -1,5 +1,8 @@
 import { describe, expect, it, mock } from "bun:test";
-import { createInlineEditInteractions } from "../../../src/components/inline-edit/InlineEdit.interactions";
+import {
+  bindInlineEditDismissals,
+  createInlineEditInteractions,
+} from "../../../src/components/inline-edit/InlineEdit.interactions";
 
 const setup = (disabled = false) => {
   let value = "Original title";
@@ -133,16 +136,82 @@ describe("InlineEdit interactions", () => {
     result.interactions.start();
     result.interactions.input("Pointer title");
 
-    result.interactions.pointerDown(result.inside);
+    result.interactions.outside(result.inside);
 
     expect(result.interactions.isOpen()).toBeTrue();
     expect(result.commits).toEqual([]);
 
-    result.interactions.pointerDown({} as Node);
+    result.interactions.outside({} as Node);
 
     expect(result.interactions.isOpen()).toBeFalse();
     expect(result.commits).toEqual(["Pointer title"]);
     expect(result.toggles.at(-1)).toEqual(["inline-edit--editing", false]);
+  });
+
+  it("binds pointer and keyboard focus-away through document bubbling", () => {
+    const listeners = new Map<string, (event: Event) => void>();
+    const addEventListener = mock((type: string, next: (event: Event) => void) => {
+      listeners.set(type, next);
+    });
+    const removeEventListener = mock(() => {});
+    const documentSource = {
+      addEventListener,
+      removeEventListener,
+    } as unknown as Pick<Document, "addEventListener" | "removeEventListener">;
+    const windowAddEventListener = mock((type: string, next: (event: Event) => void) => {
+      listeners.set(`window:${type}`, next);
+    });
+    const windowRemoveEventListener = mock(() => {});
+    const windowSource = {
+      addEventListener: windowAddEventListener,
+      removeEventListener: windowRemoveEventListener,
+    } as unknown as Pick<Window, "addEventListener" | "removeEventListener">;
+    const result = setup();
+    result.interactions.start();
+    result.interactions.input("Keyboard focus title");
+
+    const cleanup = bindInlineEditDismissals(
+      documentSource,
+      windowSource,
+      result.interactions.outside,
+      result.interactions.windowBlur,
+    );
+    listeners.get("focusin")?.({ target: {} as Node } as FocusEvent);
+
+    expect(addEventListener).toHaveBeenCalledTimes(2);
+    expect(addEventListener.mock.calls[0]?.length).toBe(2);
+    expect(addEventListener.mock.calls[1]?.length).toBe(2);
+    expect(result.interactions.isOpen()).toBeFalse();
+    expect(result.commits).toEqual(["Keyboard focus title"]);
+
+    cleanup();
+    expect(removeEventListener).toHaveBeenCalledTimes(2);
+    expect(windowRemoveEventListener).toHaveBeenCalledTimes(1);
+  });
+
+  it("closes when the edited project value changes under a reused component", () => {
+    const result = setup();
+    result.interactions.start();
+    result.interactions.input("Draft from the first project");
+
+    result.setValue("Second project");
+    result.interactions.syncValue();
+
+    expect(result.interactions.isOpen()).toBeFalse();
+    expect(result.field.value).toBe("Second project");
+    expect(result.commits).toEqual([]);
+    expect(result.toggles.at(-1)).toEqual(["inline-edit--editing", false]);
+  });
+
+  it("closes on window defocus", () => {
+    const result = setup();
+    result.interactions.start();
+    result.interactions.input("Window blur title");
+
+    result.interactions.windowBlur();
+
+    expect(result.interactions.isOpen()).toBeFalse();
+    expect(result.commits).toEqual(["Window blur title"]);
   });
 
   it("ignores unrelated keys", () => {
