@@ -128,6 +128,7 @@ gitignored, so a clean tree stays clean, but two consequences are worth knowing:
 - [ ] No hardcoded English strings — accept as props with sensible defaults
 - [ ] No inline `style={{}}` when a Tailwind class exists — use classes instead. Dynamic values (animations, user-controlled sizes, calculated positions) are OK.
 - [ ] No `className` dual support — use `class` only (SolidJS convention). `className` is accepted via `IComponentBaseProps` for compat but `class` is canonical.
+- [ ] Every state declared under a recipe's `flag` object is applied by the authored layout. `bun run check` verifies both the source and generated component.
 - [ ] No `any` types — use proper TypeScript types
 - [ ] Comments explain **why**, not **what**
 

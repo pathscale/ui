@@ -1,5 +1,6 @@
 import { readdirSync, readFileSync, existsSync } from "node:fs";
 import { join } from "node:path";
+import { missingRecipeFlagUsages } from "./component-state-contract";
 
 const COMPONENTS_DIR = "src/components";
 const CONTRIBUTING = "CONTRIBUTING.md";
@@ -36,6 +37,43 @@ for (const entry of entries) {
   const dir = entry.name;
   const pascal = toPascalCase(dir);
   const componentDir = join(COMPONENTS_DIR, dir);
+
+  // Every state flag declared by a recipe must be consumed by both the
+  // authored layout and its generated artifact. A flag that exists only in
+  // the recipe or stylesheet creates two competing component contracts: CSS
+  // waits for a class the component can never apply. InlineEdit shipped in
+  // exactly that state, leaving its editing rules unreachable.
+  const recipeFiles = readdirSync(componentDir).filter((file) =>
+    file.endsWith(".recipe.ts"),
+  );
+  const componentFiles = readdirSync(componentDir);
+  const authoredLayouts = componentFiles
+    .filter((file) => file.endsWith(".layout.tsx"))
+    .map((file) => readFileSync(join(componentDir, file), "utf8"))
+    .join("\n");
+  const generatedLayouts = componentFiles
+    .filter((file) => file.endsWith(".generated.tsx"))
+    .map((file) => readFileSync(join(componentDir, file), "utf8"))
+    .join("\n");
+  for (const recipeFile of recipeFiles) {
+    const recipeSource = readFileSync(join(componentDir, recipeFile), "utf8");
+    for (const key of missingRecipeFlagUsages(recipeSource, authoredLayouts)) {
+      fail(
+        dir,
+        "state-contract",
+        `recipe flag ${key} is never consumed by an authored layout`,
+        "Code Style",
+      );
+    }
+    for (const key of missingRecipeFlagUsages(recipeSource, generatedLayouts)) {
+      fail(
+        dir,
+        "state-contract",
+        `recipe flag ${key} is missing from generated output`,
+        "Code Style",
+      );
+    }
+  }
 
   // --- Structure rules ---
 
