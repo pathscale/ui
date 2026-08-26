@@ -87,8 +87,8 @@ export function createInlineEditInteractions(
     windowBlur: () => {
       if (open) commit();
     },
-    syncValue: () => {
-      if (open && options.value() !== sourceValue) cancel();
+    syncValue: (nextValue: string) => {
+      if (open && nextValue !== sourceValue) cancel();
     },
     keyDown: (key: string, preventDefault: () => void) => {
       if (key === "Enter") {

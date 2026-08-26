@@ -1,6 +1,6 @@
 import "./InlineEdit.css";
 import type { JSX } from "@solidjs/web";
-import { createTrackedEffect, onSettled, omit } from "solid-js";
+import { onSettled, omit } from "solid-js";
 import type { Layout } from "../../lib/layouts";
 import { twMerge } from "../../lib/twMerge";
 import type { UIBaseProps } from "../vocabulary";
@@ -71,10 +71,14 @@ const InlineEdit: Layout<typeof componentRecipe, InlineEditProps> = () => {
       props.class,
     );
 
-  createTrackedEffect(() => {
-    props.value;
-    interactions.syncValue();
-  });
+  // The controlled input value is the renderer-authoritative update path.
+  // Synchronizing in the same accessor makes a reused InlineEdit close before
+  // the next value paints, without depending on effect scheduling.
+  const controlledValue = (): string => {
+    const value = props.value;
+    interactions.syncValue(value);
+    return value;
+  };
 
   onSettled(() => {
     return bindInlineEditWindowDismissal(window, interactions.windowBlur);
@@ -117,7 +121,7 @@ const InlineEdit: Layout<typeof componentRecipe, InlineEditProps> = () => {
             field = element;
           }}
           type="text"
-          value={props.value}
+          value={controlledValue()}
           aria-label={props.label}
           onInput={(event) => {
             interactions.input(event.currentTarget.value);

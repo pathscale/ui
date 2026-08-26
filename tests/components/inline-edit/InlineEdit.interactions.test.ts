@@ -163,7 +163,7 @@ describe("InlineEdit interactions", () => {
     result.interactions.input("Draft from the first project");
 
     result.setValue("Second project");
-    result.interactions.syncValue();
+    result.interactions.syncValue("Second project");
 
     expect(result.interactions.isOpen()).toBeFalse();
     expect(result.field.value).toBe("Second project");
