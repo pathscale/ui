@@ -419,7 +419,7 @@ const SelectRoot: Layout<typeof componentRecipe, SelectRootProps> = () => {
         data-disabled={disabled() ? "true" : "false"}
         data-selection-mode={selectionMode()}
       >
-        {props.children}
+        {children}
       </div>
     </SelectContext>
   );
