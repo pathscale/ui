@@ -101,7 +101,6 @@ const InlineEdit: Layout<typeof componentRecipe, InlineEditProps> = () => {
       <Show when={isOpen()}>
         <Portal>
           <span
-            aria-hidden="true"
             onPointerDown={interactions.commit}
             onMouseDown={interactions.commit}
             onClick={interactions.commit}
