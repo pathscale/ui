@@ -8,6 +8,7 @@ const setup = (disabled = false) => {
   const focus = mock(() => {});
   const select = mock(() => {});
   const field = { value: "", focus, select };
+  const inside = {} as Node;
   const interactions = createInlineEditInteractions({
     value: () => value,
     disabled: () => disabled,
@@ -18,6 +19,7 @@ const setup = (disabled = false) => {
           return Boolean(force);
         },
       } as DOMTokenList,
+      contains: (target: Node | null) => target === inside,
     }),
     field: () => field,
     editingClass: "inline-edit--editing",
@@ -31,6 +33,7 @@ const setup = (disabled = false) => {
     select,
     toggles,
     commits,
+    inside,
     setValue: (next: string) => {
       value = next;
     },
@@ -109,7 +112,7 @@ describe("InlineEdit interactions", () => {
     expect(result.toggles.at(-1)).toEqual(["inline-edit--editing", false]);
   });
 
-  it("commits on click-away only after the field received focus", () => {
+  it("commits on blur only after the field received focus", () => {
     const openingBlur = setup();
     openingBlur.interactions.start();
     openingBlur.interactions.input("Should stay open");
@@ -123,6 +126,23 @@ describe("InlineEdit interactions", () => {
 
     expect(openingBlur.interactions.isOpen()).toBeFalse();
     expect(openingBlur.commits).toEqual(["Should stay open"]);
+  });
+
+  it("commits on an outside pointer even when the destination does not take focus", () => {
+    const result = setup();
+    result.interactions.start();
+    result.interactions.input("Pointer title");
+
+    result.interactions.pointerDown(result.inside);
+
+    expect(result.interactions.isOpen()).toBeTrue();
+    expect(result.commits).toEqual([]);
+
+    result.interactions.pointerDown({} as Node);
+
+    expect(result.interactions.isOpen()).toBeFalse();
+    expect(result.commits).toEqual(["Pointer title"]);
+    expect(result.toggles.at(-1)).toEqual(["inline-edit--editing", false]);
   });
 
   it("ignores unrelated keys", () => {

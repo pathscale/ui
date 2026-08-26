@@ -1,6 +1,6 @@
 import "./InlineEdit.css";
 import type { JSX } from "@solidjs/web";
-import { omit } from "solid-js";
+import { onSettled, omit } from "solid-js";
 import type { Layout } from "../../lib/layouts";
 import { twMerge } from "../../lib/twMerge";
 import type { UIBaseProps } from "../vocabulary";
@@ -67,6 +67,16 @@ const InlineEdit: Layout<typeof componentRecipe, InlineEditProps> = () => {
       props.disabled && CLASSES.flag.disabled,
       props.class,
     );
+
+  onSettled(() => {
+    const pointerDown = (event: PointerEvent): void => {
+      interactions.pointerDown(event.target);
+    };
+    document.addEventListener("pointerdown", pointerDown, true);
+    return () => {
+      document.removeEventListener("pointerdown", pointerDown, true);
+    };
+  });
 
   return (
     <span

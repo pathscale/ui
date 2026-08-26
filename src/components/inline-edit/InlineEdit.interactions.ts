@@ -3,7 +3,7 @@ export type InlineEditField = Pick<HTMLInputElement, "focus" | "select" | "value
 export type InlineEditInteractionOptions = {
   value: () => string;
   disabled: () => boolean;
-  root: () => Pick<HTMLElement, "classList"> | undefined;
+  root: () => Pick<HTMLElement, "classList" | "contains"> | undefined;
   field: () => InlineEditField | undefined;
   editingClass: string;
   onCommit?: (value: string) => void | Promise<unknown>;
@@ -71,6 +71,10 @@ export function createInlineEditInteractions(
     },
     blur: () => {
       if (focused && open) commit();
+    },
+    pointerDown: (target: EventTarget | null) => {
+      const root = options.root();
+      if (open && root && !root.contains(target as Node)) commit();
     },
     keyDown: (key: string, preventDefault: () => void) => {
       if (key === "Enter") {
