@@ -1,23 +1,11 @@
 export type InlineEditField = Pick<HTMLInputElement, "focus" | "select" | "value">;
 
-export function bindInlineEditDismissals(
-  documentSource: Pick<Document, "addEventListener" | "removeEventListener">,
+export function bindInlineEditWindowDismissal(
   windowSource: Pick<Window, "addEventListener" | "removeEventListener">,
-  outside: (target: EventTarget | null) => void,
   windowBlur: () => void,
 ): () => void {
-  const pointerDown = (event: PointerEvent): void => {
-    outside(event.target);
-  };
-  // Blitz delivers document-level pointer events through the normal bubbling
-  // path. Capture listeners are not portable across every supported renderer.
-  // Keyboard focus-away stays on the field's blur handler: Blitz does not
-  // preserve the leaf target on every document-level focus event, so treating
-  // document focusin as authoritative can close the editor on its own focus.
-  documentSource.addEventListener("pointerdown", pointerDown);
   windowSource.addEventListener("blur", windowBlur);
   return () => {
-    documentSource.removeEventListener("pointerdown", pointerDown);
     windowSource.removeEventListener("blur", windowBlur);
   };
 }
@@ -25,7 +13,7 @@ export function bindInlineEditDismissals(
 export type InlineEditInteractionOptions = {
   value: () => string;
   disabled: () => boolean;
-  root: () => Pick<HTMLElement, "classList" | "contains"> | undefined;
+  root: () => Pick<HTMLElement, "classList"> | undefined;
   field: () => InlineEditField | undefined;
   editingClass: string;
   onCommit?: (value: string) => void | Promise<unknown>;
@@ -95,10 +83,6 @@ export function createInlineEditInteractions(
     },
     blur: () => {
       if (focused && open) commit();
-    },
-    outside: (target: EventTarget | null) => {
-      const root = options.root();
-      if (open && root && !root.contains(target as Node)) commit();
     },
     windowBlur: () => {
       if (open) commit();
