@@ -1,6 +1,6 @@
 import "./InlineEdit.css";
 import type { JSX } from "@solidjs/web";
-import { onSettled, omit } from "solid-js";
+import { createEffect, onSettled, omit } from "solid-js";
 import type { Layout } from "../../lib/layouts";
 import { twMerge } from "../../lib/twMerge";
 import type { UIBaseProps } from "../vocabulary";
@@ -71,14 +71,9 @@ const InlineEdit: Layout<typeof componentRecipe, InlineEditProps> = () => {
       props.class,
     );
 
-  // The controlled input value is the renderer-authoritative update path.
-  // Synchronizing in the same accessor makes a reused InlineEdit close before
-  // the next value paints, without depending on effect scheduling.
-  const controlledValue = (): string => {
-    const value = props.value;
-    interactions.syncValue(value);
-    return value;
-  };
+  // `createEffect` is the public reactive lifecycle for a controlled prop.
+  // A reused InlineEdit must close as soon as its owner supplies a new value.
+  createEffect(() => interactions.syncValue(props.value));
 
   onSettled(() => {
     return bindInlineEditWindowDismissal(window, interactions.windowBlur);
@@ -97,6 +92,7 @@ const InlineEdit: Layout<typeof componentRecipe, InlineEditProps> = () => {
       <span
         aria-hidden="true"
         onPointerDown={interactions.commit}
+        onClick={interactions.commit}
         class={CLASSES.slot.dismiss}
         data-slot="inline-edit-dismiss"
       />
@@ -121,7 +117,7 @@ const InlineEdit: Layout<typeof componentRecipe, InlineEditProps> = () => {
             field = element;
           }}
           type="text"
-          value={controlledValue()}
+          value={props.value}
           aria-label={props.label}
           onInput={(event) => {
             interactions.input(event.currentTarget.value);
