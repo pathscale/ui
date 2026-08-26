@@ -9,10 +9,15 @@ export function bindInlineEditDismissals(
   const pointerDown = (event: PointerEvent): void => {
     outside(event.target);
   };
+  const click = (event: MouseEvent): void => {
+    outside(event.target);
+  };
   documentSource.addEventListener("pointerdown", pointerDown);
+  documentSource.addEventListener("click", click);
   windowSource.addEventListener("blur", windowBlur);
   return () => {
     documentSource.removeEventListener("pointerdown", pointerDown);
+    documentSource.removeEventListener("click", click);
     windowSource.removeEventListener("blur", windowBlur);
   };
 }
