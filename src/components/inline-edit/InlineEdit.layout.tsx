@@ -1,6 +1,6 @@
 import "./InlineEdit.css";
-import { Portal, type JSX } from "@solidjs/web";
-import { createEffect, createSignal, onSettled, omit, Show } from "solid-js";
+import type { JSX } from "@solidjs/web";
+import { createEffect, createSignal, onSettled, omit } from "solid-js";
 import type { Layout } from "../../lib/layouts";
 import { twMerge } from "../../lib/twMerge";
 import type { UIBaseProps } from "../vocabulary";
@@ -98,27 +98,6 @@ const InlineEdit: Layout<typeof componentRecipe, InlineEditProps> = () => {
       class={rootClasses()}
       data-slot="root"
     >
-      <Show when={isOpen()}>
-        <Portal>
-          <button
-            ref={(element: HTMLButtonElement) => {
-              // Portals live outside Solid's ordinary delegated-event root in
-              // native renderers. Bind the dismissal control itself so both
-              // physical pointer input and semantic button activation close
-              // the editor on every renderer.
-              const commit = () => interactions.commit();
-              element.addEventListener("pointerdown", commit);
-              element.addEventListener("mousedown", commit);
-              element.addEventListener("click", commit);
-            }}
-            type="button"
-            tabindex={-1}
-            aria-label="Finish editing"
-            class={CLASSES.slot.dismiss}
-            data-slot="inline-edit-dismiss"
-          />
-        </Portal>
-      </Show>
       <span class={CLASSES.slot.read} data-slot="inline-edit-read">
         <span class={CLASSES.slot.value} data-slot="inline-edit-value">
           {props.children ?? props.value}
