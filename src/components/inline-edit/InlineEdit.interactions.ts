@@ -75,6 +75,7 @@ export function createInlineEditInteractions(
   };
 
   const commit = (): void => {
+    if (!open) return;
     const next = draft.trim();
     focused = false;
     apply(false);

@@ -106,6 +106,19 @@ describe("InlineEdit interactions", () => {
     expect(result.openChanges.at(-1)).toBe(false);
   });
 
+  it("commits at most once across one pointer activation", () => {
+    const result = setup();
+    result.interactions.start();
+    result.interactions.input("Renamed once");
+
+    result.interactions.commit();
+    result.interactions.commit();
+    result.interactions.commit();
+
+    expect(result.commits).toEqual(["Renamed once"]);
+    expect(result.openChanges).toEqual([true, false]);
+  });
+
   it("commits on blur only after the field received focus", () => {
     const openingBlur = setup();
     openingBlur.interactions.start();
