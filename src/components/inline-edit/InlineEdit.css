@@ -6,6 +6,20 @@
     gap: 0.375rem;
   }
 
+  .inline-edit__dismiss {
+    position: fixed;
+    z-index: 9999;
+    inset: 0;
+    display: block;
+    background-color: rgba(0, 0, 0, 0.01);
+    pointer-events: auto;
+  }
+
+  .inline-edit--editing .inline-edit__edit {
+    position: relative;
+    z-index: 10000;
+  }
+
   .inline-edit--full-width {
     width: 100%;
   }

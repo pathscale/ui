@@ -1,6 +1,6 @@
 import "./InlineEdit.css";
-import type { JSX } from "@solidjs/web";
-import { createEffect, createSignal, onSettled, omit } from "solid-js";
+import { Portal, type JSX } from "@solidjs/web";
+import { createEffect, createSignal, onSettled, omit, Show } from "solid-js";
 import type { Layout } from "../../lib/layouts";
 import { twMerge } from "../../lib/twMerge";
 import type { UIBaseProps } from "../vocabulary";
@@ -98,6 +98,18 @@ const InlineEdit: Layout<typeof componentRecipe, InlineEditProps> = () => {
       class={rootClasses()}
       data-slot="root"
     >
+      <Show when={isOpen()}>
+        <Portal>
+          <span
+            aria-hidden="true"
+            onPointerDown={interactions.commit}
+            onMouseDown={interactions.commit}
+            onClick={interactions.commit}
+            class={CLASSES.slot.dismiss}
+            data-slot="inline-edit-dismiss"
+          />
+        </Portal>
+      </Show>
       <span class={CLASSES.slot.read} data-slot="inline-edit-read">
         <span class={CLASSES.slot.value} data-slot="inline-edit-value">
           {props.children ?? props.value}
