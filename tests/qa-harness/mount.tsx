@@ -164,6 +164,43 @@ function ToggleFixture(props: { spec: ComponentSpec; under?: unknown }) {
   );
 }
 
+
+/*
+ * Dock, with the items it requires.
+ *
+ * `items` is not optional and the layout reads `p.items.length` directly, so
+ * mounting Dock generically threw `TypeError: not a callable function` before
+ * anything rendered. The page came up with eight empty nodes and not even the
+ * harness heading, which read as a component that renders nothing when it is a
+ * component that was never given what it needs.
+ *
+ * `icon` is a `JSX.Element`, which is why this cannot be expressed as `props`
+ * in `components.ts` the way a string or a number can.
+ */
+function DockFixture(props: { spec: ComponentSpec; under?: unknown }) {
+  return (
+    <Show
+      when={
+        props.under as
+          | ((props: Record<string, unknown>) => JSX.Element)
+          | undefined
+      }
+      fallback={<span>{props.spec.component} is not exported</span>}
+    >
+      {(Component) => (
+        <Dynamic
+          component={Component()}
+          items={[
+            { title: "Home", icon: <span>H</span> },
+            { title: "Search", icon: <span>S</span> },
+            { title: "Settings", icon: <span>G</span> },
+          ]}
+        />
+      )}
+    </Show>
+  );
+}
+
 /** Ids with a hand-written fixture; everything else mounts generically. */
 const FIXTURES: Record<
   string,
@@ -176,6 +213,7 @@ const FIXTURES: Record<
   {
     checkbox: ToggleFixture,
     collapsible: CollapsibleFixture,
+    dock: DockFixture,
     dropdown: DropdownFixture,
     radio: ToggleFixture,
     select: SelectFixture,
