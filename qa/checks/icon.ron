@@ -1,0 +1,17 @@
+// Generated from qa/components.ts by qa/generate-checks.ts. Do not edit.
+//
+// Icon has no interaction described yet, so only its paint
+// check is generated. Add `subject` and `subjectRole` to its entry to
+// generate the full set its "display" kind requires.
+[
+    (
+        id: "icon-mounts",
+        group: "icon",
+        what: "Icon mounts and reaches the renderer",
+        open: Some("icon"),
+        hover: None,
+        click: None,
+        subject: "Icon",
+        expect: PaintsNamed,
+    ),
+]

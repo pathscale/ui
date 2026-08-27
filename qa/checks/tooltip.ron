@@ -1,0 +1,17 @@
+// Generated from qa/components.ts by qa/generate-checks.ts. Do not edit.
+//
+// Tooltip has no interaction described yet, so only its paint
+// check is generated. Add `subject` and `subjectRole` to its entry to
+// generate the full set its "mode" kind requires.
+[
+    (
+        id: "tooltip-mounts",
+        group: "tooltip",
+        what: "Tooltip mounts and reaches the renderer",
+        open: Some("tooltip"),
+        hover: None,
+        click: None,
+        subject: "Tooltip",
+        expect: PaintsNamed,
+    ),
+]

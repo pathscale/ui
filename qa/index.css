@@ -1,0 +1,19 @@
+/*
+ * The harness stylesheet, mirroring what a consuming application writes.
+ *
+ * `@import "tailwindcss"` is the part that was missing: it brings in the
+ * palette every design token bottoms out in. `src/index.css` maps
+ * `--color-base-100` to `var(--color-gray-900)`, and without Tailwind's own
+ * definitions that chain ends nowhere — the page renders and every component
+ * in it is transparent and unconstrained.
+ *
+ * `@source` points the scanner at the component sources, so the utilities the
+ * components actually use are emitted rather than tree-shaken away.
+ *
+ * The library build deliberately ships `@theme` raw so a consumer resolves it
+ * against their own Tailwind config, which is what AgencyZero does. The harness
+ * is a consumer, so this file is its copy of that step.
+ */
+@import "tailwindcss";
+@source "../src/";
+@import "../src/index.css";

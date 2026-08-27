@@ -1,0 +1,17 @@
+// Generated from qa/components.ts by qa/generate-checks.ts. Do not edit.
+//
+// Checkbox has no interaction described yet, so only its paint
+// check is generated. Add `subject` and `subjectRole` to its entry to
+// generate the full set its "value" kind requires.
+[
+    (
+        id: "checkbox-mounts",
+        group: "checkbox",
+        what: "Checkbox mounts and reaches the renderer",
+        open: Some("checkbox"),
+        hover: None,
+        click: None,
+        subject: "Checkbox",
+        expect: PaintsNamed,
+    ),
+]

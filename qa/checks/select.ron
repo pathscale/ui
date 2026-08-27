@@ -6,6 +6,16 @@
 // state is indistinguishable from a real one.
 [
     (
+        id: "select-mounts",
+        group: "select",
+        what: "Select mounts and reaches the renderer",
+        open: Some("select"),
+        hover: None,
+        click: None,
+        subject: "Select",
+        expect: PaintsNamed,
+    ),
+    (
         id: "select-opens",
         group: "select",
         what: "the Select menu reaches the renderer as an addressable item",

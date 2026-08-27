@@ -1,0 +1,17 @@
+// Generated from qa/components.ts by qa/generate-checks.ts. Do not edit.
+//
+// ThemeColorPicker has no interaction described yet, so only its paint
+// check is generated. Add `subject` and `subjectRole` to its entry to
+// generate the full set its "value" kind requires.
+[
+    (
+        id: "theme-color-picker-mounts",
+        group: "theme-color-picker",
+        what: "ThemeColorPicker mounts and reaches the renderer",
+        open: Some("theme-color-picker"),
+        hover: None,
+        click: None,
+        subject: "ThemeColorPicker",
+        expect: PaintsNamed,
+    ),
+]
