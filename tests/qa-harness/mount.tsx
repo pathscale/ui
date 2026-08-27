@@ -302,7 +302,24 @@ function Harness(props: { spec: ComponentSpec; component?: unknown }) {
         reached.
       */}
       <h1 data-qa="harness-title">{props.spec.component}</h1>
-      <section data-qa="fixture" aria-label="fixture">
+      {/*
+        `position: relative` and a minimum height.
+        A component that positions itself absolutely is taken out of flow, so it
+        contributes no height to a plain parent: the region measured 1184x0 and
+        the `-renders` check reported eight components as rendering nothing when
+        every one of them had painted. Badge paints a real 28x28 node, Live Chat
+        Panel a 400x720 one.
+        `relative` makes this region the containing block those components
+        position against, so they land inside it rather than against the
+        viewport, and the minimum height means the region itself always has area
+        to be seen at. What the check then measures is whether the component put
+        anything in it.
+      */}
+      <section
+        data-qa="fixture"
+        aria-label="fixture"
+        style={{ position: "relative", "min-height": "8px" }}
+      >
         {/*
           `under` rather than a second `component`: JSX takes the last of a
           duplicated prop, so passing the component under that name overwrote
