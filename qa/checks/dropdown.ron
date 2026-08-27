@@ -22,7 +22,7 @@
         open: None,
         hover: None,
         click: None,
-        subject: "region:fixture",
+        subject: "fixture",
         expect: Paints,
     ),
     (

@@ -124,7 +124,7 @@
     "clean": "rm -rf dist node_modules",
     "format": "bun biome format --write",
     "lint": "bun run lint:code && bun run lint:layouts",
-    "lint:code": "bun biome lint --write",
+    "lint:code": "bun biome lint --write src qa",
     "lint:layouts": "solid-layouts-lint",
     "check": "bun run layouts:generate && bun run scripts/check-contracts.ts",
     "check:package": "bun run scripts/check-package.ts",
@@ -135,7 +135,8 @@
     "qa:dev": "rsbuild dev --config qa/rsbuild.config.ts",
     "qa:build": "bun run qa:entries && rsbuild build --config qa/rsbuild.config.ts",
     "test": "bun test --conditions=browser",
-    "check:api": "bun run scripts/check-api-contract.ts"
+    "check:api": "bun run scripts/check-api-contract.ts",
+    "qa:lint": "bun biome lint src qa"
   },
   "sideEffects": [
     "**/*.css"
