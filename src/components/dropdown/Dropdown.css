@@ -50,9 +50,26 @@
     background-color: var(--dropdown-trigger-bg);
     color: var(--dropdown-trigger-fg);
     border-color: var(--dropdown-trigger-border);
-    box-shadow:
+    /*
+     * The drop shadow is a variable so a caller can turn it off.
+     *
+     * `0 1px 2px` paints about 3px below the border box, and a shadow is not
+     * part of the box: an element declared `24px` occupies 24px of layout and
+     * reports bounds of 27.8. That is correct CSS and still wrong for a pill
+     * sized to sit inside a fixed-height composer row, where the visual result
+     * reads as the control quietly ignoring its own height. Measured on the
+     * running application: border-box 24.1, outer bounds 27.8, with border
+     * 0.9 and zero vertical padding - the whole 3.7px difference is this
+     * shadow.
+     *
+     * A variable rather than removal, because a dropdown on an ordinary
+     * surface wants the elevation. Set `--dropdown-trigger-shadow: none` on
+     * the trigger to opt out.
+     */
+    --dropdown-trigger-shadow:
       0 1px 2px rgb(var(--shadow-color, 0 0 0) / 6%),
       0 1px 0 oklch(100% 0 0 / 0.03) inset;
+    box-shadow: var(--dropdown-trigger-shadow);
     transition:
       transform 250ms cubic-bezier(0.22, 1, 0.36, 1),
       background-color 150ms ease,
