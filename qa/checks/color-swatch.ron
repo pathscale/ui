@@ -1,8 +1,9 @@
 // Generated from qa/components.ts by qa/generate-checks.ts. Do not edit.
 //
-// ColorSwatch has no interaction described yet, so only its paint
-// check is generated. Add `subject` and `subjectRole` to its entry to
-// generate the full set its "value" kind requires.
+// ColorSwatch, mounted alone on its own harness page. Isolation is
+// the point: driving this inside a real application makes every check
+// order-dependent, and a failure caused by the previous group's leftover
+// state is indistinguishable from a real one.
 [
     (
         id: "color-swatch-page-paints",
@@ -23,5 +24,42 @@
         click: None,
         subject: "fixture",
         expect: Paints,
+    ),
+    (
+        id: "color-swatch-opens",
+        group: "color-swatch",
+        what: "the ColorSwatch menu reaches the renderer as an addressable item",
+        open: None,
+        hover: None,
+        prepare: Some("ColorSwatch"),
+        settle_after_ms: 600,
+        click: None,
+        subject: "button:ColorSwatch",
+        expect: PaintsNamed,
+    ),
+    (
+        id: "color-swatch-changes",
+        group: "color-swatch",
+        what: "choosing another value changes what the ColorSwatch trigger reads",
+        open: None,
+        hover: None,
+        prepare: Some("ColorSwatch"),
+        settle_after_ms: 600,
+        click: Some("button:ColorSwatch"),
+        subject: "button:ColorSwatch",
+        expect: NameChanges,
+    ),
+    (
+        id: "color-swatch-escape-closes",
+        group: "color-swatch",
+        what: "Escape closes the ColorSwatch menu without choosing",
+        open: None,
+        hover: None,
+        prepare: Some("ColorSwatch"),
+        settle_after_ms: 600,
+        prepare_key: Some("Escape"),
+        click: None,
+        subject: "button:ColorSwatch",
+        expect: Vanishes,
     ),
 ]

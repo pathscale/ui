@@ -1,8 +1,9 @@
 // Generated from qa/components.ts by qa/generate-checks.ts. Do not edit.
 //
-// AuthMessage has no interaction described yet, so only its paint
-// check is generated. Add `subject` and `subjectRole` to its entry to
-// generate the full set its "display" kind requires.
+// AuthMessage, mounted alone on its own harness page. Isolation is
+// the point: driving this inside a real application makes every check
+// order-dependent, and a failure caused by the previous group's leftover
+// state is indistinguishable from a real one.
 [
     (
         id: "auth-message-page-paints",
@@ -23,5 +24,15 @@
         click: None,
         subject: "fixture",
         expect: Paints,
+    ),
+    (
+        id: "auth-message-paints",
+        group: "auth-message",
+        what: "the AuthMessage reaches the renderer with a box",
+        open: None,
+        hover: None,
+        click: None,
+        subject: "undefined:undefined",
+        expect: PaintsNamed,
     ),
 ]

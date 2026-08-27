@@ -1,8 +1,9 @@
 // Generated from qa/components.ts by qa/generate-checks.ts. Do not edit.
 //
-// Radio has no interaction described yet, so only its paint
-// check is generated. Add `subject` and `subjectRole` to its entry to
-// generate the full set its "value" kind requires.
+// Radio, mounted alone on its own harness page. Isolation is
+// the point: driving this inside a real application makes every check
+// order-dependent, and a failure caused by the previous group's leftover
+// state is indistinguishable from a real one.
 [
     (
         id: "radio-page-paints",
@@ -23,5 +24,42 @@
         click: None,
         subject: "fixture",
         expect: Paints,
+    ),
+    (
+        id: "radio-opens",
+        group: "radio",
+        what: "the Radio menu reaches the renderer as an addressable item",
+        open: None,
+        hover: None,
+        prepare: Some("Radio"),
+        settle_after_ms: 600,
+        click: None,
+        subject: "radio:Radio",
+        expect: PaintsNamed,
+    ),
+    (
+        id: "radio-changes",
+        group: "radio",
+        what: "choosing another value changes what the Radio trigger reads",
+        open: None,
+        hover: None,
+        prepare: Some("Radio"),
+        settle_after_ms: 600,
+        click: Some("radio:Radio"),
+        subject: "radio:Radio",
+        expect: NameChanges,
+    ),
+    (
+        id: "radio-escape-closes",
+        group: "radio",
+        what: "Escape closes the Radio menu without choosing",
+        open: None,
+        hover: None,
+        prepare: Some("Radio"),
+        settle_after_ms: 600,
+        prepare_key: Some("Escape"),
+        click: None,
+        subject: "radio:Radio",
+        expect: Vanishes,
     ),
 ]

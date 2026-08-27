@@ -1,8 +1,9 @@
 // Generated from qa/components.ts by qa/generate-checks.ts. Do not edit.
 //
-// Spinner has no interaction described yet, so only its paint
-// check is generated. Add `subject` and `subjectRole` to its entry to
-// generate the full set its "display" kind requires.
+// Spinner, mounted alone on its own harness page. Isolation is
+// the point: driving this inside a real application makes every check
+// order-dependent, and a failure caused by the previous group's leftover
+// state is indistinguishable from a real one.
 [
     (
         id: "spinner-page-paints",
@@ -23,5 +24,15 @@
         click: None,
         subject: "fixture",
         expect: Paints,
+    ),
+    (
+        id: "spinner-paints",
+        group: "spinner",
+        what: "the Spinner reaches the renderer with a box",
+        open: None,
+        hover: None,
+        click: None,
+        subject: "undefined:undefined",
+        expect: PaintsNamed,
     ),
 ]
