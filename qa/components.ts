@@ -34,7 +34,18 @@
  *   display- only ever paints.
  */
 
-export type ComponentKind = "value" | "mode" | "action" | "display";
+/*
+ * `toggle` exists because Switch, Radio and Checkbox were declared `value`,
+ * which is the menu-shaped contract: it generates `-opens`, `-changes` and
+ * `-escape-closes`, and asserts that activating an option changes what a
+ * trigger reads. A toggle has no menu, no options and no trigger text, so all
+ * three checks were unsatisfiable and all three failed for a reason that had
+ * nothing to do with the component.
+ *
+ * A toggle's whole contract is that clicking it flips its state, which the
+ * tree reports as `selected`.
+ */
+export type ComponentKind = "value" | "mode" | "action" | "toggle" | "display";
 
 export type ComponentSpec = {
   /** URL id and check-id prefix. Kebab-case. */
@@ -102,11 +113,9 @@ export const COMPONENTS: ComponentSpec[] = [
   {
     id: "checkbox",
     component: "Checkbox",
-    kind: "value",
-    subject: "Checkbox",
+    kind: "toggle",
+    // Measured: role `checkbox`, empty name, 1x1 at (79,116).
     subjectRole: "checkbox",
-    opens: "checkbox:Checkbox",
-    activate: "checkbox:Checkbox",
   },
   { id: "chip", component: "Chip", kind: "display" },
   {
@@ -121,11 +130,18 @@ export const COMPONENTS: ComponentSpec[] = [
   {
     id: "color-swatch",
     component: "ColorSwatch",
-    kind: "value",
-    subject: "ColorSwatch",
-    subjectRole: "button",
-    opens: "button:ColorSwatch",
-    activate: "button:ColorSwatch",
+    // Measured: role `option`, 32x32, named "Color undefined". Not a button,
+    // and not a menu, so `value` generated three checks against a control that
+    // does not exist.
+    //
+    // The name is a real defect rather than a fixture artefact: the component
+    // interpolates a colour prop into its accessible name without checking it
+    // is set, so a swatch with no colour announces itself as "Color undefined"
+    // to anyone using assistive technology. Left asserted as measured, so the
+    // check goes green only once that is fixed and the name changes.
+    kind: "display",
+    subject: "Color undefined",
+    subjectRole: "option",
   },
   {
     id: "color-wheel",
@@ -140,11 +156,11 @@ export const COMPONENTS: ComponentSpec[] = [
   {
     id: "composer",
     component: "Composer",
-    kind: "value",
-    subject: "Composer",
-    subjectRole: "textbox",
-    opens: "textbox:Composer",
-    activate: "textbox:Composer",
+    // Measured: role `textbox` (empty name) and `button:Send`, disabled until
+    // there is something to send.
+    kind: "action",
+    subject: "Send",
+    subjectRole: "button",
   },
   {
     id: "cookie-consent",
@@ -171,7 +187,10 @@ export const COMPONENTS: ComponentSpec[] = [
     id: "dropdown",
     component: "Dropdown",
     kind: "value",
-    subject: "Effort",
+    // Measured: the trigger reads "Effort: medium", not "Effort". A subject of
+    // "Effort" matched nothing, so every check that had to press it first
+    // failed before reaching its own assertion.
+    subject: "Effort: medium",
     subjectRole: "button",
     activate: "menuitem:high",
     opens: "menuitem:low",
@@ -200,20 +219,20 @@ export const COMPONENTS: ComponentSpec[] = [
   {
     id: "inline-edit",
     component: "InlineEdit",
-    kind: "value",
-    subject: "InlineEdit",
-    subjectRole: "textbox",
-    opens: "textbox:InlineEdit",
-    activate: "textbox:InlineEdit",
+    // Measured: an unnamed `button` at 18x18 (the pencil) and a `textbox` that
+    // is hidden at 0x0 until it opens. Neither carries a name, so there is
+    // nothing to address by `role:name` yet; a fixture that labels the trigger
+    // would upgrade this to a real `mode`.
+    kind: "display",
   },
   {
     id: "input",
     component: "Input",
-    kind: "value",
-    subject: "Input",
+    // Measured: role `textbox`, empty name, 1158x19.6. A field is not a menu:
+    // as `value` this generated `-opens` and `-changes` against something that
+    // opens nothing and has no trigger text to change.
+    kind: "display",
     subjectRole: "textbox",
-    opens: "textbox:Input",
-    activate: "textbox:Input",
   },
   { id: "label", component: "Label", kind: "display" },
   {
@@ -259,20 +278,21 @@ export const COMPONENTS: ComponentSpec[] = [
   {
     id: "pagination",
     component: "Pagination",
-    kind: "value",
-    subject: "Pagination",
-    subjectRole: "listitem",
-    opens: "listitem:Pagination",
-    activate: "listitem:Pagination",
+    // Measured: `navigation:pagination`, and buttons that do name themselves,
+    // "Go to page 1", "Go to next page", "Go to previous page". The previous
+    // and next controls are disabled on a single-page fixture, so the page
+    // button is the one a check can press.
+    kind: "action",
+    subject: "Go to page 1",
+    subjectRole: "button",
   },
   {
     id: "password-field",
     component: "PasswordField",
-    kind: "value",
-    subject: "PasswordField",
+    // Measured: role `textbox` (empty name) plus an unnamed `button` at 28x28,
+    // which is the reveal control and has no accessible name at all.
+    kind: "display",
     subjectRole: "textbox",
-    opens: "textbox:PasswordField",
-    activate: "textbox:PasswordField",
   },
   { id: "password-requirements", component: "PasswordRequirements", kind: "display" },
   {
@@ -284,18 +304,18 @@ export const COMPONENTS: ComponentSpec[] = [
   {
     id: "radio",
     component: "Radio",
-    kind: "value",
-    subject: "Radio",
+    kind: "toggle",
+    // Measured: role `radio`, empty name, 1x1 at (79,103).
     subjectRole: "radio",
-    opens: "radio:Radio",
-    activate: "radio:Radio",
   },
   { id: "scroll-area", component: "ScrollArea", kind: "display" },
   {
     id: "select",
     component: "Select",
     kind: "value",
-    subject: "Session",
+    // Measured: the trigger reads "Session: first fixture". The options exist
+    // in the tree but at 0x0 hidden until it opens.
+    subject: "Session: first fixture",
     subjectRole: "button",
     activate: "option:second fixture",
     opens: "option:first fixture",
@@ -316,11 +336,11 @@ export const COMPONENTS: ComponentSpec[] = [
   {
     id: "switch",
     component: "Switch",
-    kind: "value",
-    subject: "Switch",
-    subjectRole: "checkbox",
-    opens: "checkbox:Switch",
-    activate: "checkbox:Switch",
+    kind: "toggle",
+    // Measured: role `switch`, empty name, 1x1 at (79,116). The visible control
+    // is a styled sibling; this is the real input. It had `checkbox:Switch`,
+    // which is wrong in both halves.
+    subjectRole: "switch",
   },
   {
     id: "table",
