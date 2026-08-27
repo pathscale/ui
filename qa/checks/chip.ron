@@ -32,7 +32,7 @@
         open: None,
         hover: None,
         click: None,
-        subject: "undefined:undefined",
+        subject: "Chip",
         expect: PaintsNamed,
     ),
 ]

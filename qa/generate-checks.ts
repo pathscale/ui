@@ -200,6 +200,27 @@ function checksFor(spec: ComponentSpec): string {
   }
 
   if (spec.kind === "display") {
+    /*
+     * A `display` component is the one kind allowed to have no `subject`: the
+     * check above this block only demands one from kinds that imply an
+     * interaction. So this check cannot use `subject` unguarded, and for a long
+     * time it did — 54 of 71 generated files asserted against the string
+     * `"undefined:undefined"`, a node that cannot exist under any renderer.
+     *
+     * They were not reported as failures, because the sweep never reached the
+     * point of judging them. That is the same defect the header of this file
+     * describes as already fixed once, and it came back the moment a check was
+     * emitted for a spec that had not been asked for the field it interpolates.
+     *
+     * The fallback is the component's own name, which the fixture renders as
+     * the mounted component's text and which is therefore addressable for every
+     * display component without anyone describing it first.
+     */
+    const paintSubject =
+      spec.subject && spec.subjectRole
+        ? subject
+        : `"${spec.component}"`;
+
     records.push(
       check({
         id: `"${spec.id}-paints"`,
@@ -208,7 +229,7 @@ function checksFor(spec: ComponentSpec): string {
         open: surface,
         hover: "None",
         click: "None",
-        subject,
+        subject: paintSubject,
         expect: "PaintsNamed",
       }),
     );
@@ -229,9 +250,37 @@ function checksFor(spec: ComponentSpec): string {
 }
 
 mkdirSync(outputDir, { recursive: true });
+
+/*
+ * Nothing is written that names a subject the renderer cannot have.
+ *
+ * `undefined` reaches a check only through template interpolation of a field
+ * the spec never set, and the result is a check that fails for a reason
+ * unrelated to the component, or worse, is never evaluated and reads as
+ * coverage. This has happened twice: 30 checks against measured-wrong roles,
+ * then 54 against `"undefined:undefined"`. A string check at the boundary costs
+ * nothing and makes the third time impossible.
+ */
+function assertNoUnresolvedSubject(id: string, body: string): void {
+  if (body.includes("undefined")) {
+    const line = body
+      .split("\n")
+      .find((candidate) => candidate.includes("undefined"))
+      ?.trim();
+    throw new Error(
+      `${id}: generated a check containing \`undefined\` (${line}). ` +
+        `Some field interpolated into it is missing from its entry in ` +
+        `components.ts. Fix the spec or the branch that emits this check; ` +
+        `do not hand-edit the generated file.`,
+    );
+  }
+}
+
 for (const spec of COMPONENTS) {
   const path = join(outputDir, `${spec.id}.ron`);
-  writeFileSync(path, checksFor(spec));
+  const body = checksFor(spec);
+  assertNoUnresolvedSubject(spec.id, body);
+  writeFileSync(path, body);
   console.log(`wrote ${path}`);
 }
 console.log(`${COMPONENTS.length} component(s) generated`);
