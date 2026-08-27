@@ -5,13 +5,23 @@
 // generate the full set its "value" kind requires.
 [
     (
-        id: "language-switcher-mounts",
+        id: "language-switcher-page-paints",
         group: "language-switcher",
-        what: "LanguageSwitcher mounts and reaches the renderer",
-        open: Some("language-switcher"),
+        what: "the LanguageSwitcher page builds and paints",
+        open: None,
         hover: None,
         click: None,
-        subject: "LanguageSwitcher",
+        subject: "heading:LanguageSwitcher",
         expect: PaintsNamed,
+    ),
+    (
+        id: "language-switcher-renders",
+        group: "language-switcher",
+        what: "LanguageSwitcher renders a node of its own",
+        open: None,
+        hover: None,
+        click: None,
+        subject: "region:fixture",
+        expect: Paints,
     ),
 ]

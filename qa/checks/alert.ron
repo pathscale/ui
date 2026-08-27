@@ -5,13 +5,23 @@
 // generate the full set its "display" kind requires.
 [
     (
-        id: "alert-mounts",
+        id: "alert-page-paints",
         group: "alert",
-        what: "Alert mounts and reaches the renderer",
-        open: Some("alert"),
+        what: "the Alert page builds and paints",
+        open: None,
         hover: None,
         click: None,
-        subject: "Alert",
+        subject: "heading:Alert",
         expect: PaintsNamed,
+    ),
+    (
+        id: "alert-renders",
+        group: "alert",
+        what: "Alert renders a node of its own",
+        open: None,
+        hover: None,
+        click: None,
+        subject: "region:fixture",
+        expect: Paints,
     ),
 ]

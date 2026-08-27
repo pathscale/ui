@@ -5,13 +5,23 @@
 // generate the full set its "display" kind requires.
 [
     (
-        id: "header-mounts",
+        id: "header-page-paints",
         group: "header",
-        what: "Header mounts and reaches the renderer",
-        open: Some("header"),
+        what: "the Header page builds and paints",
+        open: None,
         hover: None,
         click: None,
-        subject: "Header",
+        subject: "heading:Header",
         expect: PaintsNamed,
+    ),
+    (
+        id: "header-renders",
+        group: "header",
+        what: "Header renders a node of its own",
+        open: None,
+        hover: None,
+        click: None,
+        subject: "region:fixture",
+        expect: Paints,
     ),
 ]

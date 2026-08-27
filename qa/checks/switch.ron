@@ -5,13 +5,23 @@
 // generate the full set its "value" kind requires.
 [
     (
-        id: "switch-mounts",
+        id: "switch-page-paints",
         group: "switch",
-        what: "Switch mounts and reaches the renderer",
-        open: Some("switch"),
+        what: "the Switch page builds and paints",
+        open: None,
         hover: None,
         click: None,
-        subject: "Switch",
+        subject: "heading:Switch",
         expect: PaintsNamed,
+    ),
+    (
+        id: "switch-renders",
+        group: "switch",
+        what: "Switch renders a node of its own",
+        open: None,
+        hover: None,
+        click: None,
+        subject: "region:fixture",
+        expect: Paints,
     ),
 ]

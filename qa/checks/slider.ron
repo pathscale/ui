@@ -5,13 +5,23 @@
 // generate the full set its "value" kind requires.
 [
     (
-        id: "slider-mounts",
+        id: "slider-page-paints",
         group: "slider",
-        what: "Slider mounts and reaches the renderer",
-        open: Some("slider"),
+        what: "the Slider page builds and paints",
+        open: None,
         hover: None,
         click: None,
-        subject: "Slider",
+        subject: "heading:Slider",
         expect: PaintsNamed,
+    ),
+    (
+        id: "slider-renders",
+        group: "slider",
+        what: "Slider renders a node of its own",
+        open: None,
+        hover: None,
+        click: None,
+        subject: "region:fixture",
+        expect: Paints,
     ),
 ]

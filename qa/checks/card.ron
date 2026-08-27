@@ -5,13 +5,23 @@
 // generate the full set its "display" kind requires.
 [
     (
-        id: "card-mounts",
+        id: "card-page-paints",
         group: "card",
-        what: "Card mounts and reaches the renderer",
-        open: Some("card"),
+        what: "the Card page builds and paints",
+        open: None,
         hover: None,
         click: None,
-        subject: "Card",
+        subject: "heading:Card",
         expect: PaintsNamed,
+    ),
+    (
+        id: "card-renders",
+        group: "card",
+        what: "Card renders a node of its own",
+        open: None,
+        hover: None,
+        click: None,
+        subject: "region:fixture",
+        expect: Paints,
     ),
 ]

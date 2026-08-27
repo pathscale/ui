@@ -5,13 +5,23 @@
 // generate the full set its "mode" kind requires.
 [
     (
-        id: "accordion-mounts",
+        id: "accordion-page-paints",
         group: "accordion",
-        what: "Accordion mounts and reaches the renderer",
-        open: Some("accordion"),
+        what: "the Accordion page builds and paints",
+        open: None,
         hover: None,
         click: None,
-        subject: "Accordion",
+        subject: "heading:Accordion",
         expect: PaintsNamed,
+    ),
+    (
+        id: "accordion-renders",
+        group: "accordion",
+        what: "Accordion renders a node of its own",
+        open: None,
+        hover: None,
+        click: None,
+        subject: "region:fixture",
+        expect: Paints,
     ),
 ]

@@ -5,13 +5,23 @@
 // generate the full set its "mode" kind requires.
 [
     (
-        id: "dialog-mounts",
+        id: "dialog-page-paints",
         group: "dialog",
-        what: "Dialog mounts and reaches the renderer",
-        open: Some("dialog"),
+        what: "the Dialog page builds and paints",
+        open: None,
         hover: None,
         click: None,
-        subject: "Dialog",
+        subject: "heading:Dialog",
         expect: PaintsNamed,
+    ),
+    (
+        id: "dialog-renders",
+        group: "dialog",
+        what: "Dialog renders a node of its own",
+        open: None,
+        hover: None,
+        click: None,
+        subject: "region:fixture",
+        expect: Paints,
     ),
 ]

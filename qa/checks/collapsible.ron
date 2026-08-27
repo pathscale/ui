@@ -5,13 +5,23 @@
 // generate the full set its "mode" kind requires.
 [
     (
-        id: "collapsible-mounts",
+        id: "collapsible-page-paints",
         group: "collapsible",
-        what: "Collapsible mounts and reaches the renderer",
-        open: Some("collapsible"),
+        what: "the Collapsible page builds and paints",
+        open: None,
         hover: None,
         click: None,
-        subject: "Collapsible",
+        subject: "heading:Collapsible",
         expect: PaintsNamed,
+    ),
+    (
+        id: "collapsible-renders",
+        group: "collapsible",
+        what: "Collapsible renders a node of its own",
+        open: None,
+        hover: None,
+        click: None,
+        subject: "region:fixture",
+        expect: Paints,
     ),
 ]

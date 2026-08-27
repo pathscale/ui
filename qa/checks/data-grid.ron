@@ -5,13 +5,23 @@
 // generate the full set its "value" kind requires.
 [
     (
-        id: "data-grid-mounts",
+        id: "data-grid-page-paints",
         group: "data-grid",
-        what: "DataGrid mounts and reaches the renderer",
-        open: Some("data-grid"),
+        what: "the DataGrid page builds and paints",
+        open: None,
         hover: None,
         click: None,
-        subject: "DataGrid",
+        subject: "heading:DataGrid",
         expect: PaintsNamed,
+    ),
+    (
+        id: "data-grid-renders",
+        group: "data-grid",
+        what: "DataGrid renders a node of its own",
+        open: None,
+        hover: None,
+        click: None,
+        subject: "region:fixture",
+        expect: Paints,
     ),
 ]

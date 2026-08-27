@@ -5,13 +5,23 @@
 // generate the full set its "display" kind requires.
 [
     (
-        id: "chip-mounts",
+        id: "chip-page-paints",
         group: "chip",
-        what: "Chip mounts and reaches the renderer",
-        open: Some("chip"),
+        what: "the Chip page builds and paints",
+        open: None,
         hover: None,
         click: None,
-        subject: "Chip",
+        subject: "heading:Chip",
         expect: PaintsNamed,
+    ),
+    (
+        id: "chip-renders",
+        group: "chip",
+        what: "Chip renders a node of its own",
+        open: None,
+        hover: None,
+        click: None,
+        subject: "region:fixture",
+        expect: Paints,
     ),
 ]

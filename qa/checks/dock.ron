@@ -5,13 +5,23 @@
 // generate the full set its "display" kind requires.
 [
     (
-        id: "dock-mounts",
+        id: "dock-page-paints",
         group: "dock",
-        what: "Dock mounts and reaches the renderer",
-        open: Some("dock"),
+        what: "the Dock page builds and paints",
+        open: None,
         hover: None,
         click: None,
-        subject: "Dock",
+        subject: "heading:Dock",
         expect: PaintsNamed,
+    ),
+    (
+        id: "dock-renders",
+        group: "dock",
+        what: "Dock renders a node of its own",
+        open: None,
+        hover: None,
+        click: None,
+        subject: "region:fixture",
+        expect: Paints,
     ),
 ]

@@ -5,13 +5,23 @@
 // generate the full set its "display" kind requires.
 [
     (
-        id: "chat-bubble-mounts",
+        id: "chat-bubble-page-paints",
         group: "chat-bubble",
-        what: "ChatBubble mounts and reaches the renderer",
-        open: Some("chat-bubble"),
+        what: "the ChatBubble page builds and paints",
+        open: None,
         hover: None,
         click: None,
-        subject: "ChatBubble",
+        subject: "heading:ChatBubble",
         expect: PaintsNamed,
+    ),
+    (
+        id: "chat-bubble-renders",
+        group: "chat-bubble",
+        what: "ChatBubble renders a node of its own",
+        open: None,
+        hover: None,
+        click: None,
+        subject: "region:fixture",
+        expect: Paints,
     ),
 ]

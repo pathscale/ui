@@ -5,13 +5,23 @@
 // generate the full set its "display" kind requires.
 [
     (
-        id: "badge-mounts",
+        id: "badge-page-paints",
         group: "badge",
-        what: "Badge mounts and reaches the renderer",
-        open: Some("badge"),
+        what: "the Badge page builds and paints",
+        open: None,
         hover: None,
         click: None,
-        subject: "Badge",
+        subject: "heading:Badge",
         expect: PaintsNamed,
+    ),
+    (
+        id: "badge-renders",
+        group: "badge",
+        what: "Badge renders a node of its own",
+        open: None,
+        hover: None,
+        click: None,
+        subject: "region:fixture",
+        expect: Paints,
     ),
 ]

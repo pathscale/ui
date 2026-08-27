@@ -5,13 +5,23 @@
 // generate the full set its "value" kind requires.
 [
     (
-        id: "color-swatch-mounts",
+        id: "color-swatch-page-paints",
         group: "color-swatch",
-        what: "ColorSwatch mounts and reaches the renderer",
-        open: Some("color-swatch"),
+        what: "the ColorSwatch page builds and paints",
+        open: None,
         hover: None,
         click: None,
-        subject: "ColorSwatch",
+        subject: "heading:ColorSwatch",
         expect: PaintsNamed,
+    ),
+    (
+        id: "color-swatch-renders",
+        group: "color-swatch",
+        what: "ColorSwatch renders a node of its own",
+        open: None,
+        hover: None,
+        click: None,
+        subject: "region:fixture",
+        expect: Paints,
     ),
 ]

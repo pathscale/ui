@@ -5,13 +5,23 @@
 // generate the full set its "value" kind requires.
 [
     (
-        id: "input-mounts",
+        id: "input-page-paints",
         group: "input",
-        what: "Input mounts and reaches the renderer",
-        open: Some("input"),
+        what: "the Input page builds and paints",
+        open: None,
         hover: None,
         click: None,
-        subject: "Input",
+        subject: "heading:Input",
         expect: PaintsNamed,
+    ),
+    (
+        id: "input-renders",
+        group: "input",
+        what: "Input renders a node of its own",
+        open: None,
+        hover: None,
+        click: None,
+        subject: "region:fixture",
+        expect: Paints,
     ),
 ]

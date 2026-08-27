@@ -5,13 +5,23 @@
 // generate the full set its "value" kind requires.
 [
     (
-        id: "radio-mounts",
+        id: "radio-page-paints",
         group: "radio",
-        what: "Radio mounts and reaches the renderer",
-        open: Some("radio"),
+        what: "the Radio page builds and paints",
+        open: None,
         hover: None,
         click: None,
-        subject: "Radio",
+        subject: "heading:Radio",
         expect: PaintsNamed,
+    ),
+    (
+        id: "radio-renders",
+        group: "radio",
+        what: "Radio renders a node of its own",
+        open: None,
+        hover: None,
+        click: None,
+        subject: "region:fixture",
+        expect: Paints,
     ),
 ]

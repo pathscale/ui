@@ -5,13 +5,23 @@
 // generate the full set its "display" kind requires.
 [
     (
-        id: "text-mounts",
+        id: "text-page-paints",
         group: "text",
-        what: "Text mounts and reaches the renderer",
-        open: Some("text"),
+        what: "the Text page builds and paints",
+        open: None,
         hover: None,
         click: None,
-        subject: "Text",
+        subject: "heading:Text",
         expect: PaintsNamed,
+    ),
+    (
+        id: "text-renders",
+        group: "text",
+        what: "Text renders a node of its own",
+        open: None,
+        hover: None,
+        click: None,
+        subject: "region:fixture",
+        expect: Paints,
     ),
 ]

@@ -5,13 +5,23 @@
 // generate the full set its "value" kind requires.
 [
     (
-        id: "tabs-mounts",
+        id: "tabs-page-paints",
         group: "tabs",
-        what: "Tabs mounts and reaches the renderer",
-        open: Some("tabs"),
+        what: "the Tabs page builds and paints",
+        open: None,
         hover: None,
         click: None,
-        subject: "Tabs",
+        subject: "heading:Tabs",
         expect: PaintsNamed,
+    ),
+    (
+        id: "tabs-renders",
+        group: "tabs",
+        what: "Tabs renders a node of its own",
+        open: None,
+        hover: None,
+        click: None,
+        subject: "region:fixture",
+        expect: Paints,
     ),
 ]

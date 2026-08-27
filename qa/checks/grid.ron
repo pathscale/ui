@@ -5,13 +5,23 @@
 // generate the full set its "display" kind requires.
 [
     (
-        id: "grid-mounts",
+        id: "grid-page-paints",
         group: "grid",
-        what: "Grid mounts and reaches the renderer",
-        open: Some("grid"),
+        what: "the Grid page builds and paints",
+        open: None,
         hover: None,
         click: None,
-        subject: "Grid",
+        subject: "heading:Grid",
         expect: PaintsNamed,
+    ),
+    (
+        id: "grid-renders",
+        group: "grid",
+        what: "Grid renders a node of its own",
+        open: None,
+        hover: None,
+        click: None,
+        subject: "region:fixture",
+        expect: Paints,
     ),
 ]

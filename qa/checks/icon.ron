@@ -5,13 +5,23 @@
 // generate the full set its "display" kind requires.
 [
     (
-        id: "icon-mounts",
+        id: "icon-page-paints",
         group: "icon",
-        what: "Icon mounts and reaches the renderer",
-        open: Some("icon"),
+        what: "the Icon page builds and paints",
+        open: None,
         hover: None,
         click: None,
-        subject: "Icon",
+        subject: "heading:Icon",
         expect: PaintsNamed,
+    ),
+    (
+        id: "icon-renders",
+        group: "icon",
+        what: "Icon renders a node of its own",
+        open: None,
+        hover: None,
+        click: None,
+        subject: "region:fixture",
+        expect: Paints,
     ),
 ]

@@ -5,13 +5,23 @@
 // generate the full set its "display" kind requires.
 [
     (
-        id: "auth-message-mounts",
+        id: "auth-message-page-paints",
         group: "auth-message",
-        what: "AuthMessage mounts and reaches the renderer",
-        open: Some("auth-message"),
+        what: "the AuthMessage page builds and paints",
+        open: None,
         hover: None,
         click: None,
-        subject: "AuthMessage",
+        subject: "heading:AuthMessage",
         expect: PaintsNamed,
+    ),
+    (
+        id: "auth-message-renders",
+        group: "auth-message",
+        what: "AuthMessage renders a node of its own",
+        open: None,
+        hover: None,
+        click: None,
+        subject: "region:fixture",
+        expect: Paints,
     ),
 ]

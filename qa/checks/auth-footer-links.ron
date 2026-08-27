@@ -5,13 +5,23 @@
 // generate the full set its "display" kind requires.
 [
     (
-        id: "auth-footer-links-mounts",
+        id: "auth-footer-links-page-paints",
         group: "auth-footer-links",
-        what: "AuthFooterLinks mounts and reaches the renderer",
-        open: Some("auth-footer-links"),
+        what: "the AuthFooterLinks page builds and paints",
+        open: None,
         hover: None,
         click: None,
-        subject: "AuthFooterLinks",
+        subject: "heading:AuthFooterLinks",
         expect: PaintsNamed,
+    ),
+    (
+        id: "auth-footer-links-renders",
+        group: "auth-footer-links",
+        what: "AuthFooterLinks renders a node of its own",
+        open: None,
+        hover: None,
+        click: None,
+        subject: "region:fixture",
+        expect: Paints,
     ),
 ]

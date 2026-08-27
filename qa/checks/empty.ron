@@ -5,13 +5,23 @@
 // generate the full set its "display" kind requires.
 [
     (
-        id: "empty-mounts",
+        id: "empty-page-paints",
         group: "empty",
-        what: "Empty mounts and reaches the renderer",
-        open: Some("empty"),
+        what: "the Empty page builds and paints",
+        open: None,
         hover: None,
         click: None,
-        subject: "Empty",
+        subject: "heading:Empty",
         expect: PaintsNamed,
+    ),
+    (
+        id: "empty-renders",
+        group: "empty",
+        what: "Empty renders a node of its own",
+        open: None,
+        hover: None,
+        click: None,
+        subject: "region:fixture",
+        expect: Paints,
     ),
 ]

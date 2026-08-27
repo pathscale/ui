@@ -5,13 +5,23 @@
 // generate the full set its "value" kind requires.
 [
     (
-        id: "calendar-mounts",
+        id: "calendar-page-paints",
         group: "calendar",
-        what: "Calendar mounts and reaches the renderer",
-        open: Some("calendar"),
+        what: "the Calendar page builds and paints",
+        open: None,
         hover: None,
         click: None,
-        subject: "Calendar",
+        subject: "heading:Calendar",
         expect: PaintsNamed,
+    ),
+    (
+        id: "calendar-renders",
+        group: "calendar",
+        what: "Calendar renders a node of its own",
+        open: None,
+        hover: None,
+        click: None,
+        subject: "region:fixture",
+        expect: Paints,
     ),
 ]

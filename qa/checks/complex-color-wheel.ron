@@ -5,13 +5,23 @@
 // generate the full set its "value" kind requires.
 [
     (
-        id: "complex-color-wheel-mounts",
+        id: "complex-color-wheel-page-paints",
         group: "complex-color-wheel",
-        what: "ComplexColorWheel mounts and reaches the renderer",
-        open: Some("complex-color-wheel"),
+        what: "the ComplexColorWheel page builds and paints",
+        open: None,
         hover: None,
         click: None,
-        subject: "ComplexColorWheel",
+        subject: "heading:ComplexColorWheel",
         expect: PaintsNamed,
+    ),
+    (
+        id: "complex-color-wheel-renders",
+        group: "complex-color-wheel",
+        what: "ComplexColorWheel renders a node of its own",
+        open: None,
+        hover: None,
+        click: None,
+        subject: "region:fixture",
+        expect: Paints,
     ),
 ]

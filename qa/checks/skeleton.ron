@@ -5,13 +5,23 @@
 // generate the full set its "display" kind requires.
 [
     (
-        id: "skeleton-mounts",
+        id: "skeleton-page-paints",
         group: "skeleton",
-        what: "Skeleton mounts and reaches the renderer",
-        open: Some("skeleton"),
+        what: "the Skeleton page builds and paints",
+        open: None,
         hover: None,
         click: None,
-        subject: "Skeleton",
+        subject: "heading:Skeleton",
         expect: PaintsNamed,
+    ),
+    (
+        id: "skeleton-renders",
+        group: "skeleton",
+        what: "Skeleton renders a node of its own",
+        open: None,
+        hover: None,
+        click: None,
+        subject: "region:fixture",
+        expect: Paints,
     ),
 ]

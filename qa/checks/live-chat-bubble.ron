@@ -5,13 +5,23 @@
 // generate the full set its "action" kind requires.
 [
     (
-        id: "live-chat-bubble-mounts",
+        id: "live-chat-bubble-page-paints",
         group: "live-chat-bubble",
-        what: "LiveChatBubble mounts and reaches the renderer",
-        open: Some("live-chat-bubble"),
+        what: "the LiveChatBubble page builds and paints",
+        open: None,
         hover: None,
         click: None,
-        subject: "LiveChatBubble",
+        subject: "heading:LiveChatBubble",
         expect: PaintsNamed,
+    ),
+    (
+        id: "live-chat-bubble-renders",
+        group: "live-chat-bubble",
+        what: "LiveChatBubble renders a node of its own",
+        open: None,
+        hover: None,
+        click: None,
+        subject: "region:fixture",
+        expect: Paints,
     ),
 ]

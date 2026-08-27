@@ -5,13 +5,23 @@
 // generate the full set its "display" kind requires.
 [
     (
-        id: "field-group-mounts",
+        id: "field-group-page-paints",
         group: "field-group",
-        what: "FieldGroup mounts and reaches the renderer",
-        open: Some("field-group"),
+        what: "the FieldGroup page builds and paints",
+        open: None,
         hover: None,
         click: None,
-        subject: "FieldGroup",
+        subject: "heading:FieldGroup",
         expect: PaintsNamed,
+    ),
+    (
+        id: "field-group-renders",
+        group: "field-group",
+        what: "FieldGroup renders a node of its own",
+        open: None,
+        hover: None,
+        click: None,
+        subject: "region:fixture",
+        expect: Paints,
     ),
 ]

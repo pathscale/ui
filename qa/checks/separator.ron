@@ -5,13 +5,23 @@
 // generate the full set its "display" kind requires.
 [
     (
-        id: "separator-mounts",
+        id: "separator-page-paints",
         group: "separator",
-        what: "Separator mounts and reaches the renderer",
-        open: Some("separator"),
+        what: "the Separator page builds and paints",
+        open: None,
         hover: None,
         click: None,
-        subject: "Separator",
+        subject: "heading:Separator",
         expect: PaintsNamed,
+    ),
+    (
+        id: "separator-renders",
+        group: "separator",
+        what: "Separator renders a node of its own",
+        open: None,
+        hover: None,
+        click: None,
+        subject: "region:fixture",
+        expect: Paints,
     ),
 ]

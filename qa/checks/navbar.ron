@@ -5,13 +5,23 @@
 // generate the full set its "display" kind requires.
 [
     (
-        id: "navbar-mounts",
+        id: "navbar-page-paints",
         group: "navbar",
-        what: "Navbar mounts and reaches the renderer",
-        open: Some("navbar"),
+        what: "the Navbar page builds and paints",
+        open: None,
         hover: None,
         click: None,
-        subject: "Navbar",
+        subject: "heading:Navbar",
         expect: PaintsNamed,
+    ),
+    (
+        id: "navbar-renders",
+        group: "navbar",
+        what: "Navbar renders a node of its own",
+        open: None,
+        hover: None,
+        click: None,
+        subject: "region:fixture",
+        expect: Paints,
     ),
 ]

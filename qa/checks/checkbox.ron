@@ -5,13 +5,23 @@
 // generate the full set its "value" kind requires.
 [
     (
-        id: "checkbox-mounts",
+        id: "checkbox-page-paints",
         group: "checkbox",
-        what: "Checkbox mounts and reaches the renderer",
-        open: Some("checkbox"),
+        what: "the Checkbox page builds and paints",
+        open: None,
         hover: None,
         click: None,
-        subject: "Checkbox",
+        subject: "heading:Checkbox",
         expect: PaintsNamed,
+    ),
+    (
+        id: "checkbox-renders",
+        group: "checkbox",
+        what: "Checkbox renders a node of its own",
+        open: None,
+        hover: None,
+        click: None,
+        subject: "region:fixture",
+        expect: Paints,
     ),
 ]

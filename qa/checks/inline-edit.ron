@@ -5,13 +5,23 @@
 // generate the full set its "value" kind requires.
 [
     (
-        id: "inline-edit-mounts",
+        id: "inline-edit-page-paints",
         group: "inline-edit",
-        what: "InlineEdit mounts and reaches the renderer",
-        open: Some("inline-edit"),
+        what: "the InlineEdit page builds and paints",
+        open: None,
         hover: None,
         click: None,
-        subject: "InlineEdit",
+        subject: "heading:InlineEdit",
         expect: PaintsNamed,
+    ),
+    (
+        id: "inline-edit-renders",
+        group: "inline-edit",
+        what: "InlineEdit renders a node of its own",
+        open: None,
+        hover: None,
+        click: None,
+        subject: "region:fixture",
+        expect: Paints,
     ),
 ]

@@ -131,8 +131,9 @@
     "next-version": "bun run scripts/next-version.ts",
     "smoke": "bun run scripts/smoke-consumer.ts",
     "qa:checks": "bun run qa/generate-checks.ts",
+    "qa:entries": "bun run qa/generate-entries.ts",
     "qa:dev": "rsbuild dev --config qa/rsbuild.config.ts",
-    "qa:build": "rsbuild build --config qa/rsbuild.config.ts",
+    "qa:build": "bun run qa:entries && rsbuild build --config qa/rsbuild.config.ts",
     "test": "bun test --conditions=browser",
     "check:api": "bun run scripts/check-api-contract.ts"
   },
