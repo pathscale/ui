@@ -111,10 +111,15 @@ Per-page JS went from 495 kB to ~105 kB. A dynamic `require` of the package root
 defeats this: the bundler cannot prove which exports are reachable and keeps all
 71.
 
-**Hosting.** `blitz-preview` now takes `BLITZ_PREVIEW_DIST` and `--blitz-control`,
-so ps-qa attaches to a headless host serving one component's page. The host
-presents a single page as a dist, because the preview reads `index.html` and
-inlines the first `src=` and `href=` it finds.
+**Hosting.** `qa-headless-host` builds a document from one page and serves the
+inspection socket itself, with no window and no display server. `ps-qa
+sweep-components` launches one per component, waits for it to print its
+descriptor, attaches, judges and tears it down.
+
+It takes a page directly, so the sweep points at `dist/` and the pages the build
+already emits. That matters more than it sounds: the earlier design hosted the
+socket from a windowed preview, which meant a window per component and 71 of
+them over whatever the person at the machine was doing.
 
 **Styling.** Component CSS bottoms out in Tailwind's palette, so `tests/qa-harness/index.css`
 imports `tailwindcss` and points `@source` at the component sources, the step a
