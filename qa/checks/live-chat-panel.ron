@@ -1,8 +1,9 @@
 // Generated from qa/components.ts by qa/generate-checks.ts. Do not edit.
 //
-// LiveChatPanel has no interaction described yet, so only its paint
-// check is generated. Add `subject` and `subjectRole` to its entry to
-// generate the full set its "mode" kind requires.
+// LiveChatPanel, mounted alone on its own harness page. Isolation is
+// the point: driving this inside a real application makes every check
+// order-dependent, and a failure caused by the previous group's leftover
+// state is indistinguishable from a real one.
 [
     (
         id: "live-chat-panel-page-paints",
@@ -23,5 +24,42 @@
         click: None,
         subject: "fixture",
         expect: Paints,
+    ),
+    (
+        id: "live-chat-panel-opens",
+        group: "live-chat-panel",
+        what: "the LiveChatPanel menu reaches the renderer as an addressable item",
+        open: None,
+        hover: None,
+        prepare: Some("LiveChatPanel"),
+        settle_after_ms: 600,
+        click: None,
+        subject: "button:LiveChatPanel",
+        expect: PaintsNamed,
+    ),
+    (
+        id: "live-chat-panel-changes",
+        group: "live-chat-panel",
+        what: "choosing another value changes what the LiveChatPanel trigger reads",
+        open: None,
+        hover: None,
+        prepare: Some("LiveChatPanel"),
+        settle_after_ms: 600,
+        click: Some("button:LiveChatPanel"),
+        subject: "button:LiveChatPanel",
+        expect: NameChanges,
+    ),
+    (
+        id: "live-chat-panel-escape-closes",
+        group: "live-chat-panel",
+        what: "Escape closes the LiveChatPanel menu without choosing",
+        open: None,
+        hover: None,
+        prepare: Some("LiveChatPanel"),
+        settle_after_ms: 600,
+        prepare_key: Some("Escape"),
+        click: None,
+        subject: "button:LiveChatPanel",
+        expect: Vanishes,
     ),
 ]

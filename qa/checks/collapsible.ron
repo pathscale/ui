@@ -1,8 +1,9 @@
 // Generated from qa/components.ts by qa/generate-checks.ts. Do not edit.
 //
-// Collapsible has no interaction described yet, so only its paint
-// check is generated. Add `subject` and `subjectRole` to its entry to
-// generate the full set its "mode" kind requires.
+// Collapsible, mounted alone on its own harness page. Isolation is
+// the point: driving this inside a real application makes every check
+// order-dependent, and a failure caused by the previous group's leftover
+// state is indistinguishable from a real one.
 [
     (
         id: "collapsible-page-paints",
@@ -23,5 +24,42 @@
         click: None,
         subject: "fixture",
         expect: Paints,
+    ),
+    (
+        id: "collapsible-opens",
+        group: "collapsible",
+        what: "the Collapsible menu reaches the renderer as an addressable item",
+        open: None,
+        hover: None,
+        prepare: Some("Collapsible"),
+        settle_after_ms: 600,
+        click: None,
+        subject: "button:Collapsible",
+        expect: PaintsNamed,
+    ),
+    (
+        id: "collapsible-changes",
+        group: "collapsible",
+        what: "choosing another value changes what the Collapsible trigger reads",
+        open: None,
+        hover: None,
+        prepare: Some("Collapsible"),
+        settle_after_ms: 600,
+        click: Some("button:Collapsible"),
+        subject: "button:Collapsible",
+        expect: NameChanges,
+    ),
+    (
+        id: "collapsible-escape-closes",
+        group: "collapsible",
+        what: "Escape closes the Collapsible menu without choosing",
+        open: None,
+        hover: None,
+        prepare: Some("Collapsible"),
+        settle_after_ms: 600,
+        prepare_key: Some("Escape"),
+        click: None,
+        subject: "button:Collapsible",
+        expect: Vanishes,
     ),
 ]

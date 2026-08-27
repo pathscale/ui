@@ -1,8 +1,9 @@
 // Generated from qa/components.ts by qa/generate-checks.ts. Do not edit.
 //
-// Checkbox has no interaction described yet, so only its paint
-// check is generated. Add `subject` and `subjectRole` to its entry to
-// generate the full set its "value" kind requires.
+// Checkbox, mounted alone on its own harness page. Isolation is
+// the point: driving this inside a real application makes every check
+// order-dependent, and a failure caused by the previous group's leftover
+// state is indistinguishable from a real one.
 [
     (
         id: "checkbox-page-paints",
@@ -23,5 +24,42 @@
         click: None,
         subject: "fixture",
         expect: Paints,
+    ),
+    (
+        id: "checkbox-opens",
+        group: "checkbox",
+        what: "the Checkbox menu reaches the renderer as an addressable item",
+        open: None,
+        hover: None,
+        prepare: Some("Checkbox"),
+        settle_after_ms: 600,
+        click: None,
+        subject: "checkbox:Checkbox",
+        expect: PaintsNamed,
+    ),
+    (
+        id: "checkbox-changes",
+        group: "checkbox",
+        what: "choosing another value changes what the Checkbox trigger reads",
+        open: None,
+        hover: None,
+        prepare: Some("Checkbox"),
+        settle_after_ms: 600,
+        click: Some("checkbox:Checkbox"),
+        subject: "checkbox:Checkbox",
+        expect: NameChanges,
+    ),
+    (
+        id: "checkbox-escape-closes",
+        group: "checkbox",
+        what: "Escape closes the Checkbox menu without choosing",
+        open: None,
+        hover: None,
+        prepare: Some("Checkbox"),
+        settle_after_ms: 600,
+        prepare_key: Some("Escape"),
+        click: None,
+        subject: "checkbox:Checkbox",
+        expect: Vanishes,
     ),
 ]

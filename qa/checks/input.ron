@@ -1,8 +1,9 @@
 // Generated from qa/components.ts by qa/generate-checks.ts. Do not edit.
 //
-// Input has no interaction described yet, so only its paint
-// check is generated. Add `subject` and `subjectRole` to its entry to
-// generate the full set its "value" kind requires.
+// Input, mounted alone on its own harness page. Isolation is
+// the point: driving this inside a real application makes every check
+// order-dependent, and a failure caused by the previous group's leftover
+// state is indistinguishable from a real one.
 [
     (
         id: "input-page-paints",
@@ -23,5 +24,42 @@
         click: None,
         subject: "fixture",
         expect: Paints,
+    ),
+    (
+        id: "input-opens",
+        group: "input",
+        what: "the Input menu reaches the renderer as an addressable item",
+        open: None,
+        hover: None,
+        prepare: Some("Input"),
+        settle_after_ms: 600,
+        click: None,
+        subject: "textbox:Input",
+        expect: PaintsNamed,
+    ),
+    (
+        id: "input-changes",
+        group: "input",
+        what: "choosing another value changes what the Input trigger reads",
+        open: None,
+        hover: None,
+        prepare: Some("Input"),
+        settle_after_ms: 600,
+        click: Some("textbox:Input"),
+        subject: "textbox:Input",
+        expect: NameChanges,
+    ),
+    (
+        id: "input-escape-closes",
+        group: "input",
+        what: "Escape closes the Input menu without choosing",
+        open: None,
+        hover: None,
+        prepare: Some("Input"),
+        settle_after_ms: 600,
+        prepare_key: Some("Escape"),
+        click: None,
+        subject: "textbox:Input",
+        expect: Vanishes,
     ),
 ]

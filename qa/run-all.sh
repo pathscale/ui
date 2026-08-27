@@ -1,5 +1,17 @@
 #!/usr/bin/env bash
 #
+# ⚠️  HEADLESS ONLY. NEVER LAUNCH A WINDOW. ⚠️
+#
+# A sweep covers 71 components. A windowed run opens a window per component and
+# steals focus from whatever the owner is doing, 71 times. Do not add
+# `--blitz-control`, do not add `--offscreen`, do not use `BLITZ_PREVIEW_DIST`.
+# All three open a window. `--offscreen` opens one too, just off screen.
+#
+# The headless path is `AGENCYZERO_BLITZ_TREE`, which writes the semantic tree
+# to a file with no window and no display server. See qa/HANDOVER.md.
+#
+# This script refuses to run if anyone reintroduces a windowed flag.
+#
 # Drive every component's page, one at a time, and report a verdict per
 # component.
 #
@@ -20,6 +32,14 @@ readonly LOG="${QA_LOG:-/tmp/qa-all.txt}"
 # profile that adds it. Without this every component failed as "window never
 # appeared", which is indistinguishable from a component that genuinely hangs.
 export PATH="$HOME/.cargo/bin:$PATH"
+
+# A machine check, not a comment: a comment did not stop this happening.
+if grep -qE -- '--blitz-control|--offscreen|BLITZ_PREVIEW_DIST' "${BASH_SOURCE[0]}"; then
+  echo "REFUSING TO RUN: this script contains a windowed flag." >&2
+  echo "The sweep must be headless. Use AGENCYZERO_BLITZ_TREE." >&2
+  echo "See qa/HANDOVER.md." >&2
+  exit 2
+fi
 
 if [[ ! -x "$PREVIEW" ]]; then
   echo "no blitz-preview at $PREVIEW; build it or set BLITZ_PREVIEW" >&2
