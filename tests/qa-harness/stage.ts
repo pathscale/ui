@@ -6,7 +6,7 @@
  * it finds. So a run needs one component's page presented as if it were the
  * whole application, which is exactly the isolation the checks assume.
  *
- * Run: bun run qa/stage.ts <component-id> [destination]
+ * Run: bun run tests/qa-harness/stage.ts <component-id> [destination]
  * Then: BLITZ_PREVIEW_DIST=<destination> agencyzero-blitz-preview --blitz-control
  */
 import { COMPONENTS } from "./components";

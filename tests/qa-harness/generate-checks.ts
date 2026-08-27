@@ -15,10 +15,10 @@ import { join } from "node:path";
 
 /*
  * `tests/ps-qa/` is where ps-qa looks when nobody passes `--checks`, and it is
- * the layout every project driven by it uses. These lived in `qa/checks/`,
+ * the layout every project driven by it uses. These lived in `tests/qa-harness/checks/`,
  * which meant every invocation had to override the default to find them.
  */
-const outputDir = join(import.meta.dir, "..", "tests", "ps-qa");
+const outputDir = join(import.meta.dir, "..", "ps-qa");
 
 /** One `.ron` record. */
 function check(fields: Record<string, string>): string {
@@ -292,7 +292,7 @@ function checksFor(spec: ComponentSpec): string {
   }
 
   return [
-    `// Generated from qa/components.ts by qa/generate-checks.ts. Do not edit.`,
+    `// Generated from tests/qa-harness/components.ts by tests/qa-harness/generate-checks.ts. Do not edit.`,
     `//`,
     `// ${spec.component}, mounted alone on its own harness page. Isolation is`,
     `// the point: driving this inside a real application makes every check`,

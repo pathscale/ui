@@ -72,7 +72,7 @@ is nothing for a consumer-facing harness to drive.
 
 ## Current result: 33 pass, 38 fail
 
-`bash qa/run-all.sh` drives all 71, one process each. Every failure is the same
+`bash tests/qa-harness/run-all.sh` drives all 71, one process each. Every failure is the same
 check, `<id>-renders`, reporting that the component put nothing on screen when
 mounted plainly. The failures split three ways, and only the third is a defect:
 
@@ -112,11 +112,11 @@ defeats this: the bundler cannot prove which exports are reachable and keeps all
 71.
 
 **Hosting.** `blitz-preview` now takes `BLITZ_PREVIEW_DIST` and `--blitz-control`,
-so ps-qa attaches to a window showing one component's page. `qa/stage.ts`
+so ps-qa attaches to a window showing one component's page. `tests/qa-harness/stage.ts`
 presents a single page as a dist, because the preview reads `index.html` and
 inlines the first `src=` and `href=` it finds.
 
-**Styling.** Component CSS bottoms out in Tailwind's palette, so `qa/index.css`
+**Styling.** Component CSS bottoms out in Tailwind's palette, so `tests/qa-harness/index.css`
 imports `tailwindcss` and points `@source` at the component sources, the step a
 consuming application performs. Before it the Dropdown trigger was 1168x54 with
 `bg=#00000000`; it is 1184x36 with `bg=#101828ff` after.
