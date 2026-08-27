@@ -1,6 +1,9 @@
 import { recipe } from "../../lib/layouts";
 export const CLASSES = {
-  base: "dropdown",
+  // `ui-overlay-host` is the shared containing block every non-portaled overlay
+  // needs; see `_shared/overlayHost.css`. Without it the fixed menu paints
+  // outside this box and takes no pointer events.
+  base: "dropdown ui-overlay-host",
   slot: {
     trigger: "dropdown__trigger",
     popover: "dropdown__popover",

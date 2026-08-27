@@ -1,6 +1,8 @@
 import { recipe } from "../../lib/layouts";
 export const CLASSES = {
-  base: "ui-select",
+  // `ui-overlay-host` is the shared containing block every non-portaled overlay
+  // needs; see `_shared/overlayHost.css`.
+  base: "ui-select ui-overlay-host",
   flag: {
     fullWidth: "ui-select--full-width",
   },

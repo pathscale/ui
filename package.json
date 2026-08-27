@@ -7,7 +7,7 @@
     "url": "https://github.com/pathscale/ui"
   },
   "license": "MIT",
-  "description": "Highly opinionated SolidJS component library — batteries and kitchen sink included, but optimized and shiny.",
+  "description": "Highly opinionated SolidJS component library \u2014 batteries and kitchen sink included, but optimized and shiny.",
   "files": [
     "dist"
   ],
@@ -73,27 +73,27 @@
     "@rsbuild/core": "^2.0.9",
     "@rsbuild/plugin-solid": "^1.2.1",
     "@rslib/core": "^0.22.0",
-    "@solidjs/h": "2.0.0-rc.0",
+    "@solidjs/h": "^2.0.0-rc.0",
     "@standard-schema/spec": "^1.1.0",
     "@types/bun": "^1.3.14",
-    "babel-preset-solid": "2.0.0-rc.0",
+    "babel-preset-solid": "^2.0.0-rc.0",
     "cally": "^0.8.0",
     "cssnano": "^7.1.9",
     "postcss": "^8.5.15",
     "postcss-cli": "^11.0.1",
     "postcss-selector-parser": "^7.1.1",
-    "rsbuild-plugin-solid-layouts": "0.2.1",
-    "solid-js": "2.0.0-rc.0",
-    "solid-layouts": "0.2.0",
-    "solid-layouts-oxc": "0.2.1",
+    "rsbuild-plugin-solid-layouts": "^0.2.1",
+    "solid-js": "^2.0.0-rc.0",
+    "solid-layouts": "^0.2.1",
+    "solid-layouts-oxc": "^0.2.1",
     "svgo": "^3.3.3",
     "typescript": "^6.0.3"
   },
   "overrides": {
-    "babel-preset-solid": "2.0.0-rc.0"
+    "babel-preset-solid": "^2.0.0-rc.0"
   },
   "dependencies": {
-    "@solidjs/web": "2.0.0-rc.0",
+    "@solidjs/web": "^2.0.0-rc.0",
     "clsx": "^2.1.1",
     "tailwind-merge": "^3.6.0"
   },
@@ -127,6 +127,9 @@
     "check:package": "bun run scripts/check-package.ts",
     "next-version": "bun run scripts/next-version.ts",
     "smoke": "bun run scripts/smoke-consumer.ts",
+    "qa:checks": "bun run qa/generate-checks.ts",
+    "qa:dev": "rsbuild dev --config qa/rsbuild.config.ts",
+    "qa:build": "rsbuild build --config qa/rsbuild.config.ts",
     "test": "bun test --conditions=browser",
     "check:api": "bun run scripts/check-api-contract.ts"
   },

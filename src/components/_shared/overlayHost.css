@@ -1,0 +1,44 @@
+/*
+ * The containing block every component that owns a non-portaled overlay needs.
+ *
+ * One definition rather than one per component, for the same reason
+ * `material.css` exists: Dropdown, Select, Popover, Tooltip, Dialog, Drawer and
+ * anything else that opens a floating layer all need exactly this, and copying
+ * a one-line rule into seven files is seven places to be wrong in.
+ *
+ * ## What it is for
+ *
+ * These overlays are `position: fixed` and live inside their owning component's
+ * subtree rather than in a portal. (Portals are what we moved *away* from: under
+ * Blitz a portal makes a transient semantic subtree, so an option can paint for
+ * one frame and vanish before the next sibling opens.) A fixed child positioned
+ * in viewport coordinates routinely lands far outside its parent's box: a
+ * 220x239 dropdown menu under a 72x28 pill trigger overhangs by ~267px.
+ *
+ * A renderer resolves a pointer by descending the box tree, and it descends into
+ * a child that escaped its parent's bounds only when the parent carries the
+ * hoisted-content area that a *stacking context* provides. `position: relative`
+ * alone does not create one unless it also carries a `z-index`. Without a
+ * stacking context the overlay paints, reports itself visible to the semantic
+ * tree, and silently takes no clicks: hit-testing rejects the descent before it
+ * ever reaches the item.
+ *
+ * That failure is invisible to any check that activates a node semantically
+ * rather than by pointer, which is how it shipped: the menu was addressable and
+ * the value changed, so the check passed while a real mouse could not click it.
+ *
+ * `isolation: isolate` exists precisely to create a stacking context with no
+ * other visual effect, which is why it is the property used here rather than a
+ * `z-index` that would also reorder painting.
+ *
+ * ## How to use it
+ *
+ * Import this file and put `ui-overlay-host` on the component's root, alongside
+ * whatever positioning that root already sets.
+ */
+@layer components {
+  .ui-overlay-host {
+    position: relative;
+    isolation: isolate;
+  }
+}
