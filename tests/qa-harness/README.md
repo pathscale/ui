@@ -112,7 +112,7 @@ defeats this: the bundler cannot prove which exports are reachable and keeps all
 71.
 
 **Hosting.** `blitz-preview` now takes `BLITZ_PREVIEW_DIST` and `--blitz-control`,
-so ps-qa attaches to a window showing one component's page. `tests/qa-harness/stage.ts`
+so ps-qa attaches to a headless host serving one component's page. The host
 presents a single page as a dist, because the preview reads `index.html` and
 inlines the first `src=` and `href=` it finds.
 
