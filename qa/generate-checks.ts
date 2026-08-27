@@ -89,19 +89,16 @@ function checksFor(spec: ComponentSpec): string {
       hover: "None",
       click: "None",
       /*
-       * Any node the component itself put on screen. The harness's own heading
-       * and fixture wrapper are excluded by role, so this counts only what the
-       * component produced: zero means it rendered nothing, which is what
-       * Accordion does when mounted as `<Accordion>Accordion</Accordion>`.
-       */
-      /*
-       * The fixture region, which wraps only the component. A component that
-       * renders nothing leaves it 1184x0 and hidden, which is exactly what
-       * Accordion does when mounted as `<Accordion>Accordion</Accordion>`: it is
-       * compound, and needs Item/Trigger/Content to be anything at all.
+       * The fixture region, which wraps only the component.
        *
-       * `Paints` requires a box with area, so a zero-height region fails it
-       * while a component that rendered a real control passes.
+       * A component that renders nothing leaves it 1184x0 and hidden;
+       * one that renders leaves it with real height and visible. `Paints`
+       * requires a box with area, so the two are distinguishable.
+       *
+       * Known limitation, and the reason this is not the last word: a component
+       * that positions itself absolutely contributes no height to its parent,
+       * so Badge paints a real 28x28 node and still fails here. Those are
+       * listed in README.md rather than silently passed.
        */
       subject: `"region:fixture"`,
       expect: "Paints",

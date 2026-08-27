@@ -70,44 +70,72 @@ The 23 directories under `src/components` that are not re-exported from
 `src/index.ts` are deliberately absent: a consumer cannot import them, so there
 is nothing for a consumer-facing harness to drive.
 
-## Blocked: eager imports
+## Current result: 33 pass, 38 fail
 
-The registry in `App.tsx` imports all 71 components by name. At least one
-(`Accordion`) runs code at module scope that Blitz's JS runtime cannot execute,
-and it throws during *import* rather than during render:
+`bash qa/run-all.sh` drives all 71, one process each. Every failure is the same
+check, `<id>-renders`, reporting that the component put nothing on screen when
+mounted plainly. The failures split three ways, and only the third is a defect:
 
-```
-TypeError: not a callable function
-```
+**Compound components (most of the 38).** `Accordion`, `Dialog`, `Drawer`,
+`Tabs`, `Popover`, `Select`, `Dropdown` and others are assembled from parts.
+`<Accordion>Accordion</Accordion>` is not a usable Accordion, so it renders an
+empty box. These need a hand-written fixture, exactly as `Dropdown` and `Select`
+already have. Nothing is wrong with the component.
 
-An import-time throw cannot be contained. `createErrorBoundary` catches render
-failures, and the harness has one, but the module never finishes evaluating, so
-the whole page is empty and all 71 checks fail on a missing control — precisely
-the all-or-nothing failure isolation was supposed to end.
+An attempt to build these automatically — reading the parts off the component
+object at runtime and rendering the first few — was tried and reverted: it broke
+components that had been passing, because a part rendered out of order or
+without its root produces less than a bare mount does. Compound structure is
+per-component knowledge, and the honest way to supply it is one fixture at a
+time.
 
-Two ways out, neither yet taken:
+**Absolutely positioned components (false negatives).** `Badge` is an anchor
+badge: it paints a real 28x28 node and contributes no height to its parent, so
+the fixture region measures 1184x0 and the check calls it empty. The check is
+wrong here, not the component. Fixing it needs a measure of "did this subtree
+gain a node" that ps-qa does not currently express — `PaintsMore` compares one
+subject across an action, and there is no action.
 
-1. **One entry point per component.** Build 71 tiny bundles instead of one, so
-   a component that cannot be imported takes only its own page down. This is
-   the honest fix and matches the directory's premise.
-2. **Fix the components that throw.** `Accordion` is one; `tests/components/
-   optional-context-defaults.test.ts` already exists to catch this class, so
-   the gap is that it does not cover every component.
+**Genuinely renders nothing.** What remains after the two above is the list
+worth acting on. Identifying which is which needs the fixtures above written
+first, because until then a compound component and a broken one fail
+identically.
 
-Until then only the two hand-written fixtures can actually be driven, which is
-how the Dropdown pointer defect was reproduced in 14 nodes.
+## Solved
 
-## Not finished
+**Eager imports.** A single bundle put all 71 components in one module graph, so
+one that throws on import emptied the page for all of them, and an import-time
+throw cannot be caught by an error boundary. Each entry now imports one
+component from its own module, statically (`@pathscale/ui/components/<name>`).
+Per-page JS went from 495 kB to ~105 kB. A dynamic `require` of the package root
+defeats this: the bundler cannot prove which exports are reachable and keeps all
+71.
 
-`ps-qa` attaches to a Blitz application over its control socket. The harness
-builds and serves, but nothing yet hosts it *in Blitz*:
+**Hosting.** `blitz-preview` now takes `BLITZ_PREVIEW_DIST` and `--blitz-control`,
+so ps-qa attaches to a window showing one component's page. `qa/stage.ts`
+presents a single page as a dist, because the preview reads `index.html` and
+inlines the first `src=` and `href=` it finds.
 
-- `blitz-preview` reads any dist via `BLITZ_CAPTURE_DIST` (Brotli-compressed
-  assets, one JS and one CSS, which `qa:build` is already configured to emit),
-  but exposes no control socket, so `ps-qa` cannot attach.
-- `az-gui` has the inspector, but embeds `frontendDist` at compile time.
+**Styling.** Component CSS bottoms out in Tailwind's palette, so `qa/index.css`
+imports `tailwindcss` and points `@source` at the component sources, the step a
+consuming application performs. Before it the Dropdown trigger was 1168x54 with
+`bg=#00000000`; it is 1184x36 with `bg=#101828ff` after.
 
-Closing this needs one of: a `blitz-control` feature on `blitz-preview`, or a
-runtime frontend override on `az-gui`. The first is the cleaner of the two — it
-keeps the harness independent of the consuming application, which is the thing
-this directory exists to achieve.
+## Coverage, honestly
+
+Two checks are generated per component:
+
+- `<id>-page-paints` — the page built and painted. Targets the heading, which is
+  named because Blitz names a node from its text.
+- `<id>-renders` — the component produced a node, measured on the fixture region
+  that wraps only the component.
+
+The second exists because the first passed for Accordion while it rendered
+nothing at all. Three earlier attempts at it were wrong: `aria-label` on the
+component (most components do not spread unknown props, so Button rendered an
+unnamed 26px box), `aria-label` on a `role="group"` wrapper (Blitz left it an
+unnamed `generic`), and `PaintsMore` on the heading (it counts one subject
+across an action, and there is no action).
+
+A component with `subject`/`subjectRole` filled in also generates its kind's
+full set. Only `Dropdown` and `Select` have that today.
