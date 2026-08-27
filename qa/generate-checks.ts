@@ -122,7 +122,19 @@ function checksFor(spec: ComponentSpec): string {
    * a reader reads, which is the one fact no generator can infer and the one a
    * wrong guess would quietly assert against the wrong node.
    */
-  if (spec.kind !== "display" && (!spec.subject || !spec.subjectRole)) {
+  if (spec.kind === "toggle" && !spec.subjectRole) {
+    throw new Error(
+      `${spec.component} is kind "toggle" but has no \`subjectRole\`: a toggle ` +
+        `is addressed by role, because the ones measured so far render an ` +
+        `input with no accessible name at all.`,
+    );
+  }
+
+  if (
+    spec.kind !== "display" &&
+    spec.kind !== "toggle" &&
+    (!spec.subject || !spec.subjectRole)
+  ) {
     throw new Error(
       `${spec.component} is kind "${spec.kind}" but has no subject: add ` +
         `\`subject\` and \`subjectRole\` to its entry in components.ts, or ` +
@@ -180,6 +192,34 @@ function checksFor(spec: ComponentSpec): string {
         click: "None",
         subject: `"${spec.opens}"`,
         expect: "Vanishes",
+      }),
+    );
+  }
+
+  if (spec.kind === "toggle") {
+    /*
+     * A toggle's whole contract: pressing it flips the state the tree reports.
+     *
+     * Addressed by role alone, because Switch, Radio and Checkbox all render an
+     * input with no accessible name at all. Measured: role `switch` with an
+     * empty name at 1x1. That is arguably a defect in the components (a 1x1 hit
+     * target with no name is not reachable by anyone using assistive
+     * technology), but it is what they render, and a check has to address what
+     * is there rather than what should be.
+     *
+     * `SelectionChanges` compares the node's `selected` before and after,
+     * carried by id, so a second toggle on the page cannot satisfy it.
+     */
+    records.push(
+      check({
+        id: `"${spec.id}-toggles"`,
+        group: `"${spec.id}"`,
+        what: `"pressing the ${spec.component} changes what it reports"`,
+        open: surface,
+        hover: "None",
+        click: `Some("${spec.subjectRole}:")`,
+        subject: `"${spec.subjectRole}:"`,
+        expect: "SelectionChanges",
       }),
     );
   }
@@ -273,10 +313,26 @@ mkdirSync(outputDir, { recursive: true });
  * nothing and makes the third time impossible.
  */
 function assertNoUnresolvedSubject(id: string, body: string): void {
-  if (body.includes("undefined")) {
+  /*
+   * `undefined` as a whole field, not anywhere in the text.
+   *
+   * The looser check caught `subject: "option:Color undefined"`, which is
+   * correct: ColorSwatch really does announce itself as "Color undefined",
+   * because it interpolates an unset colour prop into its own accessible name.
+   * That is a defect in the component, and the check asserting the measured
+   * name is how it stays visible until someone fixes it. A generator guard
+   * that refuses to write down what a component actually renders makes the
+   * defect unassertable.
+   *
+   * What must never be written is a field that is *entirely* `undefined`, or
+   * one of the `undefined:undefined` role-name pairs, which is what unresolved
+   * interpolation produces.
+   */
+  const unresolved = /: "(undefined(:[^"]*)?|[^"]*:undefined)"/;
+  if (unresolved.test(body)) {
     const line = body
       .split("\n")
-      .find((candidate) => candidate.includes("undefined"))
+      .find((candidate) => unresolved.test(candidate))
       ?.trim();
     throw new Error(
       `${id}: generated a check containing \`undefined\` (${line}). ` +
