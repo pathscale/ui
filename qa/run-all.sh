@@ -46,6 +46,45 @@ else
   done < <(grep -oE 'id: "[a-z0-9-]+"' "$ROOT/qa/components.ts" | sed 's/id: "//;s/"//')
 fi
 
+# Refuse to sweep a stale build.
+#
+# `stage.ts` copies out of the prebuilt `qa/dist`; it does not compile. So an
+# edit to `mount.tsx` or a fixture is silently ignored until someone runs
+# `qa:build`, and the sweep reports confidently on hours-old code. That cost an
+# afternoon: a new fixture was written, the sweep was re-run three times, and
+# every run judged the previous bundle.
+#
+# Comparing timestamps rather than rebuilding: a rebuild is a minute for 71
+# pages, and doing it silently on every run would hide which source changed.
+if [[ ! -d "$ROOT/qa/dist" ]]; then
+  echo "no build at $ROOT/qa/dist; run: bun run qa:build" >&2
+  exit 1
+fi
+
+# The bundles, not a page: rsbuild emits `<id>.html` per component and no
+# `index.html`, so there is no single file that stands for the whole build.
+# Any built script is younger than the compile that produced it.
+reference="$(ls -t "$ROOT/qa/dist/static/js/"*.js 2>/dev/null | head -1)"
+if [[ -z "$reference" ]]; then
+  echo "no bundles under $ROOT/qa/dist/static/js; run: bun run qa:build" >&2
+  exit 1
+fi
+
+# `\( ... \)` around the alternation: without the group, `-newer` binds to the
+# last `-o` branch alone, so a stale `.tsx` was never reported and the guard
+# passed on exactly the file it exists to catch.
+newest_source="$(find "$ROOT/qa" \( -name '*.tsx' -o -name '*.ts' \) -newer "$reference" 2>/dev/null | grep -vE 'entries/|/dist/|/node_modules/' | head -1)"
+if [[ -n "$newest_source" ]]; then
+  echo "the build is older than $newest_source" >&2
+  echo "run: bun run qa:build   (or set QA_ALLOW_STALE=1 to sweep anyway)" >&2
+  # `[[ ... ]] && exit 1` was wrong here: when the test is false the compound
+  # returns 1, which is the last status of the script under `set -uo pipefail`
+  # and reports a refusal as a clean run. Written out so the exit is explicit.
+  if [[ -z "${QA_ALLOW_STALE:-}" ]]; then
+    exit 1
+  fi
+fi
+
 # Build each component's page. One directory per id is the layout
 # `sweep-components` expects, and it is also what keeps the components isolated:
 # each host is pointed at exactly one component's bundle.
