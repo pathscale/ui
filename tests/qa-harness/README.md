@@ -111,7 +111,7 @@ Per-page JS went from 495 kB to ~105 kB. A dynamic `require` of the package root
 defeats this: the bundler cannot prove which exports are reachable and keeps all
 71.
 
-**Hosting.** `qa-headless-host` builds a document from one page and serves the
+**Hosting.** `qa-inspect-host` builds a document from one page and serves the
 inspection socket itself, with no window and no display server. `ps-qa
 sweep-components` launches one per component, waits for it to print its
 descriptor, attaches, judges and tears it down.
