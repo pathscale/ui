@@ -21,20 +21,24 @@ set -uo pipefail
 # `tests/ps-qa`, so it needs both.
 readonly HERE="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 readonly ROOT="$(cd "$HERE/../.." && pwd)"
-readonly HOST="${QA_HOST:-$HOME/code/qa-headless-host/target/release/qa-headless-host}"
-
-# `cargo install` puts ps-qa here, and a non-interactive shell does not read the
-# profile that adds it.
+# Before either lookup below: `cargo install` puts both binaries here, and a
+# non-interactive shell does not read the profile that adds it. Resolving the
+# host first reported a freshly installed one as missing.
 export PATH="$HOME/.cargo/bin:$PATH"
+
+# Published, so a contributor installs it rather than cloning a sibling. A local
+# checkout still wins through `QA_HOST`, which is what to use when changing the
+# host and the harness together.
+readonly HOST="${QA_HOST:-$(command -v qa-inspect-host || true)}"
 
 if ! command -v ps-qa > /dev/null; then
   echo "ps-qa is not on PATH; cargo install ps-qa" >&2
   exit 1
 fi
 
-if [[ ! -x "$HOST" ]]; then
-  echo "no qa-headless-host at $HOST; build it or set QA_HOST" >&2
-  echo "  cargo build --release --manifest-path ~/code/qa-headless-host/Cargo.toml" >&2
+if [[ -z "$HOST" || ! -x "$HOST" ]]; then
+  echo "qa-inspect-host is not on PATH; cargo install qa-inspect-host" >&2
+  echo "  (or set QA_HOST to a local build)" >&2
   exit 1
 fi
 
