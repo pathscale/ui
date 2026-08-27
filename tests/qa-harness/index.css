@@ -15,5 +15,5 @@
  * is a consumer, so this file is its copy of that step.
  */
 @import "tailwindcss";
-@source "../src/";
-@import "../src/index.css";
+@source "../../src/";
+@import "../../src/index.css";

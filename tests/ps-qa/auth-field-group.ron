@@ -1,4 +1,4 @@
-// Generated from qa/components.ts by qa/generate-checks.ts. Do not edit.
+// Generated from tests/qa-harness/components.ts by tests/qa-harness/generate-checks.ts. Do not edit.
 //
 // AuthFieldGroup, mounted alone on its own harness page. Isolation is
 // the point: driving this inside a real application makes every check

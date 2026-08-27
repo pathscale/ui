@@ -7,7 +7,7 @@
   },
   "files": {
     "ignoreUnknown": false,
-    "includes": ["**", "!**/dist", "!**/node_modules", "!qa/index.css"]
+    "includes": ["**", "!**/dist", "!**/node_modules", "!tests/qa-harness/index.css"]
   },
   "formatter": {
     "enabled": true,
