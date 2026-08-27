@@ -4,7 +4,14 @@
     <meta charset="utf-8" />
     <title>UI QA harness</title>
   </head>
-  <body>
+  <!--
+    `data-theme` is required, not decorative: every design token is defined
+    under a `[data-theme=...]` selector, so without one `var(--color-base-100)`
+    resolves to nothing and components render transparent and unconstrained.
+    The first harness build showed a Dropdown trigger 1168px wide with
+    `bg=#00000000` for exactly this reason.
+  -->
+  <body data-theme="dark">
     <div id="root"></div>
   </body>
 </html>

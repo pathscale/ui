@@ -11,6 +11,13 @@
  * worth catching live in exactly that wiring: an uncontrolled component that
  * updates its own display hides a broken `onChange`.
  */
+/*
+ * The theme, first. Component CSS is written against design tokens, so without
+ * this every `var(--color-...)` falls back to nothing: the first harness build
+ * rendered a Dropdown trigger 1168px wide with `bg=#00000000`, which reads as a
+ * broken component and is really a missing stylesheet.
+ */
+import "../src/index.css";
 import { Dropdown, Select } from "@pathscale/ui";
 import { createSignal, For, Show } from "solid-js";
 import { render } from "@solidjs/web";
@@ -27,7 +34,17 @@ function DropdownFixture(props: { spec: ComponentSpec }) {
       <Dropdown.Menu>
         <For each={options()}>
           {(option) => (
-            <Dropdown.Item onSelect={() => setValue(option.value)}>
+            /*
+             * `onClick` and an explicit `aria-label`, as the consuming
+             * application uses. `Dropdown.Item` has no `onSelect`, and without
+             * the label the item reaches the semantic tree with an empty name,
+             * so `menuitem:low` matches nothing and every check fails on a
+             * missing control rather than on the behaviour.
+             */
+            <Dropdown.Item
+              aria-label={option.label}
+              onClick={() => setValue(option.value)}
+            >
               {option.label}
             </Dropdown.Item>
           )}
@@ -68,8 +85,23 @@ function SelectFixture(props: { spec: ComponentSpec }) {
 }
 
 function Harness() {
+  /*
+   * Parsed by hand rather than with `URLSearchParams`, which Blitz's JS runtime
+   * does not define: constructing one throws `ReferenceError` and the whole
+   * mount is abandoned, so the harness shows an empty window and every check
+   * fails on a missing control rather than on the component.
+   *
+   * `BLITZ_PREVIEW_COMPONENT` is the way in when there is no query string at
+   * all, which is the ordinary case for a preview window pointed at a dist.
+   */
   const selected = () => {
-    const id = new URLSearchParams(window.location.search).get("c");
+    const search = window.location?.search ?? "";
+    const fromQuery = search
+      .replace(/^\?/, "")
+      .split("&")
+      .map((pair) => pair.split("="))
+      .find(([key]) => key === "c")?.[1];
+    const id = fromQuery ?? (globalThis as { QA_COMPONENT?: string }).QA_COMPONENT;
     return COMPONENTS.find((entry) => entry.id === id) ?? COMPONENTS[0];
   };
 
