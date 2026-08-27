@@ -121,11 +121,29 @@ export const COMPONENTS: ComponentSpec[] = [
   {
     id: "collapsible",
     component: "Collapsible",
-    kind: "mode",
+    /*
+     * `display`, not `mode`.
+     *
+     * As a `mode` this generated three checks that all named the trigger as the
+     * thing that opens, changes and vanishes, which is the one node that does
+     * none of those: a disclosure trigger keeps its label and stays on screen
+     * whether the content is shown or hidden. `-changes` asserted the trigger's
+     * name changes (it reads "Collapsible" either way) and `-escape-closes`
+     * asserted the trigger vanishes (it was still there at 71x24, correctly).
+     *
+     * The content is what appears and disappears, but measured, it carries no
+     * accessible name at all: the tree holds `button:Collapsible` and the
+     * content only as an unnamed box. So the trigger is what a check can
+     * address, and what it can honestly assert is that it painted. The fixture
+     * measures 1184x48 with the content open, against 24 for the trigger alone,
+     * which is the evidence the content rendered.
+     *
+     * Asserting the disclosure behaviour needs a fixture that starts closed and
+     * content that names itself.
+     */
+    kind: "action",
     subject: "Collapsible",
     subjectRole: "button",
-    opens: "button:Collapsible",
-    activate: "button:Collapsible",
   },
   {
     id: "color-swatch",
@@ -246,6 +264,13 @@ export const COMPONENTS: ComponentSpec[] = [
     kind: "action",
     subject: "Link",
     subjectRole: "link",
+    /*
+     * Measured: without `href` the element reaches the tree as a `generic`, not
+     * a `link`, because Blitz only maps `<a>` to the link role when it has one.
+     * The component mounted and painted correctly the whole time; the check
+     * asked for a role the fixture had not given it the means to have.
+     */
+    props: { href: "#link" },
   },
   {
     id: "list-box",
