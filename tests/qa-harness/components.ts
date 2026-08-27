@@ -281,17 +281,29 @@ export const COMPONENTS: ComponentSpec[] = [
     id: "live-chat-bubble",
     component: "LiveChatBubble",
     kind: "action",
-    subject: "LiveChatBubble",
+    // Measured: `button:"Open chat"`, 56x56, pinned bottom-right. It never
+    // named itself "LiveChatBubble"; that was the component's name standing in
+    // for a control nobody had looked at.
+    subject: "Open chat",
     subjectRole: "button",
   },
   {
     id: "live-chat-panel",
     component: "LiveChatPanel",
-    kind: "mode",
-    subject: "LiveChatPanel",
+    /*
+     * Measured: the panel renders open at 400x720 and holds
+     * `heading:"Chat with us"`, `button:"Close chat"` and a disabled
+     * `button:"Send"`. There is no trigger, because the panel *is* the opened
+     * state; the bubble next door is what opens one.
+     *
+     * So `mode` was wrong in the same way Collapsible's was: it asserted that
+     * something called "LiveChatPanel" opens, changes and closes, and no node
+     * of that name exists at all. Closing is the bubble's contract, not this
+     * component's.
+     */
+    kind: "action",
+    subject: "Close chat",
     subjectRole: "button",
-    opens: "button:LiveChatPanel",
-    activate: "button:LiveChatPanel",
   },
   { id: "metal-border", component: "MetalBorder", kind: "display" },
   { id: "navbar", component: "Navbar", kind: "display" },

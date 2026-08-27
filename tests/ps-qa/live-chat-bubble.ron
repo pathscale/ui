@@ -32,7 +32,7 @@
         open: None,
         hover: None,
         click: None,
-        subject: "button:LiveChatBubble",
+        subject: "button:Open chat",
         expect: PaintsNamed,
     ),
 ]
