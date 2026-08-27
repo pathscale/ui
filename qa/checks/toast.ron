@@ -33,6 +33,6 @@
         hover: None,
         click: None,
         subject: "Toast",
-        expect: PaintsNamed,
+        expect: Paints,
     ),
 ]

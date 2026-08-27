@@ -33,6 +33,6 @@
         hover: None,
         click: None,
         subject: "Breadcrumb",
-        expect: PaintsNamed,
+        expect: Paints,
     ),
 ]

@@ -33,6 +33,6 @@
         hover: None,
         click: None,
         subject: "Dock",
-        expect: PaintsNamed,
+        expect: Paints,
     ),
 ]

@@ -33,6 +33,6 @@
         hover: None,
         click: None,
         subject: "Header",
-        expect: PaintsNamed,
+        expect: Paints,
     ),
 ]

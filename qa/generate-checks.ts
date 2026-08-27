@@ -216,10 +216,7 @@ function checksFor(spec: ComponentSpec): string {
      * the mounted component's text and which is therefore addressable for every
      * display component without anyone describing it first.
      */
-    const paintSubject =
-      spec.subject && spec.subjectRole
-        ? subject
-        : `"${spec.component}"`;
+    const described = Boolean(spec.subject && spec.subjectRole);
 
     records.push(
       check({
@@ -229,8 +226,22 @@ function checksFor(spec: ComponentSpec): string {
         open: surface,
         hover: "None",
         click: "None",
-        subject: paintSubject,
-        expect: "PaintsNamed",
+        subject: described ? subject : `"${spec.component}"`,
+        /*
+         * `PaintsNamed` only when a role was declared, because it is the
+         * `role:name` form: it splits the subject on the colon and matches both
+         * halves. Handed a bare name it looks for a node with that name and an
+         * empty role, which nothing has, and reports `no  named "Badge"` — note
+         * the gap where the role should be. Every display component without a
+         * declared role failed that way, for a reason that had nothing to do
+         * with the component.
+         *
+         * `Paints` is the name-only assertion and is what an undescribed
+         * component can honestly be held to: something with this name is on
+         * screen with a box. Declaring `subjectRole` in components.ts upgrades
+         * it to the stricter check.
+         */
+        expect: described ? "PaintsNamed" : "Paints",
       }),
     );
   }

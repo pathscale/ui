@@ -33,6 +33,6 @@
         hover: None,
         click: None,
         subject: "ComplexColorWheel",
-        expect: PaintsNamed,
+        expect: Paints,
     ),
 ]

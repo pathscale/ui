@@ -33,6 +33,6 @@
         hover: None,
         click: None,
         subject: "Spinner",
-        expect: PaintsNamed,
+        expect: Paints,
     ),
 ]

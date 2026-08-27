@@ -33,6 +33,6 @@
         hover: None,
         click: None,
         subject: "Badge",
-        expect: PaintsNamed,
+        expect: Paints,
     ),
 ]

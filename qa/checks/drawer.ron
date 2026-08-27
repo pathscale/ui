@@ -33,6 +33,6 @@
         hover: None,
         click: None,
         subject: "Drawer",
-        expect: PaintsNamed,
+        expect: Paints,
     ),
 ]

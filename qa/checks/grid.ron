@@ -33,6 +33,6 @@
         hover: None,
         click: None,
         subject: "Grid",
-        expect: PaintsNamed,
+        expect: Paints,
     ),
 ]

@@ -33,6 +33,6 @@
         hover: None,
         click: None,
         subject: "AuthMessage",
-        expect: PaintsNamed,
+        expect: Paints,
     ),
 ]

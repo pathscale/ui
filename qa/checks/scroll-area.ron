@@ -33,6 +33,6 @@
         hover: None,
         click: None,
         subject: "ScrollArea",
-        expect: PaintsNamed,
+        expect: Paints,
     ),
 ]

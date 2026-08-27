@@ -33,6 +33,6 @@
         hover: None,
         click: None,
         subject: "FieldGroup",
-        expect: PaintsNamed,
+        expect: Paints,
     ),
 ]

@@ -33,6 +33,6 @@
         hover: None,
         click: None,
         subject: "Tabs",
-        expect: PaintsNamed,
+        expect: Paints,
     ),
 ]
