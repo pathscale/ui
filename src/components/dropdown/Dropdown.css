@@ -12,6 +12,20 @@
     position: relative;
     isolation: isolate;
     display: inline-flex;
+    /*
+     * The border is inside the height a consumer asks for.
+     *
+     * There is no global `box-sizing` reset in this library, so this element
+     * was `content-box`: `height: 24px` set the *content* box and the 1px
+     * border on each side was added on top. AgencyZero's composer pill asks
+     * for `h-[24px]` and rendered at 28, measured on a running app, which is
+     * the sort of few-pixel drift that reads as a component quietly breaking
+     * its own contract.
+     *
+     * `border-box` makes an explicit height mean the height that lands on
+     * screen, which is what every caller already assumed.
+     */
+    box-sizing: border-box;
     min-height: 2.25rem;
     width: fit-content;
     align-items: center;
