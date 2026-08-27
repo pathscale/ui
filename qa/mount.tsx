@@ -16,6 +16,16 @@
  * all 71 components back into every page's graph, which is the failure the
  * per-component entries exist to remove.
  */
+/*
+ * The parts come as flat named exports, not as properties on the default
+ * export: `Collapsible.Trigger` is undefined, and a fixture written that way
+ * renders the root and nothing inside it. Only Dropdown and Select attach
+ * their parts, which is why those two worked and these did not.
+ */
+import Collapsible, {
+  CollapsibleContent,
+  CollapsibleTrigger,
+} from "@pathscale/ui/components/collapsible";
 import Dropdown from "@pathscale/ui/components/dropdown";
 import Select from "@pathscale/ui/components/select";
 import { createErrorBoundary, createSignal, For, Show } from "solid-js";
@@ -64,6 +74,12 @@ function SelectFixture(props: { spec: ComponentSpec }) {
       value={value()}
       onChange={(next) => typeof next === "string" && setValue(next)}
     >
+      {/*
+        A plain marker inside the root. If this paints and the trigger does not,
+        the root is rendering its children and the defect is in Trigger; if
+        neither paints, the root itself is producing nothing.
+      */}
+      <span>select-root-reached</span>
       <Select.Trigger aria-label={label()}>
         <Select.Value />
         <Select.Indicator />
@@ -83,9 +99,26 @@ function SelectFixture(props: { spec: ComponentSpec }) {
   );
 }
 
+/*
+ * A compound component is assembled from parts, so a bare mount renders an
+ * empty box: `<Dialog>Dialog</Dialog>` has no Content to show. Each of these
+ * renders the smallest arrangement that actually puts something on screen, and
+ * opens the ones that start closed, because a check cannot see a mode nobody
+ * entered.
+ */
+function CollapsibleFixture() {
+  return (
+    <Collapsible defaultOpen>
+      <CollapsibleTrigger>Collapsible</CollapsibleTrigger>
+      <CollapsibleContent>Collapsible content</CollapsibleContent>
+    </Collapsible>
+  );
+}
+
 /** Ids with a hand-written fixture; everything else mounts generically. */
 const FIXTURES: Record<string, (props: { spec: ComponentSpec }) => JSX.Element> =
   {
+    collapsible: CollapsibleFixture,
     dropdown: DropdownFixture,
     select: SelectFixture,
   };
@@ -104,22 +137,17 @@ const FIXTURES: Record<string, (props: { spec: ComponentSpec }) => JSX.Element> 
  * component whose real use needs structure will render thin here, and its
  * `-mounts` check is what says so.
  */
-function GenericFixture(props: {
-  spec: ComponentSpec;
-  component?: unknown;
-}) {
+function GenericFixture(props: { spec: ComponentSpec; under?: unknown }) {
   return createErrorBoundary(
     () => (
       <Show
         when={
-          props.component as
+          props.under as
             | ((props: Record<string, unknown>) => JSX.Element)
             | undefined
         }
         fallback={
-          <span aria-label={props.spec.component}>
-            {props.spec.component} is not exported
-          </span>
+          <span>{props.spec.component} is not exported</span>
         }
       >
         {(Component) => (
@@ -158,7 +186,7 @@ function GenericFixture(props: {
       </Show>
     ),
     (error) => (
-      <span aria-label={props.spec.component}>
+      <span>
         {props.spec.component} threw on mount: {String(error())}
       </span>
     ),
@@ -177,13 +205,15 @@ function Harness(props: { spec: ComponentSpec; component?: unknown }) {
         reached.
       */}
       <h1 data-qa="harness-title">{props.spec.component}</h1>
-      <div data-qa="fixture" role="region" aria-label="fixture">
-        <Dynamic
-          component={Fixture()}
-          spec={props.spec}
-          component={props.component}
-        />
-      </div>
+      <section data-qa="fixture" aria-label="fixture">
+        {/*
+          `under` rather than a second `component`: JSX takes the last of a
+          duplicated prop, so passing the component under that name overwrote
+          the fixture and `Dynamic` rendered the bare component instead. Every
+          page then produced one empty box, which read as 71 broken components.
+        */}
+        <Dynamic component={Fixture()} spec={props.spec} under={props.component} />
+      </section>
     </main>
   );
 }

@@ -100,7 +100,12 @@ function checksFor(spec: ComponentSpec): string {
        * so Badge paints a real 28x28 node and still fails here. Those are
        * listed in README.md rather than silently passed.
        */
-      subject: `"region:fixture"`,
+      /*
+       * Named, not role-scoped. Blitz maps `<section aria-label>` to `generic`
+       * rather than `region`, so pinning the role would make this check fail on
+       * every component for a reason that has nothing to do with the component.
+       */
+      subject: `"fixture"`,
       expect: "Paints",
     }),
   );
