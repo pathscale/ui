@@ -136,7 +136,7 @@
     "qa:build": "bun run qa:entries && rsbuild build --config qa/rsbuild.config.ts",
     "test": "bun test --conditions=browser",
     "check:api": "bun run scripts/check-api-contract.ts",
-    "qa:lint": "bun biome lint src qa"
+    "qa:lint": "bun biome lint qa"
   },
   "sideEffects": [
     "**/*.css"
