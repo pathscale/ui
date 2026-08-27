@@ -115,12 +115,71 @@ function CollapsibleFixture() {
   );
 }
 
+
+/*
+ * A toggle, mounted unchecked and controlled.
+ *
+ * The generic fixture passes no `checked`, so Switch, Radio and Checkbox
+ * mounted uncontrolled and the tree reported `selected: true` before anything
+ * had been pressed. The `-toggles` check then failed with "selected state
+ * stayed true", which is indistinguishable between two very different things:
+ * a component that ignores a click, and one that was already on and had
+ * nowhere to go.
+ *
+ * Starting from `false` with a controlled signal separates them. If the state
+ * flips, the component works and the old failure was the fixture's fault. If it
+ * stays false, the component really does not respond and that is a defect worth
+ * reporting.
+ *
+ * `under` rather than a static import: the generated entry already resolved the
+ * component for this page, and importing three more here would put all three in
+ * every page's bundle.
+ */
+function ToggleFixture(props: { spec: ComponentSpec; under?: unknown }) {
+  const [on, setOn] = createSignal(false);
+  return (
+    <Show
+      when={
+        props.under as
+          | ((props: Record<string, unknown>) => JSX.Element)
+          | undefined
+      }
+      fallback={<span>{props.spec.component} is not exported</span>}
+    >
+      {(Component) => (
+        <Dynamic
+          component={Component()}
+          checked={on()}
+          onChange={() => setOn((previous) => !previous)}
+          /*
+           * Both spellings. These components disagree about which they take,
+           * and a fixture that guesses wrong mounts an uncontrolled toggle
+           * again, which is the bug this exists to rule out.
+           */
+          onInput={() => setOn((previous) => !previous)}
+          aria-label={props.spec.component}
+        />
+      )}
+    </Show>
+  );
+}
+
 /** Ids with a hand-written fixture; everything else mounts generically. */
-const FIXTURES: Record<string, (props: { spec: ComponentSpec }) => JSX.Element> =
+const FIXTURES: Record<
+  string,
+  // `under` is the resolved component, which the harness passes to whichever
+  // fixture it selected. The hand-written fixtures that import their component
+  // statically ignore it; `ToggleFixture` is generic over three components and
+  // needs it.
+  (props: { spec: ComponentSpec; under?: unknown }) => JSX.Element
+> =
   {
+    checkbox: ToggleFixture,
     collapsible: CollapsibleFixture,
     dropdown: DropdownFixture,
+    radio: ToggleFixture,
     select: SelectFixture,
+    switch: ToggleFixture,
   };
 
 /*
