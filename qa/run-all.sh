@@ -8,7 +8,7 @@
 # All three open a window. `--offscreen` opens one too, just off screen.
 #
 # The headless path is `AGENCYZERO_BLITZ_TREE`, which writes the semantic tree
-# to a file with no window and no display server. See qa/HANDOVER.md.
+# to a file with no window and no display server.
 #
 # This script refuses to run if anyone reintroduces a windowed flag.
 #
@@ -37,7 +37,6 @@ export PATH="$HOME/.cargo/bin:$PATH"
 if grep -qE -- '--blitz-control|--offscreen|BLITZ_PREVIEW_DIST' "${BASH_SOURCE[0]}"; then
   echo "REFUSING TO RUN: this script contains a windowed flag." >&2
   echo "The sweep must be headless. Use AGENCYZERO_BLITZ_TREE." >&2
-  echo "See qa/HANDOVER.md." >&2
   exit 2
 fi
 

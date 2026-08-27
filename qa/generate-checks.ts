@@ -110,22 +110,24 @@ function checksFor(spec: ComponentSpec): string {
     }),
   );
 
-  // Everything past the paint check needs someone to have said which control a
-  // reader reads. Without that there is no honest way to generate an assertion:
-  // a guess would name the wrong node, which is the exact failure this whole
-  // harness exists to stop.
-  if (!spec.subject || !spec.subjectRole) {
-    return [
-      `// Generated from qa/components.ts by qa/generate-checks.ts. Do not edit.`,
-      `//`,
-      `// ${spec.component} has no interaction described yet, so only its paint`,
-      `// check is generated. Add \`subject\` and \`subjectRole\` to its entry to`,
-      `// generate the full set its "${spec.kind}" kind requires.`,
-      `[`,
-      ...records,
-      `]`,
-      ``,
-    ].join("\n");
+  /*
+   * A component whose kind implies an interaction must describe it.
+   *
+   * This used to return the paint check alone and carry on, which is how 69 of
+   * 71 components sat at partial coverage while the roster reported every one
+   * of them as having checks. Silence read as coverage.
+   *
+   * `display` is the only kind with nothing to describe: painting is its whole
+   * contract. Everything else fails generation until someone says which control
+   * a reader reads, which is the one fact no generator can infer and the one a
+   * wrong guess would quietly assert against the wrong node.
+   */
+  if (spec.kind !== "display" && (!spec.subject || !spec.subjectRole)) {
+    throw new Error(
+      `${spec.component} is kind "${spec.kind}" but has no subject: add ` +
+        `\`subject\` and \`subjectRole\` to its entry in components.ts, or ` +
+        `change its kind to "display" if painting really is its whole contract.`,
+    );
   }
 
   if (spec.kind === "value" || spec.kind === "mode") {
