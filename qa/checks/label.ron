@@ -5,13 +5,23 @@
 // generate the full set its "display" kind requires.
 [
     (
-        id: "label-mounts",
+        id: "label-page-paints",
         group: "label",
-        what: "Label mounts and reaches the renderer",
-        open: Some("label"),
+        what: "the Label page builds and paints",
+        open: None,
         hover: None,
         click: None,
-        subject: "Label",
+        subject: "heading:Label",
         expect: PaintsNamed,
+    ),
+    (
+        id: "label-renders",
+        group: "label",
+        what: "Label renders a node of its own",
+        open: None,
+        hover: None,
+        click: None,
+        subject: "region:fixture",
+        expect: Paints,
     ),
 ]

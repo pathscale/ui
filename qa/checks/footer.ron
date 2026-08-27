@@ -5,13 +5,23 @@
 // generate the full set its "display" kind requires.
 [
     (
-        id: "footer-mounts",
+        id: "footer-page-paints",
         group: "footer",
-        what: "Footer mounts and reaches the renderer",
-        open: Some("footer"),
+        what: "the Footer page builds and paints",
+        open: None,
         hover: None,
         click: None,
-        subject: "Footer",
+        subject: "heading:Footer",
         expect: PaintsNamed,
+    ),
+    (
+        id: "footer-renders",
+        group: "footer",
+        what: "Footer renders a node of its own",
+        open: None,
+        hover: None,
+        click: None,
+        subject: "region:fixture",
+        expect: Paints,
     ),
 ]

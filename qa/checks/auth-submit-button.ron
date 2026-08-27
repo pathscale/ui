@@ -5,13 +5,23 @@
 // generate the full set its "action" kind requires.
 [
     (
-        id: "auth-submit-button-mounts",
+        id: "auth-submit-button-page-paints",
         group: "auth-submit-button",
-        what: "AuthSubmitButton mounts and reaches the renderer",
-        open: Some("auth-submit-button"),
+        what: "the AuthSubmitButton page builds and paints",
+        open: None,
         hover: None,
         click: None,
-        subject: "AuthSubmitButton",
+        subject: "heading:AuthSubmitButton",
         expect: PaintsNamed,
+    ),
+    (
+        id: "auth-submit-button-renders",
+        group: "auth-submit-button",
+        what: "AuthSubmitButton renders a node of its own",
+        open: None,
+        hover: None,
+        click: None,
+        subject: "region:fixture",
+        expect: Paints,
     ),
 ]

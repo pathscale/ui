@@ -5,13 +5,23 @@
 // generate the full set its "mode" kind requires.
 [
     (
-        id: "popover-mounts",
+        id: "popover-page-paints",
         group: "popover",
-        what: "Popover mounts and reaches the renderer",
-        open: Some("popover"),
+        what: "the Popover page builds and paints",
+        open: None,
         hover: None,
         click: None,
-        subject: "Popover",
+        subject: "heading:Popover",
         expect: PaintsNamed,
+    ),
+    (
+        id: "popover-renders",
+        group: "popover",
+        what: "Popover renders a node of its own",
+        open: None,
+        hover: None,
+        click: None,
+        subject: "region:fixture",
+        expect: Paints,
     ),
 ]

@@ -5,13 +5,23 @@
 // generate the full set its "mode" kind requires.
 [
     (
-        id: "toast-mounts",
+        id: "toast-page-paints",
         group: "toast",
-        what: "Toast mounts and reaches the renderer",
-        open: Some("toast"),
+        what: "the Toast page builds and paints",
+        open: None,
         hover: None,
         click: None,
-        subject: "Toast",
+        subject: "heading:Toast",
         expect: PaintsNamed,
+    ),
+    (
+        id: "toast-renders",
+        group: "toast",
+        what: "Toast renders a node of its own",
+        open: None,
+        hover: None,
+        click: None,
+        subject: "region:fixture",
+        expect: Paints,
     ),
 ]

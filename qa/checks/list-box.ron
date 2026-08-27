@@ -5,13 +5,23 @@
 // generate the full set its "value" kind requires.
 [
     (
-        id: "list-box-mounts",
+        id: "list-box-page-paints",
         group: "list-box",
-        what: "ListBox mounts and reaches the renderer",
-        open: Some("list-box"),
+        what: "the ListBox page builds and paints",
+        open: None,
         hover: None,
         click: None,
-        subject: "ListBox",
+        subject: "heading:ListBox",
         expect: PaintsNamed,
+    ),
+    (
+        id: "list-box-renders",
+        group: "list-box",
+        what: "ListBox renders a node of its own",
+        open: None,
+        hover: None,
+        click: None,
+        subject: "region:fixture",
+        expect: Paints,
     ),
 ]

@@ -5,13 +5,23 @@
 // generate the full set its "display" kind requires.
 [
     (
-        id: "immersive-landing-mounts",
+        id: "immersive-landing-page-paints",
         group: "immersive-landing",
-        what: "ImmersiveLanding mounts and reaches the renderer",
-        open: Some("immersive-landing"),
+        what: "the ImmersiveLanding page builds and paints",
+        open: None,
         hover: None,
         click: None,
-        subject: "ImmersiveLanding",
+        subject: "heading:ImmersiveLanding",
         expect: PaintsNamed,
+    ),
+    (
+        id: "immersive-landing-renders",
+        group: "immersive-landing",
+        what: "ImmersiveLanding renders a node of its own",
+        open: None,
+        hover: None,
+        click: None,
+        subject: "region:fixture",
+        expect: Paints,
     ),
 ]

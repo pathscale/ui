@@ -5,13 +5,23 @@
 // generate the full set its "display" kind requires.
 [
     (
-        id: "auth-card-mounts",
+        id: "auth-card-page-paints",
         group: "auth-card",
-        what: "AuthCard mounts and reaches the renderer",
-        open: Some("auth-card"),
+        what: "the AuthCard page builds and paints",
+        open: None,
         hover: None,
         click: None,
-        subject: "AuthCard",
+        subject: "heading:AuthCard",
         expect: PaintsNamed,
+    ),
+    (
+        id: "auth-card-renders",
+        group: "auth-card",
+        what: "AuthCard renders a node of its own",
+        open: None,
+        hover: None,
+        click: None,
+        subject: "region:fixture",
+        expect: Paints,
     ),
 ]

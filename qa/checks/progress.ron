@@ -5,13 +5,23 @@
 // generate the full set its "display" kind requires.
 [
     (
-        id: "progress-mounts",
+        id: "progress-page-paints",
         group: "progress",
-        what: "Progress mounts and reaches the renderer",
-        open: Some("progress"),
+        what: "the Progress page builds and paints",
+        open: None,
         hover: None,
         click: None,
-        subject: "Progress",
+        subject: "heading:Progress",
         expect: PaintsNamed,
+    ),
+    (
+        id: "progress-renders",
+        group: "progress",
+        what: "Progress renders a node of its own",
+        open: None,
+        hover: None,
+        click: None,
+        subject: "region:fixture",
+        expect: Paints,
     ),
 ]

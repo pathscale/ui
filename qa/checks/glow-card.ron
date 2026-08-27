@@ -5,13 +5,23 @@
 // generate the full set its "display" kind requires.
 [
     (
-        id: "glow-card-mounts",
+        id: "glow-card-page-paints",
         group: "glow-card",
-        what: "GlowCard mounts and reaches the renderer",
-        open: Some("glow-card"),
+        what: "the GlowCard page builds and paints",
+        open: None,
         hover: None,
         click: None,
-        subject: "GlowCard",
+        subject: "heading:GlowCard",
         expect: PaintsNamed,
+    ),
+    (
+        id: "glow-card-renders",
+        group: "glow-card",
+        what: "GlowCard renders a node of its own",
+        open: None,
+        hover: None,
+        click: None,
+        subject: "region:fixture",
+        expect: Paints,
     ),
 ]

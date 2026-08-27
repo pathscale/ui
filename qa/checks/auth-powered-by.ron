@@ -5,13 +5,23 @@
 // generate the full set its "display" kind requires.
 [
     (
-        id: "auth-powered-by-mounts",
+        id: "auth-powered-by-page-paints",
         group: "auth-powered-by",
-        what: "AuthPoweredBy mounts and reaches the renderer",
-        open: Some("auth-powered-by"),
+        what: "the AuthPoweredBy page builds and paints",
+        open: None,
         hover: None,
         click: None,
-        subject: "AuthPoweredBy",
+        subject: "heading:AuthPoweredBy",
         expect: PaintsNamed,
+    ),
+    (
+        id: "auth-powered-by-renders",
+        group: "auth-powered-by",
+        what: "AuthPoweredBy renders a node of its own",
+        open: None,
+        hover: None,
+        click: None,
+        subject: "region:fixture",
+        expect: Paints,
     ),
 ]

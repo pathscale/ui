@@ -5,13 +5,23 @@
 // generate the full set its "display" kind requires.
 [
     (
-        id: "flex-mounts",
+        id: "flex-page-paints",
         group: "flex",
-        what: "Flex mounts and reaches the renderer",
-        open: Some("flex"),
+        what: "the Flex page builds and paints",
+        open: None,
         hover: None,
         click: None,
-        subject: "Flex",
+        subject: "heading:Flex",
         expect: PaintsNamed,
+    ),
+    (
+        id: "flex-renders",
+        group: "flex",
+        what: "Flex renders a node of its own",
+        open: None,
+        hover: None,
+        click: None,
+        subject: "region:fixture",
+        expect: Paints,
     ),
 ]

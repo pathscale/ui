@@ -5,13 +5,23 @@
 // generate the full set its "display" kind requires.
 [
     (
-        id: "breadcrumb-mounts",
+        id: "breadcrumb-page-paints",
         group: "breadcrumb",
-        what: "Breadcrumb mounts and reaches the renderer",
-        open: Some("breadcrumb"),
+        what: "the Breadcrumb page builds and paints",
+        open: None,
         hover: None,
         click: None,
-        subject: "Breadcrumb",
+        subject: "heading:Breadcrumb",
         expect: PaintsNamed,
+    ),
+    (
+        id: "breadcrumb-renders",
+        group: "breadcrumb",
+        what: "Breadcrumb renders a node of its own",
+        open: None,
+        hover: None,
+        click: None,
+        subject: "region:fixture",
+        expect: Paints,
     ),
 ]

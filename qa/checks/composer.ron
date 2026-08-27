@@ -5,13 +5,23 @@
 // generate the full set its "value" kind requires.
 [
     (
-        id: "composer-mounts",
+        id: "composer-page-paints",
         group: "composer",
-        what: "Composer mounts and reaches the renderer",
-        open: Some("composer"),
+        what: "the Composer page builds and paints",
+        open: None,
         hover: None,
         click: None,
-        subject: "Composer",
+        subject: "heading:Composer",
         expect: PaintsNamed,
+    ),
+    (
+        id: "composer-renders",
+        group: "composer",
+        what: "Composer renders a node of its own",
+        open: None,
+        hover: None,
+        click: None,
+        subject: "region:fixture",
+        expect: Paints,
     ),
 ]

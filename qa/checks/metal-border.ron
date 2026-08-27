@@ -5,13 +5,23 @@
 // generate the full set its "display" kind requires.
 [
     (
-        id: "metal-border-mounts",
+        id: "metal-border-page-paints",
         group: "metal-border",
-        what: "MetalBorder mounts and reaches the renderer",
-        open: Some("metal-border"),
+        what: "the MetalBorder page builds and paints",
+        open: None,
         hover: None,
         click: None,
-        subject: "MetalBorder",
+        subject: "heading:MetalBorder",
         expect: PaintsNamed,
+    ),
+    (
+        id: "metal-border-renders",
+        group: "metal-border",
+        what: "MetalBorder renders a node of its own",
+        open: None,
+        hover: None,
+        click: None,
+        subject: "region:fixture",
+        expect: Paints,
     ),
 ]

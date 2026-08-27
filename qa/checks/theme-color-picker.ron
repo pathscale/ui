@@ -5,13 +5,23 @@
 // generate the full set its "value" kind requires.
 [
     (
-        id: "theme-color-picker-mounts",
+        id: "theme-color-picker-page-paints",
         group: "theme-color-picker",
-        what: "ThemeColorPicker mounts and reaches the renderer",
-        open: Some("theme-color-picker"),
+        what: "the ThemeColorPicker page builds and paints",
+        open: None,
         hover: None,
         click: None,
-        subject: "ThemeColorPicker",
+        subject: "heading:ThemeColorPicker",
         expect: PaintsNamed,
+    ),
+    (
+        id: "theme-color-picker-renders",
+        group: "theme-color-picker",
+        what: "ThemeColorPicker renders a node of its own",
+        open: None,
+        hover: None,
+        click: None,
+        subject: "region:fixture",
+        expect: Paints,
     ),
 ]

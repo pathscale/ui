@@ -5,13 +5,23 @@
 // generate the full set its "display" kind requires.
 [
     (
-        id: "spinner-mounts",
+        id: "spinner-page-paints",
         group: "spinner",
-        what: "Spinner mounts and reaches the renderer",
-        open: Some("spinner"),
+        what: "the Spinner page builds and paints",
+        open: None,
         hover: None,
         click: None,
-        subject: "Spinner",
+        subject: "heading:Spinner",
         expect: PaintsNamed,
+    ),
+    (
+        id: "spinner-renders",
+        group: "spinner",
+        what: "Spinner renders a node of its own",
+        open: None,
+        hover: None,
+        click: None,
+        subject: "region:fixture",
+        expect: Paints,
     ),
 ]

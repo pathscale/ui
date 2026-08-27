@@ -5,13 +5,23 @@
 // generate the full set its "mode" kind requires.
 [
     (
-        id: "cookie-consent-mounts",
+        id: "cookie-consent-page-paints",
         group: "cookie-consent",
-        what: "CookieConsent mounts and reaches the renderer",
-        open: Some("cookie-consent"),
+        what: "the CookieConsent page builds and paints",
+        open: None,
         hover: None,
         click: None,
-        subject: "CookieConsent",
+        subject: "heading:CookieConsent",
         expect: PaintsNamed,
+    ),
+    (
+        id: "cookie-consent-renders",
+        group: "cookie-consent",
+        what: "CookieConsent renders a node of its own",
+        open: None,
+        hover: None,
+        click: None,
+        subject: "region:fixture",
+        expect: Paints,
     ),
 ]

@@ -5,13 +5,23 @@
 // generate the full set its "display" kind requires.
 [
     (
-        id: "auth-field-group-mounts",
+        id: "auth-field-group-page-paints",
         group: "auth-field-group",
-        what: "AuthFieldGroup mounts and reaches the renderer",
-        open: Some("auth-field-group"),
+        what: "the AuthFieldGroup page builds and paints",
+        open: None,
         hover: None,
         click: None,
-        subject: "AuthFieldGroup",
+        subject: "heading:AuthFieldGroup",
         expect: PaintsNamed,
+    ),
+    (
+        id: "auth-field-group-renders",
+        group: "auth-field-group",
+        what: "AuthFieldGroup renders a node of its own",
+        open: None,
+        hover: None,
+        click: None,
+        subject: "region:fixture",
+        expect: Paints,
     ),
 ]

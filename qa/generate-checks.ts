@@ -24,7 +24,13 @@ function check(fields: Record<string, string>): string {
 }
 
 function checksFor(spec: ComponentSpec): string {
-  const surface = `Some("${spec.id}")`;
+    /*
+   * No surface to open: the harness serves one component per page, and the
+   * page for this component is already the one under test. `open` names a
+   * surface to navigate to, which only means something in an application with
+   * more than one.
+   */
+  const surface = "None";
   const subject = `"${spec.subjectRole}:${spec.subject}"`;
   const records: string[] = [];
 
@@ -41,14 +47,64 @@ function checksFor(spec: ComponentSpec): string {
    */
   records.push(
     check({
-      id: `"${spec.id}-mounts"`,
+      id: `"${spec.id}-page-paints"`,
       group: `"${spec.id}"`,
-      what: `"${spec.component} mounts and reaches the renderer"`,
+      what: `"the ${spec.component} page builds and paints"`,
       open: surface,
       hover: "None",
       click: "None",
-      subject: `"${spec.component}"`,
+      /*
+       * The page heading, which the harness renders for whichever component it
+       * mounted. It is addressable because Blitz names a node from its text,
+       * and `heading:` pins the role so this cannot be satisfied by some other
+       * node that happens to contain the component's name.
+       *
+       * This asserts the page for this component built and painted. Whether the
+       * component itself produced anything is the job of the checks below, which
+       * need someone to have described its interaction first.
+       */
+      subject: `"heading:${spec.component}"`,
       expect: "PaintsNamed",
+    }),
+  );
+
+  /*
+   * The component itself produced something.
+   *
+   * `PaintsMore` against the page's own baseline: the harness renders a heading
+   * and a fixture wrapper whatever happens, so a page that paints proves only
+   * that the bundle built. Accordion mounted to exactly that and nothing else —
+   * it is a compound component, and `<Accordion>Accordion</Accordion>` is not a
+   * usable Accordion — while its page check passed.
+   *
+   * This is the check that separates a component that rendered from one that
+   * silently rendered nothing.
+   */
+  records.push(
+    check({
+      id: `"${spec.id}-renders"`,
+      group: `"${spec.id}"`,
+      what: `"${spec.component} renders a node of its own"`,
+      open: surface,
+      hover: "None",
+      click: "None",
+      /*
+       * Any node the component itself put on screen. The harness's own heading
+       * and fixture wrapper are excluded by role, so this counts only what the
+       * component produced: zero means it rendered nothing, which is what
+       * Accordion does when mounted as `<Accordion>Accordion</Accordion>`.
+       */
+      /*
+       * The fixture region, which wraps only the component. A component that
+       * renders nothing leaves it 1184x0 and hidden, which is exactly what
+       * Accordion does when mounted as `<Accordion>Accordion</Accordion>`: it is
+       * compound, and needs Item/Trigger/Content to be anything at all.
+       *
+       * `Paints` requires a box with area, so a zero-height region fails it
+       * while a component that rendered a real control passes.
+       */
+      subject: `"region:fixture"`,
+      expect: "Paints",
     }),
   );
 

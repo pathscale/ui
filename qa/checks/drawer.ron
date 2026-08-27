@@ -5,13 +5,23 @@
 // generate the full set its "mode" kind requires.
 [
     (
-        id: "drawer-mounts",
+        id: "drawer-page-paints",
         group: "drawer",
-        what: "Drawer mounts and reaches the renderer",
-        open: Some("drawer"),
+        what: "the Drawer page builds and paints",
+        open: None,
         hover: None,
         click: None,
-        subject: "Drawer",
+        subject: "heading:Drawer",
         expect: PaintsNamed,
+    ),
+    (
+        id: "drawer-renders",
+        group: "drawer",
+        what: "Drawer renders a node of its own",
+        open: None,
+        hover: None,
+        click: None,
+        subject: "region:fixture",
+        expect: Paints,
     ),
 ]

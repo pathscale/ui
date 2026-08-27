@@ -5,13 +5,23 @@
 // generate the full set its "value" kind requires.
 [
     (
-        id: "table-mounts",
+        id: "table-page-paints",
         group: "table",
-        what: "Table mounts and reaches the renderer",
-        open: Some("table"),
+        what: "the Table page builds and paints",
+        open: None,
         hover: None,
         click: None,
-        subject: "Table",
+        subject: "heading:Table",
         expect: PaintsNamed,
+    ),
+    (
+        id: "table-renders",
+        group: "table",
+        what: "Table renders a node of its own",
+        open: None,
+        hover: None,
+        click: None,
+        subject: "region:fixture",
+        expect: Paints,
     ),
 ]

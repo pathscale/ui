@@ -5,13 +5,23 @@
 // generate the full set its "mode" kind requires.
 [
     (
-        id: "firefox-pwa-banner-mounts",
+        id: "firefox-pwa-banner-page-paints",
         group: "firefox-pwa-banner",
-        what: "FirefoxPWABanner mounts and reaches the renderer",
-        open: Some("firefox-pwa-banner"),
+        what: "the FirefoxPWABanner page builds and paints",
+        open: None,
         hover: None,
         click: None,
-        subject: "FirefoxPWABanner",
+        subject: "heading:FirefoxPWABanner",
         expect: PaintsNamed,
+    ),
+    (
+        id: "firefox-pwa-banner-renders",
+        group: "firefox-pwa-banner",
+        what: "FirefoxPWABanner renders a node of its own",
+        open: None,
+        hover: None,
+        click: None,
+        subject: "region:fixture",
+        expect: Paints,
     ),
 ]

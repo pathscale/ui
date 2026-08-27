@@ -5,13 +5,23 @@
 // generate the full set its "mode" kind requires.
 [
     (
-        id: "live-chat-panel-mounts",
+        id: "live-chat-panel-page-paints",
         group: "live-chat-panel",
-        what: "LiveChatPanel mounts and reaches the renderer",
-        open: Some("live-chat-panel"),
+        what: "the LiveChatPanel page builds and paints",
+        open: None,
         hover: None,
         click: None,
-        subject: "LiveChatPanel",
+        subject: "heading:LiveChatPanel",
         expect: PaintsNamed,
+    ),
+    (
+        id: "live-chat-panel-renders",
+        group: "live-chat-panel",
+        what: "LiveChatPanel renders a node of its own",
+        open: None,
+        hover: None,
+        click: None,
+        subject: "region:fixture",
+        expect: Paints,
     ),
 ]

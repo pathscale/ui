@@ -5,13 +5,23 @@
 // generate the full set its "value" kind requires.
 [
     (
-        id: "pagination-mounts",
+        id: "pagination-page-paints",
         group: "pagination",
-        what: "Pagination mounts and reaches the renderer",
-        open: Some("pagination"),
+        what: "the Pagination page builds and paints",
+        open: None,
         hover: None,
         click: None,
-        subject: "Pagination",
+        subject: "heading:Pagination",
         expect: PaintsNamed,
+    ),
+    (
+        id: "pagination-renders",
+        group: "pagination",
+        what: "Pagination renders a node of its own",
+        open: None,
+        hover: None,
+        click: None,
+        subject: "region:fixture",
+        expect: Paints,
     ),
 ]

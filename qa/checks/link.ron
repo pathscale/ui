@@ -5,13 +5,23 @@
 // generate the full set its "action" kind requires.
 [
     (
-        id: "link-mounts",
+        id: "link-page-paints",
         group: "link",
-        what: "Link mounts and reaches the renderer",
-        open: Some("link"),
+        what: "the Link page builds and paints",
+        open: None,
         hover: None,
         click: None,
-        subject: "Link",
+        subject: "heading:Link",
         expect: PaintsNamed,
+    ),
+    (
+        id: "link-renders",
+        group: "link",
+        what: "Link renders a node of its own",
+        open: None,
+        hover: None,
+        click: None,
+        subject: "region:fixture",
+        expect: Paints,
     ),
 ]

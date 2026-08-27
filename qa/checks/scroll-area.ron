@@ -5,13 +5,23 @@
 // generate the full set its "display" kind requires.
 [
     (
-        id: "scroll-area-mounts",
+        id: "scroll-area-page-paints",
         group: "scroll-area",
-        what: "ScrollArea mounts and reaches the renderer",
-        open: Some("scroll-area"),
+        what: "the ScrollArea page builds and paints",
+        open: None,
         hover: None,
         click: None,
-        subject: "ScrollArea",
+        subject: "heading:ScrollArea",
         expect: PaintsNamed,
+    ),
+    (
+        id: "scroll-area-renders",
+        group: "scroll-area",
+        what: "ScrollArea renders a node of its own",
+        open: None,
+        hover: None,
+        click: None,
+        subject: "region:fixture",
+        expect: Paints,
     ),
 ]

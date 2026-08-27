@@ -5,13 +5,23 @@
 // generate the full set its "action" kind requires.
 [
     (
-        id: "button-mounts",
+        id: "button-page-paints",
         group: "button",
-        what: "Button mounts and reaches the renderer",
-        open: Some("button"),
+        what: "the Button page builds and paints",
+        open: None,
         hover: None,
         click: None,
-        subject: "Button",
+        subject: "heading:Button",
         expect: PaintsNamed,
+    ),
+    (
+        id: "button-renders",
+        group: "button",
+        what: "Button renders a node of its own",
+        open: None,
+        hover: None,
+        click: None,
+        subject: "region:fixture",
+        expect: Paints,
     ),
 ]

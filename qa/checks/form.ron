@@ -5,13 +5,23 @@
 // generate the full set its "display" kind requires.
 [
     (
-        id: "form-mounts",
+        id: "form-page-paints",
         group: "form",
-        what: "Form mounts and reaches the renderer",
-        open: Some("form"),
+        what: "the Form page builds and paints",
+        open: None,
         hover: None,
         click: None,
-        subject: "Form",
+        subject: "heading:Form",
         expect: PaintsNamed,
+    ),
+    (
+        id: "form-renders",
+        group: "form",
+        what: "Form renders a node of its own",
+        open: None,
+        hover: None,
+        click: None,
+        subject: "region:fixture",
+        expect: Paints,
     ),
 ]

@@ -5,13 +5,23 @@
 // generate the full set its "mode" kind requires.
 [
     (
-        id: "tooltip-mounts",
+        id: "tooltip-page-paints",
         group: "tooltip",
-        what: "Tooltip mounts and reaches the renderer",
-        open: Some("tooltip"),
+        what: "the Tooltip page builds and paints",
+        open: None,
         hover: None,
         click: None,
-        subject: "Tooltip",
+        subject: "heading:Tooltip",
         expect: PaintsNamed,
+    ),
+    (
+        id: "tooltip-renders",
+        group: "tooltip",
+        what: "Tooltip renders a node of its own",
+        open: None,
+        hover: None,
+        click: None,
+        subject: "region:fixture",
+        expect: Paints,
     ),
 ]

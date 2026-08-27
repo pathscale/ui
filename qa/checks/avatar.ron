@@ -5,13 +5,23 @@
 // generate the full set its "display" kind requires.
 [
     (
-        id: "avatar-mounts",
+        id: "avatar-page-paints",
         group: "avatar",
-        what: "Avatar mounts and reaches the renderer",
-        open: Some("avatar"),
+        what: "the Avatar page builds and paints",
+        open: None,
         hover: None,
         click: None,
-        subject: "Avatar",
+        subject: "heading:Avatar",
         expect: PaintsNamed,
+    ),
+    (
+        id: "avatar-renders",
+        group: "avatar",
+        what: "Avatar renders a node of its own",
+        open: None,
+        hover: None,
+        click: None,
+        subject: "region:fixture",
+        expect: Paints,
     ),
 ]

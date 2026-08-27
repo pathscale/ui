@@ -5,13 +5,23 @@
 // generate the full set its "mode" kind requires.
 [
     (
-        id: "pwa-install-prompt-mounts",
+        id: "pwa-install-prompt-page-paints",
         group: "pwa-install-prompt",
-        what: "PWAInstallPrompt mounts and reaches the renderer",
-        open: Some("pwa-install-prompt"),
+        what: "the PWAInstallPrompt page builds and paints",
+        open: None,
         hover: None,
         click: None,
-        subject: "PWAInstallPrompt",
+        subject: "heading:PWAInstallPrompt",
         expect: PaintsNamed,
+    ),
+    (
+        id: "pwa-install-prompt-renders",
+        group: "pwa-install-prompt",
+        what: "PWAInstallPrompt renders a node of its own",
+        open: None,
+        hover: None,
+        click: None,
+        subject: "region:fixture",
+        expect: Paints,
     ),
 ]

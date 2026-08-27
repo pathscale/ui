@@ -5,13 +5,23 @@
 // generate the full set its "display" kind requires.
 [
     (
-        id: "fieldset-mounts",
+        id: "fieldset-page-paints",
         group: "fieldset",
-        what: "Fieldset mounts and reaches the renderer",
-        open: Some("fieldset"),
+        what: "the Fieldset page builds and paints",
+        open: None,
         hover: None,
         click: None,
-        subject: "Fieldset",
+        subject: "heading:Fieldset",
         expect: PaintsNamed,
+    ),
+    (
+        id: "fieldset-renders",
+        group: "fieldset",
+        what: "Fieldset renders a node of its own",
+        open: None,
+        hover: None,
+        click: None,
+        subject: "region:fixture",
+        expect: Paints,
     ),
 ]
