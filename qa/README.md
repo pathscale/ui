@@ -43,7 +43,7 @@ Add one entry to `components.ts`:
 ```
 
 Then `bun run qa:checks`. The generator writes the checks the kind requires,
-into `qa/checks/<id>.ron`. Nobody writes a check by hand, which is the point:
+into `tests/ps-qa/<id>.ron`. Nobody writes a check by hand, which is the point:
 the weak assertion that let a broken Select report 2/2 is not spellable, because
 a `value` component's "changes" check always names the trigger as its subject.
 
