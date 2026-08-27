@@ -22,7 +22,6 @@ set -uo pipefail
 readonly HERE="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 readonly ROOT="$(cd "$HERE/../.." && pwd)"
 readonly HOST="${QA_HOST:-$HOME/code/qa-headless-host/target/release/qa-headless-host}"
-readonly DISTS="${QA_DISTS:-/tmp/qa-dists}"
 
 # `cargo install` puts ps-qa here, and a non-interactive shell does not read the
 # profile that adds it.
@@ -52,7 +51,7 @@ fi
 
 # Refuse to sweep a stale build.
 #
-# `stage.ts` copies out of the prebuilt `tests/qa-harness/dist`; it does not compile. So an
+# The sweep reads the prebuilt pages under `dist/`; nothing here compiles. So an
 # edit to `mount.tsx` or a fixture is silently ignored until someone runs
 # `qa:build`, and the sweep reports confidently on hours-old code. That cost an
 # afternoon: a new fixture was written, the sweep was re-run three times, and
@@ -77,10 +76,10 @@ fi
 # `\( ... \)` around the alternation: without the group, `-newer` binds to the
 # last `-o` branch alone, so a stale `.tsx` was never reported and the guard
 # passed on exactly the file it exists to catch.
-# Only what the bundle is built from. `generate-checks.ts` and `stage.ts` run
-# outside the build and never reach a page, so editing a generator was
-# reported as a stale bundle and blocked the sweep for no reason.
-newest_source="$(find "$HERE" \( -name '*.tsx' -o -name '*.ts' -o -name '*.css' \) -newer "$reference" 2>/dev/null | grep -vE 'entries/|/dist/|/node_modules/|generate-.*\.ts$|stage\.ts$|rsbuild\.config\.ts$' | head -1)"
+# Only what the bundle is built from. The generators run outside the build and
+# never reach a page, so editing one was reported as a stale bundle and blocked
+# the sweep for no reason.
+newest_source="$(find "$HERE" \( -name '*.tsx' -o -name '*.ts' -o -name '*.css' \) -newer "$reference" 2>/dev/null | grep -vE 'entries/|/dist/|/node_modules/|generate-.*\.ts$|rsbuild\.config\.ts$' | head -1)"
 if [[ -n "$newest_source" ]]; then
   echo "the build is older than $newest_source" >&2
   echo "run: bun run qa:build   (or set QA_ALLOW_STALE=1 to sweep anyway)" >&2
@@ -92,16 +91,9 @@ if [[ -n "$newest_source" ]]; then
   fi
 fi
 
-# Build each component's page. One directory per id is the layout
-# `sweep-components` expects, and it is also what keeps the components isolated:
-# each host is pointed at exactly one component's bundle.
-mkdir -p "$DISTS"
-for id in "${ids[@]}"; do
-  if ! bun run "$HERE/stage.ts" "$id" "$DISTS/$id" > /dev/null 2>&1; then
-    echo "could not stage $id" >&2
-    exit 1
-  fi
-done
+# No staging. The build already emits one page per component, `button.html`
+# beside `button.js`, and both the sweep and the host take a page directly, so
+# there is nothing to copy anywhere first.
 
 # `--app` is not optional here. Every check resolves through the profile,
 # and without one ps-qa panics rather than guessing at an application it
@@ -111,6 +103,6 @@ done
 # working directory, and this script runs from wherever it was invoked.
 exec ps-qa --app "$HERE/ps-qa.ron" sweep-components \
   --host "$HOST" \
-  --dists "$DISTS" \
+  --dists "$HERE/dist" \
   --checks "$ROOT/tests/ps-qa" \
   "${ids[@]}"
