@@ -17,7 +17,7 @@
 set -uo pipefail
 
 readonly ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
-readonly HOST="${BLITZ_PREVIEW:-$HOME/code/agencyzero/apps/blitz-preview/target/release/agencyzero-blitz-preview}"
+readonly HOST="${QA_HOST:-$HOME/code/qa-headless-host/target/release/qa-headless-host}"
 readonly DISTS="${QA_DISTS:-/tmp/qa-dists}"
 
 # `cargo install` puts ps-qa here, and a non-interactive shell does not read the
@@ -30,9 +30,8 @@ if ! command -v ps-qa > /dev/null; then
 fi
 
 if [[ ! -x "$HOST" ]]; then
-  echo "no blitz-preview at $HOST; build it or set BLITZ_PREVIEW" >&2
-  echo "  cargo build --release --manifest-path \\" >&2
-  echo "    ~/code/agencyzero/apps/blitz-preview/Cargo.toml" >&2
+  echo "no qa-headless-host at $HOST; build it or set QA_HOST" >&2
+  echo "  cargo build --release --manifest-path ~/code/qa-headless-host/Cargo.toml" >&2
   exit 1
 fi
 
