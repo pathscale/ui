@@ -73,7 +73,10 @@ fi
 # `\( ... \)` around the alternation: without the group, `-newer` binds to the
 # last `-o` branch alone, so a stale `.tsx` was never reported and the guard
 # passed on exactly the file it exists to catch.
-newest_source="$(find "$ROOT/qa" \( -name '*.tsx' -o -name '*.ts' \) -newer "$reference" 2>/dev/null | grep -vE 'entries/|/dist/|/node_modules/' | head -1)"
+# Only what the bundle is built from. `generate-checks.ts` and `stage.ts` run
+# outside the build and never reach a page, so editing a generator was
+# reported as a stale bundle and blocked the sweep for no reason.
+newest_source="$(find "$ROOT/qa" \( -name '*.tsx' -o -name '*.ts' -o -name '*.css' \) -newer "$reference" 2>/dev/null | grep -vE 'entries/|/dist/|/node_modules/|generate-.*\.ts$|stage\.ts$|rsbuild\.config\.ts$' | head -1)"
 if [[ -n "$newest_source" ]]; then
   echo "the build is older than $newest_source" >&2
   echo "run: bun run qa:build   (or set QA_ALLOW_STALE=1 to sweep anyway)" >&2
@@ -99,8 +102,11 @@ done
 # `--app` is not optional here. Every check resolves through the profile,
 # and without one ps-qa panics rather than guessing at an application it
 # knows nothing about.
+# `--checks` is still passed, but at the standard location rather than a
+# project-specific one: ps-qa resolves its default `tests/ps-qa` against the
+# working directory, and this script runs from wherever it was invoked.
 exec ps-qa --app "$ROOT/qa/ps-qa.ron" sweep-components \
   --host "$HOST" \
   --dists "$DISTS" \
-  --checks "$ROOT/qa/checks" \
+  --checks "$ROOT/tests/ps-qa" \
   "${ids[@]}"

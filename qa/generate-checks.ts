@@ -13,7 +13,12 @@ import { COMPONENTS, type ComponentSpec } from "./components";
 import { mkdirSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
 
-const outputDir = join(import.meta.dir, "checks");
+/*
+ * `tests/ps-qa/` is where ps-qa looks when nobody passes `--checks`, and it is
+ * the layout every project driven by it uses. These lived in `qa/checks/`,
+ * which meant every invocation had to override the default to find them.
+ */
+const outputDir = join(import.meta.dir, "..", "tests", "ps-qa");
 
 /** One `.ron` record. */
 function check(fields: Record<string, string>): string {
