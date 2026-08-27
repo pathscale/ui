@@ -33,6 +33,6 @@
         hover: None,
         click: None,
         subject: "Avatar",
-        expect: PaintsNamed,
+        expect: Paints,
     ),
 ]

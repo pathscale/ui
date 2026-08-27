@@ -33,6 +33,6 @@
         hover: None,
         click: None,
         subject: "Card",
-        expect: PaintsNamed,
+        expect: Paints,
     ),
 ]

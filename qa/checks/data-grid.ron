@@ -33,6 +33,6 @@
         hover: None,
         click: None,
         subject: "DataGrid",
-        expect: PaintsNamed,
+        expect: Paints,
     ),
 ]

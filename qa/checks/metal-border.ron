@@ -33,6 +33,6 @@
         hover: None,
         click: None,
         subject: "MetalBorder",
-        expect: PaintsNamed,
+        expect: Paints,
     ),
 ]

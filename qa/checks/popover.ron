@@ -33,6 +33,6 @@
         hover: None,
         click: None,
         subject: "Popover",
-        expect: PaintsNamed,
+        expect: Paints,
     ),
 ]

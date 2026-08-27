@@ -33,6 +33,6 @@
         hover: None,
         click: None,
         subject: "ChatBubble",
-        expect: PaintsNamed,
+        expect: Paints,
     ),
 ]

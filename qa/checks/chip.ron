@@ -33,6 +33,6 @@
         hover: None,
         click: None,
         subject: "Chip",
-        expect: PaintsNamed,
+        expect: Paints,
     ),
 ]

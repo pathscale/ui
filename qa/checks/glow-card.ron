@@ -33,6 +33,6 @@
         hover: None,
         click: None,
         subject: "GlowCard",
-        expect: PaintsNamed,
+        expect: Paints,
     ),
 ]

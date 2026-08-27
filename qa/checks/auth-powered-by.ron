@@ -33,6 +33,6 @@
         hover: None,
         click: None,
         subject: "AuthPoweredBy",
-        expect: PaintsNamed,
+        expect: Paints,
     ),
 ]
