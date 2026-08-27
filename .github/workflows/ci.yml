@@ -29,6 +29,13 @@ jobs:
       - name: Install Dependencies
         run: bun install
 
+      # `qa` only, for now: `src` carries 20 pre-existing findings that are not
+      # this change's to fix, and gating on them would block every PR. The
+      # harness itself was unlinted, and a duplicate JSX prop in it made all 71
+      # component pages render an empty box, which is the rule Biome catches.
+      - name: Lint
+        run: bun run qa:lint
+
       - name: Contract Check
         run: bun run check
 

@@ -1,8 +1,9 @@
 // Generated from qa/components.ts by qa/generate-checks.ts. Do not edit.
 //
-// Link has no interaction described yet, so only its paint
-// check is generated. Add `subject` and `subjectRole` to its entry to
-// generate the full set its "action" kind requires.
+// Link, mounted alone on its own harness page. Isolation is
+// the point: driving this inside a real application makes every check
+// order-dependent, and a failure caused by the previous group's leftover
+// state is indistinguishable from a real one.
 [
     (
         id: "link-page-paints",
@@ -23,5 +24,15 @@
         click: None,
         subject: "fixture",
         expect: Paints,
+    ),
+    (
+        id: "link-paints",
+        group: "link",
+        what: "the Link control is on screen and addressable",
+        open: None,
+        hover: None,
+        click: None,
+        subject: "link:Link",
+        expect: PaintsNamed,
     ),
 ]

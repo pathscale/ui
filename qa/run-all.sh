@@ -49,7 +49,11 @@ for id in "${ids[@]}"; do
     continue
   }
 
-  BLITZ_PREVIEW_DIST="$staged" "$PREVIEW" --blitz-control > "/tmp/qa-$id.log" 2>&1 &
+  # `--offscreen`: a sweep opens one window per component, and 71 windows over
+  # the owner's desktop is not acceptable. The renderer still lays out and paints,
+  # so every measurement is unchanged.
+  BLITZ_PREVIEW_DIST="$staged" "$PREVIEW" --blitz-control --offscreen \
+    > "/tmp/qa-$id.log" 2>&1 &
   preview_pid=$!
 
   # Wait for the window rather than sleeping a fixed time: a slow first paint
