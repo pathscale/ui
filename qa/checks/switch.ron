@@ -1,0 +1,17 @@
+// Generated from qa/components.ts by qa/generate-checks.ts. Do not edit.
+//
+// Switch has no interaction described yet, so only its paint
+// check is generated. Add `subject` and `subjectRole` to its entry to
+// generate the full set its "value" kind requires.
+[
+    (
+        id: "switch-mounts",
+        group: "switch",
+        what: "Switch mounts and reaches the renderer",
+        open: Some("switch"),
+        hover: None,
+        click: None,
+        subject: "Switch",
+        expect: PaintsNamed,
+    ),
+]

@@ -1,0 +1,17 @@
+// Generated from qa/components.ts by qa/generate-checks.ts. Do not edit.
+//
+// Tabs has no interaction described yet, so only its paint
+// check is generated. Add `subject` and `subjectRole` to its entry to
+// generate the full set its "value" kind requires.
+[
+    (
+        id: "tabs-mounts",
+        group: "tabs",
+        what: "Tabs mounts and reaches the renderer",
+        open: Some("tabs"),
+        hover: None,
+        click: None,
+        subject: "Tabs",
+        expect: PaintsNamed,
+    ),
+]

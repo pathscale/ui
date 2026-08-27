@@ -6,6 +6,16 @@
 // state is indistinguishable from a real one.
 [
     (
+        id: "dropdown-mounts",
+        group: "dropdown",
+        what: "Dropdown mounts and reaches the renderer",
+        open: Some("dropdown"),
+        hover: None,
+        click: None,
+        subject: "Dropdown",
+        expect: PaintsNamed,
+    ),
+    (
         id: "dropdown-opens",
         group: "dropdown",
         what: "the Dropdown menu reaches the renderer as an addressable item",

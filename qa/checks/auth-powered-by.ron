@@ -1,0 +1,17 @@
+// Generated from qa/components.ts by qa/generate-checks.ts. Do not edit.
+//
+// AuthPoweredBy has no interaction described yet, so only its paint
+// check is generated. Add `subject` and `subjectRole` to its entry to
+// generate the full set its "display" kind requires.
+[
+    (
+        id: "auth-powered-by-mounts",
+        group: "auth-powered-by",
+        what: "AuthPoweredBy mounts and reaches the renderer",
+        open: Some("auth-powered-by"),
+        hover: None,
+        click: None,
+        subject: "AuthPoweredBy",
+        expect: PaintsNamed,
+    ),
+]

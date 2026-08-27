@@ -1,0 +1,17 @@
+// Generated from qa/components.ts by qa/generate-checks.ts. Do not edit.
+//
+// ListBox has no interaction described yet, so only its paint
+// check is generated. Add `subject` and `subjectRole` to its entry to
+// generate the full set its "value" kind requires.
+[
+    (
+        id: "list-box-mounts",
+        group: "list-box",
+        what: "ListBox mounts and reaches the renderer",
+        open: Some("list-box"),
+        hover: None,
+        click: None,
+        subject: "ListBox",
+        expect: PaintsNamed,
+    ),
+]

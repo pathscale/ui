@@ -28,6 +28,48 @@ function checksFor(spec: ComponentSpec): string {
   const subject = `"${spec.subjectRole}:${spec.subject}"`;
   const records: string[] = [];
 
+  /*
+   * Every component gets this one, whatever its kind: it mounts, and it reaches
+   * the renderer with a box under the harness fixture.
+   *
+   * That is a low bar deliberately. It is also the bar a surprising number of
+   * things fail — the harness's own first run had a component that mounted to
+   * nothing because `URLSearchParams` threw — and it is the check that can be
+   * generated without anyone describing the component's interaction first. A
+   * component with no `subject` yet stops here, honestly covered for what is
+   * known about it, rather than being left out of the roster entirely.
+   */
+  records.push(
+    check({
+      id: `"${spec.id}-mounts"`,
+      group: `"${spec.id}"`,
+      what: `"${spec.component} mounts and reaches the renderer"`,
+      open: surface,
+      hover: "None",
+      click: "None",
+      subject: `"${spec.component}"`,
+      expect: "PaintsNamed",
+    }),
+  );
+
+  // Everything past the paint check needs someone to have said which control a
+  // reader reads. Without that there is no honest way to generate an assertion:
+  // a guess would name the wrong node, which is the exact failure this whole
+  // harness exists to stop.
+  if (!spec.subject || !spec.subjectRole) {
+    return [
+      `// Generated from qa/components.ts by qa/generate-checks.ts. Do not edit.`,
+      `//`,
+      `// ${spec.component} has no interaction described yet, so only its paint`,
+      `// check is generated. Add \`subject\` and \`subjectRole\` to its entry to`,
+      `// generate the full set its "${spec.kind}" kind requires.`,
+      `[`,
+      ...records,
+      `]`,
+      ``,
+    ].join("\n");
+  }
+
   if (spec.kind === "value" || spec.kind === "mode") {
     // 1. It opens. Addressed by `role:name` on a node that only exists once the
     //    mode is open: a name-only check is satisfied by the trigger, which

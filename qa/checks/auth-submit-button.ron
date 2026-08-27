@@ -1,0 +1,17 @@
+// Generated from qa/components.ts by qa/generate-checks.ts. Do not edit.
+//
+// AuthSubmitButton has no interaction described yet, so only its paint
+// check is generated. Add `subject` and `subjectRole` to its entry to
+// generate the full set its "action" kind requires.
+[
+    (
+        id: "auth-submit-button-mounts",
+        group: "auth-submit-button",
+        what: "AuthSubmitButton mounts and reaches the renderer",
+        open: Some("auth-submit-button"),
+        hover: None,
+        click: None,
+        subject: "AuthSubmitButton",
+        expect: PaintsNamed,
+    ),
+]

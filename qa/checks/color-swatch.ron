@@ -1,0 +1,17 @@
+// Generated from qa/components.ts by qa/generate-checks.ts. Do not edit.
+//
+// ColorSwatch has no interaction described yet, so only its paint
+// check is generated. Add `subject` and `subjectRole` to its entry to
+// generate the full set its "value" kind requires.
+[
+    (
+        id: "color-swatch-mounts",
+        group: "color-swatch",
+        what: "ColorSwatch mounts and reaches the renderer",
+        open: Some("color-swatch"),
+        hover: None,
+        click: None,
+        subject: "ColorSwatch",
+        expect: PaintsNamed,
+    ),
+]

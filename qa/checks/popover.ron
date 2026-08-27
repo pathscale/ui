@@ -1,0 +1,17 @@
+// Generated from qa/components.ts by qa/generate-checks.ts. Do not edit.
+//
+// Popover has no interaction described yet, so only its paint
+// check is generated. Add `subject` and `subjectRole` to its entry to
+// generate the full set its "mode" kind requires.
+[
+    (
+        id: "popover-mounts",
+        group: "popover",
+        what: "Popover mounts and reaches the renderer",
+        open: Some("popover"),
+        hover: None,
+        click: None,
+        subject: "Popover",
+        expect: PaintsNamed,
+    ),
+]

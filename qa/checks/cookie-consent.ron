@@ -1,0 +1,17 @@
+// Generated from qa/components.ts by qa/generate-checks.ts. Do not edit.
+//
+// CookieConsent has no interaction described yet, so only its paint
+// check is generated. Add `subject` and `subjectRole` to its entry to
+// generate the full set its "mode" kind requires.
+[
+    (
+        id: "cookie-consent-mounts",
+        group: "cookie-consent",
+        what: "CookieConsent mounts and reaches the renderer",
+        open: Some("cookie-consent"),
+        hover: None,
+        click: None,
+        subject: "CookieConsent",
+        expect: PaintsNamed,
+    ),
+]
