@@ -45,7 +45,7 @@ jobs:
         with:
           repository: pathscale/qa-inspect-host
           # Pin the reviewed native text-input host for the same reason.
-          ref: f9bddcb35fb8d7f7b5edd2541781bffec0d87a1d
+          ref: b4212ef5cb73e5d2639b9b210672aa96e98cf9a3
           path: .qa/qa-inspect-host
 
       - uses: Swatinem/rust-cache@v2
