@@ -84,6 +84,13 @@ export type ComponentSpec = {
   props?: Record<string, unknown>;
   /** Option labels, for components that need children. */
   options?: { value: string; label: string }[];
+  /** First-frame rendered family whose members must be distinct and contained. */
+  geometry?: {
+    family: string;
+    container: string;
+    /** Pointer target that must not repair a different neutral frame. */
+    settlesAfterHover?: string;
+  };
 };
 
 export const COMPONENTS: ComponentSpec[] = [
@@ -171,6 +178,11 @@ export const COMPONENTS: ComponentSpec[] = [
     kind: "adjustment",
     subject: "Strength 20",
     subjectRole: "button",
+    geometry: {
+      family: "radio:Theme color ",
+      container: "@color-wheel-flower",
+      settlesAfterHover: "radio:Theme color ",
+    },
   },
   {
     id: "composer",

@@ -77,6 +77,49 @@ function checksFor(spec: ComponentSpec): string {
     }),
   );
 
+  if (spec.geometry) {
+    records.push(
+      check({
+        id: `"${spec.id}-first-frame-distinct"`,
+        group: `"${spec.id}"`,
+        what: `"${spec.component} paints its repeated parts at distinct positions before interaction"`,
+        open: surface,
+        hover: "None",
+        click: "None",
+        subject: `"${spec.geometry.family}"`,
+        expect: "DistinctPositions",
+      }),
+    );
+    records.push(
+      check({
+        id: `"${spec.id}-first-frame-contained"`,
+        group: `"${spec.id}"`,
+        what: `"${spec.component} keeps its repeated parts inside their composition before interaction"`,
+        open: surface,
+        hover: "None",
+        click: "None",
+        compare: `Some("${spec.geometry.container}")`,
+        subject: `"${spec.geometry.family}"`,
+        expect: "ContainedBy",
+      }),
+    );
+    if (spec.geometry.settlesAfterHover) {
+      records.push(
+        check({
+          id: `"${spec.id}-first-frame-stable"`,
+          group: `"${spec.id}"`,
+          what: `"${spec.component} paints the same neutral frame before and after its first hover"`,
+          open: surface,
+          hover: "None",
+          after_prepare_hover: `Some("${spec.geometry.settlesAfterHover}")`,
+          click: "None",
+          subject: `"${spec.geometry.container}"`,
+          expect: "PixelsHoldAfterHover",
+        }),
+      );
+    }
+  }
+
   /*
    * The component itself produced something.
    *
