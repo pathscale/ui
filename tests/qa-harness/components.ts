@@ -6,30 +6,29 @@
  * mounts it alone, and `generate-checks.ts` turns the entry into the ps-qa
  * checks its kind requires. Nothing else is written per component.
  *
- * ## Why isolation
+ * ## Why one host per component
  *
- * Driving components inside the consuming application makes every check
- * order-dependent. Running the composer, select and rename groups in one
- * process leaves state behind: a pill left on `low` fails the next group's
- * "choosing medium changes the trigger" outright, and a dropdown left open
- * swallows the next group's first click. Those failures say nothing about the
- * component, and they are indistinguishable from real ones in a report.
+ * Every component gets a clean document. Outcomes for that component share the
+ * document so the 72-component sweep stays below two minutes. Preparation is
+ * idempotent: a check opens its precondition only when it is not already open,
+ * which also keeps every outcome reproducible by id against a fresh host.
  *
  * One component, one page, one fixture. The URL selects it, so a check restores
  * its own world by navigating rather than by undoing whatever it did.
  *
  * ## Kinds
  *
- * The kind decides which checks are generated, mirroring the templates in
- * AgencyZero's `tests/qa-templates/templates.ron`:
+ * The kind decides which rendered outcomes are generated. AgencyZero's
+ * ownership gate maps every imported value-bearing primitive back to these
+ * same outcome families:
  *
  *   value  - carries a value a reader can see. Asserted on the control the
- *            reader looks at (the trigger), never on the option that was
- *            pressed: an option's own selected flag flips even when the value
- *            never reaches the trigger, which is how a Select that could not
- *            select passed 2/2.
+ *            reader looks at after a different option is activated.
  *   mode   - swaps one thing for another. Must prove it opens, does its work,
  *            and leaves by each exit a reader has.
+ *   field  - accepts native text input and exposes the changed value.
+ *   slider - changes its exposed value through its keyboard contract.
+ *   inline-edit - opens, commits a controlled value, and abandons a draft.
  *   action - does something once and shows it happened.
  *   display- only ever paints.
  */
@@ -45,7 +44,15 @@
  * A toggle's whole contract is that clicking it flips its state, which the
  * tree reports as `selected`.
  */
-export type ComponentKind = "value" | "mode" | "action" | "toggle" | "display";
+export type ComponentKind =
+  | "value"
+  | "mode"
+  | "action"
+  | "toggle"
+  | "field"
+  | "slider"
+  | "inline-edit"
+  | "display";
 
 export type ComponentSpec = {
   /** URL id and check-id prefix. Kebab-case. */
@@ -208,7 +215,7 @@ export const COMPONENTS: ComponentSpec[] = [
     // Measured: the trigger reads "Effort: medium", not "Effort". A subject of
     // "Effort" matched nothing, so every check that had to press it first
     // failed before reaching its own assertion.
-    subject: "Effort: medium",
+    subject: "Effort:",
     subjectRole: "button",
     activate: "menuitem:high",
     opens: "menuitem:low",
@@ -237,19 +244,16 @@ export const COMPONENTS: ComponentSpec[] = [
   {
     id: "inline-edit",
     component: "InlineEdit",
-    // Measured: an unnamed `button` at 18x18 (the pencil) and a `textbox` that
-    // is hidden at 0x0 until it opens. Neither carries a name, so there is
-    // nothing to address by `role:name` yet; a fixture that labels the trigger
-    // would upgrade this to a real `mode`.
-    kind: "display",
+    kind: "inline-edit",
+    subject: "Edit title",
+    subjectRole: "button",
+    opens: "textbox:Edit title",
   },
   {
     id: "input",
     component: "Input",
-    // Measured: role `textbox`, empty name, 1158x19.6. A field is not a menu:
-    // as `value` this generated `-opens` and `-changes` against something that
-    // opens nothing and has no trigger text to change.
-    kind: "display",
+    kind: "field",
+    subject: "Fixture input",
     subjectRole: "textbox",
   },
   { id: "label", component: "Label", kind: "display" },
@@ -352,7 +356,7 @@ export const COMPONENTS: ComponentSpec[] = [
     kind: "value",
     // Measured: the trigger reads "Session: first fixture". The options exist
     // in the tree but at 0x0 hidden until it opens.
-    subject: "Session: first fixture",
+    subject: "Session:",
     subjectRole: "button",
     activate: "option:second fixture",
     opens: "option:first fixture",
@@ -367,7 +371,9 @@ export const COMPONENTS: ComponentSpec[] = [
   {
     id: "slider",
     component: "Slider",
-    kind: "display",
+    kind: "slider",
+    subject: "Fixture slider",
+    subjectRole: "slider",
   },
   { id: "spinner", component: "Spinner", kind: "display" },
   {
@@ -390,6 +396,13 @@ export const COMPONENTS: ComponentSpec[] = [
     kind: "display",
   },
   { id: "text", component: "Text", kind: "display" },
+  {
+    id: "textarea",
+    component: "Textarea",
+    kind: "field",
+    subject: "Fixture textarea",
+    subjectRole: "textbox",
+  },
   {
     id: "theme-color-picker",
     component: "ThemeColorPicker",

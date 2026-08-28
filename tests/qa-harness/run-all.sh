@@ -30,8 +30,9 @@ export PATH="$HOME/.cargo/bin:$PATH"
 # checkout still wins through `QA_HOST`, which is what to use when changing the
 # host and the harness together.
 readonly HOST="${QA_HOST:-$(command -v qa-inspect-host || true)}"
+readonly PS_QA="${QA_PS_QA:-$(command -v ps-qa || true)}"
 
-if ! command -v ps-qa > /dev/null; then
+if [[ -z "$PS_QA" || ! -x "$PS_QA" ]]; then
   echo "ps-qa is not on PATH; cargo install ps-qa" >&2
   exit 1
 fi
@@ -105,8 +106,9 @@ fi
 # `--checks` is still passed, but at the standard location rather than a
 # project-specific one: ps-qa resolves its default `tests/ps-qa` against the
 # working directory, and this script runs from wherever it was invoked.
-exec ps-qa --app "$HERE/ps-qa.ron" sweep-components \
+exec "$PS_QA" --app "$HERE/ps-qa.ron" sweep-components \
   --host "$HOST" \
   --dists "$HERE/dist" \
   --checks "$ROOT/tests/ps-qa" \
+  --mode sweep \
   "${ids[@]}"

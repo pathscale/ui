@@ -60,6 +60,7 @@
       "types": "./dist/motion/index.d.ts",
       "import": "./dist/motion/index.js"
     },
+    "./package.json": "./package.json",
     "./styles/*": "./dist/styles/*",
     "./dist/styles/*": "./dist/styles/*",
     "./index.css": "./dist/index.css"

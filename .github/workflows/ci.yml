@@ -8,7 +8,10 @@ on:
 
 jobs:
   build:
-    runs-on: ubicloud-standard-2
+    # qa-inspect-host is a native renderer binary. Its currently published
+    # Linux runtime predates Tauri's GTK trait additions, while macOS is the
+    # supported build used by the host's own CI and by AgencyZero.
+    runs-on: macos-14
     steps:
       - uses: actions/checkout@v4
 
@@ -25,6 +28,36 @@ jobs:
         uses: oven-sh/setup-bun@v1
         with:
           bun-version: latest
+
+      - uses: dtolnay/rust-toolchain@stable
+
+      - name: Checkout ps-qa
+        uses: actions/checkout@v4
+        with:
+          repository: pathscale/ps-qa
+          # Pin the reviewed sweep schema. The source branch may be deleted
+          # when its PR merges, but this release gate must remain reproducible.
+          ref: 9a89892d39bb0b2e4ec43bdbbeab610346f0700e
+          path: .qa/ps-qa
+
+      - name: Checkout qa-inspect-host
+        uses: actions/checkout@v4
+        with:
+          repository: pathscale/qa-inspect-host
+          # Pin the reviewed native text-input host for the same reason.
+          ref: f9bddcb35fb8d7f7b5edd2541781bffec0d87a1d
+          path: .qa/qa-inspect-host
+
+      - uses: Swatinem/rust-cache@v2
+        with:
+          workspaces: |
+            .qa/ps-qa
+            .qa/qa-inspect-host
+
+      - name: Build native QA tools
+        run: |
+          cargo build --release --manifest-path .qa/ps-qa/Cargo.toml
+          cargo build --release --manifest-path .qa/qa-inspect-host/Cargo.toml
 
       - name: Install Dependencies
         run: bun install
@@ -45,11 +78,18 @@ jobs:
       - name: Build
         run: bun run build
 
-      # `bun run test`, not bare `bun test`: the script passes
-      # --conditions=browser, without which Bun resolves Solid's inert server
-      # build and every reactive assertion reads back empty.
-      - name: Test
-        run: bun run test
+      # Native renderer outcomes replace jsdom interaction tests as the release
+      # gate. One headless host per component keeps the complete sweep below two
+      # minutes while preserving a clean document between components.
+      - name: Rendered component outcomes
+        env:
+          QA_PS_QA: ${{ github.workspace }}/.qa/ps-qa/target/release/ps-qa
+          QA_HOST: ${{ github.workspace }}/.qa/qa-inspect-host/target/release/qa-inspect-host
+        run: |
+          bun run qa:checks
+          git diff --exit-code -- tests/ps-qa
+          bun run qa:build
+          bash tests/qa-harness/run-all.sh
 
       # Fails when docs/api-contract.md and the shipped types disagree, in
       # either direction. Never runs with --write: regenerating the document on
