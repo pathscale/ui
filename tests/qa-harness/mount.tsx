@@ -244,22 +244,30 @@ function TabsFixture() {
 function ComplexColorWheelFixture() {
   const [strength, setStrength] = createSignal(10);
   return (
-    <ComplexColorWheel
-      value="#ffffff"
-      onChange={() => {}}
-      aria-label="Fixture colour"
-      adjustments={[
-        {
-          id: "strength",
-          label: "Strength",
-          get value() {
-            return strength();
+    <div
+      ref={() => {
+        queueMicrotask(() => {
+          document.getElementById("root")?.style.setProperty("zoom", "1.16");
+        });
+      }}
+    >
+      <ComplexColorWheel
+        value="#ffffff"
+        onChange={() => {}}
+        aria-label="Fixture colour"
+        adjustments={[
+          {
+            id: "strength",
+            label: "Strength",
+            get value() {
+              return strength();
+            },
+            stops: [10, 20],
+            onChange: setStrength,
           },
-          stops: [10, 20],
-          onChange: setStrength,
-        },
-      ]}
-    />
+        ]}
+      />
+    </div>
   );
 }
 
