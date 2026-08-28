@@ -1,9 +1,8 @@
 // Generated from tests/qa-harness/components.ts by tests/qa-harness/generate-checks.ts. Do not edit.
 //
-// InlineEdit, mounted alone on its own harness page. Isolation is
-// the point: driving this inside a real application makes every check
-// order-dependent, and a failure caused by the previous group's leftover
-// state is indistinguishable from a real one.
+// InlineEdit, mounted alone on its own harness page. Outcomes for
+// this component share one native host; idempotent preparation keeps each
+// outcome reproducible by id against a fresh host as well.
 [
     (
         id: "inline-edit-page-paints",
@@ -26,13 +25,43 @@
         expect: Paints,
     ),
     (
-        id: "inline-edit-paints",
+        id: "inline-edit-opens",
         group: "inline-edit",
-        what: "the InlineEdit reaches the renderer with a box",
+        what: "activating InlineEdit opens its labelled editor",
         open: None,
         hover: None,
+        click: Some("button:Edit title"),
+        subject: "textbox:Edit title",
+        expect: PaintsNamed,
+    ),
+    (
+        id: "inline-edit-commits",
+        group: "inline-edit",
+        what: "Enter commits the edited value and closes the editor",
+        open: None,
+        prepare: Some("button:Edit title"),
+        prepare_unless: Some("textbox:Edit title"),
+        hover: None,
         click: None,
-        subject: "InlineEdit",
-        expect: Paints,
+        type_into: Some("textbox:Edit title"),
+        text: Some("Renamed title"),
+        key: Some("Enter"),
+        subject: "heading:Committed title: Renamed title",
+        expect: PaintsNamed,
+    ),
+    (
+        id: "inline-edit-escape-keeps-value",
+        group: "inline-edit",
+        what: "Escape abandons a draft and keeps the committed value",
+        open: None,
+        prepare: Some("button:Edit title"),
+        prepare_unless: Some("textbox:Edit title"),
+        hover: None,
+        click: None,
+        type_into: Some("textbox:Edit title"),
+        text: Some("Abandoned title"),
+        key: Some("Escape"),
+        subject: "heading:Committed title: Renamed title",
+        expect: PaintsNamed,
     ),
 ]

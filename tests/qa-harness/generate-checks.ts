@@ -159,6 +159,7 @@ function checksFor(spec: ComponentSpec): string {
         open: surface,
         hover: "None",
         prepare: `Some("${spec.subject}")`,
+        prepare_unless: `Some("${spec.opens}")`,
         settle_after_ms: "600",
         click: "None",
         subject: `"${spec.opens}"`,
@@ -176,6 +177,7 @@ function checksFor(spec: ComponentSpec): string {
         open: surface,
         hover: "None",
         prepare: `Some("${spec.subject}")`,
+        prepare_unless: `Some("${spec.opens}")`,
         settle_after_ms: "600",
         click: `Some("${spec.activate}")`,
         subject,
@@ -192,6 +194,7 @@ function checksFor(spec: ComponentSpec): string {
         open: surface,
         hover: "None",
         prepare: `Some("${spec.subject}")`,
+        prepare_unless: `Some("${spec.opens}")`,
         settle_after_ms: "600",
         prepare_key: `Some("Escape")`,
         click: "None",
@@ -225,6 +228,94 @@ function checksFor(spec: ComponentSpec): string {
         click: `Some("${spec.subjectRole}:")`,
         subject: `"${spec.subjectRole}:"`,
         expect: "SelectionChanges",
+      }),
+    );
+  }
+
+  if (spec.kind === "field") {
+    records.push(
+      check({
+        id: `"${spec.id}-accepts-input"`,
+        group: `"${spec.id}"`,
+        what: `"typing changes the value exposed by ${spec.component}"`,
+        open: surface,
+        hover: "None",
+        click: "None",
+        type_into: `Some("${spec.subjectRole}:${spec.subject}")`,
+        text: `Some("QA outcome")`,
+        subject,
+        expect: "ValueChanges",
+      }),
+    );
+  }
+
+  if (spec.kind === "slider") {
+    for (const [suffix, key] of [
+      ["increments", "ArrowRight"],
+      ["restores", "ArrowLeft"],
+    ]) {
+      records.push(
+        check({
+          id: `"${spec.id}-${suffix}"`,
+          group: `"${spec.id}"`,
+          what: `"${key} changes the value exposed by ${spec.component}"`,
+          open: surface,
+          hover: "None",
+          click: "None",
+          key: `Some("${key}")`,
+          key_on: `Some("${spec.subjectRole}:${spec.subject}")`,
+          subject,
+          expect: "ValueChanges",
+        }),
+      );
+    }
+  }
+
+  if (spec.kind === "inline-edit") {
+    records.push(
+      check({
+        id: `"${spec.id}-opens"`,
+        group: `"${spec.id}"`,
+        what: `"activating ${spec.component} opens its labelled editor"`,
+        open: surface,
+        hover: "None",
+        click: `Some("${spec.subjectRole}:${spec.subject}")`,
+        subject: `"${spec.opens}"`,
+        expect: "PaintsNamed",
+      }),
+    );
+    records.push(
+      check({
+        id: `"${spec.id}-commits"`,
+        group: `"${spec.id}"`,
+        what: `"Enter commits the edited value and closes the editor"`,
+        open: surface,
+        prepare: `Some("${spec.subjectRole}:${spec.subject}")`,
+        prepare_unless: `Some("${spec.opens}")`,
+        hover: "None",
+        click: "None",
+        type_into: `Some("${spec.opens}")`,
+        text: `Some("Renamed title")`,
+        key: `Some("Enter")`,
+        subject: `"heading:Committed title: Renamed title"`,
+        expect: "PaintsNamed",
+      }),
+    );
+    records.push(
+      check({
+        id: `"${spec.id}-escape-keeps-value"`,
+        group: `"${spec.id}"`,
+        what: `"Escape abandons a draft and keeps the committed value"`,
+        open: surface,
+        prepare: `Some("${spec.subjectRole}:${spec.subject}")`,
+        prepare_unless: `Some("${spec.opens}")`,
+        hover: "None",
+        click: "None",
+        type_into: `Some("${spec.opens}")`,
+        text: `Some("Abandoned title")`,
+        key: `Some("Escape")`,
+        subject: `"heading:Committed title: Renamed title"`,
+        expect: "PaintsNamed",
       }),
     );
   }
@@ -294,10 +385,9 @@ function checksFor(spec: ComponentSpec): string {
   return [
     `// Generated from tests/qa-harness/components.ts by tests/qa-harness/generate-checks.ts. Do not edit.`,
     `//`,
-    `// ${spec.component}, mounted alone on its own harness page. Isolation is`,
-    `// the point: driving this inside a real application makes every check`,
-    `// order-dependent, and a failure caused by the previous group's leftover`,
-    `// state is indistinguishable from a real one.`,
+    `// ${spec.component}, mounted alone on its own harness page. Outcomes for`,
+    `// this component share one native host; idempotent preparation keeps each`,
+    `// outcome reproducible by id against a fresh host as well.`,
     `[`,
     ...records,
     `]`,

@@ -1,146 +1,54 @@
-# QA harness
+# Native component QA
 
-One component, mounted alone, driven by `ps-qa` against the real renderer.
+Every exported component is mounted alone and driven through Blitz's native
+inspection protocol. No browser, jsdom, desktop window, or screen coordinates
+are involved.
 
-## Why
+## Contract
 
-Driving a component inside a consuming application makes every check
-order-dependent. Running AgencyZero's `pillmenu`, `composer`, `select` and
-`rename` groups in one process produced three failures that were nothing to do
-with the components:
+`components.ts` is the inventory. Each entry declares the component's kind and
+the semantic controls a person uses. `generate-checks.ts` turns that declaration
+into ps-qa outcomes under `tests/ps-qa`.
 
-- `composer-effort-selects-option` failed because the previous group left the
-  Effort pill on `low`, so "choosing medium changes the trigger" had nothing to
-  change.
-- `select-session-changes` failed because an earlier group left a popover open.
-- `rename-closes-on-pointer-away` failed on a control an earlier check had
-  already renamed.
+The current inventory contains 72 components. Every component must build,
+mount, and paint. Value-bearing primitives used by AgencyZero have stronger
+contracts:
 
-None of those are defects, and in a report they are indistinguishable from
-defects. Worse, the reverse also happens: real breakage hides behind a failure
-blamed on ordering. One component per page, selected by URL, removes the whole
-category — a reload is a full reset.
+- Checkbox and Switch change their selected state.
+- Dropdown and Select open, change their controlled trigger value, and close on
+  Escape.
+- Input and Textarea accept native text input and expose the new value.
+- Slider changes and restores its exposed value through keyboard input.
+- InlineEdit opens its labelled textbox, commits a controlled value with Enter,
+  and abandons a later draft with Escape.
 
-It is also simply faster. Finding one Dropdown defect by driving the whole
-application took a day; the same defect on an isolated page is a single check.
-
-## Adding a component
-
-Add one entry to `components.ts`:
-
-```ts
-{
-  id: "dropdown",          // URL id and check-id prefix
-  component: "Dropdown",   // export name in @pathscale/ui
-  kind: "value",           // value | mode | action | display
-  subject: "Effort",       // the control a reader READS
-  subjectRole: "button",   // its role, so a check cannot assert on the wrong node
-  activate: "menuitem:high",
-  opens: "menuitem:low",
-  props: { label: "Effort" },
-  options: [...],
-}
-```
-
-Then `bun run qa:checks`. The generator writes the checks the kind requires,
-into `tests/ps-qa/<id>.ron`. Nobody writes a check by hand, which is the point:
-the weak assertion that let a broken Select report 2/2 is not spellable, because
-a `value` component's "changes" check always names the trigger as its subject.
-
-`kind` mirrors the templates in AgencyZero's `tests/qa-templates/templates.ron`.
+Purely visual components stop at rendered output. A component with an
+interaction must use an interaction kind; changing it to `display` is not a
+valid way to make an outcome pass.
 
 ## Running
 
 ```bash
-bun run qa:checks   # regenerate checks from components.ts
-bun run qa:build    # build the harness (reads ../dist, so build the library first)
-bun run qa:dev      # serve it at :5178 for a browser
+bun run build
+bun run qa:checks
+bun run qa:build
+bash tests/qa-harness/run-all.sh
 ```
 
-## Coverage
+Set `QA_PS_QA` or `QA_HOST` to test local builds of ps-qa or qa-inspect-host.
+The script refuses stale bundles unless `QA_ALLOW_STALE=1` is explicitly set.
 
-Every exported component has an entry in `components.ts` and a generated check
-file: **71 components, 71 files**. Two (`Dropdown`, `Select`) have hand-written
-fixtures and so generate their kind's full set; the rest generate their
-`-mounts` paint check, which is the honest coverage for a component whose
-interaction nobody has described yet. Filling in `subject`/`subjectRole` on an
-entry upgrades it, with no other work.
+The sweep uses one clean headless host per component and runs that component's
+outcomes in sequence. `prepare_unless` makes setup idempotent, so the same check
+also runs by id against a fresh host. A complete local sweep is 72/72 in about
+83 seconds.
 
-The 23 directories under `src/components` that are not re-exported from
-`src/index.ts` are deliberately absent: a consumer cannot import them, so there
-is nothing for a consumer-facing harness to drive.
+## Adding a component
 
-## Current result: 33 pass, 38 fail
+Add it to `components.ts`, add its module path to `generate-entries.ts`, and use
+the narrowest truthful kind. Add a fixture in `mount.tsx` when a generic mount
+cannot express the component's public API. Then regenerate checks and entries.
 
-`bash tests/qa-harness/run-all.sh` drives all 71, one process each. Every failure is the same
-check, `<id>-renders`, reporting that the component put nothing on screen when
-mounted plainly. The failures split three ways, and only the third is a defect:
-
-**Compound components (most of the 38).** `Accordion`, `Dialog`, `Drawer`,
-`Tabs`, `Popover`, `Select`, `Dropdown` and others are assembled from parts.
-`<Accordion>Accordion</Accordion>` is not a usable Accordion, so it renders an
-empty box. These need a hand-written fixture, exactly as `Dropdown` and `Select`
-already have. Nothing is wrong with the component.
-
-An attempt to build these automatically — reading the parts off the component
-object at runtime and rendering the first few — was tried and reverted: it broke
-components that had been passing, because a part rendered out of order or
-without its root produces less than a bare mount does. Compound structure is
-per-component knowledge, and the honest way to supply it is one fixture at a
-time.
-
-**Absolutely positioned components (false negatives).** `Badge` is an anchor
-badge: it paints a real 28x28 node and contributes no height to its parent, so
-the fixture region measures 1184x0 and the check calls it empty. The check is
-wrong here, not the component. Fixing it needs a measure of "did this subtree
-gain a node" that ps-qa does not currently express — `PaintsMore` compares one
-subject across an action, and there is no action.
-
-**Genuinely renders nothing.** What remains after the two above is the list
-worth acting on. Identifying which is which needs the fixtures above written
-first, because until then a compound component and a broken one fail
-identically.
-
-## Solved
-
-**Eager imports.** A single bundle put all 71 components in one module graph, so
-one that throws on import emptied the page for all of them, and an import-time
-throw cannot be caught by an error boundary. Each entry now imports one
-component from its own module, statically (`@pathscale/ui/components/<name>`).
-Per-page JS went from 495 kB to ~105 kB. A dynamic `require` of the package root
-defeats this: the bundler cannot prove which exports are reachable and keeps all
-71.
-
-**Hosting.** `qa-inspect-host` builds a document from one page and serves the
-inspection socket itself, with no window and no display server. `ps-qa
-sweep-components` launches one per component, waits for it to print its
-descriptor, attaches, judges and tears it down.
-
-It takes a page directly, so the sweep points at `dist/` and the pages the build
-already emits. That matters more than it sounds: the earlier design hosted the
-socket from a windowed preview, which meant a window per component and 71 of
-them over whatever the person at the machine was doing.
-
-**Styling.** Component CSS bottoms out in Tailwind's palette, so `tests/qa-harness/index.css`
-imports `tailwindcss` and points `@source` at the component sources, the step a
-consuming application performs. Before it the Dropdown trigger was 1168x54 with
-`bg=#00000000`; it is 1184x36 with `bg=#101828ff` after.
-
-## Coverage, honestly
-
-Two checks are generated per component:
-
-- `<id>-page-paints` — the page built and painted. Targets the heading, which is
-  named because Blitz names a node from its text.
-- `<id>-renders` — the component produced a node, measured on the fixture region
-  that wraps only the component.
-
-The second exists because the first passed for Accordion while it rendered
-nothing at all. Three earlier attempts at it were wrong: `aria-label` on the
-component (most components do not spread unknown props, so Button rendered an
-unnamed 26px box), `aria-label` on a `role="group"` wrapper (Blitz left it an
-unnamed `generic`), and `PaintsMore` on the heading (it counts one subject
-across an action, and there is no action).
-
-A component with `subject`/`subjectRole` filled in also generates its kind's
-full set. Only `Dropdown` and `Select` have that today.
+Generated entry points isolate import failures. A component whose module throws
+can fail only its own page, rather than emptying the entire suite. The host
+serves the built page over the inspection socket and never opens a window.

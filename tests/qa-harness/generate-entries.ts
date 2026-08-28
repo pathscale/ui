@@ -301,6 +301,7 @@ const MODULE_PATHS: Record<string, string> = {
   "table": "components/table",
   "tabs": "components/tabs",
   "text": "components/text",
+  "textarea": "components/textarea",
   "theme-color-picker": "components/theme-color-picker",
   "toast": "components/toast",
   "tooltip": "components/tooltip"

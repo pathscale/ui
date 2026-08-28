@@ -27,6 +27,7 @@ import Collapsible, {
   CollapsibleTrigger,
 } from "@pathscale/ui/components/collapsible";
 import Dropdown from "@pathscale/ui/components/dropdown";
+import InlineEdit from "@pathscale/ui/components/inline-edit";
 import Select from "@pathscale/ui/components/select";
 import { createErrorBoundary, createSignal, For, Show } from "solid-js";
 import { Dynamic, type JSX, render } from "@solidjs/web";
@@ -96,6 +97,69 @@ function SelectFixture(props: { spec: ComponentSpec }) {
         </Select.Listbox>
       </Select.Popover>
     </Select>
+  );
+}
+
+function InlineEditFixture() {
+  const [value, setValue] = createSignal("Original title");
+  return (
+    <>
+      <InlineEdit
+        value={value()}
+        label="Edit title"
+        trigger={<span aria-hidden="true">edit</span>}
+        onCommit={setValue}
+      />
+      <h2>Committed title: {value()}</h2>
+    </>
+  );
+}
+
+function FieldFixture(props: { spec: ComponentSpec; under?: unknown }) {
+  const [value, setValue] = createSignal("");
+  return (
+    <Show
+      when={
+        props.under as
+          | ((props: Record<string, unknown>) => JSX.Element)
+          | undefined
+      }
+      fallback={<span>{props.spec.component} is not exported</span>}
+    >
+      {(Component) => (
+        <Dynamic
+          component={Component()}
+          value={value()}
+          aria-label={props.spec.subject}
+          onInput={(event: InputEvent & { currentTarget: HTMLInputElement | HTMLTextAreaElement }) =>
+            setValue(event.currentTarget.value)
+          }
+        />
+      )}
+    </Show>
+  );
+}
+
+function SliderFixture(props: { spec: ComponentSpec; under?: unknown }) {
+  const [value, setValue] = createSignal(50);
+  return (
+    <Show
+      when={
+        props.under as
+          | ((props: Record<string, unknown>) => JSX.Element)
+          | undefined
+      }
+      fallback={<span>{props.spec.component} is not exported</span>}
+    >
+      {(Component) => (
+        <Dynamic
+          component={Component()}
+          value={value()}
+          onChange={setValue}
+          label={props.spec.subject}
+        />
+      )}
+    </Show>
   );
 }
 
@@ -215,9 +279,13 @@ const FIXTURES: Record<
     collapsible: CollapsibleFixture,
     dock: DockFixture,
     dropdown: DropdownFixture,
+    "inline-edit": InlineEditFixture,
+    input: FieldFixture,
     radio: ToggleFixture,
     select: SelectFixture,
+    slider: SliderFixture,
     switch: ToggleFixture,
+    textarea: FieldFixture,
   };
 
 /*

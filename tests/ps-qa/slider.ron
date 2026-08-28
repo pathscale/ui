@@ -1,9 +1,8 @@
 // Generated from tests/qa-harness/components.ts by tests/qa-harness/generate-checks.ts. Do not edit.
 //
-// Slider, mounted alone on its own harness page. Isolation is
-// the point: driving this inside a real application makes every check
-// order-dependent, and a failure caused by the previous group's leftover
-// state is indistinguishable from a real one.
+// Slider, mounted alone on its own harness page. Outcomes for
+// this component share one native host; idempotent preparation keeps each
+// outcome reproducible by id against a fresh host as well.
 [
     (
         id: "slider-page-paints",
@@ -26,13 +25,27 @@
         expect: Paints,
     ),
     (
-        id: "slider-paints",
+        id: "slider-increments",
         group: "slider",
-        what: "the Slider reaches the renderer with a box",
+        what: "ArrowRight changes the value exposed by Slider",
         open: None,
         hover: None,
         click: None,
-        subject: "Slider",
-        expect: Paints,
+        key: Some("ArrowRight"),
+        key_on: Some("slider:Fixture slider"),
+        subject: "slider:Fixture slider",
+        expect: ValueChanges,
+    ),
+    (
+        id: "slider-restores",
+        group: "slider",
+        what: "ArrowLeft changes the value exposed by Slider",
+        open: None,
+        hover: None,
+        click: None,
+        key: Some("ArrowLeft"),
+        key_on: Some("slider:Fixture slider"),
+        subject: "slider:Fixture slider",
+        expect: ValueChanges,
     ),
 ]

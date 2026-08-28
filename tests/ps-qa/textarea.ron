@@ -1,23 +1,23 @@
 // Generated from tests/qa-harness/components.ts by tests/qa-harness/generate-checks.ts. Do not edit.
 //
-// Input, mounted alone on its own harness page. Outcomes for
+// Textarea, mounted alone on its own harness page. Outcomes for
 // this component share one native host; idempotent preparation keeps each
 // outcome reproducible by id against a fresh host as well.
 [
     (
-        id: "input-page-paints",
-        group: "input",
-        what: "the Input page builds and paints",
+        id: "textarea-page-paints",
+        group: "textarea",
+        what: "the Textarea page builds and paints",
         open: None,
         hover: None,
         click: None,
-        subject: "heading:Input",
+        subject: "heading:Textarea",
         expect: PaintsNamed,
     ),
     (
-        id: "input-renders",
-        group: "input",
-        what: "Input renders a node of its own",
+        id: "textarea-renders",
+        group: "textarea",
+        what: "Textarea renders a node of its own",
         open: None,
         hover: None,
         click: None,
@@ -25,15 +25,15 @@
         expect: Paints,
     ),
     (
-        id: "input-accepts-input",
-        group: "input",
-        what: "typing changes the value exposed by Input",
+        id: "textarea-accepts-input",
+        group: "textarea",
+        what: "typing changes the value exposed by Textarea",
         open: None,
         hover: None,
         click: None,
-        type_into: Some("textbox:Fixture input"),
+        type_into: Some("textbox:Fixture textarea"),
         text: Some("QA outcome"),
-        subject: "textbox:Fixture input",
+        subject: "textbox:Fixture textarea",
         expect: ValueChanges,
     ),
 ]
