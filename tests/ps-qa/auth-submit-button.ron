@@ -34,4 +34,14 @@
         subject: "button:AuthSubmitButton",
         expect: PaintsNamed,
     ),
+    (
+        id: "auth-submit-button-acts",
+        group: "auth-submit-button",
+        what: "activating AuthSubmitButton exposes the callback result",
+        open: None,
+        hover: None,
+        click: Some("button:AuthSubmitButton"),
+        subject: "heading:Action result: AuthSubmitButton complete",
+        expect: PaintsNamed,
+    ),
 ]

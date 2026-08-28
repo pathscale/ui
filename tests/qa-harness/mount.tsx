@@ -17,18 +17,21 @@
  * per-component entries exist to remove.
  */
 /*
- * The parts come as flat named exports, not as properties on the default
- * export: `Collapsible.Trigger` is undefined, and a fixture written that way
- * renders the root and nothing inside it. Only Dropdown and Select attach
- * their parts, which is why those two worked and these did not.
+ * Collapsible's parts are flat named exports; `Collapsible.Trigger` is
+ * undefined. Dropdown, Select, Dialog, Popover and Tabs do attach their parts
+ * to the root export, so their fixtures use that public compound API.
  */
 import Collapsible, {
   CollapsibleContent,
   CollapsibleTrigger,
 } from "@pathscale/ui/components/collapsible";
+import { ComplexColorWheel } from "@pathscale/ui/components/color-wheel";
+import Dialog from "@pathscale/ui/components/dialog";
 import Dropdown from "@pathscale/ui/components/dropdown";
 import InlineEdit from "@pathscale/ui/components/inline-edit";
+import Popover from "@pathscale/ui/components/popover";
 import Select from "@pathscale/ui/components/select";
+import Tabs from "@pathscale/ui/components/tabs";
 import { createErrorBoundary, createSignal, For, Show } from "solid-js";
 import { Dynamic, type JSX, render } from "@solidjs/web";
 import { COMPONENTS, type ComponentSpec } from "./components";
@@ -89,7 +92,10 @@ function SelectFixture(props: { spec: ComponentSpec }) {
         <Select.Listbox>
           <For each={options()}>
             {(option) => (
-              <Select.Option value={option.value} textValue={option.label}>
+              <Select.Option
+                value={option.value}
+                textValue={option.label}
+              >
                 {option.label}
               </Select.Option>
             )}
@@ -115,6 +121,238 @@ function InlineEditFixture() {
   );
 }
 
+function CompletedAction(props: { component: string; complete: boolean }) {
+  return (
+    <Show when={props.complete}>
+      <h2>Action result: {props.component} complete</h2>
+    </Show>
+  );
+}
+
+function ActionFixture(props: { spec: ComponentSpec; under?: unknown }) {
+  const [complete, setComplete] = createSignal(false);
+  return (
+    <Show
+      when={
+        props.under as
+          | ((props: Record<string, unknown>) => JSX.Element)
+          | undefined
+      }
+      fallback={<span>{props.spec.component} is not exported</span>}
+    >
+      {(Component) => (
+        <>
+          <Dynamic
+            component={Component()}
+            {...(props.spec.props ?? {})}
+            onClick={() => setComplete(true)}
+          >
+            {props.spec.subject}
+          </Dynamic>
+          <CompletedAction
+            component={props.spec.component}
+            complete={complete()}
+          />
+        </>
+      )}
+    </Show>
+  );
+}
+
+function ComposerFixture(props: { spec: ComponentSpec; under?: unknown }) {
+  const [complete, setComplete] = createSignal(false);
+  return (
+    <Show
+      when={
+        props.under as
+          | ((props: Record<string, unknown>) => JSX.Element)
+          | undefined
+      }
+      fallback={<span>{props.spec.component} is not exported</span>}
+    >
+      {(Component) => (
+        <>
+          <Dynamic
+            component={Component()}
+            value="QA message"
+            onSubmit={() => setComplete(true)}
+          />
+          <CompletedAction
+            component={props.spec.component}
+            complete={complete()}
+          />
+        </>
+      )}
+    </Show>
+  );
+}
+
+function DialogFixture() {
+  return (
+    <Dialog>
+      <Dialog.Trigger>Open dialog</Dialog.Trigger>
+      <Dialog.Content>
+        <Dialog.Heading>Dialog outcome</Dialog.Heading>
+        <Dialog.CloseTrigger>Close dialog</Dialog.CloseTrigger>
+      </Dialog.Content>
+    </Dialog>
+  );
+}
+
+function PopoverFixture() {
+  return (
+    <Popover>
+      <Popover.Trigger>Open popover</Popover.Trigger>
+      <Popover.Content>
+        <Popover.Heading>Popover outcome</Popover.Heading>
+      </Popover.Content>
+    </Popover>
+  );
+}
+
+function TabsFixture() {
+  const [selected, setSelected] = createSignal("first");
+  return (
+    <Tabs
+      selectedKey={selected()}
+      onSelectionChange={(key) => setSelected(String(key))}
+    >
+      <Tabs.List aria-label="Fixture tabs">
+        <Tabs.Tab
+          id="first"
+          aria-label="First"
+        >
+          First
+        </Tabs.Tab>
+        <Tabs.Tab
+          id="second"
+          aria-label="Second"
+        >
+          Second
+        </Tabs.Tab>
+      </Tabs.List>
+      <Tabs.Panel id="first">
+        <h2>First panel</h2>
+      </Tabs.Panel>
+      <Tabs.Panel id="second">
+        <h2>Second panel</h2>
+      </Tabs.Panel>
+    </Tabs>
+  );
+}
+
+function ComplexColorWheelFixture() {
+  const [strength, setStrength] = createSignal(10);
+  return (
+    <ComplexColorWheel
+      value="#ffffff"
+      onChange={() => {}}
+      aria-label="Fixture colour"
+      adjustments={[
+        {
+          id: "strength",
+          label: "Strength",
+          get value() {
+            return strength();
+          },
+          stops: [10, 20],
+          onChange: setStrength,
+        },
+      ]}
+    />
+  );
+}
+
+function LiveChatBubbleFixture(props: {
+  spec: ComponentSpec;
+  under?: unknown;
+}) {
+  const [complete, setComplete] = createSignal(false);
+  return (
+    <Show
+      when={
+        props.under as
+          | ((props: Record<string, unknown>) => JSX.Element)
+          | undefined
+      }
+      fallback={<span>{props.spec.component} is not exported</span>}
+    >
+      {(Component) => (
+        <>
+          <Dynamic
+            component={Component()}
+            onOpen={() => setComplete(true)}
+          />
+          <CompletedAction
+            component={props.spec.component}
+            complete={complete()}
+          />
+        </>
+      )}
+    </Show>
+  );
+}
+
+function LiveChatPanelFixture(props: { spec: ComponentSpec; under?: unknown }) {
+  const [complete, setComplete] = createSignal(false);
+  return (
+    <Show
+      when={
+        props.under as
+          | ((props: Record<string, unknown>) => JSX.Element)
+          | undefined
+      }
+      fallback={<span>{props.spec.component} is not exported</span>}
+    >
+      {(Component) => (
+        <>
+          <Dynamic
+            component={Component()}
+            onClose={() => setComplete(true)}
+          />
+          <CompletedAction
+            component={props.spec.component}
+            complete={complete()}
+          />
+        </>
+      )}
+    </Show>
+  );
+}
+
+function PaginationFixture(props: { spec: ComponentSpec; under?: unknown }) {
+  const [page, setPage] = createSignal(1);
+  const [complete, setComplete] = createSignal(false);
+  return (
+    <Show
+      when={
+        props.under as
+          | ((props: Record<string, unknown>) => JSX.Element)
+          | undefined
+      }
+      fallback={<span>{props.spec.component} is not exported</span>}
+    >
+      {(Component) => (
+        <>
+          <Dynamic
+            component={Component()}
+            page={page()}
+            total={2}
+            onChange={(next: number) => {
+              setPage(next);
+              setComplete(true);
+            }}
+          />
+          <CompletedAction
+            component={props.spec.component}
+            complete={complete()}
+          />
+        </>
+      )}
+    </Show>
+  );
+}
+
 function FieldFixture(props: { spec: ComponentSpec; under?: unknown }) {
   const [value, setValue] = createSignal("");
   return (
@@ -131,9 +369,11 @@ function FieldFixture(props: { spec: ComponentSpec; under?: unknown }) {
           component={Component()}
           value={value()}
           aria-label={props.spec.subject}
-          onInput={(event: InputEvent & { currentTarget: HTMLInputElement | HTMLTextAreaElement }) =>
-            setValue(event.currentTarget.value)
-          }
+          onInput={(
+            event: InputEvent & {
+              currentTarget: HTMLInputElement | HTMLTextAreaElement;
+            },
+          ) => setValue(event.currentTarget.value)}
         />
       )}
     </Show>
@@ -165,20 +405,20 @@ function SliderFixture(props: { spec: ComponentSpec; under?: unknown }) {
 
 /*
  * A compound component is assembled from parts, so a bare mount renders an
- * empty box: `<Dialog>Dialog</Dialog>` has no Content to show. Each of these
- * renders the smallest arrangement that actually puts something on screen, and
- * opens the ones that start closed, because a check cannot see a mode nobody
- * entered.
+ * empty box: `<Dialog>Dialog</Dialog>` has no Content to show. Each fixture
+ * renders the smallest usable arrangement; the checks themselves open closed
+ * states so opening remains part of the measured outcome.
  */
 function CollapsibleFixture() {
   return (
-    <Collapsible defaultOpen>
+    <Collapsible>
       <CollapsibleTrigger>Collapsible</CollapsibleTrigger>
-      <CollapsibleContent>Collapsible content</CollapsibleContent>
+      <CollapsibleContent>
+        <h2>Action result: Collapsible complete</h2>
+      </CollapsibleContent>
     </Collapsible>
   );
 }
-
 
 /*
  * A toggle, mounted unchecked and controlled.
@@ -228,7 +468,6 @@ function ToggleFixture(props: { spec: ComponentSpec; under?: unknown }) {
   );
 }
 
-
 /*
  * Dock, with the items it requires.
  *
@@ -273,20 +512,30 @@ const FIXTURES: Record<
   // statically ignore it; `ToggleFixture` is generic over three components and
   // needs it.
   (props: { spec: ComponentSpec; under?: unknown }) => JSX.Element
-> =
-  {
-    checkbox: ToggleFixture,
-    collapsible: CollapsibleFixture,
-    dock: DockFixture,
-    dropdown: DropdownFixture,
-    "inline-edit": InlineEditFixture,
-    input: FieldFixture,
-    radio: ToggleFixture,
-    select: SelectFixture,
-    slider: SliderFixture,
-    switch: ToggleFixture,
-    textarea: FieldFixture,
-  };
+> = {
+  "auth-submit-button": ActionFixture,
+  button: ActionFixture,
+  checkbox: ToggleFixture,
+  collapsible: CollapsibleFixture,
+  "complex-color-wheel": ComplexColorWheelFixture,
+  composer: ComposerFixture,
+  dialog: DialogFixture,
+  dock: DockFixture,
+  dropdown: DropdownFixture,
+  "inline-edit": InlineEditFixture,
+  input: FieldFixture,
+  link: ActionFixture,
+  "live-chat-bubble": LiveChatBubbleFixture,
+  "live-chat-panel": LiveChatPanelFixture,
+  pagination: PaginationFixture,
+  popover: PopoverFixture,
+  radio: ToggleFixture,
+  select: SelectFixture,
+  slider: SliderFixture,
+  switch: ToggleFixture,
+  tabs: TabsFixture,
+  textarea: FieldFixture,
+};
 
 /*
  * Mount a component that was handed to us, with no knowledge of its API.
@@ -311,9 +560,7 @@ function GenericFixture(props: { spec: ComponentSpec; under?: unknown }) {
             | ((props: Record<string, unknown>) => JSX.Element)
             | undefined
         }
-        fallback={
-          <span>{props.spec.component} is not exported</span>
-        }
+        fallback={<span>{props.spec.component} is not exported</span>}
       >
         {(Component) => (
           /*
@@ -342,8 +589,11 @@ function GenericFixture(props: { spec: ComponentSpec; under?: unknown }) {
               `data-qa` marks it as harness scaffolding rather than part of the
               component under test.
             */}
-            
-            <Dynamic component={Component()} {...(props.spec.props ?? {})}>
+
+            <Dynamic
+              component={Component()}
+              {...(props.spec.props ?? {})}
+            >
               {props.spec.component}
             </Dynamic>
           </>
@@ -394,7 +644,11 @@ function Harness(props: { spec: ComponentSpec; component?: unknown }) {
           the fixture and `Dynamic` rendered the bare component instead. Every
           page then produced one empty box, which read as 71 broken components.
         */}
-        <Dynamic component={Fixture()} spec={props.spec} under={props.component} />
+        <Dynamic
+          component={Fixture()}
+          spec={props.spec}
+          under={props.component}
+        />
       </section>
     </main>
   );
@@ -405,5 +659,13 @@ export function mountComponent(id: string, component?: unknown): void {
   const spec = COMPONENTS.find((entry) => entry.id === id);
   const root = document.getElementById("root");
   if (!spec || !root) return;
-  render(() => <Harness spec={spec} component={component} />, root);
+  render(
+    () => (
+      <Harness
+        spec={spec}
+        component={component}
+      />
+    ),
+    root,
+  );
 }

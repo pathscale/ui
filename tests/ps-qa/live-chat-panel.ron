@@ -34,4 +34,14 @@
         subject: "button:Close chat",
         expect: PaintsNamed,
     ),
+    (
+        id: "live-chat-panel-acts",
+        group: "live-chat-panel",
+        what: "activating LiveChatPanel exposes the callback result",
+        open: None,
+        hover: None,
+        click: Some("button:Close chat"),
+        subject: "heading:Action result: LiveChatPanel complete",
+        expect: PaintsNamed,
+    ),
 ]

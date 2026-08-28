@@ -10,9 +10,9 @@ are involved.
 the semantic controls a person uses. `generate-checks.ts` turns that declaration
 into ps-qa outcomes under `tests/ps-qa`.
 
-The current inventory contains 72 components. Every component must build,
-mount, and paint. Value-bearing primitives used by AgencyZero have stronger
-contracts:
+The current inventory contains 72 root components. Every component must build,
+mount, and paint. Interactive components must also expose the real result of
+their public callback or controlled state change:
 
 - Checkbox and Switch change their selected state.
 - Dropdown and Select open, change their controlled trigger value, and close on
@@ -21,6 +21,10 @@ contracts:
 - Slider changes and restores its exposed value through keyboard input.
 - InlineEdit opens its labelled textbox, commits a controlled value with Enter,
   and abandons a later draft with Escape.
+- Button-like actions expose that their callback ran.
+- Dialog and Popover open portalled content and close it with Escape.
+- Tabs change both the selected tab and its corresponding panel.
+- ComplexColorWheel changes a controlled semantic adjustment.
 
 Purely visual components stop at rendered output. A component with an
 interaction must use an interaction kind; changing it to `display` is not a
@@ -48,6 +52,12 @@ also runs by id against a fresh host. A complete local sweep is 72/72 in about
 Add it to `components.ts`, add its module path to `generate-entries.ts`, and use
 the narrowest truthful kind. Add a fixture in `mount.tsx` when a generic mount
 cannot express the component's public API. Then regenerate checks and entries.
+Both generators reject duplicate or incomplete inventory records and remove
+stale generated files; CI regenerates both trees and fails on any diff.
+
+Dismissal checks always open the overlay before sending Escape. `prepare_key`
+uses a key *instead of* activating setup, so it cannot express that sequence
+and must not be used for an open-then-dismiss outcome.
 
 Generated entry points isolate import failures. A component whose module throws
 can fail only its own page, rather than emptying the entire suite. The host

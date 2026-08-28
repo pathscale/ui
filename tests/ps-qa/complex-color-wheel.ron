@@ -25,13 +25,13 @@
         expect: Paints,
     ),
     (
-        id: "complex-color-wheel-paints",
+        id: "complex-color-wheel-changes",
         group: "complex-color-wheel",
-        what: "the ComplexColorWheel reaches the renderer with a box",
+        what: "activating a ComplexColorWheel adjustment changes its controlled selection",
         open: None,
         hover: None,
-        click: None,
-        subject: "ComplexColorWheel",
-        expect: Paints,
+        click: Some("button:Strength 20"),
+        subject: "button:Strength 20",
+        expect: SelectionChanges,
     ),
 ]

@@ -31,7 +31,17 @@
         open: None,
         hover: None,
         click: None,
-        subject: "button:Go to page 1",
+        subject: "button:Go to next page",
+        expect: PaintsNamed,
+    ),
+    (
+        id: "pagination-acts",
+        group: "pagination",
+        what: "activating Pagination exposes the callback result",
+        open: None,
+        hover: None,
+        click: Some("button:Go to next page"),
+        subject: "heading:Action result: Pagination complete",
         expect: PaintsNamed,
     ),
 ]

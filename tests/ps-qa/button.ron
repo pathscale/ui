@@ -34,4 +34,14 @@
         subject: "button:Button",
         expect: PaintsNamed,
     ),
+    (
+        id: "button-acts",
+        group: "button",
+        what: "activating Button exposes the callback result",
+        open: None,
+        hover: None,
+        click: Some("button:Button"),
+        subject: "heading:Action result: Button complete",
+        expect: PaintsNamed,
+    ),
 ]
