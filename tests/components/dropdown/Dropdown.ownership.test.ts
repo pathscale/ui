@@ -8,9 +8,9 @@ const styles = await Bun.file(
 ).text();
 
 describe("Dropdown overlay ownership", () => {
-  it("keeps the fixed menu in its owning component subtree", () => {
-    expect(layout).not.toContain("<Portal");
-    expect(layout).not.toMatch(/import\s*\{[^}]*\bPortal\b[^}]*\}\s*from\s*["']@solidjs\/web["']/);
+  it("portals the fixed menu out of transformed component ancestors", () => {
+    expect(layout).toContain("<Portal>");
+    expect(layout).toMatch(/import\s*\{[^}]*\bPortal\b[^}]*\}\s*from\s*["']@solidjs\/web["']/);
     expect(layout).toContain('data-slot="dropdown-popover"');
     expect(layout).toContain("style={menuStyle()}");
   });

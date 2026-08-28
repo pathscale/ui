@@ -1,6 +1,6 @@
 import "./Dropdown.css";
 import {Show, createContext, createSignal, createTrackedEffect, createUniqueId, flush, onCleanup, onSettled, omit, useContext, type Accessor} from "solid-js";
-import type { JSX} from "@solidjs/web";
+import { Portal, type JSX} from "@solidjs/web";
 import { twMerge } from "../../lib/twMerge";
 import {
   createOverlayPosition,
@@ -226,25 +226,8 @@ const DropdownRoot: Layout<typeof componentRecipe, DropdownRootProps> = () => {
       if (menuRef()?.contains(target)) return;
       if (triggerRef()?.contains(target)) return;
       setOpen(false);
-      /*
-       * A write from here does not land on its own.
-       *
-       * This callback is invoked straight from the renderer's event dispatch
-       * rather than through the framework's delegation, so it runs outside any
-       * reactive owner. Under Solid 2 a setter called there is dropped
-       * silently: no error, nothing in the console, and `open()` still reads
-       * true on the next line.
-       *
-       * The effect is an overlay that decides to close and then does not. The
-       * trigger's own `onClick` goes through delegation and toggles correctly,
-       * which is what makes this look like an overlay bug rather than a
-       * scheduling one - and why opening a second dropdown left the first open,
-       * two panels painting at once.
-       *
-       * `flush` runs the pending updates now. Verified against this version:
-       * `set` then `flush` reads back the new value, while `runWithOwner` with
-       * a captured owner does not.
-       */
+      // This native document listener runs outside delegated event handling;
+      // flush so a second dropdown observes the first one as already closed.
       flush();
     };
 
@@ -490,31 +473,26 @@ const DropdownMenu: Layout<typeof componentRecipe, DropdownMenuProps> = () => {
 
   return (
     <Show when={ctx.open()}>
-      {/*
-        Keep the fixed overlay owned by the Dropdown subtree. Reparenting it
-        through Portal makes Blitz allocate a transient semantic subtree: an
-        option can paint for one frame and disappear before the next sibling
-        Dropdown opens. Fixed positioning already uses viewport coordinates,
-        so a body-level parent is unnecessary here.
-      */}
-      <div
-        {...others}
-        ref={ctx.setMenuRef}
-        id={ctx.menuId}
-        {...{ class: twMerge(CLASSES.slot.popover, props.class) }}
-        role={props.role ?? "menu"}
-        data-slot="dropdown-popover"
-        data-open={ctx.open() ? "true" : "false"}
-        data-align={props.align ?? "start"}
-        data-placement={overlayPosition.placement()}
-        aria-hidden={ctx.open() ? "false" : "true"}
-        style={menuStyle()}
-        onKeyDown={handleKeyDown}
-      >
-        <div {...{ class: CLASSES.slot.menu }} data-slot="dropdown-menu">
-          {props.children}
+      <Portal>
+        <div
+          {...others}
+          ref={ctx.setMenuRef}
+          id={ctx.menuId}
+          {...{ class: twMerge(CLASSES.slot.popover, props.class) }}
+          role={props.role ?? "menu"}
+          data-slot="dropdown-popover"
+          data-open={ctx.open() ? "true" : "false"}
+          data-align={props.align ?? "start"}
+          data-placement={overlayPosition.placement()}
+          aria-hidden={ctx.open() ? "false" : "true"}
+          style={menuStyle()}
+          onKeyDown={handleKeyDown}
+        >
+          <div {...{ class: CLASSES.slot.menu }} data-slot="dropdown-menu">
+            {props.children}
+          </div>
         </div>
-      </div>
+      </Portal>
     </Show>
   );
 };
