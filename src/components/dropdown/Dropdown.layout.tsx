@@ -1,5 +1,5 @@
 import "./Dropdown.css";
-import {Show, createContext, createSignal, createTrackedEffect, createUniqueId, onCleanup, onSettled, omit, useContext, type Accessor} from "solid-js";
+import {Show, createContext, createSignal, createTrackedEffect, createUniqueId, flush, onCleanup, onSettled, omit, useContext, type Accessor} from "solid-js";
 import type { JSX} from "@solidjs/web";
 import { twMerge } from "../../lib/twMerge";
 import {
@@ -226,6 +226,26 @@ const DropdownRoot: Layout<typeof componentRecipe, DropdownRootProps> = () => {
       if (menuRef()?.contains(target)) return;
       if (triggerRef()?.contains(target)) return;
       setOpen(false);
+      /*
+       * A write from here does not land on its own.
+       *
+       * This callback is invoked straight from the renderer's event dispatch
+       * rather than through the framework's delegation, so it runs outside any
+       * reactive owner. Under Solid 2 a setter called there is dropped
+       * silently: no error, nothing in the console, and `open()` still reads
+       * true on the next line.
+       *
+       * The effect is an overlay that decides to close and then does not. The
+       * trigger's own `onClick` goes through delegation and toggles correctly,
+       * which is what makes this look like an overlay bug rather than a
+       * scheduling one - and why opening a second dropdown left the first open,
+       * two panels painting at once.
+       *
+       * `flush` runs the pending updates now. Verified against this version:
+       * `set` then `flush` reads back the new value, while `runWithOwner` with
+       * a captured owner does not.
+       */
+      flush();
     };
 
     document.addEventListener("pointerdown", handlePointerDown);
