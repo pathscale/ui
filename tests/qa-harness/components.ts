@@ -29,7 +29,10 @@
  *   field  - accepts native text input and exposes the changed value.
  *   slider - changes its exposed value through its keyboard contract.
  *   inline-edit - opens, commits a controlled value, and abandons a draft.
- *   action - does something once and shows it happened.
+ *   action - does something once and exposes the callback result.
+ *   overlay - opens real portalled content and closes it with Escape.
+ *   tabs - changes the selected tab and the rendered panel together.
+ *   adjustment - changes a controlled semantic choice.
  *   display- only ever paints.
  */
 
@@ -52,6 +55,9 @@ export type ComponentKind =
   | "field"
   | "slider"
   | "inline-edit"
+  | "overlay"
+  | "tabs"
+  | "adjustment"
   | "display";
 
 export type ComponentSpec = {
@@ -70,9 +76,9 @@ export type ComponentSpec = {
   subject?: string;
   /** Role of that subject, so a check cannot assert on the wrong node. */
   subjectRole?: string;
-  /** For `value`/`mode`: the option or item to activate, as `role:name`. */
+  /** For `value`/`mode`/`tabs`: the option, item or tab to activate. */
   activate?: string;
-  /** For `mode`: the node that proves the mode opened, as `role:name`. */
+  /** Node that proves an overlay/editor opened or a tab panel changed. */
   opens?: string;
   /** Mount props. Kept literal so the fixture is readable in one glance. */
   props?: Record<string, unknown>;
@@ -129,24 +135,10 @@ export const COMPONENTS: ComponentSpec[] = [
     id: "collapsible",
     component: "Collapsible",
     /*
-     * `display`, not `mode`.
-     *
-     * As a `mode` this generated three checks that all named the trigger as the
-     * thing that opens, changes and vanishes, which is the one node that does
-     * none of those: a disclosure trigger keeps its label and stays on screen
-     * whether the content is shown or hidden. `-changes` asserted the trigger's
-     * name changes (it reads "Collapsible" either way) and `-escape-closes`
-     * asserted the trigger vanishes (it was still there at 71x24, correctly).
-     *
-     * The content is what appears and disappears, but measured, it carries no
-     * accessible name at all: the tree holds `button:Collapsible` and the
-     * content only as an unnamed box. So the trigger is what a check can
-     * address, and what it can honestly assert is that it painted. The fixture
-     * measures 1184x48 with the content open, against 24 for the trigger alone,
-     * which is the evidence the content rendered.
-     *
-     * Asserting the disclosure behaviour needs a fixture that starts closed and
-     * content that names itself.
+     * A disclosure trigger stays named and visible in both states, so menu-like
+     * NameChanges/Vanishes outcomes are wrong. The fixture starts closed and
+     * names its content as the callback result; activating the trigger must
+     * make that result paint.
      */
     kind: "action",
     subject: "Collapsible",
@@ -176,7 +168,9 @@ export const COMPONENTS: ComponentSpec[] = [
   {
     id: "complex-color-wheel",
     component: "ComplexColorWheel",
-    kind: "display",
+    kind: "adjustment",
+    subject: "Strength 20",
+    subjectRole: "button",
   },
   {
     id: "composer",
@@ -200,7 +194,10 @@ export const COMPONENTS: ComponentSpec[] = [
   {
     id: "dialog",
     component: "Dialog",
-    kind: "display",
+    kind: "overlay",
+    subject: "Open dialog",
+    subjectRole: "button",
+    opens: "heading:Dialog outcome",
   },
   { id: "dock", component: "Dock", kind: "display" },
   {
@@ -319,12 +316,10 @@ export const COMPONENTS: ComponentSpec[] = [
   {
     id: "pagination",
     component: "Pagination",
-    // Measured: `navigation:pagination`, and buttons that do name themselves,
-    // "Go to page 1", "Go to next page", "Go to previous page". The previous
-    // and next controls are disabled on a single-page fixture, so the page
-    // button is the one a check can press.
+    // Measured: `navigation:pagination`, with named previous/next controls. The
+    // fixture has two controlled pages, so Next must call onChange.
     kind: "action",
-    subject: "Go to page 1",
+    subject: "Go to next page",
     subjectRole: "button",
   },
   {
@@ -335,11 +330,18 @@ export const COMPONENTS: ComponentSpec[] = [
     kind: "display",
     subjectRole: "textbox",
   },
-  { id: "password-requirements", component: "PasswordRequirements", kind: "display" },
+  {
+    id: "password-requirements",
+    component: "PasswordRequirements",
+    kind: "display",
+  },
   {
     id: "popover",
     component: "Popover",
-    kind: "display",
+    kind: "overlay",
+    subject: "Open popover",
+    subjectRole: "button",
+    opens: "heading:Popover outcome",
   },
   { id: "progress", component: "Progress", kind: "display" },
   {
@@ -393,7 +395,11 @@ export const COMPONENTS: ComponentSpec[] = [
   {
     id: "tabs",
     component: "Tabs",
-    kind: "display",
+    kind: "tabs",
+    subject: "First",
+    subjectRole: "tab",
+    activate: "tab:Second",
+    opens: "heading:Second panel",
   },
   { id: "text", component: "Text", kind: "display" },
   {
@@ -419,3 +425,49 @@ export const COMPONENTS: ComponentSpec[] = [
     kind: "display",
   },
 ];
+
+/** Refuse an inventory whose generated pages could overwrite or under-specify one another. */
+export function validateComponentSpecs(): void {
+  const ids = new Set<string>();
+  const components = new Set<string>();
+
+  for (const spec of COMPONENTS) {
+    if (ids.has(spec.id)) {
+      throw new Error(`duplicate component QA id: ${spec.id}`);
+    }
+    if (components.has(spec.component)) {
+      throw new Error(`duplicate component QA export: ${spec.component}`);
+    }
+    ids.add(spec.id);
+    components.add(spec.component);
+
+    if (spec.kind === "toggle") {
+      if (!spec.subjectRole) {
+        throw new Error(`${spec.component}: toggle QA requires subjectRole`);
+      }
+      continue;
+    }
+
+    if (spec.kind !== "display" && (!spec.subject || !spec.subjectRole)) {
+      throw new Error(
+        `${spec.component}: ${spec.kind} QA requires subject and subjectRole`,
+      );
+    }
+
+    if (
+      (spec.kind === "value" || spec.kind === "mode" || spec.kind === "tabs") &&
+      (!spec.activate || !spec.opens)
+    ) {
+      throw new Error(
+        `${spec.component}: ${spec.kind} QA requires activate and opens`,
+      );
+    }
+
+    if (
+      (spec.kind === "overlay" || spec.kind === "inline-edit") &&
+      !spec.opens
+    ) {
+      throw new Error(`${spec.component}: ${spec.kind} QA requires opens`);
+    }
+  }
+}

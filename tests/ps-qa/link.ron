@@ -34,4 +34,14 @@
         subject: "link:Link",
         expect: PaintsNamed,
     ),
+    (
+        id: "link-acts",
+        group: "link",
+        what: "activating Link exposes the callback result",
+        open: None,
+        hover: None,
+        click: Some("link:Link"),
+        subject: "heading:Action result: Link complete",
+        expect: PaintsNamed,
+    ),
 ]

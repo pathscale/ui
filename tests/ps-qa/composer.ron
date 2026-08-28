@@ -34,4 +34,14 @@
         subject: "button:Send",
         expect: PaintsNamed,
     ),
+    (
+        id: "composer-acts",
+        group: "composer",
+        what: "activating Composer exposes the callback result",
+        open: None,
+        hover: None,
+        click: Some("button:Send"),
+        subject: "heading:Action result: Composer complete",
+        expect: PaintsNamed,
+    ),
 ]

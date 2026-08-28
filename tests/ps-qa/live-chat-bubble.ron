@@ -34,4 +34,14 @@
         subject: "button:Open chat",
         expect: PaintsNamed,
     ),
+    (
+        id: "live-chat-bubble-acts",
+        group: "live-chat-bubble",
+        what: "activating LiveChatBubble exposes the callback result",
+        open: None,
+        hover: None,
+        click: Some("button:Open chat"),
+        subject: "heading:Action result: LiveChatBubble complete",
+        expect: PaintsNamed,
+    ),
 ]

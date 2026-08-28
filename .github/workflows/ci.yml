@@ -87,7 +87,8 @@ jobs:
           QA_HOST: ${{ github.workspace }}/.qa/qa-inspect-host/target/release/qa-inspect-host
         run: |
           bun run qa:checks
-          git diff --exit-code -- tests/ps-qa
+          bun run qa:entries
+          git diff --exit-code -- tests/ps-qa tests/qa-harness/entries
           bun run qa:build
           bash tests/qa-harness/run-all.sh
 

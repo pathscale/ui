@@ -9,8 +9,12 @@
  *
  * Run: bun run qa:checks
  */
-import { COMPONENTS, type ComponentSpec } from "./components";
-import { mkdirSync, writeFileSync } from "node:fs";
+import {
+  COMPONENTS,
+  type ComponentSpec,
+  validateComponentSpecs,
+} from "./components";
+import { mkdirSync, readdirSync, unlinkSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
 
 /*
@@ -29,7 +33,7 @@ function check(fields: Record<string, string>): string {
 }
 
 function checksFor(spec: ComponentSpec): string {
-    /*
+  /*
    * No surface to open: the harness serves one component per page, and the
    * page for this component is already the one under test. `open` names a
    * surface to navigate to, which only means something in an application with
@@ -196,10 +200,87 @@ function checksFor(spec: ComponentSpec): string {
         prepare: `Some("${spec.subject}")`,
         prepare_unless: `Some("${spec.opens}")`,
         settle_after_ms: "600",
-        prepare_key: `Some("Escape")`,
         click: "None",
+        key: `Some("Escape")`,
+        key_on: `Some("${spec.opens}")`,
         subject: `"${spec.opens}"`,
         expect: "Vanishes",
+      }),
+    );
+  }
+
+  if (spec.kind === "overlay") {
+    records.push(
+      check({
+        id: `"${spec.id}-opens"`,
+        group: `"${spec.id}"`,
+        what: `"activating ${spec.component} paints its portalled content"`,
+        open: surface,
+        hover: "None",
+        click: `Some("${spec.subjectRole}:${spec.subject}")`,
+        subject: `"${spec.opens}"`,
+        expect: "PaintsNamed",
+      }),
+    );
+    records.push(
+      check({
+        id: `"${spec.id}-escape-closes"`,
+        group: `"${spec.id}"`,
+        what: `"Escape closes ${spec.component} after it really opened"`,
+        open: surface,
+        hover: "None",
+        prepare: `Some("${spec.subjectRole}:${spec.subject}")`,
+        prepare_unless: `Some("${spec.opens}")`,
+        settle_after_ms: "600",
+        click: "None",
+        key: `Some("Escape")`,
+        key_on: `Some("${spec.subjectRole}:${spec.subject}")`,
+        subject: `"${spec.opens}"`,
+        expect: "Vanishes",
+      }),
+    );
+  }
+
+  if (spec.kind === "tabs") {
+    records.push(
+      check({
+        id: `"${spec.id}-changes"`,
+        group: `"${spec.id}"`,
+        what: `"activating another ${spec.component} tab changes selection"`,
+        open: surface,
+        hover: "None",
+        click: `Some("${spec.activate}")`,
+        subject: `"${spec.activate}"`,
+        expect: "SelectionChanges",
+      }),
+    );
+    records.push(
+      check({
+        id: `"${spec.id}-changes-panel"`,
+        group: `"${spec.id}"`,
+        what: `"the selected ${spec.component} tab exposes its corresponding panel"`,
+        open: surface,
+        hover: "None",
+        prepare: `Some("${spec.activate}")`,
+        prepare_unless: `Some("${spec.opens}")`,
+        click: "None",
+        subject: `"${spec.opens}"`,
+        expect: "Paints",
+      }),
+    );
+  }
+
+  if (spec.kind === "adjustment") {
+    records.push(
+      check({
+        id: `"${spec.id}-changes"`,
+        group: `"${spec.id}"`,
+        what: `"activating a ${spec.component} adjustment changes its controlled selection"`,
+        open: surface,
+        hover: "None",
+        click: `Some("${spec.subjectRole}:${spec.subject}")`,
+        subject,
+        expect: "SelectionChanges",
       }),
     );
   }
@@ -333,6 +414,18 @@ function checksFor(spec: ComponentSpec): string {
         expect: "PaintsNamed",
       }),
     );
+    records.push(
+      check({
+        id: `"${spec.id}-acts"`,
+        group: `"${spec.id}"`,
+        what: `"activating ${spec.component} exposes the callback result"`,
+        open: surface,
+        hover: "None",
+        click: `Some("${spec.subjectRole}:${spec.subject}")`,
+        subject: `"heading:Action result: ${spec.component} complete"`,
+        expect: "PaintsNamed",
+      }),
+    );
   }
 
   if (spec.kind === "display") {
@@ -435,6 +528,16 @@ function assertNoUnresolvedSubject(id: string, body: string): void {
         `components.ts. Fix the spec or the branch that emits this check; ` +
         `do not hand-edit the generated file.`,
     );
+  }
+}
+
+validateComponentSpecs();
+
+const expectedFiles = new Set(COMPONENTS.map((spec) => `${spec.id}.ron`));
+for (const file of readdirSync(outputDir)) {
+  if (file.endsWith(".ron") && !expectedFiles.has(file)) {
+    unlinkSync(join(outputDir, file));
+    console.log(`removed stale ${join(outputDir, file)}`);
   }
 }
 

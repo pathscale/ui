@@ -34,4 +34,14 @@
         subject: "button:Collapsible",
         expect: PaintsNamed,
     ),
+    (
+        id: "collapsible-acts",
+        group: "collapsible",
+        what: "activating Collapsible exposes the callback result",
+        open: None,
+        hover: None,
+        click: Some("button:Collapsible"),
+        subject: "heading:Action result: Collapsible complete",
+        expect: PaintsNamed,
+    ),
 ]
