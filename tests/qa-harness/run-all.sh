@@ -106,7 +106,11 @@ fi
 # `--checks` is still passed, but at the standard location rather than a
 # project-specific one: ps-qa resolves its default `tests/ps-qa` against the
 # working directory, and this script runs from wherever it was invoked.
-exec "$PS_QA" --app "$HERE/ps-qa.ron" sweep-components \
+# Keep local runs on ps-qa's strict scale of 1. An overloaded CI runner may
+# opt into a visible multiplier without changing any rendered-state verdict.
+readonly TIMEOUT_SCALE="${QA_TIMEOUT_SCALE:-1}"
+
+exec "$PS_QA" --app "$HERE/ps-qa.ron" --timeout-scale "$TIMEOUT_SCALE" sweep-components \
   --host "$HOST" \
   --dists "$HERE/dist" \
   --checks "$ROOT/tests/ps-qa" \

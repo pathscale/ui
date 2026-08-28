@@ -37,7 +37,7 @@ jobs:
           repository: pathscale/ps-qa
           # Pin the reviewed sweep schema. The source branch may be deleted
           # when its PR merges, but this release gate must remain reproducible.
-          ref: 6f4a7e79547234f7626e22f536f3a2aa0073b932
+          ref: 08007a073164cf3f54214aee2471f2c6c3f939b1
           path: .qa/ps-qa
 
       - name: Checkout qa-inspect-host
@@ -85,6 +85,10 @@ jobs:
         env:
           QA_PS_QA: ${{ github.workspace }}/.qa/ps-qa/target/release/ps-qa
           QA_HOST: ${{ github.workspace }}/.qa/qa-inspect-host/target/release/qa-inspect-host
+          # GitHub's shared macOS runner took 1.6-1.9s for outcomes that pass
+          # locally under 1.25s. This widens scheduling deadlines only; every
+          # declared rendered-state transition is still required.
+          QA_TIMEOUT_SCALE: 2
         run: |
           bun run qa:checks
           bun run qa:entries
