@@ -37,7 +37,7 @@ jobs:
           repository: pathscale/ps-qa
           # Pin the reviewed sweep schema. The source branch may be deleted
           # when its PR merges, but this release gate must remain reproducible.
-          ref: 9a89892d39bb0b2e4ec43bdbbeab610346f0700e
+          ref: 6f4a7e79547234f7626e22f536f3a2aa0073b932
           path: .qa/ps-qa
 
       - name: Checkout qa-inspect-host
