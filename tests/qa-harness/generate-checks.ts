@@ -9,13 +9,14 @@
  *
  * Run: bun run qa:checks
  */
+
+import { mkdirSync, readdirSync, unlinkSync, writeFileSync } from "node:fs";
+import { join } from "node:path";
 import {
   COMPONENTS,
   type ComponentSpec,
   validateComponentSpecs,
 } from "./components";
-import { mkdirSync, readdirSync, unlinkSync, writeFileSync } from "node:fs";
-import { join } from "node:path";
 
 /*
  * `tests/ps-qa/` is where ps-qa looks when nobody passes `--checks`, and it is
@@ -256,6 +257,21 @@ function checksFor(spec: ComponentSpec): string {
   }
 
   if (spec.kind === "value" || spec.kind === "mode") {
+    if (spec.closedContent) {
+      records.push(
+        check({
+          id: `"${spec.id}-closed-content-is-absent"`,
+          group: `"${spec.id}"`,
+          what: `"the closed ${spec.component} does not retain its menu content in the renderer"`,
+          open: surface,
+          hover: "None",
+          click: "None",
+          subject: `"${spec.closedContent}"`,
+          expect: "Absent",
+        }),
+      );
+    }
+
     // 1. It opens. Addressed by `role:name` on a node that only exists once the
     //    mode is open: a name-only check is satisfied by the trigger, which
     //    paints whether or not anything happened.

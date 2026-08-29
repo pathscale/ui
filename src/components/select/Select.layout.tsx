@@ -1,5 +1,5 @@
 import "./Select.css";
-import {createContext, createMemo, createSignal, createTrackedEffect, createUniqueId, onCleanup, onSettled, omit, useContext, type Accessor, type Component} from "solid-js";
+import {createContext, createMemo, createSignal, createTrackedEffect, createUniqueId, onCleanup, onSettled, omit, Show, useContext, type Accessor, type Component} from "solid-js";
 import type { JSX} from "@solidjs/web";
 import { twMerge } from "../../lib/twMerge";
 import {
@@ -49,6 +49,8 @@ type SelectContextValue = {
   focusNext: (direction: 1 | -1) => void;
   requestFocus: (target: SelectFocusRequest) => void;
   selectKey: (key: string) => void;
+  registerOptionText: (key: string, textValue: string) => void;
+  unregisterOptionText: (key: string) => void;
   registerOption: (option: SelectOptionRecord) => void;
   unregisterOption: (key: string) => void;
   setTriggerRef: (el: HTMLButtonElement) => void;
@@ -296,13 +298,26 @@ const SelectRoot: Layout<typeof componentRecipe, SelectRootProps> = () => {
     setOpen(false, { focusTrigger: true });
   };
 
-  const registerOption = (option: SelectOptionRecord) => {
+  const registerOptionText = (key: string, textValue: string) => {
     setOptionTextByKey((current) => {
-      if (current.get(option.key) === option.textValue) return current;
+      if (current.get(key) === textValue) return current;
       const next = new Map(current);
-      next.set(option.key, option.textValue);
+      next.set(key, textValue);
       return next;
     });
+  };
+
+  const unregisterOptionText = (key: string) => {
+    setOptionTextByKey((current) => {
+      if (!current.has(key)) return current;
+      const next = new Map(current);
+      next.delete(key);
+      return next;
+    });
+  };
+
+  const registerOption = (option: SelectOptionRecord) => {
+    registerOptionText(option.key, option.textValue);
     setOptions((current) =>
       sortOptionsByDomOrder([
         ...current.filter((entry) => entry.key !== option.key),
@@ -398,6 +413,8 @@ const SelectRoot: Layout<typeof componentRecipe, SelectRootProps> = () => {
         focusNext,
         requestFocus: setFocusRequest,
         selectKey,
+        registerOptionText,
+        unregisterOptionText,
         registerOption,
         unregisterOption,
         setTriggerRef,
@@ -770,6 +787,7 @@ const SelectOption: Layout<typeof componentRecipe, SelectOptionProps> = () => {
   }
 
   const key = () => String(props.value);
+  const textValue = () => props.textValue ?? (typeof props.children === "string" ? props.children : key());
   const isDisabled = () => Boolean((props.state === "disabled")) || Boolean(props.disabled) || ctx.disabled();
   const isSelected = () => ctx.isSelected(key());
   const isFocused = () => ctx.focusedKey() === key();
@@ -779,9 +797,7 @@ const SelectOption: Layout<typeof componentRecipe, SelectOptionProps> = () => {
     optionRef = el;
     ctx.registerOption({
       key: key(),
-      textValue:
-        props.textValue ??
-        (typeof props.children === "string" ? props.children : key()),
+      textValue: textValue(),
       disabled: isDisabled(),
       ref: el,
     });
@@ -791,12 +807,14 @@ const SelectOption: Layout<typeof componentRecipe, SelectOptionProps> = () => {
   };
 
   createTrackedEffect(() => {
+    ctx.registerOptionText(key(), textValue());
+  });
+
+  createTrackedEffect(() => {
     if (!optionRef) return;
     ctx.registerOption({
       key: key(),
-      textValue:
-        props.textValue ??
-        (typeof props.children === "string" ? props.children : key()),
+      textValue: textValue(),
       disabled: isDisabled(),
       ref: optionRef,
     });
@@ -804,6 +822,7 @@ const SelectOption: Layout<typeof componentRecipe, SelectOptionProps> = () => {
 
   onCleanup(() => {
     ctx.unregisterOption(key());
+    ctx.unregisterOptionText(key());
   });
 
   const handleClick: JSX.EventHandlerUnion<HTMLButtonElement, MouseEvent> = (event) => {
@@ -866,7 +885,13 @@ const SelectOption: Layout<typeof componentRecipe, SelectOptionProps> = () => {
     }
   };
 
-  return (
+  const MountedOption: Component = () => {
+    onCleanup(() => {
+      optionRef = undefined;
+      ctx.unregisterOption(key());
+    });
+
+    return (
     <button
       {...others}
       ref={setRef}
@@ -903,7 +928,10 @@ const SelectOption: Layout<typeof componentRecipe, SelectOptionProps> = () => {
         </span>
       ) : null}
     </button>
-  );
+    );
+  };
+
+  return <Show when={ctx.open()}><MountedOption /></Show>;
 };
 
 export type SelectProps = SelectRootProps;
