@@ -1,5 +1,5 @@
 import "./Select.css";
-import {createContext, createMemo, createSignal, createTrackedEffect, createUniqueId, onCleanup, onSettled, omit, Show, useContext, type Accessor, type Component} from "solid-js";
+import {createContext, createMemo, createSignal, createTrackedEffect, createUniqueId, onCleanup, onSettled, omit, Show, untrack, useContext, type Accessor, type Component} from "solid-js";
 import type { JSX} from "@solidjs/web";
 import { twMerge } from "../../lib/twMerge";
 import {
@@ -177,7 +177,8 @@ const SelectRoot: Layout<typeof componentRecipe, SelectRootProps> = () => {
   const [internalSelectedKeys, setInternalSelectedKeys] = createSignal<string[]>(initialSelected);
   const [internalOpen, setInternalOpen] = createSignal(Boolean(props.defaultOpen));
   const [options, setOptions] = createSignal<SelectOptionRecord[]>([]);
-  const [optionTextByKey, setOptionTextByKey] = createSignal(new Map<string, string>());
+  const optionTextByKey = new Map<string, string>();
+  const [optionTextRevision, setOptionTextRevision] = createSignal(0);
   const [focusedKey, setFocusedKey] = createSignal<string | undefined>();
   const [focusRequest, setFocusRequest] = createSignal<SelectFocusRequest>(null);
   const [triggerRef, setTriggerRefSignal] = createSignal<HTMLButtonElement | undefined>();
@@ -200,10 +201,11 @@ const SelectRoot: Layout<typeof componentRecipe, SelectRootProps> = () => {
   const selectedSet = createMemo(() => new Set(selectedKeys()));
 
   const selectedText = createMemo(() => {
+    optionTextRevision();
     if (!selectedKeys().length) return "";
 
     return selectedKeys()
-      .map((key) => optionTextByKey().get(key) ?? key)
+      .map((key) => optionTextByKey.get(key) ?? key)
       .join(selectionMode() === "multiple" ? ", " : "");
   });
 
@@ -299,21 +301,18 @@ const SelectRoot: Layout<typeof componentRecipe, SelectRootProps> = () => {
   };
 
   const registerOptionText = (key: string, textValue: string) => {
-    setOptionTextByKey((current) => {
-      if (current.get(key) === textValue) return current;
-      const next = new Map(current);
-      next.set(key, textValue);
-      return next;
-    });
+    if (optionTextByKey.get(key) === textValue) return;
+    optionTextByKey.set(key, textValue);
+    if (untrack(selectedKeys).includes(key)) {
+      setOptionTextRevision((revision) => revision + 1);
+    }
   };
 
   const unregisterOptionText = (key: string) => {
-    setOptionTextByKey((current) => {
-      if (!current.has(key)) return current;
-      const next = new Map(current);
-      next.delete(key);
-      return next;
-    });
+    if (!optionTextByKey.delete(key)) return;
+    if (untrack(selectedKeys).includes(key)) {
+      setOptionTextRevision((revision) => revision + 1);
+    }
   };
 
   const registerOption = (option: SelectOptionRecord) => {
@@ -806,8 +805,9 @@ const SelectOption: Layout<typeof componentRecipe, SelectOptionProps> = () => {
     }
   };
 
-  createTrackedEffect(() => {
+  onSettled(() => {
     ctx.registerOptionText(key(), textValue());
+    return () => ctx.unregisterOptionText(key());
   });
 
   createTrackedEffect(() => {
@@ -822,7 +822,6 @@ const SelectOption: Layout<typeof componentRecipe, SelectOptionProps> = () => {
 
   onCleanup(() => {
     ctx.unregisterOption(key());
-    ctx.unregisterOptionText(key());
   });
 
   const handleClick: JSX.EventHandlerUnion<HTMLButtonElement, MouseEvent> = (event) => {
