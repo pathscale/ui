@@ -90,6 +90,8 @@ export type ComponentSpec = {
     container: string;
     /** Pointer target that must not repair a different neutral frame. */
     settlesAfterHover?: string;
+    /** Desktop relationship that must not collapse into the narrow stack. */
+    rightOf?: { subject: string; compare: string };
   };
 };
 
@@ -182,6 +184,10 @@ export const COMPONENTS: ComponentSpec[] = [
       family: "radio:Theme color ",
       container: "@color-wheel-flower",
       settlesAfterHover: "radio:Theme color ",
+      rightOf: {
+        subject: "button:Strength 20",
+        compare: "@color-wheel-flower",
+      },
     },
   },
   {

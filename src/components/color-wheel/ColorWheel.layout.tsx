@@ -70,6 +70,7 @@ export const ColorWheelLayout: Layout<
     >
       <ColorPickerContext value={context()}>
         <ColorWheelFlower
+          id={local.id ? `${local.id}-flower` : undefined}
           class={local.wheelClass}
           mode={local.mode}
           palette={local.palette}

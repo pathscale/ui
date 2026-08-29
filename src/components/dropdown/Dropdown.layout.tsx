@@ -91,9 +91,14 @@ const DropdownRoot: Layout<typeof componentRecipe, DropdownRootProps> = () => {
     "ref",
   );
 
-  const baseId = createUniqueId();
-  const triggerId = `${baseId}-trigger`;
-  const menuId = `${baseId}-menu`;
+  // The authored root id is the component's stable identity. `createUniqueId`
+  // is only an ARIA fallback for callers that have not adopted that contract;
+  // it must never overwrite a supplied id with creation-order state.
+  const generatedBaseId = createUniqueId();
+  const authoredBaseId = typeof props.id === "string" ? props.id.trim() : "";
+  const baseId = authoredBaseId || generatedBaseId;
+  const triggerId = `${baseId}--trigger`;
+  const menuId = `${baseId}--menu`;
 
   const [internalOpen, setInternalOpen] = createSignal(Boolean(props.defaultOpen));
   const [items, setItems] = createSignal<DropdownItemRecord[]>([]);

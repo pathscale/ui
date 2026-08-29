@@ -54,118 +54,127 @@ export const ComplexColorWheelLayout: Layout<
   ComplexColorWheelProps
 > = () => (
   <Card
-    {...slot.root}
     material={local.material ?? "glass"}
+    padding="none"
   >
-    <ColorWheel
-      value={local.value}
-      onChange={local.onChange}
-      mode={local.mode}
-      palette={local.palette}
-      isDisabled={local.isDisabled}
-      class={local.class}
-      wheelClass={local.wheelClass}
-      aria-label={local["aria-label"]}
-    />
+    <div {...slot.root}>
+      <ColorWheel
+        id={local.id}
+        value={local.value}
+        onChange={local.onChange}
+        mode={local.mode}
+        palette={local.palette}
+        isDisabled={local.isDisabled}
+        class={local.class}
+        wheelClass={local.wheelClass}
+        aria-label={local["aria-label"]}
+      />
 
-    <div
-      {...slot.adjustments}
-      class={twMerge(slot.adjustments.class, local.adjustmentsClass)}
-    >
-      <Show when={local.action}>
-        <div {...slot.action}>{local.action}</div>
-      </Show>
+      <div
+        {...slot.adjustments}
+        class={twMerge(slot.adjustments.class, local.adjustmentsClass)}
+      >
+        <Show when={local.action}>
+          <div {...slot.action}>{local.action}</div>
+        </Show>
 
-      <For each={local.adjustments} keyed={false}>
-        {(adjustment) => (
-          <div
-            {...slot.axis}
-            data-axis={adjustment().id}
-          >
-            <div {...slot.axisHeading}>
-              <span>{adjustment().label}</span>
-              <span>
-                {adjustment().formatValue?.(adjustment().value) ?? adjustment().value}
-              </span>
-            </div>
-            <div {...slot.axisControl}>
-              <Show
-                when={adjustment().stops?.length ? adjustment().stops : undefined}
-                fallback={
-                  <>
-                    <Show when={adjustment().preview}>
-                      <span
-                        {...slot.preview}
-                        aria-hidden="true"
-                        style={{
-                          "background-color": adjustment().preview?.(
-                            adjustment().value,
-                            local.value,
-                          ),
-                        }}
+        <For each={local.adjustments} keyed={false}>
+          {(adjustment) => (
+            <div
+              {...slot.axis}
+              data-axis={adjustment().id}
+            >
+              <div {...slot.axisHeading}>
+                <span>{adjustment().label}</span>
+                <span>
+                  {adjustment().formatValue?.(adjustment().value) ?? adjustment().value}
+                </span>
+              </div>
+              <div {...slot.axisControl}>
+                <Show
+                  when={adjustment().stops?.length ? adjustment().stops : undefined}
+                  fallback={
+                    <>
+                      <Show when={adjustment().preview}>
+                        <span
+                          {...slot.preview}
+                          aria-hidden="true"
+                          style={{
+                            "background-color": adjustment().preview?.(
+                              adjustment().value,
+                              local.value,
+                            ),
+                          }}
+                        />
+                      </Show>
+                      <Slider
+                        id={local.id ? `${local.id}-${adjustment().id}` : undefined}
+                        label={adjustment().label}
+                        value={adjustment().value}
+                        min={adjustment().min ?? 0}
+                        max={adjustment().max ?? 100}
+                        step={adjustment().step}
+                        disabled={local.isDisabled}
+                        onChange={adjustment().onChange}
+                        onChangeEnd={adjustment().onChangeEnd}
+                        formatValue={adjustment().formatValue}
+                        size="sm"
                       />
-                    </Show>
-                    <Slider
-                      label={adjustment().label}
-                      value={adjustment().value}
-                      min={adjustment().min ?? 0}
-                      max={adjustment().max ?? 100}
-                      step={adjustment().step}
-                      disabled={local.isDisabled}
-                      onChange={adjustment().onChange}
-                      onChangeEnd={adjustment().onChangeEnd}
-                      formatValue={adjustment().formatValue}
-                      size="sm"
-                    />
-                  </>
-                }
-              >
-                {(stops) => (
-                  <div {...slot.stops}>
-                    <For each={stops()}>
-                      {(stop) => (
-                        <Button
-                          {...slot.stop}
-                          type="button"
-                          size="sm"
-                          variant="ghost"
-                          aria-label={`${adjustment().label} ${
-                            adjustment().formatValue?.(stop) ?? stop
-                          }`}
-                          aria-pressed={
-                            Math.abs(adjustment().value - stop) < 0.001
-                              ? "true"
-                              : "false"
-                          }
-                          disabled={local.isDisabled}
-                          onClick={() => adjustment().onChange(stop)}
-                        >
-                          <span
-                            {...slot.stopPreview}
-                            aria-hidden="true"
-                            style={{
-                              "background-color": adjustment().preview?.(
-                                stop,
-                                local.value,
-                              ),
-                              color: adjustment().ink?.(stop, local.value),
-                            }}
+                    </>
+                  }
+                >
+                  {(stops) => (
+                    <div {...slot.stops}>
+                      <For each={stops()}>
+                        {(stop, stopIndex) => (
+                          <Button
+                            {...slot.stop}
+                            id={
+                              local.id
+                                ? `${local.id}-${adjustment().id}-${stopIndex()}`
+                                : undefined
+                            }
+                            type="button"
+                            size="sm"
+                            variant="ghost"
+                            aria-label={`${adjustment().label} ${
+                              adjustment().formatValue?.(stop) ?? stop
+                            }`}
+                            aria-pressed={
+                              Math.abs(adjustment().value - stop) < 0.001
+                                ? "true"
+                                : "false"
+                            }
+                            disabled={local.isDisabled}
+                            onClick={() => adjustment().onChange(stop)}
                           >
-                            <Show when={adjustment().ink}>A</Show>
-                          </span>
-                        </Button>
-                      )}
-                    </For>
-                  </div>
-                )}
+                            <span
+                              {...slot.stopPreview}
+                              aria-hidden="true"
+                              style={{
+                                "background-color": adjustment().preview?.(
+                                  stop,
+                                  local.value,
+                                ),
+                                color: adjustment().ink?.(stop, local.value),
+                              }}
+                            >
+                              <Show when={adjustment().ink}>A</Show>
+                            </span>
+                          </Button>
+                        )}
+                      </For>
+                    </div>
+                  )}
+                </Show>
+              </div>
+              <Show when={adjustment().hint}>
+                <span {...slot.hint}>{adjustment().hint}</span>
               </Show>
             </div>
-            <Show when={adjustment().hint}>
-              <span {...slot.hint}>{adjustment().hint}</span>
-            </Show>
-          </div>
-        )}
-      </For>
+          )}
+        </For>
+      </div>
     </div>
   </Card>
 );

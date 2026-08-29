@@ -32,6 +32,8 @@ import { componentRecipe } from "./ColorWheelFlower.recipe";
 import { flowerPetalPosition } from "./ColorWheelFlower.geometry";
 
 export interface ColorWheelFlowerProps {
+  /** Stable base for the flower and each interactive petal. */
+  id?: string;
   class?: string;
   /** Explicit mode. Omit to follow the root `data-theme` attribute. */
   mode?: ColorWheelFlowerMode;
@@ -133,11 +135,6 @@ const readMotionState = (el: HTMLElement): MotionState => {
     x: Number.isFinite(values[4]) ? values[4] : 0,
     y: Number.isFinite(values[5]) ? values[5] : 0,
   };
-};
-
-const applyMotionState = (el: HTMLElement, state: MotionState) => {
-  el.style.opacity = String(state.opacity ?? 1);
-  el.style.transform = `translate3d(${state.x ?? 0}px, ${state.y ?? 0}px, 0) scale(${state.scale ?? 1})`;
 };
 
 const getLiftOffset = (item: ColorItem, distance: number) => {
@@ -465,6 +462,7 @@ const ColorWheelFlower: Layout<typeof componentRecipe, ColorWheelFlowerProps> = 
   return (
     <div
       ref={containerRef}
+      id={props.id}
       {...{
         class: twMerge(
           CLASSES.base,
@@ -489,6 +487,7 @@ const ColorWheelFlower: Layout<typeof componentRecipe, ColorWheelFlowerProps> = 
       </div>
 
       <ColorSwatchPicker
+        id={props.id ? `${props.id}-palette` : undefined}
         {...{ class: CLASSES.picker }}
         value={pickerValue()}
         onChange={handlePickerChange}
@@ -499,7 +498,6 @@ const ColorWheelFlower: Layout<typeof componentRecipe, ColorWheelFlowerProps> = 
           {(item, index) => {
             let motionRef: HTMLDivElement | undefined;
             let dotControl: { stop: () => void } | null = null;
-            let hasPaintedFinalState = false;
 
             const isHovered = () => hoveredIndex() === index();
             const isPressed = () => pressedIndex() === index();
@@ -622,17 +620,8 @@ const ColorWheelFlower: Layout<typeof componentRecipe, ColorWheelFlowerProps> = 
             };
 
             createTrackedEffect(() => {
-              // Read first so the effect is subscribed even if this renderer
-              // runs it before Solid assigns the element ref. Returning before
-              // this read left the first frame uninitialised until hover made
-              // some other state reactive.
               const target = dotTarget();
               if (!motionRef) return;
-              if (!hasPaintedFinalState) {
-                applyMotionState(motionRef, target);
-                hasPaintedFinalState = true;
-                return;
-              }
 
               const transition = dotTransition();
               dotControl?.stop();
@@ -657,11 +646,6 @@ const ColorWheelFlower: Layout<typeof componentRecipe, ColorWheelFlowerProps> = 
                   <div
                     ref={(el) => {
                       motionRef = el;
-                      // Ref assignment is the one ordering boundary every
-                      // renderer provides. Paint the neutral final state here
-                      // rather than waiting for a later pointer invalidation.
-                      applyMotionState(el, dotTarget());
-                      hasPaintedFinalState = true;
                     }}
                     {...{ class: CLASSES.dot.motion }}
                   >
@@ -677,6 +661,7 @@ const ColorWheelFlower: Layout<typeof componentRecipe, ColorWheelFlowerProps> = 
                     />
 
                     <ColorSwatch
+                      id={props.id ? `${props.id}-petal-${index()}` : undefined}
                       color={item.hex}
                       size="lg"
                       {...{

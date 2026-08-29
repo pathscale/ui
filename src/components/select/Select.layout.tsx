@@ -158,7 +158,8 @@ const SelectRoot: Layout<typeof componentRecipe, SelectRootProps> = () => {
     "ref",
   );
 
-  const baseId = createUniqueId();
+  const generatedId = createUniqueId();
+  const baseId = props.id || generatedId;
   const triggerId = `${baseId}-trigger`;
   const listboxId = `${baseId}-listbox`;
 

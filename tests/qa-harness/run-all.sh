@@ -1,4 +1,4 @@
-#!/usr/bin/env bash
+#!/usr/bin/env zsh
 #
 # Drive every component and report a verdict per component.
 #
@@ -19,8 +19,8 @@ set -uo pipefail
 # The harness directory itself, and the repository root above it. The script
 # reads its own files from HERE and the checks from the repository's
 # `tests/ps-qa`, so it needs both.
-readonly HERE="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-readonly ROOT="$(cd "$HERE/../.." && pwd)"
+readonly HERE="${0:A:h}"
+readonly ROOT="${HERE:h:h}"
 # Before either lookup below: `cargo install` puts both binaries here, and a
 # non-interactive shell does not read the profile that adds it. Resolving the
 # host first reported a freshly installed one as missing.
@@ -47,8 +47,7 @@ ids=()
 if [[ $# -gt 0 ]]; then
   ids=("$@")
 else
-  # `mapfile` is bash 4; macOS ships 3.2, where it does not exist and the
-  # script died before running anything.
+  # Read one id at a time so the array works on the stock macOS shell.
   while IFS= read -r line; do
     ids+=("$line")
   done < <(grep -oE 'id: "[a-z0-9-]+"' "$HERE/components.ts" | sed 's/id: "//;s/"//')

@@ -49,19 +49,22 @@
 
   .color-wheel-flower__dot {
     position: absolute;
-    transform: translate(-50%, -50%);
   }
 
   .color-wheel-flower__dot-frame {
     position: relative;
     width: 32px;
     height: 32px;
+    margin-top: -16px;
+    margin-left: -16px;
   }
 
   .color-wheel-flower__dot-motion {
     position: relative;
     width: 100%;
     height: 100%;
+    opacity: 1;
+    transform: translate(0, 0) scale(1);
     will-change: transform, opacity;
   }
 

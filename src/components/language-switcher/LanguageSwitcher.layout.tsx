@@ -9,6 +9,8 @@ import type { Layout } from "../../lib/layouts";
 import { componentRecipe } from "./LanguageSwitcher.recipe";
 
 export interface LanguageSwitcherProps extends UIBaseProps {
+  /** Stable identity for the native language control. */
+  id?: string;
   /**
    * The i18n store to use for language state
    */
