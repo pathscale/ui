@@ -25,6 +25,16 @@
         expect: Paints,
     ),
     (
+        id: "select-closed-content-is-absent",
+        group: "select",
+        what: "the closed Select does not retain its menu content in the renderer",
+        open: None,
+        hover: None,
+        click: None,
+        subject: "option:first fixture",
+        expect: Absent,
+    ),
+    (
         id: "select-opens",
         group: "select",
         what: "the Select menu reaches the renderer as an addressable item",

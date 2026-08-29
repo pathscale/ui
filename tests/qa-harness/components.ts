@@ -80,6 +80,8 @@ export type ComponentSpec = {
   activate?: string;
   /** Node that proves an overlay/editor opened or a tab panel changed. */
   opens?: string;
+  /** Menu content that must not remain in the renderer while closed. */
+  closedContent?: string;
   /** Mount props. Kept literal so the fixture is readable in one glance. */
   props?: Record<string, unknown>;
   /** Option labels, for components that need children. */
@@ -393,12 +395,13 @@ export const COMPONENTS: ComponentSpec[] = [
     id: "select",
     component: "Select",
     kind: "value",
-    // Measured: the trigger reads "Session: first fixture". The options exist
-    // in the tree but at 0x0 hidden until it opens.
+    // The trigger reads "Session: first fixture" before the menu first opens,
+    // while the option nodes themselves stay out of the renderer until then.
     subject: "Session:",
     subjectRole: "button",
     activate: "option:second fixture",
     opens: "option:first fixture",
+    closedContent: "option:first fixture",
     props: { placeholder: "Session" },
     options: [
       { value: "first", label: "first fixture" },
