@@ -622,9 +622,12 @@ const ColorWheelFlower: Layout<typeof componentRecipe, ColorWheelFlowerProps> = 
             };
 
             createTrackedEffect(() => {
-              if (!motionRef) return;
-
+              // Read first so the effect is subscribed even if this renderer
+              // runs it before Solid assigns the element ref. Returning before
+              // this read left the first frame uninitialised until hover made
+              // some other state reactive.
               const target = dotTarget();
+              if (!motionRef) return;
               if (!hasPaintedFinalState) {
                 applyMotionState(motionRef, target);
                 hasPaintedFinalState = true;
@@ -654,6 +657,11 @@ const ColorWheelFlower: Layout<typeof componentRecipe, ColorWheelFlowerProps> = 
                   <div
                     ref={(el) => {
                       motionRef = el;
+                      // Ref assignment is the one ordering boundary every
+                      // renderer provides. Paint the neutral final state here
+                      // rather than waiting for a later pointer invalidation.
+                      applyMotionState(el, dotTarget());
+                      hasPaintedFinalState = true;
                     }}
                     {...{ class: CLASSES.dot.motion }}
                   >
