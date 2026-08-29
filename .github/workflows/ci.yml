@@ -36,9 +36,12 @@ jobs:
       # Track the current ps-qa release so UI coverage cannot silently remain
       # on an obsolete harness. Do not inherit a tool crate's packaged lockfile.
       - name: Install native QA tools
+        env:
+          # cargo install otherwise builds in disposable temporary directories,
+          # which leaves rust-cache nothing useful to restore on the next run.
+          CARGO_TARGET_DIR: target/qa-tools
         run: |
-          cargo install ps-qa
-          cargo install qa-inspect-host
+          cargo install ps-qa qa-inspect-host
 
       - name: Install Dependencies
         run: bun install
@@ -54,7 +57,7 @@ jobs:
         run: bun run check
 
       - name: Type Check
-        run: npx tsc --noEmit
+        run: bunx tsc --noEmit
 
       - name: Build
         run: bun run build
