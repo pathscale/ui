@@ -198,7 +198,7 @@ export const COMPONENTS: ComponentSpec[] = [
       },
       centerAlignedY: {
         subject: "@color-wheel-flower",
-        compare: "@complex-color-wheel__adjustments",
+        compare: "@complex-color-wheel-adjustments",
       },
     },
     contrast: "Theme color ",

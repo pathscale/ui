@@ -64,7 +64,7 @@
         open: None,
         hover: None,
         click: None,
-        compare: Some("@complex-color-wheel__adjustments"),
+        compare: Some("@complex-color-wheel-adjustments"),
         subject: "@color-wheel-flower",
         expect: CenterAlignedY,
     ),
