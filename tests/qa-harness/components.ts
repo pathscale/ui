@@ -88,10 +88,12 @@ export type ComponentSpec = {
   geometry?: {
     family: string;
     container: string;
-    /** Pointer target that must not repair a different neutral frame. */
-    settlesAfterHover?: string;
+    /** Pointer target whose authored hover feedback must change rendered pixels. */
+    changesOnHover?: string;
     /** Desktop relationship that must not collapse into the narrow stack. */
     rightOf?: { subject: string; compare: string };
+    /** Side-by-side regions whose rendered vertical centers must align. */
+    centerAlignedY?: { subject: string; compare: string };
   };
   /** Exact authored control geometry, before app zoom or theme scaling. */
   measure?: { subject: string; size: string };
@@ -187,10 +189,14 @@ export const COMPONENTS: ComponentSpec[] = [
     geometry: {
       family: "radio:Theme color ",
       container: "@color-wheel-flower",
-      settlesAfterHover: "radio:Theme color ",
+      changesOnHover: "radio:Theme color ",
       rightOf: {
         subject: "button:Strength 20",
         compare: "@color-wheel-flower",
+      },
+      centerAlignedY: {
+        subject: "@color-wheel-flower",
+        compare: "@complex-color-wheel__adjustments",
       },
     },
     contrast: "Theme color ",

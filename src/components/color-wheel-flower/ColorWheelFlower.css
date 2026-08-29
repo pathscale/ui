@@ -49,6 +49,18 @@
 
   .color-wheel-flower__dot {
     position: absolute;
+    z-index: 1;
+  }
+
+  .color-wheel-flower__dot--pulsing {
+    z-index: 20;
+  }
+
+  .color-wheel-flower:not(.color-wheel-flower--disabled)
+    .color-wheel-flower__dot:hover,
+  .color-wheel-flower:not(.color-wheel-flower--disabled)
+    .color-wheel-flower__dot:focus-within {
+    z-index: 30;
   }
 
   .color-wheel-flower__dot-frame {
@@ -65,7 +77,27 @@
     height: 100%;
     opacity: 1;
     transform: translate(0, 0) scale(1);
-    will-change: transform, opacity;
+    transform-origin: center;
+    transition: transform 100ms ease-out;
+  }
+
+  .color-wheel-flower:not(.color-wheel-flower--disabled)
+    .color-wheel-flower__dot:hover
+    .color-wheel-flower__dot-motion,
+  .color-wheel-flower:not(.color-wheel-flower--disabled)
+    .color-wheel-flower__dot:focus-within
+    .color-wheel-flower__dot-motion {
+    transform: translate(0, 0) scale(1.1);
+  }
+
+  .color-wheel-flower:not(.color-wheel-flower--disabled)
+    .color-wheel-flower__dot:active
+    .color-wheel-flower__dot-motion {
+    transform: translate(0, 0) scale(1.04);
+  }
+
+  .color-wheel-flower__dot--pulsing .color-wheel-flower__dot-motion {
+    animation: color-wheel-flower-pulse 220ms ease-out;
   }
 
   .color-wheel-flower__halo {
@@ -76,11 +108,26 @@
     bottom: -5px;
     border-radius: var(--radius-pill, 9999px);
     pointer-events: none;
+    opacity: 0;
     background: radial-gradient(
       circle,
       rgb(255 255 255 / 25%) 0%,
       rgb(255 255 255 / 0%) 70%
     );
+    transition: opacity 100ms ease-out;
+  }
+
+  .color-wheel-flower:not(.color-wheel-flower--disabled)
+    .color-wheel-flower__dot:hover
+    .color-wheel-flower__halo,
+  .color-wheel-flower:not(.color-wheel-flower--disabled)
+    .color-wheel-flower__dot:focus-within
+    .color-wheel-flower__halo {
+    opacity: 0.6;
+  }
+
+  .color-wheel-flower__dot--pulsing .color-wheel-flower__halo {
+    opacity: 0.35;
   }
 
   .color-wheel-flower__swatch {
@@ -125,6 +172,7 @@
 
   .color-wheel-flower__highlight {
     position: absolute;
+    z-index: 11;
     inset: 0;
     border-radius: var(--radius-pill, 9999px);
     border: 2px solid rgb(255 255 255 / 100%);
@@ -136,13 +184,41 @@
       box-shadow 300ms ease-out;
   }
 
-  .color-wheel-flower__highlight--hovered {
+  .color-wheel-flower:not(.color-wheel-flower--disabled)
+    .color-wheel-flower__dot:hover
+    .color-wheel-flower__highlight,
+  .color-wheel-flower:not(.color-wheel-flower--disabled)
+    .color-wheel-flower__dot:focus-within
+    .color-wheel-flower__highlight {
     opacity: 0.75;
     box-shadow: 0 0 6px rgb(255 255 255 / 45%);
+    transition: none;
   }
 
   .color-wheel-flower__highlight--pulsing {
     opacity: 0.45;
     box-shadow: 0 0 4px rgb(255 255 255 / 35%);
+  }
+
+  @keyframes color-wheel-flower-pulse {
+    0%,
+    100% {
+      transform: translate(0, 0) scale(1);
+    }
+    55% {
+      transform: translate(0, 0) scale(1.12);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .color-wheel-flower__dot-motion,
+    .color-wheel-flower__halo,
+    .color-wheel-flower__highlight {
+      transition: none;
+    }
+
+    .color-wheel-flower__dot--pulsing .color-wheel-flower__dot-motion {
+      animation: none;
+    }
   }
 }

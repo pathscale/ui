@@ -17,15 +17,7 @@ import {
   type ColorWheelFlowerMode,
   resolveColorWheelFlowerPalette,
 } from "./ColorWheelFlower.palette";
-import {
-  motionDistances,
-  motionDurations,
-  motionEasings,
-  prefersReducedMotion,
-  runMotion,
-  type MotionState,
-  type MotionTransition,
-} from "../../motion";
+import { prefersReducedMotion } from "../../motion";
 import { CLASSES } from "./ColorWheelFlower.recipe";
 import type { Layout } from "../../lib/layouts";
 import { componentRecipe } from "./ColorWheelFlower.recipe";
@@ -101,61 +93,6 @@ const createColorItem = (
     isCenter: options?.isCenter,
   };
 };
-
-const readMotionState = (el: HTMLElement): MotionState => {
-  if (typeof getComputedStyle === "undefined") {
-    return { opacity: 1, x: 0, y: 0, scale: 1 };
-  }
-  const styles = getComputedStyle(el);
-  const opacityValue = Number.parseFloat(styles.opacity);
-  const opacity = Number.isFinite(opacityValue) ? opacityValue : 1;
-  const transform = styles.transform;
-
-  if (!transform || transform === "none") {
-    return { opacity, x: 0, y: 0, scale: 1 };
-  }
-
-  if (typeof DOMMatrixReadOnly !== "undefined") {
-    const matrix = new DOMMatrixReadOnly(transform);
-    return { opacity, x: matrix.m41, y: matrix.m42, scale: matrix.a };
-  }
-
-  const matrixMatch = transform.match(/matrix\(([^)]+)\)/);
-  if (!matrixMatch) {
-    return { opacity, x: 0, y: 0, scale: 1 };
-  }
-
-  const values = matrixMatch[1]
-    .split(",")
-    .map((value) => Number.parseFloat(value.trim()));
-
-  return {
-    opacity,
-    scale: Number.isFinite(values[0]) ? values[0] : 1,
-    x: Number.isFinite(values[4]) ? values[4] : 0,
-    y: Number.isFinite(values[5]) ? values[5] : 0,
-  };
-};
-
-const getLiftOffset = (item: ColorItem, distance: number) => {
-  const radius = Math.sqrt(item.offsetX ** 2 + item.offsetY ** 2);
-  if (!Number.isFinite(radius) || radius === 0) {
-    return { x: 0, y: 0 };
-  }
-
-  return {
-    x: (item.offsetX / radius) * distance,
-    y: (item.offsetY / radius) * distance,
-  };
-};
-
-const easeOutBack =
-  (overshoot = 1.4) =>
-  (t: number) => {
-    const c1 = overshoot;
-    const c3 = c1 + 1;
-    return 1 + c3 * (t - 1) ** 3 + c1 * (t - 1) ** 2;
-  };
 
 const toRgba = (rgb: string, alpha: number) => {
   const match = rgb.match(/^rgb\((\d+),\s*(\d+),\s*(\d+)\)$/);
@@ -234,20 +171,11 @@ function buildColors(palette: readonly string[]): ColorItem[] {
 }
 
 const CENTER_INDEX = LAYOUT.findIndex((l) => l.isCenter);
-const MAX_RADIUS = Math.max(
-  ...LAYOUT.map((l) => Math.sqrt(l.offsetX ** 2 + l.offsetY ** 2)),
-);
-const MAX_WAVE_DISTANCE = MAX_RADIUS * 2;
-const MAX_WAVE_DELAY = 0.12;
-
 const ColorWheelFlower: Layout<typeof componentRecipe, ColorWheelFlowerProps> = () => {
 
   const context = useColorPickerContext();
 
   const [selectedIndex, setSelectedIndex] = createSignal<number | null>(null);
-  const [hoveredIndex, setHoveredIndex] = createSignal<number | null>(null);
-  const [pressedIndex, setPressedIndex] = createSignal<number | null>(null);
-  const [pointer, setPointer] = createSignal({ x: 0, y: 0, active: false });
   const [pulseState, setPulseState] = createSignal<{
     index: number;
     key: number;
@@ -283,26 +211,7 @@ const ColorWheelFlower: Layout<typeof componentRecipe, ColorWheelFlowerProps> = 
     buildColors(resolveColorWheelFlowerPalette(mode(), props.palette)),
   );
 
-  const rainbowGradient = () => {
-    const outer = colors().slice(0, 12);
-    const stops = outer.map(
-      (item, index) => `${item.rgb} ${(index / outer.length) * 360}deg`,
-    );
-    stops.push(`${outer[0].rgb} 360deg`);
-    return `conic-gradient(from 0deg, ${stops.join(", ")})`;
-  };
-
   const reduceMotion = prefersReducedMotion();
-  const ringTransition: MotionTransition = reduceMotion
-    ? { duration: 0 }
-    : { duration: motionDurations.slow, easing: motionEasings.inOut };
-
-  const hoverLift = reduceMotion ? 0 : motionDistances.sm;
-  const pressScale = 0.96;
-  const pulseScale = 1.12;
-
-  let containerRef: HTMLDivElement | undefined;
-  let pointerTimeout: number | undefined;
   let pulseTimeout: number | undefined;
 
   const closestIndex = createMemo(() => {
@@ -414,46 +323,9 @@ const ColorWheelFlower: Layout<typeof componentRecipe, ColorWheelFlowerProps> = 
     }
   });
 
-  const handlePointerMove = (event: MouseEvent) => {
-    // Bound to a const so the guard narrows across the closure boundary.
-    const node = containerRef;
-    if (!node) return;
-
-    const rect = node.getBoundingClientRect();
-    const x = event.clientX - rect.left - rect.width / 2;
-    const y = event.clientY - rect.top - rect.height / 2;
-
-    setPointer({ x, y, active: true });
-
-    if (pointerTimeout !== undefined) {
-      clearTimeout(pointerTimeout);
-    }
-
-    pointerTimeout = window.setTimeout(() => {
-      setPointer((prev) => ({ ...prev, active: false }));
-    }, 120);
-  };
-
-  const handlePointerLeave = () => {
-    setPointer((prev) => ({ ...prev, active: false }));
-    setHoveredIndex(null);
-
-    if (pointerTimeout !== undefined) {
-      clearTimeout(pointerTimeout);
-    }
-  };
-
-
-
-
   onCleanup(() => {
-
     if (pulseTimeout !== undefined) {
       clearTimeout(pulseTimeout);
-    }
-
-    if (pointerTimeout !== undefined) {
-      clearTimeout(pointerTimeout);
     }
   });
 
@@ -461,7 +333,6 @@ const ColorWheelFlower: Layout<typeof componentRecipe, ColorWheelFlowerProps> = 
 
   return (
     <div
-      ref={containerRef}
       id={props.id}
       {...{
         class: twMerge(
@@ -470,8 +341,6 @@ const ColorWheelFlower: Layout<typeof componentRecipe, ColorWheelFlowerProps> = 
           props.class,
         ),
       }}
-      onMouseMove={handlePointerMove}
-      onMouseLeave={handlePointerLeave}
       data-slot="color-wheel-flower"
       data-color-mode={mode()}
       data-disabled={context.disabled() ? "true" : "false"}
@@ -496,167 +365,24 @@ const ColorWheelFlower: Layout<typeof componentRecipe, ColorWheelFlowerProps> = 
       >
         <For each={colors()}>
           {(item, index) => {
-            let motionRef: HTMLDivElement | undefined;
-            let dotControl: { stop: () => void } | null = null;
-
-            const isHovered = () => hoveredIndex() === index();
-            const isPressed = () => pressedIndex() === index();
             const isPulsing = () => pulseState()?.index === index();
-
-            const dotBaseTarget = createMemo<MotionState>(() => {
-              if (context.disabled()) {
-                return { opacity: 0.5, scale: 1, x: 0, y: 0 };
-              }
-
-              const pointerState = pointer();
-              const anchorIdx = hoveredIndex();
-
-              let scale = 1;
-              let offsetX = 0;
-              let offsetY = 0;
-
-              if (anchorIdx !== null && pointerState.active) {
-                const anchor = colors()[anchorIdx];
-                const distance = Math.sqrt(
-                  (item.offsetX - anchor.offsetX) ** 2 +
-                    (item.offsetY - anchor.offsetY) ** 2,
-                );
-
-                const waveRadius = MAX_RADIUS * 0.9;
-                const influence = Math.max(0, 1 - distance / waveRadius);
-
-                if (influence > 0) {
-                  const maxDelta = 16;
-                  const deltaX = Math.max(
-                    -maxDelta,
-                    Math.min(maxDelta, pointerState.x - anchor.offsetX),
-                  );
-                  const deltaY = Math.max(
-                    -maxDelta,
-                    Math.min(maxDelta, pointerState.y - anchor.offsetY),
-                  );
-
-                  const waveStrength = isHovered() ? 0.25 : 0.18;
-                  offsetX += deltaX * influence * waveStrength;
-                  offsetY += deltaY * influence * waveStrength;
-
-                  const liftStrength = isHovered() ? 0.8 : 0.35;
-                  const lift = getLiftOffset(item, hoverLift * liftStrength);
-                  offsetX += lift.x * influence;
-                  offsetY += lift.y * influence;
-
-                  const scaleBoost = isHovered() ? 0.06 : 0.03;
-                  scale += influence * scaleBoost;
-                }
-              }
-
-              return { opacity: 1, scale, x: offsetX, y: offsetY };
-            });
-
-            const dotTarget = createMemo<MotionState>(() => {
-              const base = dotBaseTarget();
-              let scale = base.scale ?? 1;
-
-              if (isPulsing()) {
-                scale *= pulseScale;
-              }
-              if (isPressed()) {
-                scale *= pressScale;
-              }
-
-              return {
-                ...base,
-                scale,
-              };
-            });
-
-            const glowOpacity = createMemo(() => {
-              if (context.disabled()) return 0;
-              if (isHovered()) return 0.6;
-              if (isPulsing()) return 0.35;
-              return 0;
-            });
-
-            const dotTransition = (): MotionTransition => {
-              if (reduceMotion) return { duration: 0 };
-
-              const anchorIdx = hoveredIndex();
-              const pointerState = pointer();
-              let delay = 0;
-
-              if (anchorIdx !== null && pointerState.active) {
-                const anchor = colors()[anchorIdx];
-                const distance = Math.sqrt(
-                  (item.offsetX - anchor.offsetX) ** 2 +
-                    (item.offsetY - anchor.offsetY) ** 2,
-                );
-
-                delay = Math.min(
-                  MAX_WAVE_DELAY,
-                  (distance / MAX_WAVE_DISTANCE) * MAX_WAVE_DELAY,
-                );
-              }
-
-              if (isPulsing()) {
-                return {
-                  duration: motionDurations.fast,
-                  easing: easeOutBack(1.25),
-                };
-              }
-
-              if (isHovered()) {
-                return {
-                  duration: motionDurations.fast,
-                  easing: motionEasings.out,
-                  delay,
-                };
-              }
-
-              return {
-                duration: motionDurations.base,
-                easing: motionEasings.out,
-                delay,
-              };
-            };
-
-            createTrackedEffect(() => {
-              const target = dotTarget();
-              if (!motionRef) return;
-
-              const transition = dotTransition();
-              dotControl?.stop();
-              dotControl = runMotion(
-                motionRef,
-                readMotionState(motionRef),
-                target,
-                transition,
-              );
-            });
-
-            onCleanup(() => {
-              dotControl?.stop();
-            });
 
             return (
               <div
-                {...{ class: CLASSES.dot.base }}
+                {...{
+                  class: clsx(
+                    CLASSES.dot.base,
+                    isPulsing() && "color-wheel-flower__dot--pulsing",
+                  ),
+                }}
                 style={flowerPetalPosition(item.offsetX, item.offsetY)}
               >
                 <div {...{ class: CLASSES.dot.frame }}>
-                  <div
-                    ref={(el) => {
-                      motionRef = el;
-                    }}
-                    {...{ class: CLASSES.dot.motion }}
-                  >
+                  <div {...{ class: CLASSES.dot.motion }}>
                     <span
                       {...{ class: CLASSES.halo }}
                       style={{
-                        opacity: glowOpacity(),
                         "box-shadow": `0 0 8px ${toRgba(item.rgb, 0.3)}, 0 0 3px rgba(255,255,255,0.35)`,
-                        transition: reduceMotion
-                          ? "none"
-                          : "opacity 200ms ease-out, box-shadow 200ms ease-out",
                       }}
                     />
 
@@ -676,53 +402,12 @@ const ColorWheelFlower: Layout<typeof componentRecipe, ColorWheelFlowerProps> = 
                           : `Theme color ${item.hex}`
                       }
                       state={context.disabled() ? "disabled" : undefined}
-                      onMouseEnter={() => {
-                        if (!context.disabled()) {
-                          setHoveredIndex(index());
-                        }
-                      }}
-                      onMouseLeave={() => {
-                        if (!context.disabled()) {
-                          setHoveredIndex(null);
-                        }
-                      }}
-                      onFocus={() => {
-                        if (!context.disabled()) {
-                          setHoveredIndex(index());
-                        }
-                      }}
-                      onBlur={() => {
-                        if (!context.disabled()) {
-                          setHoveredIndex(null);
-                        }
-                      }}
-                      onPointerDown={() => {
-                        if (!context.disabled()) {
-                          setPressedIndex(index());
-                        }
-                      }}
-                      onPointerUp={() => {
-                        if (!context.disabled()) {
-                          setPressedIndex(null);
-                        }
-                      }}
-                      onPointerLeave={() => {
-                        if (!context.disabled()) {
-                          setPressedIndex(null);
-                        }
-                      }}
-                      onPointerCancel={() => {
-                        if (!context.disabled()) {
-                          setPressedIndex(null);
-                        }
-                      }}
                     />
 
                     <span
                       {...{
                         class: clsx(
                           CLASSES.highlight.base,
-                          isHovered() && CLASSES.highlight.hovered,
                           isPulsing() && CLASSES.highlight.pulsing,
                         ),
                       }}

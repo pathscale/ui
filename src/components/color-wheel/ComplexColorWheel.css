@@ -1,6 +1,6 @@
 .complex-color-wheel {
   display: flex;
-  align-items: flex-start;
+  align-items: center;
   gap: 1rem;
   padding: 0.875rem;
   /*
