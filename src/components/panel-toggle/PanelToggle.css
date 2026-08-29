@@ -36,13 +36,13 @@
   .panel-toggle--right {
     left: 100%;
     border-left: 0;
-    border-radius: 0 0.375rem 0.375rem 0;
+    border-radius: 0 0.5rem 0.5rem 0;
   }
 
   .panel-toggle--left {
     right: 100%;
     border-right: 0;
-    border-radius: 0.375rem 0 0 0.375rem;
+    border-radius: 0.5rem 0 0 0.5rem;
   }
 
   .panel-toggle__indicator {

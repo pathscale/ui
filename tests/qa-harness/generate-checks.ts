@@ -103,18 +103,18 @@ function checksFor(spec: ComponentSpec): string {
         expect: "ContainedBy",
       }),
     );
-    if (spec.geometry.settlesAfterHover) {
+    if (spec.geometry.changesOnHover) {
       records.push(
         check({
-          id: `"${spec.id}-first-frame-stable"`,
+          id: `"${spec.id}-hover-feedback"`,
           group: `"${spec.id}"`,
-          what: `"${spec.component} paints the same neutral frame before and after its first hover"`,
+          what: `"${spec.component} visibly responds when a rendered part is hovered"`,
           open: surface,
           hover: "None",
-          after_prepare_hover: `Some("${spec.geometry.settlesAfterHover}")`,
+          after_prepare_hover: `Some("${spec.geometry.changesOnHover}")`,
           click: "None",
           subject: `"${spec.geometry.container}"`,
-          expect: "PixelsHoldAfterHover",
+          expect: "PixelsChange",
         }),
       );
     }
@@ -130,6 +130,21 @@ function checksFor(spec: ComponentSpec): string {
           compare: `Some("${spec.geometry.rightOf.compare}")`,
           subject: `"${spec.geometry.rightOf.subject}"`,
           expect: "RightOf",
+        }),
+      );
+    }
+    if (spec.geometry.centerAlignedY) {
+      records.push(
+        check({
+          id: `"${spec.id}-desktop-parts-center-vertically"`,
+          group: `"${spec.id}"`,
+          what: `"${spec.component} vertically centers its primary visual against the desktop controls"`,
+          open: surface,
+          hover: "None",
+          click: "None",
+          compare: `Some("${spec.geometry.centerAlignedY.compare}")`,
+          subject: `"${spec.geometry.centerAlignedY.subject}"`,
+          expect: "CenterAlignedY",
         }),
       );
     }

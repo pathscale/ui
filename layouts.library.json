@@ -144,6 +144,7 @@
     "NoiseBackground",
     "PWAInstallPrompt",
     "Pagination",
+    "PanelToggle",
     "PasswordField",
     "PasswordRequirements",
     "Popover",
