@@ -33,14 +33,13 @@ jobs:
 
       - uses: Swatinem/rust-cache@v2
 
-      # Published versions rather than source revisions. A source checkout with
-      # floating Cargo dependencies paired old ps-qa code with a newer typed
-      # protocol and failed before the UI was tested; these are the reviewed,
-      # reproducible tool releases this workflow expects.
+      # Pin the QA tool releases, but let Cargo resolve their compatible
+      # transitive dependencies. A library CI job must not inherit a tool
+      # crate's stale packaged Cargo.lock.
       - name: Install native QA tools
         run: |
-          cargo install ps-qa --version 0.4.9 --locked
-          cargo install qa-inspect-host --version 0.1.3 --locked
+          cargo install ps-qa --version 0.4.9
+          cargo install qa-inspect-host --version 0.1.3
 
       - name: Install Dependencies
         run: bun install
