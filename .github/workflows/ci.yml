@@ -32,6 +32,10 @@ jobs:
       - uses: dtolnay/rust-toolchain@stable
 
       - uses: Swatinem/rust-cache@v2
+        with:
+          # A UI assertion failing after native tool installation must not make
+          # the next corrective run rebuild the observability stack from zero.
+          cache-on-failure: true
 
       # Track the current ps-qa release so UI coverage cannot silently remain
       # on an obsolete harness. Do not inherit a tool crate's packaged lockfile.
