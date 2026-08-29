@@ -2,6 +2,20 @@ import { pluginBabel } from "@rsbuild/plugin-babel";
 import { pluginSolid } from "@rsbuild/plugin-solid";
 import { pluginSolidLayoutsLibrary } from "rsbuild-plugin-solid-layouts";
 import { defineConfig } from "@rslib/core";
+import { readFileSync } from "node:fs";
+import { resolve } from "node:path";
+
+const packageVersion = (name: string) =>
+  JSON.parse(readFileSync(resolve(__dirname, "node_modules", name, "package.json"), "utf8"))
+    .version as string;
+const solidVersion = packageVersion("solid-js");
+const solidWebVersion = packageVersion("@solidjs/web");
+
+if (solidVersion !== solidWebVersion || !solidVersion.startsWith("2.")) {
+  throw new Error(
+    `UI requires one matching Solid 2 runtime; resolved solid-js=${solidVersion}, @solidjs/web=${solidWebVersion}`,
+  );
+}
 
 export default defineConfig({
   source: {
