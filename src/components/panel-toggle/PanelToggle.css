@@ -1,0 +1,72 @@
+@layer components {
+  .panel-toggle {
+    position: absolute;
+    top: 50%;
+    z-index: 20;
+    display: inline-flex;
+    width: 0.5rem;
+    height: 3rem;
+    flex-shrink: 0;
+    transform: translateY(-50%);
+    align-items: center;
+    justify-content: center;
+    border: 1px solid color-mix(in oklab, var(--color-primary) 40%, transparent);
+    padding: 0;
+    background: color-mix(in oklab, var(--color-primary) 20%, transparent);
+    color: var(--color-primary);
+    cursor: pointer;
+    outline: none;
+    transition:
+      background-color 150ms ease,
+      border-color 150ms ease;
+  }
+
+  .panel-toggle:hover,
+  .panel-toggle[data-hovered="true"] {
+    border-color: color-mix(in oklab, var(--color-primary) 60%, transparent);
+    background: color-mix(in oklab, var(--color-primary) 30%, transparent);
+  }
+
+  .panel-toggle:focus-visible,
+  .panel-toggle[data-focus-visible="true"] {
+    outline: var(--focus-ring-width, 2px) solid var(--color-primary);
+    outline-offset: var(--focus-ring-offset, 2px);
+  }
+
+  .panel-toggle--right {
+    left: 100%;
+    border-left: 0;
+    border-radius: 0 0.375rem 0.375rem 0;
+  }
+
+  .panel-toggle--left {
+    right: 100%;
+    border-right: 0;
+    border-radius: 0.375rem 0 0 0.375rem;
+  }
+
+  .panel-toggle__indicator {
+    width: 0.375rem;
+    height: 0.375rem;
+    border-right: 0.125rem solid currentColor;
+    border-bottom: 0.125rem solid currentColor;
+    transition: transform 200ms ease;
+  }
+
+  .panel-toggle--right[data-expanded="true"] .panel-toggle__indicator,
+  .panel-toggle--left[data-expanded="false"] .panel-toggle__indicator {
+    transform: rotate(-45deg);
+  }
+
+  .panel-toggle--right[data-expanded="false"] .panel-toggle__indicator,
+  .panel-toggle--left[data-expanded="true"] .panel-toggle__indicator {
+    transform: rotate(135deg);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .panel-toggle,
+    .panel-toggle__indicator {
+      transition: none;
+    }
+  }
+}

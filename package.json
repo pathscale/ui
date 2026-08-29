@@ -134,7 +134,7 @@
     "qa:checks": "bun run tests/qa-harness/generate-checks.ts",
     "qa:entries": "bun run tests/qa-harness/generate-entries.ts",
     "qa:dev": "rsbuild dev --config tests/qa-harness/rsbuild.config.ts",
-    "qa:build": "bun run qa:entries && rsbuild build --config tests/qa-harness/rsbuild.config.ts",
+    "qa:build": "bun run build && bun run qa:checks && bun run qa:entries && rsbuild build --config tests/qa-harness/rsbuild.config.ts",
     "test": "bun test --conditions=browser",
     "check:api": "bun run scripts/check-api-contract.ts",
     "qa:lint": "bun biome lint tests/qa-harness"

@@ -72,6 +72,11 @@ export {
 export type { ButtonProps } from "./components/button";
 export { default as Button } from "./components/button";
 export {
+  PanelToggle,
+  type PanelToggleProps,
+  type PanelToggleSide,
+} from "./components/panel-toggle";
+export {
   type CalendarDayHoverHandler,
   type CalendarDaySelectHandler,
   type CalendarProps,

@@ -361,6 +361,43 @@ function PaginationFixture(props: { spec: ComponentSpec; under?: unknown }) {
   );
 }
 
+function PanelToggleFixture(props: { spec: ComponentSpec; under?: unknown }) {
+  const [expanded, setExpanded] = createSignal(true);
+  return (
+    <Show
+      when={
+        props.under as
+          | ((props: Record<string, unknown>) => JSX.Element)
+          | undefined
+      }
+      fallback={<span>{props.spec.component} is not exported</span>}
+    >
+      {(Component) => (
+        <div
+          style={{
+            position: "relative",
+            width: "16rem",
+            height: "8rem",
+            "margin-right": "1rem",
+          }}
+        >
+          <Dynamic
+            component={Component()}
+            id="qa-panel-toggle"
+            expanded={expanded()}
+            side="right"
+            aria-label={expanded() ? "Hide details" : "Show details"}
+            aria-controls="qa-panel"
+            onClick={() => setExpanded((value) => !value)}
+          />
+          <aside id="qa-panel">Details panel</aside>
+          <CompletedAction component="PanelToggle" complete={!expanded()} />
+        </div>
+      )}
+    </Show>
+  );
+}
+
 function FieldFixture(props: { spec: ComponentSpec; under?: unknown }) {
   const [value, setValue] = createSignal("");
   return (
@@ -536,6 +573,7 @@ const FIXTURES: Record<
   "live-chat-bubble": LiveChatBubbleFixture,
   "live-chat-panel": LiveChatPanelFixture,
   pagination: PaginationFixture,
+  "panel-toggle": PanelToggleFixture,
   popover: PopoverFixture,
   radio: ToggleFixture,
   select: SelectFixture,

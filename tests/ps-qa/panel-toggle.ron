@@ -1,0 +1,58 @@
+// Generated from tests/qa-harness/components.ts by tests/qa-harness/generate-checks.ts. Do not edit.
+//
+// PanelToggle, mounted alone on its own harness page. Outcomes for
+// this component share one native host; idempotent preparation keeps each
+// outcome reproducible by id against a fresh host as well.
+[
+    (
+        id: "panel-toggle-page-paints",
+        group: "panel-toggle",
+        what: "the PanelToggle page builds and paints",
+        open: None,
+        hover: None,
+        click: None,
+        subject: "heading:PanelToggle",
+        expect: PaintsNamed,
+    ),
+    (
+        id: "panel-toggle-measures",
+        group: "panel-toggle",
+        what: "PanelToggle keeps its standard control geometry",
+        open: None,
+        hover: None,
+        click: None,
+        expect_size: Some("8x48"),
+        subject: "button:Hide details",
+        expect: Measures,
+    ),
+    (
+        id: "panel-toggle-renders",
+        group: "panel-toggle",
+        what: "PanelToggle renders a node of its own",
+        open: None,
+        hover: None,
+        click: None,
+        subject: "fixture",
+        expect: Paints,
+    ),
+    (
+        id: "panel-toggle-paints",
+        group: "panel-toggle",
+        what: "the PanelToggle control is on screen and addressable",
+        open: None,
+        hover: None,
+        click: None,
+        subject: "button:Hide details",
+        expect: PaintsNamed,
+    ),
+    (
+        id: "panel-toggle-acts",
+        group: "panel-toggle",
+        what: "activating PanelToggle exposes the callback result",
+        open: None,
+        hover: None,
+        click: Some("button:Hide details"),
+        subject: "heading:Action result: PanelToggle complete",
+        expect: PaintsNamed,
+    ),
+]
