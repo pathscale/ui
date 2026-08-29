@@ -48,7 +48,8 @@ const Slider: Layout<typeof componentRecipe, SliderProps> = () => {
   const size = () => props.size ?? "md";
   const isDisabled = () => Boolean(props.disabled);
 
-  const labelId = createUniqueId();
+  const generatedLabelId = createUniqueId();
+  const labelId = () => (props.id ? `${props.id}-label` : generatedLabelId);
   const [dragging, setDragging] = createSignal(false);
   const [focusVisible, setFocusVisible] = createSignal(false);
 
@@ -185,7 +186,7 @@ const Slider: Layout<typeof componentRecipe, SliderProps> = () => {
     >
       <Show when={props.label}>
         <span
-          id={labelId}
+          id={labelId()}
           {...{ class: CLASSES.label }}
           data-slot="label"
         >
@@ -217,6 +218,7 @@ const Slider: Layout<typeof componentRecipe, SliderProps> = () => {
         {/* biome-ignore lint/a11y/useFocusableInteractive: Solid's JSX DOM typing requires lowercase tabindex, supplied below. */}
         <div
           ref={thumbRef}
+          id={props.id}
           {...{ class: CLASSES.thumb }}
           data-slot="slider-thumb"
           data-dragging={dragging() ? "true" : "false"}
@@ -230,7 +232,7 @@ const Slider: Layout<typeof componentRecipe, SliderProps> = () => {
           aria-valuenow={props.value}
           aria-valuetext={formattedValue()}
           aria-label={props["aria-label"] ?? props.label}
-          aria-labelledby={props.label ? labelId : undefined}
+          aria-labelledby={props.label ? labelId() : undefined}
           aria-disabled={isDisabled() ? "true" : undefined}
           onKeyDown={interactions.onKeyDown}
           onKeyUp={interactions.onKeyUp}

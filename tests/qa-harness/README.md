@@ -32,11 +32,11 @@ valid way to make an outcome pass.
 
 ## Running
 
-```bash
+```zsh
 bun run build
 bun run qa:checks
 bun run qa:build
-bash tests/qa-harness/run-all.sh
+zsh tests/qa-harness/run-all.sh
 ```
 
 Set `QA_PS_QA` or `QA_HOST` to test local builds of ps-qa or qa-inspect-host.

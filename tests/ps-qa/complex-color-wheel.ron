@@ -47,6 +47,17 @@
         expect: PixelsHoldAfterHover,
     ),
     (
+        id: "complex-color-wheel-desktop-parts-sit-beside",
+        group: "complex-color-wheel",
+        what: "ComplexColorWheel places its desktop controls to the right of the primary visual",
+        open: None,
+        hover: None,
+        click: None,
+        compare: Some("@color-wheel-flower"),
+        subject: "button:Strength 20",
+        expect: RightOf,
+    ),
+    (
         id: "complex-color-wheel-renders",
         group: "complex-color-wheel",
         what: "ComplexColorWheel renders a node of its own",

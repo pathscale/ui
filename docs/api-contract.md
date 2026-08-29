@@ -182,7 +182,7 @@ HTML attributes and `UIBaseProps`; that is an assertion, not a gap.
 
 ### ColorWheelFlower
 
-`class mode palette`
+`class id mode palette`
 
 ### ComboBox
 
@@ -474,7 +474,7 @@ HTML attributes and `UIBaseProps`; that is an assertion, not a gap.
 
 ### LanguageSwitcher
 
-`align aria-label currentLanguageLabel i18n loadingLabel onLanguageChange optionsLabel`
+`align aria-label currentLanguageLabel i18n id loadingLabel onLanguageChange optionsLabel`
 
 ### Link
 

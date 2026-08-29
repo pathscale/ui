@@ -29,12 +29,17 @@
     width: 100%;
   }
 
+  .tabs__list[data-orientation="horizontal"] .tabs__tab {
+    width: auto;
+  }
+
   .tabs__list[data-orientation="vertical"] {
     flex-direction: column;
     gap: 0.25rem;
   }
 
   .tabs__list[data-orientation="vertical"] .tabs__tab {
+    width: 100%;
     min-width: 5rem;
   }
 

@@ -51,7 +51,25 @@ export const runMotion = (
   }
   applyTransform();
 
-  const animationTargets = Object.keys(to) as Array<keyof MotionState>;
+  const valueFor = (key: keyof MotionState, state: MotionState): number => {
+    if (key === "opacity") {
+      return state.opacity ?? readOpacity(el);
+    }
+    if (key === "scale") return state.scale ?? 1;
+    if (key === "x") return state.x ?? 0;
+    return state.y ?? 0;
+  };
+
+  /*
+   * Do not start a timed animation for a value which is already at its target.
+   * Apart from wasting a frame callback per channel, a component mounting in
+   * its final state would keep repainting for the full declared duration. A
+   * 31-petal colour wheel used to launch 124 such no-op animations on first
+   * paint, which made its apparently-static initial render fail to settle.
+   */
+  const animationTargets = (Object.keys(to) as Array<keyof MotionState>).filter(
+    (key) => valueFor(key, from) !== valueFor(key, to),
+  );
   if (animationTargets.length === 0) {
     onComplete?.();
     return {
@@ -68,11 +86,10 @@ export const runMotion = (
   const start = () => {
     animationTargets.forEach((key) => {
       if (key === "opacity") {
-        const fromValue =
-          from.opacity ?? (to.opacity !== undefined ? readOpacity(el) : 1);
+        const fromValue = valueFor(key, from);
         const control = driver({
           from: fromValue,
-          to: to.opacity ?? fromValue,
+          to: valueFor(key, to),
           duration,
           ease,
           onUpdate: (latest) => {
@@ -84,13 +101,8 @@ export const runMotion = (
         return;
       }
 
-      const fromValue =
-        key === "scale"
-          ? (from.scale ?? 1)
-          : key === "x"
-            ? (from.x ?? 0)
-            : (from.y ?? 0);
-      const toValue = to[key] ?? fromValue;
+      const fromValue = valueFor(key, from);
+      const toValue = valueFor(key, to);
 
       const control = driver({
         from: fromValue,

@@ -103,6 +103,7 @@ const InlineEdit: Layout<typeof componentRecipe, InlineEditProps> = () => {
           {props.children ?? props.value}
         </span>
         <button
+          id={props.id ? `${props.id}-trigger` : undefined}
           type="button"
           onClick={interactions.start}
           disabled={props.disabled}
@@ -115,6 +116,7 @@ const InlineEdit: Layout<typeof componentRecipe, InlineEditProps> = () => {
       </span>
       <span class={CLASSES.slot.edit} data-slot="inline-edit-edit">
         <input
+          id={props.id ? `${props.id}-field` : undefined}
           ref={(element: HTMLInputElement) => {
             field = element;
           }}

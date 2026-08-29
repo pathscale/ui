@@ -118,6 +118,21 @@ function checksFor(spec: ComponentSpec): string {
         }),
       );
     }
+    if (spec.geometry.rightOf) {
+      records.push(
+        check({
+          id: `"${spec.id}-desktop-parts-sit-beside"`,
+          group: `"${spec.id}"`,
+          what: `"${spec.component} places its desktop controls to the right of the primary visual"`,
+          open: surface,
+          hover: "None",
+          click: "None",
+          compare: `Some("${spec.geometry.rightOf.compare}")`,
+          subject: `"${spec.geometry.rightOf.subject}"`,
+          expect: "RightOf",
+        }),
+      );
+    }
   }
 
   /*

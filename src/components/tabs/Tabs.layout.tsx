@@ -67,7 +67,8 @@ const TabsRoot: Layout<typeof componentRecipe, TabsRootProps> = () => {
     "onSelectionChange",
   );
 
-  const baseId = createUniqueId();
+  const generatedId = createUniqueId();
+  const baseId = () => props.id || generatedId;
   const [internalSelectedKey, setInternalSelectedKey] = createSignal<TabKey | undefined>(
     props.defaultSelectedKey,
   );
@@ -101,8 +102,8 @@ const TabsRoot: Layout<typeof componentRecipe, TabsRootProps> = () => {
     setTabs((prev) => prev.filter((item) => item.key !== key));
   };
 
-  const getTabId = (key: TabKey) => `${baseId}-tab-${String(key)}`;
-  const getPanelId = (key: TabKey) => `${baseId}-panel-${String(key)}`;
+  const getTabId = (key: TabKey) => `${baseId()}-tab-${String(key)}`;
+  const getPanelId = (key: TabKey) => `${baseId()}-panel-${String(key)}`;
 
   const classes = () =>
     twMerge(
