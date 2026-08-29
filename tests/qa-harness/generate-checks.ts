@@ -135,6 +135,37 @@ function checksFor(spec: ComponentSpec): string {
     }
   }
 
+  if (spec.measure) {
+    records.push(
+      check({
+        id: `"${spec.id}-measures"`,
+        group: `"${spec.id}"`,
+        what: `"${spec.component} keeps its standard control geometry"`,
+        open: surface,
+        hover: "None",
+        click: "None",
+        expect_size: `Some("${spec.measure.size}")`,
+        subject: `"${spec.measure.subject}"`,
+        expect: "Measures",
+      }),
+    );
+  }
+
+  if (spec.contrast) {
+    records.push(
+      check({
+        id: `"${spec.id}-contrast"`,
+        group: `"${spec.id}"`,
+        what: `"${spec.component} keeps its rendered controls distinguishable from their surface"`,
+        open: surface,
+        hover: "None",
+        click: "None",
+        subject: `"${spec.contrast}"`,
+        expect: "Contrast",
+      }),
+    );
+  }
+
   /*
    * The component itself produced something.
    *

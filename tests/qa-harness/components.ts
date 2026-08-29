@@ -93,6 +93,10 @@ export type ComponentSpec = {
     /** Desktop relationship that must not collapse into the narrow stack. */
     rightOf?: { subject: string; compare: string };
   };
+  /** Exact authored control geometry, before app zoom or theme scaling. */
+  measure?: { subject: string; size: string };
+  /** Named painted family that must meet the native contrast floor. */
+  contrast?: string;
 };
 
 export const COMPONENTS: ComponentSpec[] = [
@@ -189,6 +193,7 @@ export const COMPONENTS: ComponentSpec[] = [
         compare: "@color-wheel-flower",
       },
     },
+    contrast: "Theme color ",
   },
   {
     id: "composer",
@@ -339,6 +344,14 @@ export const COMPONENTS: ComponentSpec[] = [
     kind: "action",
     subject: "Go to next page",
     subjectRole: "button",
+  },
+  {
+    id: "panel-toggle",
+    component: "PanelToggle",
+    kind: "action",
+    subject: "Hide details",
+    subjectRole: "button",
+    measure: { subject: "button:Hide details", size: "8x48" },
   },
   {
     id: "password-field",

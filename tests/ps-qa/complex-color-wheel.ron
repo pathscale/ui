@@ -58,6 +58,16 @@
         expect: RightOf,
     ),
     (
+        id: "complex-color-wheel-contrast",
+        group: "complex-color-wheel",
+        what: "ComplexColorWheel keeps its rendered controls distinguishable from their surface",
+        open: None,
+        hover: None,
+        click: None,
+        subject: "Theme color ",
+        expect: Contrast,
+    ),
+    (
         id: "complex-color-wheel-renders",
         group: "complex-color-wheel",
         what: "ComplexColorWheel renders a node of its own",
