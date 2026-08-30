@@ -411,6 +411,7 @@ const ColorWheelFlower: Layout<typeof componentRecipe, ColorWheelFlowerProps> = 
                           isPulsing() && CLASSES.highlight.pulsing,
                         ),
                       }}
+                      style={{ "border-color": item.hex }}
                     />
                   </div>
                 </div>
