@@ -25,6 +25,16 @@
         expect: Paints,
     ),
     (
+        id: "select-selected-value-paints",
+        group: "select",
+        what: "Select paints the selected value a person reads",
+        open: None,
+        hover: None,
+        click: None,
+        subject: "button:Session:",
+        expect: InteriorInk,
+    ),
+    (
         id: "select-closed-content-is-absent",
         group: "select",
         what: "the closed Select does not retain its menu content in the renderer",
