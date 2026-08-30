@@ -472,6 +472,35 @@ function checksFor(spec: ComponentSpec): string {
     }
   }
 
+  if (spec.kind === "native-select") {
+    records.push(
+      check({
+        id: `"${spec.id}-selected-value-paints"`,
+        group: `"${spec.id}"`,
+        what: `"${spec.component} paints the selected value a person reads"`,
+        open: surface,
+        hover: "None",
+        click: "None",
+        subject: `"combobox:Current language: English"`,
+        expect: "InteriorInk",
+      }),
+    );
+    records.push(
+      check({
+        id: `"${spec.id}-changes"`,
+        group: `"${spec.id}"`,
+        what: `"ArrowDown changes the selected language exposed by ${spec.component}"`,
+        open: surface,
+        hover: "None",
+        click: "None",
+        key: `Some("ArrowDown")`,
+        key_on: `Some("${spec.subjectRole}:${spec.subject}")`,
+        subject,
+        expect: "NameChanges",
+      }),
+    );
+  }
+
   if (spec.kind === "inline-edit") {
     records.push(
       check({

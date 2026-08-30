@@ -26,6 +26,7 @@ import Collapsible, {
   CollapsibleTrigger,
 } from "@pathscale/ui/components/collapsible";
 import { ComplexColorWheel } from "@pathscale/ui/components/color-wheel";
+import { createI18n, LanguageSwitcher } from "@pathscale/ui/components/language-switcher";
 import Dialog from "@pathscale/ui/components/dialog";
 import Dropdown from "@pathscale/ui/components/dropdown";
 import InlineEdit from "@pathscale/ui/components/inline-edit";
@@ -118,6 +119,26 @@ function InlineEditFixture() {
       />
       <h2>Committed title: {value()}</h2>
     </>
+  );
+}
+
+const languageFixtureStore = createI18n({
+  languages: [
+    { code: "en", name: "English" },
+    { code: "zh", name: "Chinese" },
+  ],
+  defaultLanguage: "en",
+  storageKey: "qa-language",
+});
+
+function LanguageSwitcherFixture() {
+  return (
+    <LanguageSwitcher
+      id="qa-language-switcher"
+      i18n={languageFixtureStore}
+      currentLanguageLabel="Current language"
+      optionsLabel="Language options"
+    />
   );
 }
 
@@ -569,6 +590,7 @@ const FIXTURES: Record<
   dropdown: DropdownFixture,
   "inline-edit": InlineEditFixture,
   input: FieldFixture,
+  "language-switcher": LanguageSwitcherFixture,
   link: ActionFixture,
   "live-chat-bubble": LiveChatBubbleFixture,
   "live-chat-panel": LiveChatPanelFixture,

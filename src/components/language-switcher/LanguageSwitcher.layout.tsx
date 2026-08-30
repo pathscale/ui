@@ -62,7 +62,7 @@ const LanguageSwitcher: Layout<typeof componentRecipe, LanguageSwitcherProps> = 
     props.onLanguageChange?.(lang);
   };
 
-  const classes = () => twMerge(CLASSES.base, CLASSES.trigger, props.class);
+  const classes = () => twMerge(CLASSES.base, props.class);
 
   const move = (direction: -1 | 1): void => {
     const languages = props.i18n.languages;
@@ -73,30 +73,39 @@ const LanguageSwitcher: Layout<typeof componentRecipe, LanguageSwitcherProps> = 
   };
 
   return (
-    <select
-      {...others}
-      {...{ class: classes() }}
-      style={props.style}
-      value={props.i18n.locale}
-      disabled={props.i18n.isLoading}
-      aria-busy={props.i18n.isLoading ? "true" : undefined}
-      aria-label={`${props.currentLanguageLabel ?? "Current language"}: ${currentLanguageName()}`}
-      title={props.optionsLabel ?? local["aria-label"] ?? "Language selector"}
-      onChange={(event) => void handleSelect(event.currentTarget.value)}
-      onKeyDown={(event) => {
-        if (event.key === "ArrowDown") {
-          event.preventDefault();
-          move(1);
-        } else if (event.key === "ArrowUp") {
-          event.preventDefault();
-          move(-1);
-        }
-      }}
-    >
-      <For each={props.i18n.languages}>
-        {(lang) => <option value={lang.code}>{lang.name}</option>}
-      </For>
-    </select>
+    <span {...{ class: classes() }} style={props.style}>
+      <select
+        {...others}
+        {...{ class: CLASSES.trigger }}
+        value={props.i18n.locale}
+        disabled={props.i18n.isLoading}
+        aria-busy={props.i18n.isLoading ? "true" : undefined}
+        aria-label={`${props.currentLanguageLabel ?? "Current language"}: ${currentLanguageName()}`}
+        title={props.optionsLabel ?? local["aria-label"] ?? "Language selector"}
+        onChange={(event) => void handleSelect(event.currentTarget.value)}
+        onKeyDown={(event) => {
+          if (event.key === "ArrowDown") {
+            event.preventDefault();
+            move(1);
+          } else if (event.key === "ArrowUp") {
+            event.preventDefault();
+            move(-1);
+          }
+        }}
+      >
+        <For each={props.i18n.languages}>
+          {(lang) => <option value={lang.code}>{lang.name}</option>}
+        </For>
+      </select>
+      <span
+        id={props.id ? `${props.id}-current` : undefined}
+        data-slot="language-current"
+        {...{ class: CLASSES.locale }}
+        aria-hidden="true"
+      >
+        {props.i18n.locale.toUpperCase()}
+      </span>
+    </span>
   );
 };
 

@@ -28,6 +28,7 @@
  *            and leaves by each exit a reader has.
  *   field  - accepts native text input and exposes the changed value.
  *   slider - changes its exposed value through its keyboard contract.
+ *   native-select - paints its selected value and changes it by keyboard.
  *   inline-edit - opens, commits a controlled value, and abandons a draft.
  *   action - does something once and exposes the callback result.
  *   overlay - opens real portalled content and closes it with Escape.
@@ -54,6 +55,7 @@ export type ComponentKind =
   | "toggle"
   | "field"
   | "slider"
+  | "native-select"
   | "inline-edit"
   | "overlay"
   | "tabs"
@@ -288,7 +290,9 @@ export const COMPONENTS: ComponentSpec[] = [
   {
     id: "language-switcher",
     component: "LanguageSwitcher",
-    kind: "display",
+    kind: "native-select",
+    subject: "Current language: English",
+    subjectRole: "combobox",
   },
   {
     id: "link",
