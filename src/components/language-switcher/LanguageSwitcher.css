@@ -1,6 +1,5 @@
 @layer components {
   .language-switcher {
-    position: relative;
     display: inline-flex;
   }
 
@@ -40,24 +39,7 @@
   }
 
   .language-switcher__locale {
-    position: absolute;
-    inset: 1px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border-radius: calc(var(--radius-field) - 1px);
-    background: var(--color-base-100);
-    color: var(--color-base-content);
-    pointer-events: none;
-    font-size: 0.75rem;
-    font-weight: 700;
     letter-spacing: 0.04em;
-    text-transform: uppercase;
-    transition: background-color 150ms ease;
-  }
-
-  .language-switcher:hover .language-switcher__locale {
-    background: var(--color-base-200);
   }
 
   .language-switcher__menu {

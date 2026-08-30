@@ -1,15 +1,15 @@
 import "./LanguageSwitcher.css";
-import { type Component, For, omit } from "solid-js";
+import { createSignal, For, omit, Show } from "solid-js";
+import type { Layout } from "../../lib/layouts";
 import { twMerge } from "../../lib/twMerge";
-import type { DropdownAlign } from "../dropdown";
+import Dropdown, { type DropdownAlign } from "../dropdown";
+import Icon from "../icon";
 import type { UIBaseProps } from "../vocabulary";
 import type { I18nStore } from "./createI18n";
-import { CLASSES } from "./LanguageSwitcher.recipe";
-import type { Layout } from "../../lib/layouts";
-import { componentRecipe } from "./LanguageSwitcher.recipe";
+import { CLASSES, componentRecipe } from "./LanguageSwitcher.recipe";
 
 export interface LanguageSwitcherProps extends UIBaseProps {
-  /** Stable identity for the native language control. */
+  /** Stable identity for the language control. */
   id?: string;
   /**
    * The i18n store to use for language state
@@ -42,7 +42,10 @@ export interface LanguageSwitcherProps extends UIBaseProps {
   onLanguageChange?: (lang: string) => void;
 }
 
-const LanguageSwitcher: Layout<typeof componentRecipe, LanguageSwitcherProps> = () => {
+const LanguageSwitcher: Layout<
+  typeof componentRecipe,
+  LanguageSwitcherProps
+> = () => {
   const others = omit(
     props,
     "i18n",
@@ -57,6 +60,8 @@ const LanguageSwitcher: Layout<typeof componentRecipe, LanguageSwitcherProps> = 
   );
 
   const currentLanguageName = () => props.i18n.languageNames[props.i18n.locale];
+  const isSelected = (lang: string) => props.i18n.locale === lang;
+  const [open, setOpen] = createSignal(false);
   const handleSelect = async (lang: string) => {
     await props.i18n.setLocale(lang);
     props.onLanguageChange?.(lang);
@@ -64,48 +69,68 @@ const LanguageSwitcher: Layout<typeof componentRecipe, LanguageSwitcherProps> = 
 
   const classes = () => twMerge(CLASSES.base, props.class);
 
-  const move = (direction: -1 | 1): void => {
-    const languages = props.i18n.languages;
-    const current = languages.findIndex((language) => language.code === props.i18n.locale);
-    const next = (Math.max(0, current) + direction + languages.length) % languages.length;
-    const language = languages[next];
-    if (language) void handleSelect(language.code);
-  };
-
   return (
-    <span {...{ class: classes() }} style={props.style}>
-      <select
-        {...others}
+    <Dropdown.Root
+      {...others}
+      {...{ class: classes() }}
+      open={open()}
+      onOpenChange={setOpen}
+      disabled={props.i18n.isLoading}
+      style={props.style}
+    >
+      <Dropdown.Trigger
         {...{ class: CLASSES.trigger }}
-        value={props.i18n.locale}
-        disabled={props.i18n.isLoading}
         aria-busy={props.i18n.isLoading ? "true" : undefined}
         aria-label={`${props.currentLanguageLabel ?? "Current language"}: ${currentLanguageName()}`}
         title={props.optionsLabel ?? local["aria-label"] ?? "Language selector"}
-        onChange={(event) => void handleSelect(event.currentTarget.value)}
-        onKeyDown={(event) => {
-          if (event.key === "ArrowDown") {
-            event.preventDefault();
-            move(1);
-          } else if (event.key === "ArrowUp") {
-            event.preventDefault();
-            move(-1);
+      >
+        <Show
+          when={!props.i18n.isLoading}
+          fallback={
+            <Icon
+              src="icon-[mdi--loading]"
+              {...{ class: CLASSES.loadingIcon }}
+              width={16}
+              height={16}
+              aria-label={props.loadingLabel ?? "Loading language"}
+            />
           }
-        }}
+        >
+          <span
+            data-slot="language-current"
+            {...{ class: CLASSES.locale }}
+            aria-hidden="true"
+          >
+            {props.i18n.locale.toUpperCase()}
+          </span>
+        </Show>
+      </Dropdown.Trigger>
+
+      <Dropdown.Menu
+        {...{ class: CLASSES.menu }}
+        align={props.align}
+        aria-label={props.optionsLabel ?? "Language options"}
       >
         <For each={props.i18n.languages}>
-          {(lang) => <option value={lang.code}>{lang.name}</option>}
+          {(lang) => (
+            <Dropdown.Item
+              id={props.id ? `${props.id}-option-${lang.code}` : undefined}
+              onClick={() => void handleSelect(lang.code)}
+              aria-label={lang.name}
+              {...{
+                class: twMerge(
+                  CLASSES.item,
+                  isSelected(lang.code) && CLASSES.itemSelected,
+                ),
+              }}
+              aria-current={isSelected(lang.code) ? "true" : undefined}
+            >
+              {lang.name}
+            </Dropdown.Item>
+          )}
         </For>
-      </select>
-      <span
-        id={props.id ? `${props.id}-current` : undefined}
-        data-slot="language-current"
-        {...{ class: CLASSES.locale }}
-        aria-hidden="true"
-      >
-        {props.i18n.locale.toUpperCase()}
-      </span>
-    </span>
+      </Dropdown.Menu>
+    </Dropdown.Root>
   );
 };
 

@@ -25,6 +25,16 @@
         expect: Paints,
     ),
     (
+        id: "dropdown-selected-value-paints",
+        group: "dropdown",
+        what: "Dropdown paints the selected value a person reads",
+        open: None,
+        hover: None,
+        click: None,
+        subject: "button:Effort:",
+        expect: InteriorInk,
+    ),
+    (
         id: "dropdown-opens",
         group: "dropdown",
         what: "the Dropdown menu reaches the renderer as an addressable item",
