@@ -137,10 +137,7 @@ export function createI18n(options: I18nOptions): I18nStore {
     setIsLoading(true);
 
     try {
-      const minDelay = new Promise((resolve) => setTimeout(resolve, 100));
       let data: Record<string, unknown>;
-
-      await minDelay;
 
       if (
         lang === defaultLanguage &&

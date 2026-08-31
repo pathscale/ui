@@ -76,6 +76,8 @@ export type ComponentSpec = {
   subject?: string;
   /** Role of that subject, so a check cannot assert on the wrong node. */
   subjectRole?: string;
+  /** Stable selector for the subject when its authored DOM id is the contract. */
+  subjectSelector?: string;
   /** For `value`/`mode`/`tabs`: the option, item or tab to activate. */
   activate?: string;
   /** Node that proves an overlay/editor opened or a tab panel changed. */
@@ -245,6 +247,7 @@ export const COMPONENTS: ComponentSpec[] = [
     // failed before reaching its own assertion.
     subject: "Effort:",
     subjectRole: "button",
+    subjectSelector: "#qa-dropdown--trigger",
     activate: "menuitem:high",
     opens: "menuitem:low",
     options: [
@@ -291,6 +294,7 @@ export const COMPONENTS: ComponentSpec[] = [
     kind: "value",
     subject: "Current language: English",
     subjectRole: "button",
+    subjectSelector: "#qa-language-switcher--trigger",
     activate: "menuitem:Chinese",
     opens: "menuitem:Chinese",
   },
@@ -403,6 +407,7 @@ export const COMPONENTS: ComponentSpec[] = [
     // while the option nodes themselves stay out of the renderer until then.
     subject: "Session:",
     subjectRole: "button",
+    subjectSelector: "#qa-select-trigger",
     activate: "option:second fixture",
     opens: "option:first fixture",
     closedContent: "option:first fixture",
