@@ -6,7 +6,6 @@
  * the working tree rather than the last publish.
  */
 import { defineConfig } from "@rsbuild/core";
-import { pluginSolid } from "@rsbuild/plugin-solid";
 import { pluginBabel } from "@rsbuild/plugin-babel";
 import { pluginSolidLayoutsApplication } from "rsbuild-plugin-solid-layouts";
 import { resolve } from "node:path";
@@ -19,13 +18,27 @@ export default defineConfig({
     // compiles `*.layout.tsx` sources; this one wires `solid-layouts` for a
     // consumer, which is what the harness is.
     pluginSolidLayoutsApplication(),
-    pluginBabel({ include: /\.(?:jsx|tsx)$/ }),
-    // `moduleName`/`generate` for the same reason `rslib.config.ts` sets them:
-    // `@rsbuild/plugin-solid` resolves a nested Solid 1 preset whose transform
-    // emits `solid-js/web`, a subpath Solid 2 dropped. Without this the harness
-    // builds and then fails to resolve at runtime.
-    pluginSolid({
-      solidPresetOptions: { moduleName: "@solidjs/web", generate: "dom" },
+    /*
+     * Babel does the Solid transform; `@rsbuild/plugin-solid` is deliberately
+     * absent. It injects solid-refresh, whose `$component` wrapper calls
+     * `createSignal(component)` — and Solid 2 reads a function initialiser as a
+     * derivation, so it builds a computed that needs an owner. Every harness
+     * page rendered an empty body and reported "Cannot read properties of
+     * undefined (reading 'spec')": the component was being invoked with no
+     * props at all.
+     *
+     * `moduleName` stays for the original reason — the transform must emit
+     * `@solidjs/web`, since Solid 2 dropped the `solid-js/web` subpath.
+     */
+    pluginBabel({
+      include: /\.(?:jsx|tsx)$/,
+      babelLoaderOptions: (config) => {
+        config.presets ??= [];
+        config.presets.push([
+          "babel-preset-solid",
+          { moduleName: "@solidjs/web", generate: "dom" },
+        ]);
+      },
     }),
   ],
   /*
