@@ -75,12 +75,12 @@ export const COMPONENT_MIGRATION_MAP = {
   StreamingTable: {
     type: "removed",
     to: null,
-    note: "Use Table with the table hooks (useTableModel/useTableSorting/etc.).",
+    note: "Use FlexGrid with createFlexGrid, fed by useStreamingBuffer.",
   },
   EnhancedTable: {
     type: "removed",
     to: null,
-    note: "Use Table with the table hooks (useTableModel/useTableSorting/etc.).",
+    note: "Use DataGrid with createDataGrid.",
   },
   WindowMockup: { type: "removed", to: null },
 

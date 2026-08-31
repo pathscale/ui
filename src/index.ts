@@ -527,7 +527,7 @@ export {
   DEFAULT_SCALE_FACTOR as DEFAULT_TOAST_SCALE_FACTOR,
   DEFAULT_TOAST_TIMEOUT,
   DEFAULT_TOAST_WIDTH,
-  default as Toast,
+  Toast,
   ToastActionButton,
   ToastCloseButton,
   ToastContent,
