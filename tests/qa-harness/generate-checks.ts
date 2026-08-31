@@ -41,7 +41,9 @@ function checksFor(spec: ComponentSpec): string {
    * more than one.
    */
   const surface = "None";
-  const subject = `"${spec.subjectRole}:${spec.subject}"`;
+  const subjectSelector =
+    spec.subjectSelector ?? `${spec.subjectRole}:${spec.subject}`;
+  const subject = `"${subjectSelector}"`;
   const records: string[] = [];
 
   /*
@@ -295,7 +297,7 @@ function checksFor(spec: ComponentSpec): string {
         what: `"the ${spec.component} menu reaches the renderer as an addressable item"`,
         open: surface,
         hover: "None",
-        prepare: `Some("${spec.subject}")`,
+        prepare: `Some("${subjectSelector}")`,
         prepare_unless: `Some("${spec.opens}")`,
         settle_after_ms: "600",
         click: "None",
@@ -313,7 +315,7 @@ function checksFor(spec: ComponentSpec): string {
         what: `"choosing another value changes what the ${spec.component} trigger reads"`,
         open: surface,
         hover: "None",
-        prepare: `Some("${spec.subject}")`,
+        prepare: `Some("${subjectSelector}")`,
         prepare_unless: `Some("${spec.opens}")`,
         settle_after_ms: "600",
         click: `Some("${spec.activate}")`,
@@ -330,7 +332,7 @@ function checksFor(spec: ComponentSpec): string {
         what: `"Escape closes the ${spec.component} menu without choosing"`,
         open: surface,
         hover: "None",
-        prepare: `Some("${spec.subject}")`,
+        prepare: `Some("${subjectSelector}")`,
         prepare_unless: `Some("${spec.opens}")`,
         settle_after_ms: "600",
         click: "None",

@@ -43,7 +43,7 @@ function DropdownFixture(props: { spec: ComponentSpec }) {
   const label = () => `Effort: ${value()}`;
 
   return (
-    <Dropdown>
+    <Dropdown id="qa-dropdown">
       <Dropdown.Trigger aria-label={label()}>{label()}</Dropdown.Trigger>
       <Dropdown.Menu>
         <For each={options()}>
@@ -76,6 +76,7 @@ function SelectFixture(props: { spec: ComponentSpec }) {
 
   return (
     <Select
+      id="qa-select"
       value={value()}
       onChange={(next) => typeof next === "string" && setValue(next)}
     >
