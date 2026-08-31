@@ -1,3 +1,8 @@
+// Named rather than left as the default export. The package root
+// re-exports this module's `default` and its `toast` function in one
+// block, and the bundler collapsed both onto `toast`: `Toast` in the
+// built entry became the toast *function*, so `Toast.Provider` and every
+// other compound member was undefined for consumers.
 export {
   DEFAULT_GAP,
   DEFAULT_MAX_VISIBLE_TOAST,
@@ -5,6 +10,7 @@ export {
   DEFAULT_TOAST_TIMEOUT,
   DEFAULT_TOAST_WIDTH,
   default,
+  default as Toast,
   type HeroUIToastOptions,
   ToastActionButton,
   type ToastActionButtonProps,

@@ -132,7 +132,7 @@ the shared fallback. This works with PathScale Fonts and application-owned font 
 - **Dates**: Calendar, RangeCalendar, DatePicker, DateRangePicker (internal date engine); DateField, TimeField (separate segmented editors)
 - **Color**: ColorPicker, ColorArea, ColorSlider, ColorSwatch(+Picker), ColorWheel, ComplexColorWheel, ColorWheelFlower, ThemeColorPicker
 - **Overlays**: Modal, Drawer, Popover, Dropdown, Menu, Toast, Disclosure(+Group), Accordion
-- **Data**: DataGrid (assembled, `createDataGrid` model), FlexGrid (incremental reveal, `createFlexGrid` model), Table (headless compound + hooks), plus primitives `useVirtualRows`, `useStreamingBuffer`, `useStreamingSubscription`
+- **Data**: DataGrid (assembled, `createDataGrid` model), FlexGrid (incremental reveal, `createFlexGrid` model), Table (headless compound, bring your own model), plus primitives `useStreamingBuffer`, `useStreamingSubscription`
 - **Auth kit**: AuthForm, AuthCard, AuthFieldGroup, AuthSubmitButton, AuthFooterLinks, AuthPoweredBy, AuthErrorMessage, AuthSuccessMessage — Layouts composing Button/Card/fields. Their spacing, alignment and tone are recipe parameters (`gap`, `align`, `variant`), so a consumer asks for the presentation it wants rather than restating utility classes. AuthCard exposes `header`, `headings`, `title`, `description`, `branding`, `body` and `footer` as `data-slot` targets.
 - **Visual FX**: MetalBorder (WebGL liquid-metal border; presets `chromatic|silver|gold`, `kind="pill"|"circle"`, `glow`, `strength` 0-100, `theme="dark"|"light"|"auto"`), GlowCard (mouse-tracking glow), NoiseBackground (animated gradient blobs), ImmersiveLanding (full mini-app w/ PWA widgets), VideoPreview, LiveChat, ChatBubble, LanguageSwitcher
 
@@ -353,24 +353,35 @@ can address the trigger and the field by name instead of guessing at the markup.
 
 ## Table (headless assembly)
 
-```tsx
-import { useTableModel, useTableSorting, useTablePagination, TableRoot, TableContent, ... } from "@pathscale/ui";
+`Table` is the compound for markup you write yourself. It has no model of its
+own: the row model hooks -- `useTableModel`, `useTableSorting`,
+`useTablePagination`, `useTableFiltering`, `useTableExpansion`,
+`useTableSelection` -- went out with TanStack, and nothing replaced them
+in that shape. Reach for `Table` only when you need markup `DataGrid`
+cannot draw, such as an animated expanded row or a bespoke row component,
+and drive it from `createDataGrid`:
 
-const sorting = useTableSorting();
-const pagination = useTablePagination();          // default page sizes [10,25,50,100]
-const table = useTableModel({
-  data: () => rows(), columns,
-  sorting: sorting.sorting, setSorting: sorting.setSorting,
-  pagination: pagination.pagination, setPagination: pagination.setPagination,
-  enableSorting: true, enablePagination: true,
-});
-// render table.getHeaderGroups()/getRowModel().rows into:
-// <TableContent sortDescriptor={sorting.sortDescriptor()} onSortChange={sorting.setSortDescriptor}>…
+```tsx
+import { createDataGrid, Table, TableSortIcon } from "@pathscale/ui";
+
+const grid = createDataGrid<Row>({ columns, rows: props.rows, pageSize: 10 });
+
+// grid.visibleColumns() for the header, grid.pageRows() for the body,
+// grid.sort() / grid.setSort for <Table.Content sortDescriptor= onSortChange=>,
+// grid.page() / grid.pageCount() / grid.switchPage() for pagination.
 ```
 
-- State-slice hooks (all controlled-or-uncontrolled): `useTableSorting`, `useTableSelection`, `useTableFiltering` (per-column popovers + `getColumnFilterProps`), `useTablePagination` (⚠️ `nextPage(max)`/`lastPage(max)` need caller-supplied max page index), `useTableExpansion`.
+If you do not need your own markup, use `DataGrid` instead: it draws the
+header, rows, pagination and empty state from the same model.
+
+- The grid model owns sorting, filtering, paging, selection and grouping.
+  What it deliberately does not own is presentation state, such as which
+  filter popover is open, or which rows a bespoke table has expanded. A
+  consumer keeping its own markup owns that too, and should key expansion by
+  row id rather than index so sorting or paging does not leave the wrong row
+  open.
 - Parts: TableRoot/ScrollContainer/Content/Header/Column/Body/Row/Cell/ExpandedRow/Footer/PageSize/ResizableContainer/ColumnResizer/LoadMore(+Content), plus SortIcon, ExpandToggle, InlineConfirm, MobileListView (responsive card fallback), VirtualSpacerRow.
-- **Virtualization is not built in.** `useVirtualRows` was a thin wrapper over `@tanstack/solid-virtual` that nothing in the library used; it was removed with the rest of TanStack. `VirtualSpacerRow` is still here for a caller that brings its own windowing.
+- **Virtualization is not built in.** `useVirtualRows` was a thin wrapper over `@tanstack/solid-virtual` that nothing in the library used; it was removed with the rest of TanStack. For a long unpaged list use `createFlexGrid`, which reveals incrementally and removes the construction cost windowing was there to avoid. `VirtualSpacerRow` is still here for a caller that brings its own windowing.
 
 ## Motion
 
