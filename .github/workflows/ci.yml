@@ -38,14 +38,34 @@ jobs:
           cache-on-failure: true
 
       # Track the current ps-qa release so UI coverage cannot silently remain
-      # on an obsolete harness. Do not inherit a tool crate's packaged lockfile.
+      # on an obsolete harness — but build each tool against the dependency set
+      # it was published with.
+      #
+      # Resolving these fresh picks the newest `ps-blitz-*` that satisfies the
+      # requirements, and those crates are not compatible across minor versions:
+      # `qa-inspect-host` ended up compiled against `ps-blitz-script` 0.4.1
+      # while its `tauri-runtime-blitz` expected 0.3.x, so the same type
+      # existed twice and every call between them failed to typecheck. That
+      # broke this step, and because everything below depends on it, Lint, Type
+      # Check, Build and the whole test suite were skipped rather than failed —
+      # a green-looking pipeline that had verified nothing.
+      #
+      # `--locked` uses each crate's own published lockfile, which is the set
+      # its author tested. It costs nothing in currency: both tools still
+      # install at their newest version.
+      #
+      # One command per tool, deliberately. `cargo install a b --locked`
+      # resolves the two together and downgrades to satisfy both — it picks
+      # `qa-inspect-host` 0.1.4 instead of 0.1.8. Installed separately they
+      # each get their own resolution and stay current.
       - name: Install native QA tools
         env:
           # cargo install otherwise builds in disposable temporary directories,
           # which leaves rust-cache nothing useful to restore on the next run.
           CARGO_TARGET_DIR: target/qa-tools
         run: |
-          cargo install ps-qa qa-inspect-host
+          cargo install ps-qa --locked
+          cargo install qa-inspect-host --locked
 
       - name: Install Dependencies
         run: bun install
