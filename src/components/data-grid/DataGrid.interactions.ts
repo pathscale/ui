@@ -1,3 +1,4 @@
+import type { JSX } from "@solidjs/web";
 import type { DataGridColumn, DataGridRow } from "./createDataGrid";
 
 /* Everything here could sit in the Layout and must not. A free identifier in a
@@ -31,11 +32,20 @@ export const rangeLabel = (
 
 export const searchPlaceholder = (label: string): string => `Search ${label}`;
 
+/*
+ * The return type is written out rather than inferred. Inferred, it is the
+ * union of `render`'s `JSX.Element` and `formatCell`'s `string`, and naming
+ * that union in a declaration file needs `RenderedElement`, which is internal
+ * to `solid-js` and has no importable path from here (TS2883). Whether the
+ * compiler reaches for that name depends on how `solid-js` happens to be
+ * hoisted, so this type-checks locally and fails on a clean install -- the
+ * annotation is what makes it not depend on the shape of `node_modules`.
+ */
 export const cellContent = <Row extends DataGridRow>(
   column: DataGridColumn<Row>,
   row: Row,
   index: number,
-) => {
+): JSX.Element => {
   if (column.render) {
     return column.render({ value: row[column.name], row, column, index });
   }
