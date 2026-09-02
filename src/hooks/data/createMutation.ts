@@ -1,11 +1,10 @@
 import { createSignal } from "solid-js";
-import type { Accessor } from "solid-js";
 
 /**
  * A write, without a query library. The companion to `createQuery`.
  *
  * Replaces `useMutation`. The same rule applies as there: reading this never
- * suspends and never throws. `mutate` reports failure through `error()`;
+ * suspends and never throws. `mutate` reports failure through `error`;
  * `mutateAsync` rejects, for a caller that wants to await and handle it.
  */
 
@@ -17,15 +16,17 @@ export interface CreateMutationOptions<TArgs extends unknown[], TResult> {
   onSettled?: () => void | Promise<void>;
 }
 
+/** Read as properties, for the same reason as `QueryResult`. */
 export interface MutationResult<TArgs extends unknown[], TResult> {
-  /** Fire and forget. Failure lands on `error()` rather than as a rejection. */
+  /** Fire and forget. Failure lands on `error` rather than as a rejection. */
   mutate: (...args: TArgs) => void;
   /** Fire and await. Rejects on failure. */
   mutateAsync: (...args: TArgs) => Promise<TResult>;
-  isPending: Accessor<boolean>;
-  error: Accessor<unknown>;
+  readonly isPending: boolean;
+  readonly error: unknown;
+  readonly isError: boolean;
   /** The last successful result. */
-  data: Accessor<TResult | undefined>;
+  readonly data: TResult | undefined;
   /** Clear `error` and `data`. */
   reset: () => void;
 }
@@ -69,9 +70,18 @@ export const createMutation = <TArgs extends unknown[], TResult>(
       void mutateAsync(...args).catch(() => {});
     },
     mutateAsync,
-    isPending,
-    error,
-    data,
+    get isPending() {
+      return isPending();
+    },
+    get error() {
+      return error();
+    },
+    get isError() {
+      return error() !== undefined;
+    },
+    get data() {
+      return data();
+    },
     reset: () => {
       setError(undefined);
       setData(() => undefined);

@@ -1,5 +1,4 @@
 import { createRenderEffect, createSignal, onCleanup, untrack } from "solid-js";
-import type { Accessor } from "solid-js";
 
 /**
  * Asynchronous reads, without a query library.
@@ -18,7 +17,7 @@ import type { Accessor } from "solid-js";
  * had nothing to print. That is how a support-chat button that had not
  * connected replaced an entire application with a blank error page.
  *
- * Here, `data()` is `undefined` until there is data, `isLoading()` is true only
+ * Here, `data` is `undefined` until there is data, `isLoading` is true only
  * while a fetch is actually in flight, and neither ever throws. A caller that
  * wants to suspend can do so explicitly; a caller that forgets cannot take the
  * page down.
@@ -36,15 +35,41 @@ export interface CreateQueryOptions<T> {
   enabled?: boolean;
 }
 
+/**
+ * Read as properties, not as accessors.
+ *
+ * `solid-query` returned a store, so every consumer of it is written
+ * `query.data`, `query.isLoading`, `query.isError` -- roughly three thousand
+ * such reads across these applications. Exposing accessors here would mean
+ * editing all of them to add `()`, turning a migration of the ~300 files that
+ * *define* queries into one that touches every file that reads one.
+ *
+ * These are getters over signals, so a read inside a tracked scope still
+ * subscribes exactly as an accessor call would.
+ */
 export interface QueryResult<T> {
   /** The last value read, or `undefined` before the first one arrives. */
-  data: Accessor<T | undefined>;
+  readonly data: T | undefined;
   /** The last failure, cleared by the next successful read. */
-  error: Accessor<unknown>;
+  readonly error: unknown;
   /** True only while a fetch is in flight. Never true for a disabled query. */
-  isLoading: Accessor<boolean>;
+  readonly isLoading: boolean;
+  /**
+   * Alias of `isLoading`, for call sites carried over from `solid-query`.
+   *
+   * Note the deliberate difference in meaning. There, `isPending` was "has no
+   * data", which stayed true forever for a query held back by `enabled: false`
+   * -- so `if (isPending) return <Spinner/>` spun for the life of the page.
+   * Here it means "a fetch is in flight", so a disabled query reads as not
+   * pending and its consumer renders instead of hanging.
+   */
+  readonly isPending: boolean;
+  /** True when the last read failed. */
+  readonly isError: boolean;
+  /** True when a value has arrived and the last read did not fail. */
+  readonly isSuccess: boolean;
   /** True once a value has arrived at least once. */
-  isReady: Accessor<boolean>;
+  readonly isReady: boolean;
   /** Read again now, regardless of `enabled`. */
   refetch: () => Promise<void>;
 }
@@ -126,10 +151,27 @@ export const createQuery = <T>(
   });
 
   return {
-    data,
-    error,
-    isLoading,
-    isReady,
+    get data() {
+      return data();
+    },
+    get error() {
+      return error();
+    },
+    get isLoading() {
+      return isLoading();
+    },
+    get isPending() {
+      return isLoading();
+    },
+    get isError() {
+      return error() !== undefined;
+    },
+    get isSuccess() {
+      return isReady() && error() === undefined;
+    },
+    get isReady() {
+      return isReady();
+    },
     refetch: run,
   };
 };
