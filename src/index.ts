@@ -607,6 +607,18 @@ export {
   useField,
   useFormContext,
 } from "./hooks/form";
+export type {
+  CreateMutationOptions,
+  CreateQueryOptions,
+  MutationResult,
+  QueryResult,
+} from "./hooks/data";
+// Data API: the replacement for @tanstack/solid-query
+export {
+  createMutation,
+  createQuery,
+  invalidateQueries,
+} from "./hooks/data";
 export { useDesktop } from "./hooks/layout";
 export type { UseAnchoredOverlayPositionOptions } from "./hooks/table";
 export { useAnchoredOverlayPosition } from "./hooks/table";
