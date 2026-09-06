@@ -34,4 +34,15 @@
         subject: "switch:",
         expect: SelectionChanges,
     ),
+    (
+        id: "switch-reports",
+        group: "switch",
+        what: "pressing Switch runs its callback, not just its own state",
+        open: None,
+        hover: None,
+        settle_after_ms: 300,
+        click: Some("switch:"),
+        subject: "heading:Callback ran",
+        expect: PaintsNamed,
+    ),
 ]

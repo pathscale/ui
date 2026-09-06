@@ -1,5 +1,5 @@
 import type { Accessor } from "solid-js";
-import { createEffect, createSignal } from "solid-js";
+import { createEffect, createRoot, createSignal } from "solid-js";
 
 /**
  * Where an application points itself, and how that survives a reload.
@@ -130,8 +130,21 @@ export const createConnectionSettings = (
     }
   };
 
-  const [state, setState] = createSignal<ConnectionSettingsState>(read());
-  const [isApplying, setIsApplying] = createSignal(false);
+  /*
+   * Owned by a root of its own.
+   *
+   * Every application creates this once, at module scope, so that the transport
+   * and the settings page read the same instance. A signal created there has no
+   * owner: the persistence effect never runs, and the page renders a switch
+   * whose state nothing is tracking. `createRoot` gives it one. This is the
+   * defect the panel had in the app while passing every check in the harness,
+   * where the fixture creates the store inside a component.
+   */
+  const [state, setState, isApplying, setIsApplying] = createRoot(() => {
+    const [s, setS] = createSignal<ConnectionSettingsState>(read());
+    const [a, setA] = createSignal(false);
+    return [s, setS, a, setA] as const;
+  });
 
   const atDefaults = (value: ConnectionSettingsState): boolean =>
     value.appPublicId === appPublicId &&
@@ -153,12 +166,19 @@ export const createConnectionSettings = (
     }
   };
 
+  // Inside a root of its own, for the same reason the signals are: at module
+  // scope there is no owner, and an unowned effect never runs.
+  //
   // Solid 2 splits an effect in two: only the compute half tracks, so the read
   // is hoisted into it and the write runs with a plain value.
-  createEffect(
-    () => state(),
-    (value) => write(value),
-  );
+  createRoot(() => {
+    createEffect(
+      () => state(),
+      (value) => {
+        write(value);
+      },
+    );
+  });
 
   const update = (
     change: (current: ConnectionSettingsState) => ConnectionSettingsState,
