@@ -26,7 +26,7 @@ import Collapsible, {
   CollapsibleTrigger,
 } from "@pathscale/ui/components/collapsible";
 import { ConnectionSettings } from "@pathscale/ui/components/connection-settings";
-import { createConnectionSettings } from "@pathscale/ui";
+import { createConnectionSettings } from "@pathscale/ui/hooks/connection";
 import { ComplexColorWheel } from "@pathscale/ui/components/color-wheel";
 import { createI18n, LanguageSwitcher } from "@pathscale/ui/components/language-switcher";
 import Dialog from "@pathscale/ui/components/dialog";
