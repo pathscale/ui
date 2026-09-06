@@ -164,6 +164,23 @@ export const COMPONENTS: ComponentSpec[] = [
     subjectRole: "button",
   },
   {
+    id: "connection-settings",
+    component: "ConnectionSettings",
+    /*
+     * The switch is the whole point. Every hand-written copy of this panel read
+     * its flag once, outside a tracked scope, so the checkbox flipped and the
+     * fields never appeared. `opens` is what turns that into an outcome instead
+     * of something a person has to click to notice.
+     */
+    kind: "action",
+    subject: "Use a custom backend",
+    // Measured, not assumed: the tree reports role `switch` for the input, and
+    // declaring `checkbox` made both interaction checks fail on a control that
+    // was painting perfectly well.
+    subjectRole: "switch",
+    opens: "API URL",
+  },
+  {
     id: "color-swatch",
     component: "ColorSwatch",
     // Measured: role `option`, 32x32, named "Color undefined". Not a button,

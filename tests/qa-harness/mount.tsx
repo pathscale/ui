@@ -25,6 +25,8 @@ import Collapsible, {
   CollapsibleContent,
   CollapsibleTrigger,
 } from "@pathscale/ui/components/collapsible";
+import { ConnectionSettings } from "@pathscale/ui/components/connection-settings";
+import { createConnectionSettings } from "@pathscale/ui";
 import { ComplexColorWheel } from "@pathscale/ui/components/color-wheel";
 import { createI18n, LanguageSwitcher } from "@pathscale/ui/components/language-switcher";
 import Dialog from "@pathscale/ui/components/dialog";
@@ -476,6 +478,36 @@ function SliderFixture(props: { spec: ComponentSpec; under?: unknown }) {
  * renders the smallest usable arrangement; the checks themselves open closed
  * states so opening remains part of the measured outcome.
  */
+/*
+ * The panel, with a store of its own and one endpoint.
+ *
+ * The endpoint is named "API URL" because that is the label the checks name,
+ * and the callback result sits in `children`, which the panel renders inside
+ * the region the switch reveals. So the `-acts` outcome is the defect every
+ * hand-written copy of this page had: the switch flips, and the revealed region
+ * either paints or it does not.
+ */
+function ConnectionSettingsFixture() {
+  const store = createConnectionSettings({
+    storageKey: "qa-connection-settings",
+    endpoints: [{ name: "api", fallback: "wss://api.example.com" }],
+  });
+
+  return (
+    <ConnectionSettings
+      store={store}
+      endpoints={[{ name: "api", label: "API URL" }]}
+      labels={{
+        useCustom: "Use a custom backend",
+        save: "Save",
+        reset: "Reset",
+      }}
+    >
+      <h2>Action result: ConnectionSettings complete</h2>
+    </ConnectionSettings>
+  );
+}
+
 function CollapsibleFixture() {
   return (
     <Collapsible>
@@ -584,6 +616,7 @@ const FIXTURES: Record<
   button: ActionFixture,
   checkbox: ToggleFixture,
   collapsible: CollapsibleFixture,
+  "connection-settings": ConnectionSettingsFixture,
   "complex-color-wheel": ComplexColorWheelFixture,
   composer: ComposerFixture,
   dialog: DialogFixture,
