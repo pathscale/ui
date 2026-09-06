@@ -8,10 +8,16 @@ on:
 
 jobs:
   build:
-    # qa-inspect-host is a native renderer binary. Its currently published
-    # Linux runtime predates Tauri's GTK trait additions, while macOS is the
-    # supported build used by the host's own CI and by AgencyZero.
-    runs-on: macos-14
+    # Linux, since `qa-inspect-host` 0.1.9. It could not be built here before:
+    # it reached the engine through `tauri-runtime-blitz`, which brought the
+    # Tauri runtime with it, and that does not compile on Linux at all -- its
+    # `RawWindow` is a `gtk::ApplicationWindow` there and a Blitz window has
+    # none. So this job ran on macOS to get a host at all.
+    #
+    # The host opens no window, and now does not compile one: it takes the
+    # runtime with `default-features = false`, so nothing in its graph is Tauri
+    # or GTK. macOS is for building packages, not for a component sweep.
+    runs-on: ubicloud-standard-2
     steps:
       - uses: actions/checkout@v4
 
@@ -50,22 +56,38 @@ jobs:
       # Check, Build and the whole test suite were skipped rather than failed —
       # a green-looking pipeline that had verified nothing.
       #
-      # `--locked` uses each crate's own published lockfile, which is the set
-      # its author tested. It costs nothing in currency: both tools still
-      # install at their newest version.
+      # `--locked` is gone, and it did cost currency: a lockfile is frozen at
+      # publication, so the host was pinned to whatever engine existed the day
+      # it was released. A renderer fix could then never reach this gate without
+      # a host release, and that is not hypothetical -- `ps-blitz` 0.4.3 fixes
+      # three defects in checkbox activation, and the host published before it
+      # kept installing 0.4.2, so `switch`, `checkbox` and `radio` went on
+      # failing here against an engine that had already been fixed.
+      #
+      # The mismatch `--locked` was added for is gone with it: it happened when
+      # `qa-inspect-host` wanted `ps-blitz` 0.4.x while its `tauri-runtime-blitz`
+      # wanted 0.3.x, so the same type existed twice. Both now require `^0.4`
+      # and resolve to one copy.
       #
       # One command per tool, deliberately. `cargo install a b --locked`
       # resolves the two together and downgrades to satisfy both — it picks
       # `qa-inspect-host` 0.1.4 instead of 0.1.8. Installed separately they
       # each get their own resolution and stay current.
+      # A renderer needs fonts wherever it runs. Not a window stack: the host's
+      # own CI asserts there is no Tauri or GTK in its graph.
+      - name: Fontconfig
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y --no-install-recommends libfontconfig-dev
+
       - name: Install native QA tools
         env:
           # cargo install otherwise builds in disposable temporary directories,
           # which leaves rust-cache nothing useful to restore on the next run.
           CARGO_TARGET_DIR: target/qa-tools
         run: |
-          cargo install ps-qa --locked
-          cargo install qa-inspect-host --locked
+          cargo install ps-qa
+          cargo install qa-inspect-host
 
       - name: Install Dependencies
         run: bun install
@@ -91,8 +113,8 @@ jobs:
       # minutes while preserving a clean document between components.
       - name: Rendered component outcomes
         env:
-          # GitHub's shared macOS runner took 1.6-1.9s for outcomes that pass
-          # locally under 1.25s. This widens scheduling deadlines only; every
+          # A shared runner takes longer than a local machine for outcomes that pass
+          # locally well inside the budget. This widens scheduling deadlines only; every
           # declared rendered-state transition is still required.
           QA_TIMEOUT_SCALE: 2
         run: |
