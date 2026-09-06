@@ -1,0 +1,47 @@
+// Generated from tests/qa-harness/components.ts by tests/qa-harness/generate-checks.ts. Do not edit.
+//
+// ConnectionSettings, mounted alone on its own harness page. Outcomes for
+// this component share one native host; idempotent preparation keeps each
+// outcome reproducible by id against a fresh host as well.
+[
+    (
+        id: "connection-settings-page-paints",
+        group: "connection-settings",
+        what: "the ConnectionSettings page builds and paints",
+        open: None,
+        hover: None,
+        click: None,
+        subject: "heading:ConnectionSettings",
+        expect: PaintsNamed,
+    ),
+    (
+        id: "connection-settings-renders",
+        group: "connection-settings",
+        what: "ConnectionSettings renders a node of its own",
+        open: None,
+        hover: None,
+        click: None,
+        subject: "fixture",
+        expect: Paints,
+    ),
+    (
+        id: "connection-settings-paints",
+        group: "connection-settings",
+        what: "the ConnectionSettings control is on screen and addressable",
+        open: None,
+        hover: None,
+        click: None,
+        subject: "switch:Use a custom backend",
+        expect: PaintsNamed,
+    ),
+    (
+        id: "connection-settings-acts",
+        group: "connection-settings",
+        what: "activating ConnectionSettings exposes the callback result",
+        open: None,
+        hover: None,
+        click: Some("switch:Use a custom backend"),
+        subject: "heading:Action result: ConnectionSettings complete",
+        expect: PaintsNamed,
+    ),
+]

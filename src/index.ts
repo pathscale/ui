@@ -627,6 +627,12 @@ export type {
 } from "./hooks/connection";
 // Where an application points itself, and how that survives a reload
 export { createConnectionSettings } from "./hooks/connection";
+export type {
+  ConnectionSettingsEndpointLabel,
+  ConnectionSettingsLabels,
+  ConnectionSettingsProps,
+} from "./components/connection-settings";
+export { ConnectionSettings } from "./components/connection-settings";
 export { useDesktop } from "./hooks/layout";
 export type { UseAnchoredOverlayPositionOptions } from "./hooks/table";
 export { useAnchoredOverlayPosition } from "./hooks/table";
