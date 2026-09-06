@@ -134,6 +134,7 @@ the shared fallback. This works with PathScale Fonts and application-owned font 
 - **Overlays**: Modal, Drawer, Popover, Dropdown, Menu, Toast, Disclosure(+Group), Accordion
 - **Data**: DataGrid (assembled, `createDataGrid` model), FlexGrid (incremental reveal, `createFlexGrid` model), Table (headless compound, bring your own model), plus primitives `useStreamingBuffer`, `useStreamingSubscription`
 - **Auth kit**: AuthForm, AuthCard, AuthFieldGroup, AuthSubmitButton, AuthFooterLinks, AuthPoweredBy, AuthErrorMessage, AuthSuccessMessage — Layouts composing Button/Card/fields. Their spacing, alignment and tone are recipe parameters (`gap`, `align`, `variant`), so a consumer asks for the presentation it wants rather than restating utility classes. AuthCard exposes `header`, `headings`, `title`, `description`, `branding`, `body` and `footer` as `data-slot` targets.
+- **Connection settings**: ConnectionSettings (the panel) with `createConnectionSettings` (the store). See below.
 - **Visual FX**: MetalBorder (WebGL liquid-metal border; presets `chromatic|silver|gold`, `kind="pill"|"circle"`, `glow`, `strength` 0-100, `theme="dark"|"light"|"auto"`), GlowCard (mouse-tracking glow), NoiseBackground (animated gradient blobs), ImmersiveLanding (full mini-app w/ PWA widgets), VideoPreview, LiveChat, ChatBubble, LanguageSwitcher
 
 Renames from old versions (see `docs/component-migration-map.md`): Loading→Spinner, DropdownSelect→Select, RadialProgress→ProgressCircle, RangeSlider→Slider, Progress→ProgressBar/ProgressCircle. ~40 components removed outright (Carousel, Rating, Steps, Stats, FileInput, …).
@@ -464,3 +465,88 @@ and have **Theming tokens** and the **Component inventory** link back here rathe
 duplicating them: those two change whenever the library changes, and a TSX copy has
 nothing keeping it honest. The inventory alone is ~40 lines that go stale the moment a
 component is added.
+
+## Connection settings
+
+Where an application points itself, and how that survives a reload. Every
+property in this family ships this page: a switch, one or more backend URLs, an
+app id, and a save that reconfigures the transport. Six of them had written it
+separately, in two shapes and with different bugs.
+
+Two pieces. `createConnectionSettings` owns the state and the persistence;
+`<ConnectionSettings>` is the panel over it. They are separate because the
+transport needs the addresses at module scope, long before any settings page is
+rendered.
+
+```tsx
+import { createConnectionSettings } from "@pathscale/ui/hooks/connection";
+import { ConnectionSettings } from "@pathscale/ui/components/connection-settings";
+
+// Module scope, so the transport and the page read the same instance.
+export const connection = createConnectionSettings({
+  storageKey: "acme.connection",          // namespace it; two apps on one origin collide
+  endpoints: [
+    { name: "api", fallback: "wss://api.acme.com" },
+    { name: "auth", fallback: "wss://auth.honey.id" },
+  ],
+  appPublicId: DEFAULT_APP_ID,
+  onApply: async ({ urls, appPublicId }) => {
+    reconfigure({ apiUrl: urls.api, authUrl: urls.auth, appPublicId });
+    await reconnect();
+  },
+});
+
+<ConnectionSettings
+  store={connection}
+  endpoints={[{ name: "api", label: "API URL", hint: "leave empty for production" }]}
+  labels={{ useCustom: "Use a custom backend", save: "Save", reset: "Reset" }}
+  showAppPublicId
+/>
+```
+
+Read `connection.urls.api` from the transport. It resolves overrides and never
+returns an empty string, and it is memoised, so reading it per request is fine.
+
+### What the store guarantees
+
+- **Per endpoint, not global.** Pointing the API at a local instance while auth
+  stays on production is the ordinary case. `setUseCustom` flips them all
+  together for a page that wants one switch; the panel does not use it, because
+  it would also mark endpoints the page never showed.
+- **An override means a value that differs from the fallback.** An endpoint
+  storing today's default is not overridden, so when that default moves the
+  application moves with it.
+- **Nothing customised means nothing stored.** At defaults the key is removed
+  rather than written, for the same reason.
+- **Stored values are checked on read.** A key written by an older version, or
+  edited by hand, falls back field by field rather than throwing. A settings
+  page that cannot open is a settings page that cannot be corrected.
+- **Addresses are validated before they are saved**, by `validate` on the
+  endpoint, defaulting to "parses as a URL". Give an endpoint its own when it
+  knows more: a WebSocket transport handed `http://` fails at connect time, far
+  from the page that could have explained it.
+- **`apply()` is awaited** and `isApplying` covers the reconnect, not just the
+  write. A failure propagates; the panel shows it and calls `onSaveFailed`.
+
+### What the panel guarantees
+
+Everything is a draft until Save, the switch included. Opening the panel,
+looking, and navigating away changes nothing. Save validates, commits, applies,
+and reports a failure where the person who pressed it is looking. Reset drops
+the overrides and applies the defaults.
+
+It renders a `<form>`, so Enter in a field saves, and its actions are the
+library's `Button`.
+
+### Migrating a site off its own copy
+
+Replace the site's store with a thin adapter over this one rather than changing
+every call site at once:
+
+```ts
+export const connectionStore = {
+  get wsUrl() { return connection.urls.api; },
+  get useCustomUrl() { return connection.isOverridden("api"); },
+  applySettings() { return connection.apply(); },
+};
+```
