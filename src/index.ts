@@ -619,6 +619,14 @@ export {
   createQuery,
   invalidateQueries,
 } from "./hooks/data";
+export type {
+  ConnectionEndpoint,
+  ConnectionSettingsOptions,
+  ConnectionSettingsState,
+  ConnectionSettingsStore,
+} from "./hooks/connection";
+// Where an application points itself, and how that survives a reload
+export { createConnectionSettings } from "./hooks/connection";
 export { useDesktop } from "./hooks/layout";
 export type { UseAnchoredOverlayPositionOptions } from "./hooks/table";
 export { useAnchoredOverlayPosition } from "./hooks/table";
