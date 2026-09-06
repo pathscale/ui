@@ -100,29 +100,9 @@ const Checkbox: Layout<typeof componentRecipe, CheckboxProps> = () => {
     inputRef.indeterminate = isIndeterminate();
   });
 
-  /*
-   * Driven from both `change` and `click`, for the reason Switch is.
-   *
-   * Blitz flips a checkbox's `checked` on a click and dispatches no `change`,
-   * so a controlled Checkbox reported the new state in the tree while its
-   * callback never ran. The guard is per interaction rather than per value: a
-   * controlled input whose DOM `checked` does not move again would make every
-   * click after the first look like a repeat and stick the box on.
-   */
-  let handledClick = false;
-
   const handleChange: JSX.EventHandlerUnion<HTMLInputElement, Event> = (
     event,
   ) => {
-    if (event.type === "click") {
-      handledClick = true;
-      queueMicrotask(() => {
-        handledClick = false;
-      });
-    } else if (handledClick) {
-      return;
-    }
-
     invokeEventHandler(props.onChange, event);
     if (event.defaultPrevented) return;
     if (isDisabled()) return;
@@ -177,7 +157,6 @@ const Checkbox: Layout<typeof componentRecipe, CheckboxProps> = () => {
         }
         aria-checked={isIndeterminate() ? "mixed" : undefined}
         onChange={handleChange}
-        onClick={handleChange}
       />
 
       <span
