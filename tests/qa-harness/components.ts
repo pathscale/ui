@@ -58,7 +58,14 @@ export type ComponentKind =
   | "overlay"
   | "tabs"
   | "adjustment"
-  | "display";
+  | "display"
+  /*
+   * settings - the panel swaps to plain inputs behind a toggle and commits them
+   *            on an explicit save. Asserts all three layers: the toggle
+   *            reveals the inputs, typing alone commits nothing, and the save
+   *            button commits.
+   */
+  | "settings";
 
 export type ComponentSpec = {
   /** URL id and check-id prefix. Kebab-case. */
@@ -78,6 +85,15 @@ export type ComponentSpec = {
   subjectRole?: string;
   /** Stable selector for the subject when its authored DOM id is the contract. */
   subjectSelector?: string;
+  /**
+   * For `settings`: the value a check types into `opens`, and the node that
+   * proves it was committed rather than merely typed.
+   */
+  commitText?: string;
+  committed?: string;
+  uncommitted?: string;
+  /** For `settings`: the control that commits the draft. */
+  commit?: string;
   /** For `value`/`mode`/`tabs`: the option, item or tab to activate. */
   activate?: string;
   /** Node that proves an overlay/editor opened or a tab panel changed. */
@@ -172,13 +188,17 @@ export const COMPONENTS: ComponentSpec[] = [
      * fields never appeared. `opens` is what turns that into an outcome instead
      * of something a person has to click to notice.
      */
-    kind: "action",
+    kind: "settings",
     subject: "Use a custom backend",
     // Measured, not assumed: the tree reports role `switch` for the input, and
     // declaring `checkbox` made both interaction checks fail on a control that
     // was painting perfectly well.
     subjectRole: "switch",
-    opens: "API URL",
+    opens: "textbox:API URL",
+    commit: "button:Save",
+    commitText: "ws://qa-committed",
+    uncommitted: "heading:Committed: wss://api.example.com",
+    committed: "heading:Committed: ws://qa-committed",
   },
   {
     id: "color-swatch",

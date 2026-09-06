@@ -11,6 +11,8 @@ import {
 import type { ConnectionSettingsStore } from "../../hooks/connection";
 import type { Layout } from "../../lib/layouts";
 import { twMerge } from "../../lib/twMerge";
+import Input from "../input";
+import Switch from "../switch";
 import type { UIBaseProps } from "../vocabulary";
 import { CLASSES, componentRecipe } from "./ConnectionSettings.recipe";
 
@@ -59,6 +61,8 @@ export type ConnectionSettingsProps = Omit<
     children?: JSX.Element;
     /** Called after the store has applied. For a toast, or navigation. */
     onSaved?: () => void;
+    /** Called when applying threw. The panel also shows the message itself. */
+    onSaveFailed?: (error: unknown) => void;
     onResetDone?: () => void;
   };
 
@@ -81,6 +85,7 @@ export const ConnectionSettingsLayout: Layout<
     "labels",
     "showAppPublicId",
     "onSaved",
+    "onSaveFailed",
     "onResetDone",
   );
 
@@ -99,21 +104,67 @@ export const ConnectionSettingsLayout: Layout<
     props.endpoints.some((e) => props.store.isOverridden(e.name)),
   );
 
+  /*
+   * The fields edit a draft, and Save commits it.
+   *
+   * Writing straight through to the store on every keystroke is what made the
+   * first version of this panel look broken: the "current URL" line updated as
+   * you typed, so pressing Save changed nothing you could see and the button
+   * read as dead. A draft also gives Reset something to discard.
+   */
+  const [draft, setDraft] = createSignal<Record<string, string>>({});
+  const [appIdDraft, setAppIdDraft] = createSignal<string | undefined>(
+    undefined,
+  );
+  const [failure, setFailure] = createSignal<string | undefined>(undefined);
+
+  const fieldValue = (name: string) =>
+    draft()[name] ?? props.store.state.urls[name] ?? "";
+  const appIdValue = () => appIdDraft() ?? props.store.state.appPublicId;
+  const edit = (name: string, value: string) =>
+    setDraft({ ...draft(), [name]: value });
+
   const setUseCustom = (next: boolean) => {
     setOpen(next);
     props.store.setUseCustom(next);
   };
 
   const save = async () => {
-    await props.store.apply();
-    props.onSaved?.();
+    setFailure(undefined);
+    for (const [name, value] of Object.entries(draft())) {
+      props.store.setUrl(name, value);
+    }
+    const id = appIdDraft();
+    if (id !== undefined) props.store.setAppPublicId(id);
+    setDraft({});
+    setAppIdDraft(undefined);
+    try {
+      await props.store.apply();
+      props.onSaved?.();
+    } catch (error) {
+      /*
+       * A failed apply is the interesting case and it used to vanish: the
+       * settings were saved, the reconnect threw, and the panel reported
+       * nothing at all. Reported here, and handed to the caller.
+       */
+      setFailure(error instanceof Error ? error.message : String(error));
+      props.onSaveFailed?.(error);
+    }
   };
 
   const reset = async () => {
+    setFailure(undefined);
+    setDraft({});
+    setAppIdDraft(undefined);
     props.store.reset();
     setOpen(false);
-    await props.store.apply();
-    props.onResetDone?.();
+    try {
+      await props.store.apply();
+      props.onResetDone?.();
+    } catch (error) {
+      setFailure(error instanceof Error ? error.message : String(error));
+      props.onSaveFailed?.(error);
+    }
   };
 
   return (
@@ -138,22 +189,20 @@ export const ConnectionSettingsLayout: Layout<
             </p>
           </Show>
         </div>
-        <input
-          type="checkbox"
-          role="switch"
+        <Switch
           class={CLASSES.slot.switch}
           id={fieldId("use-custom")}
           aria-label={props.labels.useCustom}
           checked={open()}
           disabled={props.store.isApplying}
           /*
-           * `onClick`, not `onChange`. Blitz dispatches the click but not the
-           * synthesised change event for a checkbox, so a panel wired to
-           * `onChange` flips its box and reveals nothing -- which is the same
-           * symptom every hand-written copy of this page had, from a different
-           * cause. Reading `checked` here works under both.
+           * Flipped from this component's own state, not read off the event.
+           * Blitz delivers the click before it moves the input's `checked`, so
+           * `event.currentTarget.checked` is the value from before the press
+           * and the panel opened only on every second click -- which looked
+           * exactly like a toggle that does nothing.
            */
-          onClick={(event) => setUseCustom(event.currentTarget.checked)}
+          onChange={() => setUseCustom(!open())}
         />
       </div>
 
@@ -176,17 +225,17 @@ export const ConnectionSettingsLayout: Layout<
                 >
                   {endpoint.label}
                 </label>
-                <input
+                <Input.Field
                   class={CLASSES.slot.input}
                   id={fieldId(endpoint.name)}
                   name={endpoint.name}
                   type="text"
                   aria-label={endpoint.label}
                   placeholder={endpoint.placeholder}
-                  value={props.store.state.urls[endpoint.name] ?? ""}
+                  value={fieldValue(endpoint.name)}
                   disabled={props.store.isApplying}
                   onInput={(event) =>
-                    props.store.setUrl(endpoint.name, event.currentTarget.value)
+                    edit(endpoint.name, event.currentTarget.value)
                   }
                 />
                 <Show when={endpoint.hint}>
@@ -207,16 +256,14 @@ export const ConnectionSettingsLayout: Layout<
           >
             {props.labels.appPublicId}
           </label>
-          <input
+          <Input.Field
             class={CLASSES.slot.input}
             id={fieldId("app-public-id")}
             type="text"
             aria-label={props.labels.appPublicId}
-            value={props.store.state.appPublicId}
+            value={appIdValue()}
             disabled={props.store.isApplying}
-            onInput={(event) =>
-              props.store.setAppPublicId(event.currentTarget.value)
-            }
+            onInput={(event) => setAppIdDraft(event.currentTarget.value)}
           />
         </div>
       </Show>
@@ -235,6 +282,16 @@ export const ConnectionSettingsLayout: Layout<
           )}
         </For>
       </div>
+
+      {/* A failed apply is named where the person who pressed Save is looking. */}
+      <Show when={failure()}>
+        <p
+          class={CLASSES.slot.hint}
+          role="alert"
+        >
+          {failure()}
+        </p>
+      </Show>
 
       <div class={CLASSES.slot.actions}>
         <button

@@ -34,4 +34,15 @@
         subject: "checkbox:",
         expect: SelectionChanges,
     ),
+    (
+        id: "checkbox-reports",
+        group: "checkbox",
+        what: "pressing Checkbox runs its callback, not just its own state",
+        open: None,
+        hover: None,
+        settle_after_ms: 300,
+        click: Some("checkbox:"),
+        subject: "heading:Callback ran",
+        expect: PaintsNamed,
+    ),
 ]

@@ -503,7 +503,12 @@ function ConnectionSettingsFixture() {
         reset: "Reset",
       }}
     >
-      <h2>Action result: ConnectionSettings complete</h2>
+      {/*
+        Names the committed value, so the checks can tell "typed" from "saved".
+        It reads the store, not the draft, which is the distinction the whole
+        `settings` kind exists to assert.
+      */}
+      <h2>Committed: {store.urls.api}</h2>
     </ConnectionSettings>
   );
 }
@@ -568,6 +573,66 @@ function ToggleFixture(props: { spec: ComponentSpec; under?: unknown }) {
 }
 
 /*
+ * A toggle, and a heading that only its callback can produce.
+ *
+ * `selected` in the tree is not evidence the component did anything: the
+ * renderer flips a checkbox's own state on a click, so a controlled toggle
+ * whose `onChange` never fires still reports the new value. `switch-toggles`
+ * passed on exactly that while Switch was inert under Blitz, which dispatches
+ * the click but not the change.
+ *
+ * This names the state the fixture holds, so the `-reports` check fails unless
+ * the callback ran.
+ */
+function ToggleFixtureWithReport(props: {
+  spec: ComponentSpec;
+  under?: unknown;
+}) {
+  const [on, setOn] = createSignal(false);
+  const [pressed, setPressed] = createSignal(false);
+  return (
+    <>
+      <Show
+        when={
+          props.under as
+            | ((props: Record<string, unknown>) => JSX.Element)
+            | undefined
+        }
+        fallback={<span>{props.spec.component} is not exported</span>}
+      >
+        {(Component) => (
+          <Dynamic
+            component={Component()}
+            checked={on()}
+            /*
+             * One handler, deliberately. The older fixture bound `onChange` and
+             * `onInput` both, to cover components that disagreed about which
+             * they took. Once the toggles actually invoked their callback that
+             * became two flips per click, which nets to no change at all and
+             * reads exactly like a dead component.
+             */
+            onChange={() => {
+              setPressed(true);
+              setOn((previous) => !previous);
+            }}
+            aria-label={props.spec.component}
+          />
+        )}
+      </Show>
+      {/*
+        Latched, not a live reading of `on`. Checks in a group share one host, so
+        `-toggles` has already pressed this control by the time `-reports` runs;
+        a node naming the current state would only be right when the number of
+        presses happened to be odd. This appears on the first callback and stays.
+      */}
+      <Show when={pressed()}>
+        <h2>Callback ran</h2>
+      </Show>
+    </>
+  );
+}
+
+/*
  * Dock, with the items it requires.
  *
  * `items` is not optional and the layout reads `p.items.length` directly, so
@@ -614,7 +679,7 @@ const FIXTURES: Record<
 > = {
   "auth-submit-button": ActionFixture,
   button: ActionFixture,
-  checkbox: ToggleFixture,
+  checkbox: ToggleFixtureWithReport,
   collapsible: CollapsibleFixture,
   "connection-settings": ConnectionSettingsFixture,
   "complex-color-wheel": ComplexColorWheelFixture,
@@ -631,10 +696,10 @@ const FIXTURES: Record<
   pagination: PaginationFixture,
   "panel-toggle": PanelToggleFixture,
   popover: PopoverFixture,
-  radio: ToggleFixture,
+  radio: ToggleFixtureWithReport,
   select: SelectFixture,
   slider: SliderFixture,
-  switch: ToggleFixture,
+  switch: ToggleFixtureWithReport,
   tabs: TabsFixture,
   textarea: FieldFixture,
 };

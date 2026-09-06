@@ -344,6 +344,67 @@ function checksFor(spec: ComponentSpec): string {
     );
   }
 
+  if (spec.kind === "settings") {
+    /*
+     * Three layers, because this component failed at a different one each time.
+     *
+     * The toggle reveals the inputs; typing into one commits nothing on its own;
+     * the save button commits. The middle check is the one worth having: without
+     * it a panel that writes straight through on every keystroke passes, and the
+     * save button is dead in a way nobody notices until they press it.
+     */
+    records.push(
+      check({
+        id: `"${spec.id}-reveals"`,
+        group: `"${spec.id}"`,
+        what: `"the ${spec.component} toggle swaps in the inputs"`,
+        open: surface,
+        hover: "None",
+        // The reveal mounts nodes; without a settle the assertion races the
+        // paint. The other two checks get one via `prepare`, and this one
+        // failed on a textbox its own siblings could type into.
+        settle_after_ms: "300",
+        click: `Some("${spec.subjectRole}:${spec.subject}")`,
+        subject: `"${spec.opens}"`,
+        expect: "PaintsNamed",
+      }),
+    );
+    records.push(
+      check({
+        id: `"${spec.id}-defers"`,
+        group: `"${spec.id}"`,
+        what: `"typing into ${spec.component} does not commit on its own"`,
+        open: surface,
+        hover: "None",
+        prepare: `Some("${spec.subjectRole}:${spec.subject}")`,
+        prepare_unless: `Some("${spec.opens}")`,
+        settle_after_ms: "300",
+        click: "None",
+        type_into: `Some("${spec.opens}")`,
+        text: `Some("${spec.commitText}")`,
+        subject: `"${spec.uncommitted}"`,
+        expect: "PaintsNamed",
+      }),
+    );
+    records.push(
+      check({
+        id: `"${spec.id}-commits"`,
+        group: `"${spec.id}"`,
+        what: `"saving ${spec.component} commits what was typed"`,
+        open: surface,
+        hover: "None",
+        prepare: `Some("${spec.subjectRole}:${spec.subject}")`,
+        prepare_unless: `Some("${spec.opens}")`,
+        settle_after_ms: "300",
+        type_into: `Some("${spec.opens}")`,
+        text: `Some("${spec.commitText}")`,
+        click: `Some("${spec.commit}")`,
+        subject: `"${spec.committed}"`,
+        expect: "PaintsNamed",
+      }),
+    );
+  }
+
   if (spec.kind === "overlay") {
     records.push(
       check({
@@ -444,6 +505,36 @@ function checksFor(spec: ComponentSpec): string {
         click: `Some("${spec.subjectRole}:")`,
         subject: `"${spec.subjectRole}:"`,
         expect: "SelectionChanges",
+      }),
+    );
+    /*
+     * And that the callback ran.
+     *
+     * `-toggles` above compares the tree's `selected` before and after, which
+     * the renderer flips on its own when a checkbox is clicked. A controlled
+     * toggle whose `onChange` never fires satisfies it while doing nothing at
+     * all -- which is exactly what Switch did under Blitz, where a click is
+     * dispatched and a change is not. The fixture names the state it holds, so
+     * this fails unless the component told it to change.
+     */
+    records.push(
+      check({
+        id: `"${spec.id}-reports"`,
+        group: `"${spec.id}"`,
+        what: `"pressing ${spec.component} runs its callback, not just its own state"`,
+        open: surface,
+        hover: "None",
+        settle_after_ms: "300",
+        click: `Some("${spec.subjectRole}:")`,
+        /*
+         * A latched marker, because the checks in a group share one host:
+         * `-toggles` has already pressed this control by the time this runs, so
+         * a node naming the current state would only be right when the number
+         * of presses happened to be odd. The fixture raises this on the first
+         * callback and never lowers it.
+         */
+        subject: `"heading:Callback ran"`,
+        expect: "PaintsNamed",
       }),
     );
   }
