@@ -195,13 +195,6 @@ export const ConnectionSettingsLayout: Layout<
           aria-label={props.labels.useCustom}
           checked={open()}
           disabled={props.store.isApplying}
-          /*
-           * Flipped from this component's own state, not read off the event.
-           * Blitz delivers the click before it moves the input's `checked`, so
-           * `event.currentTarget.checked` is the value from before the press
-           * and the panel opened only on every second click -- which looked
-           * exactly like a toggle that does nothing.
-           */
           onChange={() => setUseCustom(!open())}
         />
       </div>

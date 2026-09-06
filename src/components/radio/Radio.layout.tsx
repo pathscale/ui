@@ -68,28 +68,9 @@ const Radio: Layout<typeof componentRecipe, RadioProps> = () => {
 
   const hasContent = () => props.children != null || props.description != null;
 
-  /*
-   * Driven from both `change` and `click`, for the reason Switch and Checkbox
-   * are: Blitz flips a radio's `checked` on a click and dispatches no `change`,
-   * so the callback never ran while the tree reported the new selection.
-   *
-   * The guard is per interaction rather than per value, so a browser that sends
-   * both acts once while a second, separate click still registers.
-   */
-  let handledClick = false;
-
   const handleChange: JSX.EventHandlerUnion<HTMLInputElement, Event> = (
     event,
   ) => {
-    if (event.type === "click") {
-      handledClick = true;
-      queueMicrotask(() => {
-        handledClick = false;
-      });
-    } else if (handledClick) {
-      return;
-    }
-
     invokeEventHandler(props.onChange, event);
     if (event.defaultPrevented) return;
 
@@ -125,7 +106,6 @@ const Radio: Layout<typeof componentRecipe, RadioProps> = () => {
         data-slot="radio-input"
         aria-invalid={ariaInvalid() ? "true" : "false"}
         onChange={handleChange}
-        onClick={handleChange}
       />
 
       <span
