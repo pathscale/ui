@@ -73,13 +73,6 @@ jobs:
       # resolves the two together and downgrades to satisfy both — it picks
       # `qa-inspect-host` 0.1.4 instead of 0.1.8. Installed separately they
       # each get their own resolution and stay current.
-      # A renderer needs fonts wherever it runs. Not a window stack: the host's
-      # own CI asserts there is no Tauri or GTK in its graph.
-      - name: Fontconfig
-        run: |
-          sudo apt-get update -qq
-          sudo apt-get install -y --no-install-recommends libfontconfig-dev
-
       - name: Install native QA tools
         env:
           # cargo install otherwise builds in disposable temporary directories,
