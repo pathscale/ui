@@ -79,8 +79,16 @@ jobs:
           # which leaves rust-cache nothing useful to restore on the next run.
           CARGO_TARGET_DIR: target/qa-tools
         run: |
-          cargo install ps-qa
-          cargo install qa-inspect-host
+          # Pinned to a floor, not left to "latest".
+          #
+          # The sweep needs `--headless` and a host that can replace a text
+          # field without a font catalogue. Installing whatever is newest meant
+          # a version without those failed as `unexpected argument`, which
+          # reads as a broken workflow rather than a tool that is too old --
+          # and a host that silently appended to a field would not have failed
+          # at all until a check disagreed about a value.
+          cargo install ps-qa --version "^0.6.2"
+          cargo install qa-inspect-host --version "^0.1.12"
 
       - name: Install Dependencies
         run: bun install
