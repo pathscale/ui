@@ -110,12 +110,26 @@ export const isIpv6Literal = (host: string): boolean => {
   const halves = host.split("::");
   if (halves.length !== 2) return false;
   const [head, tail] = halves;
-  const v4 = new RegExp(`(?:^|:)${IPV4_TAIL}$`, "i").test(tail);
-  const groups = v4 ? tail.replace(new RegExp(`${IPV4_TAIL}$`, "i"), "") : tail;
+  /*
+   * The separator comes off with the IPv4 tail, or not at all.
+   *
+   * Stripping a trailing `:` unconditionally accepted `1::2:` -- the tail `2:`
+   * became `2` and then parsed as a group. A colon at the end of an address is
+   * a separator with nothing after it, which the URL Standard's IPv6 parser
+   * rejects, and this layer was persisting it.
+   *
+   * So the removal is tied to the thing that justifies it: the `:` before a
+   * dotted-quad suffix is part of that suffix's separator. Anything else is
+   * the tail exactly as written.
+   */
+  const embeddedV4 = new RegExp(`(?:^|:)(${IPV4_TAIL})$`, "i").exec(tail);
+  const groups = embeddedV4
+    ? tail.slice(0, tail.length - embeddedV4[1].length).replace(/:$/, "")
+    : tail;
   if (!IPV6_PIECES.test(head)) return false;
-  if (!IPV6_PIECES.test(groups.replace(/:$/, ""))) return false;
+  if (!IPV6_PIECES.test(groups)) return false;
   const count = (part: string) => (part === "" ? 0 : part.split(":").length);
-  return count(head) + count(groups.replace(/:$/, "")) + (v4 ? 2 : 0) <= 7;
+  return count(head) + count(groups) + (embeddedV4 ? 2 : 0) <= 7;
 };
 
 export const isAbsoluteUrl = (url: string): string | undefined => {
@@ -582,7 +596,23 @@ export const createConnectionSettings = (
        */
       const run =
         inFlight === 1
-          ? Promise.resolve(reconnect())
+          ? /*
+             * An async wrapper, not `Promise.resolve(reconnect())`.
+             *
+             * `onApply` may be synchronous, and a synchronous one that throws
+             * threw *out of the expression*, before the `try` below was
+             * entered. `inFlight` was never decremented and `isApplying` never
+             * cleared, so one failed reconnect left the panel disabled for the
+             * lifetime of the page -- and `queue` was never assigned either, so
+             * the chain was left holding whatever it had.
+             *
+             * An async function with no `await` before the call still runs the
+             * body synchronously, so the ordering this branch exists for is
+             * unchanged: `write` happens before the persistence effect, and a
+             * check for that still fails if the write is removed. What changes
+             * is that a synchronous throw becomes a rejection like any other.
+             */
+            (async () => reconnect())()
           : queue.then(reconnect).then(() => undefined);
       // The queue must survive a rejecting `onApply`, or one failed reconnect
       // deadlocks every later save. The error still reaches this caller.

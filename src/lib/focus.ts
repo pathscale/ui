@@ -48,14 +48,30 @@ export const focusFirst = (container: HTMLElement) => {
 };
 
 /**
- * Keep Tab inside `container`, wrapping at both ends.
+ * Keep Tab inside a scope, wrapping at both ends.
  *
- * Called by the overlay manager for the innermost overlay only. A container
- * with nothing focusable in it takes focus itself, so Tab cannot escape a
- * modal that is still loading its content.
+ * The scope is a list, not one element, because a modal's content is not
+ * always one subtree: a Popover opened from inside a Dialog portals its
+ * content elsewhere in the document, and it is still part of what the person
+ * is looking at. Trapping in the Dialog's element alone would make the popover
+ * unreachable by keyboard; treating the popover as the scope would let Tab
+ * leave the modal behind it. Both belong.
+ *
+ * Order matters: the containers are given innermost-last, and the focusables
+ * are concatenated in that order, so tabbing off the end of the newest overlay
+ * wraps to the start of the modal that owns the scope.
+ *
+ * A scope with nothing focusable in it takes focus itself, so Tab cannot
+ * escape a modal that is still loading its content.
  */
-export const trapFocus = (event: KeyboardEvent, container: HTMLElement) => {
-  const nodes = getFocusable(container);
+export const trapFocus = (
+  event: KeyboardEvent,
+  scope: HTMLElement | HTMLElement[],
+) => {
+  const containers = Array.isArray(scope) ? scope : [scope];
+  const container = containers[0];
+  if (!container) return;
+  const nodes = containers.flatMap((element) => getFocusable(element));
   if (nodes.length === 0) {
     event.preventDefault();
     container.focus();
@@ -72,8 +88,25 @@ export const trapFocus = (event: KeyboardEvent, container: HTMLElement) => {
     return;
   }
 
-  if (event.shiftKey && (active === first || active === container)) {
+  if (
+    event.shiftKey &&
+    (active === first || containers.some((element) => active === element))
+  ) {
     event.preventDefault();
     last.focus();
+  }
+
+  /*
+   * Focus outside the scope entirely is pulled back in.
+   *
+   * The two rules above only fire at the ends. They assume focus is already
+   * inside, which is true when the modal placed it there and false the moment
+   * anything else moves it -- a click on the page behind, a script focusing a
+   * toast. Without this, Tab from outside walked the document with the modal
+   * still open, which is the containment the pattern is named for.
+   */
+  if (active && !containers.some((element) => element.contains(active))) {
+    event.preventDefault();
+    (event.shiftKey ? last : first).focus();
   }
 };
