@@ -79,33 +79,6 @@ type Profile = {
    * is still covered there by `-changes`, which reads the tree.
    */
   readonly readsPixels: boolean;
-  /**
-   * Whether the host can replace the contents of a field that already holds a
-   * value.
-   *
-   * It cannot, with no fonts, and the mechanism is worth writing down because
-   * the symptom points at the component. `SetValue` clears the field by asking
-   * parley's editor to select all of it first, and every selection API parley
-   * exposes -- `select_all`, `select_byte_range` -- resolves its ends through
-   * the laid-out text. With no glyphs there is no layout to resolve against,
-   * the selection comes back collapsed, and the commit inserts at the caret.
-   * So typing "Renamed title" into a field holding "Original title" produces
-   * "Original titleRenamed title".
-   *
-   * Measured, both ways, on the same build: InlineEdit commits "Renamed title"
-   * on a host with fonts and "Original titleRenamed title" without; the
-   * connection panel refuses "wss://api.example.comws://qa-committed" as not
-   * an address, which is its validation working correctly on a value the
-   * harness mistyped.
-   *
-   * So the checks that retype a pre-filled field run in the full profile only.
-   * They are not weakened, and they are not removed: they are the strongest
-   * checks in the suite -- a save that commits what was typed is the whole
-   * contract of a settings panel -- and they keep running where they can be
-   * asked honestly. When the runtime can clear a field without consulting a
-   * layout, this flag goes away.
-   */
-  readonly retypesPrefilledFields: boolean;
 };
 
 const PROFILES: readonly Profile[] = [
@@ -114,14 +87,12 @@ const PROFILES: readonly Profile[] = [
     dir: "ps-qa",
     paints: (expect) => expect,
     readsPixels: true,
-    retypesPrefilledFields: true,
   },
   {
     id: "headless",
     dir: "ps-qa-headless",
     paints: () => "Present",
     readsPixels: false,
-    retypesPrefilledFields: false,
   },
 ];
 
@@ -498,91 +469,87 @@ function checksFor(spec: ComponentSpec, profile: Profile): string {
         expect: profile.paints("PaintsNamed"),
       }),
     );
-    // Both of these retype the endpoint field, which the panel pre-fills with
-    // the address in force. See `retypesPrefilledFields`.
-    if (profile.retypesPrefilledFields) {
-      records.push(
-        check({
-          id: `"${spec.id}-commits"`,
-          group: `"${spec.id}"`,
-          what: `"saving ${spec.component} commits what was typed"`,
-          open: surface,
-          hover: "None",
-          prepare: `Some("${spec.subjectRole}:${spec.subject}")`,
-          prepare_unless: `Some("${spec.opens}")`,
-          settle_after_ms: "300",
-          type_into: `Some("${spec.opens}")`,
-          text: `Some("${spec.commitText}")`,
-          click: `Some("${spec.commit}")`,
-          subject: `"${spec.committed}"`,
-          expect: profile.paints("PaintsNamed"),
-        }),
-      );
-      /*
-       * And that the panel said so.
-       *
-       * `-commits` reads the committed value, which is right but not sufficient:
-       * a save refused by validation, or one that throws inside `apply`, leaves
-       * that value exactly where it was and reports nothing. The fixture names
-       * what the panel told its caller, so a silent refusal is a different
-       * failure from a save that did not run.
-       */
-      records.push(
-        check({
-          id: `"${spec.id}-reports-saving"`,
-          group: `"${spec.id}"`,
-          what: `"${spec.component} tells its caller the save succeeded"`,
-          open: surface,
-          hover: "None",
-          prepare: `Some("${spec.subjectRole}:${spec.subject}")`,
-          prepare_unless: `Some("${spec.opens}")`,
-          settle_after_ms: "300",
-          type_into: `Some("${spec.opens}")`,
-          text: `Some("${spec.commitText}")`,
-          click: `Some("${spec.commit}")`,
-          subject: `"heading:Save outcome: saved"`,
-          expect: profile.paints("PaintsNamed"),
-        }),
-      );
-      /*
-       * And that the reconnect got the new settings, already persisted.
-       *
-       * `apply` promises to write storage and then hand the callback what was
-       * written, which is what a callback that reloads or navigates depends
-       * on. Neither half was asserted -- the fixture supplied no `onApply` at
-       * all -- and the ordering half was broken: persistence ran in a deferred
-       * effect a microtask after the reconnect, so a callback reading storage
-       * saw the settings it was replacing. The fixture names both, so this
-       * fails if either the argument or the order regresses.
-       */
-      records.push(
-        check({
-          id: `"${spec.id}-reconnects-with-what-it-saved"`,
-          group: `"${spec.id}"`,
-          what: `"${spec.component} reconnects with the saved settings, already persisted"`,
-          open: surface,
-          hover: "None",
-          prepare: `Some("${spec.subjectRole}:${spec.subject}")`,
-          prepare_unless: `Some("${spec.opens}")`,
-          settle_after_ms: "300",
-          /*
-           * Its own address, not `commitText`.
-           *
-           * The checks in a group share a host, so by the time this one runs
-           * storage already holds what `-commits` saved. Reusing that value
-           * made this pass with the write deleted -- measured -- because the
-           * old contents and the expected contents were the same string. A
-           * value only this check writes cannot be satisfied by what ran
-           * before it.
-           */
-          type_into: `Some("${spec.opens}")`,
-          text: `Some("${spec.reconnectText}")`,
-          click: `Some("${spec.commit}")`,
-          subject: `"heading:Reconnected: ${spec.reconnectText} over ${spec.reconnectText}"`,
-          expect: profile.paints("PaintsNamed"),
-        }),
-      );
-    }
+    records.push(
+      check({
+        id: `"${spec.id}-commits"`,
+        group: `"${spec.id}"`,
+        what: `"saving ${spec.component} commits what was typed"`,
+        open: surface,
+        hover: "None",
+        prepare: `Some("${spec.subjectRole}:${spec.subject}")`,
+        prepare_unless: `Some("${spec.opens}")`,
+        settle_after_ms: "300",
+        type_into: `Some("${spec.opens}")`,
+        text: `Some("${spec.commitText}")`,
+        click: `Some("${spec.commit}")`,
+        subject: `"${spec.committed}"`,
+        expect: profile.paints("PaintsNamed"),
+      }),
+    );
+    /*
+     * And that the panel said so.
+     *
+     * `-commits` reads the committed value, which is right but not sufficient:
+     * a save refused by validation, or one that throws inside `apply`, leaves
+     * that value exactly where it was and reports nothing. The fixture names
+     * what the panel told its caller, so a silent refusal is a different
+     * failure from a save that did not run.
+     */
+    records.push(
+      check({
+        id: `"${spec.id}-reports-saving"`,
+        group: `"${spec.id}"`,
+        what: `"${spec.component} tells its caller the save succeeded"`,
+        open: surface,
+        hover: "None",
+        prepare: `Some("${spec.subjectRole}:${spec.subject}")`,
+        prepare_unless: `Some("${spec.opens}")`,
+        settle_after_ms: "300",
+        type_into: `Some("${spec.opens}")`,
+        text: `Some("${spec.commitText}")`,
+        click: `Some("${spec.commit}")`,
+        subject: `"heading:Save outcome: saved"`,
+        expect: profile.paints("PaintsNamed"),
+      }),
+    );
+    /*
+     * And that the reconnect got the new settings, already persisted.
+     *
+     * `apply` promises to write storage and then hand the callback what was
+     * written, which is what a callback that reloads or navigates depends
+     * on. Neither half was asserted -- the fixture supplied no `onApply` at
+     * all -- and the ordering half was broken: persistence ran in a deferred
+     * effect a microtask after the reconnect, so a callback reading storage
+     * saw the settings it was replacing. The fixture names both, so this
+     * fails if either the argument or the order regresses.
+     */
+    records.push(
+      check({
+        id: `"${spec.id}-reconnects-with-what-it-saved"`,
+        group: `"${spec.id}"`,
+        what: `"${spec.component} reconnects with the saved settings, already persisted"`,
+        open: surface,
+        hover: "None",
+        prepare: `Some("${spec.subjectRole}:${spec.subject}")`,
+        prepare_unless: `Some("${spec.opens}")`,
+        settle_after_ms: "300",
+        /*
+         * Its own address, not `commitText`.
+         *
+         * The checks in a group share a host, so by the time this one runs
+         * storage already holds what `-commits` saved. Reusing that value
+         * made this pass with the write deleted -- measured -- because the
+         * old contents and the expected contents were the same string. A
+         * value only this check writes cannot be satisfied by what ran
+         * before it.
+         */
+        type_into: `Some("${spec.opens}")`,
+        text: `Some("${spec.reconnectText}")`,
+        click: `Some("${spec.commit}")`,
+        subject: `"heading:Reconnected: ${spec.reconnectText} over ${spec.reconnectText}"`,
+        expect: profile.paints("PaintsNamed"),
+      }),
+    );
   }
 
   if (spec.kind === "overlay") {
@@ -794,27 +761,23 @@ function checksFor(spec: ComponentSpec, profile: Profile): string {
         expect: profile.paints("PaintsNamed"),
       }),
     );
-    // The editor opens holding the current title, so this retypes a
-    // pre-filled field. See `retypesPrefilledFields`.
-    if (profile.retypesPrefilledFields) {
-      records.push(
-        check({
-          id: `"${spec.id}-commits"`,
-          group: `"${spec.id}"`,
-          what: `"Enter commits the edited value and closes the editor"`,
-          open: surface,
-          prepare: `Some("${spec.subjectRole}:${spec.subject}")`,
-          prepare_unless: `Some("${spec.opens}")`,
-          hover: "None",
-          click: "None",
-          type_into: `Some("${spec.opens}")`,
-          text: `Some("Renamed title")`,
-          key: `Some("Enter")`,
-          subject: `"heading:Committed title: Renamed title"`,
-          expect: profile.paints("PaintsNamed"),
-        }),
-      );
-    }
+    records.push(
+      check({
+        id: `"${spec.id}-commits"`,
+        group: `"${spec.id}"`,
+        what: `"Enter commits the edited value and closes the editor"`,
+        open: surface,
+        prepare: `Some("${spec.subjectRole}:${spec.subject}")`,
+        prepare_unless: `Some("${spec.opens}")`,
+        hover: "None",
+        click: "None",
+        type_into: `Some("${spec.opens}")`,
+        text: `Some("Renamed title")`,
+        key: `Some("Enter")`,
+        subject: `"heading:Committed title: Renamed title"`,
+        expect: profile.paints("PaintsNamed"),
+      }),
+    );
     records.push(
       check({
         id: `"${spec.id}-escape-keeps-value"`,
