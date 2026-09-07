@@ -88,8 +88,8 @@
     "postcss-selector-parser": "^7.1.1",
     "rsbuild-plugin-solid-layouts": "^0.2.1",
     "solid-js": "next",
-    "solid-layouts": "^0.2.1",
-    "solid-layouts-oxc": "^0.2.1",
+    "solid-layouts": "^0.2.3",
+    "solid-layouts-oxc": "^0.2.3",
     "svgo": "^3.3.3",
     "tailwindcss": "^4.3.3",
     "typescript": "^6.0.3"
