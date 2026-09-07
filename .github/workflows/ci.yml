@@ -115,7 +115,7 @@ jobs:
           bun run qa:entries
           git diff --exit-code -- tests/ps-qa tests/qa-harness/entries
           bun run qa:build
-          zsh tests/qa-harness/run-all.sh
+          bash tests/qa-harness/run-all.sh
 
       # Fails when docs/api-contract.md and the shipped types disagree, in
       # either direction. Never runs with --write: regenerating the document on
