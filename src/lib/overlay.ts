@@ -29,11 +29,19 @@ interface OverlayEntry {
   /** Asked at dismiss time, not at registration: `closeOnEscape` can change. */
   dismissable: () => boolean;
   /**
-   * The element Tab must not leave, for an overlay that is modal.
-   *
-   * Omitted by a non-modal overlay -- a Popover does not take focus away from
-   * the page -- and asked at key time, because the content is portalled and
+   * This overlay's own content, asked at key time because it is portalled and
    * mounts after registration.
+   *
+   * Declared by modal and non-modal overlays alike. A Popover is not modal and
+   * still has to be part of the focus scope of whatever it was opened from, or
+   * Tab cannot reach it.
+   */
+  element?: () => HTMLElement | undefined;
+  /**
+   * Whether this overlay contains focus while it is open.
+   *
+   * True for Dialog and Drawer, false for Popover. It decides who *owns* the
+   * scope; `element` decides what is *in* it.
    *
    * Here rather than on each component for the same reason `dismiss` is.
    * Dialog and Drawer each bound their own document-level Tab listener and
@@ -41,7 +49,7 @@ interface OverlayEntry {
    * one behind could pull focus out of the one in front. Which overlay owns
    * the keyboard is a question about all of them.
    */
-  trapFocusIn?: () => HTMLElement | undefined;
+  modal?: boolean;
 }
 
 /*
@@ -61,6 +69,37 @@ let keydownBound = false;
 /** The innermost overlay: the one that owns the keyboard. */
 const top = (): OverlayEntry | undefined => stack[stack.length - 1];
 
+/**
+ * The elements Tab may move within, given what is open.
+ *
+ * The innermost *modal* owns the scope, and everything opened above it is
+ * inside that scope. Empty when nothing open contains focus, which is Tab
+ * belonging to the page.
+ *
+ * Asking only the top entry was wrong in the one arrangement this manager
+ * exists for: a Popover opened from inside a Dialog is the top entry and is
+ * not modal, so Tab did nothing at all and focus walked out to the page behind
+ * a dialog that was still open -- worse than before the manager, where the
+ * Dialog's own listener at least still ran. Trapping in the modal's element
+ * alone is the opposite failure: the popover's portalled content sits outside
+ * that element and Tab could never reach it.
+ *
+ * Exported for tests. This repository has no DOM in its unit tests -- the
+ * harness is the DOM-level instrument -- and the bugs here are arrangements
+ * rather than components, which is exactly what a one-component-per-page sweep
+ * cannot set up. Keeping the decision pure is what makes it assertable at all.
+ */
+export const focusScope = (entries: readonly OverlayEntry[]): HTMLElement[] => {
+  for (let i = entries.length - 1; i >= 0; i -= 1) {
+    if (!entries[i]?.modal) continue;
+    return entries
+      .slice(i)
+      .map((entry) => entry.element?.())
+      .filter((element): element is HTMLElement => Boolean(element));
+  }
+  return [];
+};
+
 const handleKeyDown = (event: KeyboardEvent) => {
   if (event.defaultPrevented) return;
 
@@ -68,8 +107,8 @@ const handleKeyDown = (event: KeyboardEvent) => {
   if (!entry) return;
 
   if (event.key === "Tab") {
-    const container = entry.trapFocusIn?.();
-    if (container) trapFocus(event, container);
+    const scope = focusScope(stack);
+    if (scope.length > 0) trapFocus(event, scope);
     return;
   }
 

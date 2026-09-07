@@ -270,7 +270,8 @@ const DialogRoot: Layout<typeof componentRecipe, DialogRootProps> = () => {
       dismissable: () =>
         props.isDismissable !== false && props.shouldCloseOnEsc !== false,
       dismiss: () => setIsOpen(false),
-      trapFocusIn: () => contentRef() ?? undefined,
+      element: () => contentRef() ?? undefined,
+      modal: true,
     });
 
     return () => {

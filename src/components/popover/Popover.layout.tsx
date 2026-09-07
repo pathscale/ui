@@ -176,6 +176,17 @@ const PopoverRoot: Layout<typeof componentRecipe, PopoverRootProps> = () => {
     const releaseOverlay = registerOverlay({
       dismissable: () => props.closeOnEscape !== false,
       dismiss: () => setIsOpen(false, { focusTrigger: true }),
+      /*
+       * Not modal -- a popover does not take the keyboard away from the page --
+       * but its content still joins the focus scope of whatever it was opened
+       * from.
+       *
+       * Without this, a popover opened inside a Dialog was the top of the stack
+       * and declared no scope, so Tab did nothing and focus escaped to the page
+       * behind a dialog that was still open. Naming the content is what lets
+       * the dialog keep containing focus *and* lets Tab reach the popover.
+       */
+      element: () => contentRef() ?? undefined,
     });
     return () => {
       releaseOverlay();

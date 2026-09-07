@@ -284,7 +284,10 @@ const DrawerRoot: Layout<typeof componentRecipe, DrawerRootProps> = () => {
       // behind it closes instead.
       dismissable: () => isDismissable() && shouldCloseOnEsc(),
       dismiss: () => requestClose("escape"),
-      trapFocusIn: () => (trapFocusEnabled() ? dialog : undefined),
+      element: () => dialog,
+      // `trapFocus={false}` is a caller saying this drawer does not contain
+      // focus; it still contributes its content to whatever scope does.
+      modal: trapFocusEnabled(),
     });
 
     return () => {
