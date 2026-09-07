@@ -137,6 +137,39 @@ function declarationBody(text: string, typeName: string): string | null {
   return rhs;
 }
 
+/** The name half of a `name?: type` record entry. */
+const propName = (entry: string) =>
+  entry.slice(0, entry.indexOf(":")).replace(/\?$/, "");
+
+/**
+ * The declared type starting at `from`, up to the member's terminator.
+ *
+ * A scan rather than a pattern, because the terminator depends on nesting: the
+ * comma in `Record<string, number>` ends nothing, and neither does the one in
+ * `(value: string, index: number) => void`. Depth is tracked for `{}`, `()`,
+ * `[]` and `<>`; the `>` of `=>` is skipped, or every callback type would close
+ * a bracket it never opened.
+ *
+ * Whitespace is collapsed so the record does not move when a type is rewrapped
+ * across lines, which is the difference between a contract that flags real
+ * changes and one people learn to regenerate without reading.
+ */
+function typeTextAt(text: string, from: number): string {
+  let depth = 0;
+  let index = from;
+  for (; index < text.length; index += 1) {
+    const char = text[index];
+    if (char === "{" || char === "(" || char === "[") depth += 1;
+    else if (char === "}" || char === ")" || char === "]") {
+      if (depth === 0) break;
+      depth -= 1;
+    } else if (char === "<") depth += 1;
+    else if (char === ">" && text[index - 1] !== "=") depth = Math.max(0, depth - 1);
+    else if ((char === ";" || char === ",") && depth === 0) break;
+  }
+  return text.slice(from, index).replace(/\s+/g, " ").trim();
+}
+
 /**
  * The prop names a type declares, following intersections and aliases.
  *
@@ -168,11 +201,21 @@ function propsOf(
   const stripped = rhs.replace(/\/\*[\s\S]*?\*\//g, "").replace(/\/\/[^\n]*/g, "");
   const names = new Set<string>();
 
-  // Own members: every `key:` at any depth of this declaration's own literals.
+  /*
+   * Own members: every `key:` at any depth of this declaration's own literals,
+   * with the type it is declared as.
+   *
+   * The name alone was the whole record for a long time, and it cannot see the
+   * change that matters most about a callback: `onChange` went from handing
+   * over an `Event` to handing over a `boolean` on three components in this
+   * release, and the contract said nothing, because the name never moved. A
+   * consumer's handler keeps compiling and starts receiving something else.
+   */
   for (const m of stripped.matchAll(
-    /(?:^|[{;\n])\s*(?:readonly\s+)?["']?([A-Za-z_$][\w$-]*)["']?\??\s*:/g,
+    /(?:^|[{;\n])\s*(?:readonly\s+)?["']?([A-Za-z_$][\w$-]*)["']?(\??)\s*:/g,
   )) {
-    names.add(m[1]);
+    const type = typeTextAt(stripped, m.index + m[0].length);
+    names.add(`${m[1]}${m[2]}: ${type}`);
   }
 
   // Referenced members: the parts of the intersection that are types elsewhere.
@@ -191,7 +234,10 @@ function propsOf(
       for (const source of [text, ...files]) {
         const inherited = propsOf(source, omit[1], files, new Set(seen));
         if (inherited === null) continue;
-        for (const prop of inherited) if (!removed.has(prop)) names.add(prop);
+        // `removed` names props; an entry is `name?: type`, so subtract on the
+        // name half only.
+        for (const prop of inherited)
+          if (!removed.has(propName(prop))) names.add(prop);
         break;
       }
       continue;
@@ -288,6 +334,7 @@ function readDocumentedApi(): Api {
   if (!existsSync(DOC)) return new Map();
   const api: Api = new Map();
   let current: string | null = null;
+  let inBlock = false;
   for (const line of readFileSync(DOC, "utf8").split("\n")) {
     const heading = /^###\s+(\S+)/.exec(line);
     if (heading) {
@@ -295,18 +342,23 @@ function readDocumentedApi(): Api {
       api.set(current, []);
       continue;
     }
-    const props = /^`([^`]*)`$/.exec(line.trim());
-    if (current && props) {
-      api.set(
-        current,
-        props[1]
-          .split(/\s+/)
-          .map((p) => p.trim())
-          .filter(Boolean)
-          .sort(),
-      );
-      current = null;
+    if (!current) continue;
+    if (line.trim() === "```ts") {
+      inBlock = true;
+      continue;
     }
+    if (line.trim() === "```") {
+      inBlock = false;
+      api.set(current, (api.get(current) ?? []).sort());
+      current = null;
+      continue;
+    }
+    if (inBlock && line.trim()) {
+      api.set(current, [...(api.get(current) ?? []), line.trim()]);
+      continue;
+    }
+    // A component with nothing of its own says so in prose and closes there.
+    if (line.trim().startsWith("_No props")) current = null;
   }
   return api;
 }
@@ -337,7 +389,25 @@ function render(api: Api): string {
     "",
   ];
   for (const [name, props] of [...api].sort(([a], [b]) => a.localeCompare(b))) {
-    lines.push(`### ${name}`, "", `\`${props.join(" ")}\``, "");
+    /*
+     * One prop per line, with its declared type.
+     *
+     * A space-separated list of names on one line was compact and could not see
+     * the change that matters most about a callback: `onChange` going from an
+     * `Event` to a `boolean` moves no name, so the contract stayed green while
+     * every consumer's handler started receiving something else. The type is
+     * part of the promise.
+     *
+     * A fenced block rather than backticked inline, because a type contains
+     * backticks-hostile punctuation and the diff of one prop should be one
+     * line rather than the whole component's list rewrapping.
+     */
+    lines.push(`### ${name}`, "");
+    if (props.length === 0) {
+      lines.push("_No props beyond HTML attributes and `UIBaseProps`._", "");
+      continue;
+    }
+    lines.push("```ts", ...props, "```", "");
   }
   return lines.join("\n");
 }

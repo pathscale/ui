@@ -18,744 +18,1918 @@ HTML attributes and `UIBaseProps`; that is an assertion, not a gap.
 
 ### Accordion
 
-`children defaultValue disabled hideSeparator onValueChange selectionMode state value variant`
+```ts
+children?: JSX.Element
+defaultValue?: AccordionValue
+disabled?: boolean
+hideSeparator?: boolean
+onValueChange?: (value: string[]) => void
+selectionMode?: AccordionSelectionMode
+state?: State
+value?: AccordionValue
+variant?: AccordionVariant
+```
 
 ### AccordionContent
 
-`children keepMounted`
+```ts
+children?: JSX.Element
+keepMounted?: boolean
+```
 
 ### AccordionIndicator
 
-`children`
+```ts
+children?: JSX.Element
+```
 
 ### AccordionItem
 
-`children disabled state value`
+```ts
+children?: JSX.Element
+disabled?: boolean
+state?: State
+value?: string
+```
 
 ### AccordionTrigger
 
-`children indicator showIndicator`
+```ts
+children?: JSX.Element
+indicator?: JSX.Element
+showIndicator?: boolean
+```
 
 ### Address
 
-`copiedLabel copyLabel copyable explorerLabel explorerUrl font lead name onCopy size state tail truncate value`
+```ts
+copiedLabel?: JSX.Element
+copyLabel?: JSX.Element
+copyable?: boolean
+explorerLabel?: JSX.Element
+explorerUrl?: string
+font?: "mono" | "inherit"
+lead?: number
+name?: JSX.Element
+onCopy?: (value: string) => void
+size?: Size
+state?: State
+tail?: number
+truncate?: AddressTruncate
+value: string
+```
 
 ### Alert
 
-`children dismissLabel flavor icon onDismiss placement title variant`
+```ts
+children: JSX.Element
+dismissLabel?: string
+flavor?: Flavor
+icon?: JSX.Element | false
+onDismiss?: () => void
+placement?: AlertPlacement
+title?: JSX.Element
+variant?: Variant
+```
 
 ### AuthCard
 
-`brandingSlot children description footer title`
+```ts
+brandingSlot?: JSX.Element
+children: JSX.Element
+description?: JSX.Element
+footer?: JSX.Element
+title?: JSX.Element
+```
 
 ### AuthFieldGroup
 
-`children gap`
+```ts
+children: JSX.Element
+gap?: AuthFieldGroupGap
+```
 
 ### AuthFooterLinks
 
-`align items`
+```ts
+align?: AuthFooterLinksAlign
+items: AuthFooterLinkItem[]
+```
 
 ### AuthMessage
 
-`flavor message`
+```ts
+flavor?: Flavor
+message?: JSX.Element | string | null
+```
 
 ### AuthPoweredBy
 
-`align href label logo variant`
+```ts
+align?: AuthPoweredByAlign
+href?: string
+label?: string
+logo?: JSX.Element
+variant?: AuthPoweredByVariant
+```
 
 ### AuthSubmitButton
 
-`children flavor size state type variant width`
+```ts
+children: JSX.Element
+flavor?: Flavor
+size?: Size
+state?: State
+type?: "button" | "submit" | "reset"
+variant?: Variant
+width?: Width
+```
 
 ### Avatar
 
-`children flavor size variant`
+```ts
+children: JSX.Element
+flavor?: Flavor
+size?: AvatarSize
+variant?: AvatarVariant
+```
 
 ### AvatarFallback
 
-`children delayMs`
+```ts
+children?: JSX.Element
+delayMs?: number
+```
 
 ### AvatarImage
 
-``
+_No props beyond HTML attributes and `UIBaseProps`._
 
 ### Badge
 
-`children class flavor placement size state variant`
+```ts
+children?: JSX.Element
+class?: string
+flavor?: Flavor
+placement?: BadgePlacement
+size?: BadgeSize
+state?: State
+variant?: Extract<Variant, "solid" | "soft" | "outline">
+```
 
 ### Breadcrumb
 
-`children separator`
+```ts
+children: JSX.Element
+separator?: JSX.Element
+```
 
 ### BreadcrumbItem
 
-`children href isCurrent`
+```ts
+children: JSX.Element
+href?: string
+isCurrent?: boolean
+```
 
 ### Button
 
-`children flavor href radius rel size state target type variant width`
+```ts
+children?: JSX.Element
+flavor?: Flavor
+href?: string
+radius?: Radius
+rel?: string
+size?: Size
+state?: State
+target?: JSX.AnchorHTMLAttributes<HTMLAnchorElement>["target"]
+type?: "button" | "submit" | "reset"
+variant?: Variant
+width?: Width | "square"
+```
 
 ### ButtonGroup
 
-`children fullWidth orientation size state variant`
+```ts
+children?: JSX.Element
+fullWidth?: boolean
+orientation?: ButtonGroupOrientation
+size?: Size
+state?: State
+variant?: Variant
+```
 
 ### ButtonGroupSeparator
 
-``
+_No props beyond HTML attributes and `UIBaseProps`._
 
 ### Calendar
 
-`defaultValue disabled isDateUnavailable locale maxValue minValue onChange onDayHover onDaySelect rangeEnd rangePreview rangeStart selectionMode showOutsideDays state value weekdayFormat`
+```ts
+defaultValue?: Date
+disabled?: boolean
+isDateUnavailable?: (date: Date) => boolean
+locale?: string
+maxValue?: Date
+minValue?: Date
+onChange?: (value: Date) => void
+onDayHover?: CalendarDayHoverHandler
+onDaySelect?: CalendarDaySelectHandler
+rangeEnd?: Date
+rangePreview?: Date
+rangeStart?: Date
+selectionMode?: CalendarSelectionMode
+showOutsideDays?: boolean
+state?: State
+value?: Date
+weekdayFormat?: CalendarWeekdayFormat
+```
 
 ### Card
 
-`children elevation flavor footer header isInteractive material padding radius state variant`
+```ts
+children: JSX.Element
+elevation?: CardElevation
+flavor?: Flavor
+footer?: JSX.Element
+header?: JSX.Element
+isInteractive?: boolean
+material?: Material
+padding?: Space
+radius?: Radius
+state?: CardState
+variant?: Variant
+```
 
 ### CardBody
 
-`children`
+```ts
+children: JSX.Element
+```
 
 ### CardFooter
 
-`children`
+```ts
+children: JSX.Element
+```
 
 ### CardHeader
 
-`children`
+```ts
+children: JSX.Element
+```
 
 ### CardRoot
 
-`children elevation flavor footer header isInteractive material padding radius state variant`
+```ts
+children: JSX.Element
+elevation?: CardElevation
+flavor?: Flavor
+footer?: JSX.Element
+header?: JSX.Element
+isInteractive?: boolean
+material?: Material
+padding?: Space
+radius?: Radius
+state?: CardState
+variant?: Variant
+```
 
 ### ChatBubble
 
-`end`
+```ts
+end?: boolean
+```
 
 ### Checkbox
 
-`children defaultChecked description indeterminate isIndeterminate issues onChange onNativeChange state variant`
+```ts
+children?: JSX.Element
+defaultChecked?: boolean
+description?: JSX.Element
+indeterminate?: boolean
+isIndeterminate?: boolean
+issues?: Issue[]
+onChange?: (checked: boolean) => void
+onNativeChange?: JSX.EventHandlerUnion<HTMLInputElement, Event>
+state?: State
+variant?: CheckboxVariant
+```
 
 ### CheckboxGroup
 
-`children defaultValue disabled issues name onChange state value variant`
+```ts
+children?: JSX.Element | ((values: string[]) => JSX.Element)
+defaultValue?: string[]
+disabled?: boolean
+issues?: Issue[]
+name?: string
+onChange?: (value: string[]) => void
+state?: State
+value?: string[]
+variant?: CheckboxGroupVariant
+```
 
 ### Chip
 
-`children class endIcon flavor onRemove removeButtonLabel size startIcon state variant`
+```ts
+children?: JSX.Element
+class?: string
+endIcon?: JSX.Element
+flavor?: Flavor
+onRemove?: () => void
+removeButtonLabel?: string
+size?: ChipSize
+startIcon?: JSX.Element
+state?: State
+variant?: ChipVariant
+```
 
 ### CloseButton
 
-`endIcon isPending startIcon state variant`
+```ts
+endIcon?: JSX.Element
+isPending?: boolean
+startIcon?: JSX.Element
+state?: State
+variant?: CloseButtonVariant
+```
 
 ### Collapsible
 
-`children defaultOpen disabled id onOpenChange open state`
+```ts
+children?: JSX.Element
+defaultOpen?: boolean
+disabled?: boolean
+id?: string
+onOpenChange?: (open: boolean) => void
+open?: boolean
+state?: State
+```
 
 ### ColorArea
 
-`onChange state value`
+```ts
+onChange?: (value: ColorAreaValue) => void
+state?: State
+value?: ColorAreaValue
+```
 
 ### ColorField
 
-`defaultValue format fullWidth onChange state value`
+```ts
+defaultValue?: string
+format?: ColorFieldFormat
+fullWidth?: boolean
+onChange?: (value: string) => void
+state?: State
+value?: string
+```
 
 ### ColorPicker
 
-`children defaultValue onChange state value`
+```ts
+children?: JSX.Element
+defaultValue?: string
+onChange?: (value: string) => void
+state?: State
+value?: string
+```
 
 ### ColorSlider
 
-`defaultValue onChange state type value`
+```ts
+defaultValue?: number
+onChange?: (value: number) => void
+state?: State
+type?: ColorSliderType
+value?: number
+```
 
 ### ColorSwatch
 
-`color colorName isSelected onChange onSelect shape size state`
+```ts
+color: string
+colorName?: string
+isSelected?: boolean
+onChange?: (color: string) => void
+onSelect?: (color: string) => void
+shape?: ColorSwatchShape
+size?: ColorSwatchSize
+state?: State
+```
 
 ### ColorSwatchPicker
 
-`children defaultValue onChange state value`
+```ts
+children: JSX.Element
+defaultValue?: string
+onChange?: (value: string) => void
+state?: State
+value?: string
+```
 
 ### ColorWheel
 
-`aria-label class isDisabled mode onChange palette value wheelClass`
+```ts
+aria-label?: string
+class?: string
+isDisabled?: boolean
+mode?: ColorWheelFlowerMode
+onChange: (value: string) => void
+palette?: readonly string[]
+value: string
+wheelClass?: string
+```
 
 ### ColorWheelFlower
 
-`class id mode palette`
+```ts
+class?: string
+id?: string
+mode?: ColorWheelFlowerMode
+palette?: readonly string[]
+```
 
 ### ComboBox
 
-`allowsCustomValue children defaultFilter defaultInputValue defaultOpen defaultSelectedKey disabled endIcon fullWidth inputValue issues itemDisabled itemKey itemTextValue items menuTrigger name onInputChange onOpenChange onSelectionChange open placeholder required selectedKey startIcon state variant`
+```ts
+allowsCustomValue?: boolean
+children?: JSX.Element
+defaultFilter?: (textValue: string, inputValue: string) => boolean
+defaultInputValue?: string
+defaultOpen?: boolean
+defaultSelectedKey?: ComboBoxKey | null
+disabled?: boolean
+endIcon?: JSX.Element
+fullWidth?: boolean
+inputValue?: string
+issues?: Issue[]
+itemDisabled?: (item: T, index: number) => boolean
+itemKey?: (item: T, index: number) => ComboBoxKey
+itemTextValue?: (item: T, index: number) => string
+items?: readonly T[]
+menuTrigger?: ComboBoxMenuTrigger
+name?: string
+onInputChange?: (value: string) => void
+onOpenChange?: (open: boolean) => void
+onSelectionChange?: (key: string | null) => void
+open?: boolean
+placeholder?: string
+required?: boolean
+selectedKey?: ComboBoxKey | null
+startIcon?: JSX.Element
+state?: State
+variant?: ComboBoxVariant
+```
 
 ### ComboBoxInput
 
-`onInput`
+```ts
+onInput?: JSX.EventHandlerUnion<HTMLInputElement, InputEvent>
+```
 
 ### ComboBoxInputGroup
 
-`children`
+```ts
+children?: JSX.Element
+```
 
 ### ComboBoxList
 
-`children endIcon renderEmpty`
+```ts
+children?: JSX.Element | ((item: ComboBoxListRenderItem) => JSX.Element)
+endIcon?: JSX.Element
+renderEmpty?: () => JSX.Element
+```
 
 ### ComboBoxPopover
 
-`children`
+```ts
+children?: JSX.Element
+```
 
 ### ComboBoxTrigger
 
-`endIcon startIcon`
+```ts
+endIcon?: JSX.Element
+startIcon?: JSX.Element
+```
 
 ### ComplexColorWheel
 
-`action adjustments adjustmentsClass layout material`
+```ts
+action?: JSX.Element
+adjustments: readonly ColorWheelAdjustment[]
+adjustmentsClass?: string
+layout?: "auto" | "beside" | "stacked"
+material?: CardMaterial
+```
 
 ### Composer
 
-`autofocus defaultValue hint issues lead maxRows minRows name onChange onHeightChange onSubmit placeholder radius size state submitLabel submitOnEnter trail value variant viewportHeight`
+```ts
+autofocus?: boolean
+defaultValue?: string
+hint?: JSX.Element
+issues?: Issue[]
+lead?: JSX.Element
+maxRows?: number
+minRows?: number
+name?: string
+onChange?: (value: string, reason?: ChangeReason) => void
+onHeightChange?: (height: number) => void
+onSubmit?: (value: string) => void
+placeholder?: string
+radius?: Radius
+size?: Size
+state?: State
+submitLabel?: JSX.Element
+submitOnEnter?: boolean
+trail?: JSX.Element
+value?: string
+variant?: Variant
+viewportHeight?: number
+```
 
 ### ConnectionSettings
 
-`children endpoints labels onResetDone onSaveFailed onSaved showAppPublicId store`
+```ts
+children?: JSX.Element
+endpoints: readonly ConnectionSettingsEndpointLabel[]
+labels: ConnectionSettingsLabels
+onResetDone?: () => void
+onSaveFailed?: (error: unknown) => void
+onSaved?: () => void
+showAppPublicId?: boolean
+store: ConnectionSettingsStore
+```
 
 ### CookieConsent
 
-`analytics marketing onConsentChange storageKeys texts type`
+```ts
+analytics: boolean
+marketing: boolean
+onConsentChange?: (payload: { type: ConsentType; analytics: boolean; marketing: boolean; }) => void
+storageKeys?: CookieConsentStorageKeys
+texts?: CookieConsentTexts
+type: ConsentType
+```
 
 ### DataGrid
 
-`borders caption empty flavor interactive model onPageChange onSelectionChange onSortChange renderExpanded size sticky striping width`
+```ts
+borders?: DataGridBorders
+caption?: JSX.Element
+empty?: JSX.Element
+flavor?: Flavor
+interactive?: boolean
+model: DataGridModel<Row>
+onPageChange?: (page: number) => void
+onSelectionChange?: (ids: ReadonlySet<string>) => void
+onSortChange?: (sort: DataGridSort | null) => void
+renderExpanded?: (row: Row) => JSX.Element
+size?: Size
+sticky?: DataGridSticky
+striping?: DataGridStriping
+width?: Width
+```
 
 ### DateField
 
-`children defaultValue disabled fullWidth issues name onBlur onChange required state value variant`
+```ts
+children?: JSX.Element | ((props: DateFieldRenderProps) => JSX.Element)
+defaultValue?: string
+disabled?: boolean
+fullWidth?: boolean
+issues?: Issue[]
+name?: string
+onBlur?: JSX.EventHandlerUnion<HTMLInputElement, FocusEvent>
+onChange?: (value: string) => void
+required?: boolean
+state?: State
+value?: string
+variant?: DateFieldVariant
+```
 
 ### DateFieldGroup
 
-`children`
+```ts
+children?: JSX.Element | ((props: DateFieldRenderProps) => JSX.Element)
+```
 
 ### DateFieldInput
 
-`onInput`
+```ts
+onInput?: JSX.EventHandlerUnion<HTMLInputElement, InputEvent>
+```
 
 ### DateFieldInputContainer
 
-``
+_No props beyond HTML attributes and `UIBaseProps`._
 
 ### DateFieldPrefix
 
-``
+_No props beyond HTML attributes and `UIBaseProps`._
 
 ### DateFieldSegment
 
-`segment`
+```ts
+segment?: DateFieldSegmentValue
+```
 
 ### DateFieldSuffix
 
-``
+_No props beyond HTML attributes and `UIBaseProps`._
 
 ### DatePicker
 
-`defaultOpen defaultValue disabled isDateUnavailable locale maxValue minValue name onChange onOpenChange open placeholder state value weekdayFormat`
+```ts
+defaultOpen?: boolean
+defaultValue?: Date
+disabled?: boolean
+isDateUnavailable?: (date: Date) => boolean
+locale?: string
+maxValue?: Date
+minValue?: Date
+name?: string
+onChange?: (value: Date) => void
+onOpenChange?: (isOpen: boolean) => void
+open?: boolean
+placeholder?: string
+state?: State
+value?: Date
+weekdayFormat?: CalendarWeekdayFormat
+```
 
 ### DateRangePicker
 
-`defaultOpen defaultValue disabled endName endPlaceholder isDateUnavailable locale maxValue minValue onChange onOpenChange open startName startPlaceholder state value weekdayFormat`
+```ts
+defaultOpen?: boolean
+defaultValue?: DateRangeValue
+disabled?: boolean
+endName?: string
+endPlaceholder?: string
+isDateUnavailable?: (date: Date) => boolean
+locale?: string
+maxValue?: Date
+minValue?: Date
+onChange?: (value: DateRangeValue) => void
+onOpenChange?: (isOpen: boolean) => void
+open?: boolean
+startName?: string
+startPlaceholder?: string
+state?: State
+value?: DateRangeValue
+weekdayFormat?: CalendarWeekdayFormat
+```
 
 ### Dialog
 
-`backdrop children defaultOpen isDismissable onOpenChange open placement scrollBehavior shouldCloseOnBackdropClick shouldCloseOnEsc size`
+```ts
+backdrop?: DialogBackdropVariant
+children: JSX.Element
+defaultOpen?: boolean
+isDismissable?: boolean
+onOpenChange?: (isOpen: boolean) => void
+open?: boolean
+placement?: DialogPlacement
+scrollBehavior?: DialogScrollBehavior
+shouldCloseOnBackdropClick?: boolean
+shouldCloseOnEsc?: boolean
+size?: DialogSize
+```
 
 ### DialogBackdrop
 
-`children isDismissable shouldCloseOnBackdropClick variant`
+```ts
+children: JSX.Element
+isDismissable?: boolean
+shouldCloseOnBackdropClick?: boolean
+variant?: DialogBackdropVariant
+```
 
 ### DialogBody
 
-`children`
+```ts
+children: JSX.Element
+```
 
 ### DialogCloseTrigger
 
-`children`
+```ts
+children?: JSX.Element
+```
 
 ### DialogContent
 
-`backdrop children isDismissable material placement scrollBehavior shouldCloseOnBackdropClick size`
+```ts
+backdrop?: DialogBackdropVariant
+children: JSX.Element
+isDismissable?: boolean
+material?: Material
+placement?: DialogPlacement
+scrollBehavior?: DialogScrollBehavior
+shouldCloseOnBackdropClick?: boolean
+size?: DialogSize
+```
 
 ### DialogFooter
 
-`children`
+```ts
+children: JSX.Element
+```
 
 ### DialogHeader
 
-`children`
+```ts
+children: JSX.Element
+```
 
 ### DialogHeading
 
-`children`
+```ts
+children: JSX.Element
+```
 
 ### DialogIcon
 
-`children`
+```ts
+children: JSX.Element
+```
 
 ### DialogTrigger
 
-`children`
+```ts
+children: JSX.Element
+```
 
 ### Dock
 
-`baseSize desktopClass gap hoverIconSize hoverSize iconSize itemClass items magnify magnifyRange mobileClass mobileMode mobilePopupDirection mobileToggleIcon nudge orientation showContainer showDesktop showMobile springDamping springMass springStiffness tooltipClass tooltipDirection`
+```ts
+baseSize?: number
+desktopClass?: string
+gap?: number
+hoverIconSize?: number
+hoverSize?: number
+iconSize?: number
+itemClass?: string
+items: DockItem[]
+magnify?: boolean
+magnifyRange?: number
+mobileClass?: string
+mobileMode?: "burger" | "dock"
+mobilePopupDirection?: DockDirection
+mobileToggleIcon?: JSX.Element
+nudge?: number
+orientation?: "horizontal" | "vertical"
+showContainer?: boolean
+showDesktop?: boolean
+showMobile?: boolean
+springDamping?: number
+springMass?: number
+springStiffness?: number
+tooltipClass?: string
+tooltipDirection?: DockDirection
+```
 
 ### Drawer
 
-`backdrop children defaultOpen isDismissable onOpenChange open placement restoreFocus scrollBehavior shouldCloseOnBackdropClick shouldCloseOnEsc size trapFocus`
+```ts
+backdrop?: DrawerBackdropVariant
+children: JSX.Element
+defaultOpen?: boolean
+isDismissable?: boolean
+onOpenChange?: (isOpen: boolean) => void
+open?: boolean
+placement?: DrawerPlacement
+restoreFocus?: boolean
+scrollBehavior?: DrawerScrollBehavior
+shouldCloseOnBackdropClick?: boolean
+shouldCloseOnEsc?: boolean
+size?: DrawerSize
+trapFocus?: boolean
+```
 
 ### DrawerBackdrop
 
-`children isDismissable shouldCloseOnBackdropClick variant`
+```ts
+children: JSX.Element
+isDismissable?: boolean
+shouldCloseOnBackdropClick?: boolean
+variant?: DrawerBackdropVariant
+```
 
 ### DrawerBody
 
-`children id`
+```ts
+children: JSX.Element
+id?: string
+```
 
 ### DrawerClose
 
-`children`
+```ts
+children: JSX.Element
+```
 
 ### DrawerCloseTrigger
 
-`children endIcon startIcon`
+```ts
+children?: JSX.Element
+endIcon?: JSX.Element
+startIcon?: JSX.Element
+```
 
 ### DrawerContent
 
-`children material placement scrollBehavior`
+```ts
+children: JSX.Element
+material?: Material
+placement?: DrawerPlacement
+scrollBehavior?: DrawerScrollBehavior
+```
 
 ### DrawerDialog
 
-`bg borderColor borderWidth children maxWidth padding side size width`
+```ts
+bg?: string
+borderColor?: string
+borderWidth?: string
+children: JSX.Element
+maxWidth?: string
+padding?: string
+side?: DrawerDialogSide
+size?: DrawerSize
+width?: string
+```
 
 ### DrawerFooter
 
-`children`
+```ts
+children: JSX.Element
+```
 
 ### DrawerHandle
 
-``
+_No props beyond HTML attributes and `UIBaseProps`._
 
 ### DrawerHeader
 
-`children`
+```ts
+children: JSX.Element
+```
 
 ### DrawerHeading
 
-`children id`
+```ts
+children: JSX.Element
+id?: string
+```
 
 ### DrawerTrigger
 
-`children`
+```ts
+children: JSX.Element
+```
 
 ### Dropdown
 
-`autoFlip children dataTheme defaultOpen disabled onOpenChange open placement`
+```ts
+autoFlip?: boolean
+children: JSX.Element
+dataTheme?: string
+defaultOpen?: boolean
+disabled?: boolean
+onOpenChange?: (open: boolean) => void
+open?: boolean
+placement?: DropdownPlacement
+```
 
 ### Empty
 
-`children`
+```ts
+children: JSX.Element
+```
 
 ### FieldGroup
 
-`children`
+```ts
+children?: JSX.Element
+```
 
 ### Fieldset
 
-``
+_No props beyond HTML attributes and `UIBaseProps`._
 
 ### FieldsetActions
 
-`children`
+```ts
+children?: JSX.Element
+```
 
 ### FieldsetLegend
 
-``
+_No props beyond HTML attributes and `UIBaseProps`._
 
 ### FirefoxPWABanner
 
-`extensionUrl onDismiss onInstall storageKey texts`
+```ts
+extensionUrl?: string
+onDismiss?: () => void
+onInstall?: () => void
+storageKey?: string
+texts?: FirefoxPWABannerTexts
+```
 
 ### Flex
 
-`align as basis direction gap gapX gapY grow height justify minHeight minWidth paddingBlock paddingInline shrink width wrap`
+```ts
+align?: ResponsiveProp<"start" | "center" | "end" | "stretch" | "baseline">
+as?: keyof JSX.IntrinsicElements
+basis?: ResponsiveProp<"none" | "sm" | "md" | "lg" | "xl">
+direction?: ResponsiveProp<"row" | "col" | "row-reverse" | "col-reverse">
+gap?: ResponsiveProp<"none" | "sm" | "md" | "lg" | "xl">
+gapX?: ResponsiveProp<"none" | "sm" | "md" | "lg" | "xl">
+gapY?: ResponsiveProp<"none" | "sm" | "md" | "lg" | "xl">
+grow?: ResponsiveProp<boolean>
+height?: ResponsiveProp<"full">
+justify?: ResponsiveProp<"start" | "center" | "end" | "between" | "around" | "evenly">
+minHeight?: ResponsiveProp<"zero">
+minWidth?: ResponsiveProp<"zero">
+paddingBlock?: ResponsiveProp<"none" | "sm" | "md" | "lg" | "xl">
+paddingInline?: ResponsiveProp<"none" | "sm" | "md" | "lg" | "xl">
+shrink?: ResponsiveProp<boolean>
+width?: ResponsiveProp<"full">
+wrap?: ResponsiveProp<"wrap" | "nowrap" | "wrap-reverse">
+```
 
 ### FlexGrid
 
-`autoLoad children class count empty fromEnd more pageSize remaining reveal rows`
+```ts
+autoLoad?: boolean
+children: (row: T, index: () => number) => JSX.Element
+class?: string
+count: number
+empty?: JSX.Element
+fromEnd?: boolean
+more?: (props: { count: number; remaining: number; reveal: () => void; }) => JSX.Element
+pageSize?: number
+remaining: number
+reveal: () => void
+rows: readonly T[]
+```
 
 ### Footer
 
-`center children horizontal vertical`
+```ts
+center?: boolean
+children?: JSX.Element
+horizontal?: boolean
+vertical?: boolean
+```
 
 ### Form
 
-``
+_No props beyond HTML attributes and `UIBaseProps`._
 
 ### FormField
 
-`class form inputProps label name`
+```ts
+class?: string
+form?: AnyFormApi
+inputProps?: Omit<InputFieldProps, "name" | "value" | "onInput" | "onBlur" | "aria-invalid" | "isInvalid">
+label?: JSX.Element
+name: string
+```
 
 ### FormSubmitButton
 
-`children flavor form href radius rel size state target variant width`
+```ts
+children?: JSX.Element
+flavor?: Flavor
+form?: AnyFormApi
+href?: string
+radius?: Radius
+rel?: string
+size?: Size
+state?: State
+target?: JSX.AnchorHTMLAttributes<HTMLAnchorElement>["target"]
+variant?: Variant
+width?: Width | "square"
+```
 
 ### GlowCard
 
-``
+_No props beyond HTML attributes and `UIBaseProps`._
 
 ### Grid
 
-`as autoCols autoRows cols flow gap rows`
+```ts
+as?: keyof JSX.IntrinsicElements
+autoCols?: ResponsiveProp<AutoSize>
+autoRows?: ResponsiveProp<AutoSize>
+cols?: ResponsiveProp<GridSize>
+flow?: ResponsiveProp<GridFlow>
+gap?: ResponsiveProp<GridGap>
+rows?: ResponsiveProp<GridSize>
+```
 
 ### Header
 
-``
+_No props beyond HTML attributes and `UIBaseProps`._
 
 ### I18nProvider
 
-`children i18n`
+```ts
+children: JSX.Element
+i18n: I18nStore
+```
 
 ### Icon
 
-`flavor height src width`
+```ts
+flavor?: Flavor
+height?: number
+src?: string | JSX.Element
+width?: number
+```
 
 ### ImmersiveLanding
 
-`appVersion children cookieConfig currentPage enableScrollNavigation firefoxPWAConfig initialPage onNavigate onNavigationComplete overlay pages pwaConfig showArrows showCookieConsent showFirefoxBanner showNavigation showPWAPrompt transitionDuration`
+```ts
+appVersion?: string
+children: JSX.Element | ((context: ImmersiveLandingContextValue) => JSX.Element)
+cookieConfig?: CookieConsentProps
+currentPage?: Accessor<string>
+enableScrollNavigation?: boolean
+firefoxPWAConfig?: FirefoxPWABannerProps
+initialPage?: string
+onNavigate?: (fromPage: string, toPage: string) => void
+onNavigationComplete?: (page: string) => void
+overlay?: JSX.Element | ((context: ImmersiveLandingContextValue) => JSX.Element)
+pages: readonly string[]
+pwaConfig?: PWAInstallPromptProps
+showArrows?: boolean
+showCookieConsent?: boolean
+showFirefoxBanner?: boolean
+showNavigation?: boolean
+showPWAPrompt?: boolean
+transitionDuration?: number
+```
 
 ### InlineEdit
 
-`children disabled fieldClass fullWidth label onCommit trigger value`
+```ts
+children?: JSX.Element
+disabled?: boolean
+fieldClass?: string
+fullWidth?: boolean
+label?: string
+onCommit?: (value: string) => void | Promise<unknown>
+trigger?: JSX.Element
+value: string
+```
 
 ### Input
 
-`errorMessage helperText id label`
+```ts
+errorMessage?: JSX.Element
+helperText?: JSX.Element
+id?: string
+label?: JSX.Element
+```
 
 ### InputOTP
 
-`autoFocus children defaultValue disabled inputClassName inputmode issues maxLength name onChange onComplete pattern state value variant`
+```ts
+autoFocus?: boolean
+children?: JSX.Element
+defaultValue?: string
+disabled?: boolean
+inputClassName?: string
+inputmode?: JSX.InputHTMLAttributes<HTMLInputElement>["inputmode"]
+issues?: Issue[]
+maxLength?: number
+name?: string
+onChange?: (value: string) => void
+onComplete?: (value: string) => void
+pattern?: string
+state?: State
+value?: string
+variant?: InputOTPVariant
+```
 
 ### InputOTPGroup
 
-`children`
+```ts
+children?: JSX.Element
+```
 
 ### InputOTPSeparator
 
-`children`
+```ts
+children?: JSX.Element
+```
 
 ### InputOTPSlot
 
-`index`
+```ts
+index: number
+```
 
 ### Join
 
-`horizontal responsive vertical`
+```ts
+horizontal?: boolean
+responsive?: boolean
+vertical?: boolean
+```
 
 ### Kbd
 
-`children variant`
+```ts
+children?: JSX.Element
+variant?: KbdVariant
+```
 
 ### KbdAbbr
 
-`keyValue`
+```ts
+keyValue: KbdKey
+```
 
 ### KbdContent
 
-`children`
+```ts
+children?: JSX.Element
+```
 
 ### Label
 
-`for htmlFor issues required state`
+```ts
+for?: string
+htmlFor?: string
+issues?: Issue[]
+required?: boolean
+state?: State
+```
 
 ### LanguageSwitcher
 
-`align aria-label currentLanguageLabel i18n id loadingLabel onLanguageChange optionsLabel`
+```ts
+align?: DropdownAlign
+aria-label?: string
+currentLanguageLabel?: string
+i18n: I18nStore
+id?: string
+loadingLabel?: string
+onLanguageChange?: (lang: string) => void
+optionsLabel?: string
+```
 
 ### Link
 
-`isExternal state underline variant`
+```ts
+isExternal?: boolean
+state?: State
+underline?: LinkUnderline
+variant?: LinkVariant
+```
 
 ### LinkIcon
 
-``
+_No props beyond HTML attributes and `UIBaseProps`._
 
 ### ListBox
 
-`children defaultSelectedKeys disabled disabledKeys disallowEmptySelection items onAction onSelectionChange renderEmpty selectedKeys selectionMode state variant`
+```ts
+children?: JSX.Element | ((item: T) => JSX.Element)
+defaultSelectedKeys?: Iterable<string | number>
+disabled?: boolean
+disabledKeys?: Iterable<string | number>
+disallowEmptySelection?: boolean
+items?: readonly T[]
+onAction?: (key: string) => void
+onSelectionChange?: (keys: Set<string>) => void
+renderEmpty?: () => JSX.Element
+selectedKeys?: Iterable<string | number>
+selectionMode?: ListBoxSelectionMode
+state?: State
+variant?: ListBoxVariant
+```
 
 ### ListBoxItem
 
-`children disabled id state textValue variant`
+```ts
+children?: JSX.Element | ((props: ListBoxItemRenderProps) => JSX.Element)
+disabled?: boolean
+id?: string | number
+state?: State
+textValue?: string
+variant?: ListBoxVariant
+```
 
 ### ListBoxItemIndicator
 
-`children`
+```ts
+children?: JSX.Element | ((props: ListBoxItemRenderProps) => JSX.Element)
+```
 
 ### ListBoxSection
 
-`children title`
+```ts
+children?: JSX.Element
+title?: JSX.Element
+```
 
 ### LiveChatBubble
 
-`aria-label autoScrollBehavior autoScrollOnNewMessage children onClose onOpen panelProps position stickToBottomThreshold unreadCount`
+```ts
+aria-label?: string
+autoScrollBehavior?: "instant" | "smooth"
+autoScrollOnNewMessage?: boolean
+children?: JSX.Element
+onClose?: () => void
+onOpen?: () => void
+panelProps?: Omit<LiveChatPanelProps, "onClose">
+position?: "bottom-right" | "bottom-left"
+stickToBottomThreshold?: number
+unreadCount?: number
+```
 
 ### LiveChatPanel
 
-`autoScrollBehavior autoScrollOnNewMessage closeLabel emptyMessage isSending messages mockMode onClose onSendMessage placeholder sendLabel stickToBottomThreshold title`
+```ts
+autoScrollBehavior?: "instant" | "smooth"
+autoScrollOnNewMessage?: boolean
+closeLabel?: string
+emptyMessage?: string
+isSending?: boolean
+messages?: ChatMessage[]
+mockMode?: boolean
+onClose: () => void
+onSendMessage?: (payload: SendMessagePayload) => Promise<SendMessageResponse>
+placeholder?: string
+sendLabel?: string
+stickToBottomThreshold?: number
+title?: string
+```
 
 ### Menu
 
-`children defaultSelectedKeys disabled disabledKeys disallowEmptySelection items material onAction onSelectionChange renderEmpty selectedKeys selectionMode state`
+```ts
+children?: JSX.Element | ((item: T) => JSX.Element)
+defaultSelectedKeys?: Iterable<string | number>
+disabled?: boolean
+disabledKeys?: Iterable<string | number>
+disallowEmptySelection?: boolean
+items?: readonly T[]
+material?: Material
+onAction?: (key: string) => void
+onSelectionChange?: (keys: Set<string>) => void
+renderEmpty?: () => JSX.Element
+selectedKeys?: Iterable<string | number>
+selectionMode?: MenuSelectionMode
+state?: State
+```
 
 ### MenuItem
 
-`children disabled hasSubmenu id onAction state textValue variant`
+```ts
+children?: JSX.Element | ((props: MenuItemRenderProps) => JSX.Element)
+disabled?: boolean
+hasSubmenu?: boolean
+id?: string | number
+onAction?: (key: string) => void
+state?: State
+textValue?: string
+variant?: MenuItemVariant
+```
 
 ### MenuItemIndicator
 
-`children type`
+```ts
+children?: JSX.Element | ((props: MenuItemRenderProps) => JSX.Element)
+type?: MenuItemIndicatorType
+```
 
 ### MenuItemSubmenuIndicator
 
-`children`
+```ts
+children?: JSX.Element
+```
 
 ### MenuSection
 
-`children title`
+```ts
+children?: JSX.Element
+title?: JSX.Element
+```
 
 ### MetalBorder
 
-`children contentClass cornerRadius glow kind paused preset strength theme`
+```ts
+children?: JSX.Element
+contentClass?: string
+cornerRadius?: number | string
+glow?: boolean
+kind?: MetalBorderKind
+paused?: boolean
+preset?: MetalBorderPreset
+strength?: number
+theme?: MetalBorderTheme
+```
 
 ### Meter
 
-`children flavor formatOptions formatValue highValue lowValue maxValue minValue optimumValue size state value`
+```ts
+children?: JSX.Element | ((state: MeterRenderState) => JSX.Element)
+flavor?: Flavor
+formatOptions?: Intl.NumberFormatOptions
+formatValue?: (value: number, state: Omit<MeterRenderState, "valueText">) => string
+highValue?: number
+lowValue?: number
+maxValue?: number
+minValue?: number
+optimumValue?: number
+size?: MeterSize
+state?: State
+value?: number
+```
 
 ### MeterFill
 
-``
+_No props beyond HTML attributes and `UIBaseProps`._
 
 ### MeterOutput
 
-``
+_No props beyond HTML attributes and `UIBaseProps`._
 
 ### MeterTrack
 
-``
+_No props beyond HTML attributes and `UIBaseProps`._
 
 ### Navbar
 
-`as dataTheme material`
+```ts
+as?: keyof JSX.IntrinsicElements
+dataTheme?: string
+material?: Material
+```
 
 ### NoiseBackground
 
-`animating backdropBlur borderRadius children containerClass gradientColors noiseIntensity noiseSrc showNoise speed`
+```ts
+animating?: boolean
+backdropBlur?: boolean
+borderRadius?: string
+children?: JSX.Element
+containerClass?: string
+gradientColors?: string[]
+noiseIntensity?: number
+noiseSrc?: string
+showNoise?: boolean
+speed?: number
+```
 
 ### Pagination
 
-`onChange page state total`
+```ts
+onChange: (page: number) => void
+page: number
+state?: State
+total: number
+```
 
 ### PanelToggle
 
-`aria-controls aria-label expanded id side`
+```ts
+aria-controls?: string
+aria-label: string
+expanded: boolean
+id: string
+side?: PanelToggleSide
+```
 
 ### PasswordField
 
-`aria-describedby autocomplete autofocus class disabled hiddenIcon hideLabel id inputClass inputRef invalid label name onBlur onChange onVisibilityChange placeholder required showLabel startIcon value visibleIcon`
+```ts
+aria-describedby?: string
+autocomplete?: "current-password" | "new-password" | "off"
+autofocus?: boolean
+class?: string
+disabled?: boolean
+hiddenIcon?: JSX.Element
+hideLabel: string
+id?: string
+inputClass?: string
+inputRef?: (el: HTMLInputElement) => void
+invalid?: boolean
+label?: JSX.Element
+name?: string
+onBlur?: () => void
+onChange?: (value: string) => void
+onVisibilityChange?: (visible: boolean) => void
+placeholder?: string
+required?: boolean
+showLabel: string
+startIcon?: JSX.Element
+value?: string
+visibleIcon?: JSX.Element
+```
 
 ### PasswordRequirements
 
-`metIcon results title unmetIcon`
+```ts
+metIcon?: JSX.Element
+results: PasswordRuleResult[]
+title?: JSX.Element
+unmetIcon?: JSX.Element
+```
 
 ### Popover
 
-`anchorRect autoFlip children closeOnEscape closeOnOutsideClick defaultOpen offset onInteractOutside onOpenChange open placement`
+```ts
+anchorRect?: PopoverAnchor
+autoFlip?: boolean
+children: JSX.Element
+closeOnEscape?: boolean
+closeOnOutsideClick?: boolean
+defaultOpen?: boolean
+offset?: number
+onInteractOutside?: (event: Event) => void
+onOpenChange?: (open: boolean) => void
+open?: boolean
+placement?: PopoverPlacement
+```
 
 ### Progress
 
-`flavor formatValue isIndeterminate label maxValue minValue showValue size state value`
+```ts
+flavor?: Flavor
+formatValue?: (value: number) => string
+isIndeterminate?: boolean
+label?: string
+maxValue?: number
+minValue?: number
+showValue?: boolean
+size?: ProgressSize
+state?: State
+value?: number
+```
 
 ### PWAInstallPrompt
 
-`appIcon appName onDismiss onInstall storageKey texts`
+```ts
+appIcon?: string
+appName?: string
+onDismiss?: () => void
+onInstall?: () => void
+storageKey?: string
+texts?: PWAInstallPromptTexts
+```
 
 ### RadialProgress
 
-`flavor formatValue isIndeterminate label maxValue minValue size state value`
+```ts
+flavor?: Flavor
+formatValue?: (value: number) => string
+isIndeterminate?: boolean
+label?: string
+maxValue?: number
+minValue?: number
+size?: RadialProgressSize
+state?: State
+value?: number
+```
 
 ### Radio
 
-`children description indicator issues onChange onNativeChange state`
+```ts
+children?: JSX.Element
+description?: JSX.Element
+indicator?: JSX.Element
+issues?: Issue[]
+onChange?: (checked: boolean) => void
+onNativeChange?: JSX.EventHandlerUnion<HTMLInputElement, Event>
+state?: State
+```
 
 ### RadioGroup
 
-`children defaultValue description disabled errorMessage issues label name onChange orientation state value variant`
+```ts
+children: JSX.Element
+defaultValue?: string
+description?: JSX.Element
+disabled?: boolean
+errorMessage?: JSX.Element
+issues?: Issue[]
+label?: JSX.Element
+name?: string
+onChange?: (value: string) => void
+orientation?: RadioGroupOrientation
+state?: State
+value?: string
+variant?: RadioGroupVariant
+```
 
 ### RangeCalendar
 
-`defaultValue disabled isDateUnavailable locale maxValue minValue onChange onDayHover onDaySelect showOutsideDays state value weekdayFormat`
+```ts
+defaultValue?: RangeCalendarValue
+disabled?: boolean
+isDateUnavailable?: (date: Date) => boolean
+locale?: string
+maxValue?: Date
+minValue?: Date
+onChange?: (value: RangeCalendarValue) => void
+onDayHover?: (date?: Date) => void
+onDaySelect?: (date: Date) => void
+showOutsideDays?: boolean
+state?: State
+value?: RangeCalendarValue
+weekdayFormat?: CalendarWeekdayFormat
+```
 
 ### ScrollArea
 
-`hideScrollBar isEnabled offset onVisibilityChange orientation size variant visibility`
+```ts
+hideScrollBar?: boolean
+isEnabled?: boolean
+offset?: number
+onVisibilityChange?: (visibility: ScrollAreaVisibility) => void
+orientation?: ScrollAreaOrientation
+size?: number
+variant?: ScrollAreaVariant
+visibility?: ScrollAreaVisibility
+```
 
 ### Select
 
-`autoFlip children defaultOpen defaultSelectedKeys defaultValue disabled fullWidth onChange onOpenChange onSelectionChange open placeholder placement selectedKeys selectionMode state value variant`
+```ts
+autoFlip?: boolean
+children: JSX.Element
+defaultOpen?: boolean
+defaultSelectedKeys?: Iterable<SelectKey>
+defaultValue?: SelectValueType
+disabled?: boolean
+fullWidth?: boolean
+onChange?: (value: string | string[] | null) => void
+onOpenChange?: (open: boolean) => void
+onSelectionChange?: (keys: Set<string>) => void
+open?: boolean
+placeholder?: string
+placement?: SelectPlacement
+selectedKeys?: Iterable<SelectKey>
+selectionMode?: SelectSelectionMode
+state?: State
+value?: SelectValueType
+variant?: SelectVariant
+```
 
 ### Separator
 
-`orientation variant`
+```ts
+orientation?: SeparatorOrientation
+variant?: SeparatorVariant
+```
 
 ### SizePicker
 
-`aria-label onSizeChange storagePrefix`
+```ts
+aria-label?: string
+onSizeChange?: (size: SizePreset) => void
+storagePrefix?: string
+```
 
 ### Skeleton
 
-`animation height lines radius shape size width`
+```ts
+animation?: SkeletonAnimation
+height?: Size | number
+lines?: number
+radius?: Radius
+shape?: SkeletonShape
+size?: Size
+width?: Width | number
+```
 
 ### Slider
 
-`class dataTheme disabled formatValue label max min onChange onChangeEnd size step style value`
+```ts
+class?: string
+dataTheme?: string
+disabled?: boolean
+formatValue?: (value: number) => string
+label?: string
+max?: number
+min?: number
+onChange: (value: number) => void
+onChangeEnd?: (value: number) => void
+size?: SliderSize
+step?: number
+style?: JSX.CSSProperties
+value: number
+```
 
 ### Spinner
 
-`flavor label shape size`
+```ts
+flavor?: Flavor
+label?: string
+shape?: SpinnerShape
+size?: Size
+```
 
 ### Switch
 
-`children defaultChecked description flavor icon onChange onNativeChange size state`
+```ts
+children?: JSX.Element
+defaultChecked?: boolean
+description?: JSX.Element
+flavor?: Flavor
+icon?: JSX.Element
+onChange?: (checked: boolean) => void
+onNativeChange?: JSX.EventHandlerUnion<HTMLInputElement, Event>
+size?: ToggleSize
+state?: State
+```
 
 ### Table
 
-`variant`
+```ts
+variant?: TableVariant
+```
 
 ### TableExpandToggle
 
-`disabled expanded label onToggle size`
+```ts
+disabled?: boolean
+expanded: boolean
+label?: string
+onToggle?: () => void
+size?: number
+```
 
 ### TableInlineConfirm
 
-`cancelLabel confirmFlavor confirmLabel disabled loading onCancel onConfirm prompt`
+```ts
+cancelLabel: string
+confirmFlavor?: InlineConfirmVariant
+confirmLabel: string
+disabled?: boolean
+loading?: boolean
+onCancel: () => void
+onConfirm: () => void
+prompt: string
+```
 
 ### TableMobileListView
 
-`children empty emptyIcon emptyTitle itemClass listClass renderRow rows`
+```ts
+children?: (row: TRow, index: number) => JSX.Element
+empty?: JSX.Element
+emptyIcon?: string
+emptyTitle?: string
+itemClass?: string
+listClass?: string
+renderRow?: (row: TRow, index: number) => JSX.Element
+rows: TRow[]
+```
 
 ### TableSortIcon
 
-`ascIcon descIcon neutralIcon size state`
+```ts
+ascIcon?: JSX.Element
+descIcon?: JSX.Element
+neutralIcon?: JSX.Element
+size?: number
+state: SortIconState
+```
 
 ### TableVirtualSpacerRow
 
-`colspan height`
+```ts
+colspan: number
+height: number
+```
 
 ### Tabs
 
-`children defaultSelectedKey onSelectionChange orientation selectedKey variant`
+```ts
+children: JSX.Element
+defaultSelectedKey?: TabKey
+onSelectionChange?: (key: TabKey) => void
+orientation?: TabsOrientation
+selectedKey?: TabKey
+variant?: TabsVariant
+```
 
 ### Text
 
-`children family leading size tracking transform variant weight`
+```ts
+children?: JSX.Element
+family?: TextFamily
+leading?: TextLeading
+size?: TextSize
+tracking?: TextTracking
+transform?: TextTransform
+variant?: TextVariant
+weight?: TextWeight
+```
 
 ### Textarea
 
-`disabled fullWidth issues state variant`
+```ts
+disabled?: boolean
+fullWidth?: boolean
+issues?: Issue[]
+state?: State
+variant?: TextareaVariant
+```
 
 ### ThemeColorPicker
 
-`align aria-label autoFlip children onColorChange onThemeSwitch placement storagePrefix`
+```ts
+align?: ThemeColorPickerAlign
+aria-label?: string
+autoFlip?: boolean
+children?: JSX.Element
+onColorChange?: (hue: number | null, saturation: number) => void
+onThemeSwitch?: (theme: "light" | "dark") => void
+placement?: ThemeColorPickerPlacement
+storagePrefix?: string
+```
 
 ### TimeField
 
-`children defaultValue disabled fullWidth issues name onBlur onChange required state value variant`
+```ts
+children?: JSX.Element | ((props: TimeFieldRenderProps) => JSX.Element)
+defaultValue?: string
+disabled?: boolean
+fullWidth?: boolean
+issues?: Issue[]
+name?: string
+onBlur?: JSX.EventHandlerUnion<HTMLInputElement, FocusEvent>
+onChange?: (value: string) => void
+required?: boolean
+state?: State
+value?: string
+variant?: TimeFieldVariant
+```
 
 ### TimeFieldGroup
 
-`children`
+```ts
+children?: JSX.Element | ((props: TimeFieldRenderProps) => JSX.Element)
+```
 
 ### TimeFieldInput
 
-`onInput`
+```ts
+onInput?: JSX.EventHandlerUnion<HTMLInputElement, InputEvent>
+```
 
 ### TimeFieldInputContainer
 
-``
+_No props beyond HTML attributes and `UIBaseProps`._
 
 ### TimeFieldPrefix
 
-``
+_No props beyond HTML attributes and `UIBaseProps`._
 
 ### TimeFieldSegment
 
-`segment`
+```ts
+segment?: TimeFieldSegmentValue
+```
 
 ### TimeFieldSuffix
 
-``
+_No props beyond HTML attributes and `UIBaseProps`._
 
 ### Toast
 
-`actionProps children description indicator isEntering isExiting isFrontmost isHidden onClose state title variant`
+```ts
+actionProps?: ToastActionProps
+children?: JSX.Element
+description?: JSX.Element
+indicator?: JSX.Element
+isEntering?: boolean
+isExiting?: boolean
+isFrontmost?: boolean
+isHidden?: boolean
+onClose?: () => void
+state?: State
+title?: JSX.Element
+variant?: ToastVariant
+```
 
 ### ToastActionButton
 
-`children flavor href radius rel state target type width`
+```ts
+children?: JSX.Element
+flavor?: Flavor
+href?: string
+radius?: Radius
+rel?: string
+state?: State
+target?: JSX.AnchorHTMLAttributes<HTMLAnchorElement>["target"]
+type?: "button" | "submit" | "reset"
+width?: Width | "square"
+```
 
 ### ToastCloseButton
 
-`isPending state variant`
+```ts
+isPending?: boolean
+state?: State
+variant?: CloseButtonVariant
+```
 
 ### ToastContent
 
-`children`
+```ts
+children?: JSX.Element
+```
 
 ### ToastDescription
 
-`children`
+```ts
+children?: JSX.Element
+```
 
 ### ToastIndicator
 
-`children variant`
+```ts
+children?: JSX.Element
+variant?: ToastVariant
+```
 
 ### ToastProvider
 
-`children gap maxVisibleToasts placement queue renderToast scaleFactor width`
+```ts
+children?: JSX.Element
+gap?: number
+maxVisibleToasts?: number
+placement?: ToastPlacement
+queue?: ToastQueue<ToastContentValue> | null
+renderToast?: ToastRenderFn
+scaleFactor?: number
+width?: number | string
+```
 
 ### ToastTitle
 
-`children`
+```ts
+children?: JSX.Element
+```
 
 ### Toolbar
 
-`isAttached orientation`
+```ts
+isAttached?: boolean
+orientation?: ToolbarOrientation
+```
 
 ### Tooltip
 
-`autoFlip children closeDelay defaultOpen delay onOpenChange open placement showArrow sideOffset`
+```ts
+autoFlip?: boolean
+children: JSX.Element
+closeDelay?: number
+defaultOpen?: boolean
+delay?: number
+onOpenChange?: (isOpen: boolean) => void
+open?: boolean
+placement?: TooltipPlacement
+showArrow?: boolean
+sideOffset?: number
+```
 
 ### TooltipArrow
 
-`children`
+```ts
+children?: JSX.Element
+```
 
 ### TooltipContent
 
-`children`
+```ts
+children: JSX.Element
+```
 
 ### TooltipTrigger
 
-`children`
+```ts
+children: JSX.Element
+```
 
 ### VideoPreview
 
-`mirror muted stream`
+```ts
+mirror?: boolean
+muted?: boolean
+stream: Accessor<MediaStream | null>
+```
