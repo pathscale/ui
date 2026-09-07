@@ -151,8 +151,17 @@ describe("PasswordField contract", () => {
     expect(contract.required).toBeTrue();
     expect(contract.autofocus).toBeTrue();
     expect(contract["aria-describedby"]).toBe("pw-help");
-    expect(contract.isDisabled).toBeTrue();
-    expect(contract.isInvalid).toBeTrue();
+    /*
+     * `disabled` and `state`, which are what `Input` reads.
+     *
+     * This asserted `isDisabled` / `isInvalid`, which are the names on
+     * `Input`'s *context* rather than on its props: both were spread onto the
+     * component and ignored, so a disabled password field greyed out its toggle
+     * and left the input editable. The contract was corrected and this was not,
+     * which left the one test that could have caught it asserting the bug.
+     */
+    expect(contract.disabled).toBeTrue();
+    expect(contract.state).toBe("invalid");
     expect(contract.class).toContain("w-full");
     expect(contract.class).toContain("input-class");
   });

@@ -115,8 +115,18 @@ describe("API contract", () => {
     expect(HAS_BUILD, NEED_BUILD).toBeTrue();
     const built = readBuiltApi().get(component);
     expect(built, `${component} is not in the built API at all`).toBeDefined();
+    /*
+     * These cases are about the *intersection walk* -- whether a prop was found
+     * at all -- so they name props and match on the name half of each record.
+     * The record carries `name?: type` now, and asserting the whole string here
+     * would make every one of these fail the next time a type is rewritten,
+     * which is a different question and the one `docs/api-contract.md` is for.
+     */
+    const names = (built ?? []).map((entry) =>
+      entry.slice(0, entry.indexOf(":")).replace(/\?$/, ""),
+    );
     for (const prop of props) {
-      expect(built, `${component}.${prop} was not extracted`).toContain(prop);
+      expect(names, `${component}.${prop} was not extracted`).toContain(prop);
     }
   });
 
