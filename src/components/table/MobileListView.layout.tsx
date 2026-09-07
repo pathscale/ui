@@ -44,7 +44,7 @@ const MobileListView: Layout<typeof tableMobileListViewRecipe, MobileListViewPro
       <Empty>
         <Empty.Icon>
           <Icon
-            src={props.emptyIcon ?? "icon-[mdi--inbox-outline]"}
+            src={props.emptyIcon ?? "icon-[lucide--inbox]"}
             width={24}
             height={24}
           />

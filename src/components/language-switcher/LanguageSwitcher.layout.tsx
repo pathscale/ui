@@ -88,7 +88,7 @@ const LanguageSwitcher: Layout<
           when={!props.i18n.isLoading}
           fallback={
             <Icon
-              src="icon-[mdi--loading]"
+              src="icon-[lucide--loader-circle]"
               {...{ class: CLASSES.loadingIcon }}
               width={16}
               height={16}

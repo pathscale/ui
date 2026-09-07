@@ -946,6 +946,7 @@ _No props beyond HTML attributes and `UIBaseProps`._
 
 ```ts
 extensionUrl?: string
+icon?: string | JSX.Element
 onDismiss?: () => void
 onInstall?: () => void
 storageKey?: string
