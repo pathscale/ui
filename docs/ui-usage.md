@@ -19,7 +19,7 @@ bun add -d rsbuild-plugin-solid-layouts
 ```
 
 ```ts
-import { Button, Flex, Modal, toast } from "@pathscale/ui";   // everything is in the root barrel
+import { Button, Flex, Dialog, toast } from "@pathscale/ui";   // everything is in the root barrel
 import "@pathscale/ui/index.css";                              // tokens + themes + base + icons
 ```
 
@@ -92,9 +92,9 @@ to a more opaque fill.
   the *variants*, which mixed the two vocabularies and named four values that do
   not exist.
 
-  `Badge`, `Chip`, `Avatar`, `Spinner`, `Toggle`, `Meter` and the progress
+  `Badge`, `Chip`, `Avatar`, `Spinner`, `Switch`, `Meter` and the progress
   components take `color`. Read the component's own props before assuming.
-- Both `class` and `className` remain compatibility escape hatches. Prefer semantic component parameters; `solid-layouts-lint --porting --layouts @pathscale/ui` reports overrides that should move into recipes.
+- `class` is the escape hatch. **`className` is gone**: every component takes `UIBaseProps`, which carries `class` only, so a `className` you pass is an unknown prop and the class is silently dropped. Prefer semantic component parameters over either; `solid-layouts-lint --porting --layouts @pathscale/ui` reports overrides that should move into recipes.
 - Controlled/uncontrolled triples: `open/defaultOpen/onOpenChange`, `value/defaultValue/onChange`, `selectedKey/defaultSelectedKey/onSelectionChange`. Event callbacks pass **values, not events**.
 - **Breaking in 3.1 — `Switch`, `Checkbox` and `PasswordField`.** The rule above
   was already the documented contract, and three controls did not follow it.
@@ -128,7 +128,7 @@ to a more opaque fill.
 - `Slider.onChange` reports continuous values. Optional `Slider.onChangeEnd` reports the final changed value once on pointer release, pointer cancellation, keyboard release, or blur fallback. Its visible `label` is also copied to the semantic slider's `aria-label`, because not every renderer resolves `aria-labelledby` across a visually hidden label.
 - `Collapsible.Content` retains closed content by default. Set `keepMounted={false}` to mount it only while expanded; the check is reactive, so it mounts and unmounts as the state changes.
 - `Popover` accepts `anchorRect` as a rectangle or rectangle accessor when content must be positioned without a trigger element.
-- Compound components: `Modal.Trigger`, `Tabs.List`, `Select.Option`, etc. (`Object.assign` statics; also exported flat: `AccordionRoot`, `AlertTitle`, …). Parts are styleable/testable via `data-slot="..."` and state attrs (`data-open`, `data-selected`, `data-invalid`).
+- Compound components: `Dialog.Trigger`, `Tabs.List`, `Select.Option`, etc. (`Object.assign` statics; also exported flat: `AccordionRoot`, `AlertTitle`, …). Parts are styleable/testable via `data-slot="..."` and state attrs (`data-open`, `data-selected`, `data-invalid`).
 - `Tabs` does not require `ResizeObserver`. When it is unavailable, selection and keyboard behavior remain active and the indicator is measured on selection, mount, and window resize.
 - `Flex`, `Grid` and `Navbar` take a polymorphic `as`. Nothing else does; reach
   for the component that renders the element you want rather than repointing one
@@ -181,17 +181,25 @@ the shared fallback. This works with PathScale Fonts and application-owned font 
 ## Component inventory (by family)
 
 - **Layout/primitives**: Flex, Grid, Join, Card, Separator, ScrollArea, Skeleton, Empty, Footer, Header, Navbar, Toolbar, Dock
-- **Typography/misc**: Text, Link, Kbd, Badge, Chip, Tag/TagGroup, Avatar, Icon, Tooltip, Breadcrumbs, Pagination, Meter, ProgressBar, ProgressCircle, Spinner (alias: Loading)
-- **Inputs**: Input, InputGroup, InputOTP, TextField, TextArea (and textarea), NumberField, SearchField, PasswordField (+ password-requirements/rules, `passwordRules.ts`), ColorField, Checkbox(+Group), Radio(+Group), Toggle, Slider, Select, ComboBox, ListBox, SizePicker, Form pieces (Label, Description, ErrorMessage, FieldError, Fieldset)
+- **Typography/misc**: Text, Link, Kbd, Badge, Chip, Tag/TagGroup, Avatar, Icon, Tooltip, Breadcrumb, Pagination, Meter, Progress, RadialProgress, Spinner (alias: Loading)
+- **Inputs**: Input, InputGroup, InputOTP, TextField, Textarea, NumberField, SearchField, PasswordField (+ password-requirements/rules, `passwordRules.ts`), ColorField, Checkbox(+Group), Radio(+Group), Switch, Slider, Select, ComboBox, ListBox, SizePicker, Form pieces (Label, Description, ErrorMessage, FieldError, Fieldset)
 - **Dates**: Calendar, RangeCalendar, DatePicker, DateRangePicker (internal date engine); DateField, TimeField (separate segmented editors)
 - **Color**: ColorPicker, ColorArea, ColorSlider, ColorSwatch(+Picker), ColorWheel, ComplexColorWheel, ColorWheelFlower, ThemeColorPicker
-- **Overlays**: Modal, Drawer, Popover, Dropdown, Menu, Toast, Disclosure(+Group), Accordion
+- **Overlays**: Dialog, Drawer, Popover, Dropdown, Menu, Toast, Collapsible(+Group), Accordion
 - **Data**: DataGrid (assembled, `createDataGrid` model), FlexGrid (incremental reveal, `createFlexGrid` model), Table (headless compound, bring your own model), plus primitives `useStreamingBuffer`, `useStreamingSubscription`
 - **Auth kit**: AuthForm, AuthCard, AuthFieldGroup, AuthSubmitButton, AuthFooterLinks, AuthPoweredBy, AuthErrorMessage, AuthSuccessMessage — Layouts composing Button/Card/fields. Their spacing, alignment and tone are recipe parameters (`gap`, `align`, `variant`), so a consumer asks for the presentation it wants rather than restating utility classes. AuthCard exposes `header`, `headings`, `title`, `description`, `branding`, `body` and `footer` as `data-slot` targets.
 - **Connection settings**: ConnectionSettings (the panel) with `createConnectionSettings` (the store). See below.
 - **Visual FX**: MetalBorder (WebGL liquid-metal border; presets `chromatic|silver|gold`, `kind="pill"|"circle"`, `glow`, `strength` 0-100, `theme="dark"|"light"|"auto"`), GlowCard (mouse-tracking glow), NoiseBackground (animated gradient blobs), ImmersiveLanding (full mini-app w/ PWA widgets), VideoPreview, LiveChat, ChatBubble, LanguageSwitcher
 
-Renames from old versions (see `docs/component-migration-map.md`): Loading→Spinner, DropdownSelect→Select, RadialProgress→ProgressCircle, RangeSlider→Slider, Progress→ProgressBar/ProgressCircle. ~40 components removed outright (Carousel, Rating, Steps, Stats, FileInput, …).
+Renames from old versions: Loading→Spinner, DropdownSelect→Select, RangeSlider→Slider, Callout→Alert, EmptyState→Empty, Toggle→Switch, Modal→Dialog, TextArea→Textarea, Disclosure→Collapsible, FloatingDock→Dock, ProgressBar→Progress, ProgressCircle→RadialProgress, ScrollShadow→ScrollArea, Breadcrumbs→Breadcrumb. ~40 components removed outright (Carousel, Rating, Steps, Stats, FileInput, …).
+
+`docs/component-migration-map.md` describes the *earlier* 2.x HeroUI migration and
+contradicts this list on three of them: it maps `RadialProgress` to
+`ProgressCircle` and splits `Progress` into `ProgressBar`/`ProgressCircle`,
+which is the reverse of what shipped, and it lists `Dock` as removed. Its
+removed-component list is still useful; its rename table is not. `api-contract.md`
+is the file that cannot be wrong, because `bun run check:api` fails the build
+when it disagrees with the code.
 
 `ColorWheelFlower` follows the root `data-theme` by default. Its built-in light and dark
 palettes share hue positions, while dark mode uses genuinely darker values. Pass
@@ -449,7 +457,7 @@ enablePopmotion((opts) => animate({ ...opts }));   // ⚠️ WITHOUT this, all J
 - `runMotion(el, from, to, transition?, onComplete?)` — animates `opacity/x/y/scale`; **durations in seconds**.
 - Presets via `getPreset/resolvePreset` (`route`, `routeAuth`, `authSwap`, `fade`, `fadeUp`, `scaleIn`, `toast`, `routeDashboard`); `registerPreset` mutates the global set; `createMotionSystem()` for isolated instances; `createRouteTransitionResolver({rules, fallback})` for route rules.
 - Solid components: `<Presence when={open()}>{(isExiting, onExitComplete) => <MotionDiv initial animate exit isExiting={isExiting()} onExitComplete={onExitComplete}>…` — Presence force-unmounts after 800ms if `onExitComplete` never fires. `<AnimatedCollapse open duration=0.24>` for height collapse.
-- `resolvePreset(name, {reduceMotion})` returns the `noMotion` preset under prefers-reduced-motion. Note Modal/Toast/Drawer animate via CSS, not this system.
+- `resolvePreset(name, {reduceMotion})` returns the `noMotion` preset under prefers-reduced-motion. Note Dialog/Toast/Drawer animate via CSS, not this system.
 
 ## Streaming
 

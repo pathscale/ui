@@ -1,6 +1,30 @@
 # Component Migration Map
 
-This document is the canonical mapping between deprecated/old `@pathscale/ui` components and their current equivalents after the HeroUI migration and `.classes.ts` refactor.
+> **This describes the 2.x HeroUI migration, not the current API, and three of
+> its renames now point backwards.**
+>
+> It was written when `Progress` was being split into `ProgressBar` and
+> `ProgressCircle`. `0419faf` later reversed that: what ships is `Progress` and
+> `RadialProgress`, and neither `ProgressBar` nor `ProgressCircle` exists. It
+> also lists `Dock` as removed with no replacement; `Dock` is what
+> `FloatingDock` was renamed to, and it ships.
+>
+> Four separate fleet migrations were sent the wrong way by this file in one
+> day. The **removed** list below is still accurate and still worth checking
+> before assuming a component exists. The **rename** table is not: use
+> `api-contract.md`, which `bun run check:api` fails the build over, so it
+> cannot drift from the code the way this did.
+>
+> The current renames are:
+>
+>     Callout      -> Alert        EmptyState     -> Empty
+>     Toggle       -> Switch       ProgressBar    -> Progress
+>     Modal        -> Dialog       ProgressCircle -> RadialProgress
+>     TextArea     -> Textarea     ScrollShadow   -> ScrollArea
+>     Disclosure   -> Collapsible  Breadcrumbs    -> Breadcrumb
+>     FloatingDock -> Dock
+
+This document was the canonical mapping between deprecated/old `@pathscale/ui` components and their current equivalents after the HeroUI migration and `.classes.ts` refactor.
 
 ## Registry
 
