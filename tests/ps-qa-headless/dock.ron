@@ -1,0 +1,37 @@
+// Generated from tests/qa-harness/components.ts by tests/qa-harness/generate-checks.ts. Do not edit.
+//
+// Dock, mounted alone on its own harness page. Outcomes for
+// this component share one native host; idempotent preparation keeps each
+// outcome reproducible by id against a fresh host as well.
+[
+    (
+        id: "dock-page-paints",
+        group: "dock",
+        what: "the Dock page builds and paints",
+        open: None,
+        hover: None,
+        click: None,
+        subject: "heading:Dock",
+        expect: Present,
+    ),
+    (
+        id: "dock-renders",
+        group: "dock",
+        what: "Dock renders a node of its own",
+        open: None,
+        hover: None,
+        click: None,
+        subject: "fixture",
+        expect: Paints,
+    ),
+    (
+        id: "dock-paints",
+        group: "dock",
+        what: "the Dock reaches the renderer with a box",
+        open: None,
+        hover: None,
+        click: None,
+        subject: "Dock",
+        expect: Present,
+    ),
+]

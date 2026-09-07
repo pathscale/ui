@@ -1,0 +1,37 @@
+// Generated from tests/qa-harness/components.ts by tests/qa-harness/generate-checks.ts. Do not edit.
+//
+// Drawer, mounted alone on its own harness page. Outcomes for
+// this component share one native host; idempotent preparation keeps each
+// outcome reproducible by id against a fresh host as well.
+[
+    (
+        id: "drawer-page-paints",
+        group: "drawer",
+        what: "the Drawer page builds and paints",
+        open: None,
+        hover: None,
+        click: None,
+        subject: "heading:Drawer",
+        expect: Present,
+    ),
+    (
+        id: "drawer-renders",
+        group: "drawer",
+        what: "Drawer renders a node of its own",
+        open: None,
+        hover: None,
+        click: None,
+        subject: "fixture",
+        expect: Paints,
+    ),
+    (
+        id: "drawer-paints",
+        group: "drawer",
+        what: "the Drawer reaches the renderer with a box",
+        open: None,
+        hover: None,
+        click: None,
+        subject: "Drawer",
+        expect: Present,
+    ),
+]

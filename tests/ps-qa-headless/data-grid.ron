@@ -1,0 +1,37 @@
+// Generated from tests/qa-harness/components.ts by tests/qa-harness/generate-checks.ts. Do not edit.
+//
+// DataGrid, mounted alone on its own harness page. Outcomes for
+// this component share one native host; idempotent preparation keeps each
+// outcome reproducible by id against a fresh host as well.
+[
+    (
+        id: "data-grid-page-paints",
+        group: "data-grid",
+        what: "the DataGrid page builds and paints",
+        open: None,
+        hover: None,
+        click: None,
+        subject: "heading:DataGrid",
+        expect: Present,
+    ),
+    (
+        id: "data-grid-renders",
+        group: "data-grid",
+        what: "DataGrid renders a node of its own",
+        open: None,
+        hover: None,
+        click: None,
+        subject: "fixture",
+        expect: Paints,
+    ),
+    (
+        id: "data-grid-paints",
+        group: "data-grid",
+        what: "the DataGrid reaches the renderer with a box",
+        open: None,
+        hover: None,
+        click: None,
+        subject: "DataGrid",
+        expect: Present,
+    ),
+]

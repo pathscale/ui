@@ -1,0 +1,47 @@
+// Generated from tests/qa-harness/components.ts by tests/qa-harness/generate-checks.ts. Do not edit.
+//
+// Collapsible, mounted alone on its own harness page. Outcomes for
+// this component share one native host; idempotent preparation keeps each
+// outcome reproducible by id against a fresh host as well.
+[
+    (
+        id: "collapsible-page-paints",
+        group: "collapsible",
+        what: "the Collapsible page builds and paints",
+        open: None,
+        hover: None,
+        click: None,
+        subject: "heading:Collapsible",
+        expect: Present,
+    ),
+    (
+        id: "collapsible-renders",
+        group: "collapsible",
+        what: "Collapsible renders a node of its own",
+        open: None,
+        hover: None,
+        click: None,
+        subject: "fixture",
+        expect: Paints,
+    ),
+    (
+        id: "collapsible-paints",
+        group: "collapsible",
+        what: "the Collapsible control is on screen and addressable",
+        open: None,
+        hover: None,
+        click: None,
+        subject: "button:Collapsible",
+        expect: Present,
+    ),
+    (
+        id: "collapsible-acts",
+        group: "collapsible",
+        what: "activating Collapsible exposes the callback result",
+        open: None,
+        hover: None,
+        click: Some("button:Collapsible"),
+        subject: "heading:Action result: Collapsible complete",
+        expect: Present,
+    ),
+]

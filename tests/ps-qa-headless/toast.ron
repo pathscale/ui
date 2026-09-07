@@ -1,0 +1,37 @@
+// Generated from tests/qa-harness/components.ts by tests/qa-harness/generate-checks.ts. Do not edit.
+//
+// Toast, mounted alone on its own harness page. Outcomes for
+// this component share one native host; idempotent preparation keeps each
+// outcome reproducible by id against a fresh host as well.
+[
+    (
+        id: "toast-page-paints",
+        group: "toast",
+        what: "the Toast page builds and paints",
+        open: None,
+        hover: None,
+        click: None,
+        subject: "heading:Toast",
+        expect: Present,
+    ),
+    (
+        id: "toast-renders",
+        group: "toast",
+        what: "Toast renders a node of its own",
+        open: None,
+        hover: None,
+        click: None,
+        subject: "fixture",
+        expect: Paints,
+    ),
+    (
+        id: "toast-paints",
+        group: "toast",
+        what: "the Toast reaches the renderer with a box",
+        open: None,
+        hover: None,
+        click: None,
+        subject: "Toast",
+        expect: Present,
+    ),
+]

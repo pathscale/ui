@@ -1,0 +1,37 @@
+// Generated from tests/qa-harness/components.ts by tests/qa-harness/generate-checks.ts. Do not edit.
+//
+// Calendar, mounted alone on its own harness page. Outcomes for
+// this component share one native host; idempotent preparation keeps each
+// outcome reproducible by id against a fresh host as well.
+[
+    (
+        id: "calendar-page-paints",
+        group: "calendar",
+        what: "the Calendar page builds and paints",
+        open: None,
+        hover: None,
+        click: None,
+        subject: "heading:Calendar",
+        expect: Present,
+    ),
+    (
+        id: "calendar-renders",
+        group: "calendar",
+        what: "Calendar renders a node of its own",
+        open: None,
+        hover: None,
+        click: None,
+        subject: "fixture",
+        expect: Paints,
+    ),
+    (
+        id: "calendar-paints",
+        group: "calendar",
+        what: "the Calendar reaches the renderer with a box",
+        open: None,
+        hover: None,
+        click: None,
+        subject: "Calendar",
+        expect: Present,
+    ),
+]

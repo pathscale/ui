@@ -1,0 +1,37 @@
+// Generated from tests/qa-harness/components.ts by tests/qa-harness/generate-checks.ts. Do not edit.
+//
+// ColorWheel, mounted alone on its own harness page. Outcomes for
+// this component share one native host; idempotent preparation keeps each
+// outcome reproducible by id against a fresh host as well.
+[
+    (
+        id: "color-wheel-page-paints",
+        group: "color-wheel",
+        what: "the ColorWheel page builds and paints",
+        open: None,
+        hover: None,
+        click: None,
+        subject: "heading:ColorWheel",
+        expect: Present,
+    ),
+    (
+        id: "color-wheel-renders",
+        group: "color-wheel",
+        what: "ColorWheel renders a node of its own",
+        open: None,
+        hover: None,
+        click: None,
+        subject: "fixture",
+        expect: Paints,
+    ),
+    (
+        id: "color-wheel-paints",
+        group: "color-wheel",
+        what: "the ColorWheel reaches the renderer with a box",
+        open: None,
+        hover: None,
+        click: None,
+        subject: "ColorWheel",
+        expect: Present,
+    ),
+]

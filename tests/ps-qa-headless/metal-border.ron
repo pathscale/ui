@@ -1,0 +1,37 @@
+// Generated from tests/qa-harness/components.ts by tests/qa-harness/generate-checks.ts. Do not edit.
+//
+// MetalBorder, mounted alone on its own harness page. Outcomes for
+// this component share one native host; idempotent preparation keeps each
+// outcome reproducible by id against a fresh host as well.
+[
+    (
+        id: "metal-border-page-paints",
+        group: "metal-border",
+        what: "the MetalBorder page builds and paints",
+        open: None,
+        hover: None,
+        click: None,
+        subject: "heading:MetalBorder",
+        expect: Present,
+    ),
+    (
+        id: "metal-border-renders",
+        group: "metal-border",
+        what: "MetalBorder renders a node of its own",
+        open: None,
+        hover: None,
+        click: None,
+        subject: "fixture",
+        expect: Paints,
+    ),
+    (
+        id: "metal-border-paints",
+        group: "metal-border",
+        what: "the MetalBorder reaches the renderer with a box",
+        open: None,
+        hover: None,
+        click: None,
+        subject: "MetalBorder",
+        expect: Present,
+    ),
+]

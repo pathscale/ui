@@ -1,0 +1,47 @@
+// Generated from tests/qa-harness/components.ts by tests/qa-harness/generate-checks.ts. Do not edit.
+//
+// Button, mounted alone on its own harness page. Outcomes for
+// this component share one native host; idempotent preparation keeps each
+// outcome reproducible by id against a fresh host as well.
+[
+    (
+        id: "button-page-paints",
+        group: "button",
+        what: "the Button page builds and paints",
+        open: None,
+        hover: None,
+        click: None,
+        subject: "heading:Button",
+        expect: Present,
+    ),
+    (
+        id: "button-renders",
+        group: "button",
+        what: "Button renders a node of its own",
+        open: None,
+        hover: None,
+        click: None,
+        subject: "fixture",
+        expect: Paints,
+    ),
+    (
+        id: "button-paints",
+        group: "button",
+        what: "the Button control is on screen and addressable",
+        open: None,
+        hover: None,
+        click: None,
+        subject: "button:Button",
+        expect: Present,
+    ),
+    (
+        id: "button-acts",
+        group: "button",
+        what: "activating Button exposes the callback result",
+        open: None,
+        hover: None,
+        click: Some("button:Button"),
+        subject: "heading:Action result: Button complete",
+        expect: Present,
+    ),
+]

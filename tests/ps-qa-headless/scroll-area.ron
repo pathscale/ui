@@ -1,0 +1,37 @@
+// Generated from tests/qa-harness/components.ts by tests/qa-harness/generate-checks.ts. Do not edit.
+//
+// ScrollArea, mounted alone on its own harness page. Outcomes for
+// this component share one native host; idempotent preparation keeps each
+// outcome reproducible by id against a fresh host as well.
+[
+    (
+        id: "scroll-area-page-paints",
+        group: "scroll-area",
+        what: "the ScrollArea page builds and paints",
+        open: None,
+        hover: None,
+        click: None,
+        subject: "heading:ScrollArea",
+        expect: Present,
+    ),
+    (
+        id: "scroll-area-renders",
+        group: "scroll-area",
+        what: "ScrollArea renders a node of its own",
+        open: None,
+        hover: None,
+        click: None,
+        subject: "fixture",
+        expect: Paints,
+    ),
+    (
+        id: "scroll-area-paints",
+        group: "scroll-area",
+        what: "the ScrollArea reaches the renderer with a box",
+        open: None,
+        hover: None,
+        click: None,
+        subject: "ScrollArea",
+        expect: Present,
+    ),
+]

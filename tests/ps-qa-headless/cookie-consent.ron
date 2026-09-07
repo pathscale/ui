@@ -1,0 +1,37 @@
+// Generated from tests/qa-harness/components.ts by tests/qa-harness/generate-checks.ts. Do not edit.
+//
+// CookieConsent, mounted alone on its own harness page. Outcomes for
+// this component share one native host; idempotent preparation keeps each
+// outcome reproducible by id against a fresh host as well.
+[
+    (
+        id: "cookie-consent-page-paints",
+        group: "cookie-consent",
+        what: "the CookieConsent page builds and paints",
+        open: None,
+        hover: None,
+        click: None,
+        subject: "heading:CookieConsent",
+        expect: Present,
+    ),
+    (
+        id: "cookie-consent-renders",
+        group: "cookie-consent",
+        what: "CookieConsent renders a node of its own",
+        open: None,
+        hover: None,
+        click: None,
+        subject: "fixture",
+        expect: Paints,
+    ),
+    (
+        id: "cookie-consent-paints",
+        group: "cookie-consent",
+        what: "the CookieConsent reaches the renderer with a box",
+        open: None,
+        hover: None,
+        click: None,
+        subject: "CookieConsent",
+        expect: Present,
+    ),
+]

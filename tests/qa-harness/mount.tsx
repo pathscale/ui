@@ -434,16 +434,29 @@ function FieldFixture(props: { spec: ComponentSpec; under?: unknown }) {
       fallback={<span>{props.spec.component} is not exported</span>}
     >
       {(Component) => (
-        <Dynamic
-          component={Component()}
-          value={value()}
-          aria-label={props.spec.subject}
-          onInput={(
-            event: InputEvent & {
-              currentTarget: HTMLInputElement | HTMLTextAreaElement;
-            },
-          ) => setValue(event.currentTarget.value)}
-        />
+        <>
+          <Dynamic
+            component={Component()}
+            value={value()}
+            aria-label={props.spec.subject}
+            onInput={(
+              event: InputEvent & {
+                currentTarget: HTMLInputElement | HTMLTextAreaElement;
+              },
+            ) => setValue(event.currentTarget.value)}
+          />
+          {/*
+            Names the value the *consumer* received, not the one the renderer
+            holds.
+
+            `-accepts-input` asserts `ValueChanges` on the control, which reads
+            the editor's own buffer: it passes whether or not the component
+            ever told anyone. A field whose `onInput` never reaches its caller
+            is exactly as broken as one that refuses keystrokes, and it looked
+            identical to this suite.
+          */}
+          <h2>Field value: {value()}</h2>
+        </>
       )}
     </Show>
   );
@@ -488,6 +501,15 @@ function SliderFixture(props: { spec: ComponentSpec; under?: unknown }) {
  * either paints or it does not.
  */
 function ConnectionSettingsFixture() {
+  /*
+   * What the panel told its caller, named so a check can read it.
+   *
+   * A save that returns early -- refused by validation, or throwing inside
+   * `apply` -- is indistinguishable from a save that worked on nothing, and
+   * both leave the committed value where it was. Reporting the outcome is the
+   * difference between "Save is dead" and "Save refused this address".
+   */
+  const [outcome, setOutcome] = createSignal("none");
   const store = createConnectionSettings({
     storageKey: "qa-connection-settings",
     endpoints: [{ name: "api", fallback: "wss://api.example.com" }],
@@ -502,6 +524,12 @@ function ConnectionSettingsFixture() {
         save: "Save",
         reset: "Reset",
       }}
+      onSaved={() => setOutcome("saved")}
+      onSaveFailed={(error: unknown) =>
+        setOutcome(
+          `failed ${error instanceof Error ? error.message : String(error)}`,
+        )
+      }
     >
       {/*
         Names the committed value, so the checks can tell "typed" from "saved".
@@ -509,6 +537,7 @@ function ConnectionSettingsFixture() {
         `settings` kind exists to assert.
       */}
       <h2>Committed: {store.urls.api}</h2>
+      <h2>Save outcome: {outcome()}</h2>
     </ConnectionSettings>
   );
 }

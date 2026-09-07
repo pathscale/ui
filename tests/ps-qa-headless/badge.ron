@@ -1,0 +1,37 @@
+// Generated from tests/qa-harness/components.ts by tests/qa-harness/generate-checks.ts. Do not edit.
+//
+// Badge, mounted alone on its own harness page. Outcomes for
+// this component share one native host; idempotent preparation keeps each
+// outcome reproducible by id against a fresh host as well.
+[
+    (
+        id: "badge-page-paints",
+        group: "badge",
+        what: "the Badge page builds and paints",
+        open: None,
+        hover: None,
+        click: None,
+        subject: "heading:Badge",
+        expect: Present,
+    ),
+    (
+        id: "badge-renders",
+        group: "badge",
+        what: "Badge renders a node of its own",
+        open: None,
+        hover: None,
+        click: None,
+        subject: "fixture",
+        expect: Paints,
+    ),
+    (
+        id: "badge-paints",
+        group: "badge",
+        what: "the Badge reaches the renderer with a box",
+        open: None,
+        hover: None,
+        click: None,
+        subject: "Badge",
+        expect: Present,
+    ),
+]

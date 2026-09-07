@@ -1,0 +1,47 @@
+// Generated from tests/qa-harness/components.ts by tests/qa-harness/generate-checks.ts. Do not edit.
+//
+// Composer, mounted alone on its own harness page. Outcomes for
+// this component share one native host; idempotent preparation keeps each
+// outcome reproducible by id against a fresh host as well.
+[
+    (
+        id: "composer-page-paints",
+        group: "composer",
+        what: "the Composer page builds and paints",
+        open: None,
+        hover: None,
+        click: None,
+        subject: "heading:Composer",
+        expect: Present,
+    ),
+    (
+        id: "composer-renders",
+        group: "composer",
+        what: "Composer renders a node of its own",
+        open: None,
+        hover: None,
+        click: None,
+        subject: "fixture",
+        expect: Paints,
+    ),
+    (
+        id: "composer-paints",
+        group: "composer",
+        what: "the Composer control is on screen and addressable",
+        open: None,
+        hover: None,
+        click: None,
+        subject: "button:Send",
+        expect: Present,
+    ),
+    (
+        id: "composer-acts",
+        group: "composer",
+        what: "activating Composer exposes the callback result",
+        open: None,
+        hover: None,
+        click: Some("button:Send"),
+        subject: "heading:Action result: Composer complete",
+        expect: Present,
+    ),
+]
