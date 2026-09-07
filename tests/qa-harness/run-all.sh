@@ -19,8 +19,14 @@ set -uo pipefail
 # The harness directory itself, and the repository root above it. The script
 # reads its own files from HERE and the checks from the repository's
 # `tests/ps-qa`, so it needs both.
-readonly HERE="${0:A:h}"
-readonly ROOT="${HERE:h:h}"
+# `${0:A:h}` and `${HERE:h:h}` were zsh parameter-expansion modifiers: `:A`
+# for the resolved absolute path and `:h` for dirname. Bash reads `${0:A:h}`
+# as a substring expansion whose offset is the variable `A`, which under
+# `set -u` is an unbound variable, so the script died on its second statement.
+# `bash -n` cannot catch it: the syntax is valid, only the meaning differs.
+HERE="$(cd -- "$(dirname -- "$0")" && pwd -P)"
+ROOT="$(cd -- "$HERE/../.." && pwd -P)"
+readonly HERE ROOT
 # Before either lookup below: `cargo install` puts both binaries here, and a
 # non-interactive shell does not read the profile that adds it. Resolving the
 # host first reported a freshly installed one as missing.
