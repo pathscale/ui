@@ -237,6 +237,36 @@ export const COMPONENTS: ComponentSpec[] = [
     subject: "Color undefined",
     subjectRole: "option",
   },
+  /*
+   * The flower on its own, with no `ThemeColorPicker` around it.
+   *
+   * That is the arrangement that used to throw. It is exported from
+   * `@pathscale/ui/lab`, so a reader can write exactly this, and it read a
+   * context declared `createContext(undefined)` -- the default-less form in
+   * Solid 2, which throws `ContextNotFoundError` before the component's own
+   * "you must use this inside a provider" guard can run. The throw halted the
+   * reactive system and blanked the page it was on.
+   *
+   * `complex-color-wheel` did not cover it: that fixture mounts the flower
+   * under a wheel that supplies the context, which is the case that always
+   * worked.
+   */
+  {
+    id: "color-wheel-flower",
+    component: "ColorWheelFlower",
+    kind: "display",
+    /*
+     * The centre petal, by name.
+     *
+     * Not the component name: the fixture renders that on a labelled wrapper,
+     * so it is there whether or not the component rendered anything, and a
+     * check that asserts it passes against a component that threw. This name
+     * comes from inside the flower, so nothing paints it unless the flower
+     * built its palette.
+     */
+    subject: "Reset to neutral",
+    subjectRole: "radio",
+  },
   {
     id: "color-wheel",
     component: "ColorWheel",

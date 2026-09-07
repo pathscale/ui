@@ -5,7 +5,10 @@ import { clsx } from "clsx";
 import { twMerge } from "../../lib/twMerge";
 import ColorSwatch from "../color-swatch";
 import ColorSwatchPicker from "../color-swatch-picker";
-import { useColorPickerContext } from "./colorWheelFlowerContext";
+import {
+  type ColorPickerContextType,
+  useColorPickerContext,
+} from "./colorWheelFlowerContext";
 import {
   createColorFromHsl,
   parseColor,
@@ -31,6 +34,23 @@ export interface ColorWheelFlowerProps {
   mode?: ColorWheelFlowerMode;
   /** Exactly 31 literal colors, ordered outer ring, middle ring, inner ring, center. */
   palette?: readonly string[];
+  /*
+   * Standalone use. Inside a `ThemeColorPicker` the surrounding context owns
+   * the colour and these are ignored; outside one they are the whole state,
+   * and omitting all of them still renders -- an uncontrolled flower starting
+   * at white.
+   *
+   * They exist because this component is exported from `@pathscale/ui/lab`,
+   * and an exported component that can only be rendered inside one specific
+   * parent is a trap. It used to be a crashing one.
+   */
+  /** Controlled selection. A hex, `rgb()` or `hsl()` string, or a parsed value. */
+  color?: ColorValue | string;
+  /** Initial selection when uncontrolled. */
+  defaultColor?: ColorValue | string;
+  disabled?: boolean;
+  /** The colour a petal was clicked to choose. */
+  onChange?: (color: ColorValue) => void;
 }
 
 type ColorItem = {
@@ -173,7 +193,43 @@ function buildColors(palette: readonly string[]): ColorItem[] {
 const CENTER_INDEX = LAYOUT.findIndex((l) => l.isCenter);
 const ColorWheelFlower: Layout<typeof componentRecipe, ColorWheelFlowerProps> = () => {
 
-  const context = useColorPickerContext();
+  /*
+   * The surrounding picker if there is one, this component's own props if not.
+   *
+   * `useColorPickerContext()` returns `null` outside a `ThemeColorPicker`, and
+   * the fallback below is what makes that a supported way to use the flower
+   * rather than a crash. The shapes are identical, so nothing downstream has
+   * to know which one it got.
+   */
+  const providedContext = useColorPickerContext();
+
+  const toColorValue = (
+    value: ColorValue | string | undefined,
+  ): ColorValue | null =>
+    value === undefined
+      ? null
+      : typeof value === "string"
+        ? parseColor(value)
+        : value;
+
+  const WHITE = createColorFromHsl(0, 0, 100, 1);
+
+  const [standaloneColor, setStandaloneColor] = createSignal<ColorValue>(
+    toColorValue(props.defaultColor) ?? WHITE,
+  );
+
+  const context: ColorPickerContextType = providedContext ?? {
+    // A `color` prop makes it controlled; without one the click below is what
+    // moves the selection.
+    color: () => toColorValue(props.color) ?? standaloneColor(),
+    format: () => "hex" as const,
+    disabled: () => Boolean(props.disabled),
+    onChange: (next: ColorValue) => {
+      if (props.color === undefined) setStandaloneColor(next);
+      props.onChange?.(next);
+    },
+    onFormatChange: () => {},
+  };
 
   const [selectedIndex, setSelectedIndex] = createSignal<number | null>(null);
   const [pulseState, setPulseState] = createSignal<{

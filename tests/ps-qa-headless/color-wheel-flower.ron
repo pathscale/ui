@@ -1,0 +1,37 @@
+// Generated from tests/qa-harness/components.ts by tests/qa-harness/generate-checks.ts. Do not edit.
+//
+// ColorWheelFlower, mounted alone on its own harness page. Outcomes for
+// this component share one native host; idempotent preparation keeps each
+// outcome reproducible by id against a fresh host as well.
+[
+    (
+        id: "color-wheel-flower-page-paints",
+        group: "color-wheel-flower",
+        what: "the ColorWheelFlower page builds and paints",
+        open: None,
+        hover: None,
+        click: None,
+        subject: "heading:ColorWheelFlower",
+        expect: Present,
+    ),
+    (
+        id: "color-wheel-flower-renders",
+        group: "color-wheel-flower",
+        what: "ColorWheelFlower renders a node of its own",
+        open: None,
+        hover: None,
+        click: None,
+        subject: "fixture",
+        expect: Paints,
+    ),
+    (
+        id: "color-wheel-flower-paints",
+        group: "color-wheel-flower",
+        what: "the ColorWheelFlower reaches the renderer with a box",
+        open: None,
+        hover: None,
+        click: None,
+        subject: "radio:Reset to neutral",
+        expect: Present,
+    ),
+]
