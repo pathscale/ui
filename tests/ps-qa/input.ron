@@ -15,6 +15,17 @@
         expect: PaintsNamed,
     ),
     (
+        id: "input-measures",
+        group: "input",
+        what: "Input keeps its standard control geometry",
+        open: None,
+        hover: None,
+        click: None,
+        expect_size: Some("x=36"),
+        subject: "@input-control",
+        expect: Measures,
+    ),
+    (
         id: "input-renders",
         group: "input",
         what: "Input renders a node of its own",
