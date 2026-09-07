@@ -11,12 +11,11 @@ import {
 } from "solid-js";
 import type { ConnectionSettingsStore } from "../../hooks/connection";
 import type { Layout } from "../../lib/layouts";
-import { twMerge } from "../../lib/twMerge";
 import Button from "../button";
 import Input from "../input";
 import Switch from "../switch";
 import type { UIBaseProps } from "../vocabulary";
-import { CLASSES, componentRecipe } from "./ConnectionSettings.recipe";
+import { componentRecipe } from "./ConnectionSettings.recipe";
 
 /* -------------------------------------------------------------------------------------------------
  * Types
@@ -285,33 +284,27 @@ export const ConnectionSettingsLayout: Layout<
      */
     <form
       {...others}
-      {...{
-        class: twMerge(
-          CLASSES.base,
-          open() && CLASSES.flag.open,
-          props.store.isApplying && CLASSES.flag.applying,
-          props.class,
-        ),
-      }}
+      {...slot.root}
       style={props.style}
       data-theme={props.dataTheme}
-      data-slot="connection-settings"
+      data-open={open() ? "true" : "false"}
+      data-applying={props.store.isApplying ? "true" : "false"}
       onSubmit={(event) => {
         event.preventDefault();
         void save();
       }}
     >
-      <div class={CLASSES.slot.header}>
+      <div {...slot.header}>
         <div>
-          <p class={CLASSES.slot.title}>{props.labels.useCustom}</p>
+          <p {...slot.title}>{props.labels.useCustom}</p>
           <Show when={props.labels.useCustomDescription}>
-            <p class={CLASSES.slot.description}>
+            <p {...slot.description}>
               {props.labels.useCustomDescription}
             </p>
           </Show>
         </div>
         <Switch
-          class={CLASSES.slot.switch}
+          {...slot.switch}
           id={fieldId("use-custom")}
           aria-label={props.labels.useCustom}
           checked={open()}
@@ -327,20 +320,19 @@ export const ConnectionSettingsLayout: Layout<
       */}
       <Show when={open()}>
         <div
-          class={CLASSES.slot.fields}
-          data-slot="connection-settings-fields"
+          {...slot.fields}
         >
           <For each={props.endpoints}>
             {(endpoint) => (
-              <div class={CLASSES.slot.field}>
+              <div {...slot.field}>
                 <label
-                  class={CLASSES.slot.label}
+                  {...slot.label}
                   for={fieldId(endpoint.name)}
                 >
                   {endpoint.label}
                 </label>
                 <Input.Field
-                  class={CLASSES.slot.input}
+                  {...slot.input}
                   id={fieldId(endpoint.name)}
                   name={endpoint.name}
                   type="text"
@@ -354,7 +346,7 @@ export const ConnectionSettingsLayout: Layout<
                   }
                 />
                 <Show when={endpoint.hint}>
-                  <p class={CLASSES.slot.hint}>{endpoint.hint}</p>
+                  <p {...slot.hint}>{endpoint.hint}</p>
                 </Show>
               </div>
             )}
@@ -364,15 +356,15 @@ export const ConnectionSettingsLayout: Layout<
       </Show>
 
       <Show when={props.showAppPublicId && props.labels.appPublicId}>
-        <div class={CLASSES.slot.field}>
+        <div {...slot.field}>
           <label
-            class={CLASSES.slot.label}
+            {...slot.label}
             for={fieldId("app-public-id")}
           >
             {props.labels.appPublicId}
           </label>
           <Input.Field
-            class={CLASSES.slot.input}
+            {...slot.input}
             id={fieldId("app-public-id")}
             type="text"
             onKeyDown={saveOnEnter}
@@ -386,8 +378,7 @@ export const ConnectionSettingsLayout: Layout<
 
       {/* Where the application is actually pointed, overrides resolved. */}
       <div
-        class={CLASSES.slot.current}
-        data-slot="connection-settings-current"
+        {...slot.current}
       >
         {/*
           `urls` resolved once for the whole list. It builds its record per
@@ -407,7 +398,7 @@ export const ConnectionSettingsLayout: Layout<
       {/* A failed apply is named where the person who pressed Save is looking. */}
       <Show when={failure()}>
         <p
-          class={CLASSES.slot.hint}
+          {...slot.hint}
           role="alert"
         >
           {failure()}
@@ -420,7 +411,7 @@ export const ConnectionSettingsLayout: Layout<
         application is told not to do, and these two had none of the disabled,
         focus or flavour states the rest of the library has.
       */}
-      <div class={CLASSES.slot.actions}>
+      <div {...slot.actions}>
         {/*
           `type="button"` with an explicit handler, not a submit button.
           Blitz's form submission builds an entry list and navigates without

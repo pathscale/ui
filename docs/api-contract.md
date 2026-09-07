@@ -134,7 +134,7 @@ HTML attributes and `UIBaseProps`; that is an assertion, not a gap.
 
 ### Checkbox
 
-`children defaultChecked description indeterminate isIndeterminate issues state variant`
+`children defaultChecked description indeterminate isIndeterminate issues onChange onNativeChange state variant`
 
 ### CheckboxGroup
 
@@ -570,7 +570,7 @@ HTML attributes and `UIBaseProps`; that is an assertion, not a gap.
 
 ### PasswordField
 
-`aria-describedby autocomplete autofocus class disabled hiddenIcon hideLabel id inputClass inputRef invalid label name onBlur onInput onVisibilityChange placeholder required showLabel startIcon value visibleIcon`
+`aria-describedby autocomplete autofocus class disabled hiddenIcon hideLabel id inputClass inputRef invalid label name onBlur onChange onVisibilityChange placeholder required showLabel startIcon value visibleIcon`
 
 ### PasswordRequirements
 
@@ -634,7 +634,7 @@ HTML attributes and `UIBaseProps`; that is an assertion, not a gap.
 
 ### Switch
 
-`children defaultChecked description flavor icon size state`
+`children defaultChecked description flavor icon onChange onNativeChange size state`
 
 ### Table
 

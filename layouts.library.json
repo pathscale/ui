@@ -196,6 +196,7 @@
   ],
   "lint": {
     "baseline": "layouts.lint-baseline.json",
-    "warningsAsErrors": false
+    "// warningsAsErrors": "New legacy-template or manual-class debt fails the build. The baseline records what predates the layout migration; anything not in it is a component written today, and a warning nobody has to act on is a warning nobody reads.",
+    "warningsAsErrors": true
   }
 }

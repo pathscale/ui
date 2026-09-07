@@ -1,4 +1,27 @@
 @layer base {
+  /*
+   * One height scale for controls that sit next to each other.
+   *
+   * `Button` and `Input` both took `size="sm"` and disagreed about what that
+   * measured: 2.25rem against 2rem. `md` and `lg` already matched, so a
+   * button-and-input row was aligned at two sizes out of three and off by 4px
+   * at the third -- the kind of thing an application fixes with a corrective
+   * class, once per row, forever.
+   *
+   * In the base layer rather than a theme, because a control's height is not a
+   * theme decision: `light.css` and `dark.css` carry colour, radius and depth,
+   * and nothing here changes between them.
+   *
+   * Not every control has to be the same height. Two controls a person reads as
+   * one row do.
+   */
+  :root {
+    --control-h-xs: 1.75rem;
+    --control-h-sm: 2.25rem;
+    --control-h-md: 2.5rem;
+    --control-h-lg: 2.75rem;
+  }
+
   html {
     scrollbar-color: var(--color-base-300) transparent;
   }

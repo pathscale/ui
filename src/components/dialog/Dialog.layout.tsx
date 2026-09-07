@@ -2,6 +2,7 @@ import "./Dialog.css";
 import {Show, createContext, createSignal, createTrackedEffect, createUniqueId, onCleanup, omit, useContext, type Component, type ParentComponent} from "solid-js";
 import { Portal, type JSX} from "@solidjs/web";
 import { twMerge } from "../../lib/twMerge";
+import { lockBodyScroll, registerOverlay } from "../../lib/overlay";
 
 import "../_shared/material.css";
 import type { Material, UIBaseProps } from "../vocabulary";
@@ -47,36 +48,14 @@ const useModalContext = () => {
 
 const isVisibleState = (state: DialogAnimState) => state === "entering" || state === "open";
 
-let bodyLockCount = 0;
-let previousBodyOverflow = "";
-let previousBodyPaddingRight = "";
-
-const lockBodyScroll = () => {
-  if (bodyLockCount === 0) {
-    previousBodyOverflow = document.body.style.overflow;
-    previousBodyPaddingRight = document.body.style.paddingRight;
-
-    const scrollbarWidth = window.innerWidth - document.documentElement.clientWidth;
-    if (scrollbarWidth > 0) {
-      document.body.style.paddingRight = `${scrollbarWidth}px`;
-    }
-
-    document.body.style.overflow = "hidden";
-  }
-
-  bodyLockCount += 1;
-};
-
-const unlockBodyScroll = () => {
-  if (bodyLockCount <= 0) return;
-
-  bodyLockCount -= 1;
-
-  if (bodyLockCount === 0) {
-    document.body.style.overflow = previousBodyOverflow;
-    document.body.style.paddingRight = previousBodyPaddingRight;
-  }
-};
+/*
+ * Scroll locking and Escape ownership live in `lib/overlay`.
+ *
+ * This file used to carry its own copy, with its own module-scope counter, and
+ * so did Drawer. Two counters each saving `document.body.style.overflow` on
+ * their first lock is how a page ends up permanently unscrollable: the second
+ * to open saves the first one`s `hidden` and restores it on the way out.
+ */
 
 const FOCUSABLE_SELECTOR = [
   "a[href]",
@@ -292,23 +271,22 @@ const DialogRoot: Layout<typeof componentRecipe, DialogRootProps> = () => {
     }
   });
 
-  let hasScrollLock = false;
+  // The lock hands back its own release, so there is no second counter here to
+  // keep in step with it.
+  let releaseScrollLock: (() => void) | undefined;
   createTrackedEffect(() => {
     const shouldLock = isVisibleState(animState());
-    if (shouldLock && !hasScrollLock) {
-      lockBodyScroll();
-      hasScrollLock = true;
-    } else if (!shouldLock && hasScrollLock) {
-      unlockBodyScroll();
-      hasScrollLock = false;
+    if (shouldLock && !releaseScrollLock) {
+      releaseScrollLock = lockBodyScroll();
+    } else if (!shouldLock && releaseScrollLock) {
+      releaseScrollLock();
+      releaseScrollLock = undefined;
     }
   });
 
   onCleanup(() => {
-    if (hasScrollLock) {
-      unlockBodyScroll();
-      hasScrollLock = false;
-    }
+    releaseScrollLock?.();
+    releaseScrollLock = undefined;
   });
 
   let restoreFocusTarget: HTMLElement | null = null;
@@ -328,17 +306,24 @@ const DialogRoot: Layout<typeof componentRecipe, DialogRootProps> = () => {
       }
     });
 
+    /*
+     * Escape goes through the shared stack; Tab stays here.
+     *
+     * Dismissal is a question about which overlay owns the key, and only
+     * something that can see all of them can answer it -- this used to close a
+     * Dialog and the Popover opened from inside it with one press. Focus
+     * trapping is the opposite: it is about this overlay's own content, so it
+     * stays on this listener.
+     */
+    const releaseOverlay = registerOverlay({
+      active: () => isVisibleState(animState()),
+      dismissable: () =>
+        props.isDismissable !== false && props.shouldCloseOnEsc !== false,
+      dismiss: () => setIsOpen(false),
+    });
+
     const handleDocumentKeyDown = (event: KeyboardEvent) => {
       if (!isVisibleState(animState())) return;
-
-      if (event.key === "Escape") {
-        if (props.isDismissable !== false && props.shouldCloseOnEsc !== false) {
-          event.preventDefault();
-          setIsOpen(false);
-        }
-        return;
-      }
-
       if (event.key === "Tab") {
         trapFocus(event, content);
       }
@@ -347,6 +332,7 @@ const DialogRoot: Layout<typeof componentRecipe, DialogRootProps> = () => {
     document.addEventListener("keydown", handleDocumentKeyDown);
 
     return () => {
+      releaseOverlay();
       document.removeEventListener("keydown", handleDocumentKeyDown);
     };
   });

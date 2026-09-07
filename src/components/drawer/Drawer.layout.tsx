@@ -2,6 +2,7 @@ import "./Drawer.css";
 import {Show, createSignal, createTrackedEffect, createUniqueId, onCleanup, omit, type Component, type ParentComponent} from "solid-js";
 import { Portal, type JSX} from "@solidjs/web";
 import { twMerge } from "../../lib/twMerge";
+import { lockBodyScroll, registerOverlay } from "../../lib/overlay";
 import "../_shared/material.css";
 import type { Material, UIBaseProps } from "../vocabulary";
 import {
@@ -30,31 +31,11 @@ export type {
 
 /* --------------------------- body-scroll locking -------------------------- */
 
-let bodyLockCount = 0;
-let prevBodyOverflow = "";
-let prevBodyPaddingRight = "";
-
-const lockBodyScroll = () => {
-  if (bodyLockCount === 0) {
-    prevBodyOverflow = document.body.style.overflow;
-    prevBodyPaddingRight = document.body.style.paddingRight;
-    const scrollbarWidth = window.innerWidth - document.documentElement.clientWidth;
-    if (scrollbarWidth > 0) {
-      document.body.style.paddingRight = `${scrollbarWidth}px`;
-    }
-    document.body.style.overflow = "hidden";
-  }
-  bodyLockCount += 1;
-};
-
-const unlockBodyScroll = () => {
-  if (bodyLockCount <= 0) return;
-  bodyLockCount -= 1;
-  if (bodyLockCount === 0) {
-    document.body.style.overflow = prevBodyOverflow;
-    document.body.style.paddingRight = prevBodyPaddingRight;
-  }
-};
+/*
+ * Scroll locking and Escape ownership live in `lib/overlay`, shared with Dialog
+ * and Popover. This file had its own counter and its own `document` keydown;
+ * two counters is how the body ends up stuck at `overflow: hidden`.
+ */
 
 /* --------------------------------- props --------------------------------- */
 
@@ -257,20 +238,20 @@ const DrawerRoot: Layout<typeof componentRecipe, DrawerRootProps> = () => {
     if (exitTimer) clearTimeout(exitTimer);
   });
 
-  let hasScrollLock = false;
+  let releaseScrollLock: (() => void) | undefined;
   createTrackedEffect(() => {
     const visible = isVisibleState(animState());
-    if (visible && !hasScrollLock) {
-      lockBodyScroll();
-      hasScrollLock = true;
-    } else if (!visible && hasScrollLock) {
-      unlockBodyScroll();
-      hasScrollLock = false;
+    if (visible && !releaseScrollLock) {
+      releaseScrollLock = lockBodyScroll();
+    } else if (!visible && releaseScrollLock) {
+      releaseScrollLock();
+      releaseScrollLock = undefined;
     }
   });
 
   onCleanup(() => {
-    if (hasScrollLock) unlockBodyScroll();
+    releaseScrollLock?.();
+    releaseScrollLock = undefined;
   });
 
   let restoreFocusTarget: HTMLElement | null = null;
@@ -290,22 +271,30 @@ const DrawerRoot: Layout<typeof componentRecipe, DrawerRootProps> = () => {
       }
     });
 
+    // Escape through the shared stack so a Popover opened from inside this
+    // drawer closes alone; Tab stays local, because trapping is about this
+    // drawer's own content.
+    const releaseOverlay = registerOverlay({
+      active: () => isVisibleState(animState()),
+      // Stated here rather than left to `requestClose` to refuse silently: a
+      // visible drawer that will not close still owns Escape, so nothing
+      // behind it closes instead.
+      dismissable: () => isDismissable() && shouldCloseOnEsc(),
+      dismiss: () => requestClose("escape"),
+    });
+
     const onKeyDown = (event: KeyboardEvent) => {
       if (!isVisibleState(animState())) return;
-
-      if (event.key === "Escape") {
-        event.preventDefault();
-        requestClose("escape");
-        return;
-      }
-
       if (event.key === "Tab" && trapFocusEnabled()) {
         trapFocus(event, dialog);
       }
     };
 
     document.addEventListener("keydown", onKeyDown);
-    return () => document.removeEventListener("keydown", onKeyDown);
+    return () => {
+      releaseOverlay();
+      document.removeEventListener("keydown", onKeyDown);
+    };
   });
 
   createTrackedEffect(() => {
