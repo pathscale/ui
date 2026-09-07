@@ -56,7 +56,21 @@ const InputRoot: Layout<typeof componentRecipe, InputRootProps> = () => {
 
   const baseId = createUniqueId();
 
-  const size = () => props.size ?? "md";
+  /*
+   * `sm`, the same default Button has.
+   *
+   * `--control-h-*` gave the two the same height at the same *named* size, and
+   * left them defaulting to different names: an unsized Button is 2.25rem and
+   * an unsized Input was 2.5rem, so a button beside a field was still 4px out.
+   * Not one call site in this library passes a size to either -- 26 Inputs and
+   * 17 Buttons across the composites -- so every one of those rows was
+   * misaligned, including the connection panel and the auth forms.
+   *
+   * `sm` rather than moving Button, because Button's default is measured: the
+   * fleet passes `sm` at 349 of 465 sites and `md` at 25. Aligning to the
+   * measured side changes the fewest call sites.
+   */
+  const size = () => props.size ?? "sm";
   const isDisabled = () => Boolean((props.state === "disabled"));
   const isInvalid = () => Boolean((resolveState(props.state, props.issues) === "invalid"));
   const fullWidth = () => Boolean(props.fullWidth);
@@ -116,7 +130,8 @@ const InputField: Layout<typeof componentRecipe, InputFieldProps> = () => {
     "aria-invalid",
   );
 
-  const size = () => props.size ?? ctx?.size() ?? "md";
+  // `sm`, matching Button and the assembled `Input` above.
+  const size = () => props.size ?? ctx?.size() ?? "sm";
   const isDisabled = () => Boolean((props.state === "disabled")) || Boolean(props.disabled) || Boolean(ctx?.isDisabled());
   const isInvalid = () =>
     Boolean((resolveState(props.state, props.issues) === "invalid")) || Boolean(local["aria-invalid"]) || Boolean(ctx?.isInvalid());

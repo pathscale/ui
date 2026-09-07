@@ -15,6 +15,25 @@
    * Not every control has to be the same height. Two controls a person reads as
    * one row do.
    */
+  /*
+   * One spacing scale for the components that name their gap.
+   *
+   * `Flex` spells these as Tailwind utilities -- `gap-2`, `gap-4`, `gap-6` --
+   * and `AuthFieldGroup` wrote its own rem values, which agreed at `md` and
+   * `lg` and disagreed at `sm`: 0.75rem against 0.5rem. Two components naming
+   * the same size and meaning two spacings is the same defect the control
+   * heights below were added for.
+   *
+   * The values are Tailwind's, because Flex's utilities are not going to stop
+   * being Tailwind's. Anything that cannot use a utility reads these instead of
+   * guessing.
+   */
+  :root {
+    --gap-sm: 0.5rem;
+    --gap-md: 1rem;
+    --gap-lg: 1.5rem;
+  }
+
   :root {
     --control-h-xs: 1.75rem;
     --control-h-sm: 2.25rem;

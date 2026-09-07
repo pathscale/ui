@@ -15,6 +15,17 @@
         expect: PaintsNamed,
     ),
     (
+        id: "button-measures",
+        group: "button",
+        what: "Button keeps its standard control geometry",
+        open: None,
+        hover: None,
+        click: None,
+        expect_size: Some("x=36"),
+        subject: "button:Button",
+        expect: Measures,
+    ),
+    (
         id: "button-renders",
         group: "button",
         what: "Button renders a node of its own",

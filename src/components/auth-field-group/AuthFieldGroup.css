@@ -5,15 +5,23 @@
     flex-direction: column;
   }
 
+  /*
+   * The same three gaps `Flex` names.
+   *
+   * `md` and `lg` already matched `gap-4` and `gap-6`; `sm` was 0.75rem where
+   * Flex's is 0.5rem. One name meaning two spacings is the kind of thing an
+   * application fixes with a corrective class once per form, forever -- and it
+   * is the same defect `--control-h-*` was added for, one axis over.
+   */
   .auth-field-group--sm {
-    gap: 0.75rem;
+    gap: var(--gap-sm);
   }
 
   .auth-field-group--md {
-    gap: 1rem;
+    gap: var(--gap-md);
   }
 
   .auth-field-group--lg {
-    gap: 1.5rem;
+    gap: var(--gap-lg);
   }
 }

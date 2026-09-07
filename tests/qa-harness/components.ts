@@ -159,6 +159,17 @@ export const COMPONENTS: ComponentSpec[] = [
     kind: "action",
     subject: "Button",
     subjectRole: "button",
+    /*
+     * The default height, asserted here and on Input, so the two cannot drift
+     * apart again.
+     *
+     * `--control-h-*` gave them the same height at the same named size and left
+     * them defaulting to different names, so an unsized Button was 2.25rem
+     * beside an unsized Input at 2.5rem. Nothing in this library passes a size
+     * to either, so every row of them was 4px out. Height only -- the width is
+     * the label.
+     */
+    measure: { subject: "button:Button", size: "x=36" },
   },
   {
     id: "calendar",
@@ -333,6 +344,10 @@ export const COMPONENTS: ComponentSpec[] = [
     kind: "field",
     subject: "Fixture input",
     subjectRole: "textbox",
+    // The other half of the pair. See Button above.
+    // The control wrapper, not the inner `input`: the height is on the box a
+    // person sees, and the element inside it is 17px of text.
+    measure: { subject: "@input-control", size: "x=36" },
   },
   { id: "label", component: "Label", kind: "display" },
   {
