@@ -446,8 +446,12 @@ wheelClass?: string
 
 ```ts
 class?: string
+color?: ColorValue | string
+defaultColor?: ColorValue | string
+disabled?: boolean
 id?: string
 mode?: ColorWheelFlowerMode
+onChange?: (color: ColorValue) => void
 palette?: readonly string[]
 ```
 
