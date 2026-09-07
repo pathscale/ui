@@ -1,4 +1,4 @@
-#!/usr/bin/env zsh
+#!/usr/bin/env bash
 #
 # Drive every component and report a verdict per component.
 #
@@ -47,7 +47,7 @@ ids=()
 if [[ $# -gt 0 ]]; then
   ids=("$@")
 else
-  # Read one id at a time so the array works on the stock macOS shell.
+  # Read one id at a time so the array works in any POSIX-ish shell.
   while IFS= read -r line; do
     ids+=("$line")
   done < <(grep -oE 'id: "[a-z0-9-]+"' "$HERE/components.ts" | sed 's/id: "//;s/"//')
