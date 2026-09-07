@@ -110,10 +110,19 @@ jobs:
           # locally well inside the budget. This widens scheduling deadlines only; every
           # declared rendered-state transition is still required.
           QA_TIMEOUT_SCALE: 2
+          # This runner has no font catalogue, and it should not have one: a
+          # component library that needs a GUI stack installed to be tested is
+          # a component library nobody can test. With no fonts every glyph
+          # shapes to nothing, so anything sized by its text lays out flat and
+          # every paint assertion fails for a reason that says nothing about
+          # the component. The headless profile asks the same questions about
+          # layout instead; the full profile keeps the visual half and runs
+          # where there are fonts. See `PROFILES` in generate-checks.ts.
+          QA_PROFILE: headless
         run: |
           bun run qa:checks
           bun run qa:entries
-          git diff --exit-code -- tests/ps-qa tests/qa-harness/entries
+          git diff --exit-code -- tests/ps-qa tests/ps-qa-headless tests/qa-harness/entries
           bun run qa:build
           bash tests/qa-harness/run-all.sh
 
