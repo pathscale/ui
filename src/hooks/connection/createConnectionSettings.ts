@@ -56,7 +56,25 @@ export interface ConnectionSettingsApplied {
  * every test written in a browser. A check that a settings page cannot run is
  * worse than a looser one it can.
  */
-const ABSOLUTE_URL = /^[a-z][a-z0-9+.-]*:\/\/[^\s/?#]+/i;
+/*
+ * Anchored at both ends, and the port is digits.
+ *
+ * Unanchored, this matched a valid-looking *prefix*: `wss://host other` passed
+ * because the pattern stopped at the space and nothing required it to have
+ * reached the end. So did `wss://host:abc`, an unparseable port, because the
+ * host run accepted `:` as an ordinary character.
+ *
+ * Still deliberately weak about everything else, and still not `new URL()`, for
+ * the reason above. Weak is a decision about how much of an address to inspect;
+ * matching a prefix of a string it then reports as valid is not weakness, it is
+ * the wrong answer.
+ *
+ * The host alternates a bracketed IPv6 literal with an ordinary run: excluding
+ * `:` from the host, which is what isolates the port, otherwise rejects
+ * `http://[::1]:80`.
+ */
+const ABSOLUTE_URL =
+  /^[a-z][a-z0-9+.-]*:\/\/(?:\[[0-9a-f:.]+\]|[^\s/?#:]+)(?::\d+)?(?:[/?#]\S*)?$/i;
 
 export const isAbsoluteUrl = (url: string): string | undefined =>
   ABSOLUTE_URL.test(url)
@@ -156,8 +174,18 @@ export const createConnectionSettings = (
    */
   const read = (): ConnectionSettingsState => {
     const base = defaults();
-    if (typeof localStorage === "undefined") return base;
     try {
+      /*
+       * Inside the `try`, because reading the global is itself the risk.
+       *
+       * `localStorage` is a getter on `Window`, and `typeof` evaluates it. On an
+       * opaque origin, or with site data blocked, that getter throws
+       * `SecurityError` -- so the availability check threw before the guarded
+       * access it was guarding. This store is documented as built at module
+       * scope, so that escaped before anything could render: storage turned off
+       * meant the application did not start.
+       */
+      if (typeof localStorage === "undefined") return base;
       const raw = localStorage.getItem(storageKey);
       if (!raw) return base;
       const parsed: unknown = JSON.parse(raw);
@@ -180,8 +208,16 @@ export const createConnectionSettings = (
       return {
         overrides,
         urls,
+        /*
+         * An empty string is a stored value, not a missing one.
+         *
+         * Rejecting `""` here while the setter and the write both accept it
+         * gave a cleared field two meanings: empty for the rest of the session,
+         * and back to the configured default after a reload. Only the absence
+         * of a usable value falls back.
+         */
         appPublicId:
-          typeof parsed.appPublicId === "string" && parsed.appPublicId !== ""
+          typeof parsed.appPublicId === "string"
             ? parsed.appPublicId
             : base.appPublicId,
       };
@@ -214,8 +250,10 @@ export const createConnectionSettings = (
     );
 
   const write = (value: ConnectionSettingsState): void => {
-    if (typeof localStorage === "undefined") return;
     try {
+      // Inside the `try` for the same reason as in `read`: touching the global
+      // is what can throw.
+      if (typeof localStorage === "undefined") return;
       // Nothing customised means nothing to remember. Clearing rather than
       // storing the defaults means a later change to a default is picked up
       // instead of being masked by a stale copy of the old one.
@@ -240,9 +278,39 @@ export const createConnectionSettings = (
     );
   });
 
+  /*
+   * The committed value, kept alongside the signal because a read straight
+   * after a write does not see it.
+   *
+   * Measured on the pinned `solid-js@2.0.0-rc.4`, browser build:
+   *
+   *     setS({ n: 1 });
+   *     s().n            // 0
+   *     await Promise.resolve();
+   *     s().n            // 1
+   *
+   * The server build returns `1` immediately, which is why this is easy to
+   * miss: the same probe under `bun` with no export condition disproves it.
+   *
+   * The panel calls setters and then `apply()` in the same tick, so every read
+   * inside `apply` saw the settings the user had *replaced*: `onApply` got the
+   * old URLs and the old app id, the write persisted them, and the screen then
+   * updated from the signal a microtask later and looked correct. Reset was the
+   * same shape, reconnecting to the overrides it had just dropped.
+   *
+   * So the setters advance this eagerly and the signal follows for anything
+   * tracking. Everything that has to agree -- what is persisted, what `onApply`
+   * receives, what `isAtDefaults` reports -- reads from here.
+   */
+  let committed: ConnectionSettingsState = state();
+  let inFlight = 0;
+
   const update = (
     change: (current: ConnectionSettingsState) => ConnectionSettingsState,
-  ) => setState((current) => change(current));
+  ) => {
+    committed = change(committed);
+    setState(committed);
+  };
 
   /*
    * A plain function, reading `state()` once rather than per endpoint.
@@ -255,6 +323,17 @@ export const createConnectionSettings = (
    * reading it in a render loop should hoist it, which is cheaper than making
    * this clever.
    */
+  const resolveFrom = (
+    current: ConnectionSettingsState,
+  ): Record<string, string> =>
+    Object.fromEntries(
+      endpoints.map((e) => {
+        const override =
+          current.overrides[e.name] === true ? current.urls[e.name] : undefined;
+        return [e.name, override && override !== "" ? override : e.fallback];
+      }),
+    );
+
   const resolved = (): Record<string, string> => {
     const current = state();
     return Object.fromEntries(
@@ -286,7 +365,10 @@ export const createConnectionSettings = (
       return isApplying();
     },
     get isAtDefaults() {
-      return atDefaults(state());
+      // Tracks the signal so a component re-renders, but answers from the
+      // committed value, which a caller reading this right after a setter needs.
+      state();
+      return atDefaults(committed);
     },
     state$: state,
 
@@ -309,19 +391,38 @@ export const createConnectionSettings = (
       update((c) => ({ ...c, appPublicId: id }));
     },
     reset() {
-      setState(defaults());
+      committed = defaults();
+      setState(committed);
     },
     async apply() {
+      /*
+       * Counted, not a boolean.
+       *
+       * Two applies can overlap -- a second panel, a Reset while a Save is in
+       * flight, or a caller using the store directly -- and with a flag the
+       * first to finish cleared it while the other reconnect was still running,
+       * so `isApplying` reported idle mid-flight. That is the one thing this
+       * flag exists to say.
+       */
+      inFlight += 1;
       setIsApplying(true);
+      /*
+       * Snapshotted before the await, from the committed value rather than the
+       * signal. This is the promise the doc comment on `apply` makes -- persist,
+       * then hand over what was persisted -- and it only holds if both halves
+       * read the same object. Taken once, so a concurrent write between the
+       * write and the callback cannot hand `onApply` a third state.
+       */
+      const current = committed;
       try {
-        const current = state();
         await onApply?.({
-          urls: resolved(),
+          urls: resolveFrom(current),
           appPublicId: current.appPublicId,
           overrides: { ...current.overrides },
         });
       } finally {
-        setIsApplying(false);
+        inFlight -= 1;
+        if (inFlight === 0) setIsApplying(false);
       }
     },
   };

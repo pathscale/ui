@@ -2,6 +2,7 @@ import "./ConnectionSettings.css";
 import type { JSX } from "@solidjs/web";
 import {
   type Component,
+  createMemo,
   createSignal,
   createUniqueId,
   For,
@@ -123,7 +124,17 @@ export const ConnectionSettingsLayout: Layout<
   const fieldValue = (name: string) =>
     draft()[name] ?? props.store.state.urls[name] ?? "";
   const appIdValue = () => appIdDraft() ?? props.store.state.appPublicId;
-  const resolvedUrls = () => props.store.urls;
+  /*
+   * A memo, because this is read once per rendered row.
+   *
+   * `store.urls` is a fold over every endpoint that rebuilds the whole record on
+   * each read -- deliberately, since the store lives at module scope where a memo
+   * cannot be relied on to stay live. A component has an owner, so the caching
+   * the store cannot promise belongs here. As a plain function this was a full
+   * traversal per row: quadratic in the endpoint count, despite reading as if it
+   * resolved once.
+   */
+  const resolvedUrls = createMemo(() => props.store.urls);
   const edit = (name: string, value: string) =>
     setDraft({ ...draft(), [name]: value });
 
@@ -197,7 +208,18 @@ export const ConnectionSettingsLayout: Layout<
       const fallback = props.store.fallbacks[endpoint.name];
       const overridden = open() && value !== "" && value !== fallback;
       props.store.setOverride(endpoint.name, overridden);
-      if (overridden) props.store.setUrl(endpoint.name, value);
+      /*
+       * Commit the field whenever it holds one, including when it no longer
+       * overrides anything.
+       *
+       * Writing only while `overridden` left the previous custom address in the
+       * store: replacing a saved `C` with the fallback disabled the override but
+       * kept `C` in `state.urls`, so the field repopulated with `C` on the next
+       * read, and -- because the switch is still open -- a second Save saw
+       * `C !== fallback` and turned it back on. Clearing an override was
+       * therefore undone by pressing Save twice.
+       */
+      if (value !== "") props.store.setUrl(endpoint.name, value);
     }
 
     const id = appIdDraft();
@@ -218,6 +240,18 @@ export const ConnectionSettingsLayout: Layout<
     }
   };
 
+  /*
+   * Enter saves, from any field.
+   *
+   * `event.isComposing` is the guard that matters: for an IME, Enter accepts
+   * the candidate, and saving there submits a half-typed address.
+   */
+  const saveOnEnter = (event: KeyboardEvent) => {
+    if (event.key !== "Enter" || event.isComposing) return;
+    event.preventDefault();
+    void save();
+  };
+
   const reset = async () => {
     setFailure(undefined);
     setDraft({});
@@ -235,9 +269,19 @@ export const ConnectionSettingsLayout: Layout<
 
   return (
     /*
-     * A form, so Enter in a URL field saves. Someone typing an address and
-     * pressing Enter is the ordinary way to use this, and on a plain `div` it
-     * did nothing at all.
+     * A form, plus an explicit Enter handler on the fields.
+     *
+     * The form alone does not do it. Implicit submission needs a submit button,
+     * or exactly one field when there is none -- and this panel has neither: the
+     * actions are `type="button"` on purpose (see below), and a panel showing
+     * two URLs, or one URL and the app id, is the ordinary configuration. So the
+     * `onSubmit` below never fired for the case it was written for, and Enter
+     * did nothing in exactly the multi-field panel the comment described.
+     *
+     * `onSubmit` stays for the single-field case and for a browser that submits
+     * anyway; `saveOnEnter` covers the rest. It ignores an Enter that is
+     * finishing an IME composition, which is a commit to the field, not to the
+     * form.
      */
     <form
       {...others}
@@ -300,6 +344,7 @@ export const ConnectionSettingsLayout: Layout<
                   id={fieldId(endpoint.name)}
                   name={endpoint.name}
                   type="text"
+                  onKeyDown={saveOnEnter}
                   aria-label={endpoint.label}
                   placeholder={endpoint.placeholder}
                   value={fieldValue(endpoint.name)}
@@ -330,6 +375,7 @@ export const ConnectionSettingsLayout: Layout<
             class={CLASSES.slot.input}
             id={fieldId("app-public-id")}
             type="text"
+            onKeyDown={saveOnEnter}
             aria-label={props.labels.appPublicId}
             value={appIdValue()}
             disabled={props.store.isApplying}

@@ -505,7 +505,14 @@ export const connection = createConnectionSettings({
 ```
 
 Read `connection.urls.api` from the transport. It resolves overrides and never
-returns an empty string, and it is memoised, so reading it per request is fine.
+returns an empty string.
+
+It is **not** memoised: every read folds over the endpoints and rebuilds the
+record. That is deliberate — the store is created at module scope, where a memo
+sits in a detached root and can go stale rather than merely slow, and a stale
+URL is worse than a rebuilt one. Reading it per request is fine at the scale
+these panels have. Reading it in a loop is not: hoist it, or wrap it in a
+`createMemo` inside your component, where there is an owner to keep it live.
 
 ### What the store guarantees
 
