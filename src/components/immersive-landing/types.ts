@@ -138,6 +138,21 @@ export interface FirefoxPWABannerProps {
   extensionUrl?: string;
   storageKey?: string;
   texts?: FirefoxPWABannerTexts;
+  /**
+   * The browser mark shown beside the text. Omit it and the banner renders
+   * without one.
+   *
+   * A default lived here as `icon-[mdi--firefox]`, and it was the only reason
+   * this library needed a second Iconify set. Everything else it draws is
+   * `lucide`, which has no brand glyphs, so one banner in one optional
+   * component obliged every consumer to install all of `-json/mdi` --
+   * and a consumer who installed only `lucide` got build warnings and a blank
+   * space, which is what happened on crates.vip.
+   *
+   * Accepts what `Icon` accepts: an Iconify class such as
+   * `"icon-[mdi--firefox]"`, or an inline SVG element.
+   */
+  icon?: string | JSX.Element;
   onInstall?: () => void;
   onDismiss?: () => void;
 }
