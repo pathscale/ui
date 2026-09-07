@@ -225,20 +225,20 @@
    * Size
    * --------------------------------------------------------------------- */
   .button--xs {
-    height: 1.75rem;
+    height: var(--control-h-xs);
     padding-inline: 0.5rem;
     font-size: 0.75rem;
   }
   .button--sm {
-    height: 2.25rem;
+    height: var(--control-h-sm);
     padding-inline: 0.75rem;
   }
   .button--md {
-    height: 2.5rem;
+    height: var(--control-h-md);
     padding-inline: 1rem;
   }
   .button--lg {
-    height: 2.75rem;
+    height: var(--control-h-lg);
     padding-inline: 1.125rem;
     font-size: 1rem;
   }

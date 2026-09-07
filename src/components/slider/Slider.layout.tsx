@@ -1,6 +1,6 @@
 import "./Slider.css";
 import type { JSX } from "@solidjs/web";
-import { createSignal, createUniqueId, Show } from "solid-js";
+import { createSignal, createUniqueId, omit, Show } from "solid-js";
 import type { Layout } from "../../lib/layouts";
 import { twMerge } from "../../lib/twMerge";
 import type { UIBaseProps } from "../vocabulary";
@@ -25,9 +25,22 @@ type SliderBaseProps = {
   style?: JSX.CSSProperties;
 };
 
+/**
+ * Pass-through is div attributes, because that is what this renders.
+ *
+ * It declared `JSX.InputHTMLAttributes<HTMLInputElement>` and there is no
+ * `<input>` anywhere in the component: the semantic element is a `div` with
+ * `role="slider"`, and the value comes from `aria-valuenow`. So the type
+ * offered `min`, `max`, `step`, `form`, `checked` and the rest of the input
+ * surface, none of which had anywhere to go — on top of nothing being
+ * forwarded at all, which is the reason this was noticed.
+ *
+ * Narrowed to the element that exists. `min`/`max`/`step` remain as this
+ * component's own props above, where they are actually read.
+ */
 export type SliderProps = SliderBaseProps &
   UIBaseProps &
-  Omit<JSX.InputHTMLAttributes<HTMLInputElement>, keyof SliderBaseProps>;
+  Omit<JSX.HTMLAttributes<HTMLDivElement>, keyof SliderBaseProps>;
 
 function clamp(val: number, min: number, max: number) {
   return Math.min(Math.max(val, min), max);
@@ -41,6 +54,32 @@ function snapToStep(val: number, min: number, max: number, step: number) {
 const Slider: Layout<typeof componentRecipe, SliderProps> = () => {
   let trackRef: HTMLDivElement | undefined;
   let thumbRef: HTMLDivElement | undefined;
+
+  /*
+   * Everything this component owns, removed; the rest is forwarded.
+   *
+   * `SliderProps` promises `JSX.InputHTMLAttributes` pass-through and nothing
+   * was passing through: `id` and `aria-label` were read individually and the
+   * remainder was accepted by the type and dropped on the floor.
+   */
+  const others = omit(
+    props,
+    "label",
+    "value",
+    "onChange",
+    "onChangeEnd",
+    "min",
+    "max",
+    "step",
+    "disabled",
+    "formatValue",
+    "size",
+    "dataTheme",
+    "class",
+    "style",
+    "id",
+    "aria-label",
+  );
 
   const min = () => props.min ?? 0;
   const max = () => props.max ?? 100;
@@ -217,6 +256,20 @@ const Slider: Layout<typeof componentRecipe, SliderProps> = () => {
         />
         {/* biome-ignore lint/a11y/useFocusableInteractive: Solid's JSX DOM typing requires lowercase tabindex, supplied below. */}
         <div
+          /*
+           * The declared pass-through, forwarded.
+           *
+           * `SliderProps` intersects `JSX.InputHTMLAttributes`, and none of it
+           * reached the DOM: `id` and `aria-label` were read by hand and
+           * everything else -- `data-*`, `title`, focus handlers, `aria-describedby`
+           * -- was accepted by the type and dropped. It lands on the element
+           * carrying `role="slider"`, which is the one a consumer means when
+           * they attribute "the slider", not the wrapper.
+           *
+           * Spread first so the explicit attributes below still win; the
+           * component owns its own semantics.
+           */
+          {...others}
           ref={thumbRef}
           id={props.id}
           {...{ class: CLASSES.thumb }}

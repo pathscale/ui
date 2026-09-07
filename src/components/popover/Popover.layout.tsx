@@ -11,6 +11,7 @@ import {
   useContext,
 } from "solid-js";
 import { twMerge } from "../../lib/twMerge";
+import { registerOverlay } from "../../lib/overlay";
 
 import "../_shared/material.css";
 import type { Layout } from "../../lib/layouts";
@@ -145,20 +146,26 @@ const PopoverRoot: Layout<typeof componentRecipe, PopoverRootProps> = () => {
       setIsOpen(false, { focusTrigger: false });
     };
 
-    const handleKeyDown = (event: KeyboardEvent) => {
-      if (!isOpen()) return;
-      if (props.closeOnEscape === false) return;
-      if (event.key !== "Escape") return;
-      event.preventDefault();
-      setIsOpen(false, { focusTrigger: true });
-    };
+    /*
+     * Registered on the shared stack, which matters most for this component:
+     * a popover is the thing typically opened *inside* a dialog or drawer, and
+     * with each of the three binding its own `document` listener one Escape
+     * closed the popover and whatever contained it.
+     *
+     * `dismissable` is read at dismiss time rather than captured, so toggling
+     * `closeOnEscape` while open is honoured.
+     */
+    const releaseOverlay = registerOverlay({
+      active: isOpen,
+      dismissable: () => props.closeOnEscape !== false,
+      dismiss: () => setIsOpen(false, { focusTrigger: true }),
+    });
 
     document.addEventListener("pointerdown", handlePointerDown);
-    document.addEventListener("keydown", handleKeyDown);
 
     return () => {
+      releaseOverlay();
       document.removeEventListener("pointerdown", handlePointerDown);
-      document.removeEventListener("keydown", handleKeyDown);
     };
   });
 

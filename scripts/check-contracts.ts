@@ -14,6 +14,12 @@ const SKIP = new Set([
   "props-table",
   "icon",
   "form",
+  // Not components, and never were: `_shared` is helper modules and CSS
+  // (`controlledState.ts`, `overlayPosition.ts`), `status` is a plain
+  // `status.ts`. They surfaced only once the source lookup started reporting a
+  // missing component instead of skipping silently.
+  "_shared",
+  "status",
 ]);
 
 function toPascalCase(kebab: string): string {
@@ -84,28 +90,89 @@ for (const entry of entries) {
     continue;
   }
 
-  // Find the main source file (PascalCase.tsx)
-  const mainFile = `${pascal}.tsx`;
-  const mainPath = join(componentDir, mainFile);
-  if (!existsSync(mainPath)) {
-    // Some components may use a different casing or have multiple files
-    // Skip source-level checks but still check index.ts
+  /*
+   * Every authored source in the directory, not one file named after it.
+   *
+   * This looked only for `PascalCase.tsx` and `continue`d when it was missing.
+   * After the layout migration that file exists for none of the components, so
+   * every source-level rule below was skipped for all 93 of them -- and the run
+   * still printed "All 95 components pass contract checks". A check that cannot
+   * fail is worse than no check, because it is reported as coverage.
+   *
+   * Naming the file after its directory was also wrong on its own terms:
+   * `live-chat` holds `LiveChatBubble` and `LiveChatPanel`, `table` holds
+   * `ExpandToggle` and `InlineConfirm`. Those were never going to be found, and
+   * their siblings were never checked either. Checking every `*.layout.tsx`
+   * covers them and widens the rest.
+   */
+  const sourcePaths = componentFiles
+    .filter(
+      (file) =>
+        file.endsWith(".layout.tsx") ||
+        (file === `${pascal}.tsx` && !file.endsWith(".generated.tsx")),
+    )
+    .map((file) => join(componentDir, file));
+
+  if (sourcePaths.length === 0) {
+    fail(dir, "structure", "no authored component source to check", "Structure");
     continue;
   }
 
-  const source = readFileSync(mainPath, "utf8");
+  for (const mainPath of sourcePaths) {
+    checkSource(dir, mainPath);
+  }
+
+  // Barrel rules are per directory, not per source: a component with two
+  // authored files has one `index.ts`, and reporting it twice is noise.
   const index = readFileSync(indexPath, "utf8");
+  if (!index.includes("type ")) {
+    fail(dir, "structure", "index.ts must export the component's Props type", "Structure");
+  }
+}
+
+function checkSource(dir: string, mainPath: string) {
+  const source = readFileSync(mainPath, "utf8");
 
   // --- Props rules ---
 
-  // Solid 2 replaced splitProps with omit; both separate component props from
-  // the attributes deliberately passed through to the rendered element.
-  if (!source.includes("splitProps") && !source.includes("omit(")) {
+  /*
+   * A compiled layout does both of these for you.
+   *
+   * `{...slot.root}` is the layout compiler's output: it assembles the recipe's
+   * classes and merges `class`, and `local` is the prop split. So a component
+   * built that way needs neither `omit()` nor `twMerge()`, and demanding them
+   * would be asking for hand-written plumbing back inside a compiled component.
+   *
+   * These two rules predate the layout migration, and once the file lookup
+   * above started finding `.layout.tsx` they failed 34 times across 22
+   * components that are all correct. The rules were stale, not the components
+   * -- which is only visible because the check began running at all.
+   */
+  const usesLayoutSlots = /\{\.\.\.slot[.[]/.test(source);
+
+  /*
+   * Only components that actually accept pass-through need to separate it.
+   *
+   * The rule says "separate component props from HTML pass-through", so it only
+   * has meaning when there is pass-through: a closed prop set has nothing to
+   * split. `Slider` and `ColorWheelFlower` extend no `JSX.*Attributes` and
+   * spread nothing onto an element, and both were failing a rule that did not
+   * apply to them.
+   */
+  const acceptsPassThrough =
+    /JSX\.\w*(HTML|SVG)\w*Attributes/.test(source) ||
+    /\{\.\.\.(others|rest)\}/.test(source);
+
+  if (
+    acceptsPassThrough &&
+    !usesLayoutSlots &&
+    !source.includes("splitProps") &&
+    !source.includes("omit(")
+  ) {
     fail(dir, "props", "must use omit() or splitProps() to separate component props from HTML pass-through", "Props");
   }
 
-  // Must use twMerge for class merging
-  if (!source.includes("twMerge")) {
+  if (!usesLayoutSlots && !source.includes("twMerge")) {
     fail(dir, "props", "must use twMerge() for class merging", "Props");
   }
 
@@ -124,18 +191,20 @@ for (const entry of entries) {
       block += lines[j];
       if (block.includes("}}")) break;
     }
-    // Skip if it contains dynamic values (template literals, function calls, ternaries, spread)
-    if (/\$\{|`|\.\.\.|[a-z]+\(|[?]/.test(block)) continue;
+    /*
+     * Skip anything dynamic: template literals, calls, ternaries, spreads --
+     * and property access, which this missed.
+     *
+     * `style={{ "border-color": item.hex }}` is as dynamic as a call, but
+     * matched none of the patterns, so ColorWheelFlower was told to replace a
+     * runtime colour with a Tailwind class. There is no such class; the value
+     * is a swatch's own hex.
+     */
+    if (/\$\{|`|\.\.\.|[a-z]+\(|[?]|\w+\.\w+/i.test(block)) continue;
     // Only flag purely static style objects
     fail(dir, "code-style", `static inline style={{}} could be a Tailwind class (line ~${from + 1})`, "Code Style");
   }
 
-  // --- Barrel export rules ---
-
-  // index.ts must export a type (props type)
-  if (!index.includes("type ")) {
-    fail(dir, "structure", "index.ts must export the component's Props type", "Structure");
-  }
 }
 
 const tabsLayout = readFileSync(join(COMPONENTS_DIR, "tabs", "Tabs.layout.tsx"), "utf8");

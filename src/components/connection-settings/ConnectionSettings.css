@@ -67,7 +67,10 @@
     gap: 0.5rem;
   }
 
-  .connection-settings--applying .connection-settings__actions {
+  /* `data-applying`, not a class: the flag is this component's own runtime
+     state, not a prop, so a recipe prop could never be driven by it. State
+     attributes are what the library documents for exactly this. */
+  .connection-settings[data-applying="true"] .connection-settings__actions {
     opacity: 0.6;
   }
 }

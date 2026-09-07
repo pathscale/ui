@@ -71,16 +71,31 @@ to a more opaque fill.
 
 ## Component conventions (consumer-facing)
 
-- Booleans are HeroUI-style `is*`: `isDisabled`, `isOpen`, `isInvalid`, `isPending`, `isIconOnly`, `isHoverable`, `isPressable`. Native `disabled` also honored.
+- Booleans are HeroUI-style `is*` where they exist: `isDisabled`, `isInvalid`,
+  `isIconOnly`, `isInteractive`. Native `disabled` is also honored.
+
+  Not every `is*` name in older guidance is real. Overlays take `open`, not
+  `isOpen` -- `isOpen` is the *context* accessor a compound part reads, not a
+  prop you pass. Button has no `isPending`; a pending button is
+  `state="loading"`, from the shared `State` vocabulary.
 - Sizes and colour-ish props are **per-component, not a shared union in practice**.
   `ComponentSize` and `ComponentColor` are declared in `src/components/types.ts` with the
   full unions, but **they are not re-exported from the root barrel**, so consumers cannot
-  import them, and individual components narrow them. `Button` takes
-  `variant` (`primary | secondary | tertiary | outline | ghost | danger | danger-soft`)
-  and `size` (`sm | md | lg`); `Badge`, `Chip`, `Avatar`, `Spinner`, `Toggle`, `Meter` and
-  the progress components take `color`. Read the component's own props before assuming.
+  import them, and individual components narrow them.
+
+  `Button` separates **shape** from **intent**, and the two are different props:
+  `variant` is `solid | soft | outline | ghost | plain`, `flavor` is
+  `neutral | primary | secondary | accent | destructive | success | warning | info`,
+  and `state` is the shared `State`. So the call to action is
+  `flavor="primary"`, not `variant="primary"` — this line previously listed
+  `primary | secondary | tertiary | outline | ghost | danger | danger-soft` as
+  the *variants*, which mixed the two vocabularies and named four values that do
+  not exist.
+
+  `Badge`, `Chip`, `Avatar`, `Spinner`, `Toggle`, `Meter` and the progress
+  components take `color`. Read the component's own props before assuming.
 - Both `class` and `className` remain compatibility escape hatches. Prefer semantic component parameters; `solid-layouts-lint --porting --layouts @pathscale/ui` reports overrides that should move into recipes.
-- Controlled/uncontrolled triples: `isOpen/defaultOpen/onOpenChange`, `value/defaultValue/onChange`, `selectedKey/defaultSelectedKey/onSelectionChange`. Event callbacks pass **values, not events**.
+- Controlled/uncontrolled triples: `open/defaultOpen/onOpenChange`, `value/defaultValue/onChange`, `selectedKey/defaultSelectedKey/onSelectionChange`. Event callbacks pass **values, not events**.
 - **Breaking in 3.1 — `Switch`, `Checkbox` and `PasswordField`.** The rule above
   was already the documented contract, and three controls did not follow it.
   `Switch.onChange` and `Checkbox.onChange` were the input's *native* `onChange`
@@ -115,13 +130,23 @@ to a more opaque fill.
 - `Popover` accepts `anchorRect` as a rectangle or rectangle accessor when content must be positioned without a trigger element.
 - Compound components: `Modal.Trigger`, `Tabs.List`, `Select.Option`, etc. (`Object.assign` statics; also exported flat: `AccordionRoot`, `AlertTitle`, …). Parts are styleable/testable via `data-slot="..."` and state attrs (`data-open`, `data-selected`, `data-invalid`).
 - `Tabs` does not require `ResizeObserver`. When it is unavailable, selection and keyboard behavior remain active and the indicator is measured on selection, mount, and window resize.
-- No polymorphic `as` prop.
+- `Flex`, `Grid` and `Navbar` take a polymorphic `as`. Nothing else does; reach
+  for the component that renders the element you want rather than repointing one
+  that does not.
 
 ```tsx
 <Flex direction="col" gap="sm">
-  <Button variant="primary" size="md" isPending={saving()}>Save</Button>
+  <Button flavor="primary" size="md" state={saving() ? "loading" : "default"}>
+    Save
+  </Button>
 </Flex>
 ```
+
+> This example used to read `variant="primary" isPending={saving()}`, and none
+> of it was real: `variant` is `solid | soft | outline | ghost | plain`, so
+> `primary` is a **flavor**; there is no `isPending`, because pending is
+> `state="loading"`; and the same page said there was no `as` prop while three
+> components shipped one. The shortest documented path did not compile.
 
 Typography presentation belongs on `Text` parameters rather than consumer utility classes:
 
