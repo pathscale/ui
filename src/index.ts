@@ -258,6 +258,7 @@ export type {
 // Form components and hooks
 // ---------------------------------------------------------------------------
 export {
+  FieldErrorMessage,
   default as Form,
   FormField,
   FormSubmitButton,

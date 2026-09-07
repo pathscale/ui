@@ -11,7 +11,7 @@ invisible for a day behind a doc that looked correct the whole time.
 When an API change is intentional, run `bun run check:api -- --write`, read the
 diff, and commit it. The diff is the review.
 
-186 components. An empty list means the component adds nothing beyond
+187 components. An empty list means the component adds nothing beyond
 HTML attributes and `UIBaseProps`; that is an assertion, not a gap.
 
 ---
@@ -910,6 +910,12 @@ placement?: DropdownPlacement
 
 ```ts
 children: JSX.Element
+```
+
+### FieldErrorMessage
+
+```ts
+message?: string
 ```
 
 ### FieldGroup
