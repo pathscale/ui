@@ -39,6 +39,50 @@ import { createErrorBoundary, createSignal, For, Show } from "solid-js";
 import { Dynamic, type JSX, render } from "@solidjs/web";
 import { COMPONENTS, type ComponentSpec } from "./components";
 
+/**
+ * An in-memory `localStorage`, when the host has none.
+ *
+ * `qa-inspect-host` does not provide one, so every component that persists
+ * anything took its "storage is unavailable" branch and the storage path went
+ * untested -- silently, because that branch is deliberately quiet: a settings
+ * panel still works for the session without it. Every browser has storage, so
+ * a harness with none was testing the wrong shape of the thing.
+ *
+ * For the whole page, deliberately. It was briefly narrowed to the one fixture
+ * that asserts persistence, because ThemeColorPicker stopped starting with it
+ * installed. That turned out not to be about storage at all: the component
+ * logs once about CSP when it gets far enough to check, and `ps-qa` was
+ * reading the first line of the host's stdout as the descriptor path, so any
+ * component that logged during startup looked like one that would not start.
+ * Fixed in ps-qa 0.6.2. Narrowing this would have left the same trap set for
+ * the next component that logs.
+ *
+ * Per page, and never shared: each component is served on its own page in its
+ * own process, so this starts empty exactly as often as the fixtures do.
+ */
+installMemoryStorage();
+function installMemoryStorage(): void {
+  if (typeof globalThis.localStorage !== "undefined") return;
+  const entries = new Map<string, string>();
+  Object.defineProperty(globalThis, "localStorage", {
+    configurable: true,
+    value: {
+      getItem: (key: string) => entries.get(key) ?? null,
+      setItem: (key: string, value: string) => {
+        entries.set(key, String(value));
+      },
+      removeItem: (key: string) => {
+        entries.delete(key);
+      },
+      clear: () => entries.clear(),
+      key: (index: number) => [...entries.keys()][index] ?? null,
+      get length() {
+        return entries.size;
+      },
+    },
+  });
+}
+
 function DropdownFixture(props: { spec: ComponentSpec }) {
   const options = () => props.spec.options ?? [];
   const [value, setValue] = createSignal(options()[1]?.value ?? "");
@@ -510,9 +554,36 @@ function ConnectionSettingsFixture() {
    * difference between "Save is dead" and "Save refused this address".
    */
   const [outcome, setOutcome] = createSignal("none");
+  /*
+   * What `onApply` was handed, and what storage already held when it ran.
+   *
+   * Two promises `apply` makes that nothing could see: the callback receives
+   * the settings that were just saved, and they are persisted *before* it runs
+   * -- which is what a callback that reloads or navigates depends on. The
+   * fixture had no `onApply` at all, so both were unasserted, and the ordering
+   * one was in fact broken: persistence happened in a deferred effect a
+   * microtask after the reconnect.
+   */
+  const [reconnect, setReconnect] = createSignal("none");
+  const storageKey = "qa-connection-settings";
   const store = createConnectionSettings({
-    storageKey: "qa-connection-settings",
+    storageKey,
     endpoints: [{ name: "api", fallback: "wss://api.example.com" }],
+    onApply: ({ urls }) => {
+      let persisted = "nothing";
+      try {
+        const raw = localStorage.getItem(storageKey);
+        const parsed: unknown = raw ? JSON.parse(raw) : undefined;
+        const stored =
+          parsed && typeof parsed === "object" && "urls" in parsed
+            ? (parsed as { urls?: Record<string, string> }).urls?.api
+            : undefined;
+        persisted = stored ?? "nothing";
+      } catch {
+        persisted = "unreadable";
+      }
+      setReconnect(`${urls.api} over ${persisted}`);
+    },
   });
 
   return (
@@ -538,6 +609,7 @@ function ConnectionSettingsFixture() {
       */}
       <h2>Committed: {store.urls.api}</h2>
       <h2>Save outcome: {outcome()}</h2>
+      <h2>Reconnected: {reconnect()}</h2>
     </ConnectionSettings>
   );
 }

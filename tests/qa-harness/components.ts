@@ -92,6 +92,15 @@ export type ComponentSpec = {
   commitText?: string;
   committed?: string;
   uncommitted?: string;
+  /**
+   * For `settings`: a second value, for the check that asserts what the
+   * reconnect was handed.
+   *
+   * Distinct from `commitText` on purpose. The checks in a group share a host,
+   * so that one is already in storage by the time the reconnect check runs, and
+   * asserting it again passes whether or not this save persisted anything.
+   */
+  reconnectText?: string;
   /** For `settings`: the control that commits the draft. */
   commit?: string;
   /** For `value`/`mode`/`tabs`: the option, item or tab to activate. */
@@ -197,6 +206,7 @@ export const COMPONENTS: ComponentSpec[] = [
     opens: "textbox:API URL",
     commit: "button:Save",
     commitText: "ws://qa-committed",
+    reconnectText: "ws://qa-reconnected",
     uncommitted: "heading:Committed: wss://api.example.com",
     committed: "heading:Committed: ws://qa-committed",
   },

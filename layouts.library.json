@@ -196,7 +196,7 @@
   ],
   "lint": {
     "baseline": "layouts.lint-baseline.json",
-    "// warningsAsErrors": "Left off deliberately. The review asked for new layout debt to fail the build, and it was briefly turned on -- but `solid-layouts-lint` is not currently trustworthy enough to gate a build on: a tool that fails spuriously costs more than the debt it catches, and the first thing a red build from an unreliable linter teaches is to ignore red builds. Turn this on when the linter is fixed; the baseline still records what predates the layout migration either way.",
-    "warningsAsErrors": false
+    "// warningsAsErrors": "New legacy-template or manual-class debt fails the build. The baseline records what predates the layout migration; anything not in it is a component written today, and a warning nobody has to act on is a warning nobody reads. This was turned off once on the claim that the linter failed spuriously -- it does not: what was seen was the baseline ratchet doing its job after debt was removed, which docs/linting-and-porting.md describes and `solid-layouts-lint --update-baseline` resolves. Verified to have teeth: a manual class composition added to a migrated component fails `layouts:generate`.",
+    "warningsAsErrors": true
   }
 }

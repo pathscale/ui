@@ -9,7 +9,6 @@ import {
   focusFirst,
   isSidePlacement,
   isVisibleState,
-  trapFocus,
   type DrawerAnimState,
   type DrawerBackdropVariant,
   type DrawerCloseReason,
@@ -271,29 +270,25 @@ const DrawerRoot: Layout<typeof componentRecipe, DrawerRootProps> = () => {
       }
     });
 
-    // Escape through the shared stack so a Popover opened from inside this
-    // drawer closes alone; Tab stays local, because trapping is about this
-    // drawer's own content.
+    /*
+     * Escape and Tab both through the shared stack, registered as this drawer
+     * becomes visible so the stack orders by open rather than by mount.
+     *
+     * Tab used to be a local listener gated on "am I visible", which is not
+     * the same question as "am I the overlay in front": with a Dialog open
+     * over this drawer both traps ran and pulled focus against each other.
+     */
     const releaseOverlay = registerOverlay({
-      active: () => isVisibleState(animState()),
       // Stated here rather than left to `requestClose` to refuse silently: a
       // visible drawer that will not close still owns Escape, so nothing
       // behind it closes instead.
       dismissable: () => isDismissable() && shouldCloseOnEsc(),
       dismiss: () => requestClose("escape"),
+      trapFocusIn: () => (trapFocusEnabled() ? dialog : undefined),
     });
 
-    const onKeyDown = (event: KeyboardEvent) => {
-      if (!isVisibleState(animState())) return;
-      if (event.key === "Tab" && trapFocusEnabled()) {
-        trapFocus(event, dialog);
-      }
-    };
-
-    document.addEventListener("keydown", onKeyDown);
     return () => {
       releaseOverlay();
-      document.removeEventListener("keydown", onKeyDown);
     };
   });
 

@@ -146,26 +146,39 @@ const PopoverRoot: Layout<typeof componentRecipe, PopoverRootProps> = () => {
       setIsOpen(false, { focusTrigger: false });
     };
 
-    /*
-     * Registered on the shared stack, which matters most for this component:
-     * a popover is the thing typically opened *inside* a dialog or drawer, and
-     * with each of the three binding its own `document` listener one Escape
-     * closed the popover and whatever contained it.
-     *
-     * `dismissable` is read at dismiss time rather than captured, so toggling
-     * `closeOnEscape` while open is honoured.
-     */
-    const releaseOverlay = registerOverlay({
-      active: isOpen,
-      dismissable: () => props.closeOnEscape !== false,
-      dismiss: () => setIsOpen(false, { focusTrigger: true }),
-    });
-
     document.addEventListener("pointerdown", handlePointerDown);
 
     return () => {
-      releaseOverlay();
       document.removeEventListener("pointerdown", handlePointerDown);
+    };
+  });
+
+  /*
+   * Registered on the shared stack when this popover opens, and released when
+   * it closes -- which matters most for this component, because a popover is
+   * the thing typically opened *inside* a dialog or drawer.
+   *
+   * In an effect keyed on `isOpen`, not in the setup above. Registering once at
+   * mount put mount order into a stack whose whole job is open order: two
+   * popovers on a page, open the second and then the first, and Escape reached
+   * the second, because that is the one that happened to mount last. Being
+   * skipped while closed was not enough; among the open ones the ranking was
+   * still wrong.
+   *
+   * No `trapFocusIn`: a popover is not modal and does not take the keyboard
+   * away from the page behind it.
+   *
+   * `dismissable` is read at dismiss time rather than captured, so toggling
+   * `closeOnEscape` while open is honoured.
+   */
+  createTrackedEffect(() => {
+    if (!isOpen()) return;
+    const releaseOverlay = registerOverlay({
+      dismissable: () => props.closeOnEscape !== false,
+      dismiss: () => setIsOpen(false, { focusTrigger: true }),
+    });
+    return () => {
+      releaseOverlay();
     };
   });
 

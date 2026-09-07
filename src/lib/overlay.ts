@@ -20,6 +20,8 @@
  * -- and this owns the mechanism.
  */
 
+import { trapFocus } from "./focus";
+
 type DismissReason = "escape";
 
 interface OverlayEntry {
@@ -27,53 +29,62 @@ interface OverlayEntry {
   /** Asked at dismiss time, not at registration: `closeOnEscape` can change. */
   dismissable: () => boolean;
   /**
-   * Whether this overlay is on screen right now.
+   * The element Tab must not leave, for an overlay that is modal.
    *
-   * Registration lasts as long as the component, because all three of these
-   * bind their listeners once and gate inside the handler. Without this a
-   * *closed* Popover would sit on top of the stack and swallow the Escape
-   * meant for the Dialog behind it -- trading "closes everything" for "closes
-   * nothing", which is not an improvement.
+   * Omitted by a non-modal overlay -- a Popover does not take focus away from
+   * the page -- and asked at key time, because the content is portalled and
+   * mounts after registration.
+   *
+   * Here rather than on each component for the same reason `dismiss` is.
+   * Dialog and Drawer each bound their own document-level Tab listener and
+   * each gated it on "am I visible", so with both open both traps ran and the
+   * one behind could pull focus out of the one in front. Which overlay owns
+   * the keyboard is a question about all of them.
    */
-  active: () => boolean;
+  trapFocusIn?: () => HTMLElement | undefined;
 }
 
 /*
- * A stack, because dismissal is last-opened-first.
+ * A stack, in the order overlays opened.
  *
- * Registration order is open order, so the top of the stack is the innermost
- * overlay. Only it is offered the key.
+ * Registration is on *open*, not on mount, and that distinction is the whole
+ * point of the stack. Registering at setup made the order "whichever component
+ * mounted last", which is not the order anything opened in: mount two
+ * popovers, open the second and then the first, and Escape reached the second.
+ * An entry gated on an `active()` predicate had the same flaw one step later --
+ * it could skip the closed ones, but among the open ones it still ranked them
+ * by mount.
  */
 const stack: OverlayEntry[] = [];
 let keydownBound = false;
 
+/** The innermost overlay: the one that owns the keyboard. */
+const top = (): OverlayEntry | undefined => stack[stack.length - 1];
+
 const handleKeyDown = (event: KeyboardEvent) => {
-  if (event.key !== "Escape") return;
   if (event.defaultPrevented) return;
 
-  /*
-   * The topmost *visible* entry, and then only if it accepts.
-   *
-   * Two separate rules, and the order matters. Closed overlays are skipped,
-   * because registration outlives visibility. But a visible overlay that
-   * refuses Escape still *owns* it: a confirmation dialog that declines to
-   * close must not let the Drawer behind it close instead, which is what
-   * continuing the search would do. So the scan stops at the first visible
-   * entry and asks only that one.
-   */
-  let top: OverlayEntry | undefined;
-  for (let i = stack.length - 1; i >= 0; i -= 1) {
-    const entry = stack[i];
-    if (entry?.active()) {
-      top = entry;
-      break;
-    }
+  const entry = top();
+  if (!entry) return;
+
+  if (event.key === "Tab") {
+    const container = entry.trapFocusIn?.();
+    if (container) trapFocus(event, container);
+    return;
   }
-  if (!top) return;
-  if (!top.dismissable()) return;
+
+  if (event.key !== "Escape") return;
+  /*
+   * The topmost overlay owns Escape even when it refuses it.
+   *
+   * A confirmation dialog that declines to close must not let the Drawer
+   * behind it close instead, which is what walking further down the stack
+   * would do.
+   */
+  if (!entry.dismissable()) return;
 
   event.preventDefault();
-  top.dismiss("escape");
+  entry.dismiss("escape");
 };
 
 const bindKeyDown = () => {
@@ -91,10 +102,14 @@ const unbindKeyDown = () => {
 };
 
 /**
- * Claim dismissal ownership while an overlay is open.
+ * Claim the keyboard while an overlay is open.
  *
- * Call when the overlay becomes visible; call the returned function when it
- * closes. Escape reaches only the most recently registered overlay.
+ * Call this **when the overlay becomes visible**, not when the component
+ * mounts, and call the returned function when it closes. The stack is the
+ * order overlays opened in, and it can only be that if registration is.
+ *
+ * The most recently registered overlay owns Escape, and — when it declares
+ * `trapFocusIn` — Tab.
  */
 export const registerOverlay = (entry: OverlayEntry): (() => void) => {
   stack.push(entry);
