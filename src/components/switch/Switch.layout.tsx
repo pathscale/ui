@@ -144,27 +144,10 @@ const Switch: Layout<typeof componentRecipe, ToggleProps> = () => {
           {...slot.content}
         >
           <Show when={props.children}>
-            <span data-slot="label">{props.children}</span>
+            <span {...slot.label}>{props.children}</span>
           </Show>
           <Show when={props.description}>
-            <span
-              {...slot.description}
-              /*
-               * `description`, not the `switch-description` the slot would
-               * emit.
-               *
-               * Non-root slots are published as `${component}-${slot}`, and
-               * this span was hand-written as plain `description` before the
-               * migration -- as Checkbox's and Radio's still are. Qualifying
-               * only this one would leave three sibling controls disagreeing
-               * about the name of the same part, which is worse than the
-               * inconsistency it would fix. The whole family should move
-               * together, or not at all.
-               */
-              data-slot="description"
-            >
-              {props.description}
-            </span>
+            <span {...slot.description}>{props.description}</span>
           </Show>
         </span>
       </Show>

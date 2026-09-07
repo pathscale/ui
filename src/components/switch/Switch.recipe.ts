@@ -24,7 +24,19 @@ export const componentRecipe = recipe({
     thumb: { base: "switch__thumb" },
     icon: { base: "switch__icon" },
     content: { base: "switch__content" },
-    description: { base: "switch__description" },
+    /*
+     * `label` and `description` publish their bare names, not the qualified
+     * `switch-label` and `switch-description` a non-root slot would get.
+     *
+     * They are not this component's parts. Eight components in this library
+     * render one or both, and five stylesheets reach them through a descendant
+     * selector -- `.date-field [data-slot="description"]`, `.menu-item
+     * [data-slot="label"]` -- which is how a field styles whichever control is
+     * inside it. Qualifying the names here would make this the one control
+     * those rules miss.
+     */
+    label: { slot: "label" },
+    description: { base: "switch__description", slot: "description" },
   },
   props: {
     flavor: {
