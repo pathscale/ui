@@ -254,13 +254,34 @@ const InputBase: Layout<typeof componentRecipe, InputProps> = () => {
     <InputRoot
       size={props.size}
       fullWidth={props.fullWidth ?? true}
-      state={isDisabled() ? "disabled" : undefined}
+      /*
+       * Invalid is forwarded too. This sent `"disabled"` or nothing, so an
+       * input marked invalid -- by `state`, by `aria-invalid`, or by carrying an
+       * `errorMessage` -- coloured its helper text while the field itself was
+       * never told. `isInvalid()` was computed directly above and then dropped.
+       *
+       * Disabled wins when both hold: a control that cannot be edited has
+       * nothing actionable to say about its contents.
+       */
+      state={
+        isDisabled() ? "disabled" : isInvalid() ? "invalid" : undefined
+      }
       issues={props.issues}
       dataTheme={props.dataTheme}
     >
       <>
         <Show when={props.label}>
-          <InputLabel>{props.label}</InputLabel>
+          {/*
+           * `for` is explicit, because the fallback pointed somewhere else.
+           *
+           * `InputLabel` defaults to the context's `fieldId()`, but this
+           * assembly gives its `InputField` a different id (`<generated>-input`,
+           * or whatever the caller passed as `id`). So the convenience component
+           * -- the one whose whole job is wiring a label to an input -- emitted a
+           * label pointing at no element: clicking it focused nothing, and
+           * assistive technology read an unlabelled field.
+           */}
+          <InputLabel for={inputId()}>{props.label}</InputLabel>
         </Show>
         <InputField
           {...fieldProps}

@@ -189,7 +189,39 @@ const SelectRoot: Layout<typeof componentRecipe, SelectRootProps> = () => {
   const placement = () => props.placement ?? "bottom";
   const autoFlip = () => props.autoFlip ?? true;
 
+  /*
+   * Two controlled sources are a mistake, not a precedence question.
+   *
+   * This read `selectedKeys ?? value`, so passing both silently ignored one of
+   * them: a caller wiring `value` to its state and `selectedKeys` to something
+   * stale saw the stale one win, with nothing to indicate which had been
+   * dropped. The same applied to `defaultValue` and `defaultSelectedKeys`.
+   *
+   * Refused outright. There is no correct guess available -- the component
+   * cannot know which of two disagreeing sources the caller meant -- and the
+   * failure is at the call site, where it can be fixed.
+   */
+  const assertOneControlSource = () => {
+    if (props.selectedKeys !== undefined && props.value !== undefined) {
+      throw new Error(
+        "Select received both `value` and `selectedKeys`. They are competing " +
+          "control sources; pass exactly one. Use `selectedKeys` for multiple " +
+          "selection, `value` for single.",
+      );
+    }
+    if (
+      props.defaultSelectedKeys !== undefined &&
+      props.defaultValue !== undefined
+    ) {
+      throw new Error(
+        "Select received both `defaultValue` and `defaultSelectedKeys`. " +
+          "Pass exactly one.",
+      );
+    }
+  };
+
   const selectedKeys = createMemo(() => {
+    assertOneControlSource();
     const controlledValue =
       props.selectedKeys !== undefined ? props.selectedKeys : props.value;
     if (controlledValue !== undefined) {

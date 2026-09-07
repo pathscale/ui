@@ -1,5 +1,5 @@
 import "./Grid.css";
-import {omit, merge, children as resolveChildren} from "solid-js";
+import {omit, merge, children as resolveChildren, createMemo} from "solid-js";
 import { Dynamic, type JSX} from "@solidjs/web";
 import { twMerge } from "../../lib/twMerge";
 import type { UIBaseProps } from "../vocabulary";
@@ -102,21 +102,36 @@ const Grid: Layout<typeof componentRecipe, GridProps> = () => {
 
   const resolvedChildren = resolveChildren(() => merged.children);
 
-  const classes = clsx(
-    CLASSES.base,
-    mapResponsiveProp(merged.cols, CLASSES.cols),
-    mapResponsiveProp(merged.rows, CLASSES.rows),
-    mapResponsiveProp(merged.flow, CLASSES.flow),
-    mapResponsiveProp(merged.gap, CLASSES.gap),
-    mapResponsiveProp(merged.autoCols, CLASSES.autoCols),
-    mapResponsiveProp(merged.autoRows, CLASSES.autoRows),
-    merged.class,
+  /*
+   * A memo, because this ran once.
+   *
+   * As a bare `const` the whole expression evaluated during initialisation, so
+   * every `merged.*` read happened outside a tracked scope: the class string was
+   * fixed at mount and changing `cols`, `gap` or `flow` afterwards did nothing.
+   * A responsive grid whose columns come from state simply never moved, and the
+   * only way to see the new value was to remount.
+   *
+   * `Flex` does the analogous work in a `createMemo` and is reactive, which is
+   * the shape this should have had: two primitives that are used
+   * interchangeably should not differ on whether their props keep working.
+   */
+  const classes = createMemo(() =>
+    clsx(
+      CLASSES.base,
+      mapResponsiveProp(merged.cols, CLASSES.cols),
+      mapResponsiveProp(merged.rows, CLASSES.rows),
+      mapResponsiveProp(merged.flow, CLASSES.flow),
+      mapResponsiveProp(merged.gap, CLASSES.gap),
+      mapResponsiveProp(merged.autoCols, CLASSES.autoCols),
+      mapResponsiveProp(merged.autoRows, CLASSES.autoRows),
+      merged.class,
+    ),
   );
 
   return (
     <Dynamic
       component={merged.as}
-      {...{ class: twMerge(classes) }}
+      {...{ class: twMerge(classes()) }}
       {...rest}
     >
       {resolvedChildren()}

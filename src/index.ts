@@ -87,6 +87,7 @@ export {
 export type {
   CardElevation,
   CardMaterial,
+  CardState,
   CardProps,
   CardSectionProps,
 } from "./components/card";

@@ -21,6 +21,7 @@ const Card = Object.assign(CardLayout, {
 export type {
   CardElevation,
   CardMaterial,
+  CardState,
   CardProps,
   CardSectionProps,
 } from "./Card.generated";

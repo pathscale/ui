@@ -27,7 +27,7 @@ export type ToggleSize = "sm" | "md" | "lg";
 
 export type ToggleProps = Omit<
   JSX.InputHTMLAttributes<HTMLInputElement>,
-  "type" | "children" | "color"
+  "type" | "children" | "color" | "onChange"
 > &
   UIBaseProps & {
     defaultChecked?: boolean;
@@ -37,12 +37,34 @@ export type ToggleProps = Omit<
     state?: State;
     flavor?: Flavor;
     size?: ToggleSize;
+    /**
+     * The new checked state.
+     *
+     * **Breaking in 3.1.** This used to be the input's native `onChange`, so it
+     * handed you an `Event` while `Slider`, `RadioGroup` and `CheckboxGroup`
+     * handed you a value. One name meant two things depending on which control
+     * you reached for, which made swapping one field for another quietly
+     * dangerous. Every control in the library now reports its new value here.
+     *
+     * The native handler has not gone away: it is {@link onNativeChange}, and
+     * it is still where you call `preventDefault()`.
+     */
+    onChange?: (checked: boolean) => void;
+    /**
+     * The underlying `change` event, before the toggle is applied.
+     *
+     * This is the veto: `preventDefault()` here leaves the switch as it was and
+     * suppresses {@link onChange}. Reach for it when you need the event itself;
+     * for the value, use `onChange`.
+     */
+    onNativeChange?: JSX.EventHandlerUnion<HTMLInputElement, Event>;
   };
 
 const Switch: Layout<typeof componentRecipe, ToggleProps> = () => {
   const others = omit(
     props,
     "class",
+    "onNativeChange",
     "children",
     "description",
     "icon",
@@ -72,13 +94,17 @@ const Switch: Layout<typeof componentRecipe, ToggleProps> = () => {
   const handleChange: JSX.EventHandlerUnion<HTMLInputElement, Event> = (
     event,
   ) => {
-    invokeEventHandler(props.onChange, event);
+    // The event handler first, so `preventDefault()` still vetoes both the
+    // toggle and the value callback. Order is the contract here.
+    invokeEventHandler(props.onNativeChange, event);
     if (event.defaultPrevented) return;
     if (isDisabled()) return;
 
+    const checked = event.currentTarget.checked;
     if (!isControlled()) {
-      setInternalSelected(event.currentTarget.checked);
+      setInternalSelected(checked);
     }
+    props.onChange?.(checked);
   };
 
   return (

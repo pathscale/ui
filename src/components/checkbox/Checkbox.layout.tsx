@@ -30,7 +30,7 @@ export type CheckboxVariant = "primary" | "secondary";
 
 export type CheckboxProps = Omit<
   JSX.InputHTMLAttributes<HTMLInputElement>,
-  "type" | "children"
+  "type" | "children" | "onChange"
 > &
   UIBaseProps & {
     defaultChecked?: boolean;
@@ -41,6 +41,27 @@ export type CheckboxProps = Omit<
     isIndeterminate?: boolean;
     indeterminate?: boolean;
     variant?: CheckboxVariant;
+    /**
+     * The new checked state.
+     *
+     * **Breaking in 3.1.** This was the input's native `onChange`, handing you
+     * an `Event`, while `Slider`, `RadioGroup` and `CheckboxGroup` handed you a
+     * value under the same name. Every control now reports its value here.
+     *
+     * Fires for a checkbox inside a `CheckboxGroup` too, reporting this box's
+     * own state; the group separately reports the whole selection through its
+     * own `onChange`.
+     *
+     * The native handler is {@link onNativeChange}.
+     */
+    onChange?: (checked: boolean) => void;
+    /**
+     * The underlying `change` event, before the toggle is applied.
+     *
+     * `preventDefault()` here leaves the box as it was, suppresses
+     * {@link onChange}, and does not notify an enclosing group.
+     */
+    onNativeChange?: JSX.EventHandlerUnion<HTMLInputElement, Event>;
   };
 
 const Checkbox: Layout<typeof componentRecipe, CheckboxProps> = () => {
@@ -63,6 +84,7 @@ const Checkbox: Layout<typeof componentRecipe, CheckboxProps> = () => {
     "name",
     "disabled",
     "onChange",
+    "onNativeChange",
     "dataTheme",
     "aria-invalid",
   );
@@ -103,22 +125,29 @@ const Checkbox: Layout<typeof componentRecipe, CheckboxProps> = () => {
   const handleChange: JSX.EventHandlerUnion<HTMLInputElement, Event> = (
     event,
   ) => {
-    invokeEventHandler(props.onChange, event);
+    // The event handler first, so `preventDefault()` vetoes the toggle, the
+    // value callback and the group notification alike.
+    invokeEventHandler(props.onNativeChange, event);
     if (event.defaultPrevented) return;
     if (isDisabled()) return;
 
+    const checked = event.currentTarget.checked;
+
     if (group && optionValue() !== undefined) {
-      group.toggleValue(
-        optionValue() as string,
-        event.currentTarget.checked,
-        event,
-      );
+      group.toggleValue(optionValue() as string, checked, event);
+      // Still reported, before returning. A checkbox in a group used to be the
+      // one control that told its own caller nothing: `onChange` on the box was
+      // the native event and this path skipped it, so a per-box handler simply
+      // never ran. The group's own `onChange` reports the whole selection; this
+      // reports the box.
+      props.onChange?.(checked);
       return;
     }
 
     if (!isControlled()) {
-      setInternalSelected(event.currentTarget.checked);
+      setInternalSelected(checked);
     }
+    props.onChange?.(checked);
   };
 
   return (

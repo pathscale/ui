@@ -81,6 +81,35 @@ to a more opaque fill.
   the progress components take `color`. Read the component's own props before assuming.
 - Both `class` and `className` remain compatibility escape hatches. Prefer semantic component parameters; `solid-layouts-lint --porting --layouts @pathscale/ui` reports overrides that should move into recipes.
 - Controlled/uncontrolled triples: `isOpen/defaultOpen/onOpenChange`, `value/defaultValue/onChange`, `selectedKey/defaultSelectedKey/onSelectionChange`. Event callbacks pass **values, not events**.
+- **Breaking in 3.1 — `Switch`, `Checkbox` and `PasswordField`.** The rule above
+  was already the documented contract, and three controls did not follow it.
+  `Switch.onChange` and `Checkbox.onChange` were the input's *native* `onChange`
+  and handed you an `Event`, while `Slider`, `RadioGroup` and `CheckboxGroup`
+  handed you a value under the same name; `PasswordField` delivered a `string`
+  from a prop called `onInput`, matching neither. Swapping one field for another
+  therefore changed what your handler received, silently.
+
+  | control | was | now |
+  |---|---|---|
+  | `Switch` | `onChange(Event)` | `onChange(checked: boolean)` |
+  | `Checkbox` | `onChange(Event)` | `onChange(checked: boolean)` |
+  | `PasswordField` | `onInput(value)` | `onChange(value: string)` |
+
+  The native event is still available on `Switch` and `Checkbox` as
+  `onNativeChange`, and it is still where `preventDefault()` vetoes the toggle —
+  which now also suppresses `onChange`. A `Checkbox` inside a `CheckboxGroup`
+  now fires its own `onChange` as well; previously that path reported nothing to
+  the box's own caller.
+- **Breaking in 3.1 — `Select` rejects competing control sources.** Passing both
+  `value` and `selectedKeys` (or both `defaultValue` and `defaultSelectedKeys`)
+  throws. It used to prefer `selectedKeys` and silently ignore the other, so a
+  stale prop could win with nothing to say which had been dropped.
+- **Breaking in 3.1 — `Card.state`.** Typed as the shared `State`
+  (`default | loading | error | invalid | disabled | hidden`) while the recipe
+  implements `info | success | warning | danger`. The two had no member in
+  common: every accepted value did nothing, every implemented value was a type
+  error. Now `CardState`, which is what it renders. A card is not a form
+  control; interactivity is `isInteractive`.
 - `Slider.onChange` reports continuous values. Optional `Slider.onChangeEnd` reports the final changed value once on pointer release, pointer cancellation, keyboard release, or blur fallback. Its visible `label` is also copied to the semantic slider's `aria-label`, because not every renderer resolves `aria-labelledby` across a visually hidden label.
 - `Collapsible.Content` retains closed content by default. Set `keepMounted={false}` to mount it only while expanded; the check is reactive, so it mounts and unmounts as the state changes.
 - `Popover` accepts `anchorRect` as a rectangle or rectangle accessor when content must be positioned without a trigger element.

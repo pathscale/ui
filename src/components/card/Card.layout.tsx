@@ -2,7 +2,7 @@ import "../_shared/material.css";
 import type { JSX } from "@solidjs/web";
 import "./Card.css";
 import {Show} from "solid-js";
-import type { Flavor, Material, Radius, Space, State, UIBaseProps, Variant } from "../vocabulary";
+import type { Flavor, Material, Radius, Space, UIBaseProps, Variant } from "../vocabulary";
 import type { Layout } from "../../lib/layouts";
 import { card, cardBody, cardFooter, cardHeader } from "./Card.recipe";
 
@@ -17,13 +17,33 @@ import { card, cardBody, cardFooter, cardHeader } from "./Card.recipe";
 export type CardMaterial = Material;
 export type CardElevation = "none" | "sm" | "md" | "lg";
 
+/**
+ * The states this card actually renders.
+ *
+ * Not the shared `State`, which is what the prop was typed as. That union is
+ * `default | loading | error | invalid | disabled | hidden` and this recipe
+ * implements `info | success | warning | danger`: the two have **no member in
+ * common**. So every value the type permitted resolved to no class, and every
+ * value the recipe implements was a type error.
+ *
+ * A prop that accepts only values it ignores is worse than one that does not
+ * exist, because it reads as configured. Narrowed to what is implemented;
+ * `state="disabled"` and friends stop type-checking, and they never did
+ * anything, so nothing that worked stops working.
+ *
+ * A card is not a form control, which is why the shared vocabulary does not
+ * fit: it has no validity and nothing to disable. Behaviour lives on
+ * `isInteractive`.
+ */
+export type CardState = "info" | "success" | "warning" | "danger";
+
 export type CardProps = Omit<JSX.HTMLAttributes<HTMLDivElement>, "children"> &
   UIBaseProps & {
     variant?: Variant;
     material?: Material;
     elevation?: CardElevation;
     flavor?: Flavor;
-    state?: State;
+    state?: CardState;
     padding?: Space;
     radius?: Radius;
     /** Replaces isHoverable and isPressable, which had one call site each across 330. */
