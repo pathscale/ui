@@ -65,8 +65,27 @@ export const createPasswordFieldInputContract = (
   autocomplete: params.autocomplete,
   "aria-describedby": params["aria-describedby"],
   value: params.value,
-  isDisabled: Boolean(params.disabled),
-  isInvalid: Boolean(params.invalid),
+  /*
+   * `disabled` and `state`, which are what `Input` reads.
+   *
+   * This emitted `isDisabled` / `isInvalid`. Those are the names on `Input`'s
+   * *context*, not on its props: the convenience component derives disabled
+   * from `disabled` or `state === "disabled"`, and invalid from `state`,
+   * `issues`, `aria-invalid` or `errorMessage`. Neither `isDisabled` nor
+   * `isInvalid` is among them, so both were spread onto the component and
+   * ignored.
+   *
+   * The visible effect was a password field whose toggle button greyed out
+   * while the input beside it stayed editable -- disabled in appearance and not
+   * in fact -- and an invalid field that never marked itself invalid.
+   *
+   * `state: "invalid"` rather than `aria-invalid`: it is the library's own
+   * vocabulary, it drives the field's styling as well as the attribute, and the
+   * JSX typing here takes `aria-invalid` as the string `"true"`, not a boolean.
+   * Disabled stays a separate prop, so a field that is both keeps both.
+   */
+  disabled: Boolean(params.disabled),
+  state: params.invalid ? ("invalid" as const) : undefined,
   startIcon: params.startIcon,
   class: twMerge("w-full", params.inputClass),
 });

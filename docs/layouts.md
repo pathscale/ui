@@ -59,8 +59,29 @@ import { pluginSolidLayoutsApplication } from "rsbuild-plugin-solid-layouts";
 export default defineConfig({
   plugins: [
     pluginSolidLayoutsApplication({ layouts: ["@pathscale/ui"] }),
-    pluginBabel({ include: /\.(?:jsx|tsx|ts)$/ }),
-    pluginSolid(),
+    /*
+     * Babel does the Solid transform, and `@rsbuild/plugin-solid` is
+     * deliberately absent.
+     *
+     * It injects solid-refresh, whose `$component` wrapper calls
+     * `createSignal(component)` — and Solid 2 reads a function initialiser as a
+     * derivation, so it builds a computed that needs an owner. The symptom is an
+     * empty body and "Cannot read properties of undefined (reading 'spec')":
+     * the component is invoked with no props at all.
+     *
+     * `moduleName` is the second half: Solid 2 dropped the `solid-js/web`
+     * subpath, so the transform has to emit `@solidjs/web`.
+     */
+    pluginBabel({
+      include: /\.(?:jsx|tsx)$/,
+      babelLoaderOptions: (config) => {
+        config.presets ??= [];
+        config.presets.push([
+          "babel-preset-solid",
+          { moduleName: "@solidjs/web", generate: "dom" },
+        ]);
+      },
+    }),
   ],
 });
 ```

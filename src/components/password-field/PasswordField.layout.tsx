@@ -34,7 +34,15 @@ export type PasswordFieldProps = UIBaseProps & {
   hideLabel: string;
   value?: string;
   inputRef?: (el: HTMLInputElement) => void;
-  onInput?: (value: string) => void;
+  /**
+   * The new value.
+   *
+   * **Breaking in 3.1.** This was `onInput`, which named the DOM event while
+   * delivering a `string` — so it matched neither the native `onInput` (an
+   * `InputEvent`) nor the rest of the library (`onChange` with a value). It is
+   * `onChange` now, like every other control.
+   */
+  onChange?: (value: string) => void;
   onBlur?: () => void;
   visibleIcon?: JSX.Element;
   hiddenIcon?: JSX.Element;
@@ -107,7 +115,7 @@ export const PasswordFieldLayout: Layout<typeof passwordField, PasswordFieldProp
         })}
         ref={setFieldRef}
         onInput={(event: InputEvent & { currentTarget: HTMLInputElement }) => {
-          local.onInput?.(event.currentTarget.value);
+          local.onChange?.(event.currentTarget.value);
         }}
         onBlur={() => local.onBlur?.()}
         endIcon={

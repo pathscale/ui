@@ -11,7 +11,7 @@ invisible for a day behind a doc that looked correct the whole time.
 When an API change is intentional, run `bun run check:api -- --write`, read the
 diff, and commit it. The diff is the review.
 
-185 components. An empty list means the component adds nothing beyond
+186 components. An empty list means the component adds nothing beyond
 HTML attributes and `UIBaseProps`; that is an assertion, not a gap.
 
 ---
@@ -215,6 +215,10 @@ HTML attributes and `UIBaseProps`; that is an assertion, not a gap.
 ### Composer
 
 `autofocus defaultValue hint issues lead maxRows minRows name onChange onHeightChange onSubmit placeholder radius size state submitLabel submitOnEnter trail value variant viewportHeight`
+
+### ConnectionSettings
+
+`children endpoints labels onResetDone onSaveFailed onSaved showAppPublicId store`
 
 ### CookieConsent
 
