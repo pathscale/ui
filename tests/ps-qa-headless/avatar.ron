@@ -1,0 +1,37 @@
+// Generated from tests/qa-harness/components.ts by tests/qa-harness/generate-checks.ts. Do not edit.
+//
+// Avatar, mounted alone on its own harness page. Outcomes for
+// this component share one native host; idempotent preparation keeps each
+// outcome reproducible by id against a fresh host as well.
+[
+    (
+        id: "avatar-page-paints",
+        group: "avatar",
+        what: "the Avatar page builds and paints",
+        open: None,
+        hover: None,
+        click: None,
+        subject: "heading:Avatar",
+        expect: Present,
+    ),
+    (
+        id: "avatar-renders",
+        group: "avatar",
+        what: "Avatar renders a node of its own",
+        open: None,
+        hover: None,
+        click: None,
+        subject: "fixture",
+        expect: Paints,
+    ),
+    (
+        id: "avatar-paints",
+        group: "avatar",
+        what: "the Avatar reaches the renderer with a box",
+        open: None,
+        hover: None,
+        click: None,
+        subject: "Avatar",
+        expect: Present,
+    ),
+]

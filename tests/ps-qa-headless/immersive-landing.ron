@@ -1,0 +1,37 @@
+// Generated from tests/qa-harness/components.ts by tests/qa-harness/generate-checks.ts. Do not edit.
+//
+// ImmersiveLanding, mounted alone on its own harness page. Outcomes for
+// this component share one native host; idempotent preparation keeps each
+// outcome reproducible by id against a fresh host as well.
+[
+    (
+        id: "immersive-landing-page-paints",
+        group: "immersive-landing",
+        what: "the ImmersiveLanding page builds and paints",
+        open: None,
+        hover: None,
+        click: None,
+        subject: "heading:ImmersiveLanding",
+        expect: Present,
+    ),
+    (
+        id: "immersive-landing-renders",
+        group: "immersive-landing",
+        what: "ImmersiveLanding renders a node of its own",
+        open: None,
+        hover: None,
+        click: None,
+        subject: "fixture",
+        expect: Paints,
+    ),
+    (
+        id: "immersive-landing-paints",
+        group: "immersive-landing",
+        what: "the ImmersiveLanding reaches the renderer with a box",
+        open: None,
+        hover: None,
+        click: None,
+        subject: "ImmersiveLanding",
+        expect: Present,
+    ),
+]

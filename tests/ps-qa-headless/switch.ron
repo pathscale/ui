@@ -1,0 +1,48 @@
+// Generated from tests/qa-harness/components.ts by tests/qa-harness/generate-checks.ts. Do not edit.
+//
+// Switch, mounted alone on its own harness page. Outcomes for
+// this component share one native host; idempotent preparation keeps each
+// outcome reproducible by id against a fresh host as well.
+[
+    (
+        id: "switch-page-paints",
+        group: "switch",
+        what: "the Switch page builds and paints",
+        open: None,
+        hover: None,
+        click: None,
+        subject: "heading:Switch",
+        expect: Present,
+    ),
+    (
+        id: "switch-renders",
+        group: "switch",
+        what: "Switch renders a node of its own",
+        open: None,
+        hover: None,
+        click: None,
+        subject: "fixture",
+        expect: Paints,
+    ),
+    (
+        id: "switch-toggles",
+        group: "switch",
+        what: "pressing the Switch changes what it reports",
+        open: None,
+        hover: None,
+        click: Some("switch:"),
+        subject: "switch:",
+        expect: SelectionChanges,
+    ),
+    (
+        id: "switch-reports",
+        group: "switch",
+        what: "pressing Switch runs its callback, not just its own state",
+        open: None,
+        hover: None,
+        settle_after_ms: 300,
+        click: Some("switch:"),
+        subject: "heading:Callback ran",
+        expect: Present,
+    ),
+]

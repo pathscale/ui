@@ -1,0 +1,49 @@
+// Generated from tests/qa-harness/components.ts by tests/qa-harness/generate-checks.ts. Do not edit.
+//
+// Tabs, mounted alone on its own harness page. Outcomes for
+// this component share one native host; idempotent preparation keeps each
+// outcome reproducible by id against a fresh host as well.
+[
+    (
+        id: "tabs-page-paints",
+        group: "tabs",
+        what: "the Tabs page builds and paints",
+        open: None,
+        hover: None,
+        click: None,
+        subject: "heading:Tabs",
+        expect: Present,
+    ),
+    (
+        id: "tabs-renders",
+        group: "tabs",
+        what: "Tabs renders a node of its own",
+        open: None,
+        hover: None,
+        click: None,
+        subject: "fixture",
+        expect: Paints,
+    ),
+    (
+        id: "tabs-changes",
+        group: "tabs",
+        what: "activating another Tabs tab changes selection",
+        open: None,
+        hover: None,
+        click: Some("tab:Second"),
+        subject: "tab:Second",
+        expect: SelectionChanges,
+    ),
+    (
+        id: "tabs-changes-panel",
+        group: "tabs",
+        what: "the selected Tabs tab exposes its corresponding panel",
+        open: None,
+        hover: None,
+        prepare: Some("tab:Second"),
+        prepare_unless: Some("heading:Second panel"),
+        click: None,
+        subject: "heading:Second panel",
+        expect: Present,
+    ),
+]

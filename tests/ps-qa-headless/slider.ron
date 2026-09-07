@@ -1,0 +1,51 @@
+// Generated from tests/qa-harness/components.ts by tests/qa-harness/generate-checks.ts. Do not edit.
+//
+// Slider, mounted alone on its own harness page. Outcomes for
+// this component share one native host; idempotent preparation keeps each
+// outcome reproducible by id against a fresh host as well.
+[
+    (
+        id: "slider-page-paints",
+        group: "slider",
+        what: "the Slider page builds and paints",
+        open: None,
+        hover: None,
+        click: None,
+        subject: "heading:Slider",
+        expect: Present,
+    ),
+    (
+        id: "slider-renders",
+        group: "slider",
+        what: "Slider renders a node of its own",
+        open: None,
+        hover: None,
+        click: None,
+        subject: "fixture",
+        expect: Paints,
+    ),
+    (
+        id: "slider-increments",
+        group: "slider",
+        what: "ArrowRight changes the value exposed by Slider",
+        open: None,
+        hover: None,
+        click: None,
+        key: Some("ArrowRight"),
+        key_on: Some("slider:Fixture slider"),
+        subject: "slider:Fixture slider",
+        expect: ValueChanges,
+    ),
+    (
+        id: "slider-restores",
+        group: "slider",
+        what: "ArrowLeft changes the value exposed by Slider",
+        open: None,
+        hover: None,
+        click: None,
+        key: Some("ArrowLeft"),
+        key_on: Some("slider:Fixture slider"),
+        subject: "slider:Fixture slider",
+        expect: ValueChanges,
+    ),
+]

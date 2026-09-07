@@ -1,0 +1,37 @@
+// Generated from tests/qa-harness/components.ts by tests/qa-harness/generate-checks.ts. Do not edit.
+//
+// PWAInstallPrompt, mounted alone on its own harness page. Outcomes for
+// this component share one native host; idempotent preparation keeps each
+// outcome reproducible by id against a fresh host as well.
+[
+    (
+        id: "pwa-install-prompt-page-paints",
+        group: "pwa-install-prompt",
+        what: "the PWAInstallPrompt page builds and paints",
+        open: None,
+        hover: None,
+        click: None,
+        subject: "heading:PWAInstallPrompt",
+        expect: Present,
+    ),
+    (
+        id: "pwa-install-prompt-renders",
+        group: "pwa-install-prompt",
+        what: "PWAInstallPrompt renders a node of its own",
+        open: None,
+        hover: None,
+        click: None,
+        subject: "fixture",
+        expect: Paints,
+    ),
+    (
+        id: "pwa-install-prompt-paints",
+        group: "pwa-install-prompt",
+        what: "the PWAInstallPrompt reaches the renderer with a box",
+        open: None,
+        hover: None,
+        click: None,
+        subject: "PWAInstallPrompt",
+        expect: Present,
+    ),
+]

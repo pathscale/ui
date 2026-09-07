@@ -1,0 +1,47 @@
+// Generated from tests/qa-harness/components.ts by tests/qa-harness/generate-checks.ts. Do not edit.
+//
+// Pagination, mounted alone on its own harness page. Outcomes for
+// this component share one native host; idempotent preparation keeps each
+// outcome reproducible by id against a fresh host as well.
+[
+    (
+        id: "pagination-page-paints",
+        group: "pagination",
+        what: "the Pagination page builds and paints",
+        open: None,
+        hover: None,
+        click: None,
+        subject: "heading:Pagination",
+        expect: Present,
+    ),
+    (
+        id: "pagination-renders",
+        group: "pagination",
+        what: "Pagination renders a node of its own",
+        open: None,
+        hover: None,
+        click: None,
+        subject: "fixture",
+        expect: Paints,
+    ),
+    (
+        id: "pagination-paints",
+        group: "pagination",
+        what: "the Pagination control is on screen and addressable",
+        open: None,
+        hover: None,
+        click: None,
+        subject: "button:Go to next page",
+        expect: Present,
+    ),
+    (
+        id: "pagination-acts",
+        group: "pagination",
+        what: "activating Pagination exposes the callback result",
+        open: None,
+        hover: None,
+        click: Some("button:Go to next page"),
+        subject: "heading:Action result: Pagination complete",
+        expect: Present,
+    ),
+]

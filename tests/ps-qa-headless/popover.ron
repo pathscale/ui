@@ -1,0 +1,52 @@
+// Generated from tests/qa-harness/components.ts by tests/qa-harness/generate-checks.ts. Do not edit.
+//
+// Popover, mounted alone on its own harness page. Outcomes for
+// this component share one native host; idempotent preparation keeps each
+// outcome reproducible by id against a fresh host as well.
+[
+    (
+        id: "popover-page-paints",
+        group: "popover",
+        what: "the Popover page builds and paints",
+        open: None,
+        hover: None,
+        click: None,
+        subject: "heading:Popover",
+        expect: Present,
+    ),
+    (
+        id: "popover-renders",
+        group: "popover",
+        what: "Popover renders a node of its own",
+        open: None,
+        hover: None,
+        click: None,
+        subject: "fixture",
+        expect: Paints,
+    ),
+    (
+        id: "popover-opens",
+        group: "popover",
+        what: "activating Popover paints its portalled content",
+        open: None,
+        hover: None,
+        click: Some("button:Open popover"),
+        subject: "heading:Popover outcome",
+        expect: Present,
+    ),
+    (
+        id: "popover-escape-closes",
+        group: "popover",
+        what: "Escape closes Popover after it really opened",
+        open: None,
+        hover: None,
+        prepare: Some("button:Open popover"),
+        prepare_unless: Some("heading:Popover outcome"),
+        settle_after_ms: 600,
+        click: None,
+        key: Some("Escape"),
+        key_on: Some("button:Open popover"),
+        subject: "heading:Popover outcome",
+        expect: Vanishes,
+    ),
+]

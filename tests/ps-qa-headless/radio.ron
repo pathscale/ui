@@ -1,0 +1,48 @@
+// Generated from tests/qa-harness/components.ts by tests/qa-harness/generate-checks.ts. Do not edit.
+//
+// Radio, mounted alone on its own harness page. Outcomes for
+// this component share one native host; idempotent preparation keeps each
+// outcome reproducible by id against a fresh host as well.
+[
+    (
+        id: "radio-page-paints",
+        group: "radio",
+        what: "the Radio page builds and paints",
+        open: None,
+        hover: None,
+        click: None,
+        subject: "heading:Radio",
+        expect: Present,
+    ),
+    (
+        id: "radio-renders",
+        group: "radio",
+        what: "Radio renders a node of its own",
+        open: None,
+        hover: None,
+        click: None,
+        subject: "fixture",
+        expect: Paints,
+    ),
+    (
+        id: "radio-toggles",
+        group: "radio",
+        what: "pressing the Radio changes what it reports",
+        open: None,
+        hover: None,
+        click: Some("radio:"),
+        subject: "radio:",
+        expect: SelectionChanges,
+    ),
+    (
+        id: "radio-reports",
+        group: "radio",
+        what: "pressing Radio runs its callback, not just its own state",
+        open: None,
+        hover: None,
+        settle_after_ms: 300,
+        click: Some("radio:"),
+        subject: "heading:Callback ran",
+        expect: Present,
+    ),
+]

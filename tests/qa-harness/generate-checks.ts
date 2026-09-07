@@ -7,6 +7,9 @@
  * check always names the trigger as its subject, because this generator writes
  * it that way.
  *
+ * Two profiles come out of it, because two hosts can answer different
+ * questions. See `PROFILES` below.
+ *
  * Run: bun run qa:checks
  */
 
@@ -18,12 +21,109 @@ import {
   validateComponentSpecs,
 } from "./components";
 
-/*
- * `tests/ps-qa/` is where ps-qa looks when nobody passes `--checks`, and it is
- * the layout every project driven by it uses. These lived in `tests/qa-harness/checks/`,
- * which meant every invocation had to override the default to find them.
+/**
+ * What the host running these checks can be asked.
+ *
+ * `full` is the library's real contract and runs where there are fonts: macOS,
+ * and a contributor's machine. `headless` is the same checks with every
+ * assertion about *paint* weakened to an assertion about *layout*, and it is
+ * what a Linux CI runner can honestly answer.
+ *
+ * The difference is one measured fact. With no font catalogue every glyph
+ * shapes to nothing, so anything sized by its text lays out flat: the harness
+ * heading is `1184x24` with fonts and `1184x0` without, and Dialog's trigger is
+ * `78x24` and `0x0`. `Paints` asks for a box with area, so on that host it
+ * fails for every component, and it fails for a reason that says nothing about
+ * the component. `Present` asks the question those checks actually mean -- the
+ * node the document was supposed to produce appeared, with the name it was
+ * supposed to have -- and is still falsifiable in the two ways that matter: a
+ * node the document never creates fails on the tree, and one created but never
+ * laid out fails on the bounds.
+ *
+ * What is deliberately *not* weakened:
+ *
+ * - `-renders`, which is `Paints` on the fixture region. That box comes from
+ *   layout, not from text, and it is measured to hold on a fontless host for
+ *   all 74 components. It is also the only check that catches a component
+ *   which mounted to nothing, and `Present` would pass for one, because the
+ *   fixture is always in the tree. Weakening it would delete the check.
+ * - Geometry, `Measures`, `Contrast` and `InteriorInk`. These are about
+ *   components that have a box of their own, and they are measured to pass on
+ *   a fontless host already. Weakening what already works buys nothing.
+ * - Every tree assertion -- `NameChanges`, `SelectionChanges`, `ValueChanges`,
+ *   `Vanishes`, `Absent`. Those never asked about paint.
+ *
+ * So the Linux subset is functional: it drives the control, and it judges what
+ * the tree did. What it cannot tell you is whether a person would have seen
+ * it. That is the macOS job, and it is why both profiles are generated rather
+ * than one being replaced.
  */
-const outputDir = join(import.meta.dir, "..", "ps-qa");
+type Profile = {
+  readonly id: string;
+  readonly dir: string;
+  /** How this profile spells an assertion about paint. */
+  readonly paints: (expect: "Paints" | "PaintsNamed") => string;
+  /**
+   * Whether a check that reads pixels can be asked at all.
+   *
+   * `Contrast` and `InteriorInk` are not weakenable the way the paint
+   * assertions are: there is no tree-level equivalent of "a person can see
+   * this value". Without fonts they are also actively misleading in opposite
+   * directions -- `InteriorInk` fails on a trigger whose only ink is its label
+   * (Dropdown, LanguageSwitcher), and `Contrast` *passes* on every component,
+   * because it looks for painted text too close to its background and there is
+   * no painted text to find. A check that cannot fail is worse than one that
+   * is not run.
+   *
+   * So they are simply absent from the headless profile. The value being right
+   * is still covered there by `-changes`, which reads the tree.
+   */
+  readonly readsPixels: boolean;
+  /**
+   * Whether the host can replace the contents of a field that already holds a
+   * value.
+   *
+   * It cannot, with no fonts, and the mechanism is worth writing down because
+   * the symptom points at the component. `SetValue` clears the field by asking
+   * parley's editor to select all of it first, and every selection API parley
+   * exposes -- `select_all`, `select_byte_range` -- resolves its ends through
+   * the laid-out text. With no glyphs there is no layout to resolve against,
+   * the selection comes back collapsed, and the commit inserts at the caret.
+   * So typing "Renamed title" into a field holding "Original title" produces
+   * "Original titleRenamed title".
+   *
+   * Measured, both ways, on the same build: InlineEdit commits "Renamed title"
+   * on a host with fonts and "Original titleRenamed title" without; the
+   * connection panel refuses "wss://api.example.comws://qa-committed" as not
+   * an address, which is its validation working correctly on a value the
+   * harness mistyped.
+   *
+   * So the checks that retype a pre-filled field run in the full profile only.
+   * They are not weakened, and they are not removed: they are the strongest
+   * checks in the suite -- a save that commits what was typed is the whole
+   * contract of a settings panel -- and they keep running where they can be
+   * asked honestly. When the runtime can clear a field without consulting a
+   * layout, this flag goes away.
+   */
+  readonly retypesPrefilledFields: boolean;
+};
+
+const PROFILES: readonly Profile[] = [
+  {
+    id: "full",
+    dir: "ps-qa",
+    paints: (expect) => expect,
+    readsPixels: true,
+    retypesPrefilledFields: true,
+  },
+  {
+    id: "headless",
+    dir: "ps-qa-headless",
+    paints: () => "Present",
+    readsPixels: false,
+    retypesPrefilledFields: false,
+  },
+];
 
 /** One `.ron` record. */
 function check(fields: Record<string, string>): string {
@@ -33,7 +133,7 @@ function check(fields: Record<string, string>): string {
   return `    (\n${body}\n    ),`;
 }
 
-function checksFor(spec: ComponentSpec): string {
+function checksFor(spec: ComponentSpec, profile: Profile): string {
   /*
    * No surface to open: the harness serves one component per page, and the
    * page for this component is already the one under test. `open` names a
@@ -76,7 +176,7 @@ function checksFor(spec: ComponentSpec): string {
        * need someone to have described its interaction first.
        */
       subject: `"heading:${spec.component}"`,
-      expect: "PaintsNamed",
+      expect: profile.paints("PaintsNamed"),
     }),
   );
 
@@ -169,7 +269,7 @@ function checksFor(spec: ComponentSpec): string {
     );
   }
 
-  if (spec.contrast) {
+  if (spec.contrast && profile.readsPixels) {
     records.push(
       check({
         id: `"${spec.id}-contrast"`,
@@ -222,6 +322,16 @@ function checksFor(spec: ComponentSpec): string {
        * every component for a reason that has nothing to do with the component.
        */
       subject: `"fixture"`,
+      /*
+       * `Paints` in both profiles, deliberately not weakened.
+       *
+       * The fixture's box comes from layout rather than from text, so it
+       * survives a host with no fonts -- measured, for all 74 components. And
+       * it is the one check that catches a component which mounted to nothing:
+       * `Present` would pass for one, because the fixture is in the tree
+       * either way. Degrading this would not weaken the check, it would delete
+       * it.
+       */
       expect: "Paints",
     }),
   );
@@ -259,18 +369,20 @@ function checksFor(spec: ComponentSpec): string {
   }
 
   if (spec.kind === "value" || spec.kind === "mode") {
-    records.push(
-      check({
-        id: `"${spec.id}-selected-value-paints"`,
-        group: `"${spec.id}"`,
-        what: `"${spec.component} paints the selected value a person reads"`,
-        open: surface,
-        hover: "None",
-        click: "None",
-        subject,
-        expect: "InteriorInk",
-      }),
-    );
+    if (profile.readsPixels) {
+      records.push(
+        check({
+          id: `"${spec.id}-selected-value-paints"`,
+          group: `"${spec.id}"`,
+          what: `"${spec.component} paints the selected value a person reads"`,
+          open: surface,
+          hover: "None",
+          click: "None",
+          subject,
+          expect: "InteriorInk",
+        }),
+      );
+    }
 
     if (spec.closedContent) {
       records.push(
@@ -302,7 +414,7 @@ function checksFor(spec: ComponentSpec): string {
         settle_after_ms: "600",
         click: "None",
         subject: `"${spec.opens}"`,
-        expect: "PaintsNamed",
+        expect: profile.paints("PaintsNamed"),
       }),
     );
 
@@ -366,7 +478,7 @@ function checksFor(spec: ComponentSpec): string {
         settle_after_ms: "300",
         click: `Some("${spec.subjectRole}:${spec.subject}")`,
         subject: `"${spec.opens}"`,
-        expect: "PaintsNamed",
+        expect: profile.paints("PaintsNamed"),
       }),
     );
     records.push(
@@ -383,26 +495,56 @@ function checksFor(spec: ComponentSpec): string {
         type_into: `Some("${spec.opens}")`,
         text: `Some("${spec.commitText}")`,
         subject: `"${spec.uncommitted}"`,
-        expect: "PaintsNamed",
+        expect: profile.paints("PaintsNamed"),
       }),
     );
-    records.push(
-      check({
-        id: `"${spec.id}-commits"`,
-        group: `"${spec.id}"`,
-        what: `"saving ${spec.component} commits what was typed"`,
-        open: surface,
-        hover: "None",
-        prepare: `Some("${spec.subjectRole}:${spec.subject}")`,
-        prepare_unless: `Some("${spec.opens}")`,
-        settle_after_ms: "300",
-        type_into: `Some("${spec.opens}")`,
-        text: `Some("${spec.commitText}")`,
-        click: `Some("${spec.commit}")`,
-        subject: `"${spec.committed}"`,
-        expect: "PaintsNamed",
-      }),
-    );
+    // Both of these retype the endpoint field, which the panel pre-fills with
+    // the address in force. See `retypesPrefilledFields`.
+    if (profile.retypesPrefilledFields) {
+      records.push(
+        check({
+          id: `"${spec.id}-commits"`,
+          group: `"${spec.id}"`,
+          what: `"saving ${spec.component} commits what was typed"`,
+          open: surface,
+          hover: "None",
+          prepare: `Some("${spec.subjectRole}:${spec.subject}")`,
+          prepare_unless: `Some("${spec.opens}")`,
+          settle_after_ms: "300",
+          type_into: `Some("${spec.opens}")`,
+          text: `Some("${spec.commitText}")`,
+          click: `Some("${spec.commit}")`,
+          subject: `"${spec.committed}"`,
+          expect: profile.paints("PaintsNamed"),
+        }),
+      );
+      /*
+       * And that the panel said so.
+       *
+       * `-commits` reads the committed value, which is right but not sufficient:
+       * a save refused by validation, or one that throws inside `apply`, leaves
+       * that value exactly where it was and reports nothing. The fixture names
+       * what the panel told its caller, so a silent refusal is a different
+       * failure from a save that did not run.
+       */
+      records.push(
+        check({
+          id: `"${spec.id}-reports-saving"`,
+          group: `"${spec.id}"`,
+          what: `"${spec.component} tells its caller the save succeeded"`,
+          open: surface,
+          hover: "None",
+          prepare: `Some("${spec.subjectRole}:${spec.subject}")`,
+          prepare_unless: `Some("${spec.opens}")`,
+          settle_after_ms: "300",
+          type_into: `Some("${spec.opens}")`,
+          text: `Some("${spec.commitText}")`,
+          click: `Some("${spec.commit}")`,
+          subject: `"heading:Save outcome: saved"`,
+          expect: profile.paints("PaintsNamed"),
+        }),
+      );
+    }
   }
 
   if (spec.kind === "overlay") {
@@ -415,7 +557,7 @@ function checksFor(spec: ComponentSpec): string {
         hover: "None",
         click: `Some("${spec.subjectRole}:${spec.subject}")`,
         subject: `"${spec.opens}"`,
-        expect: "PaintsNamed",
+        expect: profile.paints("PaintsNamed"),
       }),
     );
     records.push(
@@ -461,7 +603,7 @@ function checksFor(spec: ComponentSpec): string {
         prepare_unless: `Some("${spec.opens}")`,
         click: "None",
         subject: `"${spec.opens}"`,
-        expect: "Paints",
+        expect: profile.paints("Paints"),
       }),
     );
   }
@@ -534,7 +676,7 @@ function checksFor(spec: ComponentSpec): string {
          * callback and never lowers it.
          */
         subject: `"heading:Callback ran"`,
-        expect: "PaintsNamed",
+        expect: profile.paints("PaintsNamed"),
       }),
     );
   }
@@ -552,6 +694,29 @@ function checksFor(spec: ComponentSpec): string {
         text: `Some("QA outcome")`,
         subject,
         expect: "ValueChanges",
+      }),
+    );
+    /*
+     * And that the consumer heard about it.
+     *
+     * `-accepts-input` above reads the control's own value, which the renderer
+     * updates whether or not the component reported anything. A field whose
+     * `onInput` never reaches its caller is exactly as broken as one that
+     * refuses keystrokes, and it passed that check. The fixture names the value
+     * it received, so this one fails unless the component told it.
+     */
+    records.push(
+      check({
+        id: `"${spec.id}-reports-input"`,
+        group: `"${spec.id}"`,
+        what: `"${spec.component} reports what was typed to its caller"`,
+        open: surface,
+        hover: "None",
+        click: "None",
+        type_into: `Some("${spec.subjectRole}:${spec.subject}")`,
+        text: `Some("QA outcome")`,
+        subject: `"heading:Field value: QA outcome"`,
+        expect: profile.paints("PaintsNamed"),
       }),
     );
   }
@@ -588,26 +753,30 @@ function checksFor(spec: ComponentSpec): string {
         hover: "None",
         click: `Some("${spec.subjectRole}:${spec.subject}")`,
         subject: `"${spec.opens}"`,
-        expect: "PaintsNamed",
+        expect: profile.paints("PaintsNamed"),
       }),
     );
-    records.push(
-      check({
-        id: `"${spec.id}-commits"`,
-        group: `"${spec.id}"`,
-        what: `"Enter commits the edited value and closes the editor"`,
-        open: surface,
-        prepare: `Some("${spec.subjectRole}:${spec.subject}")`,
-        prepare_unless: `Some("${spec.opens}")`,
-        hover: "None",
-        click: "None",
-        type_into: `Some("${spec.opens}")`,
-        text: `Some("Renamed title")`,
-        key: `Some("Enter")`,
-        subject: `"heading:Committed title: Renamed title"`,
-        expect: "PaintsNamed",
-      }),
-    );
+    // The editor opens holding the current title, so this retypes a
+    // pre-filled field. See `retypesPrefilledFields`.
+    if (profile.retypesPrefilledFields) {
+      records.push(
+        check({
+          id: `"${spec.id}-commits"`,
+          group: `"${spec.id}"`,
+          what: `"Enter commits the edited value and closes the editor"`,
+          open: surface,
+          prepare: `Some("${spec.subjectRole}:${spec.subject}")`,
+          prepare_unless: `Some("${spec.opens}")`,
+          hover: "None",
+          click: "None",
+          type_into: `Some("${spec.opens}")`,
+          text: `Some("Renamed title")`,
+          key: `Some("Enter")`,
+          subject: `"heading:Committed title: Renamed title"`,
+          expect: profile.paints("PaintsNamed"),
+        }),
+      );
+    }
     records.push(
       check({
         id: `"${spec.id}-escape-keeps-value"`,
@@ -621,8 +790,20 @@ function checksFor(spec: ComponentSpec): string {
         type_into: `Some("${spec.opens}")`,
         text: `Some("Abandoned title")`,
         key: `Some("Escape")`,
-        subject: `"heading:Committed title: Renamed title"`,
-        expect: "PaintsNamed",
+        /*
+         * What Escape promises, stated so nothing else has to be true.
+         *
+         * This named a committed value twice and was wrong both times: first
+         * the one `-commits` writes, which is only there when the checks share
+         * a host, then the fixture's own, which is only there when they do
+         * not. Both are claims about what ran before rather than about Escape.
+         *
+         * The promise itself is negative -- the abandoned draft is not what
+         * got committed -- and `Absent` says exactly that, whatever the
+         * committed value happens to be.
+         */
+        subject: `"heading:Committed title: Abandoned title"`,
+        expect: "Absent",
       }),
     );
   }
@@ -637,7 +818,7 @@ function checksFor(spec: ComponentSpec): string {
         hover: "None",
         click: "None",
         subject,
-        expect: "PaintsNamed",
+        expect: profile.paints("PaintsNamed"),
       }),
     );
     records.push(
@@ -649,7 +830,7 @@ function checksFor(spec: ComponentSpec): string {
         hover: "None",
         click: `Some("${spec.subjectRole}:${spec.subject}")`,
         subject: `"heading:Action result: ${spec.component} complete"`,
-        expect: "PaintsNamed",
+        expect: profile.paints("PaintsNamed"),
       }),
     );
   }
@@ -696,7 +877,7 @@ function checksFor(spec: ComponentSpec): string {
          * screen with a box. Declaring `subjectRole` in components.ts upgrades
          * it to the stricter check.
          */
-        expect: described ? "PaintsNamed" : "Paints",
+        expect: profile.paints(described ? "PaintsNamed" : "Paints"),
       }),
     );
   }
@@ -713,8 +894,6 @@ function checksFor(spec: ComponentSpec): string {
     ``,
   ].join("\n");
 }
-
-mkdirSync(outputDir, { recursive: true });
 
 /*
  * Nothing is written that names a subject the renderer cannot have.
@@ -760,18 +939,25 @@ function assertNoUnresolvedSubject(id: string, body: string): void {
 validateComponentSpecs();
 
 const expectedFiles = new Set(COMPONENTS.map((spec) => `${spec.id}.ron`));
-for (const file of readdirSync(outputDir)) {
-  if (file.endsWith(".ron") && !expectedFiles.has(file)) {
-    unlinkSync(join(outputDir, file));
-    console.log(`removed stale ${join(outputDir, file)}`);
-  }
-}
 
-for (const spec of COMPONENTS) {
-  const path = join(outputDir, `${spec.id}.ron`);
-  const body = checksFor(spec);
-  assertNoUnresolvedSubject(spec.id, body);
-  writeFileSync(path, body);
-  console.log(`wrote ${path}`);
+for (const profile of PROFILES) {
+  const outputDir = join(import.meta.dir, "..", profile.dir);
+  mkdirSync(outputDir, { recursive: true });
+
+  for (const file of readdirSync(outputDir)) {
+    if (file.endsWith(".ron") && !expectedFiles.has(file)) {
+      unlinkSync(join(outputDir, file));
+      console.log(`removed stale ${join(outputDir, file)}`);
+    }
+  }
+
+  for (const spec of COMPONENTS) {
+    const path = join(outputDir, `${spec.id}.ron`);
+    const body = checksFor(spec, profile);
+    assertNoUnresolvedSubject(spec.id, body);
+    writeFileSync(path, body);
+  }
+  console.log(
+    `${profile.id}: ${COMPONENTS.length} component(s) -> ${profile.dir}/`,
+  );
 }
-console.log(`${COMPONENTS.length} component(s) generated`);

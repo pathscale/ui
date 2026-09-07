@@ -1,0 +1,47 @@
+// Generated from tests/qa-harness/components.ts by tests/qa-harness/generate-checks.ts. Do not edit.
+//
+// LiveChatPanel, mounted alone on its own harness page. Outcomes for
+// this component share one native host; idempotent preparation keeps each
+// outcome reproducible by id against a fresh host as well.
+[
+    (
+        id: "live-chat-panel-page-paints",
+        group: "live-chat-panel",
+        what: "the LiveChatPanel page builds and paints",
+        open: None,
+        hover: None,
+        click: None,
+        subject: "heading:LiveChatPanel",
+        expect: Present,
+    ),
+    (
+        id: "live-chat-panel-renders",
+        group: "live-chat-panel",
+        what: "LiveChatPanel renders a node of its own",
+        open: None,
+        hover: None,
+        click: None,
+        subject: "fixture",
+        expect: Paints,
+    ),
+    (
+        id: "live-chat-panel-paints",
+        group: "live-chat-panel",
+        what: "the LiveChatPanel control is on screen and addressable",
+        open: None,
+        hover: None,
+        click: None,
+        subject: "button:Close chat",
+        expect: Present,
+    ),
+    (
+        id: "live-chat-panel-acts",
+        group: "live-chat-panel",
+        what: "activating LiveChatPanel exposes the callback result",
+        open: None,
+        hover: None,
+        click: Some("button:Close chat"),
+        subject: "heading:Action result: LiveChatPanel complete",
+        expect: Present,
+    ),
+]

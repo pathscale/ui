@@ -1,0 +1,37 @@
+// Generated from tests/qa-harness/components.ts by tests/qa-harness/generate-checks.ts. Do not edit.
+//
+// Skeleton, mounted alone on its own harness page. Outcomes for
+// this component share one native host; idempotent preparation keeps each
+// outcome reproducible by id against a fresh host as well.
+[
+    (
+        id: "skeleton-page-paints",
+        group: "skeleton",
+        what: "the Skeleton page builds and paints",
+        open: None,
+        hover: None,
+        click: None,
+        subject: "heading:Skeleton",
+        expect: Present,
+    ),
+    (
+        id: "skeleton-renders",
+        group: "skeleton",
+        what: "Skeleton renders a node of its own",
+        open: None,
+        hover: None,
+        click: None,
+        subject: "fixture",
+        expect: Paints,
+    ),
+    (
+        id: "skeleton-paints",
+        group: "skeleton",
+        what: "the Skeleton reaches the renderer with a box",
+        open: None,
+        hover: None,
+        click: None,
+        subject: "Skeleton",
+        expect: Present,
+    ),
+]

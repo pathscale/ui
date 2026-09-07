@@ -1,0 +1,37 @@
+// Generated from tests/qa-harness/components.ts by tests/qa-harness/generate-checks.ts. Do not edit.
+//
+// Separator, mounted alone on its own harness page. Outcomes for
+// this component share one native host; idempotent preparation keeps each
+// outcome reproducible by id against a fresh host as well.
+[
+    (
+        id: "separator-page-paints",
+        group: "separator",
+        what: "the Separator page builds and paints",
+        open: None,
+        hover: None,
+        click: None,
+        subject: "heading:Separator",
+        expect: Present,
+    ),
+    (
+        id: "separator-renders",
+        group: "separator",
+        what: "Separator renders a node of its own",
+        open: None,
+        hover: None,
+        click: None,
+        subject: "fixture",
+        expect: Paints,
+    ),
+    (
+        id: "separator-paints",
+        group: "separator",
+        what: "the Separator reaches the renderer with a box",
+        open: None,
+        hover: None,
+        click: None,
+        subject: "Separator",
+        expect: Present,
+    ),
+]

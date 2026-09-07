@@ -1,0 +1,37 @@
+// Generated from tests/qa-harness/components.ts by tests/qa-harness/generate-checks.ts. Do not edit.
+//
+// Footer, mounted alone on its own harness page. Outcomes for
+// this component share one native host; idempotent preparation keeps each
+// outcome reproducible by id against a fresh host as well.
+[
+    (
+        id: "footer-page-paints",
+        group: "footer",
+        what: "the Footer page builds and paints",
+        open: None,
+        hover: None,
+        click: None,
+        subject: "heading:Footer",
+        expect: Present,
+    ),
+    (
+        id: "footer-renders",
+        group: "footer",
+        what: "Footer renders a node of its own",
+        open: None,
+        hover: None,
+        click: None,
+        subject: "fixture",
+        expect: Paints,
+    ),
+    (
+        id: "footer-paints",
+        group: "footer",
+        what: "the Footer reaches the renderer with a box",
+        open: None,
+        hover: None,
+        click: None,
+        subject: "Footer",
+        expect: Present,
+    ),
+]

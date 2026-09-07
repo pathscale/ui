@@ -1,0 +1,37 @@
+// Generated from tests/qa-harness/components.ts by tests/qa-harness/generate-checks.ts. Do not edit.
+//
+// Empty, mounted alone on its own harness page. Outcomes for
+// this component share one native host; idempotent preparation keeps each
+// outcome reproducible by id against a fresh host as well.
+[
+    (
+        id: "empty-page-paints",
+        group: "empty",
+        what: "the Empty page builds and paints",
+        open: None,
+        hover: None,
+        click: None,
+        subject: "heading:Empty",
+        expect: Present,
+    ),
+    (
+        id: "empty-renders",
+        group: "empty",
+        what: "Empty renders a node of its own",
+        open: None,
+        hover: None,
+        click: None,
+        subject: "fixture",
+        expect: Paints,
+    ),
+    (
+        id: "empty-paints",
+        group: "empty",
+        what: "the Empty reaches the renderer with a box",
+        open: None,
+        hover: None,
+        click: None,
+        subject: "Empty",
+        expect: Present,
+    ),
+]

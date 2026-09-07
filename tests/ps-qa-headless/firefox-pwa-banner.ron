@@ -1,0 +1,37 @@
+// Generated from tests/qa-harness/components.ts by tests/qa-harness/generate-checks.ts. Do not edit.
+//
+// FirefoxPWABanner, mounted alone on its own harness page. Outcomes for
+// this component share one native host; idempotent preparation keeps each
+// outcome reproducible by id against a fresh host as well.
+[
+    (
+        id: "firefox-pwa-banner-page-paints",
+        group: "firefox-pwa-banner",
+        what: "the FirefoxPWABanner page builds and paints",
+        open: None,
+        hover: None,
+        click: None,
+        subject: "heading:FirefoxPWABanner",
+        expect: Present,
+    ),
+    (
+        id: "firefox-pwa-banner-renders",
+        group: "firefox-pwa-banner",
+        what: "FirefoxPWABanner renders a node of its own",
+        open: None,
+        hover: None,
+        click: None,
+        subject: "fixture",
+        expect: Paints,
+    ),
+    (
+        id: "firefox-pwa-banner-paints",
+        group: "firefox-pwa-banner",
+        what: "the FirefoxPWABanner reaches the renderer with a box",
+        open: None,
+        hover: None,
+        click: None,
+        subject: "FirefoxPWABanner",
+        expect: Present,
+    ),
+]

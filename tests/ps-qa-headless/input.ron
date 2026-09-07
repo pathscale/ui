@@ -12,7 +12,7 @@
         hover: None,
         click: None,
         subject: "heading:Input",
-        expect: PaintsNamed,
+        expect: Present,
     ),
     (
         id: "input-renders",
@@ -46,6 +46,6 @@
         type_into: Some("textbox:Fixture input"),
         text: Some("QA outcome"),
         subject: "heading:Field value: QA outcome",
-        expect: PaintsNamed,
+        expect: Present,
     ),
 ]

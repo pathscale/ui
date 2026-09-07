@@ -1,0 +1,37 @@
+// Generated from tests/qa-harness/components.ts by tests/qa-harness/generate-checks.ts. Do not edit.
+//
+// Progress, mounted alone on its own harness page. Outcomes for
+// this component share one native host; idempotent preparation keeps each
+// outcome reproducible by id against a fresh host as well.
+[
+    (
+        id: "progress-page-paints",
+        group: "progress",
+        what: "the Progress page builds and paints",
+        open: None,
+        hover: None,
+        click: None,
+        subject: "heading:Progress",
+        expect: Present,
+    ),
+    (
+        id: "progress-renders",
+        group: "progress",
+        what: "Progress renders a node of its own",
+        open: None,
+        hover: None,
+        click: None,
+        subject: "fixture",
+        expect: Paints,
+    ),
+    (
+        id: "progress-paints",
+        group: "progress",
+        what: "the Progress reaches the renderer with a box",
+        open: None,
+        hover: None,
+        click: None,
+        subject: "Progress",
+        expect: Present,
+    ),
+]

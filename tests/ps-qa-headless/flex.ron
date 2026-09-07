@@ -1,0 +1,37 @@
+// Generated from tests/qa-harness/components.ts by tests/qa-harness/generate-checks.ts. Do not edit.
+//
+// Flex, mounted alone on its own harness page. Outcomes for
+// this component share one native host; idempotent preparation keeps each
+// outcome reproducible by id against a fresh host as well.
+[
+    (
+        id: "flex-page-paints",
+        group: "flex",
+        what: "the Flex page builds and paints",
+        open: None,
+        hover: None,
+        click: None,
+        subject: "heading:Flex",
+        expect: Present,
+    ),
+    (
+        id: "flex-renders",
+        group: "flex",
+        what: "Flex renders a node of its own",
+        open: None,
+        hover: None,
+        click: None,
+        subject: "fixture",
+        expect: Paints,
+    ),
+    (
+        id: "flex-paints",
+        group: "flex",
+        what: "the Flex reaches the renderer with a box",
+        open: None,
+        hover: None,
+        click: None,
+        subject: "Flex",
+        expect: Present,
+    ),
+]

@@ -1,0 +1,37 @@
+// Generated from tests/qa-harness/components.ts by tests/qa-harness/generate-checks.ts. Do not edit.
+//
+// Navbar, mounted alone on its own harness page. Outcomes for
+// this component share one native host; idempotent preparation keeps each
+// outcome reproducible by id against a fresh host as well.
+[
+    (
+        id: "navbar-page-paints",
+        group: "navbar",
+        what: "the Navbar page builds and paints",
+        open: None,
+        hover: None,
+        click: None,
+        subject: "heading:Navbar",
+        expect: Present,
+    ),
+    (
+        id: "navbar-renders",
+        group: "navbar",
+        what: "Navbar renders a node of its own",
+        open: None,
+        hover: None,
+        click: None,
+        subject: "fixture",
+        expect: Paints,
+    ),
+    (
+        id: "navbar-paints",
+        group: "navbar",
+        what: "the Navbar reaches the renderer with a box",
+        open: None,
+        hover: None,
+        click: None,
+        subject: "Navbar",
+        expect: Present,
+    ),
+]

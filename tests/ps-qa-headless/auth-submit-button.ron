@@ -1,0 +1,47 @@
+// Generated from tests/qa-harness/components.ts by tests/qa-harness/generate-checks.ts. Do not edit.
+//
+// AuthSubmitButton, mounted alone on its own harness page. Outcomes for
+// this component share one native host; idempotent preparation keeps each
+// outcome reproducible by id against a fresh host as well.
+[
+    (
+        id: "auth-submit-button-page-paints",
+        group: "auth-submit-button",
+        what: "the AuthSubmitButton page builds and paints",
+        open: None,
+        hover: None,
+        click: None,
+        subject: "heading:AuthSubmitButton",
+        expect: Present,
+    ),
+    (
+        id: "auth-submit-button-renders",
+        group: "auth-submit-button",
+        what: "AuthSubmitButton renders a node of its own",
+        open: None,
+        hover: None,
+        click: None,
+        subject: "fixture",
+        expect: Paints,
+    ),
+    (
+        id: "auth-submit-button-paints",
+        group: "auth-submit-button",
+        what: "the AuthSubmitButton control is on screen and addressable",
+        open: None,
+        hover: None,
+        click: None,
+        subject: "button:AuthSubmitButton",
+        expect: Present,
+    ),
+    (
+        id: "auth-submit-button-acts",
+        group: "auth-submit-button",
+        what: "activating AuthSubmitButton exposes the callback result",
+        open: None,
+        hover: None,
+        click: Some("button:AuthSubmitButton"),
+        subject: "heading:Action result: AuthSubmitButton complete",
+        expect: Present,
+    ),
+]
