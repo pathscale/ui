@@ -219,13 +219,11 @@
 
   /* ── Disabled state ── */
 
-  .switch--disabled,
   .switch[data-disabled="true"] {
     cursor: not-allowed;
     opacity: 0.55;
   }
 
-  .switch--disabled .switch__thumb,
   .switch[data-disabled="true"] .switch__thumb {
     background-color: color-mix(
       in oklab,
@@ -234,7 +232,6 @@
     );
   }
 
-  .switch--disabled[data-selected="true"] .switch__thumb,
   .switch[data-disabled="true"][data-selected="true"] .switch__thumb {
     opacity: 0.4;
   }

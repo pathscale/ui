@@ -2,9 +2,8 @@ import "./Switch.css";
 import type { JSX } from "@solidjs/web";
 import { type Component, createSignal, omit, Show } from "solid-js";
 import type { Layout } from "../../lib/layouts";
-import { twMerge } from "../../lib/twMerge";
 import type { Flavor, State, UIBaseProps } from "../vocabulary";
-import { CLASSES, componentRecipe } from "./Switch.recipe";
+import { componentRecipe } from "./Switch.recipe";
 
 const invokeEventHandler = (handler: unknown, event: Event) => {
   if (typeof handler === "function") {
@@ -87,8 +86,6 @@ const Switch: Layout<typeof componentRecipe, ToggleProps> = () => {
     isControlled() ? Boolean(props.checked) : internalSelected();
   const isDisabled = () =>
     Boolean(props.state === "disabled") || Boolean(props.disabled);
-  const color = () => props.flavor ?? "accent";
-  const size = () => props.size ?? "md";
   const hasContent = () => props.children != null || props.description != null;
 
   const handleChange: JSX.EventHandlerUnion<HTMLInputElement, Event> = (
@@ -109,18 +106,8 @@ const Switch: Layout<typeof componentRecipe, ToggleProps> = () => {
 
   return (
     <label
-      {...{
-        class: twMerge(
-          CLASSES.base,
-          CLASSES.size[size()],
-          CLASSES.flavor[color() as keyof typeof CLASSES.flavor] ??
-            `switch--flavor-${color()}`,
-          isDisabled() && CLASSES.flag.disabled,
-          props.class,
-        ),
-      }}
+      {...slot.root}
       data-theme={props.dataTheme}
-      data-slot="switch"
       data-selected={isSelected() ? "true" : "false"}
       data-disabled={isDisabled() ? "true" : "false"}
       aria-disabled={isDisabled() ? "true" : "false"}
@@ -129,26 +116,22 @@ const Switch: Layout<typeof componentRecipe, ToggleProps> = () => {
         {...others}
         type="checkbox"
         role="switch"
-        {...{ class: CLASSES.slot.input }}
-        data-slot="switch-input"
+        {...slot.input}
         checked={isSelected()}
         disabled={isDisabled()}
         onChange={handleChange}
       />
 
       <span
-        {...{ class: CLASSES.slot.control }}
-        data-slot="switch-control"
+        {...slot.control}
         aria-hidden="true"
       >
         <span
-          {...{ class: CLASSES.slot.thumb }}
-          data-slot="switch-thumb"
+          {...slot.thumb}
         >
           <Show when={props.icon}>
             <span
-              {...{ class: CLASSES.slot.icon }}
-              data-slot="switch-icon"
+              {...slot.icon}
             >
               {props.icon}
             </span>
@@ -158,15 +141,26 @@ const Switch: Layout<typeof componentRecipe, ToggleProps> = () => {
 
       <Show when={hasContent()}>
         <span
-          {...{ class: CLASSES.slot.content }}
-          data-slot="switch-content"
+          {...slot.content}
         >
           <Show when={props.children}>
             <span data-slot="label">{props.children}</span>
           </Show>
           <Show when={props.description}>
             <span
-              {...{ class: CLASSES.slot.description }}
+              {...slot.description}
+              /*
+               * `description`, not the `switch-description` the slot would
+               * emit.
+               *
+               * Non-root slots are published as `${component}-${slot}`, and
+               * this span was hand-written as plain `description` before the
+               * migration -- as Checkbox's and Radio's still are. Qualifying
+               * only this one would leave three sibling controls disagreeing
+               * about the name of the same part, which is worse than the
+               * inconsistency it would fix. The whole family should move
+               * together, or not at all.
+               */
               data-slot="description"
             >
               {props.description}

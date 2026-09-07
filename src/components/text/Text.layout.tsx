@@ -1,10 +1,8 @@
 import "./Text.css";
 import type { JSX } from "@solidjs/web";
 import {omit, type Component} from "solid-js";
-import { twMerge } from "../../lib/twMerge";
 
 import type { UIBaseProps } from "../vocabulary";
-import { CLASSES } from "./Text.recipe";
 import type { Layout } from "../../lib/layouts";
 import { componentRecipe } from "./Text.recipe";
 
@@ -50,8 +48,7 @@ const TextRoot: Layout<typeof componentRecipe, TextRootProps> = () => {
   return (
     <span
       {...others}
-      {...{ class: twMerge(CLASSES.base, props.class) }}
-      data-slot="text"
+      {...slot.root}
       data-size={size()}
       data-variant={variant()}
       data-weight={props.weight}
