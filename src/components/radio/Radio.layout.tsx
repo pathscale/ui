@@ -21,7 +21,7 @@ const invokeEventHandler = (handler: unknown, event: Event) => {
 
 export type RadioProps = Omit<
   JSX.InputHTMLAttributes<HTMLInputElement>,
-  "type" | "children"
+  "type" | "children" | "onChange"
 > &
   UIBaseProps & {
     children?: JSX.Element;
@@ -29,6 +29,30 @@ export type RadioProps = Omit<
     indicator?: JSX.Element;
     state?: State;
     issues?: Issue[];
+    /**
+     * Whether this radio is now the selected one.
+     *
+     * **Breaking in 3.1**, and the last control left out of it. Switch and
+     * Checkbox were changed to report their new value here while Radio was
+     * still handing over an `Event`, which is the inconsistency the change
+     * existed to remove -- swapping one control for another quietly changed
+     * what the handler received.
+     *
+     * A radio only ever reports `true`: deselection happens by another radio
+     * in the group being chosen, and that one reports itself. Reach for
+     * `RadioGroup`'s `onChange` when the question is which value is selected.
+     *
+     * The native handler is {@link onNativeChange}, and it is still where you
+     * call `preventDefault()`.
+     */
+    onChange?: (checked: boolean) => void;
+    /**
+     * The underlying `change` event, before the selection is applied.
+     *
+     * This is the veto: `preventDefault()` here leaves the group as it was and
+     * suppresses {@link onChange}.
+     */
+    onNativeChange?: JSX.EventHandlerUnion<HTMLInputElement, Event>;
   };
 
 const Radio: Layout<typeof componentRecipe, RadioProps> = () => {
@@ -46,6 +70,7 @@ const Radio: Layout<typeof componentRecipe, RadioProps> = () => {
     "value",
     "name",
     "onChange",
+    "onNativeChange",
     "dataTheme",
     "aria-invalid",
   );
@@ -71,12 +96,16 @@ const Radio: Layout<typeof componentRecipe, RadioProps> = () => {
   const handleChange: JSX.EventHandlerUnion<HTMLInputElement, Event> = (
     event,
   ) => {
-    invokeEventHandler(props.onChange, event);
+    // The event handler first, so `preventDefault()` still vetoes both the
+    // selection and the value callback. Same order as Switch and Checkbox.
+    invokeEventHandler(props.onNativeChange, event);
     if (event.defaultPrevented) return;
 
-    if (event.currentTarget.checked && group && value() !== undefined) {
+    const checked = event.currentTarget.checked;
+    if (checked && group && value() !== undefined) {
       group.selectValue(value() as string, event);
     }
+    props.onChange?.(checked);
   };
 
   return (

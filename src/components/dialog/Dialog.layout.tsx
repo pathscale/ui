@@ -2,6 +2,7 @@ import "./Dialog.css";
 import {Show, createContext, createSignal, createTrackedEffect, createUniqueId, onCleanup, omit, useContext, type Component, type ParentComponent} from "solid-js";
 import { Portal, type JSX} from "@solidjs/web";
 import { twMerge } from "../../lib/twMerge";
+import { focusFirst } from "../../lib/focus";
 import { lockBodyScroll, registerOverlay } from "../../lib/overlay";
 
 import "../_shared/material.css";
@@ -57,68 +58,14 @@ const isVisibleState = (state: DialogAnimState) => state === "entering" || state
  * to open saves the first one`s `hidden` and restores it on the way out.
  */
 
-const FOCUSABLE_SELECTOR = [
-  "a[href]",
-  "area[href]",
-  "button:not([disabled])",
-  "input:not([disabled]):not([type='hidden'])",
-  "select:not([disabled])",
-  "textarea:not([disabled])",
-  "iframe",
-  "object",
-  "embed",
-  "[contenteditable='true']",
-  "[tabindex]:not([tabindex='-1'])",
-].join(",");
-
-const getFocusableElements = (container: HTMLElement) =>
-  Array.from(container.querySelectorAll<HTMLElement>(FOCUSABLE_SELECTOR)).filter((element) => {
-    if (element.hasAttribute("disabled")) return false;
-    if (element.getAttribute("aria-hidden") === "true") return false;
-    if (element.tabIndex < 0) return false;
-    return !element.hidden;
-  });
-
-const trapFocus = (event: KeyboardEvent, container: HTMLElement) => {
-  const focusable = getFocusableElements(container);
-
-  if (focusable.length === 0) {
-    event.preventDefault();
-    container.focus();
-    return;
-  }
-
-  const first = focusable[0];
-  const last = focusable[focusable.length - 1];
-  const active = document.activeElement as HTMLElement | null;
-
-  if (!event.shiftKey && active === last) {
-    event.preventDefault();
-    first.focus();
-    return;
-  }
-
-  if (event.shiftKey && (active === first || active === container)) {
-    event.preventDefault();
-    last.focus();
-  }
-};
-
-const focusFirstElement = (container: HTMLElement) => {
-  const autofocus = container.querySelector<HTMLElement>("[autofocus]");
-  if (autofocus) {
-    autofocus.focus();
-    return;
-  }
-
-  const focusable = getFocusableElements(container);
-  if (focusable.length > 0) {
-    focusable[0].focus();
-    return;
-  }
-
-  container.focus();
-};
+/*
+ * Focus helpers come from `src/lib/focus.ts`.
+ *
+ * This file had its own `getFocusableElements`, `trapFocus` and
+ * `focusFirstElement`, character for character the same logic as Drawer's,
+ * and the overlay manager needed a third caller. One copy, one place.
+ */
+const focusFirstElement = focusFirst;
 
 export type DialogRootProps = Omit<JSX.HTMLAttributes<HTMLDivElement>, "children"> &
   UIBaseProps & {
@@ -307,33 +254,27 @@ const DialogRoot: Layout<typeof componentRecipe, DialogRootProps> = () => {
     });
 
     /*
-     * Escape goes through the shared stack; Tab stays here.
+     * Escape and Tab both go through the shared stack.
      *
-     * Dismissal is a question about which overlay owns the key, and only
-     * something that can see all of them can answer it -- this used to close a
-     * Dialog and the Popover opened from inside it with one press. Focus
-     * trapping is the opposite: it is about this overlay's own content, so it
-     * stays on this listener.
+     * Tab used to stay here, on the reasoning that focus trapping is about
+     * this overlay's own content. It is -- but *which* overlay's content is a
+     * question about all of them, and this listener could not answer it: it
+     * gated on "am I visible", so a Dialog behind an open Drawer trapped Tab
+     * too, and the two fought over focus. The manager asks only the innermost
+     * overlay, which is the one a person is looking at.
+     *
+     * Registered from inside this effect, which runs when the dialog becomes
+     * visible, so the stack's order is the order things opened in.
      */
     const releaseOverlay = registerOverlay({
-      active: () => isVisibleState(animState()),
       dismissable: () =>
         props.isDismissable !== false && props.shouldCloseOnEsc !== false,
       dismiss: () => setIsOpen(false),
+      trapFocusIn: () => contentRef() ?? undefined,
     });
-
-    const handleDocumentKeyDown = (event: KeyboardEvent) => {
-      if (!isVisibleState(animState())) return;
-      if (event.key === "Tab") {
-        trapFocus(event, content);
-      }
-    };
-
-    document.addEventListener("keydown", handleDocumentKeyDown);
 
     return () => {
       releaseOverlay();
-      document.removeEventListener("keydown", handleDocumentKeyDown);
     };
   });
 

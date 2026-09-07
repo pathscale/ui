@@ -581,13 +581,29 @@ these panels have. Reading it in a loop is not: hoist it, or wrap it in a
   rather than written, for the same reason.
 - **Stored values are checked on read.** A key written by an older version, or
   edited by hand, falls back field by field rather than throwing. A settings
-  page that cannot open is a settings page that cannot be corrected.
+  page that cannot open is a settings page that cannot be corrected. An address
+  that does not validate is dropped along with its override, so a corrupted
+  key cannot activate an address nobody typed.
 - **Addresses are validated before they are saved**, by `validate` on the
   endpoint, defaulting to "parses as a URL". Give an endpoint its own when it
   knows more: a WebSocket transport handed `http://` fails at connect time, far
   from the page that could have explained it.
+
+  The store enforces this, not just the panel: `setUrl` returns the reason it
+  refused a value and stores nothing, because every write there becomes an
+  active, persisted override. Keep an address a person is still typing as a
+  draft in your own state and call `setUrl` when it validates — which is what
+  `ConnectionSettings` does.
+- **`apply()` persists first, then reconnects.** `onApply` receives the
+  settings that were just written, and storage already holds them when it runs,
+  so a callback that reloads or navigates reads back what it was handed.
 - **`apply()` is awaited** and `isApplying` covers the reconnect, not just the
   write. A failure propagates; the panel shows it and calls `onSaveFailed`.
+- **Overlapping applies run in order.** Two saves in quick succession reconnect
+  in the order they were made, so the transport ends on the newer one. A queued
+  apply waits for the one in front; `onApply` reconfigures a transport this
+  store does not own, so a superseded reconnect cannot be undone after the fact
+  and is not started out of turn.
 
 ### What the panel guarantees
 

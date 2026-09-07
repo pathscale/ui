@@ -57,29 +57,80 @@ export interface ConnectionSettingsApplied {
  * worse than a looser one it can.
  */
 /*
- * Anchored at both ends, and the port is digits.
+ * Anchored at both ends, with the host and port captured so they can be
+ * checked as values rather than as character runs.
  *
  * Unanchored, this matched a valid-looking *prefix*: `wss://host other` passed
  * because the pattern stopped at the space and nothing required it to have
  * reached the end. So did `wss://host:abc`, an unparseable port, because the
  * host run accepted `:` as an ordinary character.
  *
- * Still deliberately weak about everything else, and still not `new URL()`, for
- * the reason above. Weak is a decision about how much of an address to inspect;
- * matching a prefix of a string it then reports as valid is not weakness, it is
- * the wrong answer.
+ * Anchoring fixed those and left two more, which are the same mistake one level
+ * down: a run of digits is not a port, and a run of hex and colons is not an
+ * address. `wss://host:99999` and `https://[1:2:3]` both matched, and both are
+ * parse failures rather than addresses this validator is choosing not to judge.
+ * The two checks below decide them.
  *
- * The host alternates a bracketed IPv6 literal with an ordinary run: excluding
- * `:` from the host, which is what isolates the port, otherwise rejects
- * `http://[::1]:80`.
+ * Still not `new URL()`, for the reason above: the native renderer this library
+ * is tested against has no `URL` global. Still deliberately weak about the rest
+ * of the address -- weak is a decision about how much to inspect, while
+ * accepting a string that cannot parse is just the wrong answer.
  */
 const ABSOLUTE_URL =
-  /^[a-z][a-z0-9+.-]*:\/\/(?:\[[0-9a-f:.]+\]|[^\s/?#:]+)(?::\d+)?(?:[/?#]\S*)?$/i;
+  /^[a-z][a-z0-9+.-]*:\/\/(\[[^\]\s]*\]|[^\s/?#:]+)(?::(\d{1,5}))?(?:[/?#]\S*)?$/i;
 
-export const isAbsoluteUrl = (url: string): string | undefined =>
-  ABSOLUTE_URL.test(url)
-    ? undefined
-    : `${url} is not an absolute address (expected scheme://host)`;
+/** One 16-bit group of an IPv6 address. */
+const IPV6_GROUP = "[0-9a-f]{1,4}";
+/** The dotted-quad tail an IPv6 literal may end with. */
+const IPV4_TAIL =
+  "(?:(?:25[0-5]|2[0-4]\\d|1\\d\\d|[1-9]?\\d)\\.){3}(?:25[0-5]|2[0-4]\\d|1\\d\\d|[1-9]?\\d)";
+const IPV6_FULL = new RegExp(
+  `^(?:${IPV6_GROUP}:){6}(?:${IPV6_GROUP}:${IPV6_GROUP}|${IPV4_TAIL})$`,
+  "i",
+);
+const IPV6_PIECES = new RegExp(
+  `^(?:${IPV6_GROUP}(?::${IPV6_GROUP})*)?$`,
+  "i",
+);
+
+/**
+ * Whether a bracketed host is an IPv6 literal.
+ *
+ * `https://[1:2:3]` is not an address, and a character class of hex digits and
+ * colons said it was. This is the shape the URL Standard describes: eight
+ * 16-bit groups, or fewer with exactly one `::` standing for the run of zeroes
+ * it elides, optionally ending in a dotted IPv4 form.
+ *
+ * Written out rather than folded into one pattern because the `::` rule is a
+ * count, not a shape: each half has to parse, and together they have to leave
+ * at least one group for the `::` to stand for.
+ */
+export const isIpv6Literal = (host: string): boolean => {
+  if (IPV6_FULL.test(host)) return true;
+  const halves = host.split("::");
+  if (halves.length !== 2) return false;
+  const [head, tail] = halves;
+  const v4 = new RegExp(`(?:^|:)${IPV4_TAIL}$`, "i").test(tail);
+  const groups = v4 ? tail.replace(new RegExp(`${IPV4_TAIL}$`, "i"), "") : tail;
+  if (!IPV6_PIECES.test(head)) return false;
+  if (!IPV6_PIECES.test(groups.replace(/:$/, ""))) return false;
+  const count = (part: string) => (part === "" ? 0 : part.split(":").length);
+  return count(head) + count(groups.replace(/:$/, "")) + (v4 ? 2 : 0) <= 7;
+};
+
+export const isAbsoluteUrl = (url: string): string | undefined => {
+  const match = ABSOLUTE_URL.exec(url);
+  if (!match)
+    return `${url} is not an absolute address (expected scheme://host)`;
+  const [, host, port] = match;
+  if (host.startsWith("[") && !isIpv6Literal(host.slice(1, -1)))
+    return `${url} does not contain a valid IPv6 address`;
+  // The URL Standard's port state: a port is a 16-bit number, so 65536 and up
+  // is a parse failure rather than a port this validator declines to judge.
+  if (port !== undefined && Number(port) > 65535)
+    return `${url} has a port outside 0-65535`;
+  return undefined;
+};
 
 export interface ConnectionSettingsOptions {
   /** `localStorage` key. Namespace it per application; two apps on one origin would collide. */
@@ -135,7 +186,15 @@ export interface ConnectionSettingsStore {
    * next launch, with nothing on screen saying why nothing connects.
    */
   validate(name: string, url: string): string | undefined;
-  setUrl(name: string, url: string): void;
+  /**
+   * Set an endpoint's override.
+   *
+   * Returns the reason it was refused, or `undefined` when it was stored. A
+   * value written here becomes an active, persisted override, so it has to
+   * pass the same check {@link ConnectionSettingsStore.validate} applies;
+   * an invalid one is not stored at all. Keep it as a draft in the UI instead.
+   */
+  setUrl(name: string, url: string): string | undefined;
   setOverride(name: string, on: boolean): void;
   /** Flip every endpoint together, for a page with one switch. */
   setUseCustom(on: boolean): void;
@@ -198,11 +257,30 @@ export const createConnectionSettings = (
         : {};
       const storedUrls = isRecord(parsed.urls) ? parsed.urls : {};
 
+      /*
+       * Storage is input, and it is checked like input.
+       *
+       * What is here was written by a previous version of this application, or
+       * edited by hand, or corrupted; none of those is a reason to trust it. An
+       * unchecked stored address became an active override on the next launch,
+       * which is the same hole `setUrl` had, reached a different way -- and the
+       * worse way, because nobody typed it and nothing reported it.
+       *
+       * A stored value that does not parse is dropped along with its override,
+       * so the endpoint falls back to its default and the application starts on
+       * an address that works. It is not kept as a draft: nothing is editing it
+       * yet at load time, and leaving it in `urls` with the override off is how
+       * it comes back the next time Save is pressed.
+       */
       for (const endpoint of endpoints) {
-        if (storedOverrides[endpoint.name] === true)
-          overrides[endpoint.name] = true;
         const url = storedUrls[endpoint.name];
-        if (typeof url === "string" && url !== "") urls[endpoint.name] = url;
+        const usable =
+          typeof url === "string" &&
+          url !== "" &&
+          (endpoint.validate ?? isAbsoluteUrl)(url) === undefined;
+        if (usable) urls[endpoint.name] = url as string;
+        if (usable && storedOverrides[endpoint.name] === true)
+          overrides[endpoint.name] = true;
       }
 
       return {
@@ -304,6 +382,8 @@ export const createConnectionSettings = (
    */
   let committed: ConnectionSettingsState = state();
   let inFlight = 0;
+  /** The tail of the apply chain. See `apply`. */
+  let queue: Promise<void> = Promise.resolve();
 
   const update = (
     change: (current: ConnectionSettingsState) => ConnectionSettingsState,
@@ -334,15 +414,30 @@ export const createConnectionSettings = (
       }),
     );
 
-  const resolved = (): Record<string, string> => {
+  /*
+   * Resolved once per state, not once per read.
+   *
+   * `state` is replaced wholesale on every write, so the object itself is the
+   * cache key: same object, same answer, and a new object is the only way the
+   * answer can change. Deliberately not a memo -- the store is built at module
+   * scope, where a memo lives in a detached root and recomputes only while that
+   * root's graph is live, which is not a property this hook can promise and
+   * which fails by going quietly stale.
+   *
+   * The read still tracks the signal, so a component re-renders when the
+   * settings change; what it stops doing is folding over every endpoint on the
+   * way. The returned record is frozen because callers now share one.
+   */
+  let resolvedFor: ConnectionSettingsState | undefined;
+  let resolvedValue: Readonly<Record<string, string>> = Object.freeze({});
+
+  const resolved = (): Readonly<Record<string, string>> => {
     const current = state();
-    return Object.fromEntries(
-      endpoints.map((e) => {
-        const override =
-          current.overrides[e.name] === true ? current.urls[e.name] : undefined;
-        return [e.name, override && override !== "" ? override : e.fallback];
-      }),
-    );
+    if (resolvedFor !== current) {
+      resolvedFor = current;
+      resolvedValue = Object.freeze(resolveFrom(current));
+    }
+    return resolvedValue;
   };
 
   return {
@@ -375,8 +470,30 @@ export const createConnectionSettings = (
     isOverridden(name) {
       return state().overrides[name] === true;
     },
+    /*
+     * Refused rather than stored, and it says why.
+     *
+     * Every write here becomes an active override and is persisted, so an
+     * address that does not parse was being activated as though it had been
+     * checked -- and `docs/ui-usage.md` promises the store validates before
+     * saving. The panel already validates before it gets here, so this is not
+     * the path a person takes; it is the one a caller driving the store
+     * directly takes, and it was the way past the promise.
+     *
+     * An empty string still goes through: clearing a field is how an override
+     * is removed, and `validate` refuses `""` for the different question of
+     * whether it is an address.
+     */
     setUrl(name, url) {
+      if (url !== "") {
+        const endpoint = endpoints.find((e) => e.name === name);
+        const problem = endpoint
+          ? (endpoint.validate ?? isAbsoluteUrl)(url)
+          : `${name} is not a configured endpoint`;
+        if (problem) return problem;
+      }
       update((c) => ({ ...c, urls: { ...c.urls, [name]: url } }));
+      return undefined;
     },
     setOverride(name, on) {
       update((c) => ({ ...c, overrides: { ...c.overrides, [name]: on } }));
@@ -407,19 +524,71 @@ export const createConnectionSettings = (
       inFlight += 1;
       setIsApplying(true);
       /*
-       * Snapshotted before the await, from the committed value rather than the
-       * signal. This is the promise the doc comment on `apply` makes -- persist,
-       * then hand over what was persisted -- and it only holds if both halves
-       * read the same object. Taken once, so a concurrent write between the
-       * write and the callback cannot hand `onApply` a third state.
+       * Snapshotted before anything can await, from the committed value rather
+       * than the signal, so the write and the callback cannot see two different
+       * states.
        */
       const current = committed;
+      /*
+       * Run behind whatever is already applying, and hold the next one behind
+       * this.
+       *
+       * Counting overlapping applies said when the last one finished; it did
+       * not say which one finished last. Two saves in quick succession could
+       * reconnect in either order, and the losing order leaves storage saying B
+       * while the transport is configured for A -- with nothing on screen
+       * disagreeing, because `isApplying` had gone quiet and both callbacks
+       * resolved.
+       *
+       * `onApply` reconfigures somebody else's transport, so a superseded one
+       * cannot be undone after the fact and cancelling it is not this store's
+       * call either. Ordering them is: the reconnects run in the order the
+       * saves were made, and the last save is the last thing the transport
+       * hears. A queued apply waits, which is the cost, and it is the same cost
+       * a caller would pay for awaiting them itself.
+       */
+      const reconnect = () => {
+        /*
+         * Persisted here, not by the effect.
+         *
+         * `apply` promises to persist and then hand over what was persisted,
+         * and the effect that mirrors `state` into storage is deferred: it runs
+         * a microtask later, after `onApply` has already been called. A
+         * callback that reloads or navigates -- which is exactly what a
+         * transport change often does -- read the previous settings back. The
+         * effect still exists for every other write; this is what makes the
+         * ordering `apply` claims actually hold.
+         */
+        write(current);
+        return (
+          onApply?.({
+            urls: resolveFrom(current),
+            appPublicId: current.appPublicId,
+            overrides: { ...current.overrides },
+          }) ?? undefined
+        );
+      };
+      /*
+       * Inline when nothing else is applying, queued when something is.
+       *
+       * `queue.then(...)` unconditionally would have been simpler and wrong in
+       * a way that is hard to see: it puts the whole body a microtask later,
+       * which is also when the deferred persistence effect runs, so the write
+       * above would stop being what persists and start being a duplicate of
+       * whichever ran first. The ordering would hold by luck, and a test for it
+       * would pass with the write deleted -- measured, before this line existed.
+       *
+       * `inFlight` was incremented above, so 1 means this apply is the only one.
+       */
+      const run =
+        inFlight === 1
+          ? Promise.resolve(reconnect())
+          : queue.then(reconnect).then(() => undefined);
+      // The queue must survive a rejecting `onApply`, or one failed reconnect
+      // deadlocks every later save. The error still reaches this caller.
+      queue = run.catch(() => undefined);
       try {
-        await onApply?.({
-          urls: resolveFrom(current),
-          appPublicId: current.appPublicId,
-          overrides: { ...current.overrides },
-        });
+        await run;
       } finally {
         inFlight -= 1;
         if (inFlight === 0) setIsApplying(false);

@@ -594,7 +594,7 @@ HTML attributes and `UIBaseProps`; that is an assertion, not a gap.
 
 ### Radio
 
-`children description indicator issues state`
+`children description indicator issues onChange onNativeChange state`
 
 ### RadioGroup
 

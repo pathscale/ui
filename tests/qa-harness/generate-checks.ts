@@ -544,6 +544,44 @@ function checksFor(spec: ComponentSpec, profile: Profile): string {
           expect: profile.paints("PaintsNamed"),
         }),
       );
+      /*
+       * And that the reconnect got the new settings, already persisted.
+       *
+       * `apply` promises to write storage and then hand the callback what was
+       * written, which is what a callback that reloads or navigates depends
+       * on. Neither half was asserted -- the fixture supplied no `onApply` at
+       * all -- and the ordering half was broken: persistence ran in a deferred
+       * effect a microtask after the reconnect, so a callback reading storage
+       * saw the settings it was replacing. The fixture names both, so this
+       * fails if either the argument or the order regresses.
+       */
+      records.push(
+        check({
+          id: `"${spec.id}-reconnects-with-what-it-saved"`,
+          group: `"${spec.id}"`,
+          what: `"${spec.component} reconnects with the saved settings, already persisted"`,
+          open: surface,
+          hover: "None",
+          prepare: `Some("${spec.subjectRole}:${spec.subject}")`,
+          prepare_unless: `Some("${spec.opens}")`,
+          settle_after_ms: "300",
+          /*
+           * Its own address, not `commitText`.
+           *
+           * The checks in a group share a host, so by the time this one runs
+           * storage already holds what `-commits` saved. Reusing that value
+           * made this pass with the write deleted -- measured -- because the
+           * old contents and the expected contents were the same string. A
+           * value only this check writes cannot be satisfied by what ran
+           * before it.
+           */
+          type_into: `Some("${spec.opens}")`,
+          text: `Some("${spec.reconnectText}")`,
+          click: `Some("${spec.commit}")`,
+          subject: `"heading:Reconnected: ${spec.reconnectText} over ${spec.reconnectText}"`,
+          expect: profile.paints("PaintsNamed"),
+        }),
+      );
     }
   }
 
