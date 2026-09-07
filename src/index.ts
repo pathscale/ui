@@ -621,12 +621,18 @@ export {
 } from "./hooks/data";
 export type {
   ConnectionEndpoint,
+  ConnectionSettingsApplied,
   ConnectionSettingsOptions,
   ConnectionSettingsState,
   ConnectionSettingsStore,
 } from "./hooks/connection";
-// Where an application points itself, and how that survives a reload
-export { createConnectionSettings } from "./hooks/connection";
+// Where an application points itself, and how that survives a reload.
+//
+// `isAbsoluteUrl` is documented as the thing a caller composes its own
+// `validate` from, and `ConnectionSettingsApplied` is the argument `onApply`
+// receives; neither was reachable through an entry point, so both were
+// documented and unusable.
+export { createConnectionSettings, isAbsoluteUrl } from "./hooks/connection";
 export type {
   ConnectionSettingsEndpointLabel,
   ConnectionSettingsLabels,
