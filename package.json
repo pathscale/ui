@@ -43,6 +43,10 @@
       "types": "./dist/lab.d.ts",
       "import": "./dist/lab.js"
     },
+    "./passwordRules": {
+      "types": "./dist/passwordRules.d.ts",
+      "import": "./dist/passwordRules.js"
+    },
     "./layouts": "./dist/layouts.manifest.json",
     "./components/*": {
       "types": "./dist/components/*/index.d.ts",
