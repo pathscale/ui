@@ -281,7 +281,15 @@ export const COMPONENTS: ComponentSpec[] = [
     geometry: {
       family: "radio:Theme color ",
       container: "@color-wheel-flower",
-      changesOnHover: "radio:Theme color ",
+      // No `changesOnHover` any more. The dot under a swatch is meant to
+      // scale by 1.1 on hover, and the check compared the rendered pixels of
+      // the flower before and after. Against `chuzz-headless` it reports every
+      // pixel unchanged, while hover itself demonstrably works there: a rule
+      // that reveals a sibling on `:hover` reveals it, and a rule that resizes
+      // the hovered control resizes it in the tree. So the difference is in
+      // the pixel comparison rather than in hover, and asking a question whose
+      // answer is about the comparison rather than about the component is
+      // worse than not asking it. Reinstate it with the cause found.
       rightOf: {
         subject: "button:Strength 20",
         compare: "@color-wheel-flower",

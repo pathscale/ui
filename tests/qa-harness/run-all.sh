@@ -32,10 +32,16 @@ readonly HERE ROOT
 # host first reported a freshly installed one as missing.
 export PATH="$HOME/.cargo/bin:$PATH"
 
-# Published, so a contributor installs it rather than cloning a sibling. A local
-# checkout still wins through `QA_HOST`, which is what to use when changing the
-# host and the harness together.
-readonly HOST="${QA_HOST:-$(command -v qa-inspect-host || true)}"
+# The host is the browser, so it is built rather than installed: `chuzz-headless`
+# is a mode of chuzz, loading through the same loader and the same engine a tab
+# uses. It replaced `qa-inspect-host`, which was a second headless browser with
+# the web platform in only the other one, so every gap closed for the browser
+# had to be closed a second time there by hand or the sweep measured a browser
+# nobody ships.
+#
+# `QA_HOST` names a build outright, which is what CI does and what to use when
+# changing the host and the harness together.
+readonly HOST="${QA_HOST:-$(command -v chuzz-headless || true)}"
 readonly PS_QA="${QA_PS_QA:-$(command -v ps-qa || true)}"
 
 if [[ -z "$PS_QA" || ! -x "$PS_QA" ]]; then
@@ -44,8 +50,9 @@ if [[ -z "$PS_QA" || ! -x "$PS_QA" ]]; then
 fi
 
 if [[ -z "$HOST" || ! -x "$HOST" ]]; then
-  echo "qa-inspect-host is not on PATH; cargo install qa-inspect-host" >&2
-  echo "  (or set QA_HOST to a local build)" >&2
+  echo "chuzz-headless is not on PATH; build it from a chuzz checkout:" >&2
+  echo "  cargo build --release --manifest-path ../chuzz/Cargo.toml --bin chuzz-headless" >&2
+  echo "  (then set QA_HOST to it, which is also what CI does)" >&2
   exit 1
 fi
 

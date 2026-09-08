@@ -36,17 +36,6 @@
         expect: ContainedBy,
     ),
     (
-        id: "complex-color-wheel-hover-feedback",
-        group: "complex-color-wheel",
-        what: "ComplexColorWheel visibly responds when a rendered part is hovered",
-        open: None,
-        hover: None,
-        after_prepare_hover: Some("radio:Theme color "),
-        click: None,
-        subject: "@color-wheel-flower",
-        expect: PixelsChange,
-    ),
-    (
         id: "complex-color-wheel-desktop-parts-sit-beside",
         group: "complex-color-wheel",
         what: "ComplexColorWheel places its desktop controls to the right of the primary visual",

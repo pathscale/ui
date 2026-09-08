@@ -39,8 +39,18 @@ bun run qa:build
 zsh tests/qa-harness/run-all.sh
 ```
 
-Set `QA_PS_QA` or `QA_HOST` to test local builds of ps-qa or qa-inspect-host.
-The script refuses stale bundles unless `QA_ALLOW_STALE=1` is explicitly set.
+The host is `chuzz-headless`, a mode of chuzz: it loads through the same loader
+and the same engine a tab uses, so the sweep measures the browser that ships
+rather than a second one with the web platform missing from it. Build it from a
+chuzz checkout and name it:
+
+```zsh
+cargo build --release --manifest-path ../chuzz/Cargo.toml --bin chuzz-headless
+QA_HOST=../chuzz/target/release/chuzz-headless zsh tests/qa-harness/run-all.sh
+```
+
+`QA_PS_QA` does the same for a local ps-qa. The script refuses stale bundles
+unless `QA_ALLOW_STALE=1` is explicitly set.
 
 The sweep uses one clean headless host per component and runs that component's
 outcomes in sequence. `prepare_unless` makes setup idempotent, so the same check
