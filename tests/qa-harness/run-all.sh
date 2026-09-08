@@ -56,6 +56,35 @@ if [[ -z "$HOST" || ! -x "$HOST" ]]; then
   exit 1
 fi
 
+# The driver's floor, and the reason it is asserted rather than assumed.
+#
+# `command -v ps-qa` finds whatever `cargo install` left in ~/.cargo/bin,
+# which can be months old, and an old driver does not fail loudly. It reports
+# component failures that are its own: a startup `console.log` read as the
+# descriptor path (ThemeColorPicker logs one about CSP), and `QA_TIMEOUT_SCALE`
+# ignored entirely. Measured: three components "failed" against a driver eight
+# days stale, and all three passed the moment the current one ran.
+#
+# 0.6.3 is the floor because it is the first that reads `QA_TIMEOUT_SCALE` and
+# the first that takes the descriptor to be the first line that looks like one.
+readonly PS_QA_FLOOR="0.6.3"
+ps_qa_version="$("$PS_QA" --version 2>/dev/null | awk '{ print $2 }')"
+if [[ -z "$ps_qa_version" ]]; then
+  echo "$PS_QA does not report a version; it is too old to sweep with" >&2
+  exit 1
+fi
+if [[ "$(printf '%s\n%s\n' "$PS_QA_FLOOR" "$ps_qa_version" | sort -V | head -1)" != "$PS_QA_FLOOR" ]]; then
+  echo "ps-qa $ps_qa_version is older than the $PS_QA_FLOOR this harness needs." >&2
+  echo "  cargo install ps-qa --version '^$PS_QA_FLOOR'" >&2
+  echo "  (or set QA_PS_QA to a build, which is what to do when changing the driver)" >&2
+  exit 1
+fi
+
+# Say which two binaries produced the verdicts. Every wrong result this harness
+# has reported came from one of them not being the one under test.
+echo "sweeping with ps-qa $ps_qa_version at $PS_QA"
+echo "           and host $HOST"
+
 ids=()
 if [[ $# -gt 0 ]]; then
   ids=("$@")
