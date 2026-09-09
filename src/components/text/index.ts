@@ -1,6 +1,7 @@
 export {
   default,
   Text,
+  type TextAs,
   type TextFamily,
   type TextLeading,
   type TextProps,

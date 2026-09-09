@@ -475,6 +475,7 @@ export type {
 } from "./components/tabs";
 export { default as Tabs } from "./components/tabs";
 export type {
+  TextAs,
   TextFamily,
   TextLeading,
   TextProps,

@@ -1741,6 +1741,7 @@ variant?: TabsVariant
 ### Text
 
 ```ts
+as?: TextAs
 children?: JSX.Element
 family?: TextFamily
 leading?: TextLeading

@@ -178,6 +178,25 @@ The available roles are `body`, `heading`, `display`, and `mono`. They resolve t
 `--font-body`, `--font-heading`, `--font-display`, and `--font-mono`, with `--font-sans` as
 the shared fallback. This works with PathScale Fonts and application-owned font faces.
 
+**`family="heading"` is a typeface, not a heading.** It says which face to set
+the text in and nothing about the document. Say which element the text *is*
+with `as`:
+
+```tsx
+<Text as="h1" family="heading" size="xl">Pricing</Text>
+<Text as="h2" family="heading">What you get</Text>
+<Text as="p">Every plan includes the same engine.</Text>
+```
+
+`as` defaults to `span`, which is right for a run of text inside a sentence and
+is what `Text` has always rendered. It accepts `span`, `p`, `div`, `h1` through
+`h6`, `strong` and `em`.
+
+Reach for it on every title. Sites read `family="heading"` as making a heading,
+and the result was pages, landing pages among them, with no heading of any role
+anywhere on them: a reader using headings to move through the page found
+nothing to move between. If a page has a title, that title is an `h1`.
+
 ## Component inventory (by family)
 
 - **Layout/primitives**: Flex, Grid, Join, Card, Separator, ScrollArea, Skeleton, Empty, Footer, Header, Navbar, Toolbar, Dock
