@@ -900,6 +900,7 @@ id?: string
 ### DrawerTrigger
 
 ```ts
+as?: ValidComponent
 children: JSX.Element
 ```
 

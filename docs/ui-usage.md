@@ -224,6 +224,37 @@ and the result was pages, landing pages among them, with no heading of any role
 anywhere on them: a reader using headings to move through the page found
 nothing to move between. If a page has a title, that title is an `h1`.
 
+### Triggers that are given a control
+
+`Popover.Trigger` and `Drawer.Trigger` render a `button`. That is right when
+the trigger is a word or a glyph, and wrong when you hand one a control:
+
+```tsx
+<Popover.Trigger><Button>Filters</Button></Popover.Trigger>   {/* two buttons */}
+```
+
+produces a second, anonymous button wrapping the named one at identical
+coordinates. Nested interactive content is invalid HTML, the control is
+announced twice, and a press by coordinate lands on the outer wrapper rather
+than on the button you wrote. Measured on three sites for `Popover` and on
+`Drawer` besides.
+
+Make the control *be* the trigger with `as`:
+
+```tsx
+<Popover.Trigger as={Button} flavor="primary">Filters</Popover.Trigger>
+<Drawer.Trigger as={Button} variant="ghost">Menu</Drawer.Trigger>
+```
+
+One element carries the name, the box and the wiring. Everything else you pass
+goes to the delegate, so `flavor`, `size` and the rest work as they always do.
+Two things do not travel: the trigger's own class, which is a button reset that
+a real control must not be given, and `data-slot="popover-trigger"` /
+`data-slot="drawer-trigger"`, because the delegate's own recipe owns that
+attribute. Select on the delegate's slot, or on `[aria-haspopup="dialog"]`.
+
+A trigger given plain text is unchanged and needs nothing.
+
 ## Component inventory (by family)
 
 - **Layout/primitives**: Flex, Grid, Join, Card, Separator, ScrollArea, Skeleton, Empty, Footer, Header, Navbar, Toolbar, Dock

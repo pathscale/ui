@@ -1,5 +1,5 @@
 import "./Popover.css";
-import { type JSX, Portal } from "@solidjs/web";
+import { Dynamic, type JSX, Portal } from "@solidjs/web";
 import {
   createContext,
   createMemo,
@@ -9,6 +9,7 @@ import {
   onSettled,
   Show,
   useContext,
+  type ValidComponent,
 } from "solid-js";
 import { twMerge } from "../../lib/twMerge";
 import { registerOverlay } from "../../lib/overlay";
@@ -256,6 +257,31 @@ const PopoverRoot: Layout<typeof componentRecipe, PopoverRootProps> = () => {
 export type PopoverTriggerProps = UIBaseProps &
   Omit<JSX.ButtonHTMLAttributes<HTMLButtonElement>, "children"> & {
     children: JSX.Element;
+    /**
+     * The component to be the trigger, instead of a bare button.
+     *
+     * `Popover.Trigger` renders a `button`, which is right when the trigger is
+     * a word or a glyph. It is wrong when the call site hands it a control:
+     * `<Popover.Trigger><Button>Filters</Button></Popover.Trigger>` emitted a
+     * second, anonymous button wrapping the named one at identical
+     * coordinates. Found on three separate sites. Nested interactive content
+     * is invalid HTML, and a press by coordinate lands on the anonymous outer
+     * one rather than on the control that was written.
+     *
+     * `as` makes the control *be* the trigger, so there is one element:
+     *
+     * ```tsx
+     * <Popover.Trigger as={Button} flavor="primary">Filters</Popover.Trigger>
+     * ```
+     *
+     * The wiring -- id, `aria-haspopup`, `aria-expanded`, `aria-controls`, the
+     * ref and both handlers -- goes to the delegate, and anything else written
+     * here goes with it. The trigger's own class is a button reset and is
+     * dropped, because a control does not want one; so is
+     * `data-slot="popover-trigger"`, since the delegate's recipe owns that
+     * attribute. Select the delegate's own slot, or `[aria-haspopup="dialog"]`.
+     */
+    as?: ValidComponent;
   };
 
 const PopoverTrigger: Layout<
@@ -271,6 +297,7 @@ const PopoverTrigger: Layout<
     "type",
     "onClick",
     "onKeyDown",
+    "as",
   );
 
   const ctx = usePopoverContext();
@@ -295,24 +322,55 @@ const PopoverTrigger: Layout<
     }
   };
 
+  /*
+   * The delegate branch is a `Dynamic`; the default branch stays a literal
+   * `<button>`. Not symmetry for its own sake: `Button` already found that a
+   * Dynamic string element paints correctly under Blitz and drops a nested
+   * consumer's event binding, which on the element that opens the popover is
+   * the whole component. A `Dynamic` over a *component* is the shape the
+   * library already ships in Alert, Navbar and AvatarGroup.
+   */
   return (
-    <button
-      {...others}
-      ref={(el) => ctx.setTriggerRef(el)}
-      type={props.type ?? "button"}
-      id={ctx.triggerId()}
-      {...{ class: twMerge(CLASSES.slot.trigger, props.class) }}
-      data-slot="popover-trigger"
-      data-theme={props.dataTheme}
-      style={props.style}
-      aria-haspopup="dialog"
-      aria-expanded={ctx.isOpen() ? "true" : "false"}
-      aria-controls={ctx.isOpen() ? ctx.contentId() : undefined}
-      onClick={handleClick}
-      onKeyDown={handleKeyDown}
+    <Show
+      when={props.as}
+      fallback={
+        <button
+          {...others}
+          ref={(el) => ctx.setTriggerRef(el)}
+          type={props.type ?? "button"}
+          id={ctx.triggerId()}
+          {...{ class: twMerge(CLASSES.slot.trigger, props.class) }}
+          data-slot="popover-trigger"
+          data-theme={props.dataTheme}
+          style={props.style}
+          aria-haspopup="dialog"
+          aria-expanded={ctx.isOpen() ? "true" : "false"}
+          aria-controls={ctx.isOpen() ? ctx.contentId() : undefined}
+          onClick={handleClick}
+          onKeyDown={handleKeyDown}
+        >
+          {props.children}
+        </button>
+      }
     >
-      {props.children}
-    </button>
+      <Dynamic
+        component={props.as as ValidComponent}
+        {...others}
+        ref={(el: HTMLElement) => ctx.setTriggerRef(el)}
+        type={props.type ?? "button"}
+        id={ctx.triggerId()}
+        class={props.class}
+        data-theme={props.dataTheme}
+        style={props.style}
+        aria-haspopup="dialog"
+        aria-expanded={ctx.isOpen() ? "true" : "false"}
+        aria-controls={ctx.isOpen() ? ctx.contentId() : undefined}
+        onClick={handleClick}
+        onKeyDown={handleKeyDown}
+      >
+        {props.children}
+      </Dynamic>
+    </Show>
   );
 };
 

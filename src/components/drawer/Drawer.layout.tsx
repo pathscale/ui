@@ -1,6 +1,6 @@
 import "./Drawer.css";
-import {Show, createSignal, createTrackedEffect, createUniqueId, onCleanup, omit, type Component, type ParentComponent} from "solid-js";
-import { Portal, type JSX} from "@solidjs/web";
+import {Show, createSignal, createTrackedEffect, createUniqueId, onCleanup, omit, type Component, type ParentComponent, type ValidComponent} from "solid-js";
+import { Dynamic, Portal, type JSX} from "@solidjs/web";
 import { twMerge } from "../../lib/twMerge";
 import { lockBodyScroll, registerOverlay } from "../../lib/overlay";
 import "../_shared/material.css";
@@ -61,6 +61,29 @@ export type DrawerTriggerProps = Omit<
 > &
   UIBaseProps & {
     children: JSX.Element;
+    /**
+     * The component to be the trigger, instead of a bare button.
+     *
+     * `Drawer.Trigger` renders a `button`, which is right when the trigger is
+     * a word or a glyph and wrong when the call site hands it a control:
+     * `<Drawer.Trigger><Button>Menu</Button></Drawer.Trigger>` produced a
+     * `button` wrapping a `button` at an identical box with an identical name,
+     * so every trigger was announced twice and the press by coordinate landed
+     * on the outer one rather than on the control that was written. Nested
+     * interactive content is also invalid HTML.
+     *
+     * `as` makes the control *be* the trigger, so there is one element:
+     *
+     * ```tsx
+     * <Drawer.Trigger as={Button} variant="ghost">Menu</Drawer.Trigger>
+     * ```
+     *
+     * The wiring and anything else written here go to the delegate. The
+     * trigger's own class is a button reset and is dropped, because a control
+     * does not want one; so is `data-slot="drawer-trigger"`, since the
+     * delegate's recipe owns that attribute.
+     */
+    as?: ValidComponent;
   };
 
 export type DrawerBackdropProps = Omit<JSX.HTMLAttributes<HTMLDivElement>, "children"> &
@@ -353,7 +376,15 @@ const DrawerRoot: Layout<typeof componentRecipe, DrawerRootProps> = () => {
 };
 
 const DrawerTrigger: Layout<typeof componentRecipe, DrawerTriggerProps> = () => {
-  const others = omit(props, "children", "class", "dataTheme", "style", "onClick");
+  const others = omit(
+    props,
+    "children",
+    "class",
+    "dataTheme",
+    "style",
+    "onClick",
+    "as",
+  );
 
   const ctx = useDrawerContext();
 
@@ -362,18 +393,41 @@ const DrawerTrigger: Layout<typeof componentRecipe, DrawerTriggerProps> = () => 
     if (typeof props.onClick === "function") props.onClick(event);
   };
 
+  /*
+   * The default branch stays a literal `<button>` and only the delegate branch
+   * is a `Dynamic`. Button already found that a Dynamic string element paints
+   * correctly under Blitz and drops a nested consumer's event binding, which on
+   * the element that opens the drawer is the whole component.
+   */
   return (
-    <button
-      {...others}
-      type="button"
-      class={twMerge(CLASSES.Trigger.base, props.class)}
-      data-slot="drawer-trigger"
-      data-theme={props.dataTheme}
-      style={props.style}
-      onClick={handleClick}
+    <Show
+      when={props.as}
+      fallback={
+        <button
+          {...others}
+          type="button"
+          class={twMerge(CLASSES.Trigger.base, props.class)}
+          data-slot="drawer-trigger"
+          data-theme={props.dataTheme}
+          style={props.style}
+          onClick={handleClick}
+        >
+          {props.children}
+        </button>
+      }
     >
-      {props.children}
-    </button>
+      <Dynamic
+        component={props.as as ValidComponent}
+        {...others}
+        type="button"
+        class={props.class}
+        data-theme={props.dataTheme}
+        style={props.style}
+        onClick={handleClick}
+      >
+        {props.children}
+      </Dynamic>
+    </Show>
   );
 };
 
