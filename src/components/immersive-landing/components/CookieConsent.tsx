@@ -10,6 +10,7 @@ import Button from "../../button";
 import Flex from "../../flex";
 import { CLASSES } from "../ImmersiveLanding.recipe";
 import type { ConsentType, CookieConsentProps } from "../types";
+import { dismissesOnBackdropPress } from "./CookieConsent.interactions";
 
 /**
  * CookieConsent Component
@@ -188,6 +189,15 @@ export const CookieConsent: Component<CookieConsentProps> = (props) => {
     setShowManage(false);
   };
 
+  // The backdrop is an ancestor of the panel, so a press on a category or on
+  // Save arrives here as well. Only a press that landed on the backdrop itself
+  // is a dismissal; see `dismissesOnBackdropPress` for why the panel's own
+  // `stopPropagation` cannot be relied on to say so.
+  const handleBackdropClick = (event: MouseEvent) => {
+    if (!dismissesOnBackdropPress(event)) return;
+    handleManageClose();
+  };
+
   const handleManageSave = () => {
     localStorage.setItem(CONSENT_KEY(), "custom");
     localStorage.setItem(ANALYTICS_KEY(), analyticsEnabled().toString());
@@ -288,7 +298,7 @@ export const CookieConsent: Component<CookieConsentProps> = (props) => {
           aria-modal="true"
           aria-labelledby="cookie-manage-title"
           {...{ class: CLASSES.cookie.modalBackdrop }}
-          onClick={handleManageClose}
+          onClick={handleBackdropClick}
         >
           <div
             {...{ class: CLASSES.cookie.modalCard }}
