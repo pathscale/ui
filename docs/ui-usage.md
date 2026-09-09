@@ -125,14 +125,41 @@ to a more opaque fill.
   common: every accepted value did nothing, every implemented value was a type
   error. Now `CardState`, which is what it renders. A card is not a form
   control; interactivity is `isInteractive`.
+- **Behaviour change — an interactive `Card` is a button only when it has
+  something to press.** `isInteractive` gave every card `role="button"` and
+  `tabindex="0"`, so the ordinary way to make a whole card navigate,
+  `<a href><Card isInteractive /></a>`, produced a `button` inside a `link`
+  with the same name and the same box: invalid HTML, announced twice, and a
+  press by coordinate landing on whichever was on top. Measured on one site as
+  every card on it. `isInteractive` now means what it looks like it means, the
+  hover and press affordance; the button role and the keyboard activation
+  arrive with an `onClick`.
+
+  So a card inside a link is fixed where it stands, with nothing to edit. A
+  card that carried a handler is unchanged. What does change is a card whose
+  click was handled by an ancestor rather than by the card: it keeps the
+  affordance and loses the role and the tab stop, so move the handler onto the
+  `Card`.
+
+  Better still, if the card navigates, give it the `href` and drop the wrapper:
+
+  ```tsx
+  <Card href="/pricing" isInteractive>…</Card>
+  ```
+
+  `Card` then renders a real anchor, so middle-click, open-in-new-tab and copy
+  link address work, and there is nothing left to nest it inside. `role` is
+  also honoured properly now: `role="presentation"` no longer leaves
+  `tabindex="0"` behind.
 - `Slider.onChange` reports continuous values. Optional `Slider.onChangeEnd` reports the final changed value once on pointer release, pointer cancellation, keyboard release, or blur fallback. Its visible `label` is also copied to the semantic slider's `aria-label`, because not every renderer resolves `aria-labelledby` across a visually hidden label.
 - `Collapsible.Content` retains closed content by default. Set `keepMounted={false}` to mount it only while expanded; the check is reactive, so it mounts and unmounts as the state changes.
 - `Popover` accepts `anchorRect` as a rectangle or rectangle accessor when content must be positioned without a trigger element.
 - Compound components: `Dialog.Trigger`, `Tabs.List`, `Select.Option`, etc. (`Object.assign` statics; also exported flat: `AccordionRoot`, `AlertTitle`, …). Parts are styleable/testable via `data-slot="..."` and state attrs (`data-open`, `data-selected`, `data-invalid`).
 - `Tabs` does not require `ResizeObserver`. When it is unavailable, selection and keyboard behavior remain active and the indicator is measured on selection, mount, and window resize.
-- `Flex`, `Grid` and `Navbar` take a polymorphic `as`. Nothing else does; reach
-  for the component that renders the element you want rather than repointing one
-  that does not.
+- `Flex`, `Grid`, `Navbar` and `Text` take a polymorphic `as`, and `Card` and
+  `Button` take an `href` that makes them anchors. Nothing else is polymorphic;
+  reach for the component that renders the element you want rather than
+  repointing one that does not.
 
 ```tsx
 <Flex direction="col" gap="sm">

@@ -4,6 +4,8 @@ import "./Card.css";
 import {Show} from "solid-js";
 import type { Flavor, Material, Radius, Space, UIBaseProps, Variant } from "../vocabulary";
 import type { Layout } from "../../lib/layouts";
+import { buttonHref, buttonRel } from "../button/Button.interactions";
+import { cardSemantics } from "./Card.interactions";
 import { card, cardBody, cardFooter, cardHeader } from "./Card.recipe";
 
 /* -------------------------------------------------------------------------------------------------
@@ -48,6 +50,23 @@ export type CardProps = Omit<JSX.HTMLAttributes<HTMLDivElement>, "children"> &
     radius?: Radius;
     /** Replaces isHoverable and isPressable, which had one call site each across 330. */
     isInteractive?: boolean;
+    /**
+     * Renders the card as an anchor, and navigates.
+     *
+     * A whole card that navigates is the common shape, and the way it was
+     * written was `<a href><Card isInteractive /></a>`, which put a `button`
+     * inside a `link` with the same name and the same box. That is invalid
+     * HTML, it announces the card twice, and a press by coordinate lands on
+     * whichever of the two happens to be on top.
+     *
+     * A card that navigates should be the anchor rather than sit inside one,
+     * which is what `Button` already does. Middle-click, right-click,
+     * open-in-new-tab and "copy link address" all work, which a `div` with a
+     * click handler takes away.
+     */
+    href?: string;
+    target?: JSX.AnchorHTMLAttributes<HTMLAnchorElement>["target"];
+    rel?: string;
     header?: JSX.Element;
     footer?: JSX.Element;
     children: JSX.Element;
@@ -75,27 +94,33 @@ export const CardFooterLayout: Layout<typeof cardFooter, CardSectionProps> = () 
  * Card.Footer remain for anything that needs to interleave.
  *
  * An interactive card gets a button role and keyboard activation, because a
- * div that responds to click and nothing else is unreachable by keyboard.
+ * div that responds to click and nothing else is unreachable by keyboard --
+ * unless it is already something activatable, which is what `href` and an
+ * explicit `role` are for. `cardSemantics` decides between the three, and it
+ * is a pure function so the decision is asserted rather than read out of JSX.
  * -----------------------------------------------------------------------------------------------*/
 export const CardLayout: Layout<typeof card, CardProps> = () => {
+  const semantics = () =>
+    cardSemantics({
+      href: local.href,
+      isInteractive: local.isInteractive,
+      // A handler is what makes a card pressable; `isInteractive` only makes it
+      // look it. A card inside a link has the second and not the first.
+      hasActivation: local.onClick != null,
+      role: local.role,
+      tabindex: local.tabindex,
+    });
+
   const handleKeyDown: JSX.EventHandlerUnion<HTMLDivElement, KeyboardEvent> = (event) => {
-    if (!local.isInteractive) return;
+    if (!semantics().handlesKeyboardActivation) return;
     if (event.key !== "Enter" && event.key !== " ") return;
     if (event.target !== event.currentTarget) return;
     event.preventDefault();
     event.currentTarget.click();
   };
 
-  return (
-    <div
-      {...slot.root}
-      role={local.role ?? (local.isInteractive ? "button" : undefined)}
-      tabindex={local.tabindex ?? (local.isInteractive ? 0 : undefined)}
-      onKeyDown={handleKeyDown}
-      data-flavor={local.flavor ?? "neutral"}
-      data-material={local.material ?? "solid"}
-      data-material-explicit={local.material ? "" : undefined}
-    >
+  const body = () => (
+    <>
       <Show when={local.header}>
         <CardHeaderLayout>{local.header}</CardHeaderLayout>
       </Show>
@@ -105,7 +130,46 @@ export const CardLayout: Layout<typeof card, CardProps> = () => {
       <Show when={local.footer}>
         <CardFooterLayout>{local.footer}</CardFooterLayout>
       </Show>
-    </div>
+    </>
+  );
+
+  /*
+   * Both forms are literal elements rather than one `Dynamic`. `Button` learnt
+   * this the expensive way: a Dynamic string element painted correctly under
+   * Blitz and dropped a nested consumer's event binding, which on a card full
+   * of buttons is the whole point of the card.
+   */
+  return (
+    <Show
+      when={semantics().element === "a"}
+      fallback={
+        <div
+          {...slot.root}
+          role={semantics().role}
+          tabindex={semantics().tabindex}
+          onKeyDown={handleKeyDown}
+          data-flavor={local.flavor ?? "neutral"}
+          data-material={local.material ?? "solid"}
+          data-material-explicit={local.material ? "" : undefined}
+        >
+          {body()}
+        </div>
+      }
+    >
+      <a
+        {...slot.root}
+        href={buttonHref(local.href, false)}
+        target={local.target}
+        rel={buttonRel(local.rel, local.target)}
+        role={semantics().role}
+        tabindex={semantics().tabindex}
+        data-flavor={local.flavor ?? "neutral"}
+        data-material={local.material ?? "solid"}
+        data-material-explicit={local.material ? "" : undefined}
+      >
+        {body()}
+      </a>
+    </Show>
   );
 };
 

@@ -253,11 +253,14 @@ elevation?: CardElevation
 flavor?: Flavor
 footer?: JSX.Element
 header?: JSX.Element
+href?: string
 isInteractive?: boolean
 material?: Material
 padding?: Space
 radius?: Radius
+rel?: string
 state?: CardState
+target?: JSX.AnchorHTMLAttributes<HTMLAnchorElement>["target"]
 variant?: Variant
 ```
 
@@ -287,11 +290,14 @@ elevation?: CardElevation
 flavor?: Flavor
 footer?: JSX.Element
 header?: JSX.Element
+href?: string
 isInteractive?: boolean
 material?: Material
 padding?: Space
 radius?: Radius
+rel?: string
 state?: CardState
+target?: JSX.AnchorHTMLAttributes<HTMLAnchorElement>["target"]
 variant?: Variant
 ```
 
