@@ -22,6 +22,7 @@ import {
   type OverlayPlacement,
 } from "../_shared/overlayPosition";
 import type { Material, UIBaseProps } from "../vocabulary";
+import { asAriaName, resolvePopoverDialogName } from "./Popover.a11y";
 import { CLASSES, componentRecipe } from "./Popover.recipe";
 
 export type PopoverPlacement = OverlayPlacement;
@@ -46,6 +47,24 @@ type PopoverContextValue = {
   contentId: () => string;
   offset: () => number;
   onInteractOutside?: (event: Event) => void;
+  /*
+   * What `Popover.Dialog` was told to call the dialog.
+   *
+   * `role="dialog"` is on `Popover.Content`, because the content is the
+   * portalled overlay and `Popover.Dialog` is an optional panel inside it. So
+   * an `aria-label` written on `Popover.Dialog`, which is where a reader
+   * expects to name a dialog, landed on a generic inside the dialog and named
+   * nothing. Every popover dialog in the fleet was anonymous for that reason.
+   *
+   * The label travels up rather than the role travelling down: moving
+   * `role="dialog"` to `Popover.Dialog` would leave a popover written without
+   * one with no dialog at all, and would make two dialogs of a popover written
+   * with two panels.
+   */
+  dialogLabel: () => string | undefined;
+  setDialogLabel: (next: string | undefined) => void;
+  dialogLabelledBy: () => string | undefined;
+  setDialogLabelledBy: (next: string | undefined) => void;
 };
 
 const PopoverContext = createContext<PopoverContextValue | null>(null);
@@ -106,6 +125,10 @@ const PopoverRoot: Layout<typeof componentRecipe, PopoverRootProps> = () => {
   );
   const [resolvedPlacement, setResolvedPlacement] =
     createSignal<PopoverPlacement>(props.placement ?? "bottom");
+  const [dialogLabel, setDialogLabel] = createSignal<string | undefined>();
+  const [dialogLabelledBy, setDialogLabelledBy] = createSignal<
+    string | undefined
+  >();
 
   const isControlled = createMemo(() => props.open !== undefined);
   const isOpen = createMemo(() =>
@@ -209,6 +232,10 @@ const PopoverRoot: Layout<typeof componentRecipe, PopoverRootProps> = () => {
     contentId,
     offset,
     onInteractOutside: props.onInteractOutside,
+    dialogLabel,
+    setDialogLabel,
+    dialogLabelledBy,
+    setDialogLabelledBy,
   };
 
   return (
@@ -327,6 +354,15 @@ const PopoverContent: Layout<
     ctx.setPlacement(overlayPosition.placement());
   });
 
+  const dialogName = () =>
+    resolvePopoverDialogName({
+      contentLabel: asAriaName(props["aria-label"]),
+      contentLabelledBy: asAriaName(props["aria-labelledby"]),
+      dialogLabel: ctx.dialogLabel(),
+      dialogLabelledBy: ctx.dialogLabelledBy(),
+      triggerId: ctx.triggerRef() ? ctx.triggerId() : undefined,
+    });
+
   const style = () => {
     const overlayStyle = overlayPosition.style();
 
@@ -363,10 +399,8 @@ const PopoverContent: Layout<
           data-placement={ctx.placement()}
           data-theme={props.dataTheme}
           style={style()}
-          aria-labelledby={
-            props["aria-labelledby"] ??
-            (ctx.triggerRef() ? ctx.triggerId() : undefined)
-          }
+          aria-label={dialogName()["aria-label"]}
+          aria-labelledby={dialogName()["aria-labelledby"]}
           aria-hidden={ctx.isOpen() ? "false" : "true"}
         >
           {props.children}
@@ -385,7 +419,36 @@ const PopoverDialog: Layout<
   typeof componentRecipe,
   PopoverDialogProps
 > = () => {
-  const others = omit(props, "children", "class", "dataTheme", "style");
+  const others = omit(
+    props,
+    "children",
+    "class",
+    "dataTheme",
+    "style",
+    "aria-label",
+    "aria-labelledby",
+  );
+
+  const ctx = usePopoverContext();
+
+  /*
+   * The name is handed to the node that carries `role="dialog"` rather than
+   * written here, and is withdrawn when this panel unmounts so a popover
+   * reopened without one is not still wearing the last one.
+   *
+   * Both attributes are removed from the passthrough above: repeating them on
+   * this generic would name an element nothing addresses, and would make a
+   * screen reader announce the name twice inside the dialog it already names.
+   */
+  createTrackedEffect(() => {
+    ctx.setDialogLabel(asAriaName(props["aria-label"]));
+    return () => ctx.setDialogLabel(undefined);
+  });
+
+  createTrackedEffect(() => {
+    ctx.setDialogLabelledBy(asAriaName(props["aria-labelledby"]));
+    return () => ctx.setDialogLabelledBy(undefined);
+  });
 
   return (
     <div
