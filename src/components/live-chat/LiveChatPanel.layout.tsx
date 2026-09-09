@@ -9,6 +9,7 @@ import type { ChatMessage, SendMessagePayload, SendMessageResponse } from "./typ
 import { CLASSES } from "./LiveChat.recipe";
 import type { Layout } from "../../lib/layouts";
 import { componentRecipe } from "./LiveChat.recipe";
+import { formatChatTime } from "./LiveChatPanel.interactions";
 
 export interface LiveChatPanelProps extends UIBaseProps {
   /**
@@ -128,14 +129,6 @@ const getMockMessages = (): ChatMessage[] => {
   ];
 
   return [...salesMessages, ...supportMessages].sort((a, b) => a.timestamp - b.timestamp);
-};
-
-const formatTime = (timestamp: number) => {
-  return new Intl.DateTimeFormat("en-US", {
-    hour: "numeric",
-    minute: "2-digit",
-    hour12: true,
-  }).format(new Date(timestamp));
 };
 
 const LiveChatPanel: Layout<typeof componentRecipe, LiveChatPanelProps> = () => {
@@ -396,7 +389,7 @@ const LiveChatPanel: Layout<typeof componentRecipe, LiveChatPanelProps> = () => 
                     </p>
                   </div>
                   <span {...{ class: CLASSES.panel.timestamp }}>
-                    {formatTime(message.timestamp)}
+                    {formatChatTime(message.timestamp)}
                   </span>
                 </div>
               </div>
