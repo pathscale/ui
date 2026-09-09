@@ -10,12 +10,14 @@ import {
   getToday,
   normalizeDate,
   parseDate,
+  resolveDateNames,
   shiftDateByMonths,
   toISODate,
   useCalendarNavigation,
   useCalendarState,
   useDateSelection,
   type CalendarSelectionMode,
+  type DateNames,
 } from "../../hooks/date";
 import type { UIBaseProps, State } from "../vocabulary";
 import { CLASSES } from "./Calendar.recipe";
@@ -23,7 +25,7 @@ import type { Layout } from "../../lib/layouts";
 import { componentRecipe } from "./Calendar.recipe";
 
 export type CalendarWeekdayFormat = "narrow" | "short" | "long";
-export type { CalendarSelectionMode };
+export type { CalendarSelectionMode, DateNames };
 export type CalendarDaySelectHandler = (date: Date) => void;
 export type CalendarDayHoverHandler = (date?: Date) => void;
 
@@ -40,7 +42,24 @@ type CalendarBaseProps = {
   minValue?: Date;
   maxValue?: Date;
   isDateUnavailable?: (date: Date) => boolean;
+  /**
+   * The language to render in. Honoured only when `dateNames` supplies the
+   * names to back it; on its own it cannot change what is on screen, because
+   * the library carries no locale data beyond `en-US`. Whatever is actually
+   * rendered is reported on the root element's `lang`.
+   */
   locale?: string;
+  /**
+   * Month and weekday names for a language other than English.
+   *
+   * The library ships one table, `en-US`, and no way to derive another: `Intl`
+   * is unavailable in the chuzz browser and ICU data is deliberately not
+   * shipped. A translated site passes its own names here, from the same i18n
+   * catalogue it already uses for the rest of its strings. All five arrays are
+   * required. Omit this and the calendar renders English and says `lang="en-US"`
+   * regardless of `locale`.
+   */
+  dateNames?: DateNames;
   weekdayFormat?: CalendarWeekdayFormat;
   showOutsideDays?: boolean;
   state?: State;
@@ -74,6 +93,7 @@ const Calendar: Layout<typeof componentRecipe, CalendarProps> = () => {
     "maxValue",
     "isDateUnavailable",
     "locale",
+    "dateNames",
     "weekdayFormat",
     "showOutsideDays",
     "state",
@@ -113,7 +133,16 @@ const Calendar: Layout<typeof componentRecipe, CalendarProps> = () => {
 
   const minDate = createMemo(() => normalizeDate(props.minValue));
   const maxDate = createMemo(() => normalizeDate(props.maxValue));
-  const locale = createMemo(() => props.locale ?? "en-US");
+  /**
+   * The names on screen, and the locale they honestly are. A `locale` with no
+   * `dateNames` behind it resolves back to `en-US` rather than mislabelling
+   * English text as the language that was asked for.
+   */
+  const resolvedNames = createMemo(() =>
+    resolveDateNames(props.locale, props.dateNames),
+  );
+  const dateNames = createMemo(() => resolvedNames().names);
+  const renderedLocale = createMemo(() => resolvedNames().locale);
   const weekdayFormat = createMemo<CalendarWeekdayFormat>(
     () => props.weekdayFormat ?? "short",
   );
@@ -149,7 +178,7 @@ const Calendar: Layout<typeof componentRecipe, CalendarProps> = () => {
 
   const calendarState = useCalendarState({
     selectionMode: () => selectionMode(),
-    locale,
+    dateNames,
     weekdayFormat,
     visibleMonth: navigation.visibleMonth,
     focusedDate: navigation.focusedDate,
@@ -278,6 +307,9 @@ const Calendar: Layout<typeof componentRecipe, CalendarProps> = () => {
       data-slot="calendar"
       data-selection-mode={selectionMode()}
       data-disabled={isCalendarDisabled() ? "true" : "false"}
+      /* The language actually on screen, which is not always the one asked
+         for. See `resolveDateNames`. */
+      lang={renderedLocale()}
       data-theme={props.dataTheme}
       style={props.style}
       aria-disabled={isCalendarDisabled() ? "true" : undefined}
@@ -313,13 +345,16 @@ const Calendar: Layout<typeof componentRecipe, CalendarProps> = () => {
           </button>
         </div>
 
+        {/* biome-ignore lint/a11y/useSemanticElements: an h2 brings the user agent's default margin into every consumer that does not reset it, which moves the header; the role names the month in the accessibility tree and changes no box. */}
         <div
           id={headingId}
           {...{ class: CLASSES.Heading.base }}
           data-slot="calendar-heading"
+          role="heading"
+          aria-level="2"
           aria-live="polite"
         >
-          {calendarState.monthFormatter().format(navigation.visibleMonth())}
+          {calendarState.monthLabel()}
         </div>
 
         <div {...{ class: CLASSES.Nav.base }} data-slot="calendar-nav">
@@ -431,7 +466,7 @@ const Calendar: Layout<typeof componentRecipe, CalendarProps> = () => {
                             data-disabled={cellState.isDisabled ? "true" : "false"}
                             data-unavailable={cellState.isUnavailable ? "true" : "false"}
                             role="gridcell"
-                            aria-label={calendarState.dayLabelFormatter().format(date)}
+                            aria-label={calendarState.formatDayLabel(date)}
                             aria-selected={cellState.isAriaSelected ? "true" : "false"}
                             aria-disabled={cellState.isDisabled ? "true" : "false"}
                             disabled={cellState.isDisabled}

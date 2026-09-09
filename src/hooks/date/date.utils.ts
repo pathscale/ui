@@ -1,3 +1,9 @@
+import {
+  type DateNames,
+  EN_US_DATE_NAMES,
+  formatCompactDate,
+} from "./date.names";
+
 export const DAYS_PER_WEEK = 7;
 export const CALENDAR_GRID_DAYS = 42;
 
@@ -60,19 +66,23 @@ export const parseDate = (value: string | null | undefined): Date | null => {
   return parsed;
 };
 
+/**
+ * The date a picker shows on its trigger. "Jun 15, 2025".
+ *
+ * The second parameter used to be a locale string and the third an
+ * `Intl.DateTimeFormatOptions`. Both are gone rather than kept as ignored
+ * arguments: a `locale` this function cannot honour is worse than no `locale`
+ * at all, and the component that owns the locale prop resolves it through
+ * `resolveDateNames` before calling here. See `date.names.ts`.
+ */
 export const formatDate = (
   value: Date | null | undefined,
-  locale = "en-US",
-  options: Intl.DateTimeFormatOptions = {
-    day: "numeric",
-    month: "short",
-    year: "numeric",
-  },
+  names: DateNames = EN_US_DATE_NAMES,
 ) => {
   const date = normalizeDate(value);
   if (!date) return "";
 
-  return new Intl.DateTimeFormat(locale, options).format(date);
+  return formatCompactDate(date, names);
 };
 
 const pad = (value: number) => String(value).padStart(2, "0");

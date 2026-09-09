@@ -5,11 +5,15 @@ import { twMerge } from "../../lib/twMerge";
 
 import {
   formatDate,
+  resolveDateNames,
   toISODate,
   useDateSelection,
   usePickerOpenState,
 } from "../../hooks/date";
-import Calendar, { type CalendarWeekdayFormat } from "../calendar";
+import Calendar, {
+  type CalendarWeekdayFormat,
+  type DateNames,
+} from "../calendar";
 import type { UIBaseProps, State } from "../vocabulary";
 import { CLASSES } from "./DatePicker.recipe";
 import type { Layout } from "../../lib/layouts";
@@ -25,6 +29,8 @@ type DatePickerBaseProps = {
   name?: string;
   placeholder?: string;
   locale?: string;
+  /** Month and weekday names for a language other than English. See `Calendar`. */
+  dateNames?: DateNames;
   weekdayFormat?: CalendarWeekdayFormat;
   minValue?: Date;
   maxValue?: Date;
@@ -56,6 +62,7 @@ const DatePicker: Layout<typeof componentRecipe, DatePickerProps> = () => {
     "name",
     "placeholder",
     "locale",
+    "dateNames",
     "weekdayFormat",
     "minValue",
     "maxValue",
@@ -79,13 +86,19 @@ const DatePicker: Layout<typeof componentRecipe, DatePickerProps> = () => {
     isDisabled,
   });
 
-  const locale = createMemo(() => props.locale ?? "en-US");
+  /**
+   * The trigger text renders from the same table the calendar inside the
+   * popover does, so the two never disagree about the month.
+   */
+  const dateNames = createMemo(
+    () => resolveDateNames(props.locale, props.dateNames).names,
+  );
 
   const displayValue = createMemo(() => {
     const selectedDate = selection.selectedDate();
     if (!selectedDate) return props.placeholder ?? "Select date";
 
-    return formatDate(selectedDate, locale());
+    return formatDate(selectedDate, dateNames());
   });
 
   const uniqueId = createUniqueId();
@@ -188,7 +201,8 @@ const DatePicker: Layout<typeof componentRecipe, DatePickerProps> = () => {
             data-slot="date-picker-calendar"
             value={selection.selectedDate() ?? undefined}
             onChange={handleDateChange}
-            locale={locale()}
+            locale={props.locale}
+            dateNames={props.dateNames}
             weekdayFormat={props.weekdayFormat}
             minValue={props.minValue}
             maxValue={props.maxValue}

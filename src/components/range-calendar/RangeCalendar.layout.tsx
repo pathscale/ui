@@ -7,7 +7,10 @@ import {
   useRangeSelection,
   type ControlledDateRangeValue,
 } from "../../hooks/date";
-import Calendar, { type CalendarWeekdayFormat } from "../calendar";
+import Calendar, {
+  type CalendarWeekdayFormat,
+  type DateNames,
+} from "../calendar";
 import type { UIBaseProps, State } from "../vocabulary";
 import { CLASSES } from "./RangeCalendar.recipe";
 import type { Layout } from "../../lib/layouts";
@@ -20,6 +23,8 @@ type RangeCalendarBaseProps = {
   defaultValue?: RangeCalendarValue;
   onChange?: (value: RangeCalendarValue) => void;
   locale?: string;
+  /** Month and weekday names for a language other than English. See `Calendar`. */
+  dateNames?: DateNames;
   weekdayFormat?: CalendarWeekdayFormat;
   minValue?: Date;
   maxValue?: Date;
@@ -49,6 +54,7 @@ const RangeCalendar: Layout<typeof componentRecipe, RangeCalendarProps> = () => 
     "defaultValue",
     "onChange",
     "locale",
+    "dateNames",
     "weekdayFormat",
     "minValue",
     "maxValue",
@@ -105,6 +111,7 @@ const RangeCalendar: Layout<typeof componentRecipe, RangeCalendarProps> = () => 
         rangeEnd={rangeSelection.rangeEnd() ?? undefined}
         rangePreview={rangeSelection.hoveredDate() ?? undefined}
         locale={props.locale}
+        dateNames={props.dateNames}
         weekdayFormat={props.weekdayFormat}
         minValue={props.minValue}
         maxValue={props.maxValue}

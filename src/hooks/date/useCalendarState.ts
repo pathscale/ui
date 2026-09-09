@@ -1,7 +1,13 @@
 import { type Accessor, createMemo } from "solid-js";
 
 import {
-  addDays,
+  type DateNameWidth,
+  type DateNames,
+  formatFullDate,
+  formatMonthYear,
+  weekdayNames,
+} from "./date.names";
+import {
   buildCalendarGrid,
   compareDates,
   createPreviewRange,
@@ -17,8 +23,14 @@ export type CalendarSelectionMode = "single" | "range";
 
 type CalendarStateOptions = {
   selectionMode: Accessor<CalendarSelectionMode>;
-  locale: Accessor<string>;
-  weekdayFormat: Accessor<"narrow" | "short" | "long">;
+  /**
+   * The names to render with. The owning component resolves these from its
+   * `locale` and `dateNames` props through `resolveDateNames`, so there is no
+   * `locale` here: this hook formats from a table and has nothing to do with
+   * one. See `date.names.ts`.
+   */
+  dateNames: Accessor<DateNames>;
+  weekdayFormat: Accessor<DateNameWidth>;
   visibleMonth: Accessor<Date>;
   focusedDate: Accessor<Date>;
   selectedDate: Accessor<Date | null>;
@@ -45,31 +57,19 @@ export type CalendarCellState = {
 };
 
 export const useCalendarState = (options: CalendarStateOptions) => {
-  const monthFormatter = createMemo(
-    () =>
-      new Intl.DateTimeFormat(options.locale(), {
-        month: "long",
-        year: "numeric",
-      }),
+  /** The grid heading, e.g. "June 2025". */
+  const monthLabel = createMemo(() =>
+    formatMonthYear(options.visibleMonth(), options.dateNames()),
   );
 
-  const dayLabelFormatter = createMemo(
-    () => new Intl.DateTimeFormat(options.locale(), { dateStyle: "full" }),
-  );
+  /** A day button's `aria-label`, e.g. "Sunday, June 15, 2025". */
+  const formatDayLabel = (date: Date) =>
+    formatFullDate(date, options.dateNames());
 
-  const weekdayFormatter = createMemo(
-    () =>
-      new Intl.DateTimeFormat(options.locale(), {
-        weekday: options.weekdayFormat(),
-      }),
+  /** The seven column headers, Sunday first. */
+  const weekdayLabels = createMemo(() =>
+    weekdayNames(options.weekdayFormat(), options.dateNames()),
   );
-
-  const weekdayLabels = createMemo(() => {
-    const firstSunday = new Date(2024, 0, 7, 12, 0, 0, 0);
-    return Array.from({ length: 7 }, (_, index) =>
-      weekdayFormatter().format(addDays(firstSunday, index)),
-    );
-  });
 
   const calendarWeeks = createMemo(() =>
     splitWeeks(buildCalendarGrid(options.visibleMonth(), 0)),
@@ -149,8 +149,8 @@ export const useCalendarState = (options: CalendarStateOptions) => {
   };
 
   return {
-    monthFormatter,
-    dayLabelFormatter,
+    monthLabel,
+    formatDayLabel,
     weekdayLabels,
     calendarWeeks,
     normalizedRange,

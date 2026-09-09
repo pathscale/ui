@@ -226,6 +226,7 @@ _No props beyond HTML attributes and `UIBaseProps`._
 ### Calendar
 
 ```ts
+dateNames?: DateNames
 defaultValue?: Date
 disabled?: boolean
 isDateUnavailable?: (date: Date) => boolean
@@ -655,6 +656,7 @@ _No props beyond HTML attributes and `UIBaseProps`._
 ### DatePicker
 
 ```ts
+dateNames?: DateNames
 defaultOpen?: boolean
 defaultValue?: Date
 disabled?: boolean
@@ -675,6 +677,7 @@ weekdayFormat?: CalendarWeekdayFormat
 ### DateRangePicker
 
 ```ts
+dateNames?: DateNames
 defaultOpen?: boolean
 defaultValue?: DateRangeValue
 disabled?: boolean
@@ -1556,6 +1559,7 @@ variant?: RadioGroupVariant
 ### RangeCalendar
 
 ```ts
+dateNames?: DateNames
 defaultValue?: RangeCalendarValue
 disabled?: boolean
 isDateUnavailable?: (date: Date) => boolean

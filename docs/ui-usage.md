@@ -615,7 +615,47 @@ the same either way.
 
 ## Dates
 
-Calendar/DatePicker/RangeCalendar/DateRangePicker use the internal engine (native Date + Intl; no date lib). Values are `Date` objects; ranges are `{start: Date, end: Date}`. Controlled via `value/defaultValue/onChange`. `DateField`/`TimeField` are separate segmented text editors, not calendar-backed.
+Calendar/DatePicker/RangeCalendar/DateRangePicker use the internal engine (native `Date`, a built-in name table, no `Intl` and no date lib). Values are `Date` objects; ranges are `{start: Date, end: Date}`. Controlled via `value/defaultValue/onChange`. `DateField`/`TimeField` are separate segmented text editors, not calendar-backed.
+
+### Language
+
+The name table is `en-US` only, and it is the whole of the locale data the
+library carries. `Intl` is not used at all: it is undefined in the chuzz
+browser, ICU data is deliberately not shipped, and the resulting
+`ReferenceError` does not produce a wrong date, it halts Solid's reactive
+system for the rest of the page's life.
+
+So **`locale` on its own changes nothing.** Pass `dateNames` to render another
+language:
+
+```tsx
+import { Calendar, type DateNames } from "@pathscale/ui";
+
+const de: DateNames = {
+  monthsLong: ["Januar", "Februar", /* ...12 */],
+  monthsShort: ["Jan", "Feb", /* ...12 */],
+  weekdaysNarrow: ["S", "M", "D", "M", "D", "F", "S"], // Sunday first
+  weekdaysShort: ["So", "Mo", "Di", "Mi", "Do", "Fr", "Sa"],
+  weekdaysLong: ["Sonntag", "Montag", /* ...7 */],
+};
+
+<Calendar locale="de-DE" dateNames={de} />;
+```
+
+All five arrays are required, months indexed by `Date#getMonth` and weekdays by
+`Date#getDay` from Sunday. A site with its own i18n already has these strings.
+The same props exist on `RangeCalendar`, `DatePicker` and `DateRangePicker`.
+
+Two things to know:
+
+- **A `locale` with no `dateNames` renders English**, and says so. The root
+  element carries `lang` set to the language actually on screen, so
+  `<Calendar locale="de-DE" />` renders `lang="en-US"`. It does not throw and
+  it does not label English text as German.
+- **The assembly order stays `en-US`.** `dateNames` replaces the words, not the
+  grammar, so a German calendar reads "Sonntag, Juni 15, 2025" rather than
+  "Sonntag, 15. Juni 2025". Per-locale patterns are what ICU is for, and ICU is
+  what was ruled out. Raise it if a site needs the ordering.
 
 
 ## Mirroring to the public showcase (js.software)

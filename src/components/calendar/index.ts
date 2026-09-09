@@ -4,5 +4,6 @@ export {
   type CalendarProps,
   type CalendarSelectionMode,
   type CalendarWeekdayFormat,
+  type DateNames,
   default,
 } from "./Calendar.generated";

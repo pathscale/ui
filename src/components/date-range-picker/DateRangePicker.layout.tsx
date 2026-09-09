@@ -5,12 +5,16 @@ import { twMerge } from "../../lib/twMerge";
 
 import {
   formatDate,
+  resolveDateNames,
   toISODate,
   usePickerOpenState,
   useRangeSelection,
   type ControlledDateRangeValue,
 } from "../../hooks/date";
-import Calendar, { type CalendarWeekdayFormat } from "../calendar";
+import Calendar, {
+  type CalendarWeekdayFormat,
+  type DateNames,
+} from "../calendar";
 import type { UIBaseProps, State } from "../vocabulary";
 import { CLASSES } from "./DateRangePicker.recipe";
 import type { Layout } from "../../lib/layouts";
@@ -30,6 +34,8 @@ type DateRangePickerBaseProps = {
   startPlaceholder?: string;
   endPlaceholder?: string;
   locale?: string;
+  /** Month and weekday names for a language other than English. See `Calendar`. */
+  dateNames?: DateNames;
   weekdayFormat?: CalendarWeekdayFormat;
   minValue?: Date;
   maxValue?: Date;
@@ -63,6 +69,7 @@ const DateRangePicker: Layout<typeof componentRecipe, DateRangePickerProps> = ()
     "startPlaceholder",
     "endPlaceholder",
     "locale",
+    "dateNames",
     "weekdayFormat",
     "minValue",
     "maxValue",
@@ -91,7 +98,13 @@ const DateRangePicker: Layout<typeof componentRecipe, DateRangePickerProps> = ()
     rangeSelection.clearPendingSelection();
   });
 
-  const locale = createMemo(() => props.locale ?? "en-US");
+  /**
+   * The trigger text renders from the same table the calendar inside the
+   * popover does, so the two never disagree about the month.
+   */
+  const dateNames = createMemo(
+    () => resolveDateNames(props.locale, props.dateNames).names,
+  );
 
   const startValue = createMemo(() => rangeSelection.rangeStart());
   const endValue = createMemo(() => rangeSelection.rangeEnd());
@@ -99,12 +112,12 @@ const DateRangePicker: Layout<typeof componentRecipe, DateRangePickerProps> = ()
 
   const startDisplay = createMemo(() => {
     if (!startValue()) return props.startPlaceholder ?? "Start date";
-    return formatDate(startValue(), locale());
+    return formatDate(startValue(), dateNames());
   });
 
   const endDisplay = createMemo(() => {
     if (!endValue()) return props.endPlaceholder ?? "End date";
-    return formatDate(endValue(), locale());
+    return formatDate(endValue(), dateNames());
   });
 
   const handleDateSelect = (date: Date) => {
@@ -238,7 +251,8 @@ const DateRangePicker: Layout<typeof componentRecipe, DateRangePickerProps> = ()
             rangePreview={rangeSelection.hoveredDate() ?? undefined}
             onDaySelect={handleDateSelect}
             onDayHover={rangeSelection.setHoverDate}
-            locale={locale()}
+            locale={props.locale}
+            dateNames={props.dateNames}
             weekdayFormat={props.weekdayFormat}
             minValue={props.minValue}
             maxValue={props.maxValue}

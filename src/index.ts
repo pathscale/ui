@@ -82,6 +82,7 @@ export {
   type CalendarProps,
   type CalendarSelectionMode,
   type CalendarWeekdayFormat,
+  type DateNames,
   default as Calendar,
 } from "./components/calendar";
 export type {

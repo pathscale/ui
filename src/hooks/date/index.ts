@@ -1,3 +1,4 @@
+export * from "./date.names";
 export * from "./date.utils";
 export * from "./useCalendarNavigation";
 export * from "./useCalendarState";
