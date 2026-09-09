@@ -224,6 +224,32 @@ and the result was pages, landing pages among them, with no heading of any role
 anywhere on them: a reader using headings to move through the page found
 nothing to move between. If a page has a title, that title is an `h1`.
 
+### Naming a Switch, Radio or Checkbox
+
+All three render a visually hidden 1x1 `input` with a styled, `aria-hidden`
+sibling beside it. That is the ordinary pattern and it is correct, and it means
+the control has whatever name you give it and no name at all otherwise. There
+is nothing visible for a name to be inferred from: the thing a reader sees is
+the decoration.
+
+Give it children, which become the visible label and the name through the
+wrapping `<label>`:
+
+```tsx
+<Switch onChange={setDark}>Dark mode</Switch>
+```
+
+Or, when the row around it already carries the words, `aria-label`:
+
+```tsx
+<Switch aria-label="Dark mode" onChange={setDark} />
+```
+
+One or the other, always. A toggle with neither is a 1x1 target with an empty
+name: nothing can address it, and no assistive technology can reach it. Four
+sites reported exactly that, and a sweep of the showcase measured 13 unnamed
+switches on one page and 8 unnamed radios of 10 on another.
+
 ### Triggers that are given a control
 
 `Popover.Trigger` and `Drawer.Trigger` render a `button`. That is right when
