@@ -50,19 +50,35 @@
     transform: rotate(-180deg);
   }
 
+  /*
+   * A closed panel is out of the page, not merely flattened. Same fault and
+   * same fix as `.accordion__content`: `keepMounted` is the default, so a
+   * closed panel stays in the document carrying `aria-hidden="true"` while
+   * everything inside it kept `visibility: visible` and stayed in the tab
+   * order. Tab moved focus into a panel nobody can see, inside an
+   * `aria-hidden` subtree, which is the one thing `aria-hidden` must never
+   * contain.
+   */
   .collapsible__content {
     display: grid;
     grid-template-rows: 0fr;
     opacity: 0;
     overflow: hidden;
+    visibility: hidden;
     transition:
       grid-template-rows 200ms ease,
-      opacity 200ms ease;
+      opacity 200ms ease,
+      visibility 0s linear 200ms;
   }
 
   .collapsible__content[data-expanded="true"] {
     grid-template-rows: 1fr;
     opacity: 1;
+    visibility: visible;
+    transition:
+      grid-template-rows 200ms ease,
+      opacity 200ms ease,
+      visibility 0s linear 0s;
   }
 
   .collapsible__body {

@@ -93,19 +93,42 @@
     transform: rotate(-180deg);
   }
 
+  /*
+   * A closed panel is out of the page, not merely flattened.
+   *
+   * `keepMounted` is the default, so a closed panel stays in the document, and
+   * it carried `aria-hidden="true"` while its contents kept `visibility:
+   * visible`. Nothing under `grid-template-rows: 0fr` and `opacity: 0` is
+   * display:none, so every link and button inside a closed panel was still in
+   * the tab order: Tab moved focus into a panel nobody can see, into an
+   * `aria-hidden` subtree, which is the one thing `aria-hidden` must never
+   * contain.
+   *
+   * `visibility: hidden` is what takes the descendants out of both the tab
+   * order and the accessibility tree, and it is delayed by the length of the
+   * collapse so the animation still plays before the panel disappears. Opening
+   * drops the delay, so the panel is visible for the whole of the expansion.
+   */
   .accordion__content {
     display: grid;
     grid-template-rows: 0fr;
     opacity: 0;
     overflow: hidden;
+    visibility: hidden;
     transition:
       grid-template-rows 200ms ease,
-      opacity 200ms ease;
+      opacity 200ms ease,
+      visibility 0s linear 200ms;
   }
 
   .accordion__content--expanded {
     grid-template-rows: 1fr;
     opacity: 1;
+    visibility: visible;
+    transition:
+      grid-template-rows 200ms ease,
+      opacity 200ms ease,
+      visibility 0s linear 0s;
   }
 
   .accordion__body {
