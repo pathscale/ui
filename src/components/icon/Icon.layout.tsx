@@ -26,6 +26,21 @@ export type IconProps = UIBaseProps & {
   width?: number;
   height?: number;
   flavor?: Flavor;
+  /**
+   * What this icon means, for an icon that carries meaning on its own.
+   *
+   * Most icons sit beside a label that already says it, and repeating it makes
+   * a reader hear the same thing twice; those stay hidden, which is the
+   * default and stays the default. The ones that need this are the icons that
+   * *are* the label: a status glyph in a table cell, a lone mark in a square
+   * button, a trend arrow next to a bare number.
+   *
+   * Setting it swaps `aria-hidden="true"` for `role="img"` and this name. The
+   * default was right and there was simply no way off it: `aria-hidden` was
+   * written straight into the markup, so it survived any `aria-label` a call
+   * site passed through and the icon stayed out of the tree regardless.
+   */
+  label?: string;
 };
 
 /* -------------------------------------------------------------------------------------------------
@@ -40,8 +55,17 @@ export type IconProps = UIBaseProps & {
  *
  * Square by default at 24px, with both dimensions still separate because some
  * sets ship rectangular glyphs and forcing them square crops them.
+ *
+ * Hidden from the accessibility tree unless `label` says otherwise. The default
+ * is right for nearly every icon in the fleet -- decoration beside text that
+ * already says it -- and it was also the only behaviour there was: `aria-hidden`
+ * was written into the markup, so a call site that passed `aria-label` got an
+ * element that carried both and stayed out of the tree anyway. `label` is the
+ * way off it, and it is one prop rather than an escape hatch per attribute
+ * because an icon that is announced needs a role and a name together or neither.
  * -----------------------------------------------------------------------------------------------*/
 export const IconLayout: Layout<typeof icon, IconProps> = () => (
+  // biome-ignore lint/a11y/useAriaPropsSupportedByRole: role and name are decided by one prop, so both are present or neither is; the rule reads a static role only.
   <span
     {...slot.root}
     style={{
@@ -51,7 +75,9 @@ export const IconLayout: Layout<typeof icon, IconProps> = () => (
     }}
     data-flavor={local.flavor ?? "inherit"}
     data-source={typeof local.src === "string" ? "preload" : "svg"}
-    aria-hidden="true"
+    role={local.label ? "img" : undefined}
+    aria-label={local.label}
+    aria-hidden={local.label ? undefined : "true"}
   >
     <Show
       when={typeof local.src === "string"}

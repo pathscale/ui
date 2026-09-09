@@ -481,7 +481,7 @@ toast.success("Saved"); toast.danger("Failed"); toast.promise(p, {loading, succe
 
 ## Icons
 
-`Icon` takes one prop, `src`, and which source it is, is the type: a string is a
+`Icon`'s main prop is `src`, and which source it is, is the type: a string is a
 preload token (`"lucide--copy"`, or the wrapped `"icon-[lucide--copy]"`), an
 element is inline SVG you own.
 
@@ -489,6 +489,20 @@ element is inline SVG you own.
 <Icon src="lucide--copy" />
 <Icon src={<svg viewBox="0 0 24 24">…</svg>} />
 ```
+
+An icon is hidden from the accessibility tree by default, which is right for
+the common case: it sits next to text that already says what it means, and
+announcing it says the same thing twice. When the icon *is* the label, name it
+with `label`, which swaps `aria-hidden` for `role="img"` and that name.
+
+```tsx
+<Button width="square" aria-label="Copy"><Icon src="lucide--copy" /></Button>
+<Icon src="lucide--trending-up" label="Rising" />
+```
+
+Reach for `label` only when nothing else names the thing. A square `Button`
+with its own `aria-label` is already named, so labelling the icon inside it
+makes the control announce twice.
 
 **The library ships no glyphs.** Your app generates the CSS that resolves a
 token, with `@plugin "@iconify/tailwind4"` under Tailwind v4 or

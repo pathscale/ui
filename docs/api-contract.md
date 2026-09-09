@@ -1062,6 +1062,7 @@ i18n: I18nStore
 ```ts
 flavor?: Flavor
 height?: number
+label?: string
 src?: string | JSX.Element
 width?: number
 ```
