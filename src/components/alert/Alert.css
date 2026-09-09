@@ -5,6 +5,14 @@
    * Same shape as Button: flavor or state picks --alert-accent and the
    * variant decides how it is spent. State is declared second so it wins on
    * source order — a reported condition outranks a styling preference.
+   *
+   * --alert-accent-ink carries the same split Button needed: the accent as a
+   * surface and the accent as ink are not the same colour when the flavor is
+   * `neutral`, whose accent is --color-base-300, the page one step darker.
+   * `plain` is the variant that writes the accent straight onto the page, so
+   * `variant="plain" flavor="neutral"` was unreadable for exactly the reason a
+   * neutral outline Button was invisible. Ink defaults to the accent, so only
+   * `neutral` overrides it.
    * --------------------------------------------------------------------- */
   .alert {
     display: flex;
@@ -20,6 +28,7 @@
 
     --alert-accent: var(--color-base-300);
     --alert-accent-fg: var(--color-base-content);
+    --alert-accent-ink: var(--alert-accent);
     --alert-bg: var(--color-base-200);
     --alert-fg: var(--color-base-content);
     --alert-border: transparent;
@@ -33,6 +42,7 @@
   .alert--flavor-neutral {
     --alert-accent: var(--color-base-300);
     --alert-accent-fg: var(--color-base-content);
+    --alert-accent-ink: var(--color-base-content);
   }
   .alert--flavor-primary {
     --alert-accent: var(--color-primary);
@@ -96,7 +106,7 @@
 
   .alert--plain {
     --alert-bg: transparent;
-    --alert-fg: var(--alert-accent);
+    --alert-fg: var(--alert-accent-ink);
     --alert-border: transparent;
     padding: 0;
   }

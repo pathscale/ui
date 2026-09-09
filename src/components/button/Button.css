@@ -2,10 +2,31 @@
   /* -----------------------------------------------------------------------
    * Root
    *
-   * Two custom properties carry the whole state x variant cross product:
+   * Three custom properties carry the whole state x variant cross product:
    * a state sets --button-accent (and its readable foreground), and a variant
    * decides how that accent is spent. 8 states + 5 variants = 13 rules
    * instead of 40 combinations.
+   *
+   * The third is --button-accent-ink, and it exists because the accent is two
+   * different things depending on how a variant spends it. `solid` paints the
+   * accent as a *surface* and writes on it with --button-accent-fg; `outline`,
+   * `soft` and `plain` paint the accent as *ink*, on the page's own surface.
+   * Seven flavors set an accent that works either way. `neutral` sets
+   * --color-base-300, which is a surface token by construction: it is the page
+   * one step darker.
+   *
+   * So `variant="outline" flavor="neutral"` resolved label and border alike to
+   * base-300 and rendered a completely invisible control: correct role, correct
+   * name, correct 46x28 box, clickable, and 0 of its 1288 pixels different from
+   * the background behind it. Measured at #e6e4e3 on a #f5f5f4 page, the label
+   * was at 1.16:1. The focus ring had the same fault for the same reason: a
+   * neutral button's focus ring was drawn in the surface colour.
+   *
+   * --button-accent-ink is therefore what the accent means when it is ink. It
+   * defaults to the accent, so the seven flavors that already worked are
+   * untouched and a theme defining its own flavor needs to set nothing; only
+   * `neutral` overrides it, to the content colour that is readable on the page
+   * by definition.
    * --------------------------------------------------------------------- */
   .button {
     position: relative;
@@ -36,6 +57,7 @@
 
     --button-accent: var(--color-base-300);
     --button-accent-fg: var(--color-base-content);
+    --button-accent-ink: var(--button-accent);
     --button-bg: transparent;
     --button-bg-hover: var(--button-bg);
     --button-bg-pressed: var(--button-bg-hover);
@@ -49,7 +71,7 @@
 
   .button:focus-visible,
   .button[data-focus-visible="true"] {
-    outline: var(--focus-ring-width, 2px) solid var(--button-accent);
+    outline: var(--focus-ring-width, 2px) solid var(--button-accent-ink);
     outline-offset: var(--focus-ring-offset, 2px);
   }
 
@@ -84,9 +106,14 @@
   /* -----------------------------------------------------------------------
    * Flavor — a styling preference: which palette slot to wear
    * --------------------------------------------------------------------- */
+  /*
+   * The one flavor whose accent is a surface. `outline`, `soft` and `plain`
+   * would otherwise draw the label in it, on the page it is one step away from.
+   */
   .button--flavor-neutral {
     --button-accent: var(--color-base-300);
     --button-accent-fg: var(--color-base-content);
+    --button-accent-ink: var(--color-base-content);
   }
   .button--flavor-primary {
     --button-accent: var(--color-primary);
@@ -177,7 +204,7 @@
       var(--button-accent),
       var(--color-base-100) 74%
     );
-    --button-fg: var(--button-accent);
+    --button-fg: var(--button-accent-ink);
     --button-border: transparent;
   }
 
@@ -193,8 +220,8 @@
       var(--button-accent),
       transparent 80%
     );
-    --button-fg: var(--button-accent);
-    --button-border: var(--button-accent);
+    --button-fg: var(--button-accent-ink);
+    --button-border: var(--button-accent-ink);
   }
 
   /* Ghost keeps body text colour: it is chrome, not an accent surface. */
@@ -210,7 +237,7 @@
     --button-bg: transparent;
     --button-bg-hover: transparent;
     --button-bg-pressed: transparent;
-    --button-fg: var(--button-accent);
+    --button-fg: var(--button-accent-ink);
     --button-border: transparent;
     height: auto;
     padding-inline: 0;
