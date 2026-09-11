@@ -54,6 +54,7 @@ export type ComponentKind =
   | "toggle"
   | "field"
   | "form"
+  | "calendar"
   | "slider"
   | "inline-edit"
   | "overlay"
@@ -175,7 +176,9 @@ export const COMPONENTS: ComponentSpec[] = [
   {
     id: "calendar",
     component: "Calendar",
-    kind: "display",
+    kind: "calendar",
+    subject: "Tuesday, June 24, 2025",
+    subjectRole: "gridcell",
   },
   { id: "card", component: "Card", kind: "display" },
   { id: "chat-bubble", component: "ChatBubble", kind: "display" },

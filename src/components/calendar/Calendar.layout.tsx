@@ -420,13 +420,13 @@ const Calendar: Layout<typeof componentRecipe, CalendarProps> = () => {
               <div {...{ class: CLASSES.GridRow.base }} data-slot="calendar-grid-row" role="row">
                 <For each={week}>
                   {(date) => {
-                    const cellState = calendarState.getCellState(date);
+                    const cellState = createMemo(() => calendarState.getCellState(date));
                     const isoDate = toISODate(date);
 
                     return (
                       <div {...{ class: CLASSES.DayWrapper.base }} data-slot="calendar-day-wrapper" role="presentation">
                         <Show
-                          when={showOutsideDays() || !cellState.isOutsideMonth}
+                          when={showOutsideDays() || !cellState().isOutsideMonth}
                           fallback={
                             <span
                               {...{ class: CLASSES.DayPlaceholder.base }}
@@ -439,42 +439,42 @@ const Calendar: Layout<typeof componentRecipe, CalendarProps> = () => {
                             type="button"
                             {...{ class: twMerge(
                               CLASSES.Cell.base,
-                              cellState.isSelected && CLASSES.Cell.flag.selected,
-                              cellState.isRangeStart && CLASSES.Cell.flag.rangeStart,
-                              cellState.isRangeEnd && CLASSES.Cell.flag.rangeEnd,
-                              cellState.isInCommittedRange && CLASSES.Cell.flag.inRange,
-                              cellState.isInPreviewRange &&
-                                !cellState.isInCommittedRange &&
+                              cellState().isSelected && CLASSES.Cell.flag.selected,
+                              cellState().isRangeStart && CLASSES.Cell.flag.rangeStart,
+                              cellState().isRangeEnd && CLASSES.Cell.flag.rangeEnd,
+                              cellState().isInCommittedRange && CLASSES.Cell.flag.inRange,
+                              cellState().isInPreviewRange &&
+                                !cellState().isInCommittedRange &&
                                 CLASSES.Cell.flag.inPreviewRange,
-                              cellState.isToday && CLASSES.Cell.flag.today,
-                              cellState.isOutsideMonth && CLASSES.Cell.flag.outsideMonth,
-                              cellState.isDisabled && CLASSES.Cell.flag.disabled,
-                              cellState.isUnavailable && CLASSES.Cell.flag.unavailable,
-                              cellState.isFocused && CLASSES.Cell.flag.focused,
+                              cellState().isToday && CLASSES.Cell.flag.today,
+                              cellState().isOutsideMonth && CLASSES.Cell.flag.outsideMonth,
+                              cellState().isDisabled && CLASSES.Cell.flag.disabled,
+                              cellState().isUnavailable && CLASSES.Cell.flag.unavailable,
+                              cellState().isFocused && CLASSES.Cell.flag.focused,
                             ) }}
                             data-slot="calendar-cell"
                             data-date={isoDate}
-                            data-selected={cellState.isSelected ? "true" : "false"}
-                            data-range-start={cellState.isRangeStart ? "true" : "false"}
-                            data-range-end={cellState.isRangeEnd ? "true" : "false"}
-                            data-in-range={cellState.isInCommittedRange ? "true" : "false"}
+                            data-selected={cellState().isSelected ? "true" : "false"}
+                            data-range-start={cellState().isRangeStart ? "true" : "false"}
+                            data-range-end={cellState().isRangeEnd ? "true" : "false"}
+                            data-in-range={cellState().isInCommittedRange ? "true" : "false"}
                             data-in-preview-range={
-                              cellState.isInPreviewRange ? "true" : "false"
+                              cellState().isInPreviewRange ? "true" : "false"
                             }
-                            data-today={cellState.isToday ? "true" : "false"}
-                            data-outside-month={cellState.isOutsideMonth ? "true" : "false"}
-                            data-disabled={cellState.isDisabled ? "true" : "false"}
-                            data-unavailable={cellState.isUnavailable ? "true" : "false"}
+                            data-today={cellState().isToday ? "true" : "false"}
+                            data-outside-month={cellState().isOutsideMonth ? "true" : "false"}
+                            data-disabled={cellState().isDisabled ? "true" : "false"}
+                            data-unavailable={cellState().isUnavailable ? "true" : "false"}
                             role="gridcell"
                             aria-label={calendarState.formatDayLabel(date)}
-                            aria-selected={cellState.isAriaSelected ? "true" : "false"}
-                            aria-disabled={cellState.isDisabled ? "true" : "false"}
-                            disabled={cellState.isDisabled}
-                            tabindex={cellState.isFocused ? 0 : -1}
+                            aria-selected={cellState().isAriaSelected ? "true" : "false"}
+                            aria-disabled={cellState().isDisabled ? "true" : "false"}
+                            disabled={cellState().isDisabled}
+                            tabindex={cellState().isFocused ? 0 : -1}
                             onClick={() => selectDate(date)}
                             onFocus={() => navigation.setFocusedDate(date)}
                             onMouseEnter={() => {
-                              if (cellState.isDisabled) return;
+                              if (cellState().isDisabled) return;
                               props.onDayHover?.(date);
                             }}
                             onKeyDown={handleCellKeyDown}

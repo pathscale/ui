@@ -36,6 +36,7 @@ import Popover from "@pathscale/ui/components/popover";
 import Select from "@pathscale/ui/components/select";
 import Tabs from "@pathscale/ui/components/tabs";
 import Button from "@pathscale/ui/components/button";
+import Calendar from "@pathscale/ui/components/calendar";
 import { Form } from "@pathscale/ui/components/form";
 import Input from "@pathscale/ui/components/input";
 import { createForm } from "@pathscale/ui/hooks/form";
@@ -807,6 +808,16 @@ function FormFixture() {
   );
 }
 
+function CalendarFixture() {
+  const [value, setValue] = createSignal(new Date(2025, 5, 15));
+  return (
+    <>
+      <Calendar value={value()} onChange={setValue} />
+      <p role="status">Selected {value().getFullYear()}-{String(value().getMonth() + 1).padStart(2, "0")}-{String(value().getDate()).padStart(2, "0")}</p>
+    </>
+  );
+}
+
 /** Ids with a hand-written fixture; everything else mounts generically. */
 const FIXTURES: Record<
   string,
@@ -818,6 +829,7 @@ const FIXTURES: Record<
 > = {
   "auth-submit-button": ActionFixture,
   button: ActionFixture,
+  calendar: CalendarFixture,
   checkbox: ToggleFixtureWithReport,
   collapsible: CollapsibleFixture,
   "connection-settings": ConnectionSettingsFixture,

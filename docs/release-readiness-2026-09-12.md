@@ -13,13 +13,16 @@ version; CI remains responsible for assigning and publishing it after approval.
 
 - [x] Build the candidate ps-qa and font-enabled host; verify post-action paint,
   explicit gridcell targets, keyboard shortcuts, and transformed pointer actions.
-- [ ] Resolve ps-blitz CI's old-host boundary and verify the coordinated stack.
+- [ ] Verify ps-blitz CI with the pinned coordinated stack. The follow-up fix
+  excludes nested dependency checkouts from the engine workspace; local Cargo
+  resolution passes, and the new CI run must confirm it.
 - [ ] Build and pack fresh UI source with solid-layouts 0.2.4; run the full native
   component sweep, API/package gates, and clean consumer builds.
 - [ ] Resolve Honey's cold first-submit failure; verify allowed and denied actions
   for Platform Admin, App Admin, and Guest, including session and security flows.
-- [ ] Verify Worktables editing, cancellation, undo, findings, and zoom; rerun
-  js.software calendar/navigation and website theme contrast with the fixed driver.
+- [x] Verify Worktables editing, cancellation, undo, findings, and zoom (112/112).
+- [ ] Confirm the Calendar fix in js.software; resolve Web3 theme contrast and
+  carousel settling failures with the fixed driver.
 - [ ] Repeat scoped site E2E against the final package, recording missing backend
   contracts separately from library regressions.
 - [ ] Push verified changes to the existing PRs and reconcile their descriptions
@@ -58,11 +61,12 @@ Worktables' clean install still awaits the separate house DSL SDK 0.1.2 release.
 | --- | --- | --- |
 | Native option labels and selected state disappeared in the control refactor | Six regression tests restored; native select fixture passes in Linux CI and with the final local stack | Verify published protocol integration |
 | Transformed client rectangles disagreed with painted controls | Four geometry tests, inline fragment tests, and full Linux suite pass; final pointer fixture and Worktables zoom/drag checks pass | CI host boundary and published integration |
-| New pointer fixture runs against old chuzz in ps-blitz CI | Geometry passes; pointer action is rejected as unsupported by the host | Run the coordinated candidate stack and resolve the CI host version boundary |
+| CI needs the coordinated unpublished runtime stack | Exact dependency revisions pinned. The next run exposed nested Cargo workspace inheritance; exclusions fix local dependency resolution | Verify the follow-up CI run |
+| Calendar cells captured selection state once | Cell state is now reactive; six native checks verify selection changes and controlled callbacks in both directions | Confirm the packed fix in js.software |
 | Responsive layout classes were purged from consumers | Purge manifest includes responsive Grid/Flex classes; 24x landing checks passed | Full consumer rebuilds from the final package |
 | Form submission discarded schema output | Typed schema output preserved; six native form checks passed | Honey cold first-submit failure still unresolved |
 | ConnectionSettings missing from layout manifest | Export added; isolated package consumer build passed | Pays runtime checks |
-| CI weakened paint checks on a fontless host | Font-enabled host builds; UI CI selects full checks; fresh local sweep passes 270 checks across 75 component fixtures | Repeat website theme checks; verify Linux CI after dependency release |
+| CI weakened paint checks on a fontless host | Font-enabled host builds; UI CI selects full checks; fresh local sweep passes 273 checks across 75 component fixtures | Repeat website theme checks; verify Linux CI after dependency release |
 | ps-qa measured contrast and other paint assertions before their declared action | Verdict reads moved after input; native regression passes both restoring and breaking contrast | Repeat website theme checks |
 | ps-qa rejected explicit gridcell targets | Explicit role selectors now bypass the generic inventory role list while retaining actionability checks | Native role regression and js.software calendar rerun |
 | ps-qa's older drag diagnostic only scrolls containers | Actual pointer dragging/cancellation added to CLI and declarative checks; native fixture and Worktables movement/cancellation/undo checks pass | PR and CI review |
@@ -88,14 +92,14 @@ final package and runtime. Check definitions have changed since some runs.
 | [worktables.dev #9](https://github.com/pathscale/worktables.dev/pull/9) | UI/SVG editor replaces Cytoscape/ELK. Fresh package run passes 112/112, including 33 designer and 7 findings checks. Real pointer movement, cancellation, undo, zoom, and emitted schema edits pass. Clean install still awaits house DSL SDK 0.1.2; final visual inspection is pending. |
 | [crates.vip #1](https://github.com/pathscale/crates.vip/pull/1) | Earlier 71/71; authentication is deliberately bypassed in both client and backend, so this is not evidence of authenticated role coverage. |
 | [24x.ai #11](https://github.com/pathscale/24x.ai/pull/11) | Earlier 137/141; corrected responsive landing 16/16. Auth app identity/backend setup still needs final verification. |
-| [js.software #53](https://github.com/pathscale/js.software/pull/53) | Latest observed 309/316; explicit gridcell target fix and unique Layouts page marker prepared. CI now includes all declared groups. Fresh run pending. |
+| [js.software #53](https://github.com/pathscale/js.software/pull/53) | Latest completed run 315/316; remaining failure exposed UI Calendar's stale selection state. Packed Calendar fix is being verified. CI includes all declared groups. |
 | [kard.vip #8](https://github.com/pathscale/kard.vip/pull/8) | Earlier 223/223; demo actions do not prove payment functionality. |
 | [nofilter.io #340](https://github.com/pathscale/nofilter.io/pull/340) | Earlier 127/129; Guest login route failures and suspended dev backend. |
 | [pathscale.com #17](https://github.com/pathscale/pathscale.com/pull/17) | Public site remains in scope. Owner confirmed the old portal has little value and need not block UI. Configured `pathscale-be` no longer exists; do not recreate without a reviewed deployment plan. |
 | [pays.online #166](https://github.com/pathscale/pays.online/pull/166) | Package build passes after ConnectionSettings export fix. Wallet settings call methods absent from the backend schema; onboarding contains unfinished handlers. The configured Honey app id is a UUID rather than the required 16-character public id. Real payment actions require a defined dev setup and review. |
 | [promptsyntax.org #18](https://github.com/pathscale/promptsyntax.org/pull/18) | Earlier 129/129; final package rerun pending. |
 | [support.cafe #12](https://github.com/pathscale/support.cafe/pull/12) | Earlier 104/104; final package rerun pending. |
-| [web3.trading #18](https://github.com/pathscale/web3.trading/pull/18) | Earlier 102/103 after shared scroll action fix; cookie/theme contrast remains. |
+| [web3.trading #18](https://github.com/pathscale/web3.trading/pull/18) | Latest run 101/103: dark-theme GET STARTED contrast measured 1.96:1, and the final carousel slide did not remain stable within its outcome window. Both need investigation. |
 | [ui-starter-app #13](https://github.com/pathscale/ui-starter-app/pull/13) | Earlier 144/144; final package rerun pending. |
 | [agencyzero #211](https://github.com/pathscale/agencyzero/pull/211), [#212](https://github.com/pathscale/agencyzero/pull/212) | UI and control integration in scope; core-specific features are handed to a dedicated owner after UI is ready. |
 
@@ -107,10 +111,10 @@ disposable QA applications may be changed or deleted by the lifecycle checks.
 
 Honey's creation handler now awaits its mutation, so the form's submitting state
 covers the backend request. This is not yet evidence that the cold-submit failure
-is fixed. For that investigation, note that the native runtime reports thrown
-jobs but installs no Boa promise-rejection tracker; an ignored rejected submit
-promise may therefore leave no runtime diagnostic. Capture the submit rejection
-directly in a temporary diagnostic build before concluding that no exception occurs.
+is fixed. Disposable-bundle tracing confirms validation completes, the mutation
+starts, and execution waits at CreateApp's RPC. One diagnostic lifecycle passed
+15/15, but three consecutive repetitions stalled at that RPC. Request/response
+tracing is now the next diagnostic step; no stable fix has been established.
 
 Pathscale restoration, if approved, should mirror crates.vip's low-cost deployment:
 shared IPv4, shared CPU, one small machine. The crates backend's `fly.toml` and
@@ -142,8 +146,8 @@ already present as equivalent patches. Pays' remaining local work was inspected:
 
 No local branch was deleted. Any later integration belongs in the existing Pays
 PR and must retain its backend and payment review requirements.
-Worktables has four local commits ahead of its existing PR branch plus the editor
-replacement. These changes must be reviewed and pushed together after verification.
+Worktables' four previously local commits and the verified editor replacement are
+now pushed to its existing PR. They remain subject to owner review.
 
 Two ps-blitz patch-identity exceptions were inspected: `fix/engine-gaps`' response
 metadata fetch is present in the release branch with later configurable user-agent
@@ -155,13 +159,12 @@ style fix was made in `/Users/revenge/code/solid-layouts-ui-release` to preserve
 
 ## Pending final run
 
-The shared build window completed: the font-enabled host, driver, UI package,
-Honey and Worktables build successfully. UI's full native sweep passes 270 checks
+The font-enabled host, driver, UI package, Honey and Worktables build successfully.
+UI's full native sweep after the Calendar fix passes 273 checks
 across 75 fixtures; API/package checks pass across 187 components and 1,002 files.
 The native gesture/paint regression and ps-qa clippy/tests pass. Worktables passes
 112/112. Honey still fails its cold first application submission.
 
-The core task has another requested 5–10 minute measurement window; heavy local
-work is held during it. Next: inspect Honey's disposable bundle with logging
-injected after minification (the production optimizer removes source logging),
-then finish remaining consumers and CI integration. No deployment sign-off yet.
+The current shared build/test window is open. Continue Honey request/response
+tracing, consumer verification, and CI integration, coordinating the next quiet
+measurement window with the core task. No deployment sign-off yet.

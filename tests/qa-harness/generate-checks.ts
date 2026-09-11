@@ -836,6 +836,25 @@ function checksFor(spec: ComponentSpec, profile: Profile): string {
     );
   }
 
+  if (spec.kind === "calendar") {
+    records.push(
+      check({ id: '"calendar-selects-existing-cell"', group: '"calendar"',
+        what: '"selecting a date updates the existing grid cell"',
+        prepare: 'Some("gridcell:Sunday, June 15, 2025")',
+        click: `Some(${subject})`, subject, expect: "SelectionChanges" }),
+      check({ id: '"calendar-delivers-selected-value"', group: '"calendar"',
+        what: '"the controlled consumer receives the selected date"',
+        subject: '"status:Selected 2025-06-24"', expect: "Present" }),
+      check({ id: '"calendar-reselects-original-date"', group: '"calendar"',
+        what: '"another selection updates the original cell again"',
+        click: 'Some("gridcell:Sunday, June 15, 2025")',
+        subject: '"gridcell:Sunday, June 15, 2025"', expect: "SelectionChanges" }),
+      check({ id: '"calendar-delivers-restored-value"', group: '"calendar"',
+        what: '"the controlled consumer receives the restored date"',
+        subject: '"status:Selected 2025-06-15"', expect: "Present" }),
+    );
+  }
+
   if (spec.kind === "form") {
     records.push(
       check({ id: '"form-refuses-invalid-input"', group: '"form"',
