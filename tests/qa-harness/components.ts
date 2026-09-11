@@ -53,6 +53,7 @@ export type ComponentKind =
   | "action"
   | "toggle"
   | "field"
+  | "form"
   | "slider"
   | "inline-edit"
   | "overlay"
@@ -362,7 +363,7 @@ export const COMPONENTS: ComponentSpec[] = [
   },
   { id: "flex", component: "Flex", kind: "display" },
   { id: "footer", component: "Footer", kind: "display" },
-  { id: "form", component: "Form", kind: "display" },
+  { id: "form", component: "Form", kind: "form", subject: "Save quantity", subjectRole: "button" },
   { id: "glow-card", component: "GlowCard", kind: "display" },
   { id: "grid", component: "Grid", kind: "display" },
   { id: "header", component: "Header", kind: "display" },

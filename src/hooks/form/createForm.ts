@@ -9,7 +9,7 @@ export type AsyncValidatorFn<TValues extends AnyValues> = (context: {
   value: TValues;
 }) => Promise<Partial<Record<keyof TValues, string>> | undefined>;
 
-export type CreateFormOptions<TValues extends AnyValues = AnyValues> = {
+export type CreateFormOptions<TValues extends AnyValues = AnyValues, TOutput = TValues> = {
   /**
    * Initial values for every field. Used to infer the form's value type and
    * to determine whether a field is "dirty".
@@ -20,7 +20,7 @@ export type CreateFormOptions<TValues extends AnyValues = AnyValues> = {
    * Any Standard Schema-compatible schema (Zod, Valibot, Arktype, ...).
    * Runs on change, on blur and on submit.
    */
-  schema?: StandardSchemaV1<TValues>;
+  schema?: StandardSchemaV1<TValues, TOutput>;
 
   /**
    * Additional async validators for fields that need server-side validation
@@ -34,7 +34,7 @@ export type CreateFormOptions<TValues extends AnyValues = AnyValues> = {
   /**
    * Called when the form is submitted and all validators pass.
    */
-  onSubmit?: (value: TValues) => void | Promise<void>;
+  onSubmit?: (value: TOutput) => void | Promise<void>;
 };
 
 /** What a field tracks besides its value. */
@@ -115,8 +115,8 @@ const issuesToErrors = (
  * field is touched — the display gate lives in `useField`, so a submit can
  * surface every error at once by touching every field.
  */
-export const createForm = <TValues extends AnyValues = AnyValues>(
-  options: CreateFormOptions<TValues>,
+export const createForm = <TValues extends AnyValues = AnyValues, TOutput = TValues>(
+  options: CreateFormOptions<TValues, TOutput>,
 ): FormApi<TValues> => {
   // `NoFn` rejects a callable initial value, which a generic `TValues` cannot
   // prove it is not. The values are a plain object by construction.
@@ -200,23 +200,17 @@ export const createForm = <TValues extends AnyValues = AnyValues>(
     });
     flush();
 
-    let ok = runSchema();
-
-    // An async schema is resolved here, where there is somewhere to await it.
+    // Validate once and keep the schema's output: transforms and defaults are
+    // part of validation, and the submit handler must receive their result.
+    let output = values as unknown as TOutput;
     const schema = options.schema;
     if (schema) {
-      const result = schema["~standard"].validate(values as TValues);
-      if (result instanceof Promise) {
-        const resolved = await result;
-        applyErrors(
-          resolved.issues ? issuesToErrors(resolved.issues) : {},
-          true,
-        );
-        ok = !resolved.issues?.length;
-      }
+      const pending = schema["~standard"].validate(values as TValues);
+      const result = pending instanceof Promise ? await pending : pending;
+      applyErrors(result.issues ? issuesToErrors(result.issues) : {}, true);
+      if (result.issues) return;
+      output = result.value;
     }
-
-    if (!ok) return;
 
     setStatus((draft) => {
       draft.isSubmitting = true;
@@ -235,7 +229,7 @@ export const createForm = <TValues extends AnyValues = AnyValues>(
           return;
         }
       }
-      await options.onSubmit?.(values as TValues);
+      await options.onSubmit?.(output);
     } finally {
       setStatus((draft) => {
         draft.isSubmitting = false;

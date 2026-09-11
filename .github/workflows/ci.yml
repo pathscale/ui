@@ -80,23 +80,16 @@ jobs:
         run: bun run build
 
       # Native renderer outcomes replace jsdom interaction tests as the release
-      # gate. One headless host per component keeps the complete sweep below two
-      # minutes while preserving a clean document between components.
+      # gate. One headless host per component preserves a clean document.
       - name: Rendered component outcomes
         env:
           # A shared runner takes longer than a local machine for outcomes that pass
           # locally well inside the budget. This widens scheduling deadlines only; every
           # declared rendered-state transition is still required.
           QA_TIMEOUT_SCALE: 2
-          # This runner has no font catalogue, and it should not have one: a
-          # component library that needs a GUI stack installed to be tested is
-          # a component library nobody can test. With no fonts every glyph
-          # shapes to nothing, so anything sized by its text lays out flat and
-          # every paint assertion fails for a reason that says nothing about
-          # the component. The headless profile asks the same questions about
-          # layout instead; the full profile keeps the visual half and runs
-          # where there are fonts. See `PROFILES` in generate-checks.ts.
-          QA_PROFILE: headless
+          # The shared host action installs fonts without a desktop stack.
+          # Keep actual paint assertions in the release gate.
+          QA_PROFILE: full
           # The harness looks for `chuzz-headless` on PATH; here it is the
           # build the composite action above just made, so it is named
           # outright.

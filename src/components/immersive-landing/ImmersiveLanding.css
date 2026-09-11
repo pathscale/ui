@@ -358,7 +358,7 @@
   .immersive-landing-cookie__manage-button {
     border: 0;
     background: transparent;
-    color: color-mix(in oklab, var(--color-base-content) 70%, transparent);
+    color: var(--color-base-content);
     font-size: 0.875rem;
     text-decoration: underline;
     cursor: pointer;

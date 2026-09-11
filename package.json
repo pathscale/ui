@@ -92,7 +92,7 @@
     "postcss-selector-parser": "^7.1.1",
     "rsbuild-plugin-solid-layouts": "^0.2.1",
     "solid-js": "2.0.0-rc.4",
-    "solid-layouts": "^0.2.3",
+    "solid-layouts": "^0.2.4",
     "solid-layouts-oxc": "^0.2.3",
     "svgo": "^3.3.3",
     "tailwindcss": "^4.3.3",
@@ -111,7 +111,7 @@
     "@solidjs/web": ">=2.0.0-rc.0",
     "popmotion": "^11.0.5",
     "solid-js": ">=2.0.0-rc.0",
-    "solid-layouts": "^0.2.0"
+    "solid-layouts": "^0.2.4"
   },
   "peerDependenciesMeta": {
     "@standard-schema/spec": {

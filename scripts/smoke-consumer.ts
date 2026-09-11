@@ -126,6 +126,7 @@ writeFileSync(
   Card,
   ColorWheel,
   ComplexColorWheel,
+  ConnectionSettings,
   Dialog,
   Flex,
   Icon,
@@ -136,6 +137,7 @@ writeFileSync(
   toast,
   createDataGrid,
   createForm,
+  createConnectionSettings,
   type Flavor,
   type Size,
   type State,
@@ -147,6 +149,11 @@ import { runMotion } from "${pkgJson.name}/motion";
 const flavor: Flavor = "primary";
 const size: Size = "md";
 const state: State = "loading";
+const connection = createConnectionSettings({
+  storageKey: "consumer-connections",
+  endpoints: [{ name: "api", fallback: "wss://example.com" }],
+  onApply: () => {},
+});
 
 export const App = () => (
   <Flex direction="col" gap="sm">
@@ -162,6 +169,9 @@ export const App = () => (
       onChange={() => {}}
       adjustments={[]}
     />
+    <ConnectionSettings store={connection} endpoints={[{ name: "api", label: "API" }]} labels={{
+      useCustom: "Use custom endpoints", save: "Apply", reset: "Reset",
+    }} />
   </Flex>
 );
 
@@ -248,11 +258,11 @@ step("publish every exercised Layout in the manifest", () => {
   const manifest = JSON.parse(
     readFileSync(join(packageRoot, installed.solidLayouts), "utf8"),
   );
-  for (const name of ["ColorWheel", "ComplexColorWheel"]) {
+  for (const name of ["ColorWheel", "ComplexColorWheel", "ConnectionSettings"]) {
     if (!manifest.components?.[name])
       throw new Error(`missing Layout manifest entry: ${name}`);
   }
-  return "ColorWheel and ComplexColorWheel are registered";
+  return "ColorWheel, ComplexColorWheel and ConnectionSettings are registered";
 });
 step("typecheck with moduleResolution: bundler", () =>
   run("./node_modules/.bin/tsc --noEmit", fixture),

@@ -69,6 +69,8 @@ Nested glass is flattened to one pane on purpose, and both
 `prefers-reduced-transparency` and a browser without `backdrop-filter` fall back
 to a more opaque fill.
 
+Components require `solid-layouts >=0.2.4` so caller styles reach their root elements reactively.
+
 ## Component conventions (consumer-facing)
 
 - Booleans are HeroUI-style `is*` where they exist: `isDisabled`, `isInvalid`,
@@ -363,7 +365,8 @@ const form = createForm({
 - `Form` without a `form` prop = plain styled `<form>` (`FormRoot`). With `form` = context provider + wired submit.
 - Inside a `<Form>`: `useField(name)` → `{value, error, touched, invalid, handleChange, handleBlur}`. **Errors are touch-gated** — `error()` is `undefined` until the field blurs. `FormSubmitButton` disables on `!form.isValid()` (not touch-gated), so the button can be disabled with no visible error. A failed `submit()` touches every field, so the errors it refused on all become visible at once.
 - The form API is the library's own: `values()`, `getFieldValue`, `getFieldMeta`, `setFieldValue`, `validateField`, `submit()`, `isSubmitting()`, `isValid()`. There is no longer a `_tsForm` escape hatch, because there is no longer a wrapped library to escape to.
-- Schema validation runs on change+blur+submit; blur errors clear immediately on change once valid.
+- Synchronous schema validation runs on change, blur, and submit; touched errors clear when valid. Submit also awaits asynchronous Standard Schemas.
+- `defaultValues` and field accessors retain the input type. `onSubmit` receives the schema’s validated output, including coercions, transforms, and defaults. Validation runs once for each submit.
 
 ## DataGrid (assembled)
 

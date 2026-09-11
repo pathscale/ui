@@ -28,7 +28,7 @@ yarn add @pathscale/ui solid-layouts && yarn add -D rsbuild-plugin-solid-layouts
 
 ## Setup
 
-`@pathscale/ui` 2.x is a compiled Layout bundle. Configure the application compiler before
+`@pathscale/ui` 3.x is a compiled Layout bundle. Configure the application compiler before
 Solid transforms JSX:
 
 ```ts
@@ -58,10 +58,21 @@ import "@pathscale/ui/index.css";
 
 export const Example = () => (
   <Flex direction="col" gap="sm">
-    <Button variant="primary" size="md">Primary</Button>
+    <Button variant="solid" flavor="primary" size="md">Primary</Button>
   </Flex>
 );
 ```
+
+In the application's Tailwind v4 stylesheet, register the package as a source
+(adjust the relative path from that stylesheet):
+
+```css
+@source "../node_modules/@pathscale/ui";
+```
+
+This includes the published `dist/responsive-classes.txt` scanner input. Grid and
+Flex compose responsive classes at runtime, so scanning only the compiled JavaScript
+misses utilities such as `md:grid-cols-3`.
 
 ## Theming
 

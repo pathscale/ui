@@ -1,8 +1,7 @@
 # Native component QA
 
-Every exported component is mounted alone and driven through Blitz's native
-inspection protocol. No browser, jsdom, desktop window, or screen coordinates
-are involved.
+Every exported component is mounted alone in chuzz's headless browser and driven
+through the shared control protocol by ps-qa. No desktop window is opened.
 
 ## Contract
 
@@ -10,8 +9,8 @@ are involved.
 the semantic controls a person uses. `generate-checks.ts` turns that declaration
 into ps-qa outcomes under `tests/ps-qa`.
 
-The current inventory contains 72 root components. Every component must build,
-mount, and paint. Interactive components must also expose the real result of
+Every inventoried component must build, mount, and paint. Interactive components
+must also expose the real result of
 their public callback or controlled state change:
 
 - Checkbox and Switch change their selected state.
@@ -36,7 +35,7 @@ valid way to make an outcome pass.
 bun run build
 bun run qa:checks
 bun run qa:build
-zsh tests/qa-harness/run-all.sh
+bash tests/qa-harness/run-all.sh
 ```
 
 The host is `chuzz-headless`, a mode of chuzz: it loads through the same loader
@@ -45,17 +44,20 @@ rather than a second one with the web platform missing from it. Build it from a
 chuzz checkout and name it:
 
 ```zsh
-cargo build --release --manifest-path ../chuzz/Cargo.toml --bin chuzz-headless
-QA_HOST=../chuzz/target/release/chuzz-headless zsh tests/qa-harness/run-all.sh
+cargo build --release --manifest-path ../chuzz/Cargo.toml --bin chuzz-headless \
+  --no-default-features --features capture,javascript,scrollbars,webp,system-fonts
+QA_HOST=../chuzz/target/release/chuzz-headless bash tests/qa-harness/run-all.sh
 ```
 
-`QA_PS_QA` does the same for a local ps-qa. The script refuses stale bundles
-unless `QA_ALLOW_STALE=1` is explicitly set.
+`QA_PS_QA` does the same for a local ps-qa, version 0.7.1 or newer. The script
+refuses stale bundles unless `QA_ALLOW_STALE=1` is explicitly set. Linux rendered
+QA needs fontconfig development files and an installed font such as DejaVu;
+the shared CI host action installs both. Release verification uses `QA_PROFILE=full`.
 
 The sweep uses one clean headless host per component and runs that component's
 outcomes in sequence. `prepare_unless` makes setup idempotent, so the same check
-also runs by id against a fresh host. A complete local sweep is 72/72 in about
-83 seconds.
+also runs by id against a fresh host. Report the actual outcome counts and
+failures from each run; inventory size alone does not establish coverage.
 
 ## Adding a component
 

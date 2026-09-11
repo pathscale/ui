@@ -2,8 +2,8 @@
  * Build config for the QA harness.
  *
  * Separate from `rslib.config.ts`, which builds the library: this is an
- * application, and it consumes the library from source so a check runs against
- * the working tree rather than the last publish.
+ * application, and it consumes the freshly built library package so a check
+ * runs against the working tree rather than the last publish.
  */
 import { defineConfig } from "@rsbuild/core";
 import { pluginBabel } from "@rsbuild/plugin-babel";

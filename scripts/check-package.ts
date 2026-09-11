@@ -54,6 +54,13 @@ const entries = new Set(
 
 const shipped = (rel: string) => entries.has(rel.replace(/^\.\//, ""));
 
+if (!shipped("dist/responsive-classes.txt")) {
+  failures.push({
+    rule: "responsive CSS source is missing",
+    detail: "dist/responsive-classes.txt must ship so consumer Tailwind builds can discover Grid and Flex breakpoint utilities",
+  });
+}
+
 /**
  * A wildcard target is satisfied if anything in the tarball matches its shape.
  * Note `*` in an `exports` target matches across path segments — it is not a

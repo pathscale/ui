@@ -279,13 +279,15 @@ export const CookieConsent: Component<CookieConsentProps> = (props) => {
                 >
                   {texts().decline}
                 </Button>
-                <button
+                <Button
                   type="button"
+                  variant="ghost"
+                  size="sm"
                   {...{ class: CLASSES.cookie.manageButton }}
                   onClick={handleManageOpen}
                 >
                   {texts().manage}
-                </button>
+                </Button>
               </Flex>
             </Flex>
           </div>

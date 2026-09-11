@@ -35,6 +35,10 @@ import InlineEdit from "@pathscale/ui/components/inline-edit";
 import Popover from "@pathscale/ui/components/popover";
 import Select from "@pathscale/ui/components/select";
 import Tabs from "@pathscale/ui/components/tabs";
+import Button from "@pathscale/ui/components/button";
+import { Form } from "@pathscale/ui/components/form";
+import Input from "@pathscale/ui/components/input";
+import { createForm } from "@pathscale/ui/hooks/form";
 import { createErrorBoundary, createSignal, For, Show } from "solid-js";
 import { Dynamic, type JSX, render } from "@solidjs/web";
 import { COMPONENTS, type ComponentSpec } from "./components";
@@ -769,6 +773,40 @@ function DockFixture(props: { spec: ComponentSpec; under?: unknown }) {
   );
 }
 
+function FormFixture() {
+  const [saved, setSaved] = createSignal("Not saved");
+  let submissions = 0;
+  const form = createForm<{ quantity: string }, { quantity: number }>({
+    defaultValues: { quantity: "" },
+    schema: {
+      "~standard": {
+        version: 1,
+        vendor: "qa-quantity",
+        validate(value) {
+          const quantity = Number((value as { quantity: string }).quantity);
+          return Number.isInteger(quantity) && quantity > 0
+            ? { value: { quantity } }
+            : { issues: [{ message: "Enter a positive quantity", path: ["quantity"] }] };
+        },
+      },
+    },
+    onSubmit(value) {
+      setSaved(`Saved ${value.quantity}:${typeof value.quantity}:${++submissions}`);
+    },
+  });
+  return (
+    <Form form={form}>
+      <Input aria-label="Quantity" value={form.values().quantity}
+        onInput={(event) => form.setFieldValue("quantity", event.currentTarget.value)} />
+      <Show when={form.getFieldMeta("quantity").isTouched && form.getFieldMeta("quantity").errors[0]}>
+        {(message) => <p role="alert">{message}</p>}
+      </Show>
+      <Button type="submit">Save quantity</Button>
+      <p role="status">{saved()}</p>
+    </Form>
+  );
+}
+
 /** Ids with a hand-written fixture; everything else mounts generically. */
 const FIXTURES: Record<
   string,
@@ -788,6 +826,7 @@ const FIXTURES: Record<
   dialog: DialogFixture,
   dock: DockFixture,
   dropdown: DropdownFixture,
+  form: FormFixture,
   "inline-edit": InlineEditFixture,
   input: FieldFixture,
   "language-switcher": LanguageSwitcherFixture,

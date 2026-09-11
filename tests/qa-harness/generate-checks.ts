@@ -836,6 +836,24 @@ function checksFor(spec: ComponentSpec, profile: Profile): string {
     );
   }
 
+  if (spec.kind === "form") {
+    records.push(
+      check({ id: '"form-refuses-invalid-input"', group: '"form"',
+        what: '"a native submit exposes validation instead of saving invalid input"',
+        click: `Some(${subject})`, subject: '"alert:Enter a positive quantity"', expect: "Present" }),
+      check({ id: '"form-invalid-submit-does-not-save"', group: '"form"',
+        what: '"the invalid submission never reaches the consumer callback"',
+        subject: '"status:Not saved"', expect: "Present" }),
+      check({ id: '"form-submits-transformed-value-once"', group: '"form"',
+        what: '"one click submits the schema output as a number exactly once"',
+        setup_type_into: 'Some("textbox:Quantity")', setup_text: 'Some("42")',
+        click: `Some(${subject})`, subject: '"status:Saved 42:number:1"', expect: "Present" }),
+      check({ id: '"form-clears-validation-after-correction"', group: '"form"',
+        what: '"the corrected value clears the visible validation error"',
+        subject: '"alert:Enter a positive quantity"', expect: "Absent" }),
+    );
+  }
+
   if (spec.kind === "display") {
     /*
      * A `display` component is the one kind allowed to have no `subject`: the
