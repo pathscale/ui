@@ -17,7 +17,7 @@
 
   /*
    * The placeholder. It fills the box and paints nothing on its own: the mark
-   * arrives either as the application's generated `icon-[...]` rule, which masks
+   * arrives either as the application's generated Iconify utility, which masks
    * and paints `background-color: currentColor`, or as an inline SVG child.
    * Either way the glyph inherits `color` from the root, which is the whole
    * reason the flavour lives one level up.
