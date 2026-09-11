@@ -12,7 +12,7 @@
  */
 const WRAPPED = /^icon-\[(.+)\]$/;
 
-/** Strip the `icon-[...]` wrapper if the caller supplied one. */
+/** Strip an Iconify utility wrapper if the caller supplied one. */
 export function normalizeToken(token: string): string {
   const wrapped = WRAPPED.exec(token.trim());
   return wrapped ? wrapped[1] : token.trim();

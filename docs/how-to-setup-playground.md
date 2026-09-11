@@ -76,7 +76,7 @@ export default defineConfig({
 @source "./";
 @source "../../UI/src";
 
-/* The library ships no glyphs. This is what resolves icon-[...] tokens, and it
+/* The library ships no glyphs. This resolves Iconify utility tokens, and it
    scans YOUR source, so an icon only exists if you wrote it. */
 @plugin "@iconify/tailwind4";
 ```
