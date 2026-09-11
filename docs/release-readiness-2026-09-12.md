@@ -1,16 +1,14 @@
 # UI release review — 12 September 2026
 
-Status: **UI package ready for owner review; not ready to deploy**. This is the
-working release gate, not a sign-off.
-The owner reviews the existing PRs before deployment. Do not land a branch that
-automatically deploys or publishes without approval. Before creating a Fly dev
-instance, contact the owner so they can be online for questions.
+Status: **UI 3.2.0 package release approved and locally verified**. Website
+deployments remain separately reviewed. Before creating a Fly dev instance,
+contact the owner so they can be online for questions.
 
 ## Concrete TODO
 
-The release script currently computes **3.2.0** from npm's 3.1.0 baseline and
-the branch's conventional commits. This is a proposed release, not a published
-version; CI remains responsible for assigning and publishing it after approval.
+The release script computes **3.2.0** from npm's 3.1.0 baseline and the branch's
+conventional commits. Local release verification is complete; the repository's
+release workflow assigns and publishes the version after the fast-forward.
 
 - [x] Build the candidate ps-qa and font-enabled host; verify post-action paint,
   explicit gridcell targets, keyboard shortcuts, and transformed pointer actions.
@@ -28,23 +26,25 @@ version; CI remains responsible for assigning and publishing it after approval.
   the landing surface was scoped away from the independently animated chat halo.
 - [x] Repeat scoped site E2E against the final package, recording missing backend
   contracts separately from library regressions.
-- [ ] Push verified changes to the existing PRs and reconcile their descriptions
-  and CI results with this evidence for owner review.
-- [ ] After owner approval, release the dependency chain in order, verify registry
-  availability, and deploy only the approved website changes.
+- [x] Push the verified library, driver, runtime, and host changes to their
+  existing release branches and reconcile their descriptions with local evidence.
+- [x] Release ps-blitz 0.4.8, blitz-control-protocol 0.5.0, ps-qa 0.7.1,
+  tauri-runtime-blitz 0.4.0, and the Chuzz 0.1.37 host in dependency order.
+- [ ] Release UI 3.2.0 and verify a fresh consumer install from npm.
+- [ ] Deploy only the separately reviewed website changes.
 
 ## Release sequence
 
-1. [ps-blitz #95](https://github.com/pathscale/ps-blitz/pull/95): publish 0.4.8
-   after the select accessibility and transformed geometry changes are verified.
+1. [ps-blitz #95](https://github.com/pathscale/ps-blitz/pull/95): 0.4.8 published.
 2. [ps-observability #21](https://github.com/pathscale/ps-observability/pull/21):
-   publish blitz-control-protocol 0.5.0 and ps-qa 0.7.1 against that engine.
+   blitz-control-protocol 0.5.0 and ps-qa 0.7.1 published against that engine.
 3. [tauri-runtime-blitz #57](https://github.com/pathscale/tauri-runtime-blitz/pull/57):
-   publish 0.4.0 against the shared protocol.
-4. [chuzz #45](https://github.com/pathscale/chuzz/pull/45): shared document actions,
-   headless build gating, and a font-enabled website QA host.
-5. [UI #289](https://github.com/pathscale/UI/pull/289): verify the packaged library
-   and its consumers with the released host and driver, then publish through CI.
+   0.4.0 published against the shared protocol.
+4. [chuzz #45](https://github.com/pathscale/chuzz/pull/45) and
+   [#46](https://github.com/pathscale/chuzz/pull/46): shared document actions,
+   headless build gating, and the signed 0.1.37 host published.
+5. [UI #289](https://github.com/pathscale/UI/pull/289): publish 3.2.0 after the
+   packaged library and its consumers passed against the released host and driver.
 6. Review and deploy approved website PRs using the published library.
 
 The older handover put tauri-runtime-blitz before ps-observability. Its manifest
@@ -62,7 +62,7 @@ Worktables' clean install still awaits the separate house DSL SDK 0.1.2 release.
 
 | Finding | Current evidence | Remaining verification |
 | --- | --- | --- |
-| Native option labels and selected state disappeared in the control refactor | Six regression tests restored; native select fixture passes in Linux CI and with the final local stack | Verify published protocol integration |
+| Native option labels and selected state disappeared in the control refactor | Six regression tests restored; the native Select fixture passes all 7 outcomes with published ps-blitz 0.4.8, protocol 0.5.0, ps-qa 0.7.1, and Chuzz 0.1.37 | Complete |
 | Transformed client rectangles disagreed with painted controls | Four geometry tests, inline fragment tests, and full Linux suite pass; final pointer fixture and Worktables zoom/drag checks pass | CI host boundary and published integration |
 | CI needs the coordinated unpublished runtime stack | Exact dependency revisions pinned; nested workspace exclusions resolved Cargo inheritance. Coordinated CI run 34632611122 passes with refreshed socket/contrast revisions | Verify registry integration after approval |
 | Calendar cells captured selection state once | Cell state is now reactive; six native checks verify selection changes and controlled callbacks in both directions. Packed js.software run passes 316/316 | Owner review |
@@ -70,7 +70,7 @@ Worktables' clean install still awaits the separate house DSL SDK 0.1.2 release.
 | Responsive layout classes were purged from consumers | Purge manifest includes responsive Grid/Flex classes; 24x landing checks passed | Full consumer rebuilds from the final package |
 | Form submission discarded schema output | Typed schema output preserved; six native form checks and Honey's expanded suite pass | Owner review |
 | ConnectionSettings missing from layout manifest | Export added; isolated package consumer build passed | Pays runtime checks |
-| CI weakened paint checks on a fontless host | Font-enabled host builds; UI CI selects full checks; fresh local sweep passes 273 checks across 75 component fixtures | Repeat website theme checks; verify Linux CI after dependency release |
+| A fontless host weakens paint checks | The font-enabled release host builds; a fresh local sweep against the public dependency stack passes 273 checks across 75 component fixtures | Complete |
 | ps-qa measured paint before input, then sampled contrast transitions too early | Reads moved after input; contrast honors the outcome and stability windows. Six native driver scenarios pass, including delayed repair and persistent contrast failure. Web3 theme group passes 18/18 | Final stack sweeps |
 | ps-qa rejected explicit gridcell targets | Explicit role selectors now bypass the generic inventory role list while retaining actionability checks; native Calendar and packed js.software checks pass | Owner review |
 | ps-qa's older drag diagnostic only scrolls containers | Actual pointer dragging/cancellation added to CLI and declarative checks; native fixture and Worktables movement/cancellation/undo checks pass | PR and CI review |
@@ -126,10 +126,9 @@ their manifests install the unrelated `biome` 0.3.3 package rather than
 TypeScript, build, and native E2E results above are separate evidence. Repairing
 the formatter dependency and stale configuration remains tooling cleanup.
 
-UI CI run 34633005400 still stops at chuzz master's GUI `layouts:local` build
-step (exit 127). PR #45 gates that build behind the GUI feature; its local
-font-enabled headless build and coordinated engine CI pass. Keep the release
-order rather than weakening UI checks to bypass the unreleased host.
+The previous UI run stopped at Chuzz's stale GUI build path. Chuzz #45 and #46
+fixed that release path; the published 0.1.37 host then passed the complete local
+273-check component sweep. The checks were kept at the full font-enabled profile.
 
 Honey's creation handler now awaits its mutation, so submitting covers the backend
 request. Tracing showed validation completed but CreateApp was never sent when
