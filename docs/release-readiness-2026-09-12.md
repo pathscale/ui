@@ -13,16 +13,19 @@ version; CI remains responsible for assigning and publishing it after approval.
 
 - [x] Build the candidate ps-qa and font-enabled host; verify post-action paint,
   explicit gridcell targets, keyboard shortcuts, and transformed pointer actions.
-- [ ] Verify ps-blitz CI with the pinned coordinated stack. The follow-up fix
-  excludes nested dependency checkouts from the engine workspace; local Cargo
-  resolution passes, and the new CI run must confirm it.
+- [x] Verify ps-blitz CI with the pinned coordinated stack. Run 34631808347
+  passes after excluding nested dependency workspaces. A subsequent pin refresh
+  includes the newly verified WebSocket and contrast-settling fixes.
 - [ ] Build and pack fresh UI source with solid-layouts 0.2.4; run the full native
   component sweep, API/package gates, and clean consumer builds.
-- [ ] Resolve Honey's cold first-submit failure; verify allowed and denied actions
-  for Platform Admin, App Admin, and Guest, including session and security flows.
+- [x] Resolve Honey's cold first-submit failure and run the 192-check suite,
+  including Platform Admin, App Admin, Guest, and password change/restore.
+- [ ] Finish reproducible recovery-code coverage; TOTP confirmation and Telegram
+  enrollment/login remain separate security gates.
 - [x] Verify Worktables editing, cancellation, undo, findings, and zoom (112/112).
-- [ ] Confirm the Calendar fix in js.software; resolve Web3 theme contrast and
-  carousel settling failures with the fixed driver.
+- [x] Confirm the packed Calendar fix in js.software (316/316).
+- [ ] Resolve Web3 carousel settling. Its theme group now passes 18/18 after
+  ps-qa learned to wait for contrast within the declared outcome window.
 - [ ] Repeat scoped site E2E against the final package, recording missing backend
   contracts separately from library regressions.
 - [ ] Push verified changes to the existing PRs and reconcile their descriptions
@@ -61,13 +64,14 @@ Worktables' clean install still awaits the separate house DSL SDK 0.1.2 release.
 | --- | --- | --- |
 | Native option labels and selected state disappeared in the control refactor | Six regression tests restored; native select fixture passes in Linux CI and with the final local stack | Verify published protocol integration |
 | Transformed client rectangles disagreed with painted controls | Four geometry tests, inline fragment tests, and full Linux suite pass; final pointer fixture and Worktables zoom/drag checks pass | CI host boundary and published integration |
-| CI needs the coordinated unpublished runtime stack | Exact dependency revisions pinned. The next run exposed nested Cargo workspace inheritance; exclusions fix local dependency resolution | Verify the follow-up CI run |
-| Calendar cells captured selection state once | Cell state is now reactive; six native checks verify selection changes and controlled callbacks in both directions | Confirm the packed fix in js.software |
+| CI needs the coordinated unpublished runtime stack | Exact dependency revisions pinned; nested workspace exclusions resolved Cargo inheritance. Coordinated CI run 34631808347 passes | Verify refreshed socket/contrast pins and registry integration |
+| Calendar cells captured selection state once | Cell state is now reactive; six native checks verify selection changes and controlled callbacks in both directions. Packed js.software run passes 316/316 | Owner review |
+| Honey CreateApp stalled during socket connection | chuzz iterated a live listener array; the first RPC removed its open listener and skipped the next. Snapshot dispatch fixes three consecutive 15-step lifecycles and the full 192-check suite | Refreshed host CI |
 | Responsive layout classes were purged from consumers | Purge manifest includes responsive Grid/Flex classes; 24x landing checks passed | Full consumer rebuilds from the final package |
-| Form submission discarded schema output | Typed schema output preserved; six native form checks passed | Honey cold first-submit failure still unresolved |
+| Form submission discarded schema output | Typed schema output preserved; six native form checks and Honey's expanded suite pass | Owner review |
 | ConnectionSettings missing from layout manifest | Export added; isolated package consumer build passed | Pays runtime checks |
 | CI weakened paint checks on a fontless host | Font-enabled host builds; UI CI selects full checks; fresh local sweep passes 273 checks across 75 component fixtures | Repeat website theme checks; verify Linux CI after dependency release |
-| ps-qa measured contrast and other paint assertions before their declared action | Verdict reads moved after input; native regression passes both restoring and breaking contrast | Repeat website theme checks |
+| ps-qa measured paint before input, then sampled contrast transitions too early | Reads moved after input; contrast honors the outcome and stability windows. Six native driver scenarios pass, including delayed repair and persistent contrast failure. Web3 theme group passes 18/18 | Final stack sweeps |
 | ps-qa rejected explicit gridcell targets | Explicit role selectors now bypass the generic inventory role list while retaining actionability checks | Native role regression and js.software calendar rerun |
 | ps-qa's older drag diagnostic only scrolls containers | Actual pointer dragging/cancellation added to CLI and declarative checks; native fixture and Worktables movement/cancellation/undo checks pass | PR and CI review |
 | UI sweep could accept bundles older than the library source | Staleness guard now includes library source and package output; confirmed it rejects the current outdated bundle before launching a host | Fresh full build and sweep |
@@ -88,18 +92,18 @@ final package and runtime. Check definitions have changed since some runs.
 
 | Repository / existing PR | Observed result or blocker |
 | --- | --- |
-| [honey.id #332](https://github.com/pathscale/honey.id/pull/332) | Earlier 177-check baseline passed. Expanded application lifecycle exposes a cold first-submit failure; final three-role coverage is incomplete. |
+| [honey.id #332](https://github.com/pathscale/honey.id/pull/332) | Expanded suite passes 192/192; three standalone app lifecycles pass consecutively. Recovery-code generation, two login/rotation cycles, old-code rejection, save gates, and unchanged-password login passed hands-on. Repeatable recovery runner is being finalized; TOTP and Telegram remain unverified. |
 | [worktables.dev #9](https://github.com/pathscale/worktables.dev/pull/9) | UI/SVG editor replaces Cytoscape/ELK. Fresh package run passes 112/112, including 33 designer and 7 findings checks. Real pointer movement, cancellation, undo, zoom, and emitted schema edits pass. Clean install still awaits house DSL SDK 0.1.2; final visual inspection is pending. |
 | [crates.vip #1](https://github.com/pathscale/crates.vip/pull/1) | Earlier 71/71; authentication is deliberately bypassed in both client and backend, so this is not evidence of authenticated role coverage. |
 | [24x.ai #11](https://github.com/pathscale/24x.ai/pull/11) | Earlier 137/141; corrected responsive landing 16/16. Auth app identity/backend setup still needs final verification. |
-| [js.software #53](https://github.com/pathscale/js.software/pull/53) | Latest completed run 315/316; remaining failure exposed UI Calendar's stale selection state. Packed Calendar fix is being verified. CI includes all declared groups. |
+| [js.software #53](https://github.com/pathscale/js.software/pull/53) | Packed Calendar fix passes 316/316. CI includes all declared groups. |
 | [kard.vip #8](https://github.com/pathscale/kard.vip/pull/8) | Earlier 223/223; demo actions do not prove payment functionality. |
 | [nofilter.io #340](https://github.com/pathscale/nofilter.io/pull/340) | Earlier 127/129; Guest login route failures and suspended dev backend. |
 | [pathscale.com #17](https://github.com/pathscale/pathscale.com/pull/17) | Public site remains in scope. Owner confirmed the old portal has little value and need not block UI. Configured `pathscale-be` no longer exists; do not recreate without a reviewed deployment plan. |
 | [pays.online #166](https://github.com/pathscale/pays.online/pull/166) | Package build passes after ConnectionSettings export fix. Wallet settings call methods absent from the backend schema; onboarding contains unfinished handlers. The configured Honey app id is a UUID rather than the required 16-character public id. Real payment actions require a defined dev setup and review. |
 | [promptsyntax.org #18](https://github.com/pathscale/promptsyntax.org/pull/18) | Earlier 129/129; final package rerun pending. |
 | [support.cafe #12](https://github.com/pathscale/support.cafe/pull/12) | Earlier 104/104; final package rerun pending. |
-| [web3.trading #18](https://github.com/pathscale/web3.trading/pull/18) | Latest run 101/103: dark-theme GET STARTED contrast measured 1.96:1, and the final carousel slide did not remain stable within its outcome window. Both need investigation. |
+| [web3.trading #18](https://github.com/pathscale/web3.trading/pull/18) | Latest run 102/103. Theme contrast passes after the driver waits for the rendered outcome; native capture confirms readable settled paint. The last carousel slide's 500ms stability check still fails and needs investigation. |
 | [ui-starter-app #13](https://github.com/pathscale/ui-starter-app/pull/13) | Earlier 144/144; final package rerun pending. |
 | [agencyzero #211](https://github.com/pathscale/agencyzero/pull/211), [#212](https://github.com/pathscale/agencyzero/pull/212) | UI and control integration in scope; core-specific features are handed to a dedicated owner after UI is ready. |
 
@@ -109,12 +113,11 @@ session recovery, and relevant security settings need outcomes, not just screen
 presence. TOTP/recovery verification remains incomplete. Only uniquely named
 disposable QA applications may be changed or deleted by the lifecycle checks.
 
-Honey's creation handler now awaits its mutation, so the form's submitting state
-covers the backend request. This is not yet evidence that the cold-submit failure
-is fixed. Disposable-bundle tracing confirms validation completes, the mutation
-starts, and execution waits at CreateApp's RPC. One diagnostic lifecycle passed
-15/15, but three consecutive repetitions stalled at that RPC. Request/response
-tracing is now the next diagnostic step; no stable fix has been established.
+Honey's creation handler now awaits its mutation, so submitting covers the backend
+request. Tracing showed validation completed but CreateApp was never sent when
+GetApps and CreateApp queued during WebSocket connection. The first open listener
+removed itself and chuzz skipped the next listener. The host now snapshots
+listeners before dispatch; three clean lifecycles and the full suite pass.
 
 Pathscale restoration, if approved, should mirror crates.vip's low-cost deployment:
 shared IPv4, shared CPU, one small machine. The crates backend's `fly.toml` and
@@ -163,8 +166,9 @@ The font-enabled host, driver, UI package, Honey and Worktables build successful
 UI's full native sweep after the Calendar fix passes 273 checks
 across 75 fixtures; API/package checks pass across 187 components and 1,002 files.
 The native gesture/paint regression and ps-qa clippy/tests pass. Worktables passes
-112/112. Honey still fails its cold first application submission.
+112/112, JS Software 316/316, and Honey 192/192. Honey's additional recovery-code
+flow passes hands-on; its reusable runner still needs its own final run.
 
-The current shared build/test window is open. Continue Honey request/response
-tracing, consumer verification, and CI integration, coordinating the next quiet
-measurement window with the core task. No deployment sign-off yet.
+The core task is preparing another quiet measurement window. Use that period
+for source and PR review; resume recovery-runner and final consumer verification
+when the shared window reopens. No deployment sign-off yet.
