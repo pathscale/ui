@@ -17,3 +17,9 @@
 @import "tailwindcss";
 @source "../../src/";
 @import "../../src/index.css";
+
+.qa-theme-color-preview {
+  width: 5rem;
+  height: 5rem;
+  background-color: var(--nf-accent, transparent);
+}

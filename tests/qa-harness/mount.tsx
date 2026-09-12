@@ -340,6 +340,7 @@ function ThemeColorPickerFixture() {
         storagePrefix="qa-theme-color"
         onThemeSwitch={setTheme}
       />
+      <h2 class="qa-theme-color-preview">Applied theme color preview</h2>
       <h2>ThemeColorPicker theme: {theme()}</h2>
     </>
   );
