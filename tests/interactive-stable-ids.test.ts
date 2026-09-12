@@ -24,7 +24,7 @@ describe("interactive stable ids", () => {
   });
 
   it("derives every complex wheel control id from its caller-owned base", () => {
-    expect(wheel).toContain("id={local.id}");
+    expect(wheel).toContain("`${local.id}--wheel`");
     expect(wheel).toContain("`${local.id}-${adjustment().id}`");
     expect(wheel).toContain("`${local.id}-${adjustment().id}-${stopIndex()}`");
     expect(flower).toContain("`${props.id}-petal-${index()}`");

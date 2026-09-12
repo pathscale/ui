@@ -120,6 +120,7 @@ export const PasswordFieldLayout: Layout<typeof passwordField, PasswordFieldProp
         onBlur={() => local.onBlur?.()}
         endIcon={
           <Button
+            id={local.id ? `${local.id}--visibility` : undefined}
             {...slot.toggle}
             type="button"
             variant="ghost"

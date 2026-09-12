@@ -104,6 +104,7 @@ const RangeCalendar: Layout<typeof componentRecipe, RangeCalendarProps> = () => 
       }}
     >
       <Calendar
+        id={typeof props.id === "string" ? `${props.id}--calendar` : undefined}
         {...{ class: CLASSES.Calendar.base }}
         selectionMode="range"
         value={rangeSelection.focusDate() ?? undefined}

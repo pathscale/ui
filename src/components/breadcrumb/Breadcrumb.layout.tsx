@@ -93,13 +93,14 @@ const BreadcrumbRoot: Layout<typeof componentRecipe, BreadcrumbRootProps> = () =
 const [ITEM_CLASS, LINK_CLASS, SEPARATOR_CLASS] = CLASSES.Item.base;
 
 const BreadcrumbItem: Layout<typeof componentRecipe, BreadcrumbItemProps> = () => {
-  const others = omit(props, "children", "class", "href", "isCurrent", "dataTheme", "style");
+  const others = omit(props, "children", "class", "href", "isCurrent", "dataTheme", "style", "id");
 
   const ctx = useBreadcrumbContext();
 
   return (
     <li
       {...others}
+      id={typeof props.id === "string" ? `${props.id}--item` : undefined}
       {...{ class: twMerge(ITEM_CLASS, props.class) }}
       data-slot="breadcrumb-item"
       data-theme={props.dataTheme}
@@ -109,6 +110,7 @@ const BreadcrumbItem: Layout<typeof componentRecipe, BreadcrumbItemProps> = () =
         when={props.href && !props.isCurrent}
         fallback={
           <span
+            id={props.id}
             {...{ class: LINK_CLASS }}
             data-slot="breadcrumb-link"
             data-current={props.isCurrent ? "true" : undefined}
@@ -119,6 +121,7 @@ const BreadcrumbItem: Layout<typeof componentRecipe, BreadcrumbItemProps> = () =
         }
       >
         <a
+          id={props.id}
           href={props.href}
           {...{ class: LINK_CLASS }}
           data-slot="breadcrumb-link"

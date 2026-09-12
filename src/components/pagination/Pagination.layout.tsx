@@ -70,6 +70,7 @@ const Pagination: Layout<typeof componentRecipe, PaginationProps> = () => {
       <ul {...{ class: CLASSES.slot.content }} data-slot="pagination-content">
         <li {...{ class: CLASSES.slot.item }} data-slot="pagination-item">
           <button
+            id={typeof props.id === "string" ? `${props.id}--previous` : undefined}
             type="button"
             {...{ class: twMerge(CLASSES.slot.link, CLASSES.slot.linkNav) }}
             data-slot="pagination-previous"
@@ -87,6 +88,7 @@ const Pagination: Layout<typeof componentRecipe, PaginationProps> = () => {
             <li {...{ class: CLASSES.slot.item }} data-slot="pagination-item">
               {typeof token === "number" ? (
                 <button
+                  id={typeof props.id === "string" ? `${props.id}--page-${token}` : undefined}
                   type="button"
                   {...{ class: CLASSES.slot.link }}
                   data-slot="pagination-link"
@@ -113,6 +115,7 @@ const Pagination: Layout<typeof componentRecipe, PaginationProps> = () => {
 
         <li {...{ class: CLASSES.slot.item }} data-slot="pagination-item">
           <button
+            id={typeof props.id === "string" ? `${props.id}--next` : undefined}
             type="button"
             {...{ class: twMerge(CLASSES.slot.link, CLASSES.slot.linkNav) }}
             data-slot="pagination-next"

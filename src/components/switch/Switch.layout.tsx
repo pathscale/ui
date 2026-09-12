@@ -107,6 +107,7 @@ const Switch: Layout<typeof componentRecipe, ToggleProps> = () => {
   return (
     <label
       {...slot.root}
+      id={typeof props.id === "string" ? `${props.id}--root` : undefined}
       data-theme={props.dataTheme}
       data-selected={isSelected() ? "true" : "false"}
       data-disabled={isDisabled() ? "true" : "false"}
@@ -114,6 +115,7 @@ const Switch: Layout<typeof componentRecipe, ToggleProps> = () => {
     >
       <input
         {...others}
+        id={props.id}
         type="checkbox"
         role="switch"
         {...slot.input}

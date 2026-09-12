@@ -50,6 +50,7 @@ const SizePicker: Layout<typeof componentRecipe, SizePickerProps> = () => {
       <For each={PRESETS}>
         {(preset) => (
           <Button
+            id={typeof props.id === "string" ? `${props.id}--${preset.toLowerCase()}` : undefined}
             type="button"
             size="sm"
             variant={store().size() === preset ? "solid" : "ghost"} flavor={store().size() === preset ? "primary" : "neutral"}

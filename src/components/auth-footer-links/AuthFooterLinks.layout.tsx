@@ -40,6 +40,7 @@ export const AuthFooterLinksLayout: Layout<typeof authFooterLinks, AuthFooterLin
         item.href ? (
           <a
             {...slot.link}
+            id={typeof local.id === "string" ? `${local.id}--${item.key}` : undefined}
             href={item.href}
             data-disabled={item.disabled ? "true" : "false"}
             aria-disabled={item.disabled ? "true" : undefined}
@@ -56,6 +57,7 @@ export const AuthFooterLinksLayout: Layout<typeof authFooterLinks, AuthFooterLin
         ) : (
           <button
             {...slot.link}
+            id={typeof local.id === "string" ? `${local.id}--${item.key}` : undefined}
             type="button"
             data-disabled={item.disabled ? "true" : "false"}
             disabled={item.disabled}

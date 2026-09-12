@@ -127,6 +127,7 @@ export const ComposerLayout: Layout<typeof composer, ComposerProps> = () => {
     <div {...slot.root} data-state={state()}>
       <textarea
         {...slot.field}
+        id={typeof local.id === "string" ? `${local.id}--field` : undefined}
         ref={field}
         name={local.name}
         value={value()}
@@ -158,6 +159,7 @@ export const ComposerLayout: Layout<typeof composer, ComposerProps> = () => {
         </Show>
         <button
           {...slot.submit}
+          id={typeof local.id === "string" ? `${local.id}--submit` : undefined}
           type="button"
           onClick={submit}
           disabled={busy() || !isSubmittable(value())}

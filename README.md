@@ -3,7 +3,7 @@
 Highly opinionated SolidJS component library — batteries and kitchen sink included, but
 optimized and shiny.
 
-**103 components.** HeroUI-parity API, daisyUI-style theming, Tailwind v4 tokens, light and
+**101 component families.** HeroUI-parity API, daisyUI-style theming, Tailwind v4 tokens, light and
 dark themes built in.
 
 **[→ Browse every component, live](https://js.software)**

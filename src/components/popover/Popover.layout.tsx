@@ -119,10 +119,14 @@ const PopoverRoot: Layout<typeof componentRecipe, PopoverRootProps> = () => {
   const [triggerRef, setTriggerRef] = createSignal<HTMLElement | undefined>();
   const [contentRef, setContentRef] = createSignal<HTMLElement | undefined>();
   const [triggerId] = createSignal(
-    `popover-trigger-${Math.random().toString(36).slice(2, 8)}`,
+    typeof props.id === "string" && props.id.trim()
+      ? `${props.id}--trigger`
+      : `popover-trigger-${Math.random().toString(36).slice(2, 8)}`,
   );
   const [contentId] = createSignal(
-    `popover-content-${Math.random().toString(36).slice(2, 8)}`,
+    typeof props.id === "string" && props.id.trim()
+      ? `${props.id}--content`
+      : `popover-content-${Math.random().toString(36).slice(2, 8)}`,
   );
   const [resolvedPlacement, setResolvedPlacement] =
     createSignal<PopoverPlacement>(props.placement ?? "bottom");

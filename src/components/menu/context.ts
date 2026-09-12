@@ -12,6 +12,7 @@ export type MenuItemRecord = {
 export type MenuFocusTarget = "first" | "last" | "selected";
 
 export type MenuContextValue = {
+  rootId: Accessor<string | undefined>;
   selectionMode: Accessor<MenuSelectionMode>;
   selectedKeys: Accessor<Set<string>>;
   disabledKeys: Accessor<Set<string>>;

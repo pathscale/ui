@@ -59,7 +59,7 @@ export const ComplexColorWheelLayout: Layout<
   >
     <div {...slot.root}>
       <ColorWheel
-        id={local.id}
+        id={local.id ? `${local.id}--wheel` : undefined}
         value={local.value}
         onChange={local.onChange}
         mode={local.mode}

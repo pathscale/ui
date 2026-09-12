@@ -88,6 +88,7 @@ export const AddressLayout: Layout<typeof address, AddressProps> = () => {
       <Show when={local.copyable !== false}>
         <button
           {...slot.copy}
+          id={typeof local.id === "string" ? `${local.id}--copy` : undefined}
           type="button"
           onClick={copy}
           disabled={local.state === "disabled"}
@@ -104,6 +105,7 @@ export const AddressLayout: Layout<typeof address, AddressProps> = () => {
       <Show when={local.explorerUrl}>
         <a
           {...slot.link}
+          id={typeof local.id === "string" ? `${local.id}--explorer` : undefined}
           href={local.explorerUrl}
           target="_blank"
           rel="noreferrer noopener"

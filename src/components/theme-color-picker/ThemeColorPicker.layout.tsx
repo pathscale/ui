@@ -202,6 +202,7 @@ const ThemeColorPicker: Layout<typeof componentRecipe, ThemeColorPickerProps> = 
         {...others}
       >
         <Button
+          id={typeof props.id === "string" ? `${props.id}--trigger` : undefined}
           type="button"
           size="sm"
           variant="ghost"
@@ -222,6 +223,7 @@ const ThemeColorPicker: Layout<typeof componentRecipe, ThemeColorPickerProps> = 
         <Show when={isOpen()}>
           <Portal>
             <div
+              id={typeof props.id === "string" ? `${props.id}--popover` : undefined}
               ref={setPopoverRef}
               {...{ class: popoverClasses() }}
               data-placement={overlayPosition.placement()}
@@ -230,13 +232,17 @@ const ThemeColorPicker: Layout<typeof componentRecipe, ThemeColorPickerProps> = 
               <ColorPickerContext value={contextValue()}>
                 <div {...{ class: CLASSES.row }}>
                   <div {...{ class: CLASSES.wheelWrap }}>
-                    <ColorWheelFlower {...{ class: CLASSES.wheelCustom }} />
+                    <ColorWheelFlower
+                      id={typeof props.id === "string" ? `${props.id}--wheel` : undefined}
+                      {...{ class: CLASSES.wheelCustom }}
+                    />
                   </div>
 
                   <div {...{ class: CLASSES.grayscaleList }}>
                     <For each={GRAYSCALE_SWATCHES}>
                       {(g) => (
                         <button
+                          id={typeof props.id === "string" ? `${props.id}--${g.label.toLowerCase().replace(/\s+/g, "-")}` : undefined}
                           type="button"
                           {...{ class: CLASSES.swatchButton }}
                           style={{ "background-color": `${g.hex}` }}
