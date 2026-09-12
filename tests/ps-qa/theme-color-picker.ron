@@ -35,6 +35,16 @@
         expect: PaintsNamed,
     ),
     (
+        id: "theme-color-picker-applies-accent",
+        group: "theme-color-picker",
+        what: "choosing a swatch visibly applies the requested accent",
+        open: None,
+        hover: None,
+        click: Some("button:Black"),
+        subject: "heading:Applied theme color preview",
+        expect: OpaqueBackground,
+    ),
+    (
         id: "theme-color-picker-switches-theme",
         group: "theme-color-picker",
         what: "choosing a grayscale swatch reports the requested theme",

@@ -715,6 +715,7 @@ export const COMPONENTS: ComponentSpec[] = [
     kind: "custom",
     outcomes: [
       { suffix: "opens", what: "the theme color trigger opens its palette", click: "button:Change theme color", subject: "button:Black", expect: "PaintsNamed", paint: true },
+      { suffix: "applies-accent", what: "choosing a swatch visibly applies the requested accent", click: "button:Black", subject: "heading:Applied theme color preview", expect: "OpaqueBackground" },
       { suffix: "switches-theme", what: "choosing a grayscale swatch reports the requested theme", click: "button:Black", subject: "heading:ThemeColorPicker theme: light", expect: "PaintsNamed", paint: true, covers: ["button:White", "button:Light gray", "button:Gray", "button:Dark gray", "button:Charcoal", "button:Black"] },
     ],
   },

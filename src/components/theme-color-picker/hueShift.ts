@@ -2,25 +2,40 @@ import { createSignal, createTrackedEffect } from "solid-js";
 
 // CSP detection: Test if inline styles are allowed
 let cspAllowsInlineStyles: boolean | null = null;
+let cspProbeElement: HTMLDivElement | null = null;
 
 const checkCspAllowsInlineStyles = (): boolean => {
   if (cspAllowsInlineStyles !== null) return cspAllowsInlineStyles;
   if (typeof window === "undefined") return true;
 
   try {
-    const testEl = document.createElement("div");
-    testEl.style.setProperty("--csp-test", "1");
     // If document.body isn't ready yet, don't latch a false-negative — assume
     // inline styles work and re-probe on the next call.
     if (!document.body) {
       return true;
     }
-    document.body.appendChild(testEl);
-    const computed = getComputedStyle(testEl).getPropertyValue("--csp-test");
-    document.body.removeChild(testEl);
-    cspAllowsInlineStyles = computed === "1";
+
+    if (!cspProbeElement) {
+      cspProbeElement = document.createElement("div");
+      cspProbeElement.setAttribute("style", "display: none");
+      document.body.appendChild(cspProbeElement);
+      return true;
+    }
+
+    const computed = getComputedStyle(cspProbeElement).display;
+    // Some renderers resolve newly inserted nodes on their next frame. An
+    // empty computed value is therefore unknown rather than a CSP rejection;
+    // keep the probe mounted and ask again when an actual color is applied.
+    if (typeof computed !== "string" || computed === "") return true;
+
+    cspAllowsInlineStyles = computed === "none";
+    cspProbeElement.remove();
+    cspProbeElement = null;
   } catch {
-    cspAllowsInlineStyles = false;
+    // A renderer without computed-style support cannot prove that CSP denied
+    // the declaration. Keep the feature available instead of caching a false
+    // rejection that every later color change would inherit.
+    return true;
   }
 
   if (cspAllowsInlineStyles === false) {
