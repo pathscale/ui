@@ -1,6 +1,7 @@
 import {
   type Component,
   createSignal,
+  createUniqueId,
   onCleanup,
   onSettled,
   Show,
@@ -22,6 +23,9 @@ const defaultTexts = {
 };
 
 export const PWAInstallPrompt: Component<PWAInstallPromptProps> = (props) => {
+  const generatedId = createUniqueId();
+  const baseId = () => props.id?.trim() || `pwa-install-${generatedId}`;
+  const controlId = (suffix: string) => `${baseId()}-${suffix}`;
   const STORAGE_KEY = () => props.storageKey ?? "app_pwa_dismissed";
   const appName = () => props.appName ?? "My App";
   const appIcon = () => props.appIcon ?? "/icon-192.png";
@@ -110,9 +114,10 @@ export const PWAInstallPrompt: Component<PWAInstallPromptProps> = (props) => {
   return (
     <Show when={showPrompt()}>
       <div
+        id={controlId("dialog")}
         role="dialog"
         aria-modal="false"
-        aria-labelledby="pwa-install-title"
+        aria-labelledby={controlId("title")}
         {...{ class: CLASSES.pwaPrompt.dialog }}
       >
         <Card
@@ -120,6 +125,7 @@ export const PWAInstallPrompt: Component<PWAInstallPromptProps> = (props) => {
           {...{ class: CLASSES.pwaPrompt.card }}
         >
           <Button
+            id={controlId("close")}
             size="sm"
             variant="ghost"
             width="square"
@@ -150,7 +156,7 @@ export const PWAInstallPrompt: Component<PWAInstallPromptProps> = (props) => {
                 {...{ class: CLASSES.pwaPrompt.textWrap }}
               >
                 <h3
-                  id="pwa-install-title"
+                  id={controlId("title")}
                   {...{ class: CLASSES.pwaPrompt.title }}
                 >
                   {texts().title}
@@ -163,6 +169,7 @@ export const PWAInstallPrompt: Component<PWAInstallPromptProps> = (props) => {
           </Card.Body>
           <Card.Footer {...{ class: CLASSES.pwaPrompt.footer }}>
             <Button
+              id={controlId("install")}
               flavor="primary"
               {...{ class: CLASSES.pwaPrompt.action }}
               onClick={handleInstall}
@@ -170,6 +177,7 @@ export const PWAInstallPrompt: Component<PWAInstallPromptProps> = (props) => {
               {texts().installButton}
             </Button>
             <Button
+              id={controlId("not-now")}
               variant="ghost"
               {...{ class: CLASSES.pwaPrompt.action }}
               onClick={handleDismiss}

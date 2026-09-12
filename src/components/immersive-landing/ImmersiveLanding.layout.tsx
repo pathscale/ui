@@ -99,8 +99,6 @@ const ImmersiveLanding: Layout<typeof componentRecipe, ImmersiveLandingProps> = 
         <div {...{ class: CLASSES.landing.viewport }}>
           <div {...{ class: CLASSES.landing.pageLayer }}>{renderChildren()}</div>
         </div>
-      </div>
-
       <Show when={props.overlay || props.appVersion}>
         <div {...{ class: CLASSES.landing.overlay }}>
           {renderOverlay()}
@@ -117,6 +115,7 @@ const ImmersiveLanding: Layout<typeof componentRecipe, ImmersiveLandingProps> = 
       {/* Desktop side arrows */}
       {showArrowNav() && (
         <ImmersiveLandingArrows
+          id={props.id ? `${props.id}-desktop` : undefined}
           onPrev={navigation.goPrev}
           onNext={navigation.goNext}
           isFirstPage={navigation.isFirstPage()}
@@ -127,6 +126,7 @@ const ImmersiveLanding: Layout<typeof componentRecipe, ImmersiveLandingProps> = 
       {/* Bottom navigation (dots, counter, mobile arrows) */}
       {showNav() && (
         <ImmersiveLandingNavigation
+          id={props.id ? `${props.id}-navigation` : undefined}
           pages={props.pages}
           currentPageIndex={navigation.currentIndex()}
           onPageDotClick={navigation.navigateTo}
@@ -139,6 +139,10 @@ const ImmersiveLanding: Layout<typeof componentRecipe, ImmersiveLandingProps> = 
 
       <Show when={props.showPWAPrompt}>
         <PWAInstallPrompt
+          id={
+            props.pwaConfig?.id ??
+            (props.id ? `${props.id}-pwa-install` : undefined)
+          }
           appName={props.pwaConfig?.appName}
           appIcon={props.pwaConfig?.appIcon}
           storageKey={props.pwaConfig?.storageKey ?? "app_pwa_dismissed"}
@@ -149,6 +153,10 @@ const ImmersiveLanding: Layout<typeof componentRecipe, ImmersiveLandingProps> = 
       </Show>
       <Show when={props.showFirefoxBanner}>
         <FirefoxPWABanner
+          id={
+            props.firefoxPWAConfig?.id ??
+            (props.id ? `${props.id}-firefox-pwa` : undefined)
+          }
           extensionUrl={props.firefoxPWAConfig?.extensionUrl}
           storageKey={
             props.firefoxPWAConfig?.storageKey ?? "app_firefox_pwa_dismissed"
@@ -161,11 +169,16 @@ const ImmersiveLanding: Layout<typeof componentRecipe, ImmersiveLandingProps> = 
       </Show>
       <Show when={props.showCookieConsent}>
         <CookieConsent
+          id={
+            props.cookieConfig?.id ??
+            (props.id ? `${props.id}-cookie-consent` : undefined)
+          }
           storageKeys={props.cookieConfig?.storageKeys}
           texts={props.cookieConfig?.texts}
           onConsentChange={props.cookieConfig?.onConsentChange}
         />
       </Show>
+      </div>
     </ImmersiveLandingContext>
   );
 };

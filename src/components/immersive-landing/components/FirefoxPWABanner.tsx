@@ -1,4 +1,10 @@
-import { type Component, createSignal, onSettled, Show } from "solid-js";
+import {
+  type Component,
+  createSignal,
+  createUniqueId,
+  onSettled,
+  Show,
+} from "solid-js";
 import Button from "../../button";
 import Card from "../../card";
 import Flex from "../../flex";
@@ -60,6 +66,9 @@ const isPWAInstalled = (): boolean => {
  * (beforeinstallprompt). Currently shows for Firefox desktop with extension recommendation.
  */
 export const FirefoxPWABanner: Component<FirefoxPWABannerProps> = (props) => {
+  const generatedId = createUniqueId();
+  const baseId = () => props.id?.trim() || `firefox-pwa-${generatedId}`;
+  const controlId = (suffix: string) => `${baseId()}-${suffix}`;
   const [showBanner, setShowBanner] = createSignal(false);
   const [browser, setBrowser] = createSignal<BrowserType>("supported");
 
@@ -119,7 +128,8 @@ export const FirefoxPWABanner: Component<FirefoxPWABannerProps> = (props) => {
   return (
     <Show when={showBanner()}>
       <div
-        aria-labelledby="pwa-unsupported-title"
+        id={controlId("banner")}
+        aria-labelledby={controlId("title")}
         {...{ class: CLASSES.firefoxBanner.dialog }}
       >
         <Card
@@ -127,6 +137,7 @@ export const FirefoxPWABanner: Component<FirefoxPWABannerProps> = (props) => {
           {...{ class: CLASSES.firefoxBanner.card }}
         >
           <Button
+            id={controlId("close")}
             size="sm"
             variant="ghost"
             width="square"
@@ -166,7 +177,7 @@ export const FirefoxPWABanner: Component<FirefoxPWABannerProps> = (props) => {
                 {...{ class: CLASSES.firefoxBanner.textWrap }}
               >
                 <h3
-                  id="pwa-unsupported-title"
+                  id={controlId("title")}
                   {...{ class: CLASSES.firefoxBanner.title }}
                 >
                   {texts().title}
@@ -179,6 +190,7 @@ export const FirefoxPWABanner: Component<FirefoxPWABannerProps> = (props) => {
           </Card.Body>
           <Card.Footer {...{ class: CLASSES.firefoxBanner.footer }}>
             <Button
+              id={controlId("install")}
               flavor="primary"
               {...{ class: CLASSES.firefoxBanner.action }}
               onClick={handleAction}
@@ -186,6 +198,7 @@ export const FirefoxPWABanner: Component<FirefoxPWABannerProps> = (props) => {
               {texts().installButton}
             </Button>
             <Button
+              id={controlId("dismiss")}
               variant="ghost"
               {...{ class: CLASSES.firefoxBanner.action }}
               onClick={handleDismiss}

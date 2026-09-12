@@ -15,6 +15,16 @@
         expect: PaintsNamed,
     ),
     (
+        id: "slider-contrast",
+        group: "slider",
+        what: "Slider keeps its rendered controls distinguishable from their surface",
+        open: None,
+        hover: None,
+        click: None,
+        subject: "Fixture slider",
+        expect: Contrast,
+    ),
+    (
         id: "slider-renders",
         group: "slider",
         what: "Slider renders a node of its own",

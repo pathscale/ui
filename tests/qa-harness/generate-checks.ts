@@ -878,7 +878,7 @@ function checksFor(spec: ComponentSpec, profile: Profile): string {
     );
   }
 
-  if (spec.kind === "custom") {
+  if (spec.kind === "custom" || spec.kind === "settings") {
     for (const outcome of spec.outcomes ?? []) {
       const fields: Record<string, string> = {
         id: JSON.stringify(`${spec.id}-${outcome.suffix}`),

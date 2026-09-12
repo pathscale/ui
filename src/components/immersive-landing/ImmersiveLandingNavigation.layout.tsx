@@ -9,6 +9,7 @@ import { componentRecipe } from "./ImmersiveLanding.recipe";
 const ImmersiveLandingNavigation: Layout<typeof componentRecipe, ImmersiveLandingNavigationProps> = () => {
   const others = omit(
     props,
+    "id",
     "pages",
     "currentPageIndex",
     "onPageDotClick",
@@ -19,6 +20,7 @@ const ImmersiveLandingNavigation: Layout<typeof componentRecipe, ImmersiveLandin
     "class",
     "style",
   );
+  const baseId = () => props.id;
 
   const mobileArrowClasses = (disabled: boolean) =>
     twMerge(
@@ -28,6 +30,7 @@ const ImmersiveLandingNavigation: Layout<typeof componentRecipe, ImmersiveLandin
 
   return (
     <nav
+      id={baseId()}
       {...{
         class: twMerge(CLASSES.navigation.base, props.class),
       }}
@@ -39,6 +42,7 @@ const ImmersiveLandingNavigation: Layout<typeof componentRecipe, ImmersiveLandin
         <div {...{ class: CLASSES.navigation.row }}>
           {/* Left arrow - Mobile only */}
           <button
+            id={baseId() ? `${baseId()}-previous` : undefined}
             type="button"
             onClick={props.onPrev}
             disabled={props.isFirstPage}
@@ -62,6 +66,7 @@ const ImmersiveLandingNavigation: Layout<typeof componentRecipe, ImmersiveLandin
               <For each={props.pages}>
                 {(pageId, index) => (
                   <button
+                    id={baseId() ? `${baseId()}-page-${index() + 1}` : undefined}
                     type="button"
                     onClick={() => props.onPageDotClick(pageId)}
                     {...{
@@ -87,6 +92,7 @@ const ImmersiveLandingNavigation: Layout<typeof componentRecipe, ImmersiveLandin
 
           {/* Right arrow - Mobile only */}
           <button
+            id={baseId() ? `${baseId()}-next` : undefined}
             type="button"
             onClick={props.onNext}
             disabled={props.isLastPage}

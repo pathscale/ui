@@ -15,7 +15,7 @@
     --slider-pad: calc((var(--slider-h) - var(--slider-thumb-h)) / 2);
     --slider-track-bg: var(--color-default);
     --slider-fill-bg: var(--color-accent);
-    --slider-thumb-bg: var(--color-accent-foreground, white);
+    --slider-thumb-bg: var(--color-base-content);
   }
 
   .slider__label {

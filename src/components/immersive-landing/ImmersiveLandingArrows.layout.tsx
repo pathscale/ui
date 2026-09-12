@@ -7,7 +7,8 @@ import type { Layout } from "../../lib/layouts";
 import { componentRecipe } from "./ImmersiveLanding.recipe";
 
 const ImmersiveLandingArrows: Layout<typeof componentRecipe, ImmersiveLandingArrowsProps> = () => {
-  const others = omit(props, "onPrev", "onNext", "isFirstPage", "isLastPage", "class");
+  const others = omit(props, "id", "onPrev", "onNext", "isFirstPage", "isLastPage", "class");
+  const baseId = () => props.id;
 
   const handleNext = () => {
     if (props.onNext) {
@@ -26,6 +27,7 @@ const ImmersiveLandingArrows: Layout<typeof componentRecipe, ImmersiveLandingArr
       {/* Left Arrow - Desktop only */}
       <Show when={!props.isFirstPage}>
         <button
+          id={baseId() ? `${baseId()}-previous` : undefined}
           type="button"
           onClick={handlePrev}
           {...{
@@ -53,6 +55,7 @@ const ImmersiveLandingArrows: Layout<typeof componentRecipe, ImmersiveLandingArr
       {/* Right Arrow - Desktop only */}
       <Show when={!props.isLastPage}>
         <button
+          id={baseId() ? `${baseId()}-next` : undefined}
           type="button"
           onClick={handleNext}
           {...{

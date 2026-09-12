@@ -35,4 +35,14 @@
         expect: Present,
         covers: ["button:Go to page 1 of 2", "button:Go to page 2 of 2", "button:Next page"],
     ),
+    (
+        id: "immersive-landing-navigates-back",
+        group: "immersive-landing",
+        what: "landing previous navigation returns to the earlier page and reports the route",
+        open: None,
+        hover: None,
+        click: Some("button:Previous page"),
+        subject: "heading:Landing navigation: second to first",
+        expect: Present,
+    ),
 ]
