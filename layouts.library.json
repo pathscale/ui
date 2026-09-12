@@ -97,6 +97,8 @@
     "FieldsetLegend",
     "FirefoxPWABanner",
     "Flex",
+    "FlexGrid",
+    "FlexGridRoot",
     "Footer",
     "Form",
     "FormContext",

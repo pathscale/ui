@@ -330,6 +330,7 @@ function checksFor(spec: ComponentSpec, profile: Profile): string {
   if (
     spec.kind !== "display" &&
     spec.kind !== "toggle" &&
+    spec.kind !== "custom" &&
     (!spec.subject || !spec.subjectRole)
   ) {
     throw new Error(
@@ -550,6 +551,22 @@ function checksFor(spec: ComponentSpec, profile: Profile): string {
         expect: profile.paints("PaintsNamed"),
       }),
     );
+    records.push(
+      check({
+        id: `"${spec.id}-resets-draft"`,
+        group: `"${spec.id}"`,
+        what: `"resetting ${spec.component} discards the draft and reports completion"`,
+        open: surface,
+        hover: "None",
+        prepare: `Some("${spec.subjectRole}:${spec.subject}")`,
+        prepare_unless: `Some("${spec.opens}")`,
+        setup_type_into: `Some("${spec.opens}")`,
+        setup_text: `Some("ws://qa-reset-draft")`,
+        click: `Some("button:Reset")`,
+        subject: `"heading:Panel outcome: reset"`,
+        expect: profile.paints("PaintsNamed"),
+      }),
+    );
   }
 
   if (spec.kind === "overlay") {
@@ -631,6 +648,7 @@ function checksFor(spec: ComponentSpec, profile: Profile): string {
   }
 
   if (spec.kind === "toggle") {
+    const toggleSubject = `${spec.subjectRole}:${spec.subject ?? ""}`;
     /*
      * A toggle's whole contract: pressing it flips the state the tree reports.
      *
@@ -651,8 +669,8 @@ function checksFor(spec: ComponentSpec, profile: Profile): string {
         what: `"pressing the ${spec.component} changes what it reports"`,
         open: surface,
         hover: "None",
-        click: `Some("${spec.subjectRole}:")`,
-        subject: `"${spec.subjectRole}:"`,
+        click: `Some("${toggleSubject}")`,
+        subject: `"${toggleSubject}"`,
         expect: "SelectionChanges",
       }),
     );
@@ -674,7 +692,7 @@ function checksFor(spec: ComponentSpec, profile: Profile): string {
         open: surface,
         hover: "None",
         settle_after_ms: "300",
-        click: `Some("${spec.subjectRole}:")`,
+        click: `Some("${toggleSubject}")`,
         /*
          * A latched marker, because the checks in a group share one host:
          * `-toggles` has already pressed this control by the time this runs, so
@@ -858,6 +876,39 @@ function checksFor(spec: ComponentSpec, profile: Profile): string {
         expect: "Absent",
       }),
     );
+  }
+
+  if (spec.kind === "custom") {
+    for (const outcome of spec.outcomes ?? []) {
+      const fields: Record<string, string> = {
+        id: JSON.stringify(`${spec.id}-${outcome.suffix}`),
+        group: JSON.stringify(spec.id),
+        what: JSON.stringify(outcome.what),
+        open: surface,
+        hover: outcome.hover ? `Some(${JSON.stringify(outcome.hover)})` : "None",
+        click: outcome.click ? `Some(${JSON.stringify(outcome.click)})` : "None",
+        subject: JSON.stringify(outcome.subject),
+        expect: outcome.paint
+          ? profile.paints(outcome.expect as "Paints" | "PaintsNamed")
+          : outcome.expect,
+      };
+
+      if (outcome.prepare) fields.prepare = `Some(${JSON.stringify(outcome.prepare)})`;
+      if (outcome.covers?.length) {
+        fields.covers = `[${outcome.covers.map((selector) => JSON.stringify(selector)).join(", ")}]`;
+      }
+      if (outcome.prepareUnless) fields.prepare_unless = `Some(${JSON.stringify(outcome.prepareUnless)})`;
+      if (outcome.settleAfterMs !== undefined) fields.settle_after_ms = String(outcome.settleAfterMs);
+      if (outcome.key) fields.key = `Some(${JSON.stringify(outcome.key)})`;
+      if (outcome.keyOn) fields.key_on = `Some(${JSON.stringify(outcome.keyOn)})`;
+      if (outcome.typeInto) fields.type_into = `Some(${JSON.stringify(outcome.typeInto)})`;
+      if (outcome.text) fields.text = `Some(${JSON.stringify(outcome.text)})`;
+      if (outcome.pointerDrag) {
+        const drag = outcome.pointerDrag;
+        fields.pointer_drag = `Some((from: ${JSON.stringify(drag.from)}, dx: ${drag.dx}.0, dy: ${drag.dy}.0, steps: ${drag.steps}))`;
+      }
+      records.push(check(fields));
+    }
   }
 
   if (spec.kind === "action") {

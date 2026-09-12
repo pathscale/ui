@@ -25,13 +25,14 @@
         expect: Paints,
     ),
     (
-        id: "immersive-landing-paints",
+        id: "immersive-landing-navigates",
         group: "immersive-landing",
-        what: "the ImmersiveLanding reaches the renderer with a box",
+        what: "landing navigation changes the active page and reports the route",
         open: None,
         hover: None,
-        click: None,
-        subject: "ImmersiveLanding",
+        click: Some("button:Go to page 2 of 2"),
+        subject: "heading:Landing navigation: first to second",
         expect: Present,
+        covers: ["button:Go to page 1 of 2", "button:Go to page 2 of 2", "button:Next page"],
     ),
 ]

@@ -1,0 +1,51 @@
+// Generated from tests/qa-harness/components.ts by tests/qa-harness/generate-checks.ts. Do not edit.
+//
+// InputOTP, mounted alone on its own harness page. Outcomes for
+// this component share one native host; idempotent preparation keeps each
+// outcome reproducible by id against a fresh host as well.
+[
+    (
+        id: "input-otp-page-paints",
+        group: "input-otp",
+        what: "the InputOTP page builds and paints",
+        open: None,
+        hover: None,
+        click: None,
+        subject: "heading:InputOTP",
+        expect: Present,
+    ),
+    (
+        id: "input-otp-renders",
+        group: "input-otp",
+        what: "InputOTP renders a node of its own",
+        open: None,
+        hover: None,
+        click: None,
+        subject: "fixture",
+        expect: Paints,
+    ),
+    (
+        id: "input-otp-accepts",
+        group: "input-otp",
+        what: "typing fills the one-time password value",
+        open: None,
+        hover: None,
+        click: None,
+        subject: "textbox:Verification code",
+        expect: ValueChanges,
+        type_into: Some("textbox:Verification code"),
+        text: Some("123456"),
+    ),
+    (
+        id: "input-otp-reports",
+        group: "input-otp",
+        what: "typing reports the one-time password",
+        open: None,
+        hover: None,
+        click: None,
+        subject: "heading:InputOTP value: 123456",
+        expect: Present,
+        type_into: Some("textbox:Verification code"),
+        text: Some("123456"),
+    ),
+]

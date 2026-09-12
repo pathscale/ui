@@ -95,4 +95,18 @@
         subject: "heading:Reconnected: ws://qa-reconnected over ws://qa-reconnected",
         expect: PaintsNamed,
     ),
+    (
+        id: "connection-settings-resets-draft",
+        group: "connection-settings",
+        what: "resetting ConnectionSettings discards the draft and reports completion",
+        open: None,
+        hover: None,
+        prepare: Some("switch:Use a custom backend"),
+        prepare_unless: Some("textbox:API URL"),
+        setup_type_into: Some("textbox:API URL"),
+        setup_text: Some("ws://qa-reset-draft"),
+        click: Some("button:Reset"),
+        subject: "heading:Panel outcome: reset",
+        expect: PaintsNamed,
+    ),
 ]

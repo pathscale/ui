@@ -99,7 +99,7 @@ export interface CookieConsentTexts {
 
   essential?: string;
   analytics?: string;
-  marketing: string;
+  marketing?: string;
 
   cancel?: string;
   save?: string;
@@ -137,6 +137,8 @@ export interface FirefoxPWABannerTexts {
 export interface FirefoxPWABannerProps {
   extensionUrl?: string;
   storageKey?: string;
+  /** Delay before the banner appears. Defaults to 2000ms. */
+  showDelayMs?: number;
   texts?: FirefoxPWABannerTexts;
   /**
    * The browser mark shown beside the text. Omit it and the banner renders

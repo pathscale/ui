@@ -1,0 +1,37 @@
+// Generated from tests/qa-harness/components.ts by tests/qa-harness/generate-checks.ts. Do not edit.
+//
+// FlexGrid, mounted alone on its own harness page. Outcomes for
+// this component share one native host; idempotent preparation keeps each
+// outcome reproducible by id against a fresh host as well.
+[
+    (
+        id: "flex-grid-page-paints",
+        group: "flex-grid",
+        what: "the FlexGrid page builds and paints",
+        open: None,
+        hover: None,
+        click: None,
+        subject: "heading:FlexGrid",
+        expect: PaintsNamed,
+    ),
+    (
+        id: "flex-grid-renders",
+        group: "flex-grid",
+        what: "FlexGrid renders a node of its own",
+        open: None,
+        hover: None,
+        click: None,
+        subject: "fixture",
+        expect: Paints,
+    ),
+    (
+        id: "flex-grid-reveals-more",
+        group: "flex-grid",
+        what: "the incremental grid reveals its next page when asked",
+        open: None,
+        hover: None,
+        click: Some("button:Load more rows"),
+        subject: "heading:Row Three",
+        expect: PaintsNamed,
+    ),
+]

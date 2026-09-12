@@ -494,6 +494,8 @@ const DockMobile: Layout<typeof componentRecipe, {
         onClick={() => setOpen(!open())}
         {...{ class: CLASSES.mobileToggle }}
         style={{ width: `${props.cfg.baseSize}px`, height: `${props.cfg.baseSize}px` }}
+        aria-label={open() ? "Close actions" : "Open actions"}
+        aria-expanded={open() ? "true" : "false"}
       >
         {props.toggleIcon ?? (
           <svg

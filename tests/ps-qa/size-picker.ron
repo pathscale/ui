@@ -1,0 +1,48 @@
+// Generated from tests/qa-harness/components.ts by tests/qa-harness/generate-checks.ts. Do not edit.
+//
+// SizePicker, mounted alone on its own harness page. Outcomes for
+// this component share one native host; idempotent preparation keeps each
+// outcome reproducible by id against a fresh host as well.
+[
+    (
+        id: "size-picker-page-paints",
+        group: "size-picker",
+        what: "the SizePicker page builds and paints",
+        open: None,
+        hover: None,
+        click: None,
+        subject: "heading:SizePicker",
+        expect: PaintsNamed,
+    ),
+    (
+        id: "size-picker-renders",
+        group: "size-picker",
+        what: "SizePicker renders a node of its own",
+        open: None,
+        hover: None,
+        click: None,
+        subject: "fixture",
+        expect: Paints,
+    ),
+    (
+        id: "size-picker-selects",
+        group: "size-picker",
+        what: "choosing a size changes its selected radio",
+        open: None,
+        hover: None,
+        click: Some("radio:Size L"),
+        subject: "radio:Size L",
+        expect: SelectionChanges,
+        covers: ["radio:Size *"],
+    ),
+    (
+        id: "size-picker-reports",
+        group: "size-picker",
+        what: "choosing a size reports the preset",
+        open: None,
+        hover: None,
+        click: Some("radio:Size L"),
+        subject: "heading:SizePicker value: L",
+        expect: Present,
+    ),
+]

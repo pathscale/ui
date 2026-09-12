@@ -1,0 +1,47 @@
+// Generated from tests/qa-harness/components.ts by tests/qa-harness/generate-checks.ts. Do not edit.
+//
+// CheckboxGroup, mounted alone on its own harness page. Outcomes for
+// this component share one native host; idempotent preparation keeps each
+// outcome reproducible by id against a fresh host as well.
+[
+    (
+        id: "checkbox-group-page-paints",
+        group: "checkbox-group",
+        what: "the CheckboxGroup page builds and paints",
+        open: None,
+        hover: None,
+        click: None,
+        subject: "heading:CheckboxGroup",
+        expect: PaintsNamed,
+    ),
+    (
+        id: "checkbox-group-renders",
+        group: "checkbox-group",
+        what: "CheckboxGroup renders a node of its own",
+        open: None,
+        hover: None,
+        click: None,
+        subject: "fixture",
+        expect: Paints,
+    ),
+    (
+        id: "checkbox-group-selects",
+        group: "checkbox-group",
+        what: "selecting a grouped checkbox changes its controlled selection",
+        open: None,
+        hover: None,
+        click: Some("checkbox:Second choice"),
+        subject: "checkbox:Second choice",
+        expect: SelectionChanges,
+    ),
+    (
+        id: "checkbox-group-reports",
+        group: "checkbox-group",
+        what: "selecting a grouped checkbox reports the new values",
+        open: None,
+        hover: None,
+        click: Some("checkbox:First choice"),
+        subject: "heading:CheckboxGroup value:",
+        expect: NameChanges,
+    ),
+]

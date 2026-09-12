@@ -1,0 +1,37 @@
+// Generated from tests/qa-harness/components.ts by tests/qa-harness/generate-checks.ts. Do not edit.
+//
+// Meter, mounted alone on its own harness page. Outcomes for
+// this component share one native host; idempotent preparation keeps each
+// outcome reproducible by id against a fresh host as well.
+[
+    (
+        id: "meter-page-paints",
+        group: "meter",
+        what: "the Meter page builds and paints",
+        open: None,
+        hover: None,
+        click: None,
+        subject: "heading:Meter",
+        expect: Present,
+    ),
+    (
+        id: "meter-renders",
+        group: "meter",
+        what: "Meter renders a node of its own",
+        open: None,
+        hover: None,
+        click: None,
+        subject: "fixture",
+        expect: Paints,
+    ),
+    (
+        id: "meter-paints",
+        group: "meter",
+        what: "the Meter reaches the renderer with a box",
+        open: None,
+        hover: None,
+        click: None,
+        subject: "Meter",
+        expect: Present,
+    ),
+]

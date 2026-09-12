@@ -25,13 +25,13 @@
         expect: Paints,
     ),
     (
-        id: "breadcrumb-paints",
+        id: "breadcrumb-navigates",
         group: "breadcrumb",
-        what: "the Breadcrumb reaches the renderer with a box",
+        what: "a breadcrumb link remains operable inside the compound list",
         open: None,
         hover: None,
-        click: None,
-        subject: "Breadcrumb",
-        expect: Paints,
+        click: Some("link:Products fixture"),
+        subject: "heading:Breadcrumb activated",
+        expect: PaintsNamed,
     ),
 ]

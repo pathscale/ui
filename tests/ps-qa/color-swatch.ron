@@ -25,13 +25,13 @@
         expect: Paints,
     ),
     (
-        id: "color-swatch-paints",
+        id: "color-swatch-selects",
         group: "color-swatch",
-        what: "the ColorSwatch reaches the renderer with a box",
+        what: "a standalone swatch reports its color to its owner",
         open: None,
         hover: None,
-        click: None,
-        subject: "option:Color undefined",
+        click: Some("option:Fixture blue"),
+        subject: "heading:ColorSwatch selected: #0000ff",
         expect: PaintsNamed,
     ),
 ]

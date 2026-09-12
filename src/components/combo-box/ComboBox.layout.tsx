@@ -296,6 +296,14 @@ const ComboBoxRoot: Layout<typeof componentRecipe, ComboBoxRootProps> = () => {
     const query = inputValue();
     const filter = props.defaultFilter ?? defaultFilter;
 
+    // The selected label is the committed display value, not a search the
+    // user entered. Opening a selected ComboBox must still offer every item;
+    // otherwise the current choice filters out every alternative and the
+    // trigger opens a one-item list that cannot change the selection.
+    if (query === (selectedItem()?.textValue ?? "")) {
+      return normalizedItems();
+    }
+
     return normalizedItems().filter((item) => filter(item.textValue, query));
   });
 

@@ -1,0 +1,40 @@
+// Generated from tests/qa-harness/components.ts by tests/qa-harness/generate-checks.ts. Do not edit.
+//
+// Toolbar, mounted alone on its own harness page. Outcomes for
+// this component share one native host; idempotent preparation keeps each
+// outcome reproducible by id against a fresh host as well.
+[
+    (
+        id: "toolbar-page-paints",
+        group: "toolbar",
+        what: "the Toolbar page builds and paints",
+        open: None,
+        hover: None,
+        click: None,
+        subject: "heading:Toolbar",
+        expect: Present,
+    ),
+    (
+        id: "toolbar-renders",
+        group: "toolbar",
+        what: "Toolbar renders a node of its own",
+        open: None,
+        hover: None,
+        click: None,
+        subject: "fixture",
+        expect: Paints,
+    ),
+    (
+        id: "toolbar-moves-focus",
+        group: "toolbar",
+        what: "ArrowRight moves focus to the next toolbar control",
+        open: None,
+        hover: None,
+        click: None,
+        subject: "button:Second tool",
+        expect: FocusMoves,
+        prepare: Some("button:First tool"),
+        key: Some("ArrowRight"),
+        key_on: Some("button:First tool"),
+    ),
+]

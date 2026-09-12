@@ -25,13 +25,13 @@
         expect: Paints,
     ),
     (
-        id: "auth-powered-by-paints",
+        id: "auth-powered-by-navigates",
         group: "auth-powered-by",
-        what: "the AuthPoweredBy reaches the renderer with a box",
+        what: "the powered-by attribution exposes an operable Honey link",
         open: None,
         hover: None,
-        click: None,
-        subject: "AuthPoweredBy",
-        expect: Paints,
+        click: Some("link:Secure Auth by Honey"),
+        subject: "heading:Honey link activated",
+        expect: PaintsNamed,
     ),
 ]

@@ -1,0 +1,73 @@
+// Generated from tests/qa-harness/components.ts by tests/qa-harness/generate-checks.ts. Do not edit.
+//
+// ComboBox, mounted alone on its own harness page. Outcomes for
+// this component share one native host; idempotent preparation keeps each
+// outcome reproducible by id against a fresh host as well.
+[
+    (
+        id: "combo-box-page-paints",
+        group: "combo-box",
+        what: "the ComboBox page builds and paints",
+        open: None,
+        hover: None,
+        click: None,
+        subject: "heading:ComboBox",
+        expect: Present,
+    ),
+    (
+        id: "combo-box-renders",
+        group: "combo-box",
+        what: "ComboBox renders a node of its own",
+        open: None,
+        hover: None,
+        click: None,
+        subject: "fixture",
+        expect: Paints,
+    ),
+    (
+        id: "combo-box-opens",
+        group: "combo-box",
+        what: "the ComboBox opens an addressable listbox",
+        open: None,
+        hover: None,
+        click: Some("button:Toggle options"),
+        subject: "option:Beta",
+        expect: Present,
+    ),
+    (
+        id: "combo-box-selects",
+        group: "combo-box",
+        what: "choosing an option changes the controlled input value",
+        open: None,
+        hover: None,
+        click: Some("option:Beta"),
+        subject: "combobox:Fixture combo box",
+        expect: ValueChanges,
+        prepare: Some("button:Toggle options"),
+        prepare_unless: Some("option:Beta"),
+    ),
+    (
+        id: "combo-box-reports",
+        group: "combo-box",
+        what: "choosing another option reports the selected key",
+        open: None,
+        hover: None,
+        click: Some("option:Alpha"),
+        subject: "heading:ComboBox value:",
+        expect: NameChanges,
+        prepare: Some("button:Toggle options"),
+        prepare_unless: Some("option:Alpha"),
+    ),
+    (
+        id: "combo-box-accepts-query",
+        group: "combo-box",
+        what: "typing a query clears the committed selection",
+        open: None,
+        hover: None,
+        click: None,
+        subject: "heading:ComboBox value:",
+        expect: NameChanges,
+        type_into: Some("combobox:Fixture combo box"),
+        text: Some("Gam"),
+    ),
+]

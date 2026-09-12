@@ -25,13 +25,13 @@
         expect: Paints,
     ),
     (
-        id: "tooltip-paints",
+        id: "tooltip-opens",
         group: "tooltip",
-        what: "the Tooltip reaches the renderer with a box",
+        what: "hovering the tooltip trigger reveals its content",
         open: None,
-        hover: None,
+        hover: Some("button:Tooltip target"),
         click: None,
-        subject: "Tooltip",
-        expect: Paints,
+        subject: "tooltip:Fixture tooltip",
+        expect: PaintsNamed,
     ),
 ]

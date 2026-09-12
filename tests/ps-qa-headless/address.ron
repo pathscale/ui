@@ -25,13 +25,13 @@
         expect: Paints,
     ),
     (
-        id: "address-paints",
+        id: "address-copies",
         group: "address",
-        what: "the Address reaches the renderer with a box",
+        what: "copying an address reports the full value to its caller",
         open: None,
         hover: None,
-        click: None,
-        subject: "Address",
-        expect: Present,
+        click: Some("button:Copy address"),
+        subject: "heading:Address copied:",
+        expect: NameChanges,
     ),
 ]

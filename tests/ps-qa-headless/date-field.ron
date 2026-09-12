@@ -1,0 +1,51 @@
+// Generated from tests/qa-harness/components.ts by tests/qa-harness/generate-checks.ts. Do not edit.
+//
+// DateField, mounted alone on its own harness page. Outcomes for
+// this component share one native host; idempotent preparation keeps each
+// outcome reproducible by id against a fresh host as well.
+[
+    (
+        id: "date-field-page-paints",
+        group: "date-field",
+        what: "the DateField page builds and paints",
+        open: None,
+        hover: None,
+        click: None,
+        subject: "heading:DateField",
+        expect: Present,
+    ),
+    (
+        id: "date-field-renders",
+        group: "date-field",
+        what: "DateField renders a node of its own",
+        open: None,
+        hover: None,
+        click: None,
+        subject: "fixture",
+        expect: Paints,
+    ),
+    (
+        id: "date-field-accepts",
+        group: "date-field",
+        what: "typing changes the date field value",
+        open: None,
+        hover: None,
+        click: None,
+        subject: "textbox:Date value",
+        expect: ValueChanges,
+        type_into: Some("textbox:Date value"),
+        text: Some("2025-06-24"),
+    ),
+    (
+        id: "date-field-reports",
+        group: "date-field",
+        what: "typing reports the date value",
+        open: None,
+        hover: None,
+        click: None,
+        subject: "heading:DateField value: 2025-06-24",
+        expect: Present,
+        type_into: Some("textbox:Date value"),
+        text: Some("2025-06-24"),
+    ),
+]

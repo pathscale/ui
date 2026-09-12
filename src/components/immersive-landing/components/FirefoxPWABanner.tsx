@@ -112,7 +112,7 @@ export const FirefoxPWABanner: Component<FirefoxPWABannerProps> = (props) => {
   onSettled(() => {
     if (checkShouldShow()) {
       // Small delay to not overwhelm user immediately
-      setTimeout(() => setShowBanner(true), 2000);
+      setTimeout(() => setShowBanner(true), props.showDelayMs ?? 2000);
     }
   });
 

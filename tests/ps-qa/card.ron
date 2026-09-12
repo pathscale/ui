@@ -25,13 +25,13 @@
         expect: Paints,
     ),
     (
-        id: "card-paints",
+        id: "card-activates",
         group: "card",
-        what: "the Card reaches the renderer with a box",
+        what: "an interactive card invokes its consumer callback",
         open: None,
         hover: None,
-        click: None,
-        subject: "Card",
-        expect: Paints,
+        click: Some("button:Interactive fixture card"),
+        subject: "heading:Card activated",
+        expect: PaintsNamed,
     ),
 ]

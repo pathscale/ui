@@ -1,0 +1,51 @@
+// Generated from tests/qa-harness/components.ts by tests/qa-harness/generate-checks.ts. Do not edit.
+//
+// ColorField, mounted alone on its own harness page. Outcomes for
+// this component share one native host; idempotent preparation keeps each
+// outcome reproducible by id against a fresh host as well.
+[
+    (
+        id: "color-field-page-paints",
+        group: "color-field",
+        what: "the ColorField page builds and paints",
+        open: None,
+        hover: None,
+        click: None,
+        subject: "heading:ColorField",
+        expect: PaintsNamed,
+    ),
+    (
+        id: "color-field-renders",
+        group: "color-field",
+        what: "ColorField renders a node of its own",
+        open: None,
+        hover: None,
+        click: None,
+        subject: "fixture",
+        expect: Paints,
+    ),
+    (
+        id: "color-field-accepts",
+        group: "color-field",
+        what: "typing a valid color changes the field value",
+        open: None,
+        hover: None,
+        click: None,
+        subject: "textbox:Color value",
+        expect: ValueChanges,
+        type_into: Some("textbox:Color value"),
+        text: Some("#112233"),
+    ),
+    (
+        id: "color-field-reports",
+        group: "color-field",
+        what: "typing a valid color reports the normalized value",
+        open: None,
+        hover: None,
+        click: None,
+        subject: "heading:ColorField value: #112233",
+        expect: Present,
+        type_into: Some("textbox:Color value"),
+        text: Some("#112233"),
+    ),
+]
