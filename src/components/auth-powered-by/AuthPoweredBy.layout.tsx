@@ -29,6 +29,7 @@ export const AuthPoweredByLayout: Layout<typeof authPoweredBy, AuthPoweredByProp
   <div {...slot.root}>
     <a
       {...slot.link}
+      id={typeof local.id === "string" ? `${local.id}--link` : undefined}
       href={local.href ?? DEFAULT_HREF}
       target="_blank"
       rel="noopener noreferrer"

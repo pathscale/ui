@@ -141,6 +141,12 @@ export type Direction = "row" | "col";
  * but a coin flip at the call site.
  */
 export interface UIBaseProps {
+  /**
+   * Stable DOM identity for scripting, diagnostics, and end-to-end automation.
+   * When a component repeats, derive this from the item's stable key (for
+   * example, `row-${row.id}`) so sibling instances never reuse one DOM id.
+   */
+  id?: string;
   dataTheme?: string;
   class?: string;
   style?: JSX.CSSProperties;

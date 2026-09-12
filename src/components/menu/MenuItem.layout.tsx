@@ -232,6 +232,7 @@ const MenuItemRoot: Layout<typeof componentRecipe, MenuItemRootProps> = () => {
     <MenuItemStateContext value={{ renderState }}>
       <div
         {...others}
+        id={menu?.rootId() ? `${menu.rootId()}--item-${key()}` : (props.id == null ? undefined : String(props.id))}
         ref={(node) => {
           itemRef = node;
           if (typeof props.ref === "function") {

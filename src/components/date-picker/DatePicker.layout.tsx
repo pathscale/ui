@@ -102,7 +102,9 @@ const DatePicker: Layout<typeof componentRecipe, DatePickerProps> = () => {
   });
 
   const uniqueId = createUniqueId();
-  const popoverId = `date-picker-popover-${uniqueId}`;
+  const popoverId = typeof props.id === "string" && props.id.trim()
+    ? `${props.id}--popover`
+    : `date-picker-popover-${uniqueId}`;
 
   const handleDateChange = (date: Date) => {
     selection.setSelectedDate(date);
@@ -141,6 +143,7 @@ const DatePicker: Layout<typeof componentRecipe, DatePickerProps> = () => {
       </Show>
 
       <button
+        id={typeof props.id === "string" ? `${props.id}--trigger` : undefined}
         type="button"
         {...{ class: CLASSES.Trigger.base }}
         data-slot="date-picker-trigger"
@@ -197,6 +200,7 @@ const DatePicker: Layout<typeof componentRecipe, DatePickerProps> = () => {
           aria-modal="false"
         >
           <Calendar
+            id={typeof props.id === "string" ? `${props.id}--calendar` : undefined}
             {...{ class: CLASSES.Calendar.base }}
             data-slot="date-picker-calendar"
             value={selection.selectedDate() ?? undefined}

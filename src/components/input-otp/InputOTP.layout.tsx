@@ -347,6 +347,7 @@ const InputOTPRoot: Layout<typeof componentRecipe, InputOTPRootProps> = () => {
         onFocusOut={handleFocusOut}
       >
         <input
+          id={typeof props.id === "string" ? `${props.id}--input` : undefined}
           ref={inputRef}
           {...{ class: twMerge(CLASSES.Input.base, props.inputClassName) }}
           data-slot="input-otp-input"

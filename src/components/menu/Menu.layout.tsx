@@ -278,6 +278,7 @@ const MenuRoot: Layout<typeof componentRecipe, MenuRootProps> = () => {
   return (
     <MenuContext
       value={{
+        rootId: () => typeof props.id === "string" ? props.id : undefined,
         selectionMode,
         selectedKeys,
         disabledKeys,

@@ -92,7 +92,10 @@ export const ConnectionSettingsLayout: Layout<
   );
 
   const uid = createUniqueId();
-  const fieldId = (name: string) => `connection-settings-${uid}-${name}`;
+  const fieldId = (name: string) =>
+    typeof props.id === "string" && props.id.trim()
+      ? `${props.id}--${name}`
+      : `connection-settings-${uid}-${name}`;
 
   /*
    * The switch reads its own signal rather than the store, and writes to both.
@@ -420,6 +423,7 @@ export const ConnectionSettingsLayout: Layout<
           carries `onSubmit`, for a browser that submits on Enter.
         */}
         <Button
+          id={fieldId("save")}
           type="button"
           flavor="primary"
           disabled={props.store.isApplying}
@@ -428,6 +432,7 @@ export const ConnectionSettingsLayout: Layout<
           {props.labels.save}
         </Button>
         <Button
+          id={fieldId("reset")}
           type="button"
           flavor="secondary"
           disabled={props.store.isApplying}

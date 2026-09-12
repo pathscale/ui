@@ -130,7 +130,9 @@ const DateRangePicker: Layout<typeof componentRecipe, DateRangePickerProps> = ()
   };
 
   const uniqueId = createUniqueId();
-  const popoverId = `date-range-picker-popover-${uniqueId}`;
+  const popoverId = typeof props.id === "string" && props.id.trim()
+    ? `${props.id}--popover`
+    : `date-range-picker-popover-${uniqueId}`;
 
   return (
     <div
@@ -172,6 +174,7 @@ const DateRangePicker: Layout<typeof componentRecipe, DateRangePickerProps> = ()
       </Show>
 
       <button
+        id={typeof props.id === "string" ? `${props.id}--trigger` : undefined}
         type="button"
         {...{ class: CLASSES.Trigger.base }}
         data-slot="date-range-picker-trigger"
@@ -242,6 +245,7 @@ const DateRangePicker: Layout<typeof componentRecipe, DateRangePickerProps> = ()
           aria-modal="false"
         >
           <Calendar
+            id={typeof props.id === "string" ? `${props.id}--calendar` : undefined}
             {...{ class: CLASSES.Calendar.base }}
             data-slot="date-range-picker-calendar"
             selectionMode="range"
