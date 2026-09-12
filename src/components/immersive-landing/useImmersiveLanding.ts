@@ -26,38 +26,43 @@ export function useImmersiveLanding(
   const [internalPage, setInternalPage] = createSignal(initialPage);
   const [isTransitioning, setIsTransitioning] = createSignal(false);
   const [direction, setDirection] = createSignal<"next" | "prev" | null>(null);
+  let pendingPage: string | undefined;
+  let expectedControlledPage: string | undefined;
+  let transitionTimer: ReturnType<typeof setTimeout> | undefined;
 
-  const activePage = isControlled ? controlledPage! : internalPage;
+  const activePage = controlledPage ?? internalPage;
   const currentIndex = () => pages.indexOf(activePage());
   const isFirstPage = () => currentIndex() === 0;
   const isLastPage = () => currentIndex() === pages.length - 1;
 
-  // In controlled mode, animate transitions triggered by external page changes (e.g. browser back/forward)
-  if (isControlled) {
-    let prevPage = controlledPage!();
-    createTrackedEffect(() => {
-      const next = controlledPage!();
-      if (next !== prevPage && !isTransitioning()) {
-        const fromIndex = pages.indexOf(prevPage);
-        const toIndex = pages.indexOf(next);
-        if (toIndex >= 0) {
-          setDirection(toIndex > fromIndex ? "next" : "prev");
-          setIsTransitioning(true);
-          setTimeout(() => {
-            setIsTransitioning(false);
-            setDirection(null);
-          }, transitionDuration);
-        }
-        prevPage = next;
-      }
-    });
-  }
+  const completeTransition = (pageId: string) => {
+    transitionTimer = undefined;
+    setIsTransitioning(false);
+    setDirection(null);
 
-  const navigateToInternal = (pageId: string) => {
-    if (isTransitioning() || !pages.includes(pageId)) return;
-    if (pageId === activePage()) return;
+    if (expectedControlledPage === pageId && activePage() !== pageId) {
+      expectedControlledPage = undefined;
+    }
 
-    const fromPage = activePage();
+    const pageElement = document.getElementById(pageId);
+    if (pageElement) {
+      pageElement.focus({ preventScroll: true });
+    }
+
+    onNavigationComplete?.(pageId);
+
+    const nextPage = pendingPage;
+    pendingPage = undefined;
+    if (nextPage && nextPage !== activePage()) {
+      queueMicrotask(() => navigateToInternal(nextPage));
+    }
+  };
+
+  const beginTransition = (
+    fromPage: string,
+    pageId: string,
+    notifyNavigation: boolean,
+  ) => {
     const fromIndex = pages.indexOf(fromPage);
     const toIndex = pages.indexOf(pageId);
 
@@ -65,21 +70,52 @@ export function useImmersiveLanding(
     setIsTransitioning(true);
     if (!isControlled) setInternalPage(pageId);
 
-    if (onNavigate) onNavigate(fromPage, pageId);
+    if (notifyNavigation) {
+      if (isControlled) expectedControlledPage = pageId;
+      onNavigate?.(fromPage, pageId);
+    }
 
-    setTimeout(() => {
-      setIsTransitioning(false);
-      setDirection(null);
+    transitionTimer = setTimeout(
+      () => completeTransition(pageId),
+      transitionDuration,
+    );
+  };
 
-      // Focus management for accessibility
-      const pageElement = document.getElementById(pageId);
-      if (pageElement) {
-        pageElement.focus({ preventScroll: true });
+  function navigateToInternal(pageId: string) {
+    if (!pages.includes(pageId)) return;
+    if (isTransitioning()) {
+      pendingPage = pageId === activePage() ? undefined : pageId;
+      return;
+    }
+    if (pageId === activePage()) return;
+
+    beginTransition(activePage(), pageId, true);
+  }
+
+  // Route changes initiated by `onNavigate` already own their transition.
+  // Animate only genuinely external changes such as browser back/forward.
+  if (controlledPage) {
+    let previousPage = controlledPage();
+    createTrackedEffect(() => {
+      const nextPage = controlledPage();
+      if (nextPage === previousPage) return;
+
+      const fromPage = previousPage;
+      previousPage = nextPage;
+
+      if (nextPage === expectedControlledPage) {
+        expectedControlledPage = undefined;
+        return;
+      }
+      if (!pages.includes(nextPage)) return;
+      if (isTransitioning()) {
+        pendingPage = nextPage;
+        return;
       }
 
-      if (onNavigationComplete) onNavigationComplete(pageId);
-    }, transitionDuration);
-  };
+      beginTransition(fromPage, nextPage, false);
+    });
+  }
 
   const navigateTo = (pageId: string) => navigateToInternal(pageId);
 
@@ -202,6 +238,10 @@ export function useImmersiveLanding(
       window.removeEventListener("touchend", handleTouchEnd);
       window.removeEventListener("keydown", handleKeyDown);
     };
+  });
+
+  onCleanup(() => {
+    if (transitionTimer !== undefined) clearTimeout(transitionTimer);
   });
 
   return {
