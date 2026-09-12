@@ -183,6 +183,13 @@ export const COMPONENTS: ComponentSpec[] = [
   { id: "card", component: "Card", kind: "display" },
   { id: "chat-bubble", component: "ChatBubble", kind: "display" },
   {
+    id: "close-button",
+    component: "CloseButton",
+    kind: "action",
+    subject: "Close fixture",
+    subjectRole: "button",
+  },
+  {
     id: "checkbox",
     component: "Checkbox",
     kind: "toggle",
@@ -336,7 +343,10 @@ export const COMPONENTS: ComponentSpec[] = [
   {
     id: "drawer",
     component: "Drawer",
-    kind: "display",
+    kind: "overlay",
+    subject: "Open drawer",
+    subjectRole: "button",
+    opens: "heading:Drawer outcome",
   },
   {
     id: "dropdown",

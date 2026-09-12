@@ -230,7 +230,16 @@ const DrawerRoot: Layout<typeof componentRecipe, DrawerRootProps> = () => {
     setIsOpen(false);
   };
 
+  let enterTimer: ReturnType<typeof setTimeout> | undefined;
   let exitTimer: ReturnType<typeof setTimeout> | undefined;
+
+  const finishEntering = () => {
+    if (isOpen() && animState() === "entering") setAnimState("open");
+    if (enterTimer) {
+      clearTimeout(enterTimer);
+      enterTimer = undefined;
+    }
+  };
 
   createTrackedEffect(() => {
     const open = isOpen();
@@ -243,11 +252,23 @@ const DrawerRoot: Layout<typeof componentRecipe, DrawerRootProps> = () => {
       }
       if (state === "closed" || state === "exiting") {
         setAnimState("entering");
+        // A windowed browser advances this after two painted frames so the
+        // entering transform can animate. A headless native host has no
+        // compositor and may never deliver requestAnimationFrame at all; in
+        // that environment the drawer used to remain translated completely
+        // outside the viewport forever. The timer is a lifecycle fallback,
+        // not a second animation clock: whichever path runs first clears it.
+        enterTimer = setTimeout(finishEntering, 50);
         requestAnimationFrame(() => {
-          requestAnimationFrame(() => setAnimState("open"));
+          requestAnimationFrame(finishEntering);
         });
       }
       return;
+    }
+
+    if (enterTimer) {
+      clearTimeout(enterTimer);
+      enterTimer = undefined;
     }
 
     if (state === "open" || state === "entering") {
@@ -257,6 +278,7 @@ const DrawerRoot: Layout<typeof componentRecipe, DrawerRootProps> = () => {
   });
 
   onCleanup(() => {
+    if (enterTimer) clearTimeout(enterTimer);
     if (exitTimer) clearTimeout(exitTimer);
   });
 

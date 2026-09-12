@@ -1,10 +1,8 @@
 import "./CloseButton.css";
 import type { JSX } from "@solidjs/web";
-import {omit, type Component} from "solid-js";
-import { twMerge } from "../../lib/twMerge";
+import { Show } from "solid-js";
 
 import type { UIBaseProps, State } from "../vocabulary";
-import { CLASSES } from "./CloseButton.recipe";
 import type { Layout } from "../../lib/layouts";
 import { componentRecipe } from "./CloseButton.recipe";
 
@@ -20,58 +18,27 @@ export type CloseButtonProps = Omit<JSX.ButtonHTMLAttributes<HTMLButtonElement>,
   };
 
 const CloseButton: Layout<typeof componentRecipe, CloseButtonProps> = () => {
-  const others = omit(
-    props,
-    "children",
-    "class",
-    "variant",
-    "state",
-    "isPending",
-    "startIcon",
-    "endIcon",
-    "type",
-    "dataTheme",
-    "style",
-    "aria-label",
-  );
-
-  const variant = () => props.variant ?? "default";
   const disabled = () => Boolean((props.state === "disabled")) || Boolean(props.isPending);
 
   return (
     <button
-      {...others}
+      {...slot.root}
       type={props.type ?? "button"}
       aria-label={local["aria-label"] ?? "Close"}
-      {...{ class: twMerge(
-        CLASSES.base,
-        CLASSES.variant[variant()],
-        props.class,
-      ) }}
-      data-slot="close-button"
+      onClick={props.onClick}
       data-pending={props.isPending ? "true" : "false"}
       data-theme={props.dataTheme}
       style={props.style}
       disabled={disabled()}
       aria-disabled={disabled() ? "true" : "false"}
     >
-      {props.startIcon ? (
-        <span
-          {...{ class: twMerge(CLASSES.slot.icon, CLASSES.slot.iconStart) }}
-          data-slot="close-button-start-icon"
-        >
-          {props.startIcon}
-        </span>
-      ) : null}
+      <Show when={props.startIcon}>
+        <span {...slot.startIcon}>{props.startIcon}</span>
+      </Show>
       {props.children}
-      {props.endIcon ? (
-        <span
-          {...{ class: twMerge(CLASSES.slot.icon, CLASSES.slot.iconEnd) }}
-          data-slot="close-button-end-icon"
-        >
-          {props.endIcon}
-        </span>
-      ) : null}
+      <Show when={props.endIcon}>
+        <span {...slot.endIcon}>{props.endIcon}</span>
+      </Show>
     </button>
   );
 };

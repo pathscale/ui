@@ -17,12 +17,18 @@ type CalendarNavigationOptions = {
 };
 
 export const useCalendarNavigation = (options: CalendarNavigationOptions) => {
+  const clampDateToBounds = (date: Date) => {
+    const min = options.minDate();
+    const max = options.maxDate();
+    if (min && date < min) return min;
+    if (max && date > max) return max;
+    return date;
+  };
+  const initialFocusedDate = clampDateToBounds(options.initialFocusedDate());
   const [visibleMonth, setVisibleMonth] = createSignal(
-    startOfMonth(options.initialFocusedDate()),
+    startOfMonth(initialFocusedDate),
   );
-  const [focusedDate, setFocusedDate] = createSignal(
-    options.initialFocusedDate(),
-  );
+  const [focusedDate, setFocusedDate] = createSignal(initialFocusedDate);
 
   const clampVisibleMonth = (nextVisibleMonth: Date) => {
     const min = options.minDate();

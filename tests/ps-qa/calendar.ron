@@ -25,6 +25,22 @@
         expect: Paints,
     ),
     (
+        id: "calendar-navigates-to-previous-month",
+        group: "calendar",
+        what: "Previous month changes the visible calendar month",
+        click: Some("#qa-calendar--previous-month"),
+        subject: "heading:June 2025",
+        expect: NameChanges,
+    ),
+    (
+        id: "calendar-navigates-back-to-next-month",
+        group: "calendar",
+        what: "Next month changes the visible calendar month",
+        click: Some("#qa-calendar--next-month"),
+        subject: "heading:May 2025",
+        expect: NameChanges,
+    ),
+    (
         id: "calendar-selects-existing-cell",
         group: "calendar",
         what: "selecting a date updates the existing grid cell",

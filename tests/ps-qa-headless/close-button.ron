@@ -1,0 +1,47 @@
+// Generated from tests/qa-harness/components.ts by tests/qa-harness/generate-checks.ts. Do not edit.
+//
+// CloseButton, mounted alone on its own harness page. Outcomes for
+// this component share one native host; idempotent preparation keeps each
+// outcome reproducible by id against a fresh host as well.
+[
+    (
+        id: "close-button-page-paints",
+        group: "close-button",
+        what: "the CloseButton page builds and paints",
+        open: None,
+        hover: None,
+        click: None,
+        subject: "heading:CloseButton",
+        expect: Present,
+    ),
+    (
+        id: "close-button-renders",
+        group: "close-button",
+        what: "CloseButton renders a node of its own",
+        open: None,
+        hover: None,
+        click: None,
+        subject: "fixture",
+        expect: Paints,
+    ),
+    (
+        id: "close-button-paints",
+        group: "close-button",
+        what: "the CloseButton control is on screen and addressable",
+        open: None,
+        hover: None,
+        click: None,
+        subject: "button:Close fixture",
+        expect: Present,
+    ),
+    (
+        id: "close-button-acts",
+        group: "close-button",
+        what: "activating CloseButton exposes the callback result",
+        open: None,
+        hover: None,
+        click: Some("button:Close fixture"),
+        subject: "heading:Action result: CloseButton complete",
+        expect: Present,
+    ),
+]

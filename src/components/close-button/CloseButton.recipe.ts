@@ -1,13 +1,19 @@
 import { recipe } from "../../lib/layouts";
-export const CLASSES = {
-  base: "close-button",
-  variant: {
-    default: "close-button--default",
+
+export const componentRecipe = recipe({
+  component: "close-button",
+  element: "button",
+  slots: {
+    root: { base: "close-button" },
+    startIcon: { base: "close-button__icon close-button__icon--start" },
+    endIcon: { base: "close-button__icon close-button__icon--end" },
   },
-  slot: {
-    icon: "close-button__icon",
-    iconStart: "close-button__icon--start",
-    iconEnd: "close-button__icon--end",
+  props: {
+    variant: {
+      default: "close-button--default",
+    },
   },
-} as const;
-export const componentRecipe = recipe({component:"close-button",slots:{"close-button":{},"close-button-end-icon":{},"close-button-start-icon":{},"root":{},},});
+  defaults: {
+    variant: "default",
+  },
+});

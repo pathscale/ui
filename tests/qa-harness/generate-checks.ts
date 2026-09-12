@@ -562,6 +562,8 @@ function checksFor(spec: ComponentSpec, profile: Profile): string {
         hover: "None",
         click: `Some("${spec.subjectRole}:${spec.subject}")`,
         subject: `"${spec.opens}"`,
+        // PaintsNamed also requires the named box to intersect the viewport.
+        // That catches an overlay stuck in its off-screen entering transform.
         expect: profile.paints("PaintsNamed"),
       }),
     );
@@ -887,6 +889,14 @@ function checksFor(spec: ComponentSpec, profile: Profile): string {
 
   if (spec.kind === "calendar") {
     records.push(
+      check({ id: '"calendar-navigates-to-previous-month"', group: '"calendar"',
+        what: '"Previous month changes the visible calendar month"',
+        click: 'Some("#qa-calendar--previous-month")',
+        subject: '"heading:June 2025"', expect: "NameChanges" }),
+      check({ id: '"calendar-navigates-back-to-next-month"', group: '"calendar"',
+        what: '"Next month changes the visible calendar month"',
+        click: 'Some("#qa-calendar--next-month")',
+        subject: '"heading:May 2025"', expect: "NameChanges" }),
       check({ id: '"calendar-selects-existing-cell"', group: '"calendar"',
         what: '"selecting a date updates the existing grid cell"',
         prepare: 'Some("gridcell:Sunday, June 15, 2025")',
