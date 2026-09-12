@@ -61,7 +61,7 @@ Exact packed-candidate consumer runs also pass:
 | NoFilter | 132/132 | Its separate documentation placeholder was corrected on PR #340; rebuilt output is clean |
 | Pays | 45/45 | Expanded application-id refusal passes; production build has no phantom UI Iconify warning |
 | Honey public surface | 13/13 | Production build has no phantom UI Iconify warning |
-| JS Software | 599/599 across 13 groups | Exact packed UI candidate; all 101 public families are demonstrated, all 286 discovered controls have an attributed outcome and a stable unique identity, every declared site outcome passes in one host, Slider and Color Picker keyboard and pointer outcomes pass, and the phantom UI Iconify warning is gone |
+| JS Software | 600/600 across 13 groups | Exact packed UI candidate; all 101 public families are demonstrated, all 287 discovered controls have an attributed outcome and a stable unique identity, a read-only Progress is addressed and updated by its authored ID, every declared site outcome passes in one host, Slider and Color Picker keyboard and pointer outcomes pass, and the phantom UI Iconify warning is gone |
 
 ## Harness patch
 
@@ -78,7 +78,7 @@ The engine branch at `9d131c27` passes formatting, 96/96 DOM tests, 6/6
 fragment-navigation tests, and the
 complete script suite. The harness review tree passes formatting,
 80/80 protocol tests with capture enabled, 161/161 ps-qa tests, and the CLI
-tests. Its coordinated JS Software run passes 599/599 with every new pointer
+tests. Its coordinated JS Software run passes 600/600 with every new pointer
 coordinate inside the renderer-reported viewport.
 
 Its required publication order is:
@@ -113,7 +113,7 @@ uncovered product workflow works.
 | [web3.trading #18](https://github.com/pathscale/web3.trading/pull/18) | 103/103 | Public, auth validation, theme/carousel, and guest chat are covered. Authenticated trading is not yet end-to-end proven. |
 | [pays.online #166](https://github.com/pathscale/pays.online/pull/166) | Typecheck, lint, build, 45/45 against UI #292 | Code review can proceed. Deployment is blocked by an obsolete production Honey UUID, no known production Pays registration, and no matching deployed backend. The frontend now refuses the invalid id locally and explains the problem. |
 | [honey.id #332](https://github.com/pathscale/honey.id/pull/332) | 196 defined native checks across five roles; deployed dev 193/196; coordinated local app lifecycle 19/19; recovery runner 33/33 | UI is review-ready. Dev's three failures expose the backend's empty regenerated API key. TOTP confirmation and Telegram enrollment/login remain unproved. |
-| [js.software #54](https://github.com/pathscale/js.software/pull/54) | Typecheck, lint, build, and 599/599 across 13 native groups against the exact packed UI #292 candidate. The showcase maps all 101 public UI families; the inventory finds 286/286 controls with attributed outcomes and zero missing, unstable, or duplicate IDs. Slider and Color Picker paths use keyboard or viewport-bounded pointer input, and every landing-page and header action is exercised. | Review-ready; refresh the UI lock after 3.2.1 publishes. Additional product bugs reported later should receive their own reproductions and outcomes. |
+| [js.software #54](https://github.com/pathscale/js.software/pull/54) | Typecheck, build, and 600/600 across 13 native groups against the exact packed UI #292 candidate. The showcase maps all 101 public UI families; the inventory finds 287/287 controls with attributed outcomes and zero missing, unstable, or duplicate IDs. A read-only Progress is addressed and updated by its authored ID. Slider and Color Picker paths use keyboard or viewport-bounded pointer input, and every landing-page and header action is exercised. | Review-ready; refresh the UI lock after 3.2.1 publishes. Additional product bugs reported later should receive their own reproductions and outcomes. |
 | [nofilter.io #340](https://github.com/pathscale/nofilter.io/pull/340) | Lint, build, 132/132 | Public/auth validation is covered. A real two-participant WebRTC studio session remains unproved. |
 | [24x.ai #11](https://github.com/pathscale/24x.ai/pull/11) | Lint, build, desktop 141/141, phone 20/20 | Session UI uses a Honey application identity workaround. 24x has a dev registration, but no working callback backend for it. |
 | [kard.vip #8](https://github.com/pathscale/kard.vip/pull/8) | 223/223 | Demo behavior is covered; this is not real payment evidence. |
