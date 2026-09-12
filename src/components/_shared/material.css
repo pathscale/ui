@@ -149,6 +149,57 @@
   }
 
   /*
+   * Depth is paint on the existing pane, not another backdrop boundary. The
+   * resolver scales these tokens together from the public depth value, so zero
+   * removes the sheen, edge light, inner glow and shadow while larger values
+   * make the same surface read as thicker glass.
+   */
+  :is(
+    :root.glass [data-material="solid"]:not([data-material-explicit]),
+    [data-material="glass"]
+  )::before {
+    background-image:
+      linear-gradient(
+        to bottom,
+        color-mix(
+          in oklab,
+          var(--glass-highlight-color, white),
+          transparent calc(100% - var(--glass-depth-top-glow-opacity, 8%))
+        ),
+        transparent 28%,
+        color-mix(
+          in oklab,
+          var(--glass-highlight-color, white),
+          transparent calc(100% - var(--glass-depth-bottom-glow-opacity, 12%))
+        )
+      ),
+      linear-gradient(
+        115deg,
+        transparent 20%,
+        color-mix(
+          in oklab,
+          var(--glass-highlight-color, white),
+          transparent calc(100% - var(--glass-depth-sheen-opacity, 7.5%))
+        ) 50%,
+        transparent var(--glass-depth-sheen-size, 70%)
+      );
+    box-shadow:
+      inset 0 var(--border, 1px) 0 0
+        color-mix(
+          in oklab,
+          var(--glass-highlight-color, white),
+          transparent calc(100% - var(--glass-highlight-opacity, 18%))
+        ),
+      inset 0 0 var(--glass-inner-glow-blur, 0px)
+        var(--glass-inner-glow-spread, 0px)
+        rgb(
+          var(--glass-inner-glow-rgb, 255 255 255) /
+          var(--glass-inner-glow-alpha, 0)
+        ),
+      var(--glass-shadow-depth, 0 8px 32px rgb(0 0 0 / 10%));
+  }
+
+  /*
    * Glass inside glass is one pane, not two.
    *
    * A backdrop filter reads the pixels behind it, so nesting one inside another
@@ -174,6 +225,7 @@
   }
 
   [data-material="glass"] [data-material="glass"]::before {
+    background-image: none;
     box-shadow: none;
   }
 
