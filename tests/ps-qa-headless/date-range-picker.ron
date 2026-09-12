@@ -1,0 +1,59 @@
+// Generated from tests/qa-harness/components.ts by tests/qa-harness/generate-checks.ts. Do not edit.
+//
+// DateRangePicker, mounted alone on its own harness page. Outcomes for
+// this component share one native host; idempotent preparation keeps each
+// outcome reproducible by id against a fresh host as well.
+[
+    (
+        id: "date-range-picker-page-paints",
+        group: "date-range-picker",
+        what: "the DateRangePicker page builds and paints",
+        open: None,
+        hover: None,
+        click: None,
+        subject: "heading:DateRangePicker",
+        expect: Present,
+    ),
+    (
+        id: "date-range-picker-renders",
+        group: "date-range-picker",
+        what: "DateRangePicker renders a node of its own",
+        open: None,
+        hover: None,
+        click: None,
+        subject: "fixture",
+        expect: Paints,
+    ),
+    (
+        id: "date-range-picker-opens",
+        group: "date-range-picker",
+        what: "the date range picker opens its calendar dialog",
+        open: None,
+        hover: None,
+        click: Some("button:Jun 15, 2025 Jun 17, 2025"),
+        subject: "dialog:",
+        expect: Present,
+    ),
+    (
+        id: "date-range-picker-starts",
+        group: "date-range-picker",
+        what: "choosing a date starts a pending range",
+        open: None,
+        hover: None,
+        click: Some("gridcell:Tuesday, June 24, 2025"),
+        subject: "gridcell:Tuesday, June 24, 2025",
+        expect: SelectionChanges,
+        prepare: Some("button:Jun 15, 2025 Jun 17, 2025"),
+        prepare_unless: Some("dialog:"),
+    ),
+    (
+        id: "date-range-picker-completes",
+        group: "date-range-picker",
+        what: "choosing a second date completes the controlled range",
+        open: None,
+        hover: None,
+        click: Some("gridcell:Thursday, June 26, 2025"),
+        subject: "heading:DateRangePicker end: 2025-06-26",
+        expect: Present,
+    ),
+]

@@ -1,0 +1,38 @@
+// Generated from tests/qa-harness/components.ts by tests/qa-harness/generate-checks.ts. Do not edit.
+//
+// Join, mounted alone on its own harness page. Outcomes for
+// this component share one native host; idempotent preparation keeps each
+// outcome reproducible by id against a fresh host as well.
+[
+    (
+        id: "join-page-paints",
+        group: "join",
+        what: "the Join page builds and paints",
+        open: None,
+        hover: None,
+        click: None,
+        subject: "heading:Join",
+        expect: Present,
+    ),
+    (
+        id: "join-renders",
+        group: "join",
+        what: "Join renders a node of its own",
+        open: None,
+        hover: None,
+        click: None,
+        subject: "fixture",
+        expect: Paints,
+    ),
+    (
+        id: "join-contains-actions",
+        group: "join",
+        what: "joined buttons remain operable",
+        open: None,
+        hover: None,
+        click: Some("button:First joined button"),
+        subject: "heading:Join selected: first",
+        expect: Present,
+        covers: ["button:* joined button"],
+    ),
+]

@@ -153,6 +153,7 @@ const ImmersiveLanding: Layout<typeof componentRecipe, ImmersiveLandingProps> = 
           storageKey={
             props.firefoxPWAConfig?.storageKey ?? "app_firefox_pwa_dismissed"
           }
+          showDelayMs={props.firefoxPWAConfig?.showDelayMs}
           texts={props.firefoxPWAConfig?.texts}
           onInstall={props.firefoxPWAConfig?.onInstall}
           onDismiss={props.firefoxPWAConfig?.onDismiss}

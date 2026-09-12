@@ -1,0 +1,67 @@
+// Generated from tests/qa-harness/components.ts by tests/qa-harness/generate-checks.ts. Do not edit.
+//
+// RangeCalendar, mounted alone on its own harness page. Outcomes for
+// this component share one native host; idempotent preparation keeps each
+// outcome reproducible by id against a fresh host as well.
+[
+    (
+        id: "range-calendar-page-paints",
+        group: "range-calendar",
+        what: "the RangeCalendar page builds and paints",
+        open: None,
+        hover: None,
+        click: None,
+        subject: "heading:RangeCalendar",
+        expect: PaintsNamed,
+    ),
+    (
+        id: "range-calendar-renders",
+        group: "range-calendar",
+        what: "RangeCalendar renders a node of its own",
+        open: None,
+        hover: None,
+        click: None,
+        subject: "fixture",
+        expect: Paints,
+    ),
+    (
+        id: "range-calendar-starts",
+        group: "range-calendar",
+        what: "choosing a date starts a pending range",
+        open: None,
+        hover: None,
+        click: Some("gridcell:Tuesday, June 24, 2025"),
+        subject: "gridcell:Tuesday, June 24, 2025",
+        expect: SelectionChanges,
+    ),
+    (
+        id: "range-calendar-completes",
+        group: "range-calendar",
+        what: "choosing a second date completes the controlled range",
+        open: None,
+        hover: None,
+        click: Some("gridcell:Thursday, June 26, 2025"),
+        subject: "heading:RangeCalendar end: 2025-06-26",
+        expect: Present,
+    ),
+    (
+        id: "range-calendar-next-month",
+        group: "range-calendar",
+        what: "the next-month control advances the visible calendar",
+        open: None,
+        hover: None,
+        click: Some("button:Next month"),
+        subject: "heading:July 2025",
+        expect: PaintsNamed,
+    ),
+    (
+        id: "range-calendar-previous-month",
+        group: "range-calendar",
+        what: "the previous-month control returns to the prior calendar",
+        open: None,
+        hover: None,
+        click: Some("button:Previous month"),
+        subject: "heading:June 2025",
+        expect: PaintsNamed,
+    ),
+]

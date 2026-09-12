@@ -21,7 +21,7 @@
  * Run: bun run qa:entries (or qa:build, which does it first)
  */
 import { COMPONENTS, validateComponentSpecs } from "./components";
-import { mkdirSync, readdirSync, unlinkSync, writeFileSync } from "node:fs";
+import { mkdirSync, readdirSync, statSync, unlinkSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
 
 /*
@@ -65,6 +65,7 @@ const IMPORT_FORM: Record<string, string> = {
   "Breadcrumb": "named",
   "BreadcrumbItem": "named",
   "Button": "default",
+  "ButtonGroup": "default",
   "Calendar": "default",
   "CardRoot": "named",
   "CardBody": "named",
@@ -73,14 +74,21 @@ const IMPORT_FORM: Record<string, string> = {
   "Card": "default",
   "ChatBubble": "default",
   "Checkbox": "default",
+  "CheckboxGroup": "default",
   "Chip": "default",
   "CloseButton": "default",
+  "ColorArea": "default",
+  "ColorField": "default",
+  "ColorPicker": "default",
+  "ColorSlider": "default",
+  "ColorSwatchPicker": "default",
   "Collapsible": "default",
   "ConnectionSettings": "named",
   "ColorSwatch": "default",
   "ColorWheel": "named",
   "ColorWheelFlower": "named",
   "ComplexColorWheel": "named",
+  "ComboBox": "default",
   "autosize": "named",
   "boundsFromRows": "named",
   "Composer": "default",
@@ -88,6 +96,9 @@ const IMPORT_FORM: Record<string, string> = {
   "shouldSubmit": "named",
   "createDataGrid": "named",
   "DataGrid": "default",
+  "DateField": "default",
+  "DatePicker": "default",
+  "DateRangePicker": "default",
   "DialogBackdrop": "named",
   "DialogBody": "named",
   "DialogCloseTrigger": "named",
@@ -138,6 +149,8 @@ const IMPORT_FORM: Record<string, string> = {
   "useImmersiveLandingContext": "named",
   "InlineEdit": "default",
   "Input": "default",
+  "Join": "default",
+  "Kbd": "default",
   "InputOTP": "default",
   "InputOTPGroup": "named",
   "InputOTPSeparator": "named",
@@ -160,18 +173,24 @@ const IMPORT_FORM: Record<string, string> = {
   "LiveChatBubble": "named",
   "LiveChatPanel": "named",
   "MetalBorder": "named",
+  "Menu": "default",
+  "Meter": "default",
   "Navbar": "default",
+  "NoiseBackground": "default",
   "Pagination": "default",
   "PanelToggle": "named",
   "PasswordField": "named",
   "PasswordRequirements": "named",
   "Popover": "default",
   "Progress": "default",
+  "RadialProgress": "default",
   "Radio": "default",
+  "RangeCalendar": "default",
   "RadioGroup": "named",
   "ScrollArea": "default",
   "Select": "default",
   "Separator": "default",
+  "SizePicker": "named",
   "Skeleton": "default",
   "Slider": "default",
   "Spinner": "default",
@@ -191,6 +210,8 @@ const IMPORT_FORM: Record<string, string> = {
   "getDefaultHueShiftStore": "named",
   "resetHueShift": "named",
   "ThemeColorPicker": "named",
+  "TimeField": "default",
+  "Toolbar": "default",
   "DEFAULT_TOAST_GAP": "named",
   "DEFAULT_MAX_VISIBLE_TOAST": "named",
   "DEFAULT_TOAST_SCALE_FACTOR": "named",
@@ -208,6 +229,7 @@ const IMPORT_FORM: Record<string, string> = {
   "toast": "named",
   "toastQueue": "named",
   "Tooltip": "default",
+  "VideoPreview": "named",
   "TooltipArrow": "named",
   "TooltipContent": "named",
   "TooltipTrigger": "named",
@@ -250,21 +272,32 @@ const MODULE_PATHS: Record<string, string> = {
   "badge": "components/badge",
   "breadcrumb": "components/breadcrumb",
   "button": "components/button",
+  "button-group": "components/button-group",
   "calendar": "components/calendar",
   "card": "components/card",
   "chat-bubble": "components/chatbubble",
   "checkbox": "components/checkbox",
+  "checkbox-group": "components/checkbox-group",
   "chip": "components/chip",
   "close-button": "components/close-button",
+  "color-area": "components/color-area",
+  "color-field": "components/color-field",
+  "color-picker": "components/color-picker",
+  "color-slider": "components/color-slider",
+  "color-swatch-picker": "components/color-swatch-picker",
   "collapsible": "components/collapsible",
   "connection-settings": "components/connection-settings",
   "color-swatch": "components/color-swatch",
   "color-wheel": "components/color-wheel",
   "color-wheel-flower": "components/color-wheel-flower",
   "complex-color-wheel": "components/color-wheel",
+  "combo-box": "components/combo-box",
   "composer": "components/composer",
   "cookie-consent": "components/immersive-landing",
   "data-grid": "components/data-grid",
+  "date-field": "components/date-field",
+  "date-picker": "components/date-picker",
+  "date-range-picker": "components/date-range-picker",
   "dialog": "components/dialog",
   "dock": "components/dock",
   "drawer": "components/drawer",
@@ -274,6 +307,7 @@ const MODULE_PATHS: Record<string, string> = {
   "fieldset": "components/fieldset",
   "firefox-pwa-banner": "components/immersive-landing",
   "flex": "components/flex",
+  "flex-grid": "components/flex-grid",
   "footer": "components/footer",
   "form": "components/form",
   "glow-card": "components/glow-card",
@@ -283,6 +317,9 @@ const MODULE_PATHS: Record<string, string> = {
   "immersive-landing": "components/immersive-landing",
   "inline-edit": "components/inline-edit",
   "input": "components/input",
+  "input-otp": "components/input-otp",
+  "join": "components/join",
+  "kbd": "components/kbd",
   "label": "components/label",
   "language-switcher": "components/language-switcher",
   "link": "components/link",
@@ -290,7 +327,10 @@ const MODULE_PATHS: Record<string, string> = {
   "live-chat-bubble": "components/live-chat",
   "live-chat-panel": "components/live-chat",
   "metal-border": "components/metal-border",
+  "menu": "components/menu",
+  "meter": "components/meter",
   "navbar": "components/navbar",
+  "noise-background": "components/noise-background",
   "pwa-install-prompt": "components/immersive-landing",
   "pagination": "components/pagination",
   "panel-toggle": "components/panel-toggle",
@@ -298,10 +338,14 @@ const MODULE_PATHS: Record<string, string> = {
   "password-requirements": "components/password-requirements",
   "popover": "components/popover",
   "progress": "components/progress",
+  "radial-progress": "components/radial-progress",
   "radio": "components/radio",
+  "radio-group": "components/radio-group",
+  "range-calendar": "components/range-calendar",
   "scroll-area": "components/scroll-area",
   "select": "components/select",
   "separator": "components/separator",
+  "size-picker": "components/size-picker",
   "skeleton": "components/skeleton",
   "slider": "components/slider",
   "spinner": "components/spinner",
@@ -311,14 +355,46 @@ const MODULE_PATHS: Record<string, string> = {
   "text": "components/text",
   "textarea": "components/textarea",
   "theme-color-picker": "components/theme-color-picker",
+  "time-field": "components/time-field",
+  "toolbar": "components/toolbar",
   "toast": "components/toast",
-  "tooltip": "components/tooltip"
+  "tooltip": "components/tooltip",
+  "video-preview": "components/video-preview"
 };
 
 const outputDir = join(import.meta.dir, "entries");
 mkdirSync(outputDir, { recursive: true });
 
 validateComponentSpecs();
+
+/*
+ * Coverage is a source-tree invariant, not a number copied into a README.
+ * Every visual component family gets a dedicated harness surface. Aliases are
+ * explicit so a newly added directory cannot disappear between a package
+ * export and the native QA matrix without breaking qa:entries.
+ */
+const SOURCE_FAMILY_TO_HARNESS: Record<string, readonly string[]> = {
+  chatbubble: ["chat-bubble"],
+  "live-chat": ["live-chat-bubble", "live-chat-panel"],
+};
+const NON_VISUAL_SOURCE_FAMILIES = new Set(["_shared", "status"]);
+const harnessIds = new Set(COMPONENTS.map((spec) => spec.id));
+const sourceComponentsDir = join(import.meta.dir, "../../src/components");
+for (const family of readdirSync(sourceComponentsDir)) {
+  if (
+    NON_VISUAL_SOURCE_FAMILIES.has(family) ||
+    !statSync(join(sourceComponentsDir, family)).isDirectory()
+  ) {
+    continue;
+  }
+  const requiredIds = SOURCE_FAMILY_TO_HARNESS[family] ?? [family];
+  const missing = requiredIds.filter((id) => !harnessIds.has(id));
+  if (missing.length > 0) {
+    throw new Error(
+      `${family}: source component family has no QA harness page (${missing.join(", ")})`,
+    );
+  }
+}
 
 const expectedFiles = new Set(COMPONENTS.map((spec) => `${spec.id}.tsx`));
 for (const file of readdirSync(outputDir)) {

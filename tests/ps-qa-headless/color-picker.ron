@@ -1,0 +1,63 @@
+// Generated from tests/qa-harness/components.ts by tests/qa-harness/generate-checks.ts. Do not edit.
+//
+// ColorPicker, mounted alone on its own harness page. Outcomes for
+// this component share one native host; idempotent preparation keeps each
+// outcome reproducible by id against a fresh host as well.
+[
+    (
+        id: "color-picker-page-paints",
+        group: "color-picker",
+        what: "the ColorPicker page builds and paints",
+        open: None,
+        hover: None,
+        click: None,
+        subject: "heading:ColorPicker",
+        expect: Present,
+    ),
+    (
+        id: "color-picker-renders",
+        group: "color-picker",
+        what: "ColorPicker renders a node of its own",
+        open: None,
+        hover: None,
+        click: None,
+        subject: "fixture",
+        expect: Paints,
+    ),
+    (
+        id: "color-picker-hue-changes",
+        group: "color-picker",
+        what: "the composed hue slider changes the controlled color",
+        open: None,
+        hover: None,
+        click: None,
+        subject: "slider:Hue",
+        expect: ValueChanges,
+        key: Some("ArrowRight"),
+        key_on: Some("slider:Hue"),
+    ),
+    (
+        id: "color-picker-area-changes",
+        group: "color-picker",
+        what: "the composed color area changes the controlled color",
+        open: None,
+        hover: None,
+        click: None,
+        subject: "slider:Color area",
+        expect: ValueChanges,
+        key: Some("ArrowRight"),
+        key_on: Some("slider:Color area"),
+    ),
+    (
+        id: "color-picker-field-reports",
+        group: "color-picker",
+        what: "the composed color field reports a typed literal",
+        open: None,
+        hover: None,
+        click: None,
+        subject: "heading:ColorPicker value:",
+        expect: NameChanges,
+        type_into: Some("textbox:Color value"),
+        text: Some("#112233"),
+    ),
+]

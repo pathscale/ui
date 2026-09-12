@@ -959,6 +959,7 @@ extensionUrl?: string
 icon?: string | JSX.Element
 onDismiss?: () => void
 onInstall?: () => void
+showDelayMs?: number
 storageKey?: string
 texts?: FirefoxPWABannerTexts
 ```

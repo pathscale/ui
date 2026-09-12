@@ -1,0 +1,51 @@
+// Generated from tests/qa-harness/components.ts by tests/qa-harness/generate-checks.ts. Do not edit.
+//
+// TimeField, mounted alone on its own harness page. Outcomes for
+// this component share one native host; idempotent preparation keeps each
+// outcome reproducible by id against a fresh host as well.
+[
+    (
+        id: "time-field-page-paints",
+        group: "time-field",
+        what: "the TimeField page builds and paints",
+        open: None,
+        hover: None,
+        click: None,
+        subject: "heading:TimeField",
+        expect: Present,
+    ),
+    (
+        id: "time-field-renders",
+        group: "time-field",
+        what: "TimeField renders a node of its own",
+        open: None,
+        hover: None,
+        click: None,
+        subject: "fixture",
+        expect: Paints,
+    ),
+    (
+        id: "time-field-accepts",
+        group: "time-field",
+        what: "typing changes the time field value",
+        open: None,
+        hover: None,
+        click: None,
+        subject: "textbox:Time value",
+        expect: ValueChanges,
+        type_into: Some("textbox:Time value"),
+        text: Some("12:34"),
+    ),
+    (
+        id: "time-field-reports",
+        group: "time-field",
+        what: "typing reports the time value",
+        open: None,
+        hover: None,
+        click: None,
+        subject: "heading:TimeField value: 12:34",
+        expect: Present,
+        type_into: Some("textbox:Time value"),
+        text: Some("12:34"),
+    ),
+]

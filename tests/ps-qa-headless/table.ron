@@ -25,13 +25,13 @@
         expect: Paints,
     ),
     (
-        id: "table-paints",
+        id: "table-sorts",
         group: "table",
-        what: "the Table reaches the renderer with a box",
+        what: "a sortable table column reports its next direction",
         open: None,
         hover: None,
-        click: None,
-        subject: "Table",
-        expect: Present,
+        click: Some("Name fixture"),
+        subject: "heading:Table sort:",
+        expect: NameChanges,
     ),
 ]

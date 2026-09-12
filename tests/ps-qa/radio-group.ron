@@ -1,0 +1,48 @@
+// Generated from tests/qa-harness/components.ts by tests/qa-harness/generate-checks.ts. Do not edit.
+//
+// RadioGroup, mounted alone on its own harness page. Outcomes for
+// this component share one native host; idempotent preparation keeps each
+// outcome reproducible by id against a fresh host as well.
+[
+    (
+        id: "radio-group-page-paints",
+        group: "radio-group",
+        what: "the RadioGroup page builds and paints",
+        open: None,
+        hover: None,
+        click: None,
+        subject: "heading:RadioGroup",
+        expect: PaintsNamed,
+    ),
+    (
+        id: "radio-group-renders",
+        group: "radio-group",
+        what: "RadioGroup renders a node of its own",
+        open: None,
+        hover: None,
+        click: None,
+        subject: "fixture",
+        expect: Paints,
+    ),
+    (
+        id: "radio-group-selects",
+        group: "radio-group",
+        what: "choosing another grouped radio changes controlled selection",
+        open: None,
+        hover: None,
+        click: Some("radio:Second radio"),
+        subject: "radio:Second radio",
+        expect: SelectionChanges,
+        covers: ["radio:* radio"],
+    ),
+    (
+        id: "radio-group-reports",
+        group: "radio-group",
+        what: "choosing another grouped radio reports its value",
+        open: None,
+        hover: None,
+        click: Some("radio:Second radio"),
+        subject: "heading:RadioGroup value: second",
+        expect: Present,
+    ),
+]

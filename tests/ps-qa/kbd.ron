@@ -1,0 +1,37 @@
+// Generated from tests/qa-harness/components.ts by tests/qa-harness/generate-checks.ts. Do not edit.
+//
+// Kbd, mounted alone on its own harness page. Outcomes for
+// this component share one native host; idempotent preparation keeps each
+// outcome reproducible by id against a fresh host as well.
+[
+    (
+        id: "kbd-page-paints",
+        group: "kbd",
+        what: "the Kbd page builds and paints",
+        open: None,
+        hover: None,
+        click: None,
+        subject: "heading:Kbd",
+        expect: PaintsNamed,
+    ),
+    (
+        id: "kbd-renders",
+        group: "kbd",
+        what: "Kbd renders a node of its own",
+        open: None,
+        hover: None,
+        click: None,
+        subject: "fixture",
+        expect: Paints,
+    ),
+    (
+        id: "kbd-paints",
+        group: "kbd",
+        what: "the Kbd reaches the renderer with a box",
+        open: None,
+        hover: None,
+        click: None,
+        subject: "Kbd",
+        expect: Paints,
+    ),
+]

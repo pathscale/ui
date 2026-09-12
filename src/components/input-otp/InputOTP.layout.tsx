@@ -117,6 +117,7 @@ const InputOTPRoot: Layout<typeof componentRecipe, InputOTPRootProps> = () => {
     "onMouseDown",
     "onFocusOut",
     "aria-invalid",
+    "aria-label",
     "ref",
   );
 
@@ -358,6 +359,7 @@ const InputOTPRoot: Layout<typeof componentRecipe, InputOTPRootProps> = () => {
           disabled={isDisabled()}
           aria-disabled={isDisabled() ? "true" : undefined}
           aria-invalid={isInvalid() ? "true" : undefined}
+          aria-label={local["aria-label"]}
           autocomplete="one-time-code"
           onFocus={() => {
             setIsFocused(true);
@@ -404,7 +406,7 @@ const InputOTPSlot: Layout<typeof componentRecipe, InputOTPSlotProps> = () => {
   const char = () => context?.chars()[props.index] ?? "";
   const isActive = () =>
     Boolean(context?.isFocused()) &&
-    !Boolean(context?.isDisabled()) &&
+    !context?.isDisabled() &&
     (context?.activeIndex() ?? 0) === props.index;
 
   const handleMouseDown: JSX.EventHandlerUnion<HTMLDivElement, MouseEvent> = (event) => {

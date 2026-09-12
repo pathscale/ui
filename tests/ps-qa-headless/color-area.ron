@@ -1,0 +1,62 @@
+// Generated from tests/qa-harness/components.ts by tests/qa-harness/generate-checks.ts. Do not edit.
+//
+// ColorArea, mounted alone on its own harness page. Outcomes for
+// this component share one native host; idempotent preparation keeps each
+// outcome reproducible by id against a fresh host as well.
+[
+    (
+        id: "color-area-page-paints",
+        group: "color-area",
+        what: "the ColorArea page builds and paints",
+        open: None,
+        hover: None,
+        click: None,
+        subject: "heading:ColorArea",
+        expect: Present,
+    ),
+    (
+        id: "color-area-renders",
+        group: "color-area",
+        what: "ColorArea renders a node of its own",
+        open: None,
+        hover: None,
+        click: None,
+        subject: "fixture",
+        expect: Paints,
+    ),
+    (
+        id: "color-area-keyboard-changes",
+        group: "color-area",
+        what: "ArrowRight changes the controlled saturation",
+        open: None,
+        hover: None,
+        click: None,
+        subject: "slider:Color area",
+        expect: ValueChanges,
+        key: Some("ArrowRight"),
+        key_on: Some("slider:Color area"),
+    ),
+    (
+        id: "color-area-reports",
+        group: "color-area",
+        what: "keyboard adjustment reports the new color area value",
+        open: None,
+        hover: None,
+        click: None,
+        subject: "heading:ColorArea changed",
+        expect: Present,
+        key: Some("ArrowRight"),
+        key_on: Some("slider:Color area"),
+    ),
+    (
+        id: "color-area-pointer-changes",
+        group: "color-area",
+        what: "pointer dragging changes the controlled saturation",
+        open: None,
+        hover: None,
+        click: None,
+        subject: "slider:Color area",
+        expect: ValueChanges,
+        pointer_drag: Some((from: "slider:Color area", dx: -80.0, dy: 20.0, steps: 4)),
+    ),
+]

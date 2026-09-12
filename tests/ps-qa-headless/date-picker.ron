@@ -1,0 +1,49 @@
+// Generated from tests/qa-harness/components.ts by tests/qa-harness/generate-checks.ts. Do not edit.
+//
+// DatePicker, mounted alone on its own harness page. Outcomes for
+// this component share one native host; idempotent preparation keeps each
+// outcome reproducible by id against a fresh host as well.
+[
+    (
+        id: "date-picker-page-paints",
+        group: "date-picker",
+        what: "the DatePicker page builds and paints",
+        open: None,
+        hover: None,
+        click: None,
+        subject: "heading:DatePicker",
+        expect: Present,
+    ),
+    (
+        id: "date-picker-renders",
+        group: "date-picker",
+        what: "DatePicker renders a node of its own",
+        open: None,
+        hover: None,
+        click: None,
+        subject: "fixture",
+        expect: Paints,
+    ),
+    (
+        id: "date-picker-opens",
+        group: "date-picker",
+        what: "the date picker opens its calendar dialog",
+        open: None,
+        hover: None,
+        click: Some("button:Jun 15, 2025"),
+        subject: "dialog:",
+        expect: Present,
+    ),
+    (
+        id: "date-picker-selects",
+        group: "date-picker",
+        what: "choosing a date reports the controlled value",
+        open: None,
+        hover: None,
+        click: Some("gridcell:Tuesday, June 24, 2025"),
+        subject: "heading:DatePicker value: 2025-06-24",
+        expect: Present,
+        prepare: Some("button:Jun 15, 2025"),
+        prepare_unless: Some("dialog:"),
+    ),
+]

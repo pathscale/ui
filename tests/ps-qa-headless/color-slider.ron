@@ -1,0 +1,62 @@
+// Generated from tests/qa-harness/components.ts by tests/qa-harness/generate-checks.ts. Do not edit.
+//
+// ColorSlider, mounted alone on its own harness page. Outcomes for
+// this component share one native host; idempotent preparation keeps each
+// outcome reproducible by id against a fresh host as well.
+[
+    (
+        id: "color-slider-page-paints",
+        group: "color-slider",
+        what: "the ColorSlider page builds and paints",
+        open: None,
+        hover: None,
+        click: None,
+        subject: "heading:ColorSlider",
+        expect: Present,
+    ),
+    (
+        id: "color-slider-renders",
+        group: "color-slider",
+        what: "ColorSlider renders a node of its own",
+        open: None,
+        hover: None,
+        click: None,
+        subject: "fixture",
+        expect: Paints,
+    ),
+    (
+        id: "color-slider-keyboard-changes",
+        group: "color-slider",
+        what: "ArrowRight changes the controlled hue",
+        open: None,
+        hover: None,
+        click: None,
+        subject: "slider:Hue",
+        expect: ValueChanges,
+        key: Some("ArrowRight"),
+        key_on: Some("slider:Hue"),
+    ),
+    (
+        id: "color-slider-reports",
+        group: "color-slider",
+        what: "the hue slider reports the changed value",
+        open: None,
+        hover: None,
+        click: None,
+        subject: "heading:ColorSlider changed",
+        expect: Present,
+        key: Some("ArrowRight"),
+        key_on: Some("slider:Hue"),
+    ),
+    (
+        id: "color-slider-pointer-changes",
+        group: "color-slider",
+        what: "pointer dragging changes the controlled hue",
+        open: None,
+        hover: None,
+        click: None,
+        subject: "slider:Hue",
+        expect: ValueChanges,
+        pointer_drag: Some((from: "slider:Hue", dx: 100.0, dy: 0.0, steps: 4)),
+    ),
+]

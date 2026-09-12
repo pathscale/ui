@@ -679,3 +679,8 @@ export {
   glassTokensToCss,
   resolveGlassTokens,
 } from "./styles/glass";
+export {
+  componentFamilies,
+  type ComponentFamily,
+  type ComponentFamilyId,
+} from "./component-families";

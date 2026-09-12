@@ -4,7 +4,8 @@
 agents alike, and for every consuming application. Those apps link here rather than
 keeping their own copy — one library, one set of conventions, no drift.
 
-SolidJS component library, HeroUI-parity API, daisyUI-style theming. ~104 components.
+SolidJS component library, HeroUI-parity API, daisyUI-style theming. 101 public
+component families.
 
 This file is **how to USE the library** (as a consumer, or when writing demos and
 examples). For **modifying the library itself**, read
@@ -25,6 +26,11 @@ import "@pathscale/ui/index.css";                              // tokens + theme
 
 Subpath exports also exist: `./components/*`, `./primitives/*`, `./hooks/*`, `./motion`,
 `./styles/*`.
+
+`componentFamilies` is the canonical public visual-family inventory. Documentation
+and showcase applications can import it with `ComponentFamily` and
+`ComponentFamilyId` from the root barrel, then fail their own build when a newly
+shipped family has no page or example.
 
 Layout components require the application compiler before the normal Solid transform. See [Layouts](./layouts.md) for the Rsbuild configuration, exact failure behavior, and porting report.
 
@@ -154,6 +160,11 @@ Components require `solid-layouts >=0.2.4` so caller styles reach their root ele
   also honoured properly now: `role="presentation"` no longer leaves
   `tabindex="0"` behind.
 - `Slider.onChange` reports continuous values. Optional `Slider.onChangeEnd` reports the final changed value once on pointer release, pointer cancellation, keyboard release, or blur fallback. Its visible `label` is also copied to the semantic slider's `aria-label`, because not every renderer resolves `aria-labelledby` across a visually hidden label.
+- `FirefoxPWABanner` waits 2000ms before appearing by default. Pass
+  `showDelayMs` when the surrounding onboarding flow needs a different delay;
+  the same option is available as `ImmersiveLanding.firefoxPWAConfig.showDelayMs`.
+  The banner still applies its Firefox, standalone-mode, and dismissal checks
+  before starting that delay.
 - `Collapsible.Content` retains closed content by default. Set `keepMounted={false}` to mount it only while expanded; the check is reactive, so it mounts and unmounts as the state changes.
 - `Popover` accepts `anchorRect` as a rectangle or rectangle accessor when content must be positioned without a trigger element.
 - Compound components: `Dialog.Trigger`, `Tabs.List`, `Select.Option`, etc. (`Object.assign` statics; also exported flat: `AccordionRoot`, `AlertTitle`, …). Parts are styleable/testable via `data-slot="..."` and state attrs (`data-open`, `data-selected`, `data-invalid`).

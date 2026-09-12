@@ -1,3 +1,5 @@
+import { componentFamilies } from "../../src/component-families";
+
 /*
  * Every component the harness can mount, and what a person can do to it.
  *
@@ -60,6 +62,7 @@ export type ComponentKind =
   | "overlay"
   | "tabs"
   | "adjustment"
+  | "custom"
   | "display"
   /*
    * settings - the panel swaps to plain inputs behind a toggle and commits them
@@ -130,21 +133,65 @@ export type ComponentSpec = {
   measure?: { subject: string; size: string };
   /** Named painted family that must meet the native contrast floor. */
   contrast?: string;
+  /** Component-specific native outcomes for behavior outside the shared kinds. */
+  outcomes?: {
+    suffix: string;
+    what: string;
+    subject: string;
+    expect: string;
+    paint?: boolean;
+    hover?: string;
+    covers?: string[];
+    click?: string;
+    prepare?: string;
+    prepareUnless?: string;
+    settleAfterMs?: number;
+    key?: string;
+    keyOn?: string;
+    typeInto?: string;
+    text?: string;
+    pointerDrag?: { from: string; dx: number; dy: number; steps: number };
+  }[];
 };
 
 export const COMPONENTS: ComponentSpec[] = [
   {
     id: "accordion",
     component: "Accordion",
-    kind: "display",
+    kind: "custom",
+    outcomes: [
+      { suffix: "opens", what: "activating an accordion trigger reveals its panel", click: "button:First section", subject: "heading:First panel", expect: "PaintsNamed", paint: true },
+      { suffix: "reports", what: "the accordion reports its controlled selection", click: "button:First section", subject: "heading:Accordion value:", expect: "NameChanges" },
+    ],
   },
-  { id: "address", component: "Address", kind: "display" },
-  { id: "alert", component: "Alert", kind: "display" },
+  {
+    id: "address", component: "Address", kind: "custom",
+    outcomes: [
+      { suffix: "copies", what: "copying an address reports the full value to its caller", click: "button:Copy address", subject: "heading:Address copied:", expect: "NameChanges" },
+    ],
+  },
+  {
+    id: "alert", component: "Alert", kind: "custom",
+    outcomes: [
+      { suffix: "dismisses", what: "the alert dismiss control invokes its owner", click: "button:Dismiss fixture alert", subject: "heading:Alert dismissed", expect: "PaintsNamed", paint: true },
+    ],
+  },
   { id: "auth-card", component: "AuthCard", kind: "display" },
   { id: "auth-field-group", component: "AuthFieldGroup", kind: "display" },
-  { id: "auth-footer-links", component: "AuthFooterLinks", kind: "display" },
+  {
+    id: "auth-footer-links", component: "AuthFooterLinks", kind: "custom",
+    outcomes: [
+      { suffix: "follows-link", what: "an auth footer link invokes its callback before navigation", click: "link:Privacy fixture", subject: "heading:Auth footer action:", expect: "NameChanges" },
+      { suffix: "runs-action", what: "an auth footer action remains a semantic button", click: "button:Help fixture", subject: "heading:Auth footer action:", expect: "NameChanges" },
+    ],
+  },
   { id: "auth-message", component: "AuthMessage", kind: "display" },
-  { id: "auth-powered-by", component: "AuthPoweredBy", kind: "display" },
+  {
+    id: "auth-powered-by", component: "AuthPoweredBy", kind: "custom",
+    outcomes: [
+      { suffix: "navigates", what: "the powered-by attribution exposes an operable Honey link", click: "link:Secure Auth by Honey", subject: "heading:Honey link activated", expect: "PaintsNamed", paint: true },
+    ],
+  },
   {
     id: "auth-submit-button",
     component: "AuthSubmitButton",
@@ -154,7 +201,12 @@ export const COMPONENTS: ComponentSpec[] = [
   },
   { id: "avatar", component: "Avatar", kind: "display" },
   { id: "badge", component: "Badge", kind: "display" },
-  { id: "breadcrumb", component: "Breadcrumb", kind: "display" },
+  {
+    id: "breadcrumb", component: "Breadcrumb", kind: "custom",
+    outcomes: [
+      { suffix: "navigates", what: "a breadcrumb link remains operable inside the compound list", click: "link:Products fixture", subject: "heading:Breadcrumb activated", expect: "PaintsNamed", paint: true },
+    ],
+  },
   {
     id: "button",
     component: "Button",
@@ -180,7 +232,12 @@ export const COMPONENTS: ComponentSpec[] = [
     subject: "Tuesday, June 24, 2025",
     subjectRole: "gridcell",
   },
-  { id: "card", component: "Card", kind: "display" },
+  {
+    id: "card", component: "Card", kind: "custom",
+    outcomes: [
+      { suffix: "activates", what: "an interactive card invokes its consumer callback", click: "button:Interactive fixture card", subject: "heading:Card activated", expect: "PaintsNamed", paint: true },
+    ],
+  },
   { id: "chat-bubble", component: "ChatBubble", kind: "display" },
   {
     id: "close-button",
@@ -193,10 +250,15 @@ export const COMPONENTS: ComponentSpec[] = [
     id: "checkbox",
     component: "Checkbox",
     kind: "toggle",
-    // Measured: role `checkbox`, empty name, 1x1 at (79,116).
+    subject: "Checkbox",
     subjectRole: "checkbox",
   },
-  { id: "chip", component: "Chip", kind: "display" },
+  {
+    id: "chip", component: "Chip", kind: "custom",
+    outcomes: [
+      { suffix: "removes", what: "the removable chip invokes its owner", click: "button:Remove fixture chip", subject: "heading:Chip removed", expect: "PaintsNamed", paint: true },
+    ],
+  },
   {
     id: "collapsible",
     component: "Collapsible",
@@ -235,18 +297,10 @@ export const COMPONENTS: ComponentSpec[] = [
   {
     id: "color-swatch",
     component: "ColorSwatch",
-    // Measured: role `option`, 32x32, named "Color undefined". Not a button,
-    // and not a menu, so `value` generated three checks against a control that
-    // does not exist.
-    //
-    // The name is a real defect rather than a fixture artefact: the component
-    // interpolates a colour prop into its accessible name without checking it
-    // is set, so a swatch with no colour announces itself as "Color undefined"
-    // to anyone using assistive technology. Left asserted as measured, so the
-    // check goes green only once that is fixed and the name changes.
-    kind: "display",
-    subject: "Color undefined",
-    subjectRole: "option",
+    kind: "custom",
+    outcomes: [
+      { suffix: "selects", what: "a standalone swatch reports its color to its owner", click: "option:Fixture blue", subject: "heading:ColorSwatch selected: #0000ff", expect: "PaintsNamed", paint: true },
+    ],
   },
   /*
    * The flower on its own, with no `ThemeColorPicker` around it.
@@ -265,7 +319,7 @@ export const COMPONENTS: ComponentSpec[] = [
   {
     id: "color-wheel-flower",
     component: "ColorWheelFlower",
-    kind: "display",
+    kind: "custom",
     /*
      * The centre petal, by name.
      *
@@ -277,16 +331,24 @@ export const COMPONENTS: ComponentSpec[] = [
      */
     subject: "Reset to neutral",
     subjectRole: "radio",
+    outcomes: [
+      { suffix: "selects", what: "a flower petal changes the controlled color", click: "radio:Theme color #DDA82C", subject: "radio:Theme color #DDA82C", expect: "SelectionChanges", covers: ["radio:*"] },
+      { suffix: "reports", what: "the standalone flower reports the selected color", click: "radio:Theme color #DD732C", subject: "heading:ColorWheelFlower changed", expect: "PaintsNamed", paint: true },
+    ],
   },
   {
     id: "color-wheel",
     component: "ColorWheel",
-    kind: "display",
+    kind: "custom",
+    outcomes: [
+      { suffix: "selects", what: "a color wheel petal changes the controlled selection", click: "radio:Theme color #DDA82C", subject: "radio:Theme color #DDA82C", expect: "SelectionChanges", covers: ["radio:*"] },
+      { suffix: "reports", what: "the color wheel reports the selected literal", click: "radio:Theme color #DD732C", subject: "heading:ColorWheel value:", expect: "NameChanges" },
+    ],
   },
   {
     id: "complex-color-wheel",
     component: "ComplexColorWheel",
-    kind: "adjustment",
+    kind: "custom",
     subject: "Strength 20",
     subjectRole: "button",
     geometry: {
@@ -311,25 +373,42 @@ export const COMPONENTS: ComponentSpec[] = [
       },
     },
     contrast: "Theme color ",
+    outcomes: [
+      { suffix: "adjusts", what: "choosing an adjustment updates its controlled selection", click: "button:Strength 20", subject: "button:Strength 20", expect: "SelectionChanges", covers: ["button:Strength *"] },
+      { suffix: "selects-color", what: "choosing a flower petal updates the controlled color", click: "radio:Theme color #DDA82C", subject: "radio:Theme color #DDA82C", expect: "SelectionChanges", covers: ["radio:*"] },
+    ],
   },
   {
     id: "composer",
     component: "Composer",
-    // Measured: role `textbox` (empty name) and `button:Send`, disabled until
-    // there is something to send.
-    kind: "action",
-    subject: "Send",
-    subjectRole: "button",
+    kind: "custom",
+    outcomes: [
+      { suffix: "accepts", what: "typing into Composer updates its controlled draft", typeInto: "textbox:Fixture message", text: "QA message", subject: "heading:Composer draft: QA message", expect: "PaintsNamed", paint: true },
+      { suffix: "submits", what: "sending Composer reports its trimmed message", click: "button:Send", subject: "heading:Composer submitted: QA message", expect: "PaintsNamed", paint: true },
+    ],
   },
   {
     id: "cookie-consent",
     component: "CookieConsent",
-    kind: "display",
+    kind: "custom",
+    outcomes: [
+      { suffix: "manages", what: "cookie consent opens its preference dialog", click: "button:Manage M", subject: "heading:Manage M preferences", expect: "PaintsNamed", paint: true, covers: ["button:Manage *"] },
+      { suffix: "saves-custom", what: "saving managed preferences reports custom consent", click: "button:Save M", subject: "heading:Cookie consent M: custom", expect: "PaintsNamed", paint: true },
+      { suffix: "accepts-all", what: "accepting all cookies reports full consent", click: "button:Accept all A", subject: "heading:Cookie consent A: all", expect: "PaintsNamed", paint: true, covers: ["button:Accept all *"] },
+      { suffix: "declines", what: "declining optional cookies reports essential consent", click: "button:Decline D", subject: "heading:Cookie consent D: essential", expect: "PaintsNamed", paint: true, covers: ["button:Decline *"] },
+    ],
   },
   {
     id: "data-grid",
     component: "DataGrid",
-    kind: "display",
+    kind: "custom",
+    outcomes: [
+      { suffix: "sorts", what: "a sortable grid column reports its next direction", click: "columnheader:Name", subject: "heading:Grid sort:", expect: "NameChanges" },
+      { suffix: "selects-row", what: "a row checkbox reports the selected row identity", click: "checkbox:Select row", subject: "heading:Grid selection:", expect: "NameChanges", covers: ["checkbox:Select row"] },
+      { suffix: "selects-page", what: "the select-all checkbox selects every row on the current page", click: "checkbox:Select all rows", subject: "heading:Grid selection:", expect: "NameChanges" },
+      { suffix: "pages", what: "the grid pager reports the next page", click: "button:Next page", subject: "heading:Grid page:", expect: "NameChanges" },
+      { suffix: "filters", what: "the grid search field filters the source rows", typeInto: "Search Name", text: "Gam", subject: "heading:Grid first filtered row:", expect: "NameChanges" },
+    ],
   },
   {
     id: "dialog",
@@ -339,7 +418,12 @@ export const COMPONENTS: ComponentSpec[] = [
     subjectRole: "button",
     opens: "heading:Dialog outcome",
   },
-  { id: "dock", component: "Dock", kind: "display" },
+  {
+    id: "dock", component: "Dock", kind: "custom",
+    outcomes: [
+      { suffix: "acts", what: "a dock item invokes its owner", click: "button:Search", subject: "heading:Dock selected: Search", expect: "PaintsNamed", paint: true, covers: ["button:Home", "button:Search", "button:Settings"] },
+    ],
+  },
   {
     id: "drawer",
     component: "Drawer",
@@ -372,7 +456,12 @@ export const COMPONENTS: ComponentSpec[] = [
   {
     id: "firefox-pwa-banner",
     component: "FirefoxPWABanner",
-    kind: "display",
+    kind: "custom",
+    outcomes: [
+      { suffix: "installs", what: "the Firefox extension action invokes its consumer callback", click: "button:Install extension A", subject: "heading:Firefox PWA outcome:", expect: "NameChanges", covers: ["button:Install extension *"] },
+      { suffix: "defers", what: "the Firefox later action dismisses the banner", click: "button:Maybe later B", subject: "heading:Firefox PWA outcome:", expect: "NameChanges", covers: ["button:Maybe later *"] },
+      { suffix: "closes", what: "the Firefox close action dismisses the banner", click: "button:Close Firefox C", subject: "heading:Firefox PWA outcome:", expect: "NameChanges", covers: ["button:Close Firefox *"] },
+    ],
   },
   { id: "flex", component: "Flex", kind: "display" },
   { id: "footer", component: "Footer", kind: "display" },
@@ -381,7 +470,12 @@ export const COMPONENTS: ComponentSpec[] = [
   { id: "grid", component: "Grid", kind: "display" },
   { id: "header", component: "Header", kind: "display" },
   { id: "icon", component: "Icon", kind: "display" },
-  { id: "immersive-landing", component: "ImmersiveLanding", kind: "display" },
+  {
+    id: "immersive-landing", component: "ImmersiveLanding", kind: "custom",
+    outcomes: [
+      { suffix: "navigates", what: "landing navigation changes the active page and reports the route", click: "button:Go to page 2 of 2", subject: "heading:Landing navigation: first to second", expect: "PaintsNamed", paint: true, covers: ["button:Go to page 1 of 2", "button:Go to page 2 of 2", "button:Next page"] },
+    ],
+  },
   {
     id: "inline-edit",
     component: "InlineEdit",
@@ -429,7 +523,11 @@ export const COMPONENTS: ComponentSpec[] = [
   {
     id: "list-box",
     component: "ListBox",
-    kind: "display",
+    kind: "custom",
+    outcomes: [
+      { suffix: "selects", what: "choosing a listbox item changes its controlled selection", click: "option:Second item", subject: "option:Second item", expect: "SelectionChanges" },
+      { suffix: "reports", what: "the listbox reports the selected key", click: "option:First item", subject: "heading:ListBox value:", expect: "NameChanges" },
+    ],
   },
   {
     id: "live-chat-bubble",
@@ -455,25 +553,34 @@ export const COMPONENTS: ComponentSpec[] = [
      * of that name exists at all. Closing is the bubble's contract, not this
      * component's.
      */
-    kind: "action",
-    subject: "Close chat",
-    subjectRole: "button",
+    kind: "custom",
+    outcomes: [
+      { suffix: "accepts-message", what: "the chat composer accepts a message", typeInto: "textbox:Message support...", text: "Hello support", subject: "textbox:Message support...", expect: "ValueChanges" },
+      { suffix: "sends-message", what: "the chat panel hands the message to its owner", click: "button:Send", subject: "heading:LiveChat sent: Hello support", expect: "PaintsNamed", paint: true },
+      { suffix: "closes", what: "the chat panel close control invokes its owner", click: "button:Close chat", subject: "heading:Action result: LiveChatPanel complete", expect: "PaintsNamed", paint: true },
+    ],
   },
   { id: "metal-border", component: "MetalBorder", kind: "display" },
   { id: "navbar", component: "Navbar", kind: "display" },
   {
     id: "pwa-install-prompt",
     component: "PWAInstallPrompt",
-    kind: "display",
+    kind: "custom",
+    outcomes: [
+      { suffix: "installs", what: "accepting the browser install prompt reports installation", click: "button:Install A", subject: "heading:PWA outcome:", expect: "NameChanges", covers: ["button:Install *"] },
+      { suffix: "defers", what: "the not-now action dismisses the prompt and reports deferral", click: "button:Not now B", subject: "heading:PWA outcome:", expect: "NameChanges", covers: ["button:Not now *"] },
+      { suffix: "closes", what: "the close action dismisses the prompt and reports closure", click: "button:Close C", subject: "heading:PWA outcome:", expect: "NameChanges", covers: ["button:Close *"] },
+    ],
   },
   {
     id: "pagination",
     component: "Pagination",
     // Measured: `navigation:pagination`, with named previous/next controls. The
     // fixture has two controlled pages, so Next must call onChange.
-    kind: "action",
-    subject: "Go to next page",
-    subjectRole: "button",
+    kind: "custom",
+    outcomes: [
+      { suffix: "changes", what: "pagination reports the next page to its owner", click: "button:Go to next page", subject: "heading:Action result: Pagination complete", expect: "PaintsNamed", paint: true, covers: ["button:Go to *"] },
+    ],
   },
   {
     id: "panel-toggle",
@@ -486,10 +593,11 @@ export const COMPONENTS: ComponentSpec[] = [
   {
     id: "password-field",
     component: "PasswordField",
-    // Measured: role `textbox` (empty name) plus an unnamed `button` at 28x28,
-    // which is the reveal control and has no accessible name at all.
-    kind: "display",
-    subjectRole: "textbox",
+    kind: "custom",
+    outcomes: [
+      { suffix: "accepts", what: "typing updates the controlled password value", typeInto: "textbox:Password", text: "secret", subject: "heading:Password value: secret", expect: "PaintsNamed", paint: true },
+      { suffix: "reveals", what: "the visibility control reports its pressed state", click: "button:Show password", subject: "button:Hide password", expect: "PaintsNamed", paint: true },
+    ],
   },
   {
     id: "password-requirements",
@@ -509,7 +617,7 @@ export const COMPONENTS: ComponentSpec[] = [
     id: "radio",
     component: "Radio",
     kind: "toggle",
-    // Measured: role `radio`, empty name, 1x1 at (79,103).
+    subject: "Radio",
     subjectRole: "radio",
   },
   { id: "scroll-area", component: "ScrollArea", kind: "display" },
@@ -545,24 +653,25 @@ export const COMPONENTS: ComponentSpec[] = [
     id: "switch",
     component: "Switch",
     kind: "toggle",
-    // Measured: role `switch`, empty name, 1x1 at (79,116). The visible control
-    // is a styled sibling; this is the real input. It had `checkbox:Switch`,
-    // which is wrong in both halves.
+    subject: "Switch",
     subjectRole: "switch",
   },
   {
     id: "table",
     component: "Table",
-    kind: "display",
+    kind: "custom",
+    outcomes: [
+      { suffix: "sorts", what: "a sortable table column reports its next direction", click: "Name fixture", subject: "heading:Table sort:", expect: "NameChanges" },
+    ],
   },
   {
     id: "tabs",
     component: "Tabs",
-    kind: "tabs",
-    subject: "First",
-    subjectRole: "tab",
-    activate: "tab:Second",
-    opens: "heading:Second panel",
+    kind: "custom",
+    outcomes: [
+      { suffix: "changes", what: "activating another tab changes controlled selection", click: "tab:Second", subject: "tab:Second", expect: "SelectionChanges", covers: ["tab:*"] },
+      { suffix: "changes-panel", what: "the selected tab exposes its corresponding panel", subject: "heading:Second panel", expect: "PaintsNamed", paint: true },
+    ],
   },
   { id: "text", component: "Text", kind: "display" },
   {
@@ -575,18 +684,222 @@ export const COMPONENTS: ComponentSpec[] = [
   {
     id: "theme-color-picker",
     component: "ThemeColorPicker",
-    kind: "display",
+    kind: "custom",
+    outcomes: [
+      { suffix: "opens", what: "the theme color trigger opens its palette", click: "button:Change theme color", subject: "button:Black", expect: "PaintsNamed", paint: true },
+      { suffix: "switches-theme", what: "choosing a grayscale swatch reports the requested theme", click: "button:Black", subject: "heading:ThemeColorPicker theme: light", expect: "PaintsNamed", paint: true, covers: ["button:White", "button:Light gray", "button:Gray", "button:Dark gray", "button:Charcoal", "button:Black"] },
+    ],
   },
   {
     id: "toast",
     component: "Toast",
-    kind: "display",
+    kind: "custom",
+    outcomes: [
+      { suffix: "opens", what: "requesting a toast paints its queued action", click: "button:Show fixture toast", subject: "button:Undo fixture", expect: "PaintsNamed", paint: true },
+      { suffix: "acts", what: "the toast action invokes its consumer callback", click: "button:Undo fixture", subject: "heading:Toast outcome:", expect: "NameChanges" },
+      { suffix: "closes", what: "the toast close control removes the notification", click: "button:Dismiss notification", subject: "button:Dismiss notification", expect: "Vanishes" },
+    ],
   },
   {
     id: "tooltip",
     component: "Tooltip",
-    kind: "display",
+    kind: "custom",
+    outcomes: [
+      { suffix: "opens", what: "hovering the tooltip trigger reveals its content", hover: "button:Tooltip target", subject: "tooltip:Fixture tooltip", expect: "PaintsNamed", paint: true },
+    ],
   },
+  {
+    id: "button-group", component: "ButtonGroup", kind: "custom",
+    outcomes: [
+      { suffix: "contains-actions", what: "grouped buttons remain operable", click: "button:First grouped button", subject: "heading:ButtonGroup selected: first", expect: "PaintsNamed", paint: true, covers: ["button:* grouped button"] },
+    ],
+  },
+  {
+    id: "checkbox-group",
+    component: "CheckboxGroup",
+    kind: "custom",
+    outcomes: [
+      { suffix: "selects", what: "selecting a grouped checkbox changes its controlled selection", click: "checkbox:Second choice", subject: "checkbox:Second choice", expect: "SelectionChanges" },
+      { suffix: "reports", what: "selecting a grouped checkbox reports the new values", click: "checkbox:First choice", subject: "heading:CheckboxGroup value:", expect: "NameChanges" },
+    ],
+  },
+  {
+    id: "color-area",
+    component: "ColorArea",
+    kind: "custom",
+    outcomes: [
+      { suffix: "keyboard-changes", what: "ArrowRight changes the controlled saturation", key: "ArrowRight", keyOn: "slider:Color area", subject: "slider:Color area", expect: "ValueChanges" },
+      { suffix: "reports", what: "keyboard adjustment reports the new color area value", key: "ArrowRight", keyOn: "slider:Color area", subject: "heading:ColorArea changed", expect: "Present" },
+      { suffix: "pointer-changes", what: "pointer dragging changes the controlled saturation", pointerDrag: { from: "slider:Color area", dx: -80, dy: 20, steps: 4 }, subject: "slider:Color area", expect: "ValueChanges" },
+    ],
+  },
+  {
+    id: "color-field",
+    component: "ColorField",
+    kind: "custom",
+    outcomes: [
+      { suffix: "accepts", what: "typing a valid color changes the field value", typeInto: "textbox:Color value", text: "#112233", subject: "textbox:Color value", expect: "ValueChanges" },
+      { suffix: "reports", what: "typing a valid color reports the normalized value", typeInto: "textbox:Color value", text: "#112233", subject: "heading:ColorField value: #112233", expect: "Present" },
+    ],
+  },
+  {
+    id: "color-picker",
+    component: "ColorPicker",
+    kind: "custom",
+    outcomes: [
+      { suffix: "hue-changes", what: "the composed hue slider changes the controlled color", key: "ArrowRight", keyOn: "slider:Hue", subject: "slider:Hue", expect: "ValueChanges" },
+      { suffix: "area-changes", what: "the composed color area changes the controlled color", key: "ArrowRight", keyOn: "slider:Color area", subject: "slider:Color area", expect: "ValueChanges" },
+      { suffix: "field-reports", what: "the composed color field reports a typed literal", typeInto: "textbox:Color value", text: "#112233", subject: "heading:ColorPicker value:", expect: "NameChanges" },
+    ],
+  },
+  {
+    id: "color-slider",
+    component: "ColorSlider",
+    kind: "custom",
+    outcomes: [
+      { suffix: "keyboard-changes", what: "ArrowRight changes the controlled hue", key: "ArrowRight", keyOn: "slider:Hue", subject: "slider:Hue", expect: "ValueChanges" },
+      { suffix: "reports", what: "the hue slider reports the changed value", key: "ArrowRight", keyOn: "slider:Hue", subject: "heading:ColorSlider changed", expect: "Present" },
+      { suffix: "pointer-changes", what: "pointer dragging changes the controlled hue", pointerDrag: { from: "slider:Hue", dx: 100, dy: 0, steps: 4 }, subject: "slider:Hue", expect: "ValueChanges" },
+    ],
+  },
+  {
+    id: "color-swatch-picker",
+    component: "ColorSwatchPicker",
+    kind: "custom",
+    outcomes: [
+      { suffix: "selects", what: "choosing another swatch changes its controlled selection", click: "radio:Blue swatch", subject: "radio:Blue swatch", expect: "SelectionChanges", covers: ["radio:* swatch"] },
+      { suffix: "reports", what: "choosing another swatch reports the color", click: "radio:Blue swatch", subject: "heading:ColorSwatchPicker value: #0000ff", expect: "Present" },
+    ],
+  },
+  {
+    id: "combo-box",
+    component: "ComboBox",
+    kind: "custom",
+    outcomes: [
+      { suffix: "opens", what: "the ComboBox opens an addressable listbox", click: "button:Toggle options", subject: "option:Beta", expect: "PaintsNamed", paint: true },
+      { suffix: "selects", what: "choosing an option changes the controlled input value", prepare: "button:Toggle options", prepareUnless: "option:Beta", click: "option:Beta", subject: "combobox:Fixture combo box", expect: "ValueChanges" },
+      { suffix: "reports", what: "choosing another option reports the selected key", prepare: "button:Toggle options", prepareUnless: "option:Alpha", click: "option:Alpha", subject: "heading:ComboBox value:", expect: "NameChanges" },
+      { suffix: "accepts-query", what: "typing a query clears the committed selection", typeInto: "combobox:Fixture combo box", text: "Gam", subject: "heading:ComboBox value:", expect: "NameChanges" },
+    ],
+  },
+  {
+    id: "date-field",
+    component: "DateField",
+    kind: "custom",
+    outcomes: [
+      { suffix: "accepts", what: "typing changes the date field value", typeInto: "textbox:Date value", text: "2025-06-24", subject: "textbox:Date value", expect: "ValueChanges" },
+      { suffix: "reports", what: "typing reports the date value", typeInto: "textbox:Date value", text: "2025-06-24", subject: "heading:DateField value: 2025-06-24", expect: "Present" },
+    ],
+  },
+  {
+    id: "date-picker",
+    component: "DatePicker",
+    kind: "custom",
+    outcomes: [
+      { suffix: "opens", what: "the date picker opens its calendar dialog", click: "button:Jun 15, 2025", subject: "dialog:", expect: "PaintsNamed", paint: true },
+      { suffix: "selects", what: "choosing a date reports the controlled value", prepare: "button:Jun 15, 2025", prepareUnless: "dialog:", click: "gridcell:Tuesday, June 24, 2025", subject: "heading:DatePicker value: 2025-06-24", expect: "Present" },
+    ],
+  },
+  {
+    id: "date-range-picker",
+    component: "DateRangePicker",
+    kind: "custom",
+    outcomes: [
+      { suffix: "opens", what: "the date range picker opens its calendar dialog", click: "button:Jun 15, 2025 Jun 17, 2025", subject: "dialog:", expect: "PaintsNamed", paint: true },
+      { suffix: "starts", what: "choosing a date starts a pending range", prepare: "button:Jun 15, 2025 Jun 17, 2025", prepareUnless: "dialog:", click: "gridcell:Tuesday, June 24, 2025", subject: "gridcell:Tuesday, June 24, 2025", expect: "SelectionChanges" },
+      { suffix: "completes", what: "choosing a second date completes the controlled range", click: "gridcell:Thursday, June 26, 2025", subject: "heading:DateRangePicker end: 2025-06-26", expect: "Present" },
+    ],
+  },
+  {
+    id: "flex-grid",
+    component: "FlexGrid",
+    kind: "custom",
+    outcomes: [
+      {
+        suffix: "reveals-more",
+        what: "the incremental grid reveals its next page when asked",
+        click: "button:Load more rows",
+        subject: "heading:Row Three",
+        expect: "PaintsNamed",
+        paint: true,
+      },
+    ],
+  },
+  {
+    id: "input-otp",
+    component: "InputOTP",
+    kind: "custom",
+    outcomes: [
+      { suffix: "accepts", what: "typing fills the one-time password value", typeInto: "textbox:Verification code", text: "123456", subject: "textbox:Verification code", expect: "ValueChanges" },
+      { suffix: "reports", what: "typing reports the one-time password", typeInto: "textbox:Verification code", text: "123456", subject: "heading:InputOTP value: 123456", expect: "Present" },
+    ],
+  },
+  {
+    id: "join", component: "Join", kind: "custom",
+    outcomes: [
+      { suffix: "contains-actions", what: "joined buttons remain operable", click: "button:First joined button", subject: "heading:Join selected: first", expect: "PaintsNamed", paint: true, covers: ["button:* joined button"] },
+    ],
+  },
+  { id: "kbd", component: "Kbd", kind: "display" },
+  {
+    id: "menu",
+    component: "Menu",
+    kind: "custom",
+    outcomes: [
+      { suffix: "selects", what: "activating a menu item changes its controlled selection", click: "menuitemradio:Beta action", subject: "menuitemradio:Beta action", expect: "SelectionChanges", covers: ["menuitemradio:* action"] },
+      { suffix: "reports", what: "activating a menu item reports its selected key", click: "menuitemradio:Beta action", subject: "heading:Menu value: b", expect: "Present" },
+    ],
+  },
+  { id: "meter", component: "Meter", kind: "display" },
+  { id: "noise-background", component: "NoiseBackground", kind: "display" },
+  { id: "radial-progress", component: "RadialProgress", kind: "display" },
+  {
+    id: "radio-group",
+    component: "RadioGroup",
+    kind: "custom",
+    outcomes: [
+      { suffix: "selects", what: "choosing another grouped radio changes controlled selection", click: "radio:Second radio", subject: "radio:Second radio", expect: "SelectionChanges", covers: ["radio:* radio"] },
+      { suffix: "reports", what: "choosing another grouped radio reports its value", click: "radio:Second radio", subject: "heading:RadioGroup value: second", expect: "Present" },
+    ],
+  },
+  {
+    id: "range-calendar",
+    component: "RangeCalendar",
+    kind: "custom",
+    outcomes: [
+      { suffix: "starts", what: "choosing a date starts a pending range", click: "gridcell:Tuesday, June 24, 2025", subject: "gridcell:Tuesday, June 24, 2025", expect: "SelectionChanges" },
+      { suffix: "completes", what: "choosing a second date completes the controlled range", click: "gridcell:Thursday, June 26, 2025", subject: "heading:RangeCalendar end: 2025-06-26", expect: "Present" },
+      { suffix: "next-month", what: "the next-month control advances the visible calendar", click: "button:Next month", subject: "heading:July 2025", expect: "PaintsNamed", paint: true },
+      { suffix: "previous-month", what: "the previous-month control returns to the prior calendar", click: "button:Previous month", subject: "heading:June 2025", expect: "PaintsNamed", paint: true },
+    ],
+  },
+  {
+    id: "size-picker",
+    component: "SizePicker",
+    kind: "custom",
+    outcomes: [
+      { suffix: "selects", what: "choosing a size changes its selected radio", click: "radio:Size L", subject: "radio:Size L", expect: "SelectionChanges", covers: ["radio:Size *"] },
+      { suffix: "reports", what: "choosing a size reports the preset", click: "radio:Size L", subject: "heading:SizePicker value: L", expect: "Present" },
+    ],
+  },
+  {
+    id: "time-field",
+    component: "TimeField",
+    kind: "custom",
+    outcomes: [
+      { suffix: "accepts", what: "typing changes the time field value", typeInto: "textbox:Time value", text: "12:34", subject: "textbox:Time value", expect: "ValueChanges" },
+      { suffix: "reports", what: "typing reports the time value", typeInto: "textbox:Time value", text: "12:34", subject: "heading:TimeField value: 12:34", expect: "Present" },
+    ],
+  },
+  {
+    id: "toolbar",
+    component: "Toolbar",
+    kind: "custom",
+    outcomes: [
+      { suffix: "moves-focus", what: "ArrowRight moves focus to the next toolbar control", prepare: "button:First tool", key: "ArrowRight", keyOn: "button:First tool", subject: "button:Second tool", expect: "FocusMoves" },
+    ],
+  },
+  { id: "video-preview", component: "VideoPreview", kind: "display" },
 ];
 
 /** Refuse an inventory whose generated pages could overwrite or under-specify one another. */
@@ -607,6 +920,13 @@ export function validateComponentSpecs(): void {
     if (spec.kind === "toggle") {
       if (!spec.subjectRole) {
         throw new Error(`${spec.component}: toggle QA requires subjectRole`);
+      }
+      continue;
+    }
+
+    if (spec.kind === "custom") {
+      if (!spec.outcomes?.length) {
+        throw new Error(`${spec.component}: custom QA requires outcomes`);
       }
       continue;
     }
@@ -632,5 +952,20 @@ export function validateComponentSpecs(): void {
     ) {
       throw new Error(`${spec.component}: ${spec.kind} QA requires opens`);
     }
+  }
+
+  const declared = new Map(componentFamilies.map((family) => [family.id, family.name]));
+  const missing = COMPONENTS.filter((spec) => declared.get(spec.id) !== spec.component);
+  const stale = componentFamilies.filter(
+    (family) => !COMPONENTS.some((spec) => spec.id === family.id && spec.component === family.name),
+  );
+  if (missing.length > 0 || stale.length > 0) {
+    throw new Error(
+      `component family manifest and native QA registry differ; missing/mismatched: ${missing
+        .map((spec) => `${spec.id}:${spec.component}`)
+        .join(", ") || "none"}; stale: ${stale
+        .map((family) => `${family.id}:${family.name}`)
+        .join(", ") || "none"}`,
+    );
   }
 }

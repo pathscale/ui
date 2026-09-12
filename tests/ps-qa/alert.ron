@@ -25,13 +25,13 @@
         expect: Paints,
     ),
     (
-        id: "alert-paints",
+        id: "alert-dismisses",
         group: "alert",
-        what: "the Alert reaches the renderer with a box",
+        what: "the alert dismiss control invokes its owner",
         open: None,
         hover: None,
-        click: None,
-        subject: "Alert",
-        expect: Paints,
+        click: Some("button:Dismiss fixture alert"),
+        subject: "heading:Alert dismissed",
+        expect: PaintsNamed,
     ),
 ]

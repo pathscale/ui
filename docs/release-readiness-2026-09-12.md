@@ -10,7 +10,9 @@ secondary integration signal, not QA evidence.
 
 ## What changed after UI 3.2.0
 
-[UI #292](https://github.com/pathscale/UI/pull/292) contains two fixes:
+[UI #292](https://github.com/pathscale/UI/pull/292) contains the original two
+regression fixes plus the consumer-contract corrections found by the expanded
+native audit:
 
 - UI's shipped CSS contained an Icon documentation placeholder shaped like an
   Iconify utility. Consumer production builds therefore printed
@@ -20,20 +22,29 @@ secondary integration signal, not QA evidence.
   selected another slide during an active transition. It now preserves that
   destination, avoids a duplicate timer when its own callback updates the
   controlled route, and cleans up cancelled work.
+- `ComboBox` now reopens a selected value with every alternative available,
+  `InputOTP` forwards its authored accessible name, and the mobile Dock trigger
+  reports its name and expanded state.
+- `FirefoxPWABanner` exposes its appearance delay directly and through
+  `ImmersiveLanding`; its public API and usage documentation now agree.
+- The package exports a canonical 101-family component inventory. UI's native
+  registry and js.software both fail their build if a public family is omitted,
+  and the Solid Layouts consumer manifest now includes `FlexGrid`.
 
 The conventional release calculation resolves this branch to **3.2.1**.
 
 ## UI release gate
 
-The exact branch at `6b6de87` passes:
+The current review tree passes:
 
 - 93 component contracts;
 - TypeScript and the 547-file library build;
 - 320/320 Bun tests;
-- 75/75 native component pages through `chuzz-headless`;
+- 101/101 native component pages through `chuzz-headless`, including an
+  explicit FlexGrid incremental-reveal outcome;
 - Slider's expanded native contract at 10/10: Arrow keys, Home/End,
   Page Up/Down, controlled pointer dragging, and the final `onChangeEnd` value;
-- the package/export gate across 1,002 shipped files;
+- the package/export gate across 1,004 shipped files;
 - strict publint, with one non-blocking suggestion;
 - a fresh consumer install, typecheck, Layout registration load, and browser
   bundle;
@@ -50,7 +61,7 @@ Exact packed-candidate consumer runs also pass:
 | NoFilter | 132/132 | Its separate documentation placeholder was corrected on PR #340; rebuilt output is clean |
 | Pays | 45/45 | Expanded application-id refusal passes; production build has no phantom UI Iconify warning |
 | Honey public surface | 13/13 | Production build has no phantom UI Iconify warning |
-| JS Software | 347/347 across 12 groups | Exact packed UI candidate; Slider and Color Picker keyboard and pointer outcomes pass, and the phantom UI Iconify warning is gone |
+| JS Software | 555/555 across 13 groups | Exact packed UI candidate; all 101 public families are demonstrated, every declared site outcome passes in one host, Slider and Color Picker keyboard and pointer outcomes pass, and the phantom UI Iconify warning is gone |
 
 ## Harness patch
 
@@ -65,9 +76,9 @@ document-height root or `<main>` as the physical window.
 
 The engine branch at `9d131c27` passes formatting, 96/96 DOM tests, 6/6
 fragment-navigation tests, and the
-complete script suite. The harness branch at `25a5af9` passes formatting,
-78/78 protocol tests with capture enabled, 151/151 ps-qa tests, and the CLI
-tests. Its coordinated JS Software run passes 347/347 with every new pointer
+complete script suite. The harness review tree passes formatting,
+80/80 protocol tests with capture enabled, 158/158 ps-qa tests, and the CLI
+tests. Its coordinated JS Software run passes 555/555 with every new pointer
 coordinate inside the renderer-reported viewport.
 
 Its required publication order is:
@@ -102,7 +113,7 @@ uncovered product workflow works.
 | [web3.trading #18](https://github.com/pathscale/web3.trading/pull/18) | 103/103 | Public, auth validation, theme/carousel, and guest chat are covered. Authenticated trading is not yet end-to-end proven. |
 | [pays.online #166](https://github.com/pathscale/pays.online/pull/166) | Typecheck, lint, build, 45/45 against UI #292 | Code review can proceed. Deployment is blocked by an obsolete production Honey UUID, no known production Pays registration, and no matching deployed backend. The frontend now refuses the invalid id locally and explains the problem. |
 | [honey.id #332](https://github.com/pathscale/honey.id/pull/332) | 196 defined native checks across five roles; deployed dev 193/196; coordinated local app lifecycle 19/19; recovery runner 33/33 | UI is review-ready. Dev's three failures expose the backend's empty regenerated API key. TOTP confirmation and Telegram enrollment/login remain unproved. |
-| [js.software #54](https://github.com/pathscale/js.software/pull/54) | Typecheck, lint, build, and 347/347 against the exact packed UI #292 candidate. Coverage now drives every demonstrated Slider and Color Picker path with keyboard or viewport-bounded pointer input and requires retained value changes. | Review-ready; refresh the UI lock after 3.2.1 publishes. Additional product bugs reported later should receive their own reproductions and outcomes. |
+| [js.software #54](https://github.com/pathscale/js.software/pull/54) | Typecheck, lint, build, and 555/555 across 13 native groups against the exact packed UI #292 candidate. The showcase maps all 101 public UI families, drives every demonstrated Slider and Color Picker path with keyboard or viewport-bounded pointer input, and exercises every landing-page and header action. | Review-ready; refresh the UI lock after 3.2.1 publishes. Additional product bugs reported later should receive their own reproductions and outcomes. |
 | [nofilter.io #340](https://github.com/pathscale/nofilter.io/pull/340) | Lint, build, 132/132 | Public/auth validation is covered. A real two-participant WebRTC studio session remains unproved. |
 | [24x.ai #11](https://github.com/pathscale/24x.ai/pull/11) | Lint, build, desktop 141/141, phone 20/20 | Session UI uses a Honey application identity workaround. 24x has a dev registration, but no working callback backend for it. |
 | [kard.vip #8](https://github.com/pathscale/kard.vip/pull/8) | 223/223 | Demo behavior is covered; this is not real payment evidence. |

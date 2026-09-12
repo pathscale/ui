@@ -1,6 +1,7 @@
 import { readdirSync, readFileSync, existsSync } from "node:fs";
 import { join } from "node:path";
 import { missingRecipeFlagUsages } from "./component-state-contract";
+import { componentFamilies } from "../src/component-families";
 
 const COMPONENTS_DIR = "src/components";
 const CONTRIBUTING = "CONTRIBUTING.md";
@@ -29,6 +30,21 @@ function toPascalCase(kebab: string): string {
 type Violation = { component: string; rule: string; detail: string; section: string };
 
 const violations: Violation[] = [];
+
+const layoutLibrary = JSON.parse(readFileSync("layouts.library.json", "utf8")) as {
+  exports?: string[];
+};
+const layoutExports = new Set(layoutLibrary.exports ?? []);
+for (const family of componentFamilies) {
+  if (!layoutExports.has(family.name)) {
+    fail(
+      family.id,
+      "layouts-manifest",
+      `${family.name} is public but absent from layouts.library.json exports`,
+      "Structure",
+    );
+  }
+}
 
 function fail(component: string, rule: string, detail: string, section: string) {
   violations.push({ component, rule, detail, section });
