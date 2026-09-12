@@ -513,6 +513,7 @@ function FieldFixture(props: { spec: ComponentSpec; under?: unknown }) {
 
 function SliderFixture(props: { spec: ComponentSpec; under?: unknown }) {
   const [value, setValue] = createSignal(50);
+  const [committed, setCommitted] = createSignal<number>();
   return (
     <Show
       when={
@@ -523,12 +524,18 @@ function SliderFixture(props: { spec: ComponentSpec; under?: unknown }) {
       fallback={<span>{props.spec.component} is not exported</span>}
     >
       {(Component) => (
-        <Dynamic
-          component={Component()}
-          value={value()}
-          onChange={setValue}
-          label={props.spec.subject}
-        />
+        <>
+          <Dynamic
+            component={Component()}
+            value={value()}
+            onChange={setValue}
+            onChangeEnd={setCommitted}
+            label={props.spec.subject}
+          />
+          <Show when={committed() !== undefined}>
+            <h2>Slider committed: {committed()}</h2>
+          </Show>
+        </>
       )}
     </Show>
   );
