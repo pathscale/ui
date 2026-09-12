@@ -93,7 +93,7 @@ const Pagination: Layout<typeof componentRecipe, PaginationProps> = () => {
                   data-active={token === currentPage() ? "true" : undefined}
                   aria-current={token === currentPage() ? "page" : undefined}
                   aria-label={`Go to page ${token}`}
-                  disabled={disabled()}
+                  disabled={disabled() || token === currentPage()}
                   onClick={() => handleChange(token)}
                 >
                   {token}

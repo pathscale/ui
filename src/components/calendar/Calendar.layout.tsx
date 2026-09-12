@@ -1,6 +1,6 @@
 import "./Calendar.css";
 import type { JSX } from "@solidjs/web";
-import {For, Show, createMemo, createTrackedEffect, createUniqueId, omit} from "solid-js";
+import {For, Show, createEffect, createMemo, createUniqueId, omit} from "solid-js";
 import { twMerge } from "../../lib/twMerge";
 
 import {
@@ -172,9 +172,13 @@ const Calendar: Layout<typeof componentRecipe, CalendarProps> = () => {
     isDateDisabled,
   });
 
-  createTrackedEffect(() => {
-    navigation.syncFocusedDate(focusReferenceDate());
-  });
+  // Track only the external reference date. Tracking the sync function itself
+  // also subscribed this effect to `visibleMonth`, so every navigation click
+  // changed the month and immediately reset it to the selected date's month.
+  createEffect(
+    () => focusReferenceDate(),
+    (value) => navigation.syncFocusedDate(value),
+  );
 
   const calendarState = useCalendarState({
     selectionMode: () => selectionMode(),
@@ -197,7 +201,7 @@ const Calendar: Layout<typeof componentRecipe, CalendarProps> = () => {
 
     queueMicrotask(() => {
       const target = rootRef?.querySelector<HTMLButtonElement>(
-        `[data-slot=\"calendar-cell\"][data-date=\"${dateValue}\"]`,
+        `[data-slot="calendar-cell"][data-date="${dateValue}"]`,
       );
       target?.focus();
     });
@@ -288,7 +292,10 @@ const Calendar: Layout<typeof componentRecipe, CalendarProps> = () => {
   };
 
   const uniqueId = createUniqueId();
-  const headingId = `calendar-heading-${uniqueId}`;
+  const headingId =
+    typeof props.id === "string" && props.id.trim()
+      ? `${props.id}--heading`
+      : `calendar-heading-${uniqueId}`;
 
   return (
     <div
@@ -317,6 +324,7 @@ const Calendar: Layout<typeof componentRecipe, CalendarProps> = () => {
       <div {...{ class: CLASSES.Header.base }} data-slot="calendar-header">
         <div {...{ class: CLASSES.Nav.base }} data-slot="calendar-nav">
           <button
+            id={typeof props.id === "string" ? `${props.id}--previous-month` : undefined}
             type="button"
             {...{ class: CLASSES.NavButton.base }}
             data-slot="calendar-nav-button"
@@ -359,6 +367,7 @@ const Calendar: Layout<typeof componentRecipe, CalendarProps> = () => {
 
         <div {...{ class: CLASSES.Nav.base }} data-slot="calendar-nav">
           <button
+            id={typeof props.id === "string" ? `${props.id}--next-month` : undefined}
             type="button"
             {...{ class: CLASSES.NavButton.base }}
             data-slot="calendar-nav-button"
@@ -436,6 +445,11 @@ const Calendar: Layout<typeof componentRecipe, CalendarProps> = () => {
                           }
                         >
                           <button
+                            id={
+                              typeof props.id === "string"
+                                ? `${props.id}--${isoDate}`
+                                : undefined
+                            }
                             type="button"
                             {...{ class: twMerge(
                               CLASSES.Cell.base,

@@ -30,6 +30,7 @@ import { createConnectionSettings } from "@pathscale/ui/hooks/connection";
 import { ComplexColorWheel } from "@pathscale/ui/components/color-wheel";
 import { createI18n, LanguageSwitcher } from "@pathscale/ui/components/language-switcher";
 import Dialog from "@pathscale/ui/components/dialog";
+import Drawer from "@pathscale/ui/components/drawer";
 import Dropdown from "@pathscale/ui/components/dropdown";
 import InlineEdit from "@pathscale/ui/components/inline-edit";
 import Popover from "@pathscale/ui/components/popover";
@@ -37,6 +38,7 @@ import Select from "@pathscale/ui/components/select";
 import Tabs from "@pathscale/ui/components/tabs";
 import Button from "@pathscale/ui/components/button";
 import Calendar from "@pathscale/ui/components/calendar";
+import CloseButton from "@pathscale/ui/components/close-button";
 import { Form } from "@pathscale/ui/components/form";
 import Input from "@pathscale/ui/components/input";
 import { createForm } from "@pathscale/ui/hooks/form";
@@ -232,6 +234,24 @@ function ActionFixture(props: { spec: ComponentSpec; under?: unknown }) {
   );
 }
 
+function CloseButtonFixture(props: {
+  spec: ComponentSpec;
+}) {
+  const [complete, setComplete] = createSignal(false);
+  return (
+    <>
+      <CloseButton
+        aria-label={props.spec.subject}
+        onClick={() => setComplete(true)}
+      />
+      <CompletedAction
+        component={props.spec.component}
+        complete={complete()}
+      />
+    </>
+  );
+}
+
 function ComposerFixture(props: { spec: ComponentSpec; under?: unknown }) {
   const [complete, setComplete] = createSignal(false);
   return (
@@ -269,6 +289,27 @@ function DialogFixture() {
         <Dialog.CloseTrigger>Close dialog</Dialog.CloseTrigger>
       </Dialog.Content>
     </Dialog>
+  );
+}
+
+function DrawerFixture() {
+  return (
+    <Drawer placement="left">
+      <Drawer.Trigger as={Button}>Open drawer</Drawer.Trigger>
+      <Drawer.Backdrop>
+        <Drawer.Content>
+          <Drawer.Dialog>
+            <Drawer.Header>
+              <Drawer.Heading>Drawer outcome</Drawer.Heading>
+            </Drawer.Header>
+            <Drawer.Body>The drawer is visibly inside the viewport.</Drawer.Body>
+            <Drawer.Footer>
+              <Drawer.CloseTrigger>Close drawer</Drawer.CloseTrigger>
+            </Drawer.Footer>
+          </Drawer.Dialog>
+        </Drawer.Content>
+      </Drawer.Backdrop>
+    </Drawer>
   );
 }
 
@@ -638,54 +679,6 @@ function CollapsibleFixture() {
 }
 
 /*
- * A toggle, mounted unchecked and controlled.
- *
- * The generic fixture passes no `checked`, so Switch, Radio and Checkbox
- * mounted uncontrolled and the tree reported `selected: true` before anything
- * had been pressed. The `-toggles` check then failed with "selected state
- * stayed true", which is indistinguishable between two very different things:
- * a component that ignores a click, and one that was already on and had
- * nowhere to go.
- *
- * Starting from `false` with a controlled signal separates them. If the state
- * flips, the component works and the old failure was the fixture's fault. If it
- * stays false, the component really does not respond and that is a defect worth
- * reporting.
- *
- * `under` rather than a static import: the generated entry already resolved the
- * component for this page, and importing three more here would put all three in
- * every page's bundle.
- */
-function ToggleFixture(props: { spec: ComponentSpec; under?: unknown }) {
-  const [on, setOn] = createSignal(false);
-  return (
-    <Show
-      when={
-        props.under as
-          | ((props: Record<string, unknown>) => JSX.Element)
-          | undefined
-      }
-      fallback={<span>{props.spec.component} is not exported</span>}
-    >
-      {(Component) => (
-        <Dynamic
-          component={Component()}
-          checked={on()}
-          onChange={() => setOn((previous) => !previous)}
-          /*
-           * Both spellings. These components disagree about which they take,
-           * and a fixture that guesses wrong mounts an uncontrolled toggle
-           * again, which is the bug this exists to rule out.
-           */
-          onInput={() => setOn((previous) => !previous)}
-          aria-label={props.spec.component}
-        />
-      )}
-    </Show>
-  );
-}
-
-/*
  * A toggle, and a heading that only its callback can produce.
  *
  * `selected` in the tree is not evidence the component did anything: the
@@ -819,7 +812,7 @@ function CalendarFixture() {
   const [value, setValue] = createSignal(new Date(2025, 5, 15));
   return (
     <>
-      <Calendar value={value()} onChange={setValue} />
+      <Calendar id="qa-calendar" value={value()} onChange={setValue} />
       <p role="status">Selected {value().getFullYear()}-{String(value().getMonth() + 1).padStart(2, "0")}-{String(value().getDate()).padStart(2, "0")}</p>
     </>
   );
@@ -830,20 +823,22 @@ const FIXTURES: Record<
   string,
   // `under` is the resolved component, which the harness passes to whichever
   // fixture it selected. The hand-written fixtures that import their component
-  // statically ignore it; `ToggleFixture` is generic over three components and
-  // needs it.
+  // statically ignore it; `ToggleFixtureWithReport` is generic over three
+  // components and needs it.
   (props: { spec: ComponentSpec; under?: unknown }) => JSX.Element
 > = {
   "auth-submit-button": ActionFixture,
   button: ActionFixture,
   calendar: CalendarFixture,
   checkbox: ToggleFixtureWithReport,
+  "close-button": CloseButtonFixture,
   collapsible: CollapsibleFixture,
   "connection-settings": ConnectionSettingsFixture,
   "complex-color-wheel": ComplexColorWheelFixture,
   composer: ComposerFixture,
   dialog: DialogFixture,
   dock: DockFixture,
+  drawer: DrawerFixture,
   dropdown: DropdownFixture,
   form: FormFixture,
   "inline-edit": InlineEditFixture,
