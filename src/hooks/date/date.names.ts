@@ -8,8 +8,8 @@
  * throw escapes every boundary the component has and reaches Solid 2, which
  * responds by halting its reactive system permanently: the page keeps painting
  * the frame it already had, so it looks alive, while every control on it is
- * dead. js.software's `/calendar` route is dead this way today, and nothing on
- * the page says so.
+ * dead. js.software's `/calendar` route failed this way before the calendar
+ * moved to this table, while leaving a frame that looked alive.
  *
  * What the calendar actually needed from `Intl` was twelve month names, seven
  * weekday names in three widths, and four assembly patterns. That is a table,

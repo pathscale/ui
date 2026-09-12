@@ -4,8 +4,8 @@ import { join } from "node:path";
 import { createMemo, createRoot } from "solid-js";
 
 import {
-  type DateNameWidth,
   type DateNames,
+  type DateNameWidth,
   DEFAULT_DATE_LOCALE,
   EN_US_DATE_NAMES,
   formatCompactDate,
@@ -26,8 +26,9 @@ import { useCalendarState } from "../../../src/hooks/date/useCalendarState";
  * not survivable: it escapes the component, reaches Solid 2, and Solid 2
  * halts its reactive system permanently. The page keeps painting the frame it
  * already had, so it looks fine, while every control on it is dead.
- * js.software's `/calendar` route is dead this way today, and nothing visible
- * says so, which is why "it renders" is not evidence and this file exists.
+ * js.software's `/calendar` route failed this way before the calendar moved to
+ * the table, while leaving a frame that looked alive. That is why "it renders"
+ * is not evidence and this file exists.
  *
  * Two halves, and both are needed:
  *
@@ -458,7 +459,13 @@ describe("no module on the calendar's path references Intl", () => {
   it("would catch a reference, so the scan is not vacuous", () => {
     const planted = ["const f = new Intl.DateTimeFormat(locale);"];
 
-    expect(planted.filter((line) => !isComment(line) && /(?<!`)\bIntl\b(?!`)/.test(line))).toHaveLength(1);
-    expect([" * `Intl` is unavailable", "// Intl is gone"].filter(isComment)).toHaveLength(2);
+    expect(
+      planted.filter(
+        (line) => !isComment(line) && /(?<!`)\bIntl\b(?!`)/.test(line),
+      ),
+    ).toHaveLength(1);
+    expect(
+      [" * `Intl` is unavailable", "// Intl is gone"].filter(isComment),
+    ).toHaveLength(2);
   });
 });

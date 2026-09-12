@@ -25,7 +25,7 @@ The conventional release calculation resolves this branch to **3.2.1**.
 
 ## UI release gate
 
-The exact branch at `4a04b24` passes:
+The exact branch at `6b6de87` passes:
 
 - 93 component contracts;
 - TypeScript and the 547-file library build;
@@ -50,22 +50,35 @@ Exact packed-candidate consumer runs also pass:
 | NoFilter | 132/132 | Its separate documentation placeholder was corrected on PR #340; rebuilt output is clean |
 | Pays | 45/45 | Expanded application-id refusal passes; production build has no phantom UI Iconify warning |
 | Honey public surface | 13/13 | Production build has no phantom UI Iconify warning |
+| JS Software | 347/347 across 12 groups | Exact packed UI candidate; Slider and Color Picker keyboard and pointer outcomes pass, and the phantom UI Iconify warning is gone |
 
 ## Harness patch
 
+[ps-blitz #97](https://github.com/pathscale/ps-blitz/pull/97) and
 [ps-observability #20](https://github.com/pathscale/ps-observability/pull/20)
-fixes driver defects discovered during the fleet sweep. It records visible
-preparation and timed actions and corrects protocol handling. The branch at
-`6442d1d` passes formatting, clippy with all features, 88/88 protocol tests,
-150/150 ps-qa tests, and the CLI tests.
+fix driver defects discovered while exercising the Slider paths. The engine
+keeps connected Solid delegated handlers alive, reveals text-node targets
+without crashing, and routes semantic activation through the normal input
+sequence. The protocol reports the real viewport and keeps client and page
+pointer coordinates distinct after scrolling. ps-qa then refuses to treat a
+document-height root or `<main>` as the physical window.
+
+The engine branch at `9d131c27` passes formatting, 96/96 DOM tests, 6/6
+fragment-navigation tests, and the
+complete script suite. The harness branch at `25a5af9` passes formatting,
+78/78 protocol tests with capture enabled, 151/151 ps-qa tests, and the CLI
+tests. Its coordinated JS Software run passes 347/347 with every new pointer
+coordinate inside the renderer-reported viewport.
 
 Its required publication order is:
 
-1. owner review and merge of ps-observability #20;
-2. publish `blitz-control-protocol` 0.5.1;
-3. rebuild the native hosts against that protocol;
-4. publish `ps-qa` 0.7.2;
-5. rerun the site suites with the published driver and rebuilt host.
+1. owner review of ps-blitz #97 and ps-observability #20;
+2. merge and publish ps-blitz 0.4.9 after approval;
+3. publish `blitz-control-protocol` 0.5.1 after approval;
+4. merge [chuzz #47](https://github.com/pathscale/chuzz/pull/47) after approval
+   and publish the rebuilt native host against those releases;
+5. publish `ps-qa` 0.7.2 after approval;
+6. rerun the site suites with the published driver and rebuilt host.
 
 The earlier one-control-surface dependency chain is complete:
 `ps-blitz-dom` 0.4.8, `ps-blitz-debug-control` 0.3.8,
@@ -89,7 +102,7 @@ uncovered product workflow works.
 | [web3.trading #18](https://github.com/pathscale/web3.trading/pull/18) | 103/103 | Public, auth validation, theme/carousel, and guest chat are covered. Authenticated trading is not yet end-to-end proven. |
 | [pays.online #166](https://github.com/pathscale/pays.online/pull/166) | Typecheck, lint, build, 45/45 against UI #292 | Code review can proceed. Deployment is blocked by an obsolete production Honey UUID, no known production Pays registration, and no matching deployed backend. The frontend now refuses the invalid id locally and explains the problem. |
 | [honey.id #332](https://github.com/pathscale/honey.id/pull/332) | 196 defined native checks across five roles; deployed dev 193/196; coordinated local app lifecycle 19/19; recovery runner 33/33 | UI is review-ready. Dev's three failures expose the backend's empty regenerated API key. TOTP confirmation and Telegram enrollment/login remain unproved. |
-| [js.software #54](https://github.com/pathscale/js.software/pull/54) | The earlier lint/build and 332/332 suite are insufficient; the owner reports many product bugs and is preparing the concrete list. | **Not release-ready.** Reproduce and cover the reported failures before making any readiness claim; then refresh the UI lock after 3.2.1 publishes. |
+| [js.software #54](https://github.com/pathscale/js.software/pull/54) | Typecheck, lint, build, and 347/347 against the exact packed UI #292 candidate. Coverage now drives every demonstrated Slider and Color Picker path with keyboard or viewport-bounded pointer input and requires retained value changes. | Review-ready; refresh the UI lock after 3.2.1 publishes. Additional product bugs reported later should receive their own reproductions and outcomes. |
 | [nofilter.io #340](https://github.com/pathscale/nofilter.io/pull/340) | Lint, build, 132/132 | Public/auth validation is covered. A real two-participant WebRTC studio session remains unproved. |
 | [24x.ai #11](https://github.com/pathscale/24x.ai/pull/11) | Lint, build, desktop 141/141, phone 20/20 | Session UI uses a Honey application identity workaround. 24x has a dev registration, but no working callback backend for it. |
 | [kard.vip #8](https://github.com/pathscale/kard.vip/pull/8) | 223/223 | Demo behavior is covered; this is not real payment evidence. |
@@ -136,7 +149,7 @@ backend/core handoff after the UI release review.
 
 ## Release order after owner review
 
-1. Review UI #292 and ps-observability #20.
+1. Review UI #292, ps-blitz #97, ps-observability #20, and chuzz #47.
 2. Merge and publish only after explicit owner approval: UI 3.2.1 and the
    protocol/driver sequence above.
 3. Refresh each site's lockfile or clean install so it resolves the published
