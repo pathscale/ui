@@ -746,6 +746,55 @@ function checksFor(spec: ComponentSpec, profile: Profile): string {
         }),
       );
     }
+
+    records.push(
+      check({
+        id: `"${spec.id}-pointer-drag-changes-value"`,
+        group: `"${spec.id}"`,
+        what: `"dragging ${spec.component} changes the controlled value exposed by its caller"`,
+        open: surface,
+        hover: "None",
+        click: "None",
+        pointer_drag: `Some((from: "${spec.subjectRole}:${spec.subject}", dx: 160.0, dy: 0.0, steps: 6))`,
+        subject,
+        expect: "ValueChanges",
+      }),
+    );
+    records.push(
+      check({
+        id: `"${spec.id}-pointer-release-commits"`,
+        group: `"${spec.id}"`,
+        what: `"releasing a ${spec.component} drag reports one final value through onChangeEnd"`,
+        open: surface,
+        hover: "None",
+        click: "None",
+        pointer_drag: `Some((from: "${spec.subjectRole}:${spec.subject}", dx: 120.0, dy: 0.0, steps: 4))`,
+        subject: `"heading:Slider committed:"`,
+        expect: profile.paints("PaintsNamed"),
+      }),
+    );
+
+    for (const [suffix, key] of [
+      ["goes-to-minimum", "Home"],
+      ["goes-to-maximum", "End"],
+      ["takes-a-large-step-down", "PageDown"],
+      ["takes-a-large-step-up", "PageUp"],
+    ]) {
+      records.push(
+        check({
+          id: `"${spec.id}-${suffix}"`,
+          group: `"${spec.id}"`,
+          what: `"${key} changes the value exposed by ${spec.component}"`,
+          open: surface,
+          hover: "None",
+          click: "None",
+          key: `Some("${key}")`,
+          key_on: `Some("${spec.subjectRole}:${spec.subject}")`,
+          subject,
+          expect: "ValueChanges",
+        }),
+      );
+    }
   }
 
   if (spec.kind === "inline-edit") {
