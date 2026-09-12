@@ -293,6 +293,32 @@ export const COMPONENTS: ComponentSpec[] = [
     reconnectText: "ws://qa-reconnected",
     uncommitted: "heading:Committed: wss://api.example.com",
     committed: "heading:Committed: ws://qa-committed",
+    outcomes: [
+      {
+        suffix: "refuses-invalid-app-id",
+        what: "ConnectionSettings validates an application id before saving it",
+        prepare: "switch:Use a custom backend",
+        prepareUnless: "textbox:API URL",
+        typeInto: "textbox:Application ID",
+        text: "invalid",
+        click: "button:Save",
+        subject: "heading:Save outcome: failed Application ID must be 16 letters or numbers",
+        expect: "PaintsNamed",
+        paint: true,
+      },
+      {
+        suffix: "invalid-app-id-does-not-commit",
+        what: "a rejected application id leaves committed settings untouched",
+        prepare: "switch:Use a custom backend",
+        prepareUnless: "textbox:API URL",
+        typeInto: "textbox:Application ID",
+        text: "invalid",
+        click: "button:Save",
+        subject: "heading:Committed app: QaAppPublicId123",
+        expect: "PaintsNamed",
+        paint: true,
+      },
+    ],
   },
   {
     id: "color-swatch",
@@ -474,6 +500,7 @@ export const COMPONENTS: ComponentSpec[] = [
     id: "immersive-landing", component: "ImmersiveLanding", kind: "custom",
     outcomes: [
       { suffix: "navigates", what: "landing navigation changes the active page and reports the route", click: "button:Go to page 2 of 2", subject: "heading:Landing navigation: first to second", expect: "PaintsNamed", paint: true, covers: ["button:Go to page 1 of 2", "button:Go to page 2 of 2", "button:Next page"] },
+      { suffix: "navigates-back", what: "landing previous navigation returns to the earlier page and reports the route", click: "button:Previous page", subject: "heading:Landing navigation: second to first", expect: "PaintsNamed", paint: true },
     ],
   },
   {
@@ -647,6 +674,7 @@ export const COMPONENTS: ComponentSpec[] = [
     kind: "slider",
     subject: "Fixture slider",
     subjectRole: "slider",
+    contrast: "Fixture slider",
   },
   { id: "spinner", component: "Spinner", kind: "display" },
   {

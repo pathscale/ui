@@ -321,6 +321,8 @@ const LiveChatPanel: Layout<typeof componentRecipe, LiveChatPanelProps> = () => 
           <h3 {...{ class: CLASSES.panel.headerTitle }}>{props.title ?? "Chat with us"}</h3>
         </div>
         <button
+          id={props.id ? `${props.id}-close` : undefined}
+          type="button"
           onClick={props.onClose}
           {...{ class: CLASSES.panel.closeButton }}
           aria-label={props.closeLabel ?? "Close chat"}
@@ -407,6 +409,7 @@ const LiveChatPanel: Layout<typeof componentRecipe, LiveChatPanelProps> = () => 
       {/* Input area */}
       <div {...{ class: CLASSES.panel.inputArea }}>
           <Input
+            id={props.id ? `${props.id}-message` : undefined}
             type="text"
             value={inputValue()}
             onInput={(e) => setInputValue(e.currentTarget.value)}
@@ -416,6 +419,7 @@ const LiveChatPanel: Layout<typeof componentRecipe, LiveChatPanelProps> = () => 
             {...{ class: CLASSES.panel.input }}
           />
           <Button
+            id={props.id ? `${props.id}-send` : undefined}
             onClick={handleSend}
             state={isSending() ? "loading" : inputValue().trim() ? "default" : "disabled"}
             {...{ class: CLASSES.panel.sendButton }}
