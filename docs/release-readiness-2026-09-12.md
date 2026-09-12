@@ -1,199 +1,166 @@
-# UI release review — 12 September 2026
+# UI and website release readiness — 12 September 2026
 
-Status: **UI 3.2.0 package release approved and locally verified**. Website
-deployments remain separately reviewed. Before creating a Fly dev instance,
-contact the owner so they can be online for questions.
+Status: **UI 3.2.1 is ready for owner review.** No known UI library defect
+blocks the patch release. UI 3.2.0 is already published; the current patch
+candidate fixes the two regressions found while proving its consumers.
 
-## Concrete TODO
+No merge, package publication, or deployment is authorized by this document.
+All evidence below is from local builds and native `ps-qa` runs. CI is a
+secondary integration signal, not QA evidence.
 
-The release script computes **3.2.0** from npm's 3.1.0 baseline and the branch's
-conventional commits. Local release verification is complete; the repository's
-release workflow assigns and publishes the version after the fast-forward.
+## What changed after UI 3.2.0
 
-- [x] Build the candidate ps-qa and font-enabled host; verify post-action paint,
-  explicit gridcell targets, keyboard shortcuts, and transformed pointer actions.
-- [x] Verify ps-blitz CI with the pinned coordinated stack. Run 34632611122
-  passes at 97ca22ca, including the WebSocket listener and contrast-settling fixes.
-- [x] Build and pack fresh UI source with solid-layouts 0.2.4; run the full native
-  component sweep, API/package gates, and consumer builds against the packed candidate.
-- [x] Resolve Honey's cold first-submit failure and run the expanded 196-check suite,
-  including Platform Admin, App Admin, Guest, and password change/restore.
-- [x] Finish reproducible recovery-code coverage. TOTP confirmation and Telegram
-  enrollment/login remain separate security gates for Honey.
-- [x] Verify Worktables editing, cancellation, undo, findings, and zoom (112/112).
-- [x] Confirm the packed Calendar fix in js.software (316/316).
-- [x] Resolve Web3 carousel settling. Its complete final run passes 103/103 after
-  the landing surface was scoped away from the independently animated chat halo.
-- [x] Repeat scoped site E2E against the final package, recording missing backend
-  contracts separately from library regressions.
-- [x] Push the verified library, driver, runtime, and host changes to their
-  existing release branches and reconcile their descriptions with local evidence.
-- [x] Release ps-blitz 0.4.8, blitz-control-protocol 0.5.0, ps-qa 0.7.1,
-  tauri-runtime-blitz 0.4.0, and the Chuzz 0.1.37 host in dependency order.
-- [ ] Release UI 3.2.0 and verify a fresh consumer install from npm.
-- [ ] Deploy only the separately reviewed website changes.
+[UI #292](https://github.com/pathscale/UI/pull/292) contains two fixes:
 
-## Release sequence
+- UI's shipped CSS contained an Icon documentation placeholder shaped like an
+  Iconify utility. Consumer production builds therefore printed
+  `Invalid icon name: "..."`. The placeholder is gone from source, docs, and
+  the built package.
+- `ImmersiveLanding` discarded the latest destination when a controlled caller
+  selected another slide during an active transition. It now preserves that
+  destination, avoids a duplicate timer when its own callback updates the
+  controlled route, and cleans up cancelled work.
 
-1. [ps-blitz #95](https://github.com/pathscale/ps-blitz/pull/95): 0.4.8 published.
-2. [ps-observability #21](https://github.com/pathscale/ps-observability/pull/21):
-   blitz-control-protocol 0.5.0 and ps-qa 0.7.1 published against that engine.
-3. [tauri-runtime-blitz #57](https://github.com/pathscale/tauri-runtime-blitz/pull/57):
-   0.4.0 published against the shared protocol.
-4. [chuzz #45](https://github.com/pathscale/chuzz/pull/45) and
-   [#46](https://github.com/pathscale/chuzz/pull/46): shared document actions,
-   headless build gating, and the signed 0.1.37 host published.
-5. [UI #289](https://github.com/pathscale/UI/pull/289): publish 3.2.0 after the
-   packaged library and its consumers passed against the released host and driver.
-6. Review and deploy approved website PRs using the published library.
+The conventional release calculation resolves this branch to **3.2.1**.
 
-The older handover put tauri-runtime-blitz before ps-observability. Its manifest
-requires protocol 0.5, so that order cannot resolve. Registry dependency failures
-before the upstream publications are expected and are separate from regressions.
+## UI release gate
 
-`solid-layouts` 0.2.4 has already published through
-[PR #19](https://github.com/pathscale/solid-layouts/pull/19). It forwards caller
-styles to the root slot; without it, UI Card positions and dimensions are dropped.
-UI and consumer manifest floors and resolvable lockfiles are updated. UI has the
-published 0.2.4 installed; final clean consumer installs remain part of this gate.
-Worktables' clean install still awaits the separate house DSL SDK 0.1.2 release.
+The exact branch at `4a04b24` passes:
 
-## Library and harness findings
+- 93 component contracts;
+- TypeScript and the 547-file library build;
+- 320/320 Bun tests;
+- 75/75 native component outcomes through `chuzz-headless`;
+- the package/export gate across 1,002 shipped files;
+- strict publint, with one non-blocking suggestion;
+- a fresh consumer install, typecheck, Layout registration load, and browser
+  bundle;
+- `npm pack --dry-run`;
+- Pathscale's coordinated local site/backend/Honey run at 138/138;
+- the focused Pathscale rapid-carousel countercheck: UI 3.2.0 fails 21/22,
+  while this candidate passes 22/22.
 
-| Finding | Current evidence | Remaining verification |
+Exact packed-candidate consumer runs also pass:
+
+| Consumer | Native result | Package-specific result |
+| --- | ---: | --- |
+| Web3 Trading | 103/103 | Production build has no phantom UI Iconify warning |
+| NoFilter | 132/132 | Its separate documentation placeholder was corrected on PR #340; rebuilt output is clean |
+| Pays | 45/45 | Expanded application-id refusal passes; production build has no phantom UI Iconify warning |
+| Honey public surface | 13/13 | Production build has no phantom UI Iconify warning |
+
+## Harness patch
+
+[ps-observability #20](https://github.com/pathscale/ps-observability/pull/20)
+fixes driver defects discovered during the fleet sweep. It records visible
+preparation and timed actions and corrects protocol handling. The branch at
+`6442d1d` passes formatting, clippy with all features, 88/88 protocol tests,
+150/150 ps-qa tests, and the CLI tests.
+
+Its required publication order is:
+
+1. owner review and merge of ps-observability #20;
+2. publish `blitz-control-protocol` 0.5.1;
+3. rebuild the native hosts against that protocol;
+4. publish `ps-qa` 0.7.2;
+5. rerun the site suites with the published driver and rebuilt host.
+
+The earlier one-control-surface dependency chain is complete:
+`ps-blitz-dom` 0.4.8, `ps-blitz-debug-control` 0.3.8,
+`tauri-runtime-blitz` 0.4.0, `blitz-control-protocol` 0.5.0, `ps-qa` 0.7.1,
+and Chuzz 0.1.37 are published. ps-blitz #95's option regression was fixed and
+merged; overlapping rescue PR #96 was closed.
+
+## Website and application review queue
+
+Every PR in this table is open and mergeable as of this review. Counts are
+fresh local native results from the named PR branches. A passing surface suite
+proves the behaviors it names; it does not imply an unavailable backend or an
+uncovered product workflow works.
+
+| Repository / existing PR | Local evidence | Release boundary |
 | --- | --- | --- |
-| Native option labels and selected state disappeared in the control refactor | Six regression tests restored; the native Select fixture passes all 7 outcomes with published ps-blitz 0.4.8, protocol 0.5.0, ps-qa 0.7.1, and Chuzz 0.1.37 | Complete |
-| Transformed client rectangles disagreed with painted controls | Four geometry tests, inline fragment tests, and full Linux suite pass; final pointer fixture and Worktables zoom/drag checks pass | CI host boundary and published integration |
-| CI needs the coordinated unpublished runtime stack | Exact dependency revisions pinned; nested workspace exclusions resolved Cargo inheritance. Coordinated CI run 34632611122 passes with refreshed socket/contrast revisions | Verify registry integration after approval |
-| Calendar cells captured selection state once | Cell state is now reactive; six native checks verify selection changes and controlled callbacks in both directions. Packed js.software run passes 316/316 | Owner review |
-| Honey CreateApp stalled during socket connection | chuzz iterated a live listener array; the first RPC removed its open listener and skipped the next. Snapshot dispatch fixes three consecutive 15-step lifecycles and the full 192-check suite; refreshed coordinated CI passes | GUI build review and registry integration |
-| Responsive layout classes were purged from consumers | Purge manifest includes responsive Grid/Flex classes; 24x landing checks passed | Full consumer rebuilds from the final package |
-| Form submission discarded schema output | Typed schema output preserved; six native form checks and Honey's expanded suite pass | Owner review |
-| ConnectionSettings missing from layout manifest | Export added; isolated package consumer build passed | Pays runtime checks |
-| A fontless host weakens paint checks | The font-enabled release host builds; a fresh local sweep against the public dependency stack passes 273 checks across 75 component fixtures | Complete |
-| ps-qa measured paint before input, then sampled contrast transitions too early | Reads moved after input; contrast honors the outcome and stability windows. Six native driver scenarios pass, including delayed repair and persistent contrast failure. Web3 theme group passes 18/18 | Final stack sweeps |
-| ps-qa rejected explicit gridcell targets | Explicit role selectors now bypass the generic inventory role list while retaining actionability checks; native Calendar and packed js.software checks pass | Owner review |
-| ps-qa's older drag diagnostic only scrolls containers | Actual pointer dragging/cancellation added to CLI and declarative checks; native fixture and Worktables movement/cancellation/undo checks pass | PR and CI review |
-| UI sweep could accept bundles older than the library source | Staleness guard now includes library source and package output; confirmed it rejects the current outdated bundle before launching a host | Fresh full build and sweep |
+| [pathscale.com #17](https://github.com/pathscale/pathscale.com/pull/17) | Lint, build, and coordinated local run 138/138 | UI branch is review-ready. A real deployment needs its own production Honey registration and a reviewed backend deployment. |
+| [promptsyntax.org #18](https://github.com/pathscale/promptsyntax.org/pull/18) | 129/129 | Review-ready; refresh UI lock after 3.2.1 publishes. |
+| [worktables.dev #10](https://github.com/pathscale/worktables.dev/pull/10) | Lint, build, 170/170 | PR #9 is merged. The designer uses UI controls, native SVG relationships, and `@pathscale/worktable-dsl` 0.1.2. Source contains no Cytoscape, canvas, or `getContext`; #10 restores the format gate. |
+| [support.cafe #12](https://github.com/pathscale/support.cafe/pull/12) | 104/104 | Signed-out product surfaces are covered. Authenticated support workflows still need a live account/backend fixture. |
+| [web3.trading #18](https://github.com/pathscale/web3.trading/pull/18) | 103/103 | Public, auth validation, theme/carousel, and guest chat are covered. Authenticated trading is not yet end-to-end proven. |
+| [pays.online #166](https://github.com/pathscale/pays.online/pull/166) | Typecheck, lint, build, 45/45 against UI #292 | Code review can proceed. Deployment is blocked by an obsolete production Honey UUID, no known production Pays registration, and no matching deployed backend. The frontend now refuses the invalid id locally and explains the problem. |
+| [honey.id #332](https://github.com/pathscale/honey.id/pull/332) | 196 defined native checks across five roles; deployed dev 193/196; coordinated local app lifecycle 19/19; recovery runner 33/33 | UI is review-ready. Dev's three failures expose the backend's empty regenerated API key. TOTP confirmation and Telegram enrollment/login remain unproved. |
+| [js.software #54](https://github.com/pathscale/js.software/pull/54) | Lint, build, 332/332 | Review-ready; refresh UI lock after 3.2.1 publishes. |
+| [nofilter.io #340](https://github.com/pathscale/nofilter.io/pull/340) | Lint, build, 132/132 | Public/auth validation is covered. A real two-participant WebRTC studio session remains unproved. |
+| [24x.ai #11](https://github.com/pathscale/24x.ai/pull/11) | Lint, build, desktop 141/141, phone 20/20 | Session UI uses a Honey application identity workaround. 24x has a dev registration, but no working callback backend for it. |
+| [kard.vip #8](https://github.com/pathscale/kard.vip/pull/8) | 223/223 | Demo behavior is covered; this is not real payment evidence. |
+| [agencyzero #211](https://github.com/pathscale/agencyzero/pull/211) | Frontend gates and native UI suites pass; Rust tests pass | UI scope is review-ready. Core-specific work in #212 is reserved for a dedicated core owner. |
+| [crates.vip #1](https://github.com/pathscale/crates.vip/pull/1) | 71/71 plus 24/24 glyph checks | UI is review-ready. Authentication is deliberately bypassed in this product. |
+| [ui-starter-app #13](https://github.com/pathscale/ui-starter-app/pull/13) | 144/144 plus 12/12 glyph checks | Review-ready; refresh UI lock after 3.2.1 publishes. |
 
-Use `/Users/revenge/code/ps-observability/target/debug/ps-qa` (0.7.1) and
-`/Users/revenge/code/chuzz/target/release/chuzz-headless` for local candidate runs.
-The installed `~/.cargo/bin/ps-qa` was 0.6.3 and is not the release candidate.
-`qa-hosted --checks` takes a directory. Build before running: stale built files do
-not verify source changes. Keep pointer, keyboard, scroll, paint, and persistence
-failures visible; do not replace them with presence checks to obtain a pass.
+`consulting.parcle.ai` is intentionally excluded. It is unmaintained and was
+removed locally to avoid implying ownership or release priority.
 
-## Website scope
+## Honey role and security coverage
 
-All local checkouts are under `/Users/revenge/code`; remotes are `pathscale/<name>`.
-Counts below are earlier observed runs, not a final release verdict. They do not
-prove that every product feature is covered, and must be repeated against the
-final package and runtime. Check definitions have changed since some runs.
+Honey's 196 static outcomes are distributed across nine groups:
 
-| Repository / existing PR | Observed result or blocker |
-| --- | --- |
-| [honey.id #332](https://github.com/pathscale/honey.id/pull/332) | Expanded suite passes 193/196. The three failures truthfully identify the backend's empty API-key regeneration response; the dedicated error flow passes 18/18. Recovery-code generation, two login/rotation cycles, old-code rejection, save gates, unchanged-password login, and sign-out pass in a reusable 33/33 runner. TOTP and Telegram remain unverified. |
-| [worktables.dev #9](https://github.com/pathscale/worktables.dev/pull/9) | UI/SVG editor replaces Cytoscape/ELK. Final packed-package run passes 112/112, including 33 designer and 7 findings checks. Real pointer movement, cancellation, undo, zoom, and emitted schema edits pass. Visual inspection confirms the UI cards, native SVG relationships, toolbar, and inspector. Clean install still awaits house DSL SDK 0.1.2. |
-| [crates.vip #1](https://github.com/pathscale/crates.vip/pull/1) | Final packed-package run passes 71/71; authentication is deliberately bypassed in both client and backend, so this is not evidence of authenticated role coverage. |
-| [24x.ai #11](https://github.com/pathscale/24x.ai/pull/11) | Final packed-package runs pass 141/141 at desktop width and 20/20 at phone width. The dev login still authenticates under Honey's dev application because 24x has no usable dev registration of its own. |
-| [js.software #53](https://github.com/pathscale/js.software/pull/53) | Packed Calendar fix passes 316/316. CI includes all declared groups. |
-| [kard.vip #8](https://github.com/pathscale/kard.vip/pull/8) | Final packed-package run passes 223/223; demo actions do not prove payment functionality. |
-| [nofilter.io #340](https://github.com/pathscale/nofilter.io/pull/340) | Final packed-package run passes 129/129. |
-| [pathscale.com #17](https://github.com/pathscale/pathscale.com/pull/17) | The public/UI flow and carousel pass against the final package. The dev run passes 105/124: the known username and wrong-password refusal work, but the correct-password callback does not create a protected session, stranding 19 dependent portal/settings checks. Owner confirmed the old portal has little value and need not block UI. Configured `pathscale-be` no longer exists; do not recreate without a reviewed deployment plan. |
-| [pays.online #166](https://github.com/pathscale/pays.online/pull/166) | Packed-package typecheck and build pass after adopting shared ConnectionSettings. There is no ps-qa profile. Wallet settings call methods absent from the backend schema; onboarding contains unfinished handlers. The configured Honey app id is a UUID rather than the required 16-character public id. Real payment actions require a defined dev setup and review. |
-| [promptsyntax.org #18](https://github.com/pathscale/promptsyntax.org/pull/18) | Final packed-package run passes 129/129. |
-| [support.cafe #12](https://github.com/pathscale/support.cafe/pull/12) | Final packed-package run passes 104/104. |
-| [web3.trading #18](https://github.com/pathscale/web3.trading/pull/18) | Final packed-package run passes 103/103. Theme contrast settles correctly, the last carousel slide remains stable for 500ms, and the guest chat closes. |
-| [ui-starter-app #13](https://github.com/pathscale/ui-starter-app/pull/13) | Final packed-package run passes 144/144. |
-| [agencyzero #211](https://github.com/pathscale/agencyzero/pull/211), [#212](https://github.com/pathscale/agencyzero/pull/212) | UI and control integration in scope; core-specific features are handed to a dedicated owner after UI is ready. |
+| Group | Checks |
+| --- | ---: |
+| Admin | 24 |
+| Application lifecycle | 19 |
+| Application | 18 |
+| Controls | 18 |
+| Entry | 16 |
+| Platform | 32 |
+| Public | 13 |
+| Roles | 21 |
+| Security | 35 |
 
-Honey verification must cover **Platform Admin, App Admin, and Guest** with real
-allowed and denied behavior. Application creation, saved edits, deletion, logout,
-session recovery, and relevant security settings need outcomes, not just screen
-presence. Recovery verification is complete; TOTP and Telegram remain incomplete. Only uniquely named
-disposable QA applications may be changed or deleted by the lifecycle checks.
+The suite exercises Platform Admin, Platform Support, App Admin, App Support,
+and Guest behavior, including allowed and denied actions. The reusable recovery
+runner covers two login/rotation cycles, rejection of a used code, save
+confirmation, unchanged-password login, and final sign-out.
 
-Honey's backend production approval has a separate security review item. The
-July 27 audit's app-token trust concern still matches the inspected auth backend
-at `60d37dc`: `src/services/auth/app_token.rs` checks that a caller-selected
-source app exists and accepts its callback's user identity, without an explicit
-source-to-target trust check. This is a source finding, not a live exploit test.
-Do not treat passing recovery or UI checks as closing that backend boundary.
+The three deployed-dev failures are kept visible: regenerate, hide, and reveal
+receive an empty replacement API key from the current backend. Coordinated local
+branches fix that lifecycle, but their publication is blocked on the WorkTable
+core dependency. The related review branches are:
 
-Do not count the current Honey or js.software `biome` scripts as validation:
-their manifests install the unrelated `biome` 0.3.3 package rather than
-`@biomejs/biome`. Its CLI can return success without checking files. Their
-TypeScript, build, and native E2E results above are separate evidence. Repairing
-the formatter dependency and stale configuration remains tooling cleanup.
+- [honey_id-types #17](https://github.com/pathscale/honey_id-types/pull/17);
+- [auth.honey.id-backend #42](https://github.com/pathscale/auth.honey.id-backend/pull/42);
+- [api.honey.id-backend #29](https://github.com/pathscale/api.honey.id-backend/pull/29).
 
-The previous UI run stopped at Chuzz's stale GUI build path. Chuzz #45 and #46
-fixed that release path; the published 0.1.37 host then passed the complete local
-273-check component sweep. The checks were kept at the full font-enabled profile.
+AppAdmin is already present on the API backend master branch. It must not be
+reimplemented. The remaining Telegram/TOTP and WorkTable work belongs in the
+backend/core handoff after the UI release review.
 
-Honey's creation handler now awaits its mutation, so submitting covers the backend
-request. Tracing showed validation completed but CreateApp was never sent when
-GetApps and CreateApp queued during WebSocket connection. The first open listener
-removed itself and chuzz skipped the next listener. The host now snapshots
-listeners before dispatch; three clean lifecycles and the full suite pass.
+## Release order after owner review
 
-Pathscale restoration, if approved, should mirror crates.vip's low-cost deployment:
-shared IPv4, shared CPU, one small machine. The crates backend's `fly.toml` and
-`docs/deploy.md` are the reference. Do not assume the former Pathscale placeholder
-callback or diagnostic dashboard is a production feature specification.
+1. Review UI #292 and ps-observability #20.
+2. Merge and publish only after explicit owner approval: UI 3.2.1 and the
+   protocol/driver sequence above.
+3. Refresh each site's lockfile or clean install so it resolves the published
+   UI 3.2.1, then repeat its complete native suite locally.
+4. Review and merge the UI-complete site PRs individually.
+5. Deploy only approved sites. Before creating or changing a Fly dev instance,
+   contact the owner so they can be online.
+6. Hand Honey persistence, Telegram/TOTP, AgencyZero core, and product-specific
+   backend gaps to their dedicated owners with the failing native outcomes kept
+   as acceptance criteria.
 
-`consulting.parcle.ai` is unmaintained, intentionally absent locally, and excluded
-from this release gate.
+## Checkout and branch state
 
-## Local changes and branches
+The maintained active checkouts match their upstream PR branches. They are
+clean except for an intentional AgencyZero local overlay in
+`apps/gui/Cargo.toml`, `apps/gui/src/main.rs`, `scripts/qa-full-local.sh`, and
+`docs/performance-measurement-todo.md`; those files are outside the UI PR and
+must be preserved.
 
-Preserve unrelated changes and append work to existing PRs. Do not recreate the
-deleted scratchpad checkout or delete branches while auditing them.
+Merged WorkTables PRs #5 through #8 and their dead remote branches are gone.
+JS Software's dead `feat/ui-2.3` branch is gone. Chuzz's merged temporary
+branches and prunable worktree are gone. Chuzz retains two real local feature
+branches, `feat/network-apis` and `feat/diagnostics-tool-client`, because they
+contain unique commits.
 
-The scoped branch comparison found most apparently orphaned engine/control commits
-already present as equivalent patches. Pays' remaining local work was inspected:
-
-- `feat/engine-console`: `6ed3396` adds a separate enforcement-engine contract,
-  connection, status and payment pages. Its default backend is localhost and it
-  has no verified deployment. The request-id control updates a signal after the
-  form has captured its defaults, so new-id and post-send rotation need behavioral
-  verification and correction before use. Preserve this feature branch; it is not
-  a missing UI migration fix and is not approved payment functionality.
-- The following `aa6cccd` removes old theme/table dependencies; the current release
-  branch already contains the corresponding migration, so do not replay it blindly.
-- `wip/local-save-20260815`: `c0560c1` and `5309222` contain signing design documents
-  and their correction. Preserve these for payment/backend review; they do not
-  change the shipped frontend. No remote branch contains `6ed3396` or `5309222`.
-
-No local branch was deleted. Any later integration belongs in the existing Pays
-PR and must retain its backend and payment review requirements.
-Worktables' four previously local commits and the verified editor replacement are
-now pushed to its existing PR. They remain subject to owner review.
-
-Two ps-blitz patch-identity exceptions were inspected: `fix/engine-gaps`' response
-metadata fetch is present in the release branch with later configurable user-agent
-changes, and `release/engine-fixes`' remaining unique commit only bumps the old
-version to 0.3.7. Neither needs replaying onto 0.4.8.
-
-The original `solid-layouts` checkout contains other local work; the published root
-style fix was made in `/Users/revenge/code/solid-layouts-ui-release` to preserve it.
-
-## Final local release candidate
-
-The font-enabled host, ps-qa 0.7.1 driver, packed UI package, Honey, and Worktables
-build successfully. UI's final native sweep passes 273 checks across 75 fixtures;
-API/package checks pass across 187 components and 1,002 files. The full chuzz GUI
-release build, workspace tests, and clippy pass. Worktables passes 112/112, JS
-Software 316/316, Web3 103/103, 24x 141/141 plus 20/20 mobile, crates 71/71,
-kard 223/223, nofilter 129/129, Prompt Syntax 129/129, support.cafe 104/104,
-and the starter 144/144.
-
-Honey's complete run is 193/196 because the backend returns no regenerated API
-key; the truthful error path passes 18/18 and the reusable recovery runner passes
-33/33. Pathscale's public/UI flow passes, while its dev application callback does
-not establish the protected session. Pays builds but has no native QA profile and
-has explicit backend contract gaps. These site-specific boundaries do not indicate
-a UI package regression.
-
-No deployment sign-off is implied. The owner must review the PRs, then the five
-dependency releases must publish in order before registry CI and approved website
-deployments can complete.
+Pays retains `feat/engine-console` and `wip/local-save-20260815`; both contain
+unique, unreviewed backend/payment work and are not part of the UI release.
+The ps-observability and Pathscale backend pre-rebase backup branches are kept
+deliberately. No release branch depends on the deleted scratchpad tree.
