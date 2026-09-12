@@ -1,4 +1,6 @@
 import { describe, expect, it } from "bun:test";
+import { readFileSync } from "node:fs";
+import { join } from "node:path";
 import {
   applyGlassTokens,
   GLASS_DEFAULTS,
@@ -21,6 +23,22 @@ const MODES = ["light", "dark"] as const;
 const DERIVED = Object.keys(resolveGlassTokens(GLASS_DEFAULTS.dark, "dark"));
 
 describe("glass tuning", () => {
+  it("connects the public depth axis to shared material paint", () => {
+    const materialCss = readFileSync(
+      join(import.meta.dir, "..", "..", "src", "components", "_shared", "material.css"),
+      "utf8",
+    );
+    for (const token of [
+      "--glass-depth-top-glow-opacity",
+      "--glass-depth-bottom-glow-opacity",
+      "--glass-depth-sheen-opacity",
+      "--glass-inner-glow-alpha",
+      "--glass-shadow-depth",
+    ]) {
+      expect(materialCss, `${token} has no material consumer`).toContain(`var(${token}`);
+    }
+  });
+
   it("derives the same token set whatever the input", () => {
     for (const mode of MODES) {
       for (const tuning of [
