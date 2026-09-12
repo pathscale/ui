@@ -164,7 +164,19 @@ Components require `solid-layouts >=0.2.4` so caller styles reach their root ele
   `showDelayMs` when the surrounding onboarding flow needs a different delay;
   the same option is available as `ImmersiveLanding.firefoxPWAConfig.showDelayMs`.
   The banner still applies its Firefox, standalone-mode, and dismissal checks
-  before starting that delay.
+  before starting that delay. Give it an `id` to derive stable IDs for its
+  banner and actions; `ImmersiveLanding` derives this base from its own `id`
+  unless `firefoxPWAConfig.id` overrides it.
+- Give `PWAInstallPrompt` an `id` to derive stable IDs for its dialog and
+  actions. `ImmersiveLanding` derives this base from its own `id` unless
+  `pwaConfig.id` overrides it.
+- `ImmersiveLanding.id` is placed on the component root. Its page viewport,
+  arrows, navigation, optional PWA prompts, and cookie controls remain inside
+  that ownership subtree and derive their control IDs from the same base.
+- Give `CookieConsent` an `id` when its controls need stable authored IDs. Its
+  banner, dialog, preference inputs, and actions derive unique IDs from that
+  base. `ImmersiveLanding` forwards `cookieConfig.id` and otherwise derives the
+  cookie family from the landing's own `id`.
 - `Collapsible.Content` retains closed content by default. Set `keepMounted={false}` to mount it only while expanded; the check is reactive, so it mounts and unmounts as the state changes.
 - `Popover` accepts `anchorRect` as a rectangle or rectangle accessor when content must be positioned without a trigger element.
 - Compound components: `Dialog.Trigger`, `Tabs.List`, `Select.Option`, etc. (`Object.assign` statics; also exported flat: `AccordionRoot`, `AlertTitle`, …). Parts are styleable/testable via `data-slot="..."` and state attrs (`data-open`, `data-selected`, `data-invalid`).
@@ -730,12 +742,28 @@ export const connection = createConnectionSettings({
 });
 
 <ConnectionSettings
+  id="acme-connection"
   store={connection}
   endpoints={[{ name: "api", label: "API URL", hint: "leave empty for production" }]}
-  labels={{ useCustom: "Use a custom backend", save: "Save", reset: "Reset" }}
+  labels={{
+    useCustom: "Use a custom backend",
+    appPublicId: "Application ID",
+    save: "Save",
+    reset: "Reset",
+  }}
   showAppPublicId
+  validateAppPublicId={(id) =>
+    /^[0-9A-Za-z]{16}$/.test(id)
+      ? undefined
+      : "Application ID must be 16 letters or numbers"
+  }
 />
 ```
+
+When `showAppPublicId`, `labels.appPublicId`, and `validateAppPublicId` are all
+present, Save validates the visible application ID before changing persisted
+settings or running `onApply`. Return `undefined` to accept it or a message to
+show the failure and call `onSaveFailed`.
 
 Read `connection.urls.api` from the transport. It resolves overrides and never
 returns an empty string.

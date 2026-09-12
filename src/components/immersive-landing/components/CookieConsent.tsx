@@ -2,6 +2,7 @@ import {
   type Component,
   createEffect,
   createSignal,
+  createUniqueId,
   onCleanup,
   onSettled,
   Show,
@@ -115,6 +116,9 @@ export const CookieConsent: Component<CookieConsentProps> = (props) => {
   // Preference states for manage modal
   const [analyticsEnabled, setAnalyticsEnabled] = createSignal(false);
   const [marketingEnabled, setMarketingEnabled] = createSignal(false);
+  const generatedId = createUniqueId();
+  const baseId = () => props.id?.trim() || `cookie-consent-${generatedId}`;
+  const controlId = (suffix: string) => `${baseId()}-${suffix}`;
 
   const CONSENT_KEY = () =>
     props.storageKeys?.consentKey ?? "app_cookie_consent";
@@ -239,9 +243,10 @@ export const CookieConsent: Component<CookieConsentProps> = (props) => {
       {/* Cookie Consent Banner */}
       <Show when={showBanner()}>
         <div
+          id={controlId("banner")}
           role="dialog"
           aria-modal="false"
-          aria-labelledby="cookie-consent-message"
+          aria-labelledby={controlId("message")}
           {...{
             class: `${CLASSES.cookie.banner}${isClosing() ? ` ${CLASSES.cookie.bannerClosing}` : ""}`,
           }}
@@ -253,7 +258,7 @@ export const CookieConsent: Component<CookieConsentProps> = (props) => {
               {...{ class: CLASSES.cookie.row }}
             >
               <p
-                id="cookie-consent-message"
+                id={controlId("message")}
                 {...{ class: CLASSES.cookie.message }}
               >
                 {texts().message}
@@ -264,6 +269,7 @@ export const CookieConsent: Component<CookieConsentProps> = (props) => {
                 {...{ class: CLASSES.cookie.actions }}
               >
                 <Button
+                  id={controlId("accept-all")}
                   flavor="primary"
                   size="sm"
                   {...{ class: CLASSES.cookie.actionButton }}
@@ -272,6 +278,7 @@ export const CookieConsent: Component<CookieConsentProps> = (props) => {
                   {texts().acceptAll}
                 </Button>
                 <Button
+                  id={controlId("decline")}
                   variant="ghost"
                   size="sm"
                   {...{ class: CLASSES.cookie.actionButton }}
@@ -280,6 +287,7 @@ export const CookieConsent: Component<CookieConsentProps> = (props) => {
                   {texts().decline}
                 </Button>
                 <Button
+                  id={controlId("manage")}
                   type="button"
                   variant="ghost"
                   size="sm"
@@ -296,9 +304,10 @@ export const CookieConsent: Component<CookieConsentProps> = (props) => {
 
       <Show when={showManage()}>
         <div
+          id={controlId("dialog")}
           role="dialog"
           aria-modal="true"
-          aria-labelledby="cookie-manage-title"
+          aria-labelledby={controlId("title")}
           {...{ class: CLASSES.cookie.modalBackdrop }}
           onClick={handleBackdropClick}
         >
@@ -312,12 +321,13 @@ export const CookieConsent: Component<CookieConsentProps> = (props) => {
               {...{ class: CLASSES.cookie.modalHeader }}
             >
               <h2
-                id="cookie-manage-title"
+                id={controlId("title")}
                 {...{ class: CLASSES.cookie.modalTitle }}
               >
                 {texts().manageTitle}
               </h2>
               <Button
+                id={controlId("close")}
                 size="sm"
                 variant="ghost"
                 width="square"
@@ -342,6 +352,7 @@ export const CookieConsent: Component<CookieConsentProps> = (props) => {
                   {texts().essential}
                 </span>
                 <input
+                  id={controlId("essential")}
                   type="checkbox"
                   checked
                   disabled
@@ -355,6 +366,7 @@ export const CookieConsent: Component<CookieConsentProps> = (props) => {
                   {texts().analytics}
                 </span>
                 <input
+                  id={controlId("analytics")}
                   type="checkbox"
                   checked={analyticsEnabled()}
                   onChange={(e) => setAnalyticsEnabled(e.currentTarget.checked)}
@@ -368,6 +380,7 @@ export const CookieConsent: Component<CookieConsentProps> = (props) => {
                   {texts().marketing}
                 </span>
                 <input
+                  id={controlId("marketing")}
                   type="checkbox"
                   checked={marketingEnabled()}
                   onChange={(e) => setMarketingEnabled(e.currentTarget.checked)}
@@ -382,6 +395,7 @@ export const CookieConsent: Component<CookieConsentProps> = (props) => {
               {...{ class: CLASSES.cookie.modalFooter }}
             >
               <Button
+                id={controlId("cancel")}
                 variant="ghost"
                 size="sm"
                 onClick={handleManageClose}
@@ -389,6 +403,7 @@ export const CookieConsent: Component<CookieConsentProps> = (props) => {
                 {texts().cancel}
               </Button>
               <Button
+                id={controlId("save")}
                 flavor="primary"
                 size="sm"
                 {...{ class: CLASSES.cookie.saveButton }}

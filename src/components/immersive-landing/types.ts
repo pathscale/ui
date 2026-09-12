@@ -114,6 +114,8 @@ export interface CookieConsentStorageKeys {
 }
 
 export interface CookieConsentProps {
+  /** Caller-owned base used to derive stable IDs for every consent control. */
+  id?: string;
   texts?: CookieConsentTexts;
   storageKeys?: CookieConsentStorageKeys;
 
@@ -135,6 +137,8 @@ export interface FirefoxPWABannerTexts {
 }
 
 export interface FirefoxPWABannerProps {
+  /** Caller-owned base used to derive stable IDs for every banner control. */
+  id?: string;
   extensionUrl?: string;
   storageKey?: string;
   /** Delay before the banner appears. Defaults to 2000ms. */
@@ -168,6 +172,8 @@ export interface PWAInstallPromptTexts {
 }
 
 export interface PWAInstallPromptProps {
+  /** Caller-owned base used to derive stable IDs for every prompt control. */
+  id?: string;
   appName?: string;
   appIcon?: string;
   storageKey?: string;

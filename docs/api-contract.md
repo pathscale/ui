@@ -574,12 +574,14 @@ onSaveFailed?: (error: unknown) => void
 onSaved?: () => void
 showAppPublicId?: boolean
 store: ConnectionSettingsStore
+validateAppPublicId?: (id: string) => string | undefined
 ```
 
 ### CookieConsent
 
 ```ts
 analytics: boolean
+id?: string
 marketing: boolean
 onConsentChange?: (payload: { type: ConsentType; analytics: boolean; marketing: boolean; }) => void
 storageKeys?: CookieConsentStorageKeys
@@ -957,6 +959,7 @@ _No props beyond HTML attributes and `UIBaseProps`._
 ```ts
 extensionUrl?: string
 icon?: string | JSX.Element
+id?: string
 onDismiss?: () => void
 onInstall?: () => void
 showDelayMs?: number
@@ -1507,6 +1510,7 @@ value?: number
 ```ts
 appIcon?: string
 appName?: string
+id?: string
 onDismiss?: () => void
 onInstall?: () => void
 storageKey?: string

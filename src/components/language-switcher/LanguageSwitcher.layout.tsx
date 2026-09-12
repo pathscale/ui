@@ -79,6 +79,7 @@ const LanguageSwitcher: Layout<
       style={props.style}
     >
       <Dropdown.Trigger
+        id={props.id ? `${props.id}-trigger` : undefined}
         {...{ class: CLASSES.trigger }}
         aria-busy={props.i18n.isLoading ? "true" : undefined}
         aria-label={`${props.currentLanguageLabel ?? "Current language"}: ${currentLanguageName()}`}
@@ -107,6 +108,7 @@ const LanguageSwitcher: Layout<
       </Dropdown.Trigger>
 
       <Dropdown.Menu
+        id={props.id ? `${props.id}-menu` : undefined}
         {...{ class: CLASSES.menu }}
         align={props.align}
         aria-label={props.optionsLabel ?? "Language options"}

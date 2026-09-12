@@ -52,6 +52,8 @@ export type ConnectionSettingsProps = Omit<
     labels: ConnectionSettingsLabels;
     /** Omit to hide the app id field entirely. */
     showAppPublicId?: boolean;
+    /** Refuse an application id before it is persisted or applied. */
+    validateAppPublicId?: (id: string) => string | undefined;
     /**
      * Rendered inside the revealed region, after the endpoint fields.
      *
@@ -86,6 +88,7 @@ export const ConnectionSettingsLayout: Layout<
     "endpoints",
     "labels",
     "showAppPublicId",
+    "validateAppPublicId",
     "onSaved",
     "onSaveFailed",
     "onResetDone",
@@ -193,6 +196,19 @@ export const ConnectionSettingsLayout: Layout<
           props.onSaveFailed?.(new Error(problem));
           return;
         }
+      }
+    }
+
+    if (
+      props.showAppPublicId &&
+      props.labels.appPublicId &&
+      props.validateAppPublicId
+    ) {
+      const problem = props.validateAppPublicId(appIdValue());
+      if (problem) {
+        setFailure(problem);
+        props.onSaveFailed?.(new Error(problem));
+        return;
       }
     }
 

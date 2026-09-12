@@ -357,16 +357,19 @@ function CookieConsentFixture() {
   return (
     <>
       <CookieConsent
+        id="qa-cookie-m"
         storageKeys={consent("m")}
         texts={{ acceptAll: "Accept all M", decline: "Decline M", manage: "Manage M", manageTitle: "Manage M preferences", save: "Save M", marketing: "Marketing M" }}
         onConsentChange={({ type }) => setManaged(type)}
       />
       <CookieConsent
+        id="qa-cookie-a"
         storageKeys={consent("a")}
         texts={{ acceptAll: "Accept all A", decline: "Decline A", manage: "Manage A", marketing: "Marketing A" }}
         onConsentChange={({ type }) => setAccepted(type)}
       />
       <CookieConsent
+        id="qa-cookie-d"
         storageKeys={consent("d")}
         texts={{ acceptAll: "Accept all D", decline: "Decline D", manage: "Manage D", marketing: "Marketing D" }}
         onConsentChange={({ type }) => setDeclined(type)}
@@ -743,6 +746,7 @@ function ImmersiveLandingFixture() {
   return (
     <>
       <ImmersiveLanding
+        id="immersive-landing-fixture"
         pages={["first", "second"]}
         initialPage="first"
         transitionDuration={0}
@@ -770,16 +774,19 @@ function PWAInstallPromptFixture() {
   return (
     <>
       <PWAInstallPrompt
+        id="qa-pwa-install-a"
         storageKey="qa-pwa-install"
         texts={{ installButton: "Install A", notNowButton: "Not now A", closeLabel: "Close A" }}
         onInstall={() => setOutcome("installed")}
       />
       <PWAInstallPrompt
+        id="qa-pwa-install-b"
         storageKey="qa-pwa-later"
         texts={{ installButton: "Install B", notNowButton: "Not now B", closeLabel: "Close B" }}
         onDismiss={() => setOutcome("later")}
       />
       <PWAInstallPrompt
+        id="qa-pwa-install-c"
         storageKey="qa-pwa-close"
         texts={{ installButton: "Install C", notNowButton: "Not now C", closeLabel: "Close C" }}
         onDismiss={() => setOutcome("closed")}
@@ -806,18 +813,21 @@ function FirefoxPWABannerFixture() {
   return (
     <>
       <FirefoxPWABanner
+        id="qa-firefox-pwa-a"
         storageKey="qa-firefox-install"
         showDelayMs={0}
         texts={{ installButton: "Install extension A", dismissButton: "Maybe later A", closeLabel: "Close Firefox A" }}
         onInstall={() => setOutcome("installed")}
       />
       <FirefoxPWABanner
+        id="qa-firefox-pwa-b"
         storageKey="qa-firefox-later"
         showDelayMs={0}
         texts={{ installButton: "Install extension B", dismissButton: "Maybe later B", closeLabel: "Close Firefox B" }}
         onDismiss={() => setOutcome("later")}
       />
       <FirefoxPWABanner
+        id="qa-firefox-pwa-c"
         storageKey="qa-firefox-close"
         showDelayMs={0}
         texts={{ installButton: "Install extension C", dismissButton: "Maybe later C", closeLabel: "Close Firefox C" }}
@@ -915,6 +925,7 @@ function LiveChatPanelFixture(props: { spec: ComponentSpec; under?: unknown }) {
         <>
           <Dynamic
             component={Component()}
+            id="qa-live-chat-panel"
             onClose={() => setComplete(true)}
             onSendMessage={async ({ message }: { message: string }) => {
               setSent(message);
@@ -1111,6 +1122,7 @@ function ConnectionSettingsFixture() {
   const storageKey = "qa-connection-settings";
   const store = createConnectionSettings({
     storageKey,
+    appPublicId: "QaAppPublicId123",
     endpoints: [{ name: "api", fallback: "wss://api.example.com" }],
     onApply: ({ urls }) => {
       let persisted = "nothing";
@@ -1132,13 +1144,21 @@ function ConnectionSettingsFixture() {
   return (
     <>
     <ConnectionSettings
+      id="connection-settings-fixture"
       store={store}
       endpoints={[{ name: "api", label: "API URL" }]}
       labels={{
         useCustom: "Use a custom backend",
+        appPublicId: "Application ID",
         save: "Save",
         reset: "Reset",
       }}
+      showAppPublicId
+      validateAppPublicId={(id) =>
+        /^[0-9A-Za-z]{16}$/.test(id)
+          ? undefined
+          : "Application ID must be 16 letters or numbers"
+      }
       onSaved={() => setOutcome("saved")}
       onResetDone={() => setOutcome("reset")}
       onSaveFailed={(error: unknown) =>
@@ -1153,6 +1173,7 @@ function ConnectionSettingsFixture() {
         `settings` kind exists to assert.
       */}
       <h2>Committed: {store.urls.api}</h2>
+      <h2>Committed app: {store.state.appPublicId}</h2>
       <h2>Save outcome: {outcome()}</h2>
       <h2>Reconnected: {reconnect()}</h2>
     </ConnectionSettings>
