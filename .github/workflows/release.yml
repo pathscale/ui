@@ -23,7 +23,6 @@ on:
   workflow_run:
     workflows: [CI]
     types: [completed]
-  workflow_dispatch:
 
 permissions:
   contents: read
@@ -31,10 +30,9 @@ permissions:
 jobs:
   decide:
     if: >-
-      github.event_name == 'workflow_dispatch' ||
-      (github.event.workflow_run.conclusion == 'success' &&
-       github.event.workflow_run.event == 'push' &&
-       github.event.workflow_run.head_branch == 'master')
+      github.event.workflow_run.conclusion == 'success' &&
+      github.event.workflow_run.event == 'push' &&
+      github.event.workflow_run.head_branch == 'master'
     runs-on: ubicloud-standard-2
     outputs:
       mode: ${{ steps.decide.outputs.mode }}
@@ -43,10 +41,9 @@ jobs:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0 # next-version.ts reads commit history
-          ref: ${{ github.event_name == 'workflow_run' && github.event.workflow_run.head_sha || 'master' }}
+          ref: ${{ github.event.workflow_run.head_sha }}
 
       - name: Require the tested revision to remain master
-        if: github.event_name == 'workflow_run'
         run: |
           git fetch origin master
           test "$(git rev-parse HEAD)" = "${{ github.event.workflow_run.head_sha }}"
@@ -93,7 +90,7 @@ jobs:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0
-          ref: ${{ github.event_name == 'workflow_run' && github.event.workflow_run.head_sha || 'master' }}
+          ref: ${{ github.event.workflow_run.head_sha }}
 
       - name: Require the tested revision to remain master
         run: |
