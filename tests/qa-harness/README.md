@@ -49,7 +49,8 @@ cargo build --release --manifest-path ../chuzz/Cargo.toml --bin chuzz-headless \
 QA_HOST=../chuzz/target/release/chuzz-headless bash tests/qa-harness/run-all.sh
 ```
 
-`QA_PS_QA` does the same for a local ps-qa, version 0.7.1 or newer. The script
+`QA_PS_QA` does the same for a local ps-qa. Release runs use the reviewed exact
+version 0.7.3 so a driver update cannot silently change the result. The script
 refuses stale bundles unless `QA_ALLOW_STALE=1` is explicitly set. Linux rendered
 QA needs fontconfig development files and an installed font such as DejaVu;
 the shared CI host action installs both. Release verification uses `QA_PROFILE=full`.

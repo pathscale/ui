@@ -17,20 +17,18 @@ natively, and Claude Code loads it through the `@AGENTS.md` import in
   implementation files.** It is the frontend working agreement: SolidJS/`@pathscale/ui`
   conventions, and a context-efficient workflow. Reading it first keeps
   context small and avoids re-deriving patterns that already exist.
-- **Releases are automatic — never run `npm publish` by hand.** Pushing to `master`
-  runs [`.github/workflows/release.yml`](.github/workflows/release.yml), which derives the
-  version from the conventional commits since the last release, bumps `package.json`,
-  publishes through npm Trusted Publishing (OIDC) and tags it. There is no `NPM_TOKEN` in
-  this repository, so a local publish cannot authenticate anyway, and a hand-written
+- **Releases are automatic — never run `npm publish` by hand.** A successful CI run for
+  `master` starts [`.github/workflows/release.yml`](.github/workflows/release.yml) at the
+  exact revision CI tested. The workflow stops if `master` advances before release,
+  derives the version from conventional commits, bumps `package.json`, publishes through
+  npm Trusted Publishing (OIDC), and tags the published revision. There is no `NPM_TOKEN`
+  in this repository, so a local publish cannot authenticate anyway, and a hand-written
   version bump only fights the workflow. Publishing is irreversible and a version can
   never be reused, so if a release looks wrong, read the workflow run before touching
   anything.
-- **After a merge, confirm the fix actually published.** The automatic release has one
-  hole and it is easy to walk into: if the release job for the *previous* merge is still
-  running when yours lands, the new tag can end up pointing at your commit while npm
-  never receives it. `bun run scripts/next-version.ts` then reports "no releasable
-  commits", because the range it inspects is already empty. The symptom is a merged fix
-  that a consumer cannot install.
+- **After a merge, confirm the fix actually published.** The release is gated by CI and
+  fails closed when another merge advances `master`. Confirm the npm version and tag both
+  point at the expected release revision:
 
   So check, every time:
 
@@ -40,20 +38,21 @@ natively, and Claude Code loads it through the `@AGENTS.md` import in
   git tag --points-at HEAD                # a tag here with no npm release is the hole
   ```
 
-  If master is ahead of npm, push a one-line `chore(release): <next>` bump to `master`
-  to trigger the workflow. That is the one case where touching the version by hand is
-  correct, and it is a repair, not the normal path.
+  If master is ahead of npm, inspect the CI and Release runs. Fix or re-run the failed
+  workflow rather than manufacturing another version bump.
 - **One open PR per repository. Add to it.** If a PR is already open here, push your
   commits onto that branch instead of opening a second one. Two open PRs against the
   same library mean two releases, two version bumps, and a consumer that has to wait for
   both — and whichever lands second can hit the tag hole above.
-- **`bun` is the package manager** — its lockfile is authoritative. Don't introduce a second one by running npm/yarn/pnpm here.
+- **`bun` is the package manager. Do not add or generate lockfiles.** This fleet
+  intentionally resolves from `package.json`; remove a generated lockfile before
+  reviewing the change. Don't run npm/yarn/pnpm here.
 - **Docs describe what is true now.** If you change behaviour, update the README and any affected doc in the same change.
 
 ## Build & run
 
 ```bash
-bun install
+bun install --no-save
 bun run dev
 bun run build
 bun run lint

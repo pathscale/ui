@@ -33,7 +33,7 @@ jobs:
       - name: Setup Bun
         uses: oven-sh/setup-bun@v1
         with:
-          bun-version: latest
+          bun-version: 1.3.14
 
       - uses: dtolnay/rust-toolchain@stable
 
@@ -56,12 +56,14 @@ jobs:
       # deleted from source; this is the last consumer to move off it.
       - name: Headless browser host
         id: qa
-        uses: pathscale/chuzz/.github/actions/headless-host@master
+        uses: pathscale/chuzz/.github/actions/headless-host@b0e4ce0d35fe96230c90d2a3ed55a64686abe370
         with:
           token: ${{ secrets.SIBLING_REPOS_TOKEN }}
+          chuzz-ref: b0e4ce0d35fe96230c90d2a3ed55a64686abe370
+          ps-qa-version: =0.7.3
 
       - name: Install Dependencies
-        run: bun install
+        run: bun install --no-save
 
       # `qa` only, for now: `src` carries 20 pre-existing findings that are not
       # this change's to fix, and gating on them would block every PR. The

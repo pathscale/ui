@@ -66,15 +66,15 @@ fi
 # days stale, and all three passed the moment the current one ran.
 #
 # The driver and host use the shared control protocol from this release.
-readonly PS_QA_FLOOR="0.7.1"
+readonly PS_QA_VERSION="0.7.3"
 ps_qa_version="$("$PS_QA" --version 2>/dev/null | awk '{ print $2 }')"
 if [[ -z "$ps_qa_version" ]]; then
   echo "$PS_QA does not report a version; it is too old to sweep with" >&2
   exit 1
 fi
-if [[ "$(printf '%s\n%s\n' "$PS_QA_FLOOR" "$ps_qa_version" | sort -V | head -1)" != "$PS_QA_FLOOR" ]]; then
-  echo "ps-qa $ps_qa_version is older than the $PS_QA_FLOOR this harness needs." >&2
-  echo "  cargo install ps-qa --version '^$PS_QA_FLOOR'" >&2
+if [[ "$ps_qa_version" != "$PS_QA_VERSION" ]]; then
+  echo "ps-qa $ps_qa_version is not the reviewed $PS_QA_VERSION this harness requires." >&2
+  echo "  cargo install ps-qa --version '=$PS_QA_VERSION'" >&2
   echo "  (or set QA_PS_QA to a build, which is what to do when changing the driver)" >&2
   exit 1
 fi
