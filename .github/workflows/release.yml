@@ -1,8 +1,8 @@
 name: Release
 
-# Fully automatic releases. Push to master, and if the commits since the last
-# published version warrant a release, this bumps the version, publishes to npm
-# and tags it. No version-bump PR, no manual step.
+# Fully automatic releases. Successful CI on a master push starts this workflow;
+# if the commits since the last published version warrant a release, it bumps
+# the version, publishes to npm and tags it. No version-bump PR, no manual step.
 #
 # The version comes from conventional commits (scripts/next-version.ts):
 #   type! / BREAKING CHANGE -> major, feat -> minor, fix|perf|revert -> patch.
@@ -20,8 +20,9 @@ name: Release
 # Without it the publish step fails closed rather than publishing unauthenticated.
 
 on:
-  push:
-    branches: [master]
+  workflow_run:
+    workflows: [CI]
+    types: [completed]
   workflow_dispatch:
 
 permissions:
@@ -29,6 +30,11 @@ permissions:
 
 jobs:
   decide:
+    if: >-
+      github.event_name == 'workflow_dispatch' ||
+      (github.event.workflow_run.conclusion == 'success' &&
+       github.event.workflow_run.event == 'push' &&
+       github.event.workflow_run.head_branch == 'master')
     runs-on: ubicloud-standard-2
     outputs:
       mode: ${{ steps.decide.outputs.mode }}
@@ -37,10 +43,18 @@ jobs:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0 # next-version.ts reads commit history
+          ref: ${{ github.event_name == 'workflow_run' && github.event.workflow_run.head_sha || 'master' }}
+
+      - name: Require the tested revision to remain master
+        if: github.event_name == 'workflow_run'
+        run: |
+          git fetch origin master
+          test "$(git rev-parse HEAD)" = "${{ github.event.workflow_run.head_sha }}"
+          test "$(git rev-parse origin/master)" = "${{ github.event.workflow_run.head_sha }}"
 
       - uses: oven-sh/setup-bun@v1
         with:
-          bun-version: latest
+          bun-version: 1.3.14
 
       - name: Decide whether to release, and as what version
         id: decide
@@ -71,10 +85,20 @@ jobs:
     runs-on: ubicloud-standard-2
     permissions:
       contents: write # push the bump commit
+    outputs:
+      release_sha: ${{ steps.release-sha.outputs.value }}
     env:
       VERSION: ${{ needs.decide.outputs.version }}
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          ref: ${{ github.event_name == 'workflow_run' && github.event.workflow_run.head_sha || 'master' }}
+
+      - name: Require the tested revision to remain master
+        run: |
+          git fetch origin master
+          test "$(git rev-parse HEAD)" = "$(git rev-parse origin/master)"
 
       # Mirrors ci.yml — the build resolves this plugin from a sibling directory.
       - name: Checkout rsbuild-plugin-ui-css-purge
@@ -88,7 +112,7 @@ jobs:
 
       - uses: oven-sh/setup-bun@v1
         with:
-          bun-version: latest
+          bun-version: 1.3.14
 
       - uses: actions/setup-node@v4
         with:
@@ -108,7 +132,7 @@ jobs:
           git push origin HEAD:master
 
       - name: Install dependencies
-        run: bun install
+        run: bun install --no-save
 
       - name: Contract check
         run: bun run check
@@ -144,6 +168,10 @@ jobs:
         run: |
           mkdir -p release
           npm pack --pack-destination release
+
+      - name: Record the release revision
+        id: release-sha
+        run: echo "value=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
 
       - uses: actions/upload-artifact@v4
         with:
@@ -185,7 +213,7 @@ jobs:
   # is not on npm. Tags had drifted badly before this — newest was v1.1.51
   # while npm was on 1.2.11.
   tag:
-    needs: [decide, publish]
+    needs: [decide, prepare, publish]
     runs-on: ubicloud-standard-2
     permissions:
       contents: write
@@ -199,4 +227,5 @@ jobs:
           gh release create "v$VERSION" \
             --repo "$GITHUB_REPOSITORY" \
             --title "v$VERSION" \
+            --target "${{ needs.prepare.outputs.release_sha }}" \
             --generate-notes
