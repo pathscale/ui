@@ -901,9 +901,9 @@ bun run playground:dev          # fastest visual loop; aliases @pathscale/ui -> 
 ```
 
 **Reproduce the duplication census:** the 6-line normalized-window scanner used for SEV-4 is
-at
-`/private/tmp/claude-501/-Users-revenge-code/4526fe76-867f-4d6a-a325-84ff907ebbb8/scratchpad/dup.ts`
-(scratchpad, may be cleaned up; it is ~40 lines and trivial to rewrite). Spot checks:
+was a
+`dup.ts` in the reviewer's scratch directory, not kept in the repository (it is ~40
+lines and trivial to rewrite). Spot checks:
 
 ```bash
 rg -n "const invokeEventHandler" src | wc -l        # 25

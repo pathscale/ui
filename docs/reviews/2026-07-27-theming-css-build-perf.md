@@ -733,7 +733,7 @@ Read in this order:
 Commands that work in this checkout (no `node_modules` present):
 
 ```bash
-git -C /Users/revenge/code/UI rev-parse --short HEAD
+git rev-parse --short HEAD
 diff <(sed -n '88,135p' src/styles/themes/light.css) <(sed -n '87,134p' src/styles/themes/dark.css)  # SEV-6: silent
 rg --no-filename -o "z-index: [^;]+;" src/components --glob '*.css' | sort | uniq -c | sort -rn      # SEV-7
 rg -n -- "--z-overlay\s*:" src                                                                        # SEV-7: no hits
