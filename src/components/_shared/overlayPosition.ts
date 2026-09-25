@@ -135,9 +135,32 @@ export const createOverlayPosition = (
         options.anchorRect?.(),
       );
       if (!triggerRect) return;
-      const overlayRect = overlay.getBoundingClientRect();
       const viewportWidth = window.innerWidth;
       const viewportHeight = window.innerHeight;
+
+      // Size before measuring. The width limits below arrive through the
+      // style signal, which lands only after this pass, so the overlay was
+      // measured at its unconstrained width: for Select, whose CSS floor is
+      // `max(100%, 14rem)` on a fixed box, that is the whole viewport. The
+      // left clamp then pinned it to the screen edge. Chromium corrected it a
+      // frame later through the ResizeObserver, which read as a blink; an
+      // engine whose observer does not fire kept it there. Writing the same
+      // limits onto the element first makes the one measurement the real one.
+      const maxWidth = `${round(Math.max(0, viewportWidth - viewportPadding * 2))}px`;
+      const minWidth = options.matchTriggerWidth?.()
+        ? `${round(Math.max(triggerRect.width, options.minWidth?.() ?? 0))}px`
+        : undefined;
+      // A throw here would halt every reactive owner in the app, and an
+      // overlay stand-in without a style declaration (tests measure with
+      // one) is still positionable, so the write is skipped rather than
+      // assumed.
+      const overlayStyle = overlay.style as CSSStyleDeclaration | undefined;
+      if (overlayStyle) {
+        overlayStyle.maxWidth = maxWidth;
+        if (minWidth) overlayStyle.minWidth = minWidth;
+      }
+
+      const overlayRect = overlay.getBoundingClientRect();
       const offset = options.offset();
 
       const placement = resolvePlacement(
@@ -201,14 +224,8 @@ export const createOverlayPosition = (
         position: "fixed",
         top: `${round(clamp(top, viewportPadding, maxTop))}px`,
         left: `${round(clamp(left, viewportPadding, maxLeft))}px`,
-        "max-width": `${round(Math.max(0, viewportWidth - viewportPadding * 2))}px`,
-        ...(options.matchTriggerWidth?.()
-          ? {
-              "min-width": `${round(
-                Math.max(triggerRect.width, options.minWidth?.() ?? 0),
-              )}px`,
-            }
-          : {}),
+        "max-width": maxWidth,
+        ...(minWidth ? { "min-width": minWidth } : {}),
       });
     };
 
