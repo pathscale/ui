@@ -57,17 +57,17 @@ jobs:
       # 0.1.12 is still on crates.io, so nothing broke when the crate was
       # deleted from source; this is the last consumer to move off it.
       #
-      # Pinned to a chuzz revision that has a published host (0.1.39). The
+      # Pinned to a chuzz revision that has a published host (0.1.40). The
       # previous pin predated the releases, so every run compiled that old
       # source against today's registry, and it stopped compiling once its
       # unlocked dependencies moved on (tokio features, blitz-control-protocol
       # 0.5.3): every PR here went red on a browser build, not on this code.
       - name: Headless browser host
         id: qa
-        uses: pathscale/chuzz/.github/actions/headless-host@117cb4001934ca6706869a76b8ff5a80540206c7
+        uses: pathscale/chuzz/.github/actions/headless-host@094d77b6f28f78ffcdc20b8b19e160ee6c4992ee
         with:
           token: ${{ secrets.SIBLING_REPOS_TOKEN }}
-          chuzz-ref: 117cb4001934ca6706869a76b8ff5a80540206c7
+          chuzz-ref: 094d77b6f28f78ffcdc20b8b19e160ee6c4992ee
           ps-qa-version: =0.7.3
 
       - name: Install Dependencies
