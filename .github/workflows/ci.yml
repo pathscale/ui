@@ -44,8 +44,10 @@ jobs:
           cache-on-failure: true
 
       # The host is the browser, and the browser is not a crate a site can
-      # install: `chuzz-headless` is built from source by the composite action
-      # below, which also installs the driver. That replaced `qa-inspect-host`,
+      # install: the composite action below downloads the verified
+      # `chuzz-headless` release matching its own revision (building that
+      # revision from source only if no release exists), and installs the
+      # driver. That replaced `qa-inspect-host`,
       # which was a second headless browser with the web platform in only the
       # other one -- no `URLSearchParams`, no `matchMedia`, no storage, no
       # observers -- so every gap closed for the browser had to be closed a
@@ -54,12 +56,18 @@ jobs:
       #
       # 0.1.12 is still on crates.io, so nothing broke when the crate was
       # deleted from source; this is the last consumer to move off it.
+      #
+      # Pinned to a chuzz revision that has a published host (0.1.39). The
+      # previous pin predated the releases, so every run compiled that old
+      # source against today's registry, and it stopped compiling once its
+      # unlocked dependencies moved on (tokio features, blitz-control-protocol
+      # 0.5.3): every PR here went red on a browser build, not on this code.
       - name: Headless browser host
         id: qa
-        uses: pathscale/chuzz/.github/actions/headless-host@b0e4ce0d35fe96230c90d2a3ed55a64686abe370
+        uses: pathscale/chuzz/.github/actions/headless-host@117cb4001934ca6706869a76b8ff5a80540206c7
         with:
           token: ${{ secrets.SIBLING_REPOS_TOKEN }}
-          chuzz-ref: b0e4ce0d35fe96230c90d2a3ed55a64686abe370
+          chuzz-ref: 117cb4001934ca6706869a76b8ff5a80540206c7
           ps-qa-version: =0.7.3
 
       - name: Install Dependencies
