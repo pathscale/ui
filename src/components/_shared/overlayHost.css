@@ -35,10 +35,24 @@
  *
  * Import this file and put `ui-overlay-host` on the component's root, alongside
  * whatever positioning that root already sets.
+ *
+ * ## Why an open host lifts itself
+ *
+ * The stacking context has a cost: the overlay's own `z-index` now only ranks
+ * it inside its host. The host itself paints at `z-index: auto`, in tree order,
+ * so any later positioned sibling of an ancestor paints over the open overlay.
+ * A Select in a table row is the case that shipped: `.table__row` is
+ * `position: relative`, so the next row covered the open list and its options
+ * could not be pressed. While anything inside the host is open, the host takes
+ * the overlay's layer so the whole subtree paints above what follows it.
  */
 @layer components {
   .ui-overlay-host {
     position: relative;
     isolation: isolate;
+  }
+
+  .ui-overlay-host:has([data-open="true"]) {
+    z-index: 80;
   }
 }
