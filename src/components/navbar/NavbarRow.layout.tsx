@@ -1,7 +1,8 @@
 import {omit, createMemo, children as resolveChildren} from "solid-js";
 import type { JSX } from "@solidjs/web";
 import { twMerge } from "../../lib/twMerge";
-import type { UIBaseProps, Flavor, Variant } from "../vocabulary";
+import "../_shared/material.css";
+import type { UIBaseProps, Flavor, Material, Variant } from "../vocabulary";
 import type { ComponentColor } from "../types";
 import { CLASSES } from "./Navbar.recipe";
 import type { Layout } from "../../lib/layouts";
@@ -14,6 +15,8 @@ export type NavbarRowProps = JSX.HTMLAttributes<HTMLDivElement> &
     flavor?: Flavor;
     /** Ghost is transparent chrome. It used to be a colour named `ghost`. */
     variant?: Extract<Variant, "solid" | "ghost">;
+    /** What the row is made of. Unset keeps the row's own background. */
+    material?: Material;
   };
 
 const NavbarRow: Layout<typeof componentRecipe, NavbarRowProps> = () => {
@@ -27,6 +30,7 @@ const NavbarRow: Layout<typeof componentRecipe, NavbarRowProps> = () => {
     "class",
     "style",
     "dataTheme",
+    "material",
   );
 
   const resolvedChildren = resolveChildren(() => props.children);
@@ -52,6 +56,8 @@ const NavbarRow: Layout<typeof componentRecipe, NavbarRowProps> = () => {
       {...{ class: classes() }}
       style={props.style}
       data-theme={props.dataTheme}
+      data-material={props.material}
+      data-material-explicit={props.material ? "" : undefined}
       {...others}
     >
       {resolvedChildren()}
