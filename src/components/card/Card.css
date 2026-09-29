@@ -109,19 +109,20 @@
      initial value: CSS drops the whole declaration. Three of these were read
      bare, so a theme that defined twenty-eight of the thirty-one glass tokens
      got a card with no background at all rather than a plainer one, and the
-     only themes that defined all thirty-one were the two shipped here. Both
-     use `white` for the three colours, so that is what the fallbacks say.
+     only themes that defined all thirty-one were the two shipped here. The
+     film falls back to `base-100` and the border to `base-content`, the same
+     theme colours `_shared/material.css` uses.
 
      `src/styles/glass.ts` derives the other twenty-five from three numbers. */
   .card--material-glass {
     --card-bg: color-mix(
       in oklab,
-      var(--glass-background-color, white),
+      var(--glass-background-color, var(--color-base-100)),
       transparent calc(100% - var(--glass-background-opacity, 55%))
     );
     --card-border: color-mix(
       in oklab,
-      var(--glass-border-color, white),
+      var(--glass-border-color, var(--color-base-content)),
       transparent calc(100% - var(--glass-border-opacity, 12%))
     );
     -webkit-backdrop-filter: blur(

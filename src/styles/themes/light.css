@@ -101,7 +101,7 @@
     --noise: 1;
 
     /* Glass surface tokens */
-    --glass-background-color: white;
+    --glass-background-color: var(--color-base-100);
     --glass-background-opacity: 0.96%;
     --glass-border-color: white;
     --glass-border-opacity: 30%;

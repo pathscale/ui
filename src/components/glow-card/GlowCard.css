@@ -17,13 +17,13 @@
     border-radius: inherit;
     background: color-mix(
       in oklab,
-      var(--glass-background-color, white) var(--glass-background-opacity, 38%),
+      var(--glass-background-color, var(--color-base-100)) var(--glass-background-opacity, 38%),
       transparent
     );
     border: var(--border, 1px) solid
       color-mix(
         in oklab,
-        var(--glass-border-color, white) var(--glass-border-opacity, 30%),
+        var(--glass-border-color, var(--color-base-content)) var(--glass-border-opacity, 30%),
         transparent
       );
     backdrop-filter: blur(var(--glow-card-blur))
@@ -87,7 +87,7 @@
     .glow-card {
       background: color-mix(
         in oklab,
-        var(--glass-background-color, white)
+        var(--glass-background-color, var(--color-base-100))
           var(--glass-fallback-background-opacity, 78%),
         transparent
       );

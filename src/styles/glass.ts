@@ -161,21 +161,17 @@ export function resolveGlassTokens(
   const controlTint = v.controlTint;
 
   /*
-   * Dark mode's film has to be a film, not a rounding error.
+   * The film is the theme's own `base-100`, so both modes take one curve.
    *
-   * This was `7 * rv`, so the entire refraction range moved the surface from
-   * 0% to 7% while light mode spanned 18% to 48%. Measured across the whole
-   * slider, dark mode's largest step was under two points of opacity, which is
-   * below what anyone can see on a near-black desk: the axis read as broken
-   * rather than as subtle, and the consuming app worked around it by
-   * overriding this token from a slider of its own.
-   *
-   * Dark still lands lower than light, and deliberately - a light film on a
-   * dark surface reads much faster than a dark film on a light one, so parity
-   * in numbers would not be parity in appearance. 26% at the top is enough for
-   * the surface to declare itself while leaving the text ladder its contrast.
+   * Dark used to land lower (4% to 26%) because its film was white, and a
+   * light film on a dark surface reads much faster than a dark one. Tinted
+   * with the theme's surface instead, the film is dark on dark: at 4% to 26%
+   * of it the panel all but vanished, and at the white film's opacities the
+   * panel read as milky rather than as glass, which is what sites overrode
+   * this token to escape. 18% to 48% of the theme's own surface is the range
+   * a translucent header on the same backdrop already sits in.
    */
-  const background = light ? (zero ? 0 : 18 + 30 * rv) : zero ? 0 : 4 + 22 * rv;
+  const background = zero ? 0 : 18 + 30 * rv;
   const border = light ? (zero ? 0 : 18 + 18 * rs) : 26 * rs;
   const highlight = light ? (zero ? 0 : 22 + 26 * rs) : 24 * rs;
   const bottomHighlight = light

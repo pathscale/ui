@@ -17,10 +17,12 @@
  * than tidy. An undefined custom property does not fall back to its initial
  * value: CSS drops the whole declaration. Three of these used to be read bare,
  * so a theme that defined twenty-eight of the thirty-one glass tokens got a
- * surface with no background at all rather than a plainer one. The two shipped
- * themes both use `white` for the three colours, so that is what the fallbacks
- * say. `src/styles/glass.ts` derives the rest from `blur`, `refraction` and
- * `depth`.
+ * surface with no background at all rather than a plainer one. The fallbacks
+ * tint glass with the theme itself: the film is `base-100` and the border
+ * `base-content`, so glass is the page's own surface made translucent, in any
+ * theme, rather than a white film laid over it. Highlights stay white, because
+ * they are light catching an edge. `src/styles/glass.ts` derives the rest from
+ * `blur`, `refraction` and `depth`.
  */
 
 @layer components {
@@ -71,12 +73,12 @@
   :root.glass [data-material="solid"]:not([data-material-explicit]) {
     background-color: color-mix(
       in oklab,
-      var(--glass-background-color, white),
+      var(--glass-background-color, var(--color-base-100)),
       transparent calc(100% - var(--glass-background-opacity, 55%))
     );
     border-color: color-mix(
       in oklab,
-      var(--glass-border-color, white),
+      var(--glass-border-color, var(--color-base-content)),
       transparent calc(100% - var(--glass-border-opacity, 12%))
     );
   }
@@ -110,12 +112,12 @@
   [data-material="glass"] {
     background-color: color-mix(
       in oklab,
-      var(--glass-background-color, white),
+      var(--glass-background-color, var(--color-base-100)),
       transparent calc(100% - var(--glass-background-opacity, 55%))
     );
     border-color: color-mix(
       in oklab,
-      var(--glass-border-color, white),
+      var(--glass-border-color, var(--color-base-content)),
       transparent calc(100% - var(--glass-border-opacity, 12%))
     );
     -webkit-backdrop-filter: blur(var(--glass-blur, 9px))
@@ -288,7 +290,7 @@
   [data-control-material="glass"] {
     background-color: color-mix(
       in oklab,
-      var(--glass-background-color, white),
+      var(--glass-background-color, var(--color-base-100)),
       transparent
         calc(
           100% -
@@ -311,7 +313,7 @@
     [data-material="glass"] {
       background-color: color-mix(
         in oklab,
-        var(--glass-background-color, white),
+        var(--glass-background-color, var(--color-base-100)),
         transparent calc(100% - var(--glass-fallback-background-opacity, 78%))
       );
     }
@@ -321,7 +323,7 @@
     [data-material="glass"] {
       background-color: color-mix(
         in oklab,
-        var(--glass-background-color, white),
+        var(--glass-background-color, var(--color-base-100)),
         transparent calc(100% - var(--glass-fallback-background-opacity, 78%))
       );
       -webkit-backdrop-filter: none;
