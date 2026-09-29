@@ -64,48 +64,55 @@
     padding: 0.5rem 1rem;
   }
 
-  .navbar__row--ghost {
+  .navbar__row--ghost:not([data-material="glass"]) {
     background-color: var(--color-base-100);
     color: var(--color-base-content);
   }
 
-  .navbar__row--flavor-neutral {
+  .navbar__row--flavor-neutral:not([data-material="glass"]) {
     background-color: var(--color-neutral);
     color: var(--color-neutral-content);
   }
 
-  .navbar__row--flavor-primary {
+  .navbar__row--flavor-primary:not([data-material="glass"]) {
     background-color: var(--color-primary);
     color: var(--color-primary-content);
   }
 
-  .navbar__row--flavor-secondary {
+  .navbar__row--flavor-secondary:not([data-material="glass"]) {
     background-color: var(--color-secondary);
     color: var(--color-secondary-content);
   }
 
-  .navbar__row--flavor-accent {
+  .navbar__row--flavor-accent:not([data-material="glass"]) {
     background-color: var(--color-accent);
     color: var(--color-accent-content);
   }
 
-  .navbar__row--flavor-destructive {
+  .navbar__row--flavor-destructive:not([data-material="glass"]) {
     background-color: var(--color-error);
     color: var(--color-error-foreground);
   }
 
-  .navbar__row--flavor-success {
+  .navbar__row--flavor-success:not([data-material="glass"]) {
     background-color: var(--color-success);
     color: var(--color-success-foreground);
   }
 
-  .navbar__row--flavor-warning {
+  .navbar__row--flavor-warning:not([data-material="glass"]) {
     background-color: var(--color-warning);
     color: var(--color-warning-foreground);
   }
 
-  .navbar__row--flavor-info {
+  .navbar__row--flavor-info:not([data-material="glass"]) {
     background-color: var(--color-info);
     color: var(--color-info-content);
+  }
+
+  /* A glass row is the theme's surface made translucent, so a flavour's fill
+     would hide the glass: the film comes from `_shared/material.css`, and the
+     text takes the surface's colour rather than the flavour's. */
+  .navbar__row[data-material="glass"] {
+    color: var(--color-base-content);
   }
 }

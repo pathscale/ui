@@ -1011,6 +1011,7 @@ rows: readonly T[]
 center?: boolean
 children?: JSX.Element
 horizontal?: boolean
+material?: Material
 vertical?: boolean
 ```
 

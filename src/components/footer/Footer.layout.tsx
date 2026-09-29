@@ -2,7 +2,8 @@ import "./footer.css";
 import type { JSX } from "@solidjs/web";
 import {type ParentComponent, omit} from "solid-js";
 import { twMerge } from "../../lib/twMerge";
-import type { UIBaseProps } from "../vocabulary";
+import "../_shared/material.css";
+import type { Material, UIBaseProps } from "../vocabulary";
 import { FooterTitle } from "./FooterTitle.generated";
 import { CLASSES } from "./Footer.recipe";
 import type { Layout } from "../../lib/layouts";
@@ -13,10 +14,21 @@ export type FooterProps = UIBaseProps & {
   center?: boolean;
   horizontal?: boolean;
   vertical?: boolean;
+  /** What the footer is made of. Unset keeps the footer's own background. */
+  material?: Material;
 };
 
 const Footer: Layout<typeof componentRecipe, FooterProps> = () => {
-  const others = omit(props, "children", "class", "dataTheme", "center", "horizontal", "vertical");
+  const others = omit(
+    props,
+    "children",
+    "class",
+    "dataTheme",
+    "center",
+    "horizontal",
+    "vertical",
+    "material",
+  );
 
   const classes = () =>
     twMerge(
@@ -31,6 +43,8 @@ const Footer: Layout<typeof componentRecipe, FooterProps> = () => {
     <footer
       {...others}
       data-theme={props.dataTheme}
+      data-material={props.material}
+      data-material-explicit={props.material ? "" : undefined}
       {...{ class: classes() }}
     >
       {props.children}
