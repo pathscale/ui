@@ -65,16 +65,22 @@ fi
 # ignored entirely. Measured: three components "failed" against a driver eight
 # days stale, and all three passed the moment the current one ran.
 #
-# The driver and host use the shared control protocol from this release.
-readonly PS_QA_VERSION="0.7.3"
+# The driver and host use the shared control protocol from 0.7.3, so the floor
+# is that release and the range is its caret: any later 0.7.x. A driver older
+# than the floor is the stale one this check exists to catch; a newer patch is
+# what `cargo install ps-qa --version "^0.7"` gives CI, and refusing it failed
+# every run the day 0.7.4 was published.
+readonly PS_QA_MIN="0.7.3"
 ps_qa_version="$("$PS_QA" --version 2>/dev/null | awk '{ print $2 }')"
 if [[ -z "$ps_qa_version" ]]; then
   echo "$PS_QA does not report a version; it is too old to sweep with" >&2
   exit 1
 fi
-if [[ "$ps_qa_version" != "$PS_QA_VERSION" ]]; then
-  echo "ps-qa $ps_qa_version is not the reviewed $PS_QA_VERSION this harness requires." >&2
-  echo "  cargo install ps-qa --version '=$PS_QA_VERSION'" >&2
+IFS=. read -r qa_major qa_minor qa_patch <<<"${ps_qa_version%%[-+]*}"
+IFS=. read -r min_major min_minor min_patch <<<"$PS_QA_MIN"
+if [[ "$qa_major" != "$min_major" || "$qa_minor" != "$min_minor" || "$qa_patch" -lt "$min_patch" ]]; then
+  echo "ps-qa $ps_qa_version is outside ^$PS_QA_MIN, which this harness requires." >&2
+  echo "  cargo install ps-qa --version '^$PS_QA_MIN'" >&2
   echo "  (or set QA_PS_QA to a build, which is what to do when changing the driver)" >&2
   exit 1
 fi
