@@ -58,4 +58,14 @@ describe("form field-level components are exported from the root", () => {
     expect(FIELD_LEVEL.filter((name) => !fromBarrel.has(name))).toEqual([]);
     expect(FIELD_LEVEL.filter((name) => !fromRoot.has(name))).toEqual([]);
   });
+
+  it("lists every field-level component in the layouts manifest", () => {
+    const manifest = JSON.parse(
+      readFileSync(join(import.meta.dir, "../../layouts.library.json"), "utf8"),
+    ) as { exports?: string[] };
+    const layoutExports = new Set(manifest.exports ?? []);
+
+    // The solid-layouts compiler refuses the consumer import when an export is missing.
+    expect(FIELD_LEVEL.filter((name) => !layoutExports.has(name))).toEqual([]);
+  });
 });

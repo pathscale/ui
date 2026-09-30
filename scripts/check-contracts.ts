@@ -35,6 +35,32 @@ const layoutLibrary = JSON.parse(readFileSync("layouts.library.json", "utf8")) a
   exports?: string[];
 };
 const layoutExports = new Set(layoutLibrary.exports ?? []);
+
+// Add a name only when a PascalCase root value export intentionally is not a layout export.
+const NOT_LAYOUT_EXPORTS = new Set<string>();
+
+const rootValueExports = new Set<string>();
+const rootSource = readFileSync("src/index.ts", "utf8");
+for (const block of rootSource.matchAll(/export\s*\{([^}]*)\}\s*from/g)) {
+  if (/export\s+type\s*\{/.test(block[0])) continue;
+  for (const raw of block[1].split(",")) {
+    const specifier = raw.trim();
+    if (!specifier || specifier.startsWith("type ")) continue;
+    rootValueExports.add(specifier.split(/\s+as\s+/).pop() as string);
+  }
+}
+
+for (const name of rootValueExports) {
+  if (!/^[A-Z][a-z]/.test(name)) continue;
+  if (layoutExports.has(name) || NOT_LAYOUT_EXPORTS.has(name)) continue;
+  fail(
+    name,
+    "layouts-manifest",
+    `${name} is a root export but absent from layouts.library.json exports`,
+    "Structure",
+  );
+}
+
 for (const family of componentFamilies) {
   if (!layoutExports.has(family.name)) {
     fail(
