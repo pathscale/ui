@@ -1,6 +1,12 @@
+export {
+  type AnimateElementOptions,
+  animateElement,
+  type ElementAnimation,
+} from "./animate-element";
 export { getMotionDriver, immediateDriver, setMotionDriver } from "./driver";
 export { resolveEase } from "./easing";
 export { runMotion } from "./engine";
+export { createInView, type InViewOptions } from "./in-view";
 export {
   createPopmotionDriver,
   enablePopmotion,
@@ -23,6 +29,13 @@ export {
   type RouteTransitionRuleResult,
 } from "./route";
 export {
+  createScrollProgress,
+  type ScrollProgress,
+  type ScrollProgressOptions,
+  type ScrollProgressRange,
+  supportsViewTimeline,
+} from "./scroll-progress";
+export {
   AnimatedCollapse,
   type AnimatedCollapseProps,
   computeCollapseStyle,
@@ -34,6 +47,11 @@ export {
   type PresenceProps,
   type PresenceRenderProp,
 } from "./solid";
+export {
+  type SpringKeyframeOptions,
+  springKeyframes,
+} from "./spring-keyframes";
+export { stagger } from "./stagger";
 export { createMotionSystem, type MotionSystemConfig } from "./system";
 export {
   defaultMotionTokens,
