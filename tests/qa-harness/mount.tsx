@@ -1583,6 +1583,145 @@ function VideoPreviewFixture() {
   return <VideoPreview stream={stream} aria-label="Video preview" class="w-48 h-32" />;
 }
 
+function ScrollHorizontalFixture(props: { spec: ComponentSpec; under?: unknown }) {
+  const Component = props.under as
+    | ((props: Record<string, unknown>) => JSX.Element)
+    | undefined;
+  const [reducedMotion, setReducedMotion] = createSignal(false);
+  let isNarrow = false;
+  const reducedMotionListeners = new Set<(event: MediaQueryListEvent) => void>();
+  const reducedMotionQuery = {
+    media: "(prefers-reduced-motion: reduce)",
+    get matches() {
+      return reducedMotion();
+    },
+    onchange: null,
+    addEventListener: (_type: string, listener: EventListenerOrEventListenerObject) => {
+      if (typeof listener === "function") {
+        reducedMotionListeners.add(listener as (event: MediaQueryListEvent) => void);
+      }
+    },
+    removeEventListener: (_type: string, listener: EventListenerOrEventListenerObject) => {
+      if (typeof listener === "function") {
+        reducedMotionListeners.delete(listener as (event: MediaQueryListEvent) => void);
+      }
+    },
+    addListener: (listener: (event: MediaQueryListEvent) => void) => reducedMotionListeners.add(listener),
+    removeListener: (listener: (event: MediaQueryListEvent) => void) => reducedMotionListeners.delete(listener),
+    dispatchEvent: (event: Event) => {
+      for (const listener of reducedMotionListeners) listener(event as MediaQueryListEvent);
+      if (typeof reducedMotionQuery.onchange === "function") {
+        reducedMotionQuery.onchange.call(reducedMotionQuery, event as MediaQueryListEvent);
+      }
+      return true;
+    },
+  } as MediaQueryList;
+  const matchMediaDescriptor = Object.getOwnPropertyDescriptor(window, "matchMedia");
+  const originalMatchMedia =
+    typeof window.matchMedia === "function" ? window.matchMedia.bind(window) : undefined;
+
+  try {
+    Object.defineProperty(window, "matchMedia", {
+      configurable: true,
+      value: (query: string) =>
+        query === reducedMotionQuery.media
+          ? reducedMotionQuery
+          : originalMatchMedia?.(query) ?? {
+              media: query,
+              matches: false,
+              onchange: null,
+              addEventListener: () => {},
+              removeEventListener: () => {},
+              addListener: () => {},
+              removeListener: () => {},
+              dispatchEvent: () => true,
+            },
+    });
+  } catch {
+    // A host that locks matchMedia keeps its native preference handling.
+  }
+  onCleanup(() => {
+    if (matchMediaDescriptor) {
+      Object.defineProperty(window, "matchMedia", matchMediaDescriptor);
+    } else {
+      Reflect.deleteProperty(window, "matchMedia");
+    }
+  });
+
+  const goTo = (fraction: number) => {
+    const gallery = document.querySelector<HTMLElement>(".qa-scroll-horizontal");
+    if (!gallery) return;
+
+    const scroller = document.scrollingElement ?? document.documentElement;
+    const sectionTop = gallery.getBoundingClientRect().top + (window.scrollY || scroller.scrollTop || 0);
+    const travel = Math.max(0, gallery.getBoundingClientRect().height - window.innerHeight);
+    const top = sectionTop + travel * fraction;
+    if (typeof window.scrollTo === "function") {
+      window.scrollTo({ top, behavior: "auto" });
+    } else {
+      scroller.scrollTop = top;
+      window.dispatchEvent(new Event("scroll"));
+    }
+  };
+
+  const resizeGallery = () => {
+    const gallery = document.querySelector<HTMLElement>(".qa-scroll-horizontal");
+    if (!gallery) return;
+    isNarrow = !isNarrow;
+    gallery.style.width = isNarrow ? `${Math.max(320, Math.round(window.innerWidth * 0.7))}px` : "100%";
+    window.dispatchEvent(new Event("resize"));
+  };
+
+  const toggleReducedMotion = () => {
+    setReducedMotion((current) => !current);
+    reducedMotionQuery.dispatchEvent(new Event("change"));
+  };
+
+  if (!Component) return <span>ScrollHorizontal is not exported</span>;
+
+  return (
+    <>
+      <nav
+        aria-label="Gallery QA controls"
+        style={{ position: "fixed", top: "8px", left: "8px", "z-index": "9999", display: "flex", gap: "8px" }}
+      >
+        <button type="button" onClick={() => goTo(0)}>Go to gallery start</button>
+        <button type="button" onClick={() => goTo(0.5)}>Go to gallery middle</button>
+        <button type="button" onClick={() => goTo(1)}>Go to gallery end</button>
+        <button type="button" onClick={resizeGallery}>Resize gallery viewport</button>
+        <button type="button" onClick={toggleReducedMotion}>Toggle reduced motion</button>
+      </nav>
+      <Component
+        itemWidth={400}
+        mobileItemWidth={280}
+        gap={30}
+        mobileGap={15}
+        height="auto"
+        aria-label="Scroll gallery"
+        class="qa-scroll-horizontal"
+      >
+        <article aria-label="Card one" style={{ "min-height": "320px", padding: "24px", "background-color": "#dbeafe" }}>
+          <h2>Card one</h2>
+          <button type="button">Card one action</button>
+        </article>
+        <article aria-label="Card two" style={{ "min-height": "320px", padding: "24px", "background-color": "#dcfce7" }}>
+          <h2>Card two</h2>
+          <button type="button">Card two action</button>
+        </article>
+        <article aria-label="Card three" style={{ "min-height": "320px", padding: "24px", "background-color": "#fef3c7" }}>
+          <h2>Card three</h2>
+          <button type="button">Card three action</button>
+        </article>
+        <article aria-label="Card four" style={{ "min-height": "320px", padding: "24px", "background-color": "#fce7f3" }}>
+          <h2>Card four</h2>
+          <button type="button">Card four action</button>
+        </article>
+      </Component>
+      <h2>Reduced motion: {reducedMotion() ? "enabled" : "disabled"}</h2>
+    </>
+  );
+}
+
 /** Ids with a hand-written fixture; everything else mounts generically. */
 const FIXTURES: Record<
   string,
@@ -1655,6 +1794,7 @@ const FIXTURES: Record<
   radio: ToggleFixtureWithReport,
   "radio-group": RadioGroupFixture,
   "range-calendar": RangeCalendarFixture,
+  "scroll-horizontal": ScrollHorizontalFixture,
   select: SelectFixture,
   "size-picker": SizePickerFixture,
   slider: SliderFixture,
