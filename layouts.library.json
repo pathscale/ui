@@ -158,6 +158,7 @@
     "RadioGroup",
     "RangeCalendar",
     "ScrollArea",
+    "ScrollHorizontal",
     "Select",
     "Separator",
     "SizePicker",
