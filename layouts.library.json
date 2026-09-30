@@ -91,6 +91,7 @@
     "DrawerTrigger",
     "Dropdown",
     "Empty",
+    "FieldErrorMessage",
     "FieldGroup",
     "Fieldset",
     "FieldsetActions",
