@@ -95,7 +95,7 @@ work against them directly.
 
 | family | components |
 |---|---|
-| **Layout** | Flex, Grid, Join, Surface, Card, GlassPanel, Separator, ScrollShadow, Skeleton, EmptyState, Footer, Header, Navbar, Toolbar, FloatingDock |
+| **Layout** | Flex, Grid, Join, Card, Separator, ScrollArea, ScrollHorizontal, Skeleton, Empty, Footer, Header, Navbar, Toolbar, Dock |
 | **Typography & misc** | Text, Link, Kbd, Badge, Chip, Tag, TagGroup, Avatar, Icon, Tooltip, Breadcrumbs, Pagination, Meter, ProgressBar, ProgressCircle, Spinner |
 | **Inputs** | Input, InputGroup, InputOTP, TextField, TextArea, NumberField, SearchField, PasswordField, ColorField, Checkbox, CheckboxGroup, Radio, RadioGroup, Toggle, Slider, Select, ComboBox, ListBox, SizePicker |
 | **Forms** | Form, Fieldset, Label, Description, ErrorMessage, FieldError, PasswordRequirements |

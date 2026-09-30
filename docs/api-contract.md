@@ -11,7 +11,7 @@ invisible for a day behind a doc that looked correct the whole time.
 When an API change is intentional, run `bun run check:api -- --write`, read the
 diff, and commit it. The diff is the review.
 
-187 components. An empty list means the component adds nothing beyond
+188 components. An empty list means the component adds nothing beyond
 HTML attributes and `UIBaseProps`; that is an assertion, not a gap.
 
 ---
@@ -1592,6 +1592,16 @@ orientation?: ScrollAreaOrientation
 size?: number
 variant?: ScrollAreaVariant
 visibility?: ScrollAreaVisibility
+```
+
+### ScrollHorizontal
+
+```ts
+gap?: number
+height?: number | string
+itemWidth?: number
+mobileGap?: number
+mobileItemWidth?: number
 ```
 
 ### Select

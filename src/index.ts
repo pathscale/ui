@@ -421,6 +421,8 @@ export type {
   ScrollAreaVisibility,
 } from "./components/scroll-area";
 export { default as ScrollArea } from "./components/scroll-area";
+export type { ScrollHorizontalProps } from "./components/scroll-horizontal";
+export { default as ScrollHorizontal } from "./components/scroll-horizontal";
 export { default as Select } from "./components/select";
 export type {
   SeparatorOrientation,
