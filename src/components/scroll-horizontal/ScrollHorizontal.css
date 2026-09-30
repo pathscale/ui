@@ -1,0 +1,114 @@
+@layer components {
+  .scroll-horizontal {
+    display: block;
+    width: 100%;
+  }
+
+  .scroll-horizontal[data-scroll-ready="true"] {
+    height: var(--scroll-horizontal-section-height, auto);
+  }
+
+  .scroll-horizontal__viewport {
+    align-items: center;
+    display: flex;
+    max-width: 100%;
+    overflow-x: auto;
+    overflow-y: hidden;
+  }
+
+  .scroll-horizontal__track {
+    align-items: stretch;
+    display: flex;
+    flex: 0 0 auto;
+    gap: var(--scroll-horizontal-mobile-gap, 15px);
+    min-width: 100%;
+    width: max-content;
+  }
+
+  .scroll-horizontal__track > * {
+    box-sizing: border-box;
+    flex: 0 0 var(--scroll-horizontal-mobile-item-width, 280px);
+    min-width: 0;
+    width: var(--scroll-horizontal-mobile-item-width, 280px);
+  }
+
+  .scroll-horizontal[data-scroll-ready="true"] .scroll-horizontal__viewport {
+    height: 100vh;
+    overflow: hidden;
+    position: sticky;
+    top: 0;
+  }
+
+  .scroll-horizontal[data-scroll-ready="true"] .scroll-horizontal__track {
+    transform: translate3d(
+      calc(
+        -1 *
+        var(--scroll-horizontal-travel, 0px) *
+        var(--scroll-progress, 0)
+      ),
+      0,
+      0
+    );
+  }
+
+  @media (min-width: 768px) {
+    .scroll-horizontal__track {
+      gap: var(--scroll-horizontal-gap, 30px);
+    }
+
+    .scroll-horizontal__track > * {
+      flex-basis: var(--scroll-horizontal-item-width, 400px);
+      width: var(--scroll-horizontal-item-width, 400px);
+    }
+  }
+
+  @supports (view-timeline-name: --scroll-horizontal) and
+    (view-timeline-axis: block) and
+    (animation-timeline: --scroll-horizontal) and
+    (animation-range: contain 0% contain 100%) {
+    .scroll-horizontal[data-scroll-ready="true"] {
+      view-timeline-axis: block;
+      view-timeline-name: --scroll-horizontal;
+    }
+
+    .scroll-horizontal[data-scroll-ready="true"] .scroll-horizontal__track {
+      animation: scroll-horizontal-track linear both;
+      animation-timeline: --scroll-horizontal;
+      animation-range: contain 0% contain 100%;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .scroll-horizontal[data-scroll-ready="true"] {
+      height: auto;
+    }
+
+    .scroll-horizontal[data-scroll-ready="true"] .scroll-horizontal__viewport {
+      height: auto;
+      min-height: 0;
+      overflow-x: auto;
+      overflow-y: hidden;
+      position: relative;
+      top: auto;
+    }
+
+    .scroll-horizontal[data-scroll-ready="true"] .scroll-horizontal__track {
+      animation: none;
+      transform: none;
+    }
+  }
+
+  @keyframes scroll-horizontal-track {
+    from {
+      transform: translate3d(0, 0, 0);
+    }
+
+    to {
+      transform: translate3d(
+        calc(0px - var(--scroll-horizontal-travel, 0px)),
+        0,
+        0
+      );
+    }
+  }
+}
