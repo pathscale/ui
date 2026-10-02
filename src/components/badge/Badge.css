@@ -145,28 +145,30 @@
     display: none;
   }
 
-  .badge--top-right {
+  /* Placement pins a badge to the corner of its anchor. A badge outside
+     an anchor has no corner to pin to and stays inline in its flow. */
+  .badge-anchor > .badge--top-right {
     position: absolute;
     top: 0;
     right: 0;
     transform: translate(25%, -25%);
   }
 
-  .badge--top-left {
+  .badge-anchor > .badge--top-left {
     position: absolute;
     top: 0;
     left: 0;
     transform: translate(-25%, -25%);
   }
 
-  .badge--bottom-right {
+  .badge-anchor > .badge--bottom-right {
     position: absolute;
     right: 0;
     bottom: 0;
     transform: translate(25%, 25%);
   }
 
-  .badge--bottom-left {
+  .badge-anchor > .badge--bottom-left {
     position: absolute;
     bottom: 0;
     left: 0;
