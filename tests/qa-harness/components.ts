@@ -897,6 +897,12 @@ export const COMPONENTS: ComponentSpec[] = [
   },
   { id: "meter", component: "Meter", kind: "display" },
   { id: "noise-background", component: "NoiseBackground", kind: "display" },
+  {
+    id: "qr-code",
+    component: "QrCode",
+    kind: "display",
+    props: { value: "https://pathscale.com", title: "PathScale QR code" },
+  },
   { id: "radial-progress", component: "RadialProgress", kind: "display" },
   {
     id: "radio-group",

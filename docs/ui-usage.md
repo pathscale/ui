@@ -4,7 +4,7 @@
 agents alike, and for every consuming application. Those apps link here rather than
 keeping their own copy — one library, one set of conventions, no drift.
 
-SolidJS component library, HeroUI-parity API, daisyUI-style theming. 101 public
+SolidJS component library, HeroUI-parity API, daisyUI-style theming. 103 public
 component families.
 
 This file is **how to USE the library** (as a consumer, or when writing demos and
@@ -317,7 +317,7 @@ A trigger given plain text is unchanged and needs nothing.
 - **Data**: DataGrid (assembled, `createDataGrid` model), FlexGrid (incremental reveal, `createFlexGrid` model), Table (headless compound, bring your own model), plus primitives `useStreamingBuffer`, `useStreamingSubscription`
 - **Auth kit**: AuthForm, AuthCard, AuthFieldGroup, AuthSubmitButton, AuthFooterLinks, AuthPoweredBy, AuthErrorMessage, AuthSuccessMessage — Layouts composing Button/Card/fields. Their spacing, alignment and tone are recipe parameters (`gap`, `align`, `variant`), so a consumer asks for the presentation it wants rather than restating utility classes. AuthCard exposes `header`, `headings`, `title`, `description`, `branding`, `body` and `footer` as `data-slot` targets.
 - **Connection settings**: ConnectionSettings (the panel) with `createConnectionSettings` (the store). See below.
-- **Visual FX**: MetalBorder (WebGL liquid-metal border; presets `chromatic|silver|gold`, `kind="pill"|"circle"`, `glow`, `strength` 0-100, `theme="dark"|"light"|"auto"`), GlowCard (mouse-tracking glow), NoiseBackground (animated gradient blobs), ImmersiveLanding (full mini-app w/ PWA widgets), VideoPreview, LiveChat, ChatBubble, LanguageSwitcher
+- **Visual FX**: MetalBorder (WebGL liquid-metal border; presets `chromatic|silver|gold`, `kind="pill"|"circle"`, `glow`, `strength` 0-100, `theme="dark"|"light"|"auto"`), GlowCard (mouse-tracking glow), NoiseBackground (animated gradient blobs), QrCode, ImmersiveLanding (full mini-app w/ PWA widgets), VideoPreview, LiveChat, ChatBubble, LanguageSwitcher
 
 ## ScrollHorizontal
 
@@ -725,6 +725,22 @@ token, with `@plugin "@iconify/tailwind4"` under Tailwind v4 or
 `@pathscale/rsbuild-plugin-iconify` under rsbuild, scanning your source rather
 than ours. Both sources inherit colour through `currentColor`, so `flavor` works
 the same either way.
+
+## QR codes
+
+`QrCode` encodes `value` into one inline SVG. Its required `title` is both the
+SVG title and its accessible name. Encoding is synchronous, so a changed value
+updates the matrix immediately. `level` accepts `L`, `M`, `Q` or `H` and defaults
+to `M`; `size` accepts a number of CSS pixels or another CSS length.
+
+```tsx
+import { QrCode } from "@pathscale/ui";
+
+<QrCode value={otpauthUri} title="Authenticator setup QR code" size={192} />
+```
+
+For non-Solid use, `qrMatrix(value, level?)` returns the dark modules as a
+`boolean[][]`.
 
 ## Dates
 

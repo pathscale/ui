@@ -251,6 +251,10 @@ export const componentFamilies = [
     "name": "Progress"
   },
   {
+    "id": "qr-code",
+    "name": "QrCode"
+  },
+  {
     "id": "radio",
     "name": "Radio"
   },

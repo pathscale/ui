@@ -1,0 +1,5 @@
+@layer components {
+  .qr-code {
+    display: block;
+  }
+}
