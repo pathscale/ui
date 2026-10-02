@@ -153,6 +153,7 @@
     "PasswordRequirements",
     "Popover",
     "Progress",
+    "QrCode",
     "RadialProgress",
     "Radio",
     "RadioGroup",

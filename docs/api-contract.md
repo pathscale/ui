@@ -1506,6 +1506,15 @@ state?: State
 value?: number
 ```
 
+### QrCode
+
+```ts
+level?: QrErrorCorrectionLevel
+size?: number | string
+title: string
+value: string
+```
+
 ### PWAInstallPrompt
 
 ```ts

@@ -407,6 +407,8 @@ export type {
   ProgressSize,
 } from "./components/progress";
 export { default as Progress } from "./components/progress";
+export type { QrCodeProps, QrErrorCorrectionLevel } from "./components/qr-code";
+export { default as QrCode, qrMatrix } from "./components/qr-code";
 export { default as Radio } from "./components/radio";
 export {
   RadioGroup,
