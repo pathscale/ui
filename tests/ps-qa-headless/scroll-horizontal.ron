@@ -15,6 +15,16 @@
         expect: Present,
     ),
     (
+        id: "scroll-horizontal-renders",
+        group: "scroll-horizontal",
+        what: "ScrollHorizontal renders a node of its own",
+        open: None,
+        hover: None,
+        click: None,
+        subject: "fixture",
+        expect: Paints,
+    ),
+    (
         id: "scroll-horizontal-renders-final-card",
         group: "scroll-horizontal",
         what: "the gallery keeps its final card in the rendered tree",

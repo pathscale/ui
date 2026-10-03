@@ -175,6 +175,13 @@ import — the published size is the whole library, not what ships to your users
 | **[Contributing](https://github.com/pathscale/ui/blob/master/CONTRIBUTING.md)** | local setup, component checklist, proposal template |
 | **[Releasing](https://github.com/pathscale/ui/blob/master/docs/releasing.md)** | how a push to master becomes an npm version, and the gates it passes |
 
+## Honey password validation
+
+`@pathscale/ui/passwordRules` exports `isPrintableAsciiPassword` and
+`PASSWORD_CHARSET_MESSAGE` for inline signup and password-change validation.
+Printable ASCII (U+0020–U+007E), including spaces, is accepted without normalization.
+Do not apply this restriction to sign-in or reauthentication.
+
 ## License
 
 MIT

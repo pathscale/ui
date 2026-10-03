@@ -250,6 +250,8 @@ const IMPORT_FORM: Record<string, string> = {
   "useDesktop": "named",
   "useAnchoredOverlayPosition": "named",
   "evaluatePasswordRules": "named",
+  "isPrintableAsciiPassword": "named",
+  "PASSWORD_CHARSET_MESSAGE": "named",
   "matchPasswordConfirmation": "named",
   "useStreamingBuffer": "named",
   "useStreamingSubscription": "named",
