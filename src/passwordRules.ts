@@ -1,3 +1,10 @@
+export const PASSWORD_CHARSET_MESSAGE =
+  "Use only printable ASCII characters (spaces, letters, numbers, and symbols).";
+
+/** For signup and password changes only; never restrict existing sign-in passwords. */
+export const isPrintableAsciiPassword = (password: string): boolean =>
+  /^[\x20-\x7E]*$/.test(password);
+
 export type PasswordCustomRegexRule = {
   key: string;
   regex: RegExp;

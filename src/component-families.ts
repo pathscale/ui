@@ -263,6 +263,10 @@ export const componentFamilies = [
     "name": "ScrollArea"
   },
   {
+    "id": "scroll-horizontal",
+    "name": "ScrollHorizontal"
+  },
+  {
     "id": "select",
     "name": "Select"
   },

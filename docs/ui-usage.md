@@ -311,6 +311,12 @@ A trigger given plain text is unchanged and needs nothing.
 - **Layout/primitives**: Flex, Grid, Join, Card, Separator, ScrollArea, ScrollHorizontal, Skeleton, Empty, Footer, Header, Navbar, Toolbar, Dock
 - **Typography/misc**: Text, Link, Kbd, Badge, Chip, Tag/TagGroup, Avatar, Icon, Tooltip, Breadcrumb, Pagination, Meter, Progress, RadialProgress, Spinner (alias: Loading)
 - **Inputs**: Input, InputGroup, InputOTP, TextField, Textarea, NumberField, SearchField, PasswordField (+ password-requirements/rules, `passwordRules.ts`), ColorField, Checkbox(+Group), Radio(+Group), Switch, Slider, Select, ComboBox, ListBox, SizePicker, Form pieces (Label, Description, ErrorMessage, FieldError, Fieldset)
+
+For Honey signup and password changes, import `isPrintableAsciiPassword` and
+`PASSWORD_CHARSET_MESSAGE` from `@pathscale/ui/passwordRules`. The validator allows
+only U+0020 through U+007E, preserves spaces, and leaves length and confirmation to
+the form's existing rules. Show the message inline when validation fails. Never use
+this validator for sign-in or reauthentication: existing passwords remain accepted.
 - **Dates**: Calendar, RangeCalendar, DatePicker, DateRangePicker (internal date engine); DateField, TimeField (separate segmented editors)
 - **Color**: ColorPicker, ColorArea, ColorSlider, ColorSwatch(+Picker), ColorWheel, ComplexColorWheel, ColorWheelFlower, ThemeColorPicker
 - **Overlays**: Dialog, Drawer, Popover, Dropdown, Menu, Toast, Collapsible(+Group), Accordion
