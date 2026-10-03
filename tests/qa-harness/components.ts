@@ -649,6 +649,22 @@ export const COMPONENTS: ComponentSpec[] = [
   },
   { id: "scroll-area", component: "ScrollArea", kind: "display" },
   {
+    id: "scroll-horizontal",
+    component: "ScrollHorizontal",
+    kind: "custom",
+    outcomes: [
+      { suffix: "renders-final-card", what: "the gallery keeps its final card in the rendered tree", subject: "button:Card four action", expect: "Present" },
+      { suffix: "uses-scroll-fallback-middle", what: "page scrolling moves the gallery to its middle cards without a scroll timeline", click: "button:Go to gallery middle", subject: "region:Scroll gallery", expect: "PixelsChange", settleAfterMs: 250 },
+      { suffix: "resizes-viewport", what: "the gallery recalculates its travel when its visible area resizes", prepare: "button:Go to gallery middle", click: "button:Resize gallery viewport", subject: "region:Scroll gallery", expect: "PixelsChange", settleAfterMs: 250 },
+      { suffix: "uses-scroll-fallback-end", what: "page scrolling moves the gallery to its final card without a scroll timeline", click: "button:Go to gallery end", subject: "region:Scroll gallery", expect: "PixelsChange", settleAfterMs: 250 },
+      { suffix: "uses-scroll-fallback-start", what: "page scrolling returns the gallery to its first card without a scroll timeline", click: "button:Go to gallery start", subject: "region:Scroll gallery", expect: "PixelsChange", settleAfterMs: 250 },
+      { suffix: "keeps-keyboard-order", what: "keyboard navigation reaches the next card action", prepare: "button:Go to gallery start", key: "Tab", keyOn: "button:Card three action", subject: "button:Card four action", expect: "FocusMoves", settleAfterMs: 150 },
+      { suffix: "reveals-offscreen-card-on-focus", what: "keyboard focus brings an offscreen card action into the viewport", prepare: "button:Go to gallery start", key: "Tab", keyOn: "button:Card three action", subject: "region:Scroll gallery", expect: "PixelsChange", settleAfterMs: 150 },
+      { suffix: "respects-reduced-motion", what: "a live reduced-motion change updates the gallery", prepare: "button:Go to gallery start", click: "button:Toggle reduced motion", subject: "region:Scroll gallery", expect: "PixelsChange", settleAfterMs: 250 },
+      { suffix: "reduced-motion-keyboard-scrolls", what: "the horizontal row remains keyboard scrollable under reduced motion", prepare: "button:Toggle reduced motion", prepareUnless: "heading:Reduced motion: enabled", key: "ArrowRight", keyOn: "region:Scroll gallery", subject: "region:Scroll gallery", expect: "PixelsChange", settleAfterMs: 150 },
+    ],
+  },
+  {
     id: "select",
     component: "Select",
     kind: "value",
@@ -881,6 +897,12 @@ export const COMPONENTS: ComponentSpec[] = [
   },
   { id: "meter", component: "Meter", kind: "display" },
   { id: "noise-background", component: "NoiseBackground", kind: "display" },
+  {
+    id: "qr-code",
+    component: "QrCode",
+    kind: "display",
+    props: { value: "https://pathscale.com", title: "PathScale QR code" },
+  },
   { id: "radial-progress", component: "RadialProgress", kind: "display" },
   {
     id: "radio-group",

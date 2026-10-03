@@ -251,12 +251,20 @@ export const componentFamilies = [
     "name": "Progress"
   },
   {
+    "id": "qr-code",
+    "name": "QrCode"
+  },
+  {
     "id": "radio",
     "name": "Radio"
   },
   {
     "id": "scroll-area",
     "name": "ScrollArea"
+  },
+  {
+    "id": "scroll-horizontal",
+    "name": "ScrollHorizontal"
   },
   {
     "id": "select",

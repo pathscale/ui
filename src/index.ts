@@ -243,7 +243,11 @@ export {
   FieldsetLegend,
 } from "./components/fieldset";
 export { default as Flex } from "./components/flex";
-export type { CreateFlexGridOptions, FlexGridModel, FlexGridProps } from "./components/flex-grid";
+export type {
+  CreateFlexGridOptions,
+  FlexGridModel,
+  FlexGridProps,
+} from "./components/flex-grid";
 export { createFlexGrid, default as FlexGrid } from "./components/flex-grid";
 export type { FooterProps, FooterTitleProps } from "./components/footer";
 export { default as Footer } from "./components/footer";
@@ -407,6 +411,8 @@ export type {
   ProgressSize,
 } from "./components/progress";
 export { default as Progress } from "./components/progress";
+export type { QrCodeProps, QrErrorCorrectionLevel } from "./components/qr-code";
+export { default as QrCode, qrMatrix } from "./components/qr-code";
 export { default as Radio } from "./components/radio";
 export {
   RadioGroup,
@@ -421,6 +427,8 @@ export type {
   ScrollAreaVisibility,
 } from "./components/scroll-area";
 export { default as ScrollArea } from "./components/scroll-area";
+export type { ScrollHorizontalProps } from "./components/scroll-horizontal";
+export { default as ScrollHorizontal } from "./components/scroll-horizontal";
 export { default as Select } from "./components/select";
 export type {
   SeparatorOrientation,
@@ -650,6 +658,8 @@ export { useAnchoredOverlayPosition } from "./hooks/table";
 export * from "./motion";
 export {
   evaluatePasswordRules,
+  isPrintableAsciiPassword,
+  PASSWORD_CHARSET_MESSAGE,
   matchPasswordConfirmation,
   type PasswordCustomRegexRule,
   type PasswordRuleConfig,

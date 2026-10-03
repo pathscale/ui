@@ -4,7 +4,7 @@
 agents alike, and for every consuming application. Those apps link here rather than
 keeping their own copy — one library, one set of conventions, no drift.
 
-SolidJS component library, HeroUI-parity API, daisyUI-style theming. 101 public
+SolidJS component library, HeroUI-parity API, daisyUI-style theming. 103 public
 component families.
 
 This file is **how to USE the library** (as a consumer, or when writing demos and
@@ -308,16 +308,67 @@ A trigger given plain text is unchanged and needs nothing.
 
 ## Component inventory (by family)
 
-- **Layout/primitives**: Flex, Grid, Join, Card, Separator, ScrollArea, Skeleton, Empty, Footer, Header, Navbar, Toolbar, Dock
+- **Layout/primitives**: Flex, Grid, Join, Card, Separator, ScrollArea, ScrollHorizontal, Skeleton, Empty, Footer, Header, Navbar, Toolbar, Dock
 - **Typography/misc**: Text, Link, Kbd, Badge, Chip, Tag/TagGroup, Avatar, Icon, Tooltip, Breadcrumb, Pagination, Meter, Progress, RadialProgress, Spinner (alias: Loading)
 - **Inputs**: Input, InputGroup, InputOTP, TextField, Textarea, NumberField, SearchField, PasswordField (+ password-requirements/rules, `passwordRules.ts`), ColorField, Checkbox(+Group), Radio(+Group), Switch, Slider, Select, ComboBox, ListBox, SizePicker, Form pieces (Label, Description, ErrorMessage, FieldError, Fieldset)
+
+For Honey signup and password changes, import `isPrintableAsciiPassword` and
+`PASSWORD_CHARSET_MESSAGE` from `@pathscale/ui/passwordRules`. The validator allows
+only U+0020 through U+007E, preserves spaces, and leaves length and confirmation to
+the form's existing rules. Show the message inline when validation fails. Never use
+this validator for sign-in or reauthentication: existing passwords remain accepted.
 - **Dates**: Calendar, RangeCalendar, DatePicker, DateRangePicker (internal date engine); DateField, TimeField (separate segmented editors)
 - **Color**: ColorPicker, ColorArea, ColorSlider, ColorSwatch(+Picker), ColorWheel, ComplexColorWheel, ColorWheelFlower, ThemeColorPicker
 - **Overlays**: Dialog, Drawer, Popover, Dropdown, Menu, Toast, Collapsible(+Group), Accordion
 - **Data**: DataGrid (assembled, `createDataGrid` model), FlexGrid (incremental reveal, `createFlexGrid` model), Table (headless compound, bring your own model), plus primitives `useStreamingBuffer`, `useStreamingSubscription`
 - **Auth kit**: AuthForm, AuthCard, AuthFieldGroup, AuthSubmitButton, AuthFooterLinks, AuthPoweredBy, AuthErrorMessage, AuthSuccessMessage — Layouts composing Button/Card/fields. Their spacing, alignment and tone are recipe parameters (`gap`, `align`, `variant`), so a consumer asks for the presentation it wants rather than restating utility classes. AuthCard exposes `header`, `headings`, `title`, `description`, `branding`, `body` and `footer` as `data-slot` targets.
 - **Connection settings**: ConnectionSettings (the panel) with `createConnectionSettings` (the store). See below.
-- **Visual FX**: MetalBorder (WebGL liquid-metal border; presets `chromatic|silver|gold`, `kind="pill"|"circle"`, `glow`, `strength` 0-100, `theme="dark"|"light"|"auto"`), GlowCard (mouse-tracking glow), NoiseBackground (animated gradient blobs), ImmersiveLanding (full mini-app w/ PWA widgets), VideoPreview, LiveChat, ChatBubble, LanguageSwitcher
+- **Visual FX**: MetalBorder (WebGL liquid-metal border; presets `chromatic|silver|gold`, `kind="pill"|"circle"`, `glow`, `strength` 0-100, `theme="dark"|"light"|"auto"`), GlowCard (mouse-tracking glow), NoiseBackground (animated gradient blobs), QrCode, ImmersiveLanding (full mini-app w/ PWA widgets), VideoPreview, LiveChat, ChatBubble, LanguageSwitcher
+
+## ScrollHorizontal
+
+Use `ScrollHorizontal` for a gallery whose cards move horizontally as the page
+scrolls vertically. Intro and outro sections remain regular consumer content.
+Children can be existing Layouts such as `Card`:
+
+```tsx
+import { Card, ScrollHorizontal } from "@pathscale/ui";
+
+<section aria-labelledby="gallery-intro">
+  <h2 id="gallery-intro">Stories</h2>
+  <p>Introductory copy stays outside the gallery.</p>
+</section>
+
+<ScrollHorizontal
+  aria-label="Featured stories"
+  itemWidth={400}
+  mobileItemWidth={280}
+  gap={30}
+  mobileGap={15}
+  height="auto"
+>
+  <Card>First story</Card>
+  <Card>Second story</Card>
+  <Card>Third story</Card>
+</ScrollHorizontal>
+
+<section>Outro content follows the gallery.</section>
+```
+
+`itemWidth` and `mobileItemWidth` set card widths; `gap` and `mobileGap` set
+spacing. Defaults are 400px and 280px for widths, and 30px and 15px for gaps.
+The default `height="auto"` measures the row and creates enough vertical travel
+to reach the last card. Pass a number for a pixel height or a CSS length string
+to choose a different section height.
+
+The gallery exposes a labelled `region` with a keyboard-focusable horizontal
+viewport. Supply `aria-label` or `aria-labelledby` with a useful name. Focus
+entering an offscreen card moves the page to reveal it without changing DOM or
+focus order. Reduced motion disables sticky translation and leaves a normal
+horizontal scroller. After hydration, supported browsers use a CSS view timeline;
+other browsers use a passive scroll listener with frame-scheduled progress.
+The component also accepts `class`, `style` and `dataTheme` props. `ScrollArea`
+remains the component for an ordinary scrollable region.
 
 Renames from old versions: Loading→Spinner, DropdownSelect→Select, RangeSlider→Slider, Callout→Alert, EmptyState→Empty, Toggle→Switch, Modal→Dialog, TextArea→Textarea, Disclosure→Collapsible, FloatingDock→Dock, ProgressBar→Progress, ProgressCircle→RadialProgress, ScrollShadow→ScrollArea, Breadcrumbs→Breadcrumb. ~40 components removed outright (Carousel, Rating, Steps, Stats, FileInput, …).
 
@@ -588,6 +639,48 @@ enablePopmotion((opts) => animate({ ...opts }));   // ⚠️ WITHOUT this, all J
 - Solid components: `<Presence when={open()}>{(isExiting, onExitComplete) => <MotionDiv initial animate exit isExiting={isExiting()} onExitComplete={onExitComplete}>…` — Presence force-unmounts after 800ms if `onExitComplete` never fires. `<AnimatedCollapse open duration=0.24>` for height collapse.
 - `resolvePreset(name, {reduceMotion})` returns the `noMotion` preset under prefers-reduced-motion. Note Dialog/Toast/Drawer animate via CSS, not this system.
 
+The root barrel and `@pathscale/ui/motion` subpath also export small browser
+motion helpers:
+
+```tsx
+import {
+  animateElement,
+  createInView,
+  createScrollProgress,
+  springKeyframes,
+  stagger,
+} from "@pathscale/ui/motion";
+
+const visible = createInView(() => observedElement, { once: true });
+const progress = createScrollProgress(() => section, {
+  range: "start-start/end-end",
+});
+const delay = stagger(index, 50); // milliseconds
+
+const samples = springKeyframes({ stiffness: 180, damping: 20, mass: 1 });
+const animation = animateElement(element, { opacity: samples }, {
+  duration: ((samples.length - 1) / 60) * 1000,
+});
+```
+
+`createInView` and `createScrollProgress` return Solid accessors and attach
+browser listeners only after mount. Visibility starts as `true` if the observer
+is unavailable. Scroll progress starts at zero, samples scroll updates at most
+once per animation frame, and also writes `--scroll-progress` to its target for
+CSS. Its supported range tracks the target from viewport top to its bottom at
+viewport bottom; the target's previous inline custom property is restored on
+cleanup. `supportsViewTimeline()` checks the CSS timeline and attachment range
+used by `ScrollHorizontal`.
+
+`animateElement` uses WAAPI when available, defaults to the library's base
+duration and `motionEasings.out`, and applies the final keyframe immediately when
+WAAPI is unavailable. Its options follow WAAPI timing fields in milliseconds;
+the returned `finished` promise resolves on completion or cancellation, and
+`cancel()` stops the animation. Live reduced-motion changes finish an active
+animation by default. `springKeyframes` returns normalized 60 Hz samples for a
+WAAPI property; use `(samples.length - 1) / 60 * 1000` milliseconds as the
+duration to preserve that sample rate.
+
 ## Streaming
 
 ```ts
@@ -638,6 +731,22 @@ token, with `@plugin "@iconify/tailwind4"` under Tailwind v4 or
 `@pathscale/rsbuild-plugin-iconify` under rsbuild, scanning your source rather
 than ours. Both sources inherit colour through `currentColor`, so `flavor` works
 the same either way.
+
+## QR codes
+
+`QrCode` encodes `value` into one inline SVG. Its required `title` is both the
+SVG title and its accessible name. Encoding is synchronous, so a changed value
+updates the matrix immediately. `level` accepts `L`, `M`, `Q` or `H` and defaults
+to `M`; `size` accepts a number of CSS pixels or another CSS length.
+
+```tsx
+import { QrCode } from "@pathscale/ui";
+
+<QrCode value={otpauthUri} title="Authenticator setup QR code" size={192} />
+```
+
+For non-Solid use, `qrMatrix(value, level?)` returns the dark modules as a
+`boolean[][]`.
 
 ## Dates
 
