@@ -1,7 +1,7 @@
 # Motion primitive exports
 
-The integration lane should add these exports to `src/motion/index.ts`; this
-lane intentionally leaves the existing barrel unchanged.
+These helpers are already exported from `src/motion/index.ts` and the
+`@pathscale/ui/motion` package subpath.
 
 ```ts
 export {

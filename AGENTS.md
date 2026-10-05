@@ -17,18 +17,19 @@ natively, and Claude Code loads it through the `@AGENTS.md` import in
   implementation files.** It is the frontend working agreement: SolidJS/`@pathscale/ui`
   conventions, and a context-efficient workflow. Reading it first keeps
   context small and avoids re-deriving patterns that already exist.
-- **Releases are automatic — never run `npm publish` by hand.** A successful CI run for
-  `master` starts [`.github/workflows/release.yml`](.github/workflows/release.yml) at the
-  exact revision CI tested. The workflow stops if `master` advances before release,
-  derives the version from conventional commits, bumps `package.json`, publishes through
-  npm Trusted Publishing (OIDC), and tags the published revision. There is no `NPM_TOKEN`
-  in this repository, so a local publish cannot authenticate anyway, and a hand-written
-  version bump only fights the workflow. Publishing is irreversible and a version can
-  never be reused, so if a release looks wrong, read the workflow run before touching
-  anything.
-- **After a merge, confirm the fix actually published.** The release is gated by CI and
-  fails closed when another merge advances `master`. Confirm the npm version and tag both
-  point at the expected release revision:
+- **Releases use the guarded workflow — never run `npm publish` by hand.** A successful
+  CI run for `master` starts the automatic path at the exact revision CI tested. An
+  authorized `workflow_dispatch` may use the local-QA path only with the explicitly
+  supplied full SHA that is still the exact `master` head. When a release is warranted,
+  both paths reuse the release preparation checks, publish through npm Trusted Publishing
+  (OIDC), and tag the published revision. There is no `NPM_TOKEN` in this repository, so a local publish
+  cannot authenticate anyway, and a hand-written version bump only fights the workflow.
+  Publishing is irreversible and a version can never be reused, so if a release looks
+  wrong, read the workflow run before touching anything.
+- **After a merge, confirm the fix actually published.** The automatic release is gated
+  by successful master CI; the manual path is only for an explicitly authorized local-QA
+  release at the exact current `master` SHA. Either path fails closed when `master`
+  advances. Confirm the npm version and tag both point at the expected release revision:
 
   So check, every time:
 
@@ -38,8 +39,9 @@ natively, and Claude Code loads it through the `@AGENTS.md` import in
   git tag --points-at HEAD                # a tag here with no npm release is the hole
   ```
 
-  If master is ahead of npm, inspect the CI and Release runs. Fix or re-run the failed
-  workflow rather than manufacturing another version bump.
+  If master is ahead of npm, inspect the CI and Release runs. Retry the automatic path
+  when master CI succeeds; use the manual path only after authorized local QA, supplying
+  the exact current `master` SHA. Never manufacture an extra version bump.
 - **One open PR per repository. Add to it.** If a PR is already open here, push your
   commits onto that branch instead of opening a second one. Two open PRs against the
   same library mean two releases, two version bumps, and a consumer that has to wait for
