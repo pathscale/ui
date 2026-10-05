@@ -21,6 +21,7 @@
  * undefined. Dropdown, Select, Dialog, Popover and Tabs do attach their parts
  * to the root export, so their fixtures use that public compound API.
  */
+import { supportsViewTimeline } from "@pathscale/ui/motion";
 import Collapsible, {
   CollapsibleContent,
   CollapsibleTrigger,
@@ -1588,12 +1589,72 @@ function ScrollHorizontalFixture(props: { spec: ComponentSpec; under?: unknown }
     | ((props: Record<string, unknown>) => JSX.Element)
     | undefined;
   const [reducedMotion, setReducedMotion] = createSignal(false);
+  let reducedMotionMatches = false;
+  const [viewportScrollY, setViewportScrollY] = createSignal(
+    Math.round(window.scrollY || 0),
+  );
+  const [scrollProgress, setScrollProgress] = createSignal("pending");
+  const [scrollSetup, setScrollSetup] = createSignal("pending");
+  const [viewportDom, setViewportDom] = createSignal("pending");
+  const [readyState, setReadyState] = createSignal("pending");
+  const [travelVar, setTravelVar] = createSignal("pending");
+  const [trackTransform, setTrackTransform] = createSignal("pending");
+  const [trackBox, setTrackBox] = createSignal("pending");
+  const [viewLeft, setViewLeft] = createSignal("pending");
+  const sampleGalleryReadbacks = () => {
+    const gallery = document.querySelector<HTMLElement>(".qa-scroll-horizontal");
+    const viewport = gallery?.querySelector<HTMLElement>(".scroll-horizontal__viewport");
+    const track = gallery?.querySelector<HTMLElement>(".scroll-horizontal__track");
+    setScrollProgress(
+      gallery?.style.getPropertyValue("--scroll-progress") || "unset",
+    );
+    setTravelVar(
+      gallery?.style.getPropertyValue("--scroll-horizontal-travel") || "unset",
+    );
+    setReadyState(gallery?.getAttribute("data-scroll-ready") ?? "false");
+    setViewLeft(
+      viewport && Number.isFinite(viewport.scrollLeft)
+        ? String(viewport.scrollLeft)
+        : "unset",
+    );
+    let transform = "unset";
+    try {
+      if (track && typeof getComputedStyle === "function") {
+        transform = getComputedStyle(track).transform || "none";
+      }
+    } catch {
+      transform = "error";
+    }
+    setTrackTransform(transform);
+    if (track) {
+      const rect = track.getBoundingClientRect();
+      setTrackBox(
+        `${Math.round(rect.left)},${Math.round(rect.top)} ${Math.round(rect.width)}x${Math.round(rect.height)}`,
+      );
+    } else {
+      setTrackBox("missing");
+    }
+    setScrollSetup(
+      `root=${gallery?.localName ?? "missing"};label=${gallery?.getAttribute("aria-label") ?? "missing"};ready=${gallery?.getAttribute("data-scroll-ready") ?? "missing"};view-timeline-support=${supportsViewTimeline() ? "yes" : "no"};progress=${gallery?.style.getPropertyValue("--scroll-progress") || "unset"};track=${track?.scrollWidth ?? "missing"};viewport=${viewport?.clientWidth ?? "missing"};height=${Math.round(window.innerHeight)}`,
+    );
+  };
+  const updateScrollReadbacks = () => {
+    setViewportScrollY(Math.round(window.scrollY || 0));
+    window.requestAnimationFrame(() =>
+      window.requestAnimationFrame(() => {
+        sampleGalleryReadbacks();
+      }),
+    );
+  };
+  window.addEventListener("scroll", updateScrollReadbacks, { passive: true });
+  onCleanup(() => window.removeEventListener("scroll", updateScrollReadbacks));
+  window.requestAnimationFrame(() => sampleGalleryReadbacks());
   let isNarrow = false;
   const reducedMotionListeners = new Set<(event: MediaQueryListEvent) => void>();
   const reducedMotionQuery = {
     media: "(prefers-reduced-motion: reduce)",
     get matches() {
-      return reducedMotion();
+      return reducedMotionMatches;
     },
     onchange: null,
     addEventListener: (_type: string, listener: EventListenerOrEventListenerObject) => {
@@ -1668,13 +1729,30 @@ function ScrollHorizontalFixture(props: { spec: ComponentSpec; under?: unknown }
     const gallery = document.querySelector<HTMLElement>(".qa-scroll-horizontal");
     if (!gallery) return;
     isNarrow = !isNarrow;
-    gallery.style.width = isNarrow ? `${Math.max(320, Math.round(window.innerWidth * 0.7))}px` : "100%";
+    gallery.style.width = isNarrow ? `${Math.max(320, Math.round(window.innerWidth * 0.9))}px` : "100%";
     window.dispatchEvent(new Event("resize"));
+    window.requestAnimationFrame(() => sampleGalleryReadbacks());
+  };
+
+  const captureScrollSetup = () => {
+    sampleGalleryReadbacks();
   };
 
   const toggleReducedMotion = () => {
-    setReducedMotion((current) => !current);
+    // Capture the mounted component state before the preference change intentionally
+    // clears data-scroll-ready and removes the motion binding.
+    captureScrollSetup();
+    // MediaQueryList reflects the new preference before notifying listeners;
+    // the rendered signal may commit after this event handler completes.
+    reducedMotionMatches = !reducedMotionMatches;
+    setReducedMotion(reducedMotionMatches);
     reducedMotionQuery.dispatchEvent(new Event("change"));
+    window.requestAnimationFrame(() => {
+      const viewport = document.querySelector<HTMLElement>(".qa-scroll-horizontal .scroll-horizontal__viewport");
+      setViewportDom(viewport
+        ? `${viewport.localName}; role-attr=${viewport.getAttribute("role") ?? "implicit"}; aria-label=${viewport.getAttribute("aria-label") ?? "missing"}; tabindex=${viewport.getAttribute("tabindex") ?? "missing"}`
+        : "missing");
+    });
   };
 
   if (!Component) return <span>ScrollHorizontal is not exported</span>;
@@ -1717,6 +1795,15 @@ function ScrollHorizontalFixture(props: { spec: ComponentSpec; under?: unknown }
           <button type="button">Card four action</button>
         </article>
       </Component>
+      <h2>Viewport scroll: {viewportScrollY()}</h2>
+      <h2>Scroll progress: {scrollProgress()}</h2>
+      <h2>Ready: {readyState()}</h2>
+      <h2>Travel: {travelVar()}</h2>
+      <h2>Transform: {trackTransform()}</h2>
+      <h2>Track box: {trackBox()}</h2>
+      <h2>View left: {viewLeft()}</h2>
+      <h2>Scroll setup: {scrollSetup()}</h2>
+      <h2>Viewport DOM: {viewportDom()}</h2>
       <h2>Reduced motion: {reducedMotion() ? "enabled" : "disabled"}</h2>
     </>
   );
