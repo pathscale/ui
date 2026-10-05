@@ -39,18 +39,6 @@
     top: 0;
   }
 
-  .scroll-horizontal[data-scroll-ready="true"] .scroll-horizontal__track {
-    transform: translate3d(
-      calc(
-        -1 *
-        var(--scroll-horizontal-travel, 0px) *
-        var(--scroll-progress, 0)
-      ),
-      0,
-      0
-    );
-  }
-
   @media (min-width: 768px) {
     .scroll-horizontal__track {
       gap: var(--scroll-horizontal-gap, 30px);
@@ -66,15 +54,17 @@
     (view-timeline-axis: block) and
     (animation-timeline: --scroll-horizontal) and
     (animation-range: contain 0% contain 100%) {
-    .scroll-horizontal[data-scroll-ready="true"] {
+    .scroll-horizontal[data-scroll-ready="true"][data-scroll-native="true"] {
       view-timeline-axis: block;
       view-timeline-name: --scroll-horizontal;
     }
 
-    .scroll-horizontal[data-scroll-ready="true"] .scroll-horizontal__track {
+    .scroll-horizontal[data-scroll-ready="true"][data-scroll-native="true"]
+      .scroll-horizontal__track {
       animation: scroll-horizontal-track linear both;
       animation-timeline: --scroll-horizontal;
-      animation-range: contain 0% contain 100%;
+      animation-range-start: contain 0%;
+      animation-range-end: contain 100%;
     }
   }
 
@@ -100,15 +90,11 @@
 
   @keyframes scroll-horizontal-track {
     from {
-      transform: translate3d(0, 0, 0);
+      transform: translateX(0);
     }
 
     to {
-      transform: translate3d(
-        calc(0px - var(--scroll-horizontal-travel, 0px)),
-        0,
-        0
-      );
+      transform: translateX(calc(0px - var(--scroll-horizontal-travel, 0px)));
     }
   }
 }

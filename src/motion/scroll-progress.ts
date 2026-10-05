@@ -65,7 +65,15 @@ export const attachScrollProgress = (
   if (sectionStyle) {
     try {
       priorProgress = sectionStyle.getPropertyValue("--scroll-progress");
-      priorPriority = sectionStyle.getPropertyPriority("--scroll-progress");
+      const getPropertyPriority = (
+        sectionStyle as unknown as {
+          getPropertyPriority?: (property: string) => string;
+        }
+      ).getPropertyPriority;
+      priorPriority =
+        typeof getPropertyPriority === "function"
+          ? getPropertyPriority.call(sectionStyle, "--scroll-progress")
+          : "";
       sectionStyle.setProperty("--scroll-progress", "0");
       ownsStyle = true;
     } catch {

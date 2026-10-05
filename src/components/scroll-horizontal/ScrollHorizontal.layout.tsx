@@ -11,8 +11,9 @@ import {
 } from "solid-js";
 import type { Layout } from "../../lib/layouts";
 import {
-  createScrollProgress,
+  attachScrollProgress,
   supportsViewTimeline,
+  type ScrollProgressBinding as ScrollProgressHandle,
 } from "../../motion/scroll-progress";
 import type { UIBaseProps } from "../vocabulary";
 import { componentRecipe } from "./ScrollHorizontal.recipe";
@@ -28,10 +29,44 @@ export type ScrollHorizontalProps = UIBaseProps &
 
 const ScrollProgressBinding: Component<{
   target: () => HTMLElement | undefined;
+  onProgress: (progress: number) => void;
+  onDispose: () => void;
 }> = (props) => {
-  createScrollProgress(props.target, { range: "start-start/end-end" });
+  let binding: ScrollProgressHandle | undefined;
+
+  onSettled(() => {
+    binding?.cleanup();
+    const section = props.target();
+    binding = section
+      ? attachScrollProgress(section, { onProgress: props.onProgress })
+      : undefined;
+  });
+
+  onCleanup(() => {
+    binding?.cleanup();
+    binding = undefined;
+    props.onDispose();
+  });
+
   return null;
 };
+
+type ScrollLayoutResizeObserver = Pick<ResizeObserver, "observe" | "disconnect">;
+type ScrollLayoutResizeObserverConstructor = new (
+  callback: ResizeObserverCallback,
+) => ScrollLayoutResizeObserver;
+
+const getScrollLayoutResizeObserver =
+  (): ScrollLayoutResizeObserverConstructor | undefined => {
+    const observerConstructor = (
+      window as Window & {
+        ResizeObserver?: ScrollLayoutResizeObserverConstructor;
+      }
+    ).ResizeObserver;
+    return typeof observerConstructor === "function"
+      ? observerConstructor
+      : undefined;
+  };
 
 const ScrollHorizontal: Layout<
   typeof componentRecipe,
@@ -65,9 +100,39 @@ const ScrollHorizontal: Layout<
   const [measuredHeight, setMeasuredHeight] = createSignal("auto");
   const [ready, setReady] = createSignal(false);
   const [nativeTimeline, setNativeTimeline] = createSignal(false);
+  let fallbackProgress = 0;
 
   const asPixels = (value: number): string =>
     `${Math.max(0, Number.isFinite(value) ? value : 0)}px`;
+
+  const clearFallbackTrackTransform = () => {
+    if (!trackRef) return;
+    try {
+      trackRef.style.removeProperty("transform");
+    } catch {
+      // The track may already be detached.
+    }
+  };
+
+  const writeFallbackTrackTransform = (progress?: number) => {
+    if (progress !== undefined) fallbackProgress = progress;
+    if (!trackRef) return;
+    if (prefersReducedMotion || nativeTimeline() || !ready()) {
+      clearFallbackTrackTransform();
+      return;
+    }
+
+    const distance = travel();
+    const offset =
+      Number.isFinite(distance) && Number.isFinite(fallbackProgress)
+        ? -(distance * fallbackProgress)
+        : 0;
+    try {
+      trackRef.style.transform = `translateX(${offset}px)`;
+    } catch {
+      // Inline transform is the fallback paint path; keep scroll handling.
+    }
+  };
 
   const asLength = (value: number | string): string =>
     typeof value === "number" ? asPixels(value) : value;
@@ -162,10 +227,10 @@ const ScrollHorizontal: Layout<
         const itemLeft = focusRect.left - viewportRect.left;
         const itemRight = focusRect.right - viewportRect.left;
 
-        if (
-          focusRect.width > 0 &&
-          (itemRight <= 0 || itemLeft >= visibleWidth)
-        ) {
+        const clipsLeft = itemLeft < 0;
+        const clipsRight = itemRight > visibleWidth;
+
+        if (focusRect.width > 0 && (clipsLeft || clipsRight)) {
           const sectionRect = sectionRef.getBoundingClientRect();
           const viewportHeight = window.innerHeight;
           const sectionRange = Math.max(0, sectionRect.height - viewportHeight);
@@ -174,7 +239,7 @@ const ScrollHorizontal: Layout<
           if (sectionRange > 0 && horizontalTravel > 0) {
             const currentProgress = Math.max(
               0,
-              Math.min(1, (viewportHeight - sectionRect.top) / sectionRange),
+              Math.min(1, -sectionRect.top / sectionRange),
             );
             const offsetAtStart = horizontalTravel * currentProgress;
             const itemLeftAtStart = itemLeft + offsetAtStart;
@@ -185,7 +250,9 @@ const ScrollHorizontal: Layout<
                 1,
                 itemRight <= 0
                   ? itemRightAtStart / horizontalTravel
-                  : (itemLeftAtStart - visibleWidth) / horizontalTravel,
+                  : clipsLeft
+                    ? itemLeftAtStart / horizontalTravel
+                    : (itemRightAtStart - visibleWidth) / horizontalTravel,
               ),
             );
             const sectionTop = sectionRect.top + window.scrollY;
@@ -209,23 +276,65 @@ const ScrollHorizontal: Layout<
       typeof window.matchMedia === "function"
         ? window.matchMedia("(prefers-reduced-motion: reduce)")
         : undefined;
+    const maxInitialRetries = 3;
+    let initialRetriesRemaining = maxInitialRetries;
+    let active = true;
+    let pendingFrame: number | undefined;
+    let retryPending = false;
+    let layoutObserver: ScrollLayoutResizeObserver | undefined;
+
+    const cancelScheduledMeasure = () => {
+      if (pendingFrame !== undefined) {
+        window.cancelAnimationFrame(pendingFrame);
+        pendingFrame = undefined;
+      }
+      retryPending = false;
+    };
+
+    const scheduleMeasure = (retryIfUnavailable = false) => {
+      if (!active || prefersReducedMotion) return;
+      retryPending ||= retryIfUnavailable;
+      if (pendingFrame !== undefined) return;
+
+      pendingFrame = window.requestAnimationFrame(() => {
+        pendingFrame = undefined;
+        const shouldRetry = retryPending;
+        retryPending = false;
+        if (!active || prefersReducedMotion) return;
+
+        const measured = measure();
+        setReady(measured);
+        writeFallbackTrackTransform();
+        if (measured) {
+          initialRetriesRemaining = maxInitialRetries;
+          return;
+        }
+
+        if (shouldRetry && initialRetriesRemaining > 0) {
+          initialRetriesRemaining -= 1;
+          scheduleMeasure(true);
+        }
+      });
+    };
+
     const applyMotionPreference = () => {
       prefersReducedMotion = mediaQuery?.matches ?? false;
 
       if (prefersReducedMotion) {
+        cancelScheduledMeasure();
         setReady(false);
+        clearFallbackTrackTransform();
         return;
       }
 
-      setReady(measure());
+      initialRetriesRemaining = maxInitialRetries;
+      scheduleMeasure(true);
     };
 
     const handleResize = () => {
       if (prefersReducedMotion) return;
-      setReady(measure());
+      scheduleMeasure();
     };
-
-    applyMotionPreference();
 
     window.addEventListener("resize", handleResize, { passive: true });
     mediaQuery?.addEventListener?.("change", applyMotionPreference);
@@ -233,13 +342,32 @@ const ScrollHorizontal: Layout<
       mediaQuery.addListener(applyMotionPreference);
     }
 
-    onCleanup(() => {
+    const ResizeObserverConstructor = getScrollLayoutResizeObserver();
+    if (ResizeObserverConstructor && viewportRef && trackRef) {
+      try {
+        layoutObserver = new ResizeObserverConstructor(handleResize);
+        layoutObserver.observe(viewportRef);
+        layoutObserver.observe(trackRef);
+      } catch {
+        layoutObserver?.disconnect();
+        layoutObserver = undefined;
+      }
+    }
+
+    // Bounded frame retries handle late initial layout when ResizeObserver is
+    // unavailable; observer notifications cover delayed and later resizes.
+    applyMotionPreference();
+
+    return () => {
+      active = false;
+      cancelScheduledMeasure();
+      layoutObserver?.disconnect();
       window.removeEventListener("resize", handleResize);
       mediaQuery?.removeEventListener?.("change", applyMotionPreference);
       if (mediaQuery && !mediaQuery.removeEventListener) {
         mediaQuery.removeListener(applyMotionPreference);
       }
-    });
+    };
   });
 
   return (
@@ -252,17 +380,26 @@ const ScrollHorizontal: Layout<
       }}
       data-theme={local.dataTheme}
       data-scroll-ready={ready() ? "true" : undefined}
+      data-scroll-native={nativeTimeline() ? "true" : undefined}
       style={style()}
       onFocusIn={handleFocusIn}
+      role={typeof local.role === "string" ? local.role : "group"}
+      aria-label={undefined}
+      aria-labelledby={undefined}
     >
       <Show when={ready() && !nativeTimeline()}>
-        <ScrollProgressBinding target={() => sectionRef} />
+        <ScrollProgressBinding
+          target={() => sectionRef}
+          onProgress={writeFallbackTrackTransform}
+          onDispose={clearFallbackTrackTransform}
+        />
       </Show>
       <section
         ref={(el) => {
           viewportRef = el;
         }}
         {...slot.viewport}
+        role="region"
         aria-label={
           typeof local["aria-label"] === "string"
             ? local["aria-label"]
