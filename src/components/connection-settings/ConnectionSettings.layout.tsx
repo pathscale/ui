@@ -317,9 +317,7 @@ export const ConnectionSettingsLayout: Layout<
         <div>
           <p {...slot.title}>{props.labels.useCustom}</p>
           <Show when={props.labels.useCustomDescription}>
-            <p {...slot.description}>
-              {props.labels.useCustomDescription}
-            </p>
+            <p {...slot.description}>{props.labels.useCustomDescription}</p>
           </Show>
         </div>
         <Switch
@@ -328,7 +326,7 @@ export const ConnectionSettingsLayout: Layout<
           aria-label={props.labels.useCustom}
           checked={open()}
           disabled={props.store.isApplying}
-          onChange={() => setUseCustom(!open())}
+          onChange={(checked) => setUseCustom(checked)}
         />
       </div>
 
@@ -338,9 +336,7 @@ export const ConnectionSettingsLayout: Layout<
         fields" an outcome something can observe.
       */}
       <Show when={open()}>
-        <div
-          {...slot.fields}
-        >
+        <div {...slot.fields}>
           <For each={props.endpoints}>
             {(endpoint) => (
               <div {...slot.field}>
@@ -396,9 +392,7 @@ export const ConnectionSettingsLayout: Layout<
       </Show>
 
       {/* Where the application is actually pointed, overrides resolved. */}
-      <div
-        {...slot.current}
-      >
+      <div {...slot.current}>
         {/*
           `urls` resolved once for the whole list. It builds its record per
           read, so calling it inside the row made this pass quadratic in the
