@@ -57,6 +57,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
+          persist-credentials: false
           fetch-depth: 0 # next-version.ts reads commit history
           ref: ${{ env.TARGET_SHA }}
 
@@ -115,6 +116,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
+          persist-credentials: false
           fetch-depth: 0
           ref: ${{ env.TARGET_SHA }}
 
@@ -128,6 +130,7 @@ jobs:
       - name: Checkout rsbuild-plugin-ui-css-purge
         uses: actions/checkout@v4
         with:
+          persist-credentials: false
           repository: pathscale/rsbuild-plugin-ui-css-purge
           path: rsbuild-plugin-ui-css-purge
 
@@ -147,13 +150,15 @@ jobs:
       # not on npm and finishes the job via publish-current.
       - name: Bump version on master
         if: needs.decide.outputs.mode == 'bump'
+        env:
+          GH_TOKEN: ${{ github.token }}
         run: |
           npm version "$VERSION" --no-git-tag-version
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add package.json
           git commit -m "chore(release): $VERSION [skip ci]"
-          git push origin HEAD:master
+          git push "https://x-access-token:${GH_TOKEN}@github.com/${{ github.repository }}.git" HEAD:master
 
       - name: Install dependencies
         run: bun install --no-save
