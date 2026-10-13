@@ -20,10 +20,13 @@ jobs:
     runs-on: ubicloud-standard-2
     steps:
       - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
 
       - name: Checkout rsbuild-plugin-ui-css-purge
         uses: actions/checkout@v4
         with:
+          persist-credentials: false
           repository: pathscale/rsbuild-plugin-ui-css-purge
           path: rsbuild-plugin-ui-css-purge
 
