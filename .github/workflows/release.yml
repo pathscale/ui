@@ -21,9 +21,6 @@ name: Release
 # Without it the publish step fails closed rather than publishing unauthenticated.
 
 on:
-  workflow_run:
-    workflows: [CI]
-    types: [completed]
   workflow_dispatch:
     inputs:
       master_sha:
