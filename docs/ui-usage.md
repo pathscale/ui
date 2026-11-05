@@ -185,6 +185,8 @@ Components require `solid-layouts >=0.2.4` so caller styles reach their root ele
   `Button` take an `href` that makes them anchors. Nothing else is polymorphic;
   reach for the component that renders the element you want rather than
   repointing one that does not.
+- When a `Button` or `Card` link opens with `target="_blank"`, it keeps caller
+  `rel` tokens and adds `noopener noreferrer`.
 
 ```tsx
 <Flex direction="col" gap="sm">
@@ -841,7 +843,7 @@ export const connection = createConnectionSettings({
   storageKey: "acme.connection",          // namespace it; two apps on one origin collide
   endpoints: [
     { name: "api", fallback: "wss://api.acme.com" },
-    { name: "auth", fallback: "wss://auth.honey.id" },
+    { name: "auth", fallback: "wss://auth.example.com" },
   ],
   appPublicId: DEFAULT_APP_ID,
   onApply: async ({ urls, appPublicId }) => {
@@ -868,6 +870,10 @@ export const connection = createConnectionSettings({
   }
 />
 ```
+
+The default endpoint validator accepts absolute HTTP, HTTPS, WS, and WSS URLs.
+It does not determine which transport an endpoint supports; provide that
+endpoint's `validate` callback when it needs a narrower scheme or origin rule.
 
 When `showAppPublicId`, `labels.appPublicId`, and `validateAppPublicId` are all
 present, Save validates the visible application ID before changing persisted

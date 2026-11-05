@@ -27,10 +27,11 @@ export interface ConnectionEndpoint {
    * nothing to accept.
    *
    * Defaults to {@link isAbsoluteUrl}: the value has to parse as an absolute
-   * URL. That is deliberately weak, because this hook does not know what a
-   * given endpoint speaks. An endpoint that knows should say so -- a WebSocket
-   * transport handed `http://…` fails at connect time, long after the page
-   * that could have explained it has gone.
+   * HTTP, HTTPS, WS, or WSS URL. That is deliberately weak about the scheme a
+   * particular endpoint speaks, because this hook does not know its transport.
+   * An endpoint that knows should say so -- a WebSocket transport handed
+   * `http://…` fails at connect time, long after the page that could have
+   * explained it has gone.
    */
   validate?: (url: string) => string | undefined;
 }
@@ -45,7 +46,7 @@ export interface ConnectionSettingsApplied {
 }
 
 /**
- * The default endpoint check: scheme, `://`, and something to connect to.
+ * The default endpoint check: HTTP, HTTPS, WS, or WSS, `://`, and a host.
  *
  * Exported because a caller writing its own `validate` usually wants this and
  * something else, rather than this replaced.
@@ -77,7 +78,7 @@ export interface ConnectionSettingsApplied {
  * accepting a string that cannot parse is just the wrong answer.
  */
 const ABSOLUTE_URL =
-  /^[a-z][a-z0-9+.-]*:\/\/(\[[^\]\s]*\]|[^\s/?#:]+)(?::(\d{1,5}))?(?:[/?#]\S*)?$/i;
+  /^(?:https?|wss?):\/\/(\[[^\]\s]*\]|[^\s/?#:]+)(?::(\d{1,5}))?(?:[/?#]\S*)?$/i;
 
 /** One 16-bit group of an IPv6 address. */
 const IPV6_GROUP = "[0-9a-f]{1,4}";

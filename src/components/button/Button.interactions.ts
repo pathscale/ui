@@ -30,15 +30,13 @@ export const buttonHref = (
   typeof href === "string" && !inert ? href : undefined;
 
 /**
- * `rel` for a link, defaulted for new tabs.
- *
- * A `target="_blank"` without `noopener` hands the opening document to the
- * destination. Defaulted rather than forced, so a caller who means `me` or
- * `nofollow` still gets it.
+ * Preserve caller rel tokens and require opener protection for new tabs.
  */
 export const buttonRel = (
   rel: string | false | undefined,
   target: string | false | undefined,
-): string | undefined =>
-  (rel || undefined) ??
-  (target === "_blank" ? "noopener noreferrer" : undefined);
+): string | undefined => {
+  const tokens = typeof rel === "string" ? rel.split(/\s+/).filter(Boolean) : [];
+  if (target === "_blank") tokens.push("noopener", "noreferrer");
+  return [...new Set(tokens)].join(" ") || undefined;
+};
