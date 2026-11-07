@@ -64,8 +64,6 @@ jobs:
       - name: Headless browser host
         id: qa
         uses: pathscale/chuzz/.github/actions/headless-host@master
-        with:
-          token: ${{ secrets.SIBLING_REPOS_TOKEN }}
 
       - name: Install Dependencies
         run: bun install --no-save
