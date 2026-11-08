@@ -1,4 +1,4 @@
-import { recipe } from "../../lib/layouts";
+import { type Recipe, recipe } from "../../lib/layouts";
 export const CLASSES = {
   base: "grid-layout",
   cols: {
@@ -53,4 +53,5 @@ export const CLASSES = {
     fr: "auto-rows-fr",
   },
 } as const;
-export const componentRecipe = recipe({component:"grid",slots:{"root":{},},});
+const recipeDefinition = {component:"grid",slots:{"root":{},},} as const;
+export const componentRecipe: Recipe<typeof recipeDefinition> = recipe(recipeDefinition);

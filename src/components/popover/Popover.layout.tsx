@@ -590,7 +590,14 @@ const PopoverHeading: Layout<
   );
 };
 
-const Popover = Object.assign(PopoverRoot, {
+const Popover: typeof PopoverRoot & {
+  Root: typeof PopoverRoot;
+  Trigger: typeof PopoverTrigger;
+  Content: typeof PopoverContent;
+  Dialog: typeof PopoverDialog;
+  Arrow: typeof PopoverArrow;
+  Heading: typeof PopoverHeading;
+} = Object.assign(PopoverRoot, {
   Root: PopoverRoot,
   Trigger: PopoverTrigger,
   Content: PopoverContent,

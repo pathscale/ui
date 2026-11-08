@@ -1,4 +1,4 @@
-import { recipe } from "../../lib/layouts";
+import { type Recipe, recipe } from "../../lib/layouts";
 export const CLASSES = {
   Provider: {
     base: "toast-region",
@@ -66,4 +66,5 @@ export const CLASSES = {
     icon: "toast__close-icon",
   },
 } as const;
-export const componentRecipe = recipe({component:"toast",slots:{"root":{},"toast":{},"toast-action":{},"toast-close":{},"toast-content":{},"toast-description":{},"toast-indicator":{},"toast-region":{},"toast-region-item":{},"toast-stack":{},"toast-title":{},},});
+const recipeDefinition = {component:"toast",slots:{"root":{},"toast":{},"toast-action":{},"toast-close":{},"toast-content":{},"toast-description":{},"toast-indicator":{},"toast-region":{},"toast-region-item":{},"toast-stack":{},"toast-title":{},},} as const;
+export const componentRecipe: Recipe<typeof recipeDefinition> = recipe(recipeDefinition);

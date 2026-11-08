@@ -1,4 +1,4 @@
-import { recipe } from "../../lib/layouts";
+import { type Recipe, recipe } from "../../lib/layouts";
 export const CLASSES = {
   base: "slider",
   label: "slider__label",
@@ -12,4 +12,5 @@ export const CLASSES = {
     lg: "slider--lg",
   },
 } as const;
-export const componentRecipe = recipe({component:"slider",slots:{"label":{},"root":{},"slider":{},"slider-fill":{},"slider-output":{},"slider-thumb":{},"slider-track":{},},});
+const recipeDefinition = {component:"slider",slots:{"label":{},"root":{},"slider":{},"slider-fill":{},"slider-output":{},"slider-thumb":{},"slider-track":{},},} as const;
+export const componentRecipe: Recipe<typeof recipeDefinition> = recipe(recipeDefinition);

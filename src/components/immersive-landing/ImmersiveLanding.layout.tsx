@@ -183,8 +183,14 @@ const ImmersiveLanding: Layout<typeof componentRecipe, ImmersiveLandingProps> = 
   );
 };
 
-export default Object.assign(ImmersiveLanding, {
+const ImmersiveLandingCompound: typeof ImmersiveLanding & {
+  Page: typeof ImmersiveLandingPage;
+  Arrows: typeof ImmersiveLandingArrows;
+  Navigation: typeof ImmersiveLandingNavigation;
+} = Object.assign(ImmersiveLanding, {
   Page: ImmersiveLandingPage,
   Arrows: ImmersiveLandingArrows,
   Navigation: ImmersiveLandingNavigation,
 });
+
+export default ImmersiveLandingCompound;

@@ -1,4 +1,4 @@
-import { recipe } from "../../lib/layouts";
+import { type Recipe, recipe } from "../../lib/layouts";
 
 /**
  * Card absorbs Surface and GlassPanel.
@@ -18,7 +18,7 @@ import { recipe } from "../../lib/layouts";
  * Not one call site in 13 apps used any of it — only size (49), tone (7),
  * highlight (6) and interactive (1) — so it is dropped rather than ported.
  */
-export const card = recipe({
+const cardDefinition = {
   component: "card",
   element: "div",
   slots: { root: { base: "card" } },
@@ -77,7 +77,9 @@ export const card = recipe({
     padding: "md",
     radius: "lg",
   },
-});
+} as const;
+
+export const card: Recipe<typeof cardDefinition> = recipe(cardDefinition);
 
 /**
  * The compound parts carry their own recipes rather than sharing the root's.
@@ -87,20 +89,28 @@ export const card = recipe({
  * root, through descendant selectors keyed on `card--padding-*`, so the parts
  * stay in step without needing the root's props.
  */
-export const cardHeader = recipe({
+const cardHeaderDefinition = {
   component: "card-header",
   element: "div",
   slots: { root: { base: "card__header" } },
-});
+} as const;
 
-export const cardBody = recipe({
+export const cardHeader: Recipe<typeof cardHeaderDefinition> =
+  recipe(cardHeaderDefinition);
+
+const cardBodyDefinition = {
   component: "card-body",
   element: "div",
   slots: { root: { base: "card__body" } },
-});
+} as const;
 
-export const cardFooter = recipe({
+export const cardBody: Recipe<typeof cardBodyDefinition> = recipe(cardBodyDefinition);
+
+const cardFooterDefinition = {
   component: "card-footer",
   element: "div",
   slots: { root: { base: "card__footer" } },
-});
+} as const;
+
+export const cardFooter: Recipe<typeof cardFooterDefinition> =
+  recipe(cardFooterDefinition);

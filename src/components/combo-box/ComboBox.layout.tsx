@@ -865,7 +865,14 @@ const ComboBoxList: Layout<typeof componentRecipe, ComboBoxListProps> = () => {
   );
 };
 
-const ComboBox = Object.assign(ComboBoxRoot, {
+const ComboBox: typeof ComboBoxRoot & {
+  Root: typeof ComboBoxRoot;
+  InputGroup: typeof ComboBoxInputGroup;
+  Input: typeof ComboBoxInput;
+  Trigger: typeof ComboBoxTrigger;
+  Popover: typeof ComboBoxPopover;
+  List: typeof ComboBoxList;
+} = Object.assign(ComboBoxRoot, {
   Root: ComboBoxRoot,
   InputGroup: ComboBoxInputGroup,
   Input: ComboBoxInput,

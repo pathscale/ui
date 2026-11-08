@@ -1,6 +1,6 @@
 import "./ColorSwatchPicker.css";
 import type { JSX } from "@solidjs/web";
-import {createContext, createMemo, createSignal, omit, type Accessor, type Component} from "solid-js";
+import {type Context, createContext, createMemo, createSignal, omit, type Accessor, type Component} from "solid-js";
 import { twMerge } from "../../lib/twMerge";
 import type { UIBaseProps, State } from "../vocabulary";
 import { CLASSES } from "./ColorSwatchPicker.recipe";
@@ -24,7 +24,7 @@ export type ColorSwatchPickerContextValue = {
   select: (value: string) => void;
 };
 
-export const ColorSwatchPickerContext = createContext<ColorSwatchPickerContextValue | null>(null);
+export const ColorSwatchPickerContext: Context<ColorSwatchPickerContextValue | null> = createContext<ColorSwatchPickerContextValue | null>(null);
 
 export type ColorSwatchPickerProps = Omit<JSX.HTMLAttributes<HTMLDivElement>, "onChange"> &
   UIBaseProps & {

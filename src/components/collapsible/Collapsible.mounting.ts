@@ -11,4 +11,4 @@
 export const shouldMountCollapsibleContent = (
   keepMounted: boolean,
   expanded: boolean,
-) => keepMounted || expanded;
+): boolean => keepMounted || expanded;

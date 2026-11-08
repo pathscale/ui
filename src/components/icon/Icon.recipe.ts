@@ -1,4 +1,4 @@
-import { recipe } from "../../lib/layouts";
+import { type Recipe, recipe } from "../../lib/layouts";
 
 /**
  * An icon, from either source, with the glyph itself left to the application.
@@ -10,7 +10,7 @@ import { recipe } from "../../lib/layouts";
  * handed in. Nothing here bakes a glyph into the package, which is why there is
  * no icon set in this recipe and no icon data in the shipped CSS.
  */
-export const icon = recipe({
+const iconDefinition = {
   component: "icon",
   element: "span",
   slots: {
@@ -31,4 +31,6 @@ export const icon = recipe({
     },
   },
   defaults: { flavor: "inherit" },
-});
+} as const;
+
+export const icon: Recipe<typeof iconDefinition> = recipe(iconDefinition);

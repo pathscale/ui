@@ -1,4 +1,4 @@
-import { recipe } from "../../lib/layouts";
+import { type Recipe, recipe } from "../../lib/layouts";
 
 /**
  * A alert reports a condition, so it takes `state` and nothing else.
@@ -9,7 +9,7 @@ import { recipe } from "../../lib/layouts";
  * named it after one of its own states — `status` was passed at 29 of 29 call
  * sites because "alert" was never a state it could default to.
  */
-export const alert = recipe({
+const alertDefinition = {
   component: "alert",
   element: "div",
   slots: {
@@ -47,4 +47,6 @@ export const alert = recipe({
     },
   },
   defaults: { flavor: "neutral", variant: "soft", placement: "inline" },
-});
+} as const;
+
+export const alert: Recipe<typeof alertDefinition> = recipe(alertDefinition);

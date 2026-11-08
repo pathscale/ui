@@ -40,7 +40,19 @@ export type InlineEditInteractionOptions = {
  */
 export function createInlineEditInteractions(
   options: InlineEditInteractionOptions,
-) {
+): {
+  start: () => void;
+  cancel: () => void;
+  commit: () => void;
+  isOpen: () => boolean;
+  input: (value: string) => void;
+  focus: () => void;
+  blur: () => void;
+  outside: (target: EventTarget | null) => void;
+  windowBlur: () => void;
+  syncValue: (nextValue: string) => void;
+  keyDown: (key: string, preventDefault: () => void) => void;
+} {
   let open = false;
   let focused = false;
   let draft = "";

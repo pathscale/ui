@@ -86,7 +86,12 @@ const FieldsetActions: Layout<typeof componentRecipe, FieldsetActionsProps> = ()
   );
 };
 
-const Fieldset = Object.assign(FieldsetRoot, {
+const Fieldset: typeof FieldsetRoot & {
+  Root: typeof FieldsetRoot;
+  Legend: typeof FieldsetLegend;
+  Group: typeof FieldGroup;
+  Actions: typeof FieldsetActions;
+} = Object.assign(FieldsetRoot, {
   Root: FieldsetRoot,
   Legend: FieldsetLegend,
   Group: FieldGroup,

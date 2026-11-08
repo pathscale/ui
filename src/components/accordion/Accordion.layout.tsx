@@ -484,7 +484,13 @@ const AccordionIndicator: Layout<typeof componentRecipe, AccordionIndicatorProps
   );
 };
 
-const Accordion = Object.assign(AccordionRoot, {
+const Accordion: typeof AccordionRoot & {
+  Root: typeof AccordionRoot;
+  Item: typeof AccordionItem;
+  Trigger: typeof AccordionTrigger;
+  Content: typeof AccordionContent;
+  Indicator: typeof AccordionIndicator;
+} = Object.assign(AccordionRoot, {
   Root: AccordionRoot,
   Item: AccordionItem,
   Trigger: AccordionTrigger,

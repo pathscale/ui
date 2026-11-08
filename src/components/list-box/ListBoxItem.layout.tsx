@@ -289,7 +289,10 @@ const ListBoxItemIndicator: Layout<typeof componentRecipe, ListBoxItemIndicatorP
   );
 };
 
-const ListBoxItem = Object.assign(ListBoxItemRoot, {
+const ListBoxItem: typeof ListBoxItemRoot & {
+  Root: typeof ListBoxItemRoot;
+  Indicator: typeof ListBoxItemIndicator;
+} = Object.assign(ListBoxItemRoot, {
   Root: ListBoxItemRoot,
   Indicator: ListBoxItemIndicator,
 });

@@ -1,4 +1,4 @@
-import { recipe } from "../../lib/layouts";
+import { type Recipe, recipe } from "../../lib/layouts";
 export const CLASSES = {
   base: "radio-group",
   slot: {
@@ -20,4 +20,5 @@ export const CLASSES = {
     invalid: "radio-group--invalid",
   },
 } as const;
-export const componentRecipe = recipe({component:"radio-group",slots:{"description":{},"error-message":{},"label":{},"radio-group":{},"radio-group-items":{},"root":{},},});
+const recipeDefinition = {component:"radio-group",slots:{"description":{},"error-message":{},"label":{},"radio-group":{},"radio-group-items":{},"root":{},},} as const;
+export const componentRecipe: Recipe<typeof recipeDefinition> = recipe(recipeDefinition);

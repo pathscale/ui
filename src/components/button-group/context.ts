@@ -1,4 +1,4 @@
-import { createContext } from "solid-js";
+import { type Context, createContext } from "solid-js";
 
 import type { Size, Variant } from "../vocabulary";
 
@@ -22,6 +22,6 @@ export type ButtonGroupContextValue = {
  * A truthy default such as `{}` would silence the throw and be worse: the
  * optional chain would then call methods that do not exist.
  */
-export const ButtonGroupContext = createContext<ButtonGroupContextValue | null>(
+export const ButtonGroupContext: Context<ButtonGroupContextValue | null> = createContext<ButtonGroupContextValue | null>(
   null,
 );

@@ -23,7 +23,7 @@ export type RouteTransitionResolverOptions = {
 
 export const createRouteTransitionResolver = (
   options: RouteTransitionResolverOptions,
-) => {
+): ((from: string, to: string) => MotionPreset) => {
   const resolvePreset =
     options.resolvePreset ?? ((name: string) => motionPresets[name]);
   const reduceMotion = options.reduceMotion ?? prefersReducedMotion;

@@ -1,4 +1,4 @@
-import { recipe } from "../../lib/layouts";
+import { type Recipe, recipe } from "../../lib/layouts";
 export const CLASSES = {
   base: "link",
   variant: {
@@ -18,4 +18,5 @@ export const CLASSES = {
     iconDefault: "link__icon-default",
   },
 } as const;
-export const componentRecipe = recipe({component:"link",slots:{"link":{},"link-default-icon":{},"link-icon":{},"root":{},},});
+const recipeDefinition = {component:"link",slots:{"link":{},"link-default-icon":{},"link-icon":{},"root":{},},} as const;
+export const componentRecipe: Recipe<typeof recipeDefinition> = recipe(recipeDefinition);

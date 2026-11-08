@@ -1,6 +1,6 @@
-import { recipe } from "../../lib/layouts";
+import { type Recipe, recipe } from "../../lib/layouts";
 
-export const authFooterLinks = recipe({
+const authFooterLinksDefinition = {
   component: "auth-footer-links",
   element: "div",
   slots: {
@@ -15,4 +15,7 @@ export const authFooterLinks = recipe({
     },
   },
   defaults: { align: "center" },
-});
+} as const;
+
+export const authFooterLinks: Recipe<typeof authFooterLinksDefinition> =
+  recipe(authFooterLinksDefinition);

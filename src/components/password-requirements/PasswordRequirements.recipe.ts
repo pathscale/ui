@@ -1,6 +1,6 @@
-import { recipe } from "../../lib/layouts";
+import { type Recipe, recipe } from "../../lib/layouts";
 
-export const passwordRequirements = recipe({
+const passwordRequirementsDefinition = {
   component: "password-requirements",
   element: "div",
   slots: {
@@ -11,4 +11,7 @@ export const passwordRequirements = recipe({
     icon: { base: "password-requirements__icon" },
     message: { base: "password-requirements__message" },
   },
-});
+} as const;
+
+export const passwordRequirements: Recipe<typeof passwordRequirementsDefinition> =
+  recipe(passwordRequirementsDefinition);

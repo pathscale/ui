@@ -226,7 +226,12 @@ const MeterFill: Layout<typeof componentRecipe, MeterFillProps> = () => {
   );
 };
 
-const Meter = Object.assign(MeterRoot, {
+const Meter: typeof MeterRoot & {
+  Root: typeof MeterRoot;
+  Output: typeof MeterOutput;
+  Track: typeof MeterTrack;
+  Fill: typeof MeterFill;
+} = Object.assign(MeterRoot, {
   Root: MeterRoot,
   Output: MeterOutput,
   Track: MeterTrack,

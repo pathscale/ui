@@ -1,4 +1,4 @@
-import { type Accessor, createContext, useContext } from "solid-js";
+import { type Accessor, type Context, createContext, useContext } from "solid-js";
 import type { ColorFormat, ColorValue } from "./ColorUtils";
 
 export interface ColorPickerContextType {
@@ -25,7 +25,7 @@ export interface ColorPickerContextType {
  * during render, which in Solid 2 halts the reactive system for the whole
  * page. One component on one route took an entire application down.
  */
-export const ColorPickerContext = createContext<ColorPickerContextType | null>(
+export const ColorPickerContext: Context<ColorPickerContextType | null> = createContext<ColorPickerContextType | null>(
   null,
 );
 

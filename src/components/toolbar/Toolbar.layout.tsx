@@ -127,7 +127,9 @@ const ToolbarRoot: Layout<typeof componentRecipe, ToolbarRootProps> = () => {
   );
 };
 
-const Toolbar = Object.assign(ToolbarRoot, {
+const Toolbar: typeof ToolbarRoot & {
+  Root: typeof ToolbarRoot;
+} = Object.assign(ToolbarRoot, {
   Root: ToolbarRoot,
 });
 

@@ -1,4 +1,4 @@
-import { recipe } from "../../lib/layouts";
+import { type Recipe, recipe } from "../../lib/layouts";
 export const CLASSES = {
   Root: {
     base: "date-field",
@@ -36,4 +36,5 @@ export const CLASSES = {
     base: "date-input-group__suffix",
   },
 } as const;
-export const componentRecipe = recipe({component:"date-field",slots:{"date-field":{},"date-input-group":{},"date-input-group-input":{},"date-input-group-input-container":{},"date-input-group-prefix":{},"date-input-group-segment":{},"date-input-group-suffix":{},"root":{},},});
+const recipeDefinition = {component:"date-field",slots:{"date-field":{},"date-input-group":{},"date-input-group-input":{},"date-input-group-input-container":{},"date-input-group-prefix":{},"date-input-group-segment":{},"date-input-group-suffix":{},"root":{},},} as const;
+export const componentRecipe: Recipe<typeof recipeDefinition> = recipe(recipeDefinition);

@@ -435,7 +435,15 @@ const TabSeparator: Layout<typeof componentRecipe, TabSeparatorProps> = () => {
   );
 };
 
-const Tabs = Object.assign(TabsRoot, {
+const Tabs: typeof TabsRoot & {
+  Root: typeof TabsRoot;
+  ListContainer: typeof TabListContainer;
+  List: typeof TabList;
+  Tab: typeof Tab;
+  Indicator: typeof TabIndicator;
+  Separator: typeof TabSeparator;
+  Panel: typeof TabPanel;
+} = Object.assign(TabsRoot, {
   Root: TabsRoot,
   ListContainer: TabListContainer,
   List: TabList,

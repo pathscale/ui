@@ -1,6 +1,6 @@
-import { recipe } from "../../lib/layouts";
+import { type Recipe, recipe } from "../../lib/layouts";
 
-export const panelToggle = recipe({
+const panelToggleDefinition = {
   component: "panel-toggle",
   element: "button",
   slots: {
@@ -16,4 +16,7 @@ export const panelToggle = recipe({
   defaults: {
     side: "right",
   },
-});
+} as const;
+
+export const panelToggle: Recipe<typeof panelToggleDefinition> =
+  recipe(panelToggleDefinition);

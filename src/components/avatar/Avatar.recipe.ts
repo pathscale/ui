@@ -1,4 +1,4 @@
-import { recipe } from "../../lib/layouts";
+import { type Recipe, recipe } from "../../lib/layouts";
 export const CLASSES = {
   base: "avatar",
   slot: {
@@ -29,4 +29,5 @@ export const CLASSES = {
     overlap: "-space-x-6",
   },
 } as const;
-export const componentRecipe = recipe({component:"avatar",slots:{"avatar-fallback":{},"avatar-image":{},"avatar-root":{},"root":{},},});
+const recipeDefinition = {component:"avatar",slots:{"avatar-fallback":{},"avatar-image":{},"avatar-root":{},"root":{},},} as const;
+export const componentRecipe: Recipe<typeof recipeDefinition> = recipe(recipeDefinition);

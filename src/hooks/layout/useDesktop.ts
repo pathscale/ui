@@ -1,6 +1,6 @@
-import { createSignal, onCleanup, onSettled } from "solid-js";
+import { type Accessor, createSignal, onCleanup, onSettled } from "solid-js";
 
-export function useDesktop(breakpoint = 1024) {
+export function useDesktop(breakpoint = 1024): Accessor<boolean> {
   const [isDesktop, setIsDesktop] = createSignal(false);
 
   const checkIfDesktop = () => {

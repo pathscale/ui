@@ -4,6 +4,7 @@ import {
   createSignal,
   createTrackedEffect,
   onSettled,
+  type Setter,
 } from "solid-js";
 
 type PickerOpenStateOptions = {
@@ -13,7 +14,15 @@ type PickerOpenStateOptions = {
   isDisabled: Accessor<boolean>;
 };
 
-export const usePickerOpenState = (options: PickerOpenStateOptions) => {
+export const usePickerOpenState = (
+  options: PickerOpenStateOptions,
+): {
+  isOpen: Accessor<boolean>;
+  isControlled: Accessor<boolean>;
+  setOpen: (nextOpen: boolean) => void;
+  toggleOpen: () => void;
+  setRootRef: Setter<HTMLElement | undefined>;
+} => {
   const [internalOpen, setInternalOpen] = createSignal(
     Boolean(options.defaultOpen()),
   );

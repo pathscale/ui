@@ -1,4 +1,4 @@
-import { createContext, useContext } from "solid-js";
+import { type Context, createContext, useContext } from "solid-js";
 import type { ImmersiveLandingContextValue } from "./types";
 
 /*
@@ -14,10 +14,10 @@ import type { ImmersiveLandingContextValue } from "./types";
  * A truthy default such as `{}` would silence the throw and be worse: the
  * optional chain would then call methods that do not exist.
  */
-export const ImmersiveLandingContext =
+export const ImmersiveLandingContext: Context<ImmersiveLandingContextValue | null> =
   createContext<ImmersiveLandingContextValue | null>(null);
 
-export function useImmersiveLandingContext() {
+export function useImmersiveLandingContext(): ImmersiveLandingContextValue {
   const context = useContext(ImmersiveLandingContext);
   if (!context) {
     throw new Error(

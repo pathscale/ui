@@ -1,4 +1,4 @@
-import { recipe } from "../../lib/layouts";
+import { type Recipe, recipe } from "../../lib/layouts";
 export const CLASSES = {
   Root: {
     base: "range-calendar",
@@ -11,4 +11,5 @@ export const CLASSES = {
   },
 } as const;
 
-export const componentRecipe = recipe({component:"range-calendar",slots:{"range-calendar":{},"root":{},},});
+const recipeDefinition = {component:"range-calendar",slots:{"range-calendar":{},"root":{},},} as const;
+export const componentRecipe: Recipe<typeof recipeDefinition> = recipe(recipeDefinition);

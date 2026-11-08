@@ -86,7 +86,10 @@ const ButtonGroupSeparator: Layout<typeof componentRecipe, ButtonGroupSeparatorP
   );
 };
 
-const ButtonGroup = Object.assign(ButtonGroupRoot, {
+const ButtonGroup: typeof ButtonGroupRoot & {
+  Root: typeof ButtonGroupRoot;
+  Separator: typeof ButtonGroupSeparator;
+} = Object.assign(ButtonGroupRoot, {
   Root: ButtonGroupRoot,
   Separator: ButtonGroupSeparator,
 });

@@ -10,7 +10,15 @@ export type MotionSystemConfig = {
   noMotionPreset?: MotionPreset;
 };
 
-export const createMotionSystem = (config?: MotionSystemConfig) => {
+export const createMotionSystem = (config?: MotionSystemConfig): {
+  getTokens: () => MotionTokens;
+  getPresets: () => Record<string, MotionPreset>;
+  getPreset: (name: string) => MotionPreset;
+  registerPreset: (name: string, preset: MotionPreset) => void;
+  overrideTokens: (overrides: MotionTokenOverrides) => MotionTokens;
+  resolvePreset: (name: string, options?: { reduceMotion?: boolean }) => MotionPreset;
+  setNoMotionPreset: (preset: MotionPreset) => void;
+} => {
   let tokens: MotionTokens = mergeMotionTokens(
     defaultMotionTokens,
     config?.tokens,

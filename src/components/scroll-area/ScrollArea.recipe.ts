@@ -1,4 +1,4 @@
-import { recipe } from "../../lib/layouts";
+import { type Recipe, recipe } from "../../lib/layouts";
 export const CLASSES = {
   base: "scroll-area",
   orientation: {
@@ -13,4 +13,5 @@ export const CLASSES = {
   },
 } as const;
 
-export const componentRecipe = recipe({component:"scroll-area",slots:{"root":{},},});
+const recipeDefinition = {component:"scroll-area",slots:{"root":{},},} as const;
+export const componentRecipe: Recipe<typeof recipeDefinition> = recipe(recipeDefinition);

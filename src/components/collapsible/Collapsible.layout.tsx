@@ -286,7 +286,14 @@ const CollapsibleIndicator: Layout<typeof componentRecipe, CollapsibleIndicatorP
   );
 };
 
-const Collapsible = Object.assign(CollapsibleRoot, {
+const Collapsible: typeof CollapsibleRoot & {
+  Root: typeof CollapsibleRoot;
+  Heading: typeof CollapsibleHeading;
+  Trigger: typeof CollapsibleTrigger;
+  Content: typeof CollapsibleContent;
+  Body: typeof CollapsibleBody;
+  Indicator: typeof CollapsibleIndicator;
+} = Object.assign(CollapsibleRoot, {
   Root: CollapsibleRoot,
   Heading: CollapsibleHeading,
   Trigger: CollapsibleTrigger,

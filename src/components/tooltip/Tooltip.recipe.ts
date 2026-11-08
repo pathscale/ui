@@ -1,4 +1,4 @@
-import { recipe } from "../../lib/layouts";
+import { type Recipe, recipe } from "../../lib/layouts";
 export const CLASSES = {
   base: "tooltip",
   slot: {
@@ -7,4 +7,5 @@ export const CLASSES = {
     arrow: "tooltip__arrow",
   },
 } as const;
-export const componentRecipe = recipe({component:"tooltip",slots:{"root":{},"tooltip-arrow":{},"tooltip-arrow-svg":{},"tooltip-content":{},"tooltip-root":{},"tooltip-trigger":{},},});
+const recipeDefinition = {component:"tooltip",slots:{"root":{},"tooltip-arrow":{},"tooltip-arrow-svg":{},"tooltip-content":{},"tooltip-root":{},"tooltip-trigger":{},},} as const;
+export const componentRecipe: Recipe<typeof recipeDefinition> = recipe(recipeDefinition);

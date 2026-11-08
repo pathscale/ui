@@ -24,7 +24,7 @@ const resolveNumber = (
 
 export const useAnchoredOverlayPosition = (
   options: UseAnchoredOverlayPositionOptions,
-) => {
+): { style: Accessor<JSX.CSSProperties>; updatePosition: () => void } => {
   const [style, setStyle] = createSignal<JSX.CSSProperties>({
     position: "fixed",
     top: "0px",

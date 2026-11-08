@@ -1,4 +1,4 @@
-import { recipe } from "../../lib/layouts";
+import { type Recipe, recipe } from "../../lib/layouts";
 export const CLASSES = {
   base: "color-wheel-flower",
   flag: {
@@ -30,4 +30,5 @@ export const CLASSES = {
     pulsing: "color-wheel-flower__highlight--pulsing",
   },
 } as const;
-export const componentRecipe = recipe({component:"color-wheel-flower",slots:{"color-wheel-flower":{},"root":{},},});
+const recipeDefinition = {component:"color-wheel-flower",slots:{"color-wheel-flower":{},"root":{},},} as const;
+export const componentRecipe: Recipe<typeof recipeDefinition> = recipe(recipeDefinition);

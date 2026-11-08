@@ -1,4 +1,4 @@
-import { createContext, useContext } from "solid-js";
+import { type Context, createContext, useContext } from "solid-js";
 import type {
   DrawerAnimState,
   DrawerBackdropVariant,
@@ -46,9 +46,9 @@ export type DrawerContextValue = {
  * A truthy default such as `{}` would silence the throw and be worse: the
  * optional chain would then call methods that do not exist.
  */
-export const DrawerContext = createContext<DrawerContextValue | null>(null);
+export const DrawerContext: Context<DrawerContextValue | null> = createContext<DrawerContextValue | null>(null);
 
-export const useDrawerContext = () => {
+export const useDrawerContext = (): DrawerContextValue => {
   const ctx = useContext(DrawerContext);
   if (!ctx) {
     throw new Error(

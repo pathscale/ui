@@ -809,7 +809,20 @@ const DrawerClose: Layout<typeof componentRecipe, DrawerCloseProps> = () => {
   );
 };
 
-const Drawer = Object.assign(DrawerRoot, {
+const Drawer: typeof DrawerRoot & {
+  Root: typeof DrawerRoot;
+  Trigger: typeof DrawerTrigger;
+  Backdrop: typeof DrawerBackdrop;
+  Content: typeof DrawerContent;
+  Dialog: typeof DrawerDialog;
+  Header: typeof DrawerHeader;
+  Heading: typeof DrawerHeading;
+  Body: typeof DrawerBody;
+  Footer: typeof DrawerFooter;
+  Handle: typeof DrawerHandle;
+  CloseTrigger: typeof DrawerCloseTrigger;
+  Close: typeof DrawerClose;
+} = Object.assign(DrawerRoot, {
   Root: DrawerRoot,
   Trigger: DrawerTrigger,
   Backdrop: DrawerBackdrop,

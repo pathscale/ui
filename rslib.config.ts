@@ -4,6 +4,7 @@ import { pluginSolidLayoutsLibrary } from "rsbuild-plugin-solid-layouts";
 import { defineConfig } from "@rslib/core";
 import { readFileSync } from "node:fs";
 import { resolve } from "node:path";
+import { pluginUiDeclarations } from "./scripts/emit-declarations";
 
 const packageVersion = (name: string) =>
   JSON.parse(readFileSync(resolve(__dirname, "node_modules", name, "package.json"), "utf8"))
@@ -26,9 +27,7 @@ export default defineConfig({
   lib: [
     {
       bundle: false,
-      dts: {
-        bundle: false,
-      },
+      dts: false,
       format: "esm",
       outBase: "./src",
       autoExternal: {
@@ -59,6 +58,7 @@ export default defineConfig({
   },
   plugins: [
     pluginSolidLayoutsLibrary(),
+    pluginUiDeclarations(),
     pluginBabel({
       include: /\.(?:jsx|tsx)$/,
     }),

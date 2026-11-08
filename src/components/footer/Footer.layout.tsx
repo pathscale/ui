@@ -52,6 +52,8 @@ const Footer: Layout<typeof componentRecipe, FooterProps> = () => {
   );
 };
 
-const FooterNamespaces = Object.assign(Footer, { Title: FooterTitle });
+const FooterNamespaces: typeof Footer & {
+  Title: typeof FooterTitle;
+} = Object.assign(Footer, { Title: FooterTitle });
 
 export default FooterNamespaces;

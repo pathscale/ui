@@ -39,7 +39,7 @@ export interface AnimatedCollapseProps {
 
 const DEFAULT_DURATION = 0.24;
 
-export const AnimatedCollapse = (props: AnimatedCollapseProps) => {
+export const AnimatedCollapse = (props: AnimatedCollapseProps): JSX.Element => {
   const [phase, setPhase] = createSignal<CollapsePhase>(
     props.open ? "open" : "closed",
   );

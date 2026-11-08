@@ -623,7 +623,14 @@ const DropdownSeparator: Layout<typeof componentRecipe, DropdownSeparatorProps> 
   );
 };
 
-const Dropdown = Object.assign(DropdownRoot, {
+const Dropdown: typeof DropdownRoot & {
+  Root: typeof DropdownRoot;
+  Trigger: typeof DropdownTrigger;
+  Menu: typeof DropdownMenu;
+  Item: typeof DropdownItem;
+  Group: typeof DropdownGroup;
+  Separator: typeof DropdownSeparator;
+} = Object.assign(DropdownRoot, {
   Root: DropdownRoot,
   Trigger: DropdownTrigger,
   Menu: DropdownMenu,

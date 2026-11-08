@@ -32,7 +32,22 @@ const normalizeCompleteRange = (
   };
 };
 
-export const useRangeSelection = (options: RangeSelectionOptions) => {
+export const useRangeSelection = (
+  options: RangeSelectionOptions,
+): {
+  isControlled: Accessor<boolean>;
+  isSelectingEnd: Accessor<boolean>;
+  committedRange: Accessor<ControlledDateRangeValue>;
+  hoveredDate: Accessor<Date | null>;
+  rangeStart: Accessor<Date | null>;
+  rangeEnd: Accessor<Date | null>;
+  previewRange: Accessor<ReturnType<typeof createPreviewRange>>;
+  focusDate: Accessor<Date | null>;
+  selectDate: (value: Date) => void;
+  setCommittedRange: (value: ControlledDateRangeValue) => void;
+  setHoverDate: (value: Date | undefined) => void;
+  clearPendingSelection: () => void;
+} => {
   const [internalCommittedRange, setInternalCommittedRange] =
     createSignal<ControlledDateRangeValue>(
       normalizeCompleteRange(options.defaultValue()),

@@ -10,7 +10,13 @@ import {
  * are reattached here. The parts carry their own recipes, which is why this
  * cannot happen inside the Layout template.
  */
-const Card = Object.assign(CardLayout, {
+const Card: typeof CardLayout & {
+  Root: typeof CardLayout;
+  Header: typeof CardHeaderLayout;
+  Body: typeof CardBodyLayout;
+  Content: typeof CardBodyLayout;
+  Footer: typeof CardFooterLayout;
+} = Object.assign(CardLayout, {
   Root: CardLayout,
   Header: CardHeaderLayout,
   Body: CardBodyLayout,

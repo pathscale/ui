@@ -1,4 +1,4 @@
-import { createContext, useContext } from "solid-js";
+import { type Context, createContext, useContext } from "solid-js";
 import type { FormApi } from "./createForm";
 
 // ---------------------------------------------------------------------------
@@ -9,7 +9,7 @@ import type { FormApi } from "./createForm";
 // consumer does not, so the stored type erases it.
 export type AnyFormApi = FormApi<any>;
 
-export const FormContext = createContext<AnyFormApi | null>(null);
+export const FormContext: Context<AnyFormApi | null> = createContext<AnyFormApi | null>(null);
 
 // ---------------------------------------------------------------------------
 // Hook

@@ -1,4 +1,4 @@
-import { recipe } from "../../lib/layouts";
+import { type Recipe, recipe } from "../../lib/layouts";
 export const CLASSES = {
   Root: {
     base: "input-otp",
@@ -22,4 +22,5 @@ export const CLASSES = {
     base: "input-otp__separator",
   },
 } as const;
-export const componentRecipe = recipe({component:"input-otp",slots:{"input-otp":{},"input-otp-caret":{},"input-otp-group":{},"input-otp-input":{},"input-otp-separator":{},"input-otp-slot":{},"input-otp-slot-value":{},"root":{},},});
+const recipeDefinition = {component:"input-otp",slots:{"input-otp":{},"input-otp-caret":{},"input-otp-group":{},"input-otp-input":{},"input-otp-separator":{},"input-otp-slot":{},"input-otp-slot-value":{},"root":{},},} as const;
+export const componentRecipe: Recipe<typeof recipeDefinition> = recipe(recipeDefinition);

@@ -11,10 +11,10 @@ const immediateDriver: MotionDriver = ({ to, onUpdate, onComplete }) => {
 
 let activeDriver: MotionDriver = immediateDriver;
 
-export const setMotionDriver = (driver: MotionDriver) => {
+export const setMotionDriver = (driver: MotionDriver): void => {
   activeDriver = driver;
 };
 
-export const getMotionDriver = () => activeDriver;
+export const getMotionDriver = (): MotionDriver => activeDriver;
 
 export { immediateDriver };

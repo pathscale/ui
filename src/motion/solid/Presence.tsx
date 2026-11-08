@@ -36,7 +36,7 @@ export interface PresenceProps {
 
 const DEFAULT_EXIT_TIMEOUT = 800;
 
-export const Presence = (props: PresenceProps) => {
+export const Presence = (props: PresenceProps): JSX.Element => {
   const [state, setState] = createSignal<PresenceState>({
     mounted: props.when,
     isExiting: false,

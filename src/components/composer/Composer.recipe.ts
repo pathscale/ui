@@ -1,4 +1,4 @@
-import { recipe } from "../../lib/layouts";
+import { type Recipe, recipe } from "../../lib/layouts";
 
 /**
  * The box you type a message into.
@@ -13,7 +13,7 @@ import { recipe } from "../../lib/layouts";
  * eight repositories hand-rolling Enter handling. Usage said one site; the
  * roadmap says every site, because support.cafe chat is going on all of them.
  */
-export const composer = recipe({
+const composerDefinition = {
   component: "composer",
   element: "div",
   slots: {
@@ -58,4 +58,6 @@ export const composer = recipe({
     },
   },
   defaults: { size: "md", variant: "outline", state: "default", radius: "lg" },
-});
+} as const;
+
+export const composer: Recipe<typeof composerDefinition> = recipe(composerDefinition);

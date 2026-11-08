@@ -1,4 +1,4 @@
-import { recipe } from "../../lib/layouts";
+import { type Recipe, recipe } from "../../lib/layouts";
 export const CLASSES = {
   base: "toolbar",
   orientation: {
@@ -10,4 +10,5 @@ export const CLASSES = {
   },
 } as const;
 
-export const componentRecipe = recipe({component:"toolbar",slots:{"root":{},"toolbar":{},},});
+const recipeDefinition = {component:"toolbar",slots:{"root":{},"toolbar":{},},} as const;
+export const componentRecipe: Recipe<typeof recipeDefinition> = recipe(recipeDefinition);

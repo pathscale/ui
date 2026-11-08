@@ -1,4 +1,4 @@
-import { recipe } from "../../lib/layouts";
+import { type Recipe, recipe } from "../../lib/layouts";
 
 /**
  * A blockchain address, shown the way people actually read one.
@@ -12,7 +12,7 @@ import { recipe } from "../../lib/layouts";
  * Deliberately not a form input. This displays an address someone already has;
  * entering one is `Input` with a validator.
  */
-export const address = recipe({
+const addressDefinition = {
   component: "address",
   element: "span",
   slots: {
@@ -45,4 +45,6 @@ export const address = recipe({
     },
   },
   defaults: { size: "md", state: "default", font: "mono" },
-});
+} as const;
+
+export const address: Recipe<typeof addressDefinition> = recipe(addressDefinition);

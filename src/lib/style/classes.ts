@@ -61,7 +61,10 @@ export type CvaProps<T> = T extends ConfigSchema
 export function cva<T extends ConfigSchema>(
   base?: ClassArgs,
   config?: Config<T>,
-) {
+): {
+  (props?: CvaProps<T>): string;
+  variantKeys: VariantKeys<T>[];
+} {
   const fn = (props?: CvaProps<T>) => {
     if (config?.variants == null) return classes(base, props?.class);
 

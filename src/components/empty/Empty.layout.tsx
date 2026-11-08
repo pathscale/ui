@@ -135,7 +135,13 @@ const EmptyActions: Layout<typeof componentRecipe, EmptyActionsProps> = () => {
 /* -------------------------------------------------------------------------------------------------
  * Compound Component
  * -----------------------------------------------------------------------------------------------*/
-const Empty = Object.assign(EmptyRoot, {
+const Empty: typeof EmptyRoot & {
+  Root: typeof EmptyRoot;
+  Icon: typeof EmptyIcon;
+  Title: typeof EmptyTitle;
+  Description: typeof EmptyDescription;
+  Actions: typeof EmptyActions;
+} = Object.assign(EmptyRoot, {
   Root: EmptyRoot,
   Icon: EmptyIcon,
   Title: EmptyTitle,

@@ -328,7 +328,15 @@ const TimeFieldSuffix: Layout<typeof componentRecipe, TimeFieldSuffixProps> = ()
   );
 };
 
-const TimeField = Object.assign(TimeFieldRoot, {
+const TimeField: typeof TimeFieldRoot & {
+  Root: typeof TimeFieldRoot;
+  Group: typeof TimeFieldGroup;
+  Input: typeof TimeFieldInput;
+  InputContainer: typeof TimeFieldInputContainer;
+  Segment: typeof TimeFieldSegment;
+  Prefix: typeof TimeFieldPrefix;
+  Suffix: typeof TimeFieldSuffix;
+} = Object.assign(TimeFieldRoot, {
   Root: TimeFieldRoot,
   Group: TimeFieldGroup,
   Input: TimeFieldInput,

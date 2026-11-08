@@ -1,4 +1,4 @@
-import { recipe } from "../../lib/layouts";
+import { type Recipe, recipe } from "../../lib/layouts";
 export const CLASSES = {
   root: {
     base: "table-root",
@@ -31,79 +31,132 @@ export const CLASSES = {
    values in the file that names it, so a 27-slot recipe shared by 20 files
    reports 26 unrendered slots in each of them. Declaring only what a part
    renders is what makes those diagnostics mean something. */
-export const componentRecipe = recipe({
+const recipeDefinition = {
   component: "table",
   slots: { root: {}, table: {} },
-});
-export const tableScrollContainerRecipe = recipe({
+} as const;
+
+export const componentRecipe: Recipe<typeof recipeDefinition> = recipe(recipeDefinition);
+const tableScrollContainerRecipeDefinition = {
   component: "table-scroll-container",
   slots: { root: {}, "table-scroll-container": {} },
-});
-export const tableContentRecipe = recipe({
+} as const;
+
+export const tableScrollContainerRecipe: Recipe<typeof tableScrollContainerRecipeDefinition> =
+  recipe(tableScrollContainerRecipeDefinition);
+const tableContentRecipeDefinition = {
   component: "table-content",
   slots: { root: {}, "table-content": {} },
-});
-export const tableHeaderRecipe = recipe({
+} as const;
+
+export const tableContentRecipe: Recipe<typeof tableContentRecipeDefinition> =
+  recipe(tableContentRecipeDefinition);
+const tableHeaderRecipeDefinition = {
   component: "table-header",
   slots: { root: {}, "table-header": {} },
-});
-export const tableColumnRecipe = recipe({
+} as const;
+
+export const tableHeaderRecipe: Recipe<typeof tableHeaderRecipeDefinition> =
+  recipe(tableHeaderRecipeDefinition);
+const tableColumnRecipeDefinition = {
   component: "table-column",
   slots: { root: {}, "table-column": {} },
-});
-export const tableBodyRecipe = recipe({
+} as const;
+
+export const tableColumnRecipe: Recipe<typeof tableColumnRecipeDefinition> =
+  recipe(tableColumnRecipeDefinition);
+const tableBodyRecipeDefinition = {
   component: "table-body",
   slots: { root: {}, "table-body": {} },
-});
-export const tableRowRecipe = recipe({
+} as const;
+
+export const tableBodyRecipe: Recipe<typeof tableBodyRecipeDefinition> =
+  recipe(tableBodyRecipeDefinition);
+const tableRowRecipeDefinition = {
   component: "table-row",
   slots: { root: {}, "table-row": {} },
-});
-export const tableCellRecipe = recipe({
+} as const;
+
+export const tableRowRecipe: Recipe<typeof tableRowRecipeDefinition> =
+  recipe(tableRowRecipeDefinition);
+const tableCellRecipeDefinition = {
   component: "table-cell",
   slots: { root: {}, "table-cell": {} },
-});
-export const tableExpandedRowRecipe = recipe({
+} as const;
+
+export const tableCellRecipe: Recipe<typeof tableCellRecipeDefinition> =
+  recipe(tableCellRecipeDefinition);
+const tableExpandedRowRecipeDefinition = {
   component: "table-expanded-row",
   slots: { root: {}, "table-expanded-row": {} },
-});
-export const tableFooterRecipe = recipe({
+} as const;
+
+export const tableExpandedRowRecipe: Recipe<typeof tableExpandedRowRecipeDefinition> =
+  recipe(tableExpandedRowRecipeDefinition);
+const tableFooterRecipeDefinition = {
   component: "table-footer",
   slots: { root: {}, "table-footer": {} },
-});
-export const tablePageSizeRecipe = recipe({
+} as const;
+
+export const tableFooterRecipe: Recipe<typeof tableFooterRecipeDefinition> =
+  recipe(tableFooterRecipeDefinition);
+const tablePageSizeRecipeDefinition = {
   component: "table-page-size",
   slots: { root: {}, "table-page-size": {}, "table-page-size-label": {} },
-});
-export const tableResizableContainerRecipe = recipe({
+} as const;
+
+export const tablePageSizeRecipe: Recipe<typeof tablePageSizeRecipeDefinition> =
+  recipe(tablePageSizeRecipeDefinition);
+const tableResizableContainerRecipeDefinition = {
   component: "table-resizable-container",
   slots: { root: {}, "table-resizable-container": {} },
-});
-export const tableColumnResizerRecipe = recipe({
+} as const;
+
+export const tableResizableContainerRecipe: Recipe<typeof tableResizableContainerRecipeDefinition> =
+  recipe(tableResizableContainerRecipeDefinition);
+const tableColumnResizerRecipeDefinition = {
   component: "table-column-resizer",
   slots: { root: {}, "table-column-resizer": {} },
-});
-export const tableLoadMoreRecipe = recipe({
+} as const;
+
+export const tableColumnResizerRecipe: Recipe<typeof tableColumnResizerRecipeDefinition> =
+  recipe(tableColumnResizerRecipeDefinition);
+const tableLoadMoreRecipeDefinition = {
   component: "table-load-more",
   slots: { root: {}, "table-load-more": {} },
-});
-export const tableLoadMoreContentRecipe = recipe({
+} as const;
+
+export const tableLoadMoreRecipe: Recipe<typeof tableLoadMoreRecipeDefinition> =
+  recipe(tableLoadMoreRecipeDefinition);
+const tableLoadMoreContentRecipeDefinition = {
   component: "table-load-more-content",
   slots: { root: {}, "table-load-more-content": {} },
-});
-export const tableSortIconRecipe = recipe({
+} as const;
+
+export const tableLoadMoreContentRecipe: Recipe<typeof tableLoadMoreContentRecipeDefinition> =
+  recipe(tableLoadMoreContentRecipeDefinition);
+const tableSortIconRecipeDefinition = {
   component: "table-sort-icon",
   slots: { root: {}, "table-sort-icon": {} },
-});
-export const tableExpandToggleRecipe = recipe({
+} as const;
+
+export const tableSortIconRecipe: Recipe<typeof tableSortIconRecipeDefinition> =
+  recipe(tableSortIconRecipeDefinition);
+const tableExpandToggleRecipeDefinition = {
   component: "table-expand-toggle",
   slots: { root: {}, "table-expand-toggle": {} },
-});
-export const tableVirtualSpacerRowRecipe = recipe({
+} as const;
+
+export const tableExpandToggleRecipe: Recipe<typeof tableExpandToggleRecipeDefinition> =
+  recipe(tableExpandToggleRecipeDefinition);
+const tableVirtualSpacerRowRecipeDefinition = {
   component: "table-virtual-spacer-row",
   slots: { root: {}, "table-virtual-spacer-row": {} },
-});
-export const tableMobileListViewRecipe = recipe({
+} as const;
+
+export const tableVirtualSpacerRowRecipe: Recipe<typeof tableVirtualSpacerRowRecipeDefinition> =
+  recipe(tableVirtualSpacerRowRecipeDefinition);
+const tableMobileListViewRecipeDefinition = {
   component: "table-mobile-list-view",
   slots: {
     root: {},
@@ -112,8 +165,11 @@ export const tableMobileListViewRecipe = recipe({
     "table-mobile-list-view-item": {},
     "table-mobile-list-view-empty": {},
   },
-});
-export const tableInlineConfirmRecipe = recipe({
+} as const;
+
+export const tableMobileListViewRecipe: Recipe<typeof tableMobileListViewRecipeDefinition> =
+  recipe(tableMobileListViewRecipeDefinition);
+const tableInlineConfirmRecipeDefinition = {
   component: "table-inline-confirm",
   slots: {
     root: {},
@@ -121,4 +177,7 @@ export const tableInlineConfirmRecipe = recipe({
     "table-inline-confirm-prompt": {},
     "table-inline-confirm-actions": {},
   },
-});
+} as const;
+
+export const tableInlineConfirmRecipe: Recipe<typeof tableInlineConfirmRecipeDefinition> =
+  recipe(tableInlineConfirmRecipeDefinition);

@@ -1,9 +1,12 @@
-import { recipe } from "../../lib/layouts";
+import { type Recipe, recipe } from "../../lib/layouts";
 
-export const colorWheel = recipe({
+const colorWheelDefinition = {
   component: "color-wheel",
   element: "fieldset",
   slots: {
     root: { base: "color-wheel" },
   },
-});
+} as const;
+
+export const colorWheel: Recipe<typeof colorWheelDefinition> =
+  recipe(colorWheelDefinition);

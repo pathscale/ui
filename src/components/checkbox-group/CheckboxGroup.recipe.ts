@@ -1,4 +1,4 @@
-import { recipe } from "../../lib/layouts";
+import { type Recipe, recipe } from "../../lib/layouts";
 export const CLASSES = {
   base: "checkbox-group",
   variant: {
@@ -10,4 +10,5 @@ export const CLASSES = {
     invalid: "checkbox-group--invalid",
   },
 } as const;
-export const componentRecipe = recipe({component:"checkbox-group",slots:{"checkbox-group":{},"root":{},},});
+const recipeDefinition = {component:"checkbox-group",slots:{"checkbox-group":{},"root":{},},} as const;
+export const componentRecipe: Recipe<typeof recipeDefinition> = recipe(recipeDefinition);

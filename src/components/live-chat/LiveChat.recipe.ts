@@ -1,4 +1,4 @@
-import { recipe } from "../../lib/layouts";
+import { type Recipe, recipe } from "../../lib/layouts";
 export const CLASSES = {
   bubble: {
     base: "live-chat-bubble",
@@ -40,4 +40,5 @@ export const CLASSES = {
     spinner: "live-chat-panel__spinner",
   },
 } as const;
-export const componentRecipe = recipe({component:"live-chat",slots:{"root":{},},});
+const recipeDefinition = {component:"live-chat",slots:{"root":{},},} as const;
+export const componentRecipe: Recipe<typeof recipeDefinition> = recipe(recipeDefinition);

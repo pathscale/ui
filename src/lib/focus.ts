@@ -20,7 +20,7 @@ const FOCUSABLE_SELECTOR = [
 ].join(",");
 
 /** Everything inside `container` a person can Tab to, in document order. */
-export const getFocusable = (container: HTMLElement) =>
+export const getFocusable = (container: HTMLElement): HTMLElement[] =>
   Array.from(
     container.querySelectorAll<HTMLElement>(FOCUSABLE_SELECTOR),
   ).filter(
@@ -31,7 +31,7 @@ export const getFocusable = (container: HTMLElement) =>
   );
 
 /** Move focus to the first thing inside `container` that will take it. */
-export const focusFirst = (container: HTMLElement) => {
+export const focusFirst = (container: HTMLElement): void => {
   const autofocus = container.querySelector<HTMLElement>("[autofocus]");
   if (autofocus) {
     autofocus.focus();
@@ -67,7 +67,7 @@ export const focusFirst = (container: HTMLElement) => {
 export const trapFocus = (
   event: KeyboardEvent,
   scope: HTMLElement | HTMLElement[],
-) => {
+): void => {
   const containers = Array.isArray(scope) ? scope : [scope];
   const container = containers[0];
   if (!container) return;

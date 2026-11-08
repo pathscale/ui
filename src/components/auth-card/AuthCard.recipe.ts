@@ -1,6 +1,6 @@
-import { recipe } from "../../lib/layouts";
+import { type Recipe, recipe } from "../../lib/layouts";
 
-export const authCard = recipe({
+const authCardDefinition = {
   component: "auth-card",
   element: "div",
   slots: {
@@ -13,4 +13,6 @@ export const authCard = recipe({
     branding: { base: "auth-card__branding" },
     footer: { base: "auth-card__footer" },
   },
-});
+} as const;
+
+export const authCard: Recipe<typeof authCardDefinition> = recipe(authCardDefinition);
