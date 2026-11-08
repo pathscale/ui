@@ -35,10 +35,15 @@ const setup = (disabled = false) => {
 };
 
 describe("InlineEdit interactions", () => {
-  it("opens from the pencil and focuses the populated field", async () => {
+  it("opens from the pencil and focuses the populated field after it mounts", async () => {
     const result = setup();
 
     result.interactions.start();
+    await Promise.resolve();
+    expect(result.focus).not.toHaveBeenCalled();
+
+    result.field.value = "";
+    result.interactions.mountField(result.field);
     await Promise.resolve();
 
     expect(result.interactions.isOpen()).toBeTrue();
@@ -46,6 +51,18 @@ describe("InlineEdit interactions", () => {
     expect(result.openChanges).toEqual([true]);
     expect(result.focus).toHaveBeenCalledTimes(1);
     expect(result.select).toHaveBeenCalledTimes(1);
+  });
+
+  it("does not focus a field after the edit was canceled", async () => {
+    const result = setup();
+
+    result.interactions.start();
+    result.interactions.mountField(result.field);
+    result.interactions.cancel();
+    await Promise.resolve();
+
+    expect(result.focus).not.toHaveBeenCalled();
+    expect(result.select).not.toHaveBeenCalled();
   });
 
   it("does nothing when disabled", async () => {

@@ -131,6 +131,8 @@ The rules that hold across every component — worth two minutes before your fir
 Forms are built in and take any Standard Schema validator; DataGrid derives filtering,
 sorting, pagination and selection itself. Both, with toasts, icons and dates, are covered in
 **[docs/ui-usage.md](https://github.com/pathscale/ui/blob/master/docs/ui-usage.md)**.
+The [InlineEdit guide](docs/ui-usage.md#inlineedit-a-value-edited-where-it-is-read)
+covers opening, committing, and canceling an edit.
 
 ## Requirements
 

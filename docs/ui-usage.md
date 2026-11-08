@@ -579,12 +579,9 @@ what it names.
 **Two things it does that a hand-rolled version usually gets wrong**, both of
 which shipped as bugs in the application this came from:
 
-The open state is a plain variable and the swap is written to the elements, not
-held in a signal. A `createSignal` setter called from a click handler does not
-take effect within that handler in the Solid version this targets: the write
-lands a microtask later, after the handler that would have read it has finished.
-A component whose whole job is "this click changes what is on screen" cannot be
-built on that, and the failure is silent - the trigger looks dead.
+Only the active row is mounted. When the field mounts, it receives the draft
+and takes focus. This keeps the focus request tied to the field that will
+actually be on screen.
 
 The field ignores the blur that arrives before it has focus. Revealing the field
 moves focus, and that first blur reaches the field's own handler while the mode

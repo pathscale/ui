@@ -44,17 +44,9 @@
   }
 
   .inline-edit__edit {
-    display: none;
+    display: inline-flex;
     min-width: 0;
     flex: 1 1 auto;
-  }
-
-  .inline-edit--editing .inline-edit__read {
-    display: none;
-  }
-
-  .inline-edit--editing .inline-edit__edit {
-    display: inline-flex;
   }
 
   .inline-edit__field {

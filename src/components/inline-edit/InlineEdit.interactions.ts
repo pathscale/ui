@@ -34,14 +34,14 @@ export type InlineEditInteractionOptions = {
 /**
  * Own the complete open, cancel and commit interaction for InlineEdit.
  *
- * The root class is the only rendered state. Keeping the swap here makes a
- * pencil press independently testable and keeps CSS as the single authority
- * for which row is visible.
+ * The layout mounts the active row from the open state. The field gets its
+ * draft and focus when it mounts.
  */
 export function createInlineEditInteractions(
   options: InlineEditInteractionOptions,
 ): {
   start: () => void;
+  mountField: (field: InlineEditField) => void;
   cancel: () => void;
   commit: () => void;
   isOpen: () => boolean;
@@ -74,9 +74,15 @@ export function createInlineEditInteractions(
     sourceValue = options.value();
     resetDraft();
     apply(true);
+  };
+
+  const mountField = (field: InlineEditField): void => {
+    if (!open) return;
+    field.value = draft;
     queueMicrotask(() => {
-      options.field()?.focus();
-      options.field()?.select();
+      if (!open || options.field() !== field) return;
+      field.focus();
+      if (open && options.field() === field) field.select();
     });
   };
 
@@ -97,6 +103,7 @@ export function createInlineEditInteractions(
 
   return {
     start,
+    mountField,
     cancel,
     commit,
     isOpen: () => open,

@@ -1,6 +1,6 @@
 import "./InlineEdit.css";
 import type { JSX } from "@solidjs/web";
-import { createEffect, createSignal, onSettled, omit } from "solid-js";
+import { createEffect, createSignal, onSettled, omit, Show } from "solid-js";
 import type { Layout } from "../../lib/layouts";
 import { twMerge } from "../../lib/twMerge";
 import type { UIBaseProps } from "../vocabulary";
@@ -98,43 +98,48 @@ const InlineEdit: Layout<typeof componentRecipe, InlineEditProps> = () => {
       class={rootClasses()}
       data-slot="root"
     >
-      <span class={CLASSES.slot.read} data-slot="inline-edit-read">
-        <span class={CLASSES.slot.value} data-slot="inline-edit-value">
-          {props.children ?? props.value}
+      <Show when={!isOpen()}>
+        <span class={CLASSES.slot.read} data-slot="inline-edit-read">
+          <span class={CLASSES.slot.value} data-slot="inline-edit-value">
+            {props.children ?? props.value}
+          </span>
+          <button
+            id={props.id ? `${props.id}-trigger` : undefined}
+            type="button"
+            onClick={interactions.start}
+            disabled={props.disabled}
+            aria-label={props.label}
+            class={CLASSES.slot.trigger}
+            data-slot="inline-edit-trigger"
+          >
+            {props.trigger}
+          </button>
         </span>
-        <button
-          id={props.id ? `${props.id}-trigger` : undefined}
-          type="button"
-          onClick={interactions.start}
-          disabled={props.disabled}
-          aria-label={props.label}
-          class={CLASSES.slot.trigger}
-          data-slot="inline-edit-trigger"
-        >
-          {props.trigger}
-        </button>
-      </span>
-      <span class={CLASSES.slot.edit} data-slot="inline-edit-edit">
-        <input
-          id={props.id ? `${props.id}-field` : undefined}
-          ref={(element: HTMLInputElement) => {
-            field = element;
-          }}
-          type="text"
-          value={props.value}
-          aria-label={props.label}
-          onInput={(event) => {
-            interactions.input(event.currentTarget.value);
-          }}
-          onFocus={interactions.focus}
-          onBlur={interactions.blur}
-          onKeyDown={(event) => {
-            interactions.keyDown(event.key, () => event.preventDefault());
-          }}
-          class={twMerge(CLASSES.slot.field, props.fieldClass)}
-          data-slot="inline-edit-field"
-        />
-      </span>
+      </Show>
+      <Show when={isOpen()}>
+        <span class={CLASSES.slot.edit} data-slot="inline-edit-edit">
+          <input
+            id={props.id ? `${props.id}-field` : undefined}
+            ref={(element: HTMLInputElement) => {
+              field = element;
+              interactions.mountField(element);
+            }}
+            type="text"
+            value={props.value}
+            aria-label={props.label}
+            onInput={(event) => {
+              interactions.input(event.currentTarget.value);
+            }}
+            onFocus={interactions.focus}
+            onBlur={interactions.blur}
+            onKeyDown={(event) => {
+              interactions.keyDown(event.key, () => event.preventDefault());
+            }}
+            class={twMerge(CLASSES.slot.field, props.fieldClass)}
+            data-slot="inline-edit-field"
+          />
+        </span>
+      </Show>
     </span>
   );
 };
