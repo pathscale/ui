@@ -1,25 +1,5 @@
 name: Release
 
-# Successful CI on a master push starts this workflow automatically. An
-# owner-authorized local-QA run can also be dispatched for the exact current
-# master SHA. If the commits since the last published version warrant a release,
-# it bumps the version, publishes to npm and tags it. No version-bump PR.
-#
-# The version comes from conventional commits (scripts/next-version.ts):
-#   type! / BREAKING CHANGE -> major, feat -> minor, fix|perf|revert -> patch.
-# Docs- or chore-only pushes release nothing.
-#
-# Two modes, so a half-finished release always recovers:
-#   * package.json's version is NOT on npm  -> publish it as-is (recovery, or a
-#     hand-written bump someone committed deliberately)
-#   * it IS on npm -> compute the next version, bump, publish, tag
-#
-# Publishing uses npm Trusted Publishing (OIDC): no NPM_TOKEN exists in this
-# repository. Requires one-time setup on npmjs.com:
-#   @pathscale/ui -> Settings -> Trusted Publisher -> GitHub Actions
-#   repository: pathscale/ui, workflow: release.yml
-# Without it the publish step fails closed rather than publishing unauthenticated.
-
 on:
   workflow_dispatch:
     inputs:
@@ -31,227 +11,119 @@ on:
 permissions:
   contents: read
 
+concurrency:
+  group: npm-release-master
+  cancel-in-progress: false
+
+defaults:
+  run:
+    shell: bash
+
 jobs:
-  decide:
-    if: >-
-      (
-        github.event_name == 'workflow_run' &&
-        github.event.workflow_run.conclusion == 'success' &&
-        github.event.workflow_run.event == 'push' &&
-        github.event.workflow_run.head_branch == 'master'
-      ) ||
-      (
-        github.event_name == 'workflow_dispatch' &&
-        github.ref == 'refs/heads/master' &&
-        inputs.master_sha == github.sha
-      )
-    runs-on: ubicloud-standard-2
-    env:
-      TARGET_SHA: ${{ github.event_name == 'workflow_run' && github.event.workflow_run.head_sha || inputs.master_sha }}
-    outputs:
-      mode: ${{ steps.decide.outputs.mode }}
-      version: ${{ steps.decide.outputs.version }}
-    steps:
-      - uses: actions/checkout@v4
-        with:
-          persist-credentials: false
-          fetch-depth: 0 # next-version.ts reads commit history
-          ref: ${{ env.TARGET_SHA }}
-
-      - name: Require the exact selected revision to remain master before running it
-        run: |
-          if [ "$GITHUB_EVENT_NAME" = "workflow_dispatch" ]; then
-            test "$GITHUB_REF" = "refs/heads/master"
-            test "$TARGET_SHA" = "$GITHUB_SHA"
-          fi
-          if [[ ! "$TARGET_SHA" =~ ^[0-9a-f]{40}$ ]]; then
-            echo "TARGET_SHA must be a full lowercase 40-character commit SHA" >&2
-            exit 1
-          fi
-          git fetch origin master
-          test "$(git rev-parse HEAD)" = "$TARGET_SHA"
-          test "$(git rev-parse origin/master)" = "$TARGET_SHA"
-
-      - uses: oven-sh/setup-bun@v1
-        with:
-          bun-version: 1.3.14
-
-      - name: Decide whether to release, and as what version
-        id: decide
-        run: |
-          current="$(node -p "require('./package.json').version")"
-
-          if ! npm view "@pathscale/ui@$current" version >/dev/null 2>&1; then
-            echo "mode=publish-current" >> "$GITHUB_OUTPUT"
-            echo "version=$current" >> "$GITHUB_OUTPUT"
-            echo "::notice::$current is not on npm — publishing it as-is"
-            exit 0
-          fi
-
-          next="$(bun run scripts/next-version.ts)"
-          if [ -z "$next" ]; then
-            echo "mode=none" >> "$GITHUB_OUTPUT"
-            echo "::notice::no releasable commits since $current — nothing to do"
-            exit 0
-          fi
-
-          echo "mode=bump" >> "$GITHUB_OUTPUT"
-          echo "version=$next" >> "$GITHUB_OUTPUT"
-          echo "::notice::releasing $current -> $next"
-
   prepare:
-    needs: decide
-    if: needs.decide.outputs.mode != 'none'
-    runs-on: ubicloud-standard-2
-    permissions:
-      contents: write # push the bump commit
+    if: github.repository == 'pathscale/ui' && github.ref == 'refs/heads/master' && inputs.master_sha == github.sha
+    runs-on: ubicloud-standard-2-ubuntu-2404
     outputs:
-      release_sha: ${{ steps.release-sha.outputs.value }}
+      sha256: ${{ steps.archive.outputs.sha256 }}
     env:
-      VERSION: ${{ needs.decide.outputs.version }}
-      TARGET_SHA: ${{ github.event_name == 'workflow_run' && github.event.workflow_run.head_sha || inputs.master_sha }}
+      TARGET_SHA: ${{ github.sha }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
         with:
           persist-credentials: false
-          fetch-depth: 0
-          ref: ${{ env.TARGET_SHA }}
+          ref: ${{ github.sha }}
 
-      - name: Require the selected revision to remain master before release preparation
+      - name: Verify the selected revision is still master
         run: |
-          git fetch origin master
+          master="$(git ls-remote --exit-code origin refs/heads/master)"
           test "$(git rev-parse HEAD)" = "$TARGET_SHA"
-          test "$(git rev-parse origin/master)" = "$TARGET_SHA"
+          test "${master%%$'\t'*}" = "$TARGET_SHA"
 
-      # Mirrors ci.yml — the build resolves this plugin from a sibling directory.
-      - name: Checkout rsbuild-plugin-ui-css-purge
-        uses: actions/checkout@v4
-        with:
-          persist-credentials: false
-          repository: pathscale/rsbuild-plugin-ui-css-purge
-          path: rsbuild-plugin-ui-css-purge
-
-      - name: Symlink plugin to expected path
-        run: ln -s $GITHUB_WORKSPACE/rsbuild-plugin-ui-css-purge ../rsbuild-plugin-ui-css-purge
-
-      - uses: oven-sh/setup-bun@v1
-        with:
-          bun-version: 1.3.14
-
-      - uses: actions/setup-node@v4
-        with:
-          node-version: 24
-
-      # Commit the bump before publishing, so master always states the version we
-      # intend to ship. If a later step fails, the next run sees a version that is
-      # not on npm and finishes the job via publish-current.
-      - name: Bump version on master
-        if: needs.decide.outputs.mode == 'bump'
-        env:
-          GH_TOKEN: ${{ github.token }}
+      - &setup-bun
+        name: Setup Bun
         run: |
-          npm version "$VERSION" --no-git-tag-version
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add package.json
-          git commit -m "chore(release): $VERSION [skip ci]"
-          git push "https://x-access-token:${GH_TOKEN}@github.com/${{ github.repository }}.git" HEAD:master
+          directory="$(mktemp -d "$RUNNER_TEMP/bun-1.4.4.XXXXXX")"
+          archive=bun-linux-x64-baseline.zip
+          sha256=e0446eb55995772eb9894bebae9a6be368d985a8b9271ee124486f9946eedd76
+          curl --fail --silent --show-error --location --retry 3 --max-time 180 \
+            "https://github.com/oven-sh/bun/releases/download/bun-v1.4.4/$archive" \
+            --output "$directory/$archive"
+          printf '%s  %s\n' "$sha256" "$directory/$archive" | sha256sum --strict --check
+          unzip -q "$directory/$archive" bun-linux-x64-baseline/bun -d "$directory"
+          chmod +x "$directory/bun-linux-x64-baseline/bun"
+          echo "$directory/bun-linux-x64-baseline" >> "$GITHUB_PATH"
+
+      - name: Check the manifest version on npm
+        run: |
+          version_path="$(bun -e 'console.log(encodeURIComponent(require("./package.json").version))')"
+          status="$(curl --silent --show-error --output /dev/null --write-out '%{http_code}' \
+            --max-time 30 "https://registry.npmjs.org/@pathscale%2fui/$version_path")"
+          case "$status" in
+            404) ;;
+            200)
+              echo "::error::The package.json version is already published."
+              exit 1
+              ;;
+            *)
+              echo "::error::npm version lookup returned HTTP $status."
+              exit 1
+              ;;
+          esac
 
       - name: Install dependencies
         run: bun install --no-save
 
-      - name: Contract check
-        run: bun run check
-
-      - name: Type check
-        run: npx tsc --noEmit
-
-      - name: Build
-        run: bun run build
-
-      # ---- gates. A version can never be reused, so fail before shipping.
-
-      - name: Package check (exports and README resolve against the tarball)
-        run: bun run check:package
-
-      - name: publint (publish config, exports, file paths)
-        run: npx --yes publint --strict
-
-      # Replaces @arethetypeswrong/cli, which modelled four TypeScript resolution
-      # modes — three of which nothing here ships to — and reported 378 findings
-      # with none actionable. This installs the packed tarball into a fixture app
-      # configured like our real consumers and typechecks it, which on its first
-      # run caught tailwind-merge being a devDependency while 127 shipped files
-      # import it.
-      #
-      # Advisory for now; promote to blocking once it has run green a few times.
-      # Today's release failed four times on gates that had never run in CI.
-      - name: Consumer smoke test (advisory)
-        continue-on-error: true
-        run: bun run smoke
-
-      - name: Pack the verified release
+      - name: Build the release package
         run: |
+          bun run --bun layouts:generate
+          bun run --bun build:dist
+
+      - name: Pack the release archive
+        run: |
+          git diff --exit-code HEAD -- package.json
           mkdir -p release
-          npm pack --pack-destination release
+          bun pm pack --filename release/package.tgz
 
-      - name: Record the release revision
-        id: release-sha
-        run: echo "value=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
+      - name: Record the release archive digest
+        id: archive
+        run: |
+          checksum="$(sha256sum release/package.tgz)"
+          echo "sha256=${checksum%% *}" >> "$GITHUB_OUTPUT"
 
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
         with:
           name: npm-package
-          path: release/*.tgz
+          path: release/package.tgz
           if-no-files-found: error
 
   publish:
-    needs: [decide, prepare]
-    runs-on: ubuntu-latest
-    permissions:
-      contents: read
-      id-token: write # OIDC trusted publishing + provenance
+    needs: prepare
+    runs-on: ubuntu-24.04
+    environment: npm-publish
+    permissions: {}
     steps:
-      - uses: actions/download-artifact@v4
+      - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4.3.0
         with:
           name: npm-package
           path: release
 
-      - uses: actions/setup-node@v4
-        with:
-          node-version: 24
+      - *setup-bun
 
-      - name: Require npm with OIDC support
-        run: |
-          npm_version="$(npm --version)"
-          node -e '
-            const [major, minor, patch = 0] = process.argv[1].split(".").map(Number);
-            if (major < 11 || (major === 11 && (minor < 5 || (minor === 5 && patch < 1)))) process.exit(1);
-          ' "$npm_version" || {
-            echo "npm 11.5.1 or newer is required for Trusted Publishing; found $npm_version"
-            exit 1
-          }
-
-      - name: Publish to npm
-        run: npm publish ./release/*.tgz --access public
-
-  # Tag only after a successful publish, so tags never point at a version that
-  # is not on npm. Tags had drifted badly before this — newest was v1.1.51
-  # while npm was on 1.2.11.
-  tag:
-    needs: [decide, prepare, publish]
-    runs-on: ubicloud-standard-2
-    permissions:
-      contents: write
-    env:
-      VERSION: ${{ needs.decide.outputs.version }}
-    steps:
-      - name: Tag the release
+      - name: Verify the archive and master revision
         env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          ARCHIVE_SHA256: ${{ needs.prepare.outputs.sha256 }}
+          TARGET_SHA: ${{ github.sha }}
         run: |
-          gh release create "v$VERSION" \
-            --repo "$GITHUB_REPOSITORY" \
-            --title "v$VERSION" \
-            --target "${{ needs.prepare.outputs.release_sha }}" \
-            --generate-notes
+          printf '%s  %s\n' "$ARCHIVE_SHA256" release/package.tgz | sha256sum --strict --check
+          master="$(git ls-remote --exit-code "https://github.com/$GITHUB_REPOSITORY.git" refs/heads/master)"
+          test "${master%%$'\t'*}" = "$TARGET_SHA"
+
+      - name: Publish the verified archive
+        env:
+          NPM_CONFIG_TOKEN: ${{ secrets.NPM_PUBLISH_TOKEN }}
+        run: |
+          if [[ -z "$NPM_CONFIG_TOKEN" ]]; then
+            echo "::error::Configure the npm-publish environment's NPM_PUBLISH_TOKEN before dispatching a release."
+            exit 1
+          fi
+          bun publish ./release/package.tgz --registry https://registry.npmjs.org --access public --ignore-scripts

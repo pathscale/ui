@@ -8,8 +8,10 @@
 
 ## Setup
 
+Use Bun 1.4.4 or newer.
+
 ```bash
-bun install
+bun install --no-save
 bun run dev      # dev server
 bun run build    # production build
 bun run lint
@@ -211,7 +213,7 @@ Why not use existing components or compose from primitives?
 Before submitting:
 
 - [ ] Component follows all rules in the [Component Checklist](#component-checklist)
-- [ ] `bun build` passes
-- [ ] No TypeScript errors (`npx tsc --noEmit`)
+- [ ] `bun run build` passes
+- [ ] `bun check --no-script` passes
 - [ ] Showcase page created/updated in js.software
 - [ ] Commit message follows convention

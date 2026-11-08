@@ -5,65 +5,71 @@ on:
 
 jobs:
   build:
-    # Linux, since `qa-inspect-host` 0.1.9. It could not be built here before:
-    # it reached the engine through `tauri-runtime-blitz`, which brought the
-    # Tauri runtime with it, and that does not compile on Linux at all -- its
-    # `RawWindow` is a `gtk::ApplicationWindow` there and a Blitz window has
-    # none. So this job ran on macOS to get a host at all.
-    #
-    # The host opens no window, and now does not compile one: it takes the
-    # runtime with `default-features = false`, so nothing in its graph is Tauri
-    # or GTK. macOS is for building packages, not for a component sweep.
-    runs-on: ubicloud-standard-2
+    if: github.ref == 'refs/heads/master'
+    # The headless browser archive is built for Linux x86_64.
+    runs-on: ubicloud-standard-2-ubuntu-2404
+    permissions:
+      contents: read
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
         with:
           persist-credentials: false
-
-      - name: Checkout rsbuild-plugin-ui-css-purge
-        uses: actions/checkout@v4
-        with:
-          persist-credentials: false
-          repository: pathscale/rsbuild-plugin-ui-css-purge
-          path: rsbuild-plugin-ui-css-purge
-
-      - name: Symlink plugin to expected path
-        run: ln -s $GITHUB_WORKSPACE/rsbuild-plugin-ui-css-purge ../rsbuild-plugin-ui-css-purge
+          ref: ${{ github.sha }}
 
       - name: Setup Bun
-        uses: oven-sh/setup-bun@v1
-        with:
-          bun-version: 1.3.14
+        shell: bash
+        run: |
+          directory="$(mktemp -d "$RUNNER_TEMP/bun-1.4.4.XXXXXX")"
+          archive=bun-linux-x64-baseline.zip
+          sha256=e0446eb55995772eb9894bebae9a6be368d985a8b9271ee124486f9946eedd76
+          curl --fail --silent --show-error --location --retry 3 --max-time 180 \
+            "https://github.com/oven-sh/bun/releases/download/bun-v1.4.4/$archive" \
+            --output "$directory/$archive"
+          printf '%s  %s\n' "$sha256" "$directory/$archive" | sha256sum --strict --check
+          unzip -q "$directory/$archive" bun-linux-x64-baseline/bun -d "$directory"
+          chmod +x "$directory/bun-linux-x64-baseline/bun"
+          echo "$directory/bun-linux-x64-baseline" >> "$GITHUB_PATH"
 
-      - uses: dtolnay/rust-toolchain@stable
+      - name: Set up Rust for ps-qa
+        shell: bash
+        run: |
+          rustup toolchain install 1.99.1 --profile minimal --no-self-update
+          rustup default 1.99.1
 
-      - uses: Swatinem/rust-cache@v2
+      - uses: Swatinem/rust-cache@d1527c8f67ef9af357290475d4af4b0fab8f12e0 # v2.9.3
         with:
           # A UI assertion failing after native tool installation must not make
           # the next corrective run rebuild the observability stack from zero.
           cache-on-failure: true
+          cache-bin: false
 
-      # The host is the browser, and the browser is not a crate a site can
-      # install: the composite action below downloads the verified
-      # `chuzz-headless` release matching its own revision (building that
-      # revision from source only if no release exists), and installs the
-      # driver. That replaced `qa-inspect-host`,
-      # which was a second headless browser with the web platform in only the
-      # other one -- no `URLSearchParams`, no `matchMedia`, no storage, no
-      # observers -- so every gap closed for the browser had to be closed a
-      # second time there by hand, or the sweep measured a browser nobody
-      # ships.
-      #
-      # 0.1.12 is still on crates.io, so nothing broke when the crate was
-      # deleted from source; this is the last consumer to move off it.
-      #
-      # Unpinned, as every site's QA is: `@master` downloads the released
-      # chuzz-headless and installs the newest ps-qa 0.7. A pinned revision
-      # builds old source against today's registry and stops compiling once
-      # its unlocked dependencies move on.
+      # Match the driver's debug protocol 2 descriptor and socket.
       - name: Headless browser host
         id: qa
-        uses: pathscale/chuzz/.github/actions/headless-host@master
+        shell: bash
+        run: |
+          version=0.1.46
+          asset=chuzz-headless-x86_64-unknown-linux-gnu.tar.gz
+          sha256=a43bbba7b1336c19db0eb7e892df2771ba87986aca06478343ff1eaddc8eb21d
+          directory="$RUNNER_TEMP/chuzz-headless-$version"
+          mkdir -p "$directory"
+          curl --fail --silent --show-error --location --retry 3 --max-time 180 \
+            "https://github.com/pathscale/chuzz/releases/download/headless-v$version/$asset" \
+            --output "$directory/$asset"
+          printf '%s  %s\n' "$sha256" "$asset" | (cd "$directory" && sha256sum --strict --check)
+          tar -xzf "$directory/$asset" -C "$directory"
+          test "$(cat "$directory/VERSION")" = "$version"
+          chmod +x "$directory/chuzz-headless"
+          echo "host=$directory/chuzz-headless" >> "$GITHUB_OUTPUT"
+
+      - name: Install fonts for rendered outcomes
+        run: |
+          snapshot=20261107T000000Z
+          sudo apt-get --snapshot "$snapshot" -o APT::Update::Error-Mode=any update
+          sudo apt-get --snapshot "$snapshot" install -y fontconfig fonts-dejavu-core
+
+      - name: Install the headless QA driver
+        run: cargo install ps-qa --locked --version '=0.9.8'
 
       - name: Install Dependencies
         run: bun install --no-save
@@ -76,13 +82,13 @@ jobs:
         run: bun run qa:lint
 
       - name: Contract Check
-        run: bun run check
+        run: bun run --bun check
 
       - name: Type Check
-        run: bunx tsc --noEmit
+        run: bun check --no-script
 
       - name: Build
-        run: bun run build
+        run: bun run --bun build
 
       # Native renderer outcomes replace jsdom interaction tests as the release
       # gate. One headless host per component preserves a clean document.
@@ -92,18 +98,16 @@ jobs:
           # locally well inside the budget. This widens scheduling deadlines only; every
           # declared rendered-state transition is still required.
           QA_TIMEOUT_SCALE: 2
-          # The shared host action installs fonts without a desktop stack.
+          # The runner has fonts without a desktop stack.
           # Keep actual paint assertions in the release gate.
           QA_PROFILE: full
-          # The harness looks for `chuzz-headless` on PATH; here it is the
-          # build the composite action above just made, so it is named
-          # outright.
+          # Use the verified browser archive from the host step.
           QA_HOST: ${{ steps.qa.outputs.host }}
         run: |
           bun run qa:checks
           bun run qa:entries
           git diff --exit-code -- tests/ps-qa tests/ps-qa-headless tests/qa-harness/entries
-          bun run qa:build
+          bun run --bun qa:build
           bash tests/qa-harness/run-all.sh
 
       # Fails when docs/api-contract.md and the shipped types disagree, in
@@ -117,12 +121,12 @@ jobs:
       # one that catches a package dist imports but the manifest does not
       # declare.
       - name: Consumer Smoke
-        run: bun run smoke
+        env:
+          SMOKE_WORK_DIR: ${{ runner.temp }}/ui-smoke
+        run: |
+          mkdir -p "$SMOKE_WORK_DIR"
+          bun run smoke
 
-      # The same gate the release job runs, moved forward to where it is cheap
-      # to fail. It lived only in Release, so a README documenting a subpath
-      # that no longer shipped passed every check here and stopped the 2.6.0
-      # publish instead. npm forbids replacing a version, so a release that
-      # fails this late costs a version number rather than a re-run.
+      # Check that the tarball ships the exports and imports documented in the README.
       - name: Package Check
         run: bun run check:package

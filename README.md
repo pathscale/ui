@@ -146,7 +146,8 @@ require the setup above. Versions `1.5.0` and `1.6.0` were incorrectly published
 line and must not be used.
 
 The complete compiler contract, hard-error behavior, commands, and porting analyzer are
-documented in [docs/layouts.md](docs/layouts.md).
+documented in [docs/layouts.md](docs/layouts.md). The distribution build runs on Bun
+and emits the package declarations with Oxc.
 
 Two peers are optional and only needed for the features they back: `popmotion` (JS animation
 driver) and `@standard-schema/spec` (schema validation).
@@ -173,7 +174,8 @@ import — the published size is the whole library, not what ships to your users
 | **[Live showcase](https://js.software)** | every component, rendered and interactive |
 | **[Usage reference](https://github.com/pathscale/ui/blob/master/docs/ui-usage.md)** | theming, conventions, forms, table, toast, icons, dates |
 | **[Contributing](https://github.com/pathscale/ui/blob/master/CONTRIBUTING.md)** | local setup, component checklist, proposal template |
-| **[Releasing](https://github.com/pathscale/ui/blob/master/docs/releasing.md)** | how a push to master becomes an npm version, and the gates it passes |
+| **[Rendered QA](tests/qa-harness/README.md)** | component checks and the supported ps-qa and Chuzz host versions |
+| **[Releasing](https://github.com/pathscale/ui/blob/master/docs/releasing.md)** | local package verification, verified Bun setup, and manual publication from master |
 
 ## Honey password validation
 

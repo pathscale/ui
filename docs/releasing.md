@@ -1,85 +1,56 @@
 # Releasing
 
-Releases are automatic. Push to `master` and the `Release` workflow decides
-whether to publish, computes the version, publishes to npm and tags it. There
-is no version-bump PR and no manual step.
+CI and Release run by manual dispatch on `master`. Set the intended version
+in `package.json` as part of the reviewed source change. After owner-authorized
+local QA, dispatch Release on `master` with the full current commit SHA in
+`master_sha`.
 
-You do not run `npm publish`. There is no `NPM_TOKEN` in this repository.
+Release uses that manifest version. The workflow checks that the version is
+available, builds the selected revision, and packs the tarball for
+`bun publish`. The workflow checks the current `master` SHA before
+preparation and again before publishing. Git history and tags are managed
+separately from publication.
 
-## What decides the version
+CI and Release verify the SHA-256 digest of the Linux x64 Bun release archive
+before extracting it. Update the archive version and digest in both workflows
+when upgrading Bun.
 
-`scripts/next-version.ts` reads the conventional-commit subjects since the last
-published version:
+The release operator configures a registry credential for the publish job.
+That job uses a GitHub Actions environment and passes the credential only to
+the publish step.
 
-| commit type | bump |
-|---|---|
-| `type!` or `BREAKING CHANGE` | major |
-| `feat` | minor |
-| `fix`, `perf`, `revert` | patch |
-| `docs`, `chore`, `test`, `ci`, `style`, `refactor` | nothing |
+## Local verification
 
-A docs- or chore-only push releases nothing, and that is not a failure. If you
-meant to ship, the commit type was wrong.
+The local package build uses Bun 1.4.4 or newer and the dependencies in
+`package.json`. Oxc emits isolated declarations during distribution and
+watch builds. Use Bun for type checking. Registry credentials are only
+needed when publishing.
 
-## The two modes
+From the repository root, set `SMOKE_WORK_DIR` to an existing absolute
+directory allocated for the task, then run these checks before dispatching
+Release.
 
-The workflow recovers from a half-finished release on its own:
+```sh
+TMPDIR="$SMOKE_WORK_DIR" bun run --bun build &&
+  bun check --no-script &&
+  bun run check:api &&
+  bun run check:package &&
+  bun run smoke
+```
 
-- **`package.json`'s version is not on npm** — publish it as-is. This covers a
-  previous run that built but did not publish, and a deliberate hand-written
-  bump someone committed.
-- **it is on npm** — compute the next version, bump it on `master`, publish,
-  tag.
+The package check pairs every published JavaScript wildcard export with its
+declaration in the archive. The smoke check removes its generated fixture
+and archive when it exits.
+Set `SMOKE_TARBALL` to check an existing archive. The manually dispatched
+CI workflow is available for the rendered component checks.
 
-## Authentication
+Release generates layouts and builds the distribution, then packs and
+records the archive digest. The publish job verifies the downloaded
+archive against that digest. Contract, type, package and consumer checks
+run as part of local QA before dispatch.
 
-Publishing uses npm Trusted Publishing (OIDC), configured once on npmjs.com:
+## Confirming a release
 
-    @pathscale/ui -> Settings -> Trusted Publisher -> GitHub Actions
-    repository: pathscale/ui, workflow: release.yml
-
-Without it the publish step fails closed rather than publishing
-unauthenticated.
-
-## The gates, and why they run twice
-
-Every gate in `Release` also runs in `CI`, deliberately. **npm forbids
-replacing a published version**, so a gate that only fires during a release
-costs a version number when it trips, rather than a re-run.
-
-`Release` runs, in order: contract check, type check, build, **package check**,
-`publint --strict`, and the consumer smoke test (advisory there, blocking in
-CI).
-
-The package check (`bun run check:package`) resolves the manifest's exports and
-**every import written in `README.md`** against the actual packed tarball. It
-is the gate that catches a document promising a module that no longer ships.
-
-That is not hypothetical: 2.6.0's first release attempt failed on
-
-    README imports a file that is not shipped
-      @pathscale/ui/primitives/virtualizer -> ./dist/primitives/virtualizer/index.d.ts
-
-`useVirtualRows` had gone out with TanStack `solid-virtual`, and the README's
-subpath-export example still imported it. CI was green, because CI did not run
-this check at the time. It does now.
-
-## If a release fails
-
-1. Read which step failed. The gates are ordered cheapest-first, so the first
-   failure is the real one.
-2. Fix it on a branch, open a PR, merge with `--rebase`.
-3. The merge is a push to `master`, which triggers `Release` again. Do not
-   re-run the failed job against the old commit.
-
-If the failure came after `npm publish` succeeded, do not bump manually to
-"get past it" — the recovery mode above already handles a version that is in
-`package.json` but not on npm.
-
-## Checking what actually shipped
-
-    npm view @pathscale/ui version
-
-A merged PR is not a published version. The two can disagree for as long as a
-release is failing, which is exactly what the 2.6.0 case looked like: `master`
-carried 2.6.0 while npm still served 2.5.0.
+Compare `bun info @pathscale/ui version` with `package.json` at the SHA used
+for the successful Release run. If a run fails, inspect the failed step and
+check whether the version is already on npm before dispatching again.

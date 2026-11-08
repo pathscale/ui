@@ -15,10 +15,10 @@
  * What it does not prove: that components render. That needs the Solid JSX
  * pipeline, and a flaky gate is worse than a narrow one.
  *
- * Run: bun run smoke
- *      SMOKE_TARBALL=/path/to/pkg.tgz bun run smoke   # test a specific tarball
+ * Run: SMOKE_WORK_DIR=/path/to/existing/task-dir bun run smoke
+ * Set SMOKE_TARBALL to check an archive that has already been packed.
  */
-import { execSync } from "node:child_process";
+import { execFileSync, execSync } from "node:child_process";
 import {
   existsSync,
   mkdirSync,
@@ -27,42 +27,49 @@ import {
   rmSync,
   writeFileSync,
 } from "node:fs";
-import { tmpdir } from "node:os";
-import { join, resolve } from "node:path";
+import { isAbsolute, join, resolve } from "node:path";
 
 const root = process.cwd();
 const pkgJson = JSON.parse(readFileSync(join(root, "package.json"), "utf8"));
 
 const run = (cmd: string, cwd: string) =>
-  execSync(cmd, { cwd, encoding: "utf8", stdio: ["ignore", "pipe", "pipe"] });
+  execSync(cmd, {
+    cwd,
+    encoding: "utf8",
+    env: { ...process.env, TMPDIR: cwd },
+    stdio: ["ignore", "pipe", "pipe"],
+  });
 
-// ------------------------------------------------------------------ tarball
+const workDir = process.env.SMOKE_WORK_DIR;
+if (!workDir || !isAbsolute(workDir)) {
+  throw new Error("Set SMOKE_WORK_DIR to an existing absolute task directory");
+}
 
-const tarballPath = (): string => {
-  const override = process.env.SMOKE_TARBALL;
-  if (override) {
-    const p = resolve(override);
-    if (!existsSync(p)) throw new Error(`SMOKE_TARBALL not found: ${p}`);
-    return p;
-  }
-  const expected = `${String(pkgJson.name).replace(/^@/, "").replace(/\//g, "-")}-${pkgJson.version}.tgz`;
-  const stdout = execSync("npm pack --silent", { cwd: root, encoding: "utf8" });
-  if (existsSync(join(root, expected))) return join(root, expected);
-  const printed = stdout
-    .split("\n")
-    .map((l) => l.trim())
-    .filter((l) => l.endsWith(".tgz"))
-    .pop();
-  if (printed && existsSync(join(root, printed))) return join(root, printed);
-  throw new Error(`npm pack produced no tarball (expected ${expected})`);
-};
+function createFixture(workDir: string) {
+  const path = mkdtempSync(join(workDir, "ui-smoke-"));
+  return {
+    path,
+    [Symbol.dispose]() {
+      rmSync(path, { recursive: true, force: true });
+    },
+  };
+}
 
-const tarball = tarballPath();
-const packedHere = !process.env.SMOKE_TARBALL;
+using work = createFixture(workDir);
+const fixture = work.path;
+const suppliedTarball = process.env.SMOKE_TARBALL;
+const tarball = suppliedTarball
+  ? resolve(root, suppliedTarball)
+  : join(fixture, "package.tgz");
+if (!suppliedTarball) {
+  execFileSync("bun", ["pm", "pack", "--filename", tarball], {
+    cwd: root,
+    env: { ...process.env, TMPDIR: fixture },
+    stdio: "inherit",
+  });
+}
+if (!existsSync(tarball)) throw new Error(`Tarball not found: ${tarball}`);
 
-// ------------------------------------------------------------------ fixture
-
-const fixture = mkdtempSync(join(tmpdir(), "ui-smoke-"));
 mkdirSync(join(fixture, "src"), { recursive: true });
 
 // Peer deps a consumer must install, minus the optional ones. Derived from the
@@ -82,9 +89,6 @@ writeFileSync(
       private: true,
       type: "module",
       dependencies: { ...peers, [pkgJson.name]: `file:${tarball}` },
-      devDependencies: {
-        typescript: pkgJson.devDependencies?.typescript ?? "^5",
-      },
     },
     null,
     2,
@@ -248,7 +252,7 @@ console.log(
 );
 
 step("install the tarball into a fresh consumer", () =>
-  run("bun install", fixture),
+  run("bun install --no-save", fixture),
 );
 step("publish every exercised Layout in the manifest", () => {
   const packageRoot = join(fixture, "node_modules", pkgJson.name);
@@ -265,7 +269,7 @@ step("publish every exercised Layout in the manifest", () => {
   return "ColorWheel, ComplexColorWheel and ConnectionSettings are registered";
 });
 step("typecheck with moduleResolution: bundler", () =>
-  run("./node_modules/.bin/tsc --noEmit", fixture),
+  run("bun check --no-script", fixture),
 );
 /*
  * Bundled, not executed. This package is a browser build: every compiled Layout
@@ -278,18 +282,14 @@ step("typecheck with moduleResolution: bundler", () =>
  */
 step("bundle the package as a browser consumer would", () =>
   run(
-    "./node_modules/.bin/tsc --noEmit && bun build --target=browser --outdir=.smoke-out src/load.mjs",
+    "bun build --target=browser --outdir=smoke-out src/load.mjs",
     fixture,
   ),
 );
 
-// ------------------------------------------------------------------ cleanup
-
-rmSync(fixture, { recursive: true, force: true });
-if (packedHere) rmSync(tarball, { force: true });
-
 if (failed) {
   console.error("\n✖ consumer smoke test failed — a real app would hit this\n");
-  process.exit(1);
+  process.exitCode = 1;
+} else {
+  console.log("\n✔ consumer smoke test passed");
 }
-console.log("\n✔ consumer smoke test passed");
