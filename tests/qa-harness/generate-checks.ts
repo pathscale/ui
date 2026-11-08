@@ -784,13 +784,13 @@ function checksFor(spec: ComponentSpec, profile: Profile): string {
       check({
         id: `"${spec.id}-pointer-release-commits"`,
         group: `"${spec.id}"`,
-        what: `"releasing a ${spec.component} drag reports one final value through onChangeEnd"`,
+        what: `"releasing a ${spec.component} drag reports a fresh final value through onChangeEnd"`,
         open: surface,
         hover: "None",
         click: "None",
         pointer_drag: `Some((from: "${spec.subjectRole}:${spec.subject}", dx: 120.0, dy: 0.0, steps: 4))`,
-        subject: `"heading:Slider committed:"`,
-        expect: profile.paints("PaintsNamed"),
+        subject: '"#qa-slider-commit"',
+        expect: "NameChanges",
       }),
     );
 
