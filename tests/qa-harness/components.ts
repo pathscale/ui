@@ -32,7 +32,10 @@ import { componentFamilies } from "../../src/component-families";
  *   slider - changes its exposed value through its keyboard contract.
  *   inline-edit - opens, commits a controlled value, and abandons a draft.
  *   action - does something once and exposes the callback result.
- *   overlay - opens real portalled content and closes it with Escape.
+ *   overlay - opens real portalled content and closes it with Escape. With
+ *            `closedContent`, also proves that content is absent while
+ *            closed, leaves the tree when closed, returns focus to the
+ *            trigger, and opens again.
  *   tabs - changes the selected tab and the rendered panel together.
  *   adjustment - changes a controlled semantic choice.
  *   display- only ever paints.
@@ -112,7 +115,7 @@ export type ComponentSpec = {
   activate?: string;
   /** Node that proves an overlay/editor opened or a tab panel changed. */
   opens?: string;
-  /** Menu content that must not remain in the renderer while closed. */
+  /** Menu or overlay content that must not remain in the renderer while closed. */
   closedContent?: string;
   /** Mount props. Kept literal so the fixture is readable in one glance. */
   props?: Record<string, unknown>;
@@ -457,6 +460,8 @@ export const COMPONENTS: ComponentSpec[] = [
     subject: "Open drawer",
     subjectRole: "button",
     opens: "heading:Drawer outcome",
+    // The drawer's own close control: if it is in the tree, the content is.
+    closedContent: "button:Close drawer",
   },
   {
     id: "dropdown",

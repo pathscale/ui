@@ -586,23 +586,29 @@ function DialogFixture() {
   );
 }
 
+/*
+ * Content beside the backdrop, not inside it. Both are valid, and this is the
+ * one consuming applications write; it is also the one where a closed drawer
+ * used to keep its content, and its close button, in the tree. Nested inside
+ * the backdrop the content inherited the backdrop's gate, so the fixture could
+ * not see that defect.
+ */
 function DrawerFixture() {
   return (
     <Drawer placement="left">
       <Drawer.Trigger as={Button}>Open drawer</Drawer.Trigger>
-      <Drawer.Backdrop>
-        <Drawer.Content>
-          <Drawer.Dialog>
-            <Drawer.Header>
-              <Drawer.Heading>Drawer outcome</Drawer.Heading>
-            </Drawer.Header>
-            <Drawer.Body>The drawer is visibly inside the viewport.</Drawer.Body>
-            <Drawer.Footer>
-              <Drawer.CloseTrigger>Close drawer</Drawer.CloseTrigger>
-            </Drawer.Footer>
-          </Drawer.Dialog>
-        </Drawer.Content>
-      </Drawer.Backdrop>
+      <Drawer.Backdrop>{null}</Drawer.Backdrop>
+      <Drawer.Content>
+        <Drawer.Dialog>
+          <Drawer.Header>
+            <Drawer.Heading>Drawer outcome</Drawer.Heading>
+          </Drawer.Header>
+          <Drawer.Body>The drawer is visibly inside the viewport.</Drawer.Body>
+          <Drawer.Footer>
+            <Drawer.CloseTrigger>Close drawer</Drawer.CloseTrigger>
+          </Drawer.Footer>
+        </Drawer.Dialog>
+      </Drawer.Content>
     </Drawer>
   );
 }

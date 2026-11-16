@@ -570,6 +570,20 @@ function checksFor(spec: ComponentSpec, profile: Profile): string {
   }
 
   if (spec.kind === "overlay") {
+    if (spec.closedContent) {
+      records.push(
+        check({
+          id: `"${spec.id}-closed-content-is-absent"`,
+          group: `"${spec.id}"`,
+          what: `"the closed ${spec.component} does not retain its content in the renderer"`,
+          open: surface,
+          hover: "None",
+          click: "None",
+          subject: `"${spec.closedContent}"`,
+          expect: "Absent",
+        }),
+      );
+    }
     records.push(
       check({
         id: `"${spec.id}-opens"`,
@@ -601,6 +615,59 @@ function checksFor(spec: ComponentSpec, profile: Profile): string {
         expect: "Vanishes",
       }),
     );
+    /*
+     * Closing by the overlay's own control, then reopening. An overlay that
+     * only hid its backdrop passed `-escape-closes` whenever its content sat
+     * inside that backdrop, and failed a reader the moment it did not: the
+     * closed drawer's buttons stayed named, focusable and in the tree.
+     *
+     * The checks in a group share a host and run in order, so `-reopens`
+     * presses the trigger of an overlay these checks have just closed.
+     */
+    if (spec.closedContent) {
+      records.push(
+        check({
+          id: `"${spec.id}-close-removes-content"`,
+          group: `"${spec.id}"`,
+          what: `"closing ${spec.component} removes its content from the renderer"`,
+          open: surface,
+          hover: "None",
+          prepare: `Some("${spec.subjectRole}:${spec.subject}")`,
+          prepare_unless: `Some("${spec.opens}")`,
+          settle_after_ms: "600",
+          click: `Some("${spec.closedContent}")`,
+          subject: `"${spec.closedContent}"`,
+          expect: "Vanishes",
+        }),
+      );
+      records.push(
+        check({
+          id: `"${spec.id}-close-restores-focus"`,
+          group: `"${spec.id}"`,
+          what: `"closing ${spec.component} returns focus to its trigger"`,
+          open: surface,
+          hover: "None",
+          prepare: `Some("${spec.subjectRole}:${spec.subject}")`,
+          prepare_unless: `Some("${spec.opens}")`,
+          settle_after_ms: "600",
+          click: `Some("${spec.closedContent}")`,
+          subject: `"${spec.subjectRole}:${spec.subject}"`,
+          expect: "FocusMoves",
+        }),
+      );
+      records.push(
+        check({
+          id: `"${spec.id}-reopens"`,
+          group: `"${spec.id}"`,
+          what: `"${spec.component} opens again after it was closed"`,
+          open: surface,
+          hover: "None",
+          click: `Some("${spec.subjectRole}:${spec.subject}")`,
+          subject: `"${spec.opens}"`,
+          expect: profile.paints("PaintsNamed"),
+        }),
+      );
+    }
   }
 
   if (spec.kind === "tabs") {
