@@ -1,4 +1,4 @@
-import { recipe } from "../../lib/layouts";
+import { type Recipe, recipe } from "../../lib/layouts";
 export const CLASSES = {
   base: "progress",
   label: "progress__label",
@@ -25,4 +25,5 @@ export const CLASSES = {
     disabled: "progress--disabled",
   },
 } as const;
-export const componentRecipe = recipe({component:"progress",slots:{"root":{},},});
+const recipeDefinition = {component:"progress",slots:{"root":{},},} as const;
+export const componentRecipe: Recipe<typeof recipeDefinition> = recipe(recipeDefinition);

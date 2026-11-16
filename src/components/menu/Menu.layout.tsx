@@ -315,7 +315,12 @@ const MenuRoot: Layout<typeof componentRecipe, MenuRootProps> = () => {
   );
 };
 
-const Menu = Object.assign(MenuRoot, {
+const Menu: typeof MenuRoot & {
+  Root: typeof MenuRoot;
+  Item: typeof MenuItem;
+  ItemIndicator: typeof MenuItemIndicator;
+  Section: typeof MenuSection;
+} = Object.assign(MenuRoot, {
   Root: MenuRoot,
   Item: MenuItem,
   ItemIndicator: MenuItemIndicator,

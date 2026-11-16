@@ -17,7 +17,23 @@ import TableScrollContainer from "./TableScrollContainer.generated";
 /* The compound lives here rather than in a `.layout.tsx` because it is not a
    Layout: it declares no recipe and renders nothing. Keeping it out of the
    compiler's way is what lets each part own its own file. */
-export default Object.assign(TableRoot, {
+const TableRootCompound: typeof TableRoot & {
+  Root: typeof TableRoot;
+  ScrollContainer: typeof TableScrollContainer;
+  Content: typeof TableContent;
+  Header: typeof TableHeader;
+  Column: typeof TableColumn;
+  Body: typeof TableBody;
+  Row: typeof TableRow;
+  Cell: typeof TableCell;
+  ExpandedRow: typeof TableExpandedRow;
+  Footer: typeof TableFooter;
+  PageSize: typeof TablePageSize;
+  ResizableContainer: typeof TableResizableContainer;
+  ColumnResizer: typeof TableColumnResizer;
+  LoadMore: typeof TableLoadMore;
+  LoadMoreContent: typeof TableLoadMoreContent;
+} = Object.assign(TableRoot, {
   Root: TableRoot,
   ScrollContainer: TableScrollContainer,
   Content: TableContent,
@@ -34,3 +50,5 @@ export default Object.assign(TableRoot, {
   LoadMore: TableLoadMore,
   LoadMoreContent: TableLoadMoreContent,
 });
+
+export default TableRootCompound;

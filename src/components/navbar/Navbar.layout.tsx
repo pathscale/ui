@@ -63,10 +63,18 @@ const NavbarEnd: Layout<typeof componentRecipe, JSX.HTMLAttributes<HTMLDivElemen
   />
 );
 
-export default Object.assign(Navbar, {
+const NavbarCompound: typeof Navbar & {
+  Start: typeof NavbarStart;
+  Center: typeof NavbarCenter;
+  End: typeof NavbarEnd;
+  Stack: typeof NavbarStack;
+  Row: typeof NavbarRow;
+} = Object.assign(Navbar, {
   Start: NavbarStart,
   Center: NavbarCenter,
   End: NavbarEnd,
   Stack: NavbarStack,
   Row: NavbarRow,
 });
+
+export default NavbarCompound;

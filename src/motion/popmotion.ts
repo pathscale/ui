@@ -11,6 +11,6 @@ export const createPopmotionDriver = (
   return (options) => animate(options);
 };
 
-export const enablePopmotion = (animate: PopmotionAnimate) => {
+export const enablePopmotion = (animate: PopmotionAnimate): void => {
   setMotionDriver(createPopmotionDriver(animate));
 };

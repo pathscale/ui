@@ -1,6 +1,6 @@
-import { recipe } from "../../lib/layouts";
+import { type Recipe, recipe } from "../../lib/layouts";
 
-export const authFieldGroup = recipe({
+const authFieldGroupDefinition = {
   component: "auth-field-group",
   element: "div",
   slots: { root: { base: "auth-field-group" } },
@@ -12,4 +12,7 @@ export const authFieldGroup = recipe({
     },
   },
   defaults: { gap: "md" },
-});
+} as const;
+
+export const authFieldGroup: Recipe<typeof authFieldGroupDefinition> =
+  recipe(authFieldGroupDefinition);

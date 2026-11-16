@@ -36,7 +36,7 @@ const ListBoxSectionRoot: Layout<typeof componentRecipe, ListBoxSectionRootProps
   );
 };
 
-const ListBoxSection = ListBoxSectionRoot;
+const ListBoxSection: typeof ListBoxSectionRoot = ListBoxSectionRoot;
 
 export default ListBoxSection;
 export { ListBoxSection, ListBoxSectionRoot };

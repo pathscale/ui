@@ -1,7 +1,10 @@
-import { recipe } from "../../lib/layouts";
+import { type Recipe, recipe } from "../../lib/layouts";
 
-export const authMessage = recipe({
+const authMessageDefinition = {
   component: "auth-message",
   element: "div",
   slots: { root: { base: "auth-message" } },
-});
+} as const;
+
+export const authMessage: Recipe<typeof authMessageDefinition> =
+  recipe(authMessageDefinition);

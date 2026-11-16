@@ -5,10 +5,10 @@ export type DrawerScrollBehavior = "inside" | "outside";
 export type DrawerAnimState = "entering" | "open" | "exiting" | "closed";
 export type DrawerCloseReason = "escape" | "backdrop" | "trigger" | "api";
 
-export const isSidePlacement = (placement: DrawerPlacement) =>
+export const isSidePlacement = (placement: DrawerPlacement): placement is "left" | "right" =>
   placement === "left" || placement === "right";
 
-export const isVisibleState = (state: DrawerAnimState) =>
+export const isVisibleState = (state: DrawerAnimState): state is "entering" | "open" =>
   state === "entering" || state === "open";
 
 /*

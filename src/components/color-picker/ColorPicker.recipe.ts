@@ -1,4 +1,4 @@
-import { recipe } from "../../lib/layouts";
+import { type Recipe, recipe } from "../../lib/layouts";
 export const CLASSES = {
   base: "color-picker",
   slot: {
@@ -7,4 +7,5 @@ export const CLASSES = {
     field: "color-picker__field",
   },
 } as const;
-export const componentRecipe = recipe({component:"color-picker",slots:{"color-picker":{},"root":{},},});
+const recipeDefinition = {component:"color-picker",slots:{"color-picker":{},"root":{},},} as const;
+export const componentRecipe: Recipe<typeof recipeDefinition> = recipe(recipeDefinition);

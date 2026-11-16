@@ -48,7 +48,7 @@ export function wrapWithElementIfInvalid({
 export function mapResponsiveProp<T extends string | boolean>(
   prop: ResponsiveProp<T> | undefined,
   classMap: Record<string, string>,
-) {
+): string[] {
   if (prop === undefined) return [];
   if (typeof prop === "string" || typeof prop === "boolean") {
     return [classMap[String(prop)]];

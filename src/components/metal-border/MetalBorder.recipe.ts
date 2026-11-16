@@ -1,4 +1,4 @@
-import { recipe } from "../../lib/layouts";
+import { type Recipe, recipe } from "../../lib/layouts";
 export const CLASSES = {
   Root: {
     base: "metal-border",
@@ -25,4 +25,5 @@ export const CLASSES = {
     base: "metal-border__content",
   },
 } as const;
-export const componentRecipe = recipe({component:"metal-border",slots:{"root":{},},});
+const recipeDefinition = {component:"metal-border",slots:{"root":{},},} as const;
+export const componentRecipe: Recipe<typeof recipeDefinition> = recipe(recipeDefinition);

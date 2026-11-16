@@ -1,4 +1,4 @@
-import { recipe } from "../../lib/layouts";
+import { type Recipe, recipe } from "../../lib/layouts";
 
 /**
  * Presentation lives here, not in the layout.
@@ -12,7 +12,7 @@ import { recipe } from "../../lib/layouts";
  * `open` and `applying` are recipe props rather than conditional classes in the
  * component, so the compiler owns the whole class string.
  */
-export const componentRecipe = recipe({
+const recipeDefinition = {
   component: "connection-settings",
   element: "form",
   slots: {
@@ -29,7 +29,9 @@ export const componentRecipe = recipe({
     current: { base: "connection-settings__current" },
     actions: { base: "connection-settings__actions" },
   },
-});
+} as const;
+
+export const componentRecipe: Recipe<typeof recipeDefinition> = recipe(recipeDefinition);
 
 /*
  * No `props` block, deliberately.

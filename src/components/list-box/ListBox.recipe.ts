@@ -1,4 +1,4 @@
-import { recipe } from "../../lib/layouts";
+import { type Recipe, recipe } from "../../lib/layouts";
 export const CLASSES = {
   Root: {
     base: "list-box",
@@ -22,4 +22,5 @@ export const CLASSES = {
     title: "list-box-section__title",
   },
 } as const;
-export const componentRecipe = recipe({component:"list-box",slots:{"heading":{},"listbox":{},"listbox-item":{},"listbox-item-indicator":{},"listbox-item-indicator--checkmark":{},"listbox-section":{},"root":{},},});
+const recipeDefinition = {component:"list-box",slots:{"heading":{},"listbox":{},"listbox-item":{},"listbox-item-indicator":{},"listbox-item-indicator--checkmark":{},"listbox-section":{},"root":{},},} as const;
+export const componentRecipe: Recipe<typeof recipeDefinition> = recipe(recipeDefinition);

@@ -1,4 +1,4 @@
-import { recipe } from "../../lib/layouts";
+import { type Recipe, recipe } from "../../lib/layouts";
 
 /**
  * Flavor or state picks the accent; variant decides how it is spent.
@@ -10,7 +10,7 @@ import { recipe } from "../../lib/layouts";
  * flavor defaults to primary: <Button> is the call to action, which is what
  * the fleet's 215 primary call sites were already asking for.
  */
-export const button = recipe({
+const buttonDefinition = {
   component: "button",
   element: "button",
   slots: {
@@ -81,4 +81,6 @@ export const button = recipe({
     width: "auto",
     radius: "full",
   },
-});
+} as const;
+
+export const button: Recipe<typeof buttonDefinition> = recipe(buttonDefinition);

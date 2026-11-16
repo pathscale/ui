@@ -1,4 +1,4 @@
-import { recipe } from "../../lib/layouts";
+import { type Recipe, recipe } from "../../lib/layouts";
 export const CLASSES = {
   Root: {
     base: "combo-box",
@@ -41,4 +41,5 @@ export const CLASSES = {
     end: "combo-box__icon--end",
   },
 } as const;
-export const componentRecipe = recipe({component:"combo-box",slots:{"combobox":{},"combobox-empty-state":{},"combobox-input":{},"combobox-input-group":{},"combobox-list":{},"combobox-option":{},"combobox-option-end-icon":{},"combobox-popover":{},"combobox-start-icon":{},"combobox-trigger":{},"combobox-trigger-end-icon":{},"combobox-trigger-start-icon":{},"root":{},},});
+const recipeDefinition = {component:"combo-box",slots:{"combobox":{},"combobox-empty-state":{},"combobox-input":{},"combobox-input-group":{},"combobox-list":{},"combobox-option":{},"combobox-option-end-icon":{},"combobox-popover":{},"combobox-start-icon":{},"combobox-trigger":{},"combobox-trigger-end-icon":{},"combobox-trigger-start-icon":{},"root":{},},} as const;
+export const componentRecipe: Recipe<typeof recipeDefinition> = recipe(recipeDefinition);

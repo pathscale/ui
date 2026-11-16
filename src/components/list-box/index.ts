@@ -13,7 +13,12 @@ import ListBoxSection, {
   type ListBoxSectionRootProps,
 } from "./ListBoxSection.generated";
 
-const ListBox = Object.assign(ListBoxRoot, {
+const ListBox: typeof ListBoxRoot & {
+  Root: typeof ListBoxRoot;
+  Item: typeof ListBoxItem;
+  ItemIndicator: typeof ListBoxItemIndicator;
+  Section: typeof ListBoxSection;
+} = Object.assign(ListBoxRoot, {
   Root: ListBoxRoot,
   Item: ListBoxItem,
   ItemIndicator: ListBoxItemIndicator,

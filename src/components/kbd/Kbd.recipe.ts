@@ -1,4 +1,4 @@
-import { recipe } from "../../lib/layouts";
+import { type Recipe, recipe } from "../../lib/layouts";
 export const CLASSES = {
   base: "kbd",
   variant: {
@@ -10,4 +10,5 @@ export const CLASSES = {
     content: "kbd__content",
   },
 } as const;
-export const componentRecipe = recipe({component:"kbd",slots:{"kbd":{},"kbd-abbr":{},"kbd-content":{},"root":{},},});
+const recipeDefinition = {component:"kbd",slots:{"kbd":{},"kbd-abbr":{},"kbd-content":{},"root":{},},} as const;
+export const componentRecipe: Recipe<typeof recipeDefinition> = recipe(recipeDefinition);

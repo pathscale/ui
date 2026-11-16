@@ -1,6 +1,6 @@
-import { recipe } from "../../lib/layouts";
+import { type Recipe, recipe } from "../../lib/layouts";
 
-export const authPoweredBy = recipe({
+const authPoweredByDefinition = {
   component: "auth-powered-by",
   element: "div",
   slots: {
@@ -22,4 +22,7 @@ export const authPoweredBy = recipe({
     },
   },
   defaults: { align: "center", variant: "subtle" },
-});
+} as const;
+
+export const authPoweredBy: Recipe<typeof authPoweredByDefinition> =
+  recipe(authPoweredByDefinition);

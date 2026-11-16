@@ -1,6 +1,8 @@
 import { FlexGridRoot } from "./FlexGrid.generated";
 
-const FlexGrid = Object.assign(FlexGridRoot, {
+const FlexGrid: typeof FlexGridRoot & {
+  Root: typeof FlexGridRoot;
+} = Object.assign(FlexGridRoot, {
   Root: FlexGridRoot,
 });
 

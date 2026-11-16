@@ -328,7 +328,15 @@ const DateFieldSuffix: Layout<typeof componentRecipe, DateFieldSuffixProps> = ()
   );
 };
 
-const DateField = Object.assign(DateFieldRoot, {
+const DateField: typeof DateFieldRoot & {
+  Root: typeof DateFieldRoot;
+  Group: typeof DateFieldGroup;
+  Input: typeof DateFieldInput;
+  InputContainer: typeof DateFieldInputContainer;
+  Segment: typeof DateFieldSegment;
+  Prefix: typeof DateFieldPrefix;
+  Suffix: typeof DateFieldSuffix;
+} = Object.assign(DateFieldRoot, {
   Root: DateFieldRoot,
   Group: DateFieldGroup,
   Input: DateFieldInput,

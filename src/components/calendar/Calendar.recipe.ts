@@ -1,4 +1,4 @@
-import { recipe } from "../../lib/layouts";
+import { type Recipe, recipe } from "../../lib/layouts";
 export const CLASSES = {
   Root: {
     base: "calendar",
@@ -61,4 +61,5 @@ export const CLASSES = {
     base: "calendar__day",
   },
 } as const;
-export const componentRecipe = recipe({component:"calendar",slots:{"calendar":{},"calendar-cell":{},"calendar-day":{},"calendar-day-placeholder":{},"calendar-day-wrapper":{},"calendar-grid":{},"calendar-grid-body":{},"calendar-grid-header":{},"calendar-grid-row":{},"calendar-header":{},"calendar-header-cell":{},"calendar-heading":{},"calendar-nav":{},"calendar-nav-button":{},"calendar-nav-button-icon":{},"root":{},},});
+const recipeDefinition = {component:"calendar",slots:{"calendar":{},"calendar-cell":{},"calendar-day":{},"calendar-day-placeholder":{},"calendar-day-wrapper":{},"calendar-grid":{},"calendar-grid-body":{},"calendar-grid-header":{},"calendar-grid-row":{},"calendar-header":{},"calendar-header-cell":{},"calendar-heading":{},"calendar-nav":{},"calendar-nav-button":{},"calendar-nav-button-icon":{},"root":{},},} as const;
+export const componentRecipe: Recipe<typeof recipeDefinition> = recipe(recipeDefinition);

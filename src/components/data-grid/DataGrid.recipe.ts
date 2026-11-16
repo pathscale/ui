@@ -1,4 +1,4 @@
-import { recipe } from "../../lib/layouts";
+import { type Recipe, recipe } from "../../lib/layouts";
 
 export const CLASSES = {
   root: "data-grid",
@@ -41,7 +41,7 @@ export const CLASSES = {
   interactive: "data-grid--interactive",
 } as const;
 
-export const componentRecipe = recipe({
+const recipeDefinition = {
   component: "data-grid",
   slots: {
     root: {},
@@ -52,4 +52,6 @@ export const componentRecipe = recipe({
     "data-grid-empty": {},
     "data-grid-pagination": {},
   },
-});
+} as const;
+
+export const componentRecipe: Recipe<typeof recipeDefinition> = recipe(recipeDefinition);

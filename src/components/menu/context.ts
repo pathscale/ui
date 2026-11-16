@@ -1,4 +1,4 @@
-import { type Accessor, createContext } from "solid-js";
+import { type Accessor, type Context, createContext } from "solid-js";
 
 export type MenuItemVariant = "default" | "danger";
 export type MenuSelectionMode = "none" | "single" | "multiple";
@@ -29,4 +29,4 @@ export type MenuContextValue = {
   focusBoundary: (target: MenuFocusTarget) => void;
 };
 
-export const MenuContext = createContext<MenuContextValue | null>(null);
+export const MenuContext: Context<MenuContextValue | null> = createContext<MenuContextValue | null>(null);

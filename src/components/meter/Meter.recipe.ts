@@ -1,4 +1,4 @@
-import { recipe } from "../../lib/layouts";
+import { type Recipe, recipe } from "../../lib/layouts";
 export const CLASSES = {
   base: "meter",
   output: "meter__output",
@@ -24,4 +24,5 @@ export const CLASSES = {
   },
 } as const;
 
-export const componentRecipe = recipe({component:"meter",slots:{"meter":{},"meter-fill":{},"meter-output":{},"meter-track":{},"root":{},},});
+const recipeDefinition = {component:"meter",slots:{"meter":{},"meter-fill":{},"meter-output":{},"meter-track":{},"root":{},},} as const;
+export const componentRecipe: Recipe<typeof recipeDefinition> = recipe(recipeDefinition);

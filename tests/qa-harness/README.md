@@ -49,11 +49,17 @@ cargo build --release --manifest-path ../chuzz/Cargo.toml --bin chuzz-headless \
 QA_HOST=../chuzz/target/release/chuzz-headless bash tests/qa-harness/run-all.sh
 ```
 
-`QA_PS_QA` does the same for a local ps-qa. The harness takes ps-qa `^0.7.3`: a
-driver older than 0.7.3 is refused as stale, and any later 0.7 patch runs. The script
-refuses stale bundles unless `QA_ALLOW_STALE=1` is explicitly set. Linux rendered
-QA needs fontconfig development files and an installed font such as DejaVu;
-the shared CI host action installs both. Release verification uses `QA_PROFILE=full`.
+`QA_PS_QA` selects ps-qa 0.9.8 or 0.9.9. Use a host that speaks debug protocol 2.
+CI pins ps-qa 0.9.8 and the Chuzz 0.1.46 headless archive. The driver validates
+the check manifest before the sweep and checks each host's descriptor protocol
+before connecting. The script refuses stale bundles unless `QA_ALLOW_STALE=1`
+is explicitly set. Linux rendered QA needs fontconfig and an installed font
+such as DejaVu, both installed by CI. Release verification uses `QA_PROFILE=full`.
+
+The wrapper adds the resolved QA build directory to Chuzz's `CHUZZ_READ_DIRS`.
+ps-qa selects one HTML file at a time, and Chuzz also needs read access to
+the scripts and styles alongside it. The server still serves only the build
+directory.
 
 The sweep uses one clean headless host per component and runs that component's
 outcomes in sequence. `prepare_unless` makes setup idempotent, so the same check

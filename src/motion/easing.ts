@@ -5,7 +5,7 @@ const easeInCubic = (t: number) => t * t * t;
 const easeInOutCubic = (t: number) =>
   t < 0.5 ? 4 * t * t * t : 1 - (-2 * t + 2) ** 3 / 2;
 
-export const resolveEase = (easing?: MotionEasing) => {
+export const resolveEase = (easing?: MotionEasing): ((t: number) => number) => {
   if (typeof easing === "function") return easing;
   switch (easing) {
     case "ease-in":

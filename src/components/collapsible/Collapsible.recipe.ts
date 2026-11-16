@@ -1,4 +1,4 @@
-import { recipe } from "../../lib/layouts";
+import { type Recipe, recipe } from "../../lib/layouts";
 export const CLASSES = {
   base: "collapsible",
   slot: {
@@ -14,4 +14,5 @@ export const CLASSES = {
     disabled: "collapsible--disabled",
   },
 } as const;
-export const componentRecipe = recipe({component:"collapsible",slots:{"collapsible":{},"collapsible-body":{},"collapsible-body-inner":{},"collapsible-content":{},"collapsible-heading":{},"collapsible-indicator":{},"collapsible-trigger":{},"root":{},},});
+const recipeDefinition = {component:"collapsible",slots:{"collapsible":{},"collapsible-body":{},"collapsible-body-inner":{},"collapsible-content":{},"collapsible-heading":{},"collapsible-indicator":{},"collapsible-trigger":{},"root":{},},} as const;
+export const componentRecipe: Recipe<typeof recipeDefinition> = recipe(recipeDefinition);

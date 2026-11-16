@@ -9,8 +9,9 @@
  *      (The README told people to import a compat stylesheet that does not exist.)
  *
  * Run: bun run check:package
+ *      PACKAGE_TARBALL=/path/to/pkg.tgz bun run check:package
  */
-import { execSync } from "node:child_process";
+import { execFileSync, execSync } from "node:child_process";
 import { existsSync, readFileSync, rmSync } from "node:fs";
 
 type Failure = { rule: string; detail: string };
@@ -20,33 +21,14 @@ const failures: Failure[] = [];
 
 const pkgJson = JSON.parse(readFileSync("package.json", "utf8"));
 
-/**
- * `npm pack --json` output shape is not stable across npm versions, and under
- * `--silent` npm 11 prints nothing at all. Derive the name ourselves — npm drops
- * the leading `@` and turns `/` into `-` — and only fall back to parsing stdout.
- */
-const packTarball = (): string => {
-  const expected = `${String(pkgJson.name).replace(/^@/, "").replace(/\//g, "-")}-${pkgJson.version}.tgz`;
-  const stdout = execSync("npm pack --silent", { encoding: "utf8" });
-  if (existsSync(expected)) return expected;
-
-  const printed = stdout
-    .split("\n")
-    .map((l) => l.trim())
-    .filter((l) => l.endsWith(".tgz"))
-    .pop();
-  if (printed && existsSync(printed)) return printed;
-
-  throw new Error(
-    `npm pack produced no tarball (expected ${expected}); stdout was: ${JSON.stringify(stdout)}`,
-  );
-};
-
-const tarball = packTarball();
+const suppliedTarball = process.env.PACKAGE_TARBALL;
+const tarball =
+  suppliedTarball ?? execSync("bun pm pack --quiet", { encoding: "utf8" }).trim();
+if (!tarball || !existsSync(tarball)) throw new Error(`Tarball not found: ${tarball}`);
 
 // Paths inside the tarball are prefixed with `package/`.
 const entries = new Set(
-  execSync(`tar tzf ${tarball}`, { encoding: "utf8" })
+  execFileSync("tar", ["tzf", tarball], { encoding: "utf8" })
     .split("\n")
     .filter(Boolean)
     .map((l) => l.replace(/^package\//, "").replace(/\/$/, "")),
@@ -66,11 +48,15 @@ if (!shipped("dist/responsive-classes.txt")) {
  * Note `*` in an `exports` target matches across path segments — it is not a
  * single-segment glob — so it maps to `.+`, not `[^/]+`.
  */
-const shippedGlob = (pattern: string) => {
+const targetPattern = (pattern: string, wildcard = ".+") => {
   const rel = pattern.replace(/^\.\//, "");
-  const rx = new RegExp(
-    `^${rel.split("*").map((s) => s.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")).join(".+")}$`,
-  );
+  const escaped = rel.split("*")
+    .map((segment) => segment.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"));
+  return new RegExp(`^${escaped.join(wildcard)}$`);
+};
+
+const shippedGlob = (pattern: string) => {
+  const rx = targetPattern(pattern);
   for (const e of entries) if (rx.test(e)) return true;
   return false;
 };
@@ -97,6 +83,34 @@ for (const [subpath, value] of Object.entries(pkg.exports ?? {})) {
         missing.length > 1 ? "are" : "is"
       } not in the tarball`,
     });
+  }
+}
+
+// Match each shipped JavaScript subpath against its own declaration. Merely
+// finding one .d.ts for a wildcard can hide missing declarations elsewhere.
+for (const [subpath, value] of Object.entries(pkg.exports ?? {})) {
+  if (!subpath.includes("*") || !value || typeof value !== "object") continue;
+  const { types, import: runtime } = value as Record<string, unknown>;
+  if (
+    typeof types !== "string" ||
+    typeof runtime !== "string" ||
+    !types.includes("*") ||
+    runtime.split("*").length !== 2
+  ) {
+    continue;
+  }
+
+  const runtimePattern = targetPattern(runtime, "(.+)");
+  for (const entry of entries) {
+    const wildcard = runtimePattern.exec(entry)?.[1];
+    if (!wildcard) continue;
+    const declaration = types.replaceAll("*", () => wildcard);
+    if (!shipped(declaration)) {
+      failures.push({
+        rule: "runtime subpath has no declaration",
+        detail: `${subpath.replace("*", () => wildcard)} ships ${entry} but is missing ${declaration}`,
+      });
+    }
   }
 }
 
@@ -160,7 +174,7 @@ if (existsSync("README.md")) {
 
 // ---------------------------------------------------------------- report
 
-rmSync(tarball, { force: true });
+if (suppliedTarball === undefined) rmSync(tarball, { force: true });
 
 if (failures.length > 0) {
   console.error(`\n✖ package check failed — ${failures.length} problem(s)\n`);

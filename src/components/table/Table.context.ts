@@ -1,5 +1,5 @@
 import type { JSX } from "@solidjs/web";
-import { type Accessor, createContext, useContext } from "solid-js";
+import { type Accessor, type Context, createContext, useContext } from "solid-js";
 
 export type TableVariant = "primary" | "secondary";
 export type TableSortDirection = "ascending" | "descending";
@@ -28,7 +28,7 @@ export type TableContextValue = {
  * so a table part used outside its root would crash instead of rendering
  * plainly. Both readers below already carried these exact fallbacks inline.
  */
-export const TableContext = createContext<TableContextValue>({
+export const TableContext: Context<TableContextValue> = createContext<TableContextValue>({
   variant: () => "primary",
 });
 
@@ -37,7 +37,7 @@ export type TableContentContextValue = {
   onSortChange?: (descriptor: TableSortDescriptor) => void;
 };
 
-export const TableContentContext = createContext<TableContentContextValue>({
+export const TableContentContext: Context<TableContentContextValue> = createContext<TableContentContextValue>({
   sortDescriptor: () => undefined,
 });
 
@@ -49,7 +49,7 @@ export const useTableContentContext = (): TableContentContextValue =>
 
 /* A JSX event prop is either the handler or a `[handler, data]` pair; Solid
    accepts both and a Layout that wraps one has to unwrap it by hand. */
-export const invokeEventHandler = (handler: unknown, event: Event) => {
+export const invokeEventHandler = (handler: unknown, event: Event): void => {
   if (typeof handler === "function") {
     (handler as (event: Event) => void)(event);
     return;

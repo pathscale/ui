@@ -1,4 +1,4 @@
-import { recipe } from "../../lib/layouts";
+import { type Recipe, recipe } from "../../lib/layouts";
 export const CLASSES = {
   base: "empty",
   slot: {
@@ -8,4 +8,5 @@ export const CLASSES = {
     actions: "empty__actions",
   },
 } as const;
-export const componentRecipe = recipe({component:"empty",slots:{"empty":{},"empty-actions":{},"empty-description":{},"empty-icon":{},"empty-title":{},"root":{},},});
+const recipeDefinition = {component:"empty",slots:{"empty":{},"empty-actions":{},"empty-description":{},"empty-icon":{},"empty-title":{},"root":{},},} as const;
+export const componentRecipe: Recipe<typeof recipeDefinition> = recipe(recipeDefinition);

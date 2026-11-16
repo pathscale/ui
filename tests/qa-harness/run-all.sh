@@ -45,49 +45,33 @@ readonly HOST="${QA_HOST:-$(command -v chuzz-headless || true)}"
 readonly PS_QA="${QA_PS_QA:-$(command -v ps-qa || true)}"
 
 if [[ -z "$PS_QA" || ! -x "$PS_QA" ]]; then
-  echo "ps-qa is not on PATH; cargo install ps-qa" >&2
+  echo "set QA_PS_QA or put ps-qa 0.9.8 or 0.9.9 on PATH" >&2
   exit 1
 fi
 
 if [[ -z "$HOST" || ! -x "$HOST" ]]; then
   echo "chuzz-headless is not on PATH; build it from a chuzz checkout:" >&2
-  echo "  cargo build --release --manifest-path ../chuzz/Cargo.toml --bin chuzz-headless" >&2
-  echo "  (then set QA_HOST to it, which is also what CI does)" >&2
+  echo "  See tests/qa-harness/README.md for the debug protocol 2 host build." >&2
   exit 1
 fi
 
-# The driver's floor, and the reason it is asserted rather than assumed.
-#
-# `command -v ps-qa` finds whatever `cargo install` left in ~/.cargo/bin,
-# which can be months old, and an old driver does not fail loudly. It reports
-# component failures that are its own: a startup `console.log` read as the
-# descriptor path (ThemeColorPicker logs one about CSP), and `QA_TIMEOUT_SCALE`
-# ignored entirely. Measured: three components "failed" against a driver eight
-# days stale, and all three passed the moment the current one ran.
-#
-# The driver and host use the shared control protocol from 0.7.3, so the floor
-# is that release and the range is its caret: any later 0.7.x. A driver older
-# than the floor is the stale one this check exists to catch; a newer patch is
-# what `cargo install ps-qa --version "^0.7"` gives CI, and refusing it failed
-# every run the day 0.7.4 was published.
-readonly PS_QA_MIN="0.7.3"
-ps_qa_version="$("$PS_QA" --version 2>/dev/null | awk '{ print $2 }')"
-if [[ -z "$ps_qa_version" ]]; then
-  echo "$PS_QA does not report a version; it is too old to sweep with" >&2
+# These releases accept the sweep arguments and enforce debug protocol 2
+# when they read the host's descriptor. The driver version is not the wire version.
+if ! driver_version="$("$PS_QA" --version)"; then
+  echo "could not read the ps-qa version from $PS_QA" >&2
   exit 1
 fi
-IFS=. read -r qa_major qa_minor qa_patch <<<"${ps_qa_version%%[-+]*}"
-IFS=. read -r min_major min_minor min_patch <<<"$PS_QA_MIN"
-if [[ "$qa_major" != "$min_major" || "$qa_minor" != "$min_minor" || "$qa_patch" -lt "$min_patch" ]]; then
-  echo "ps-qa $ps_qa_version is outside ^$PS_QA_MIN, which this harness requires." >&2
-  echo "  cargo install ps-qa --version '^$PS_QA_MIN'" >&2
-  echo "  (or set QA_PS_QA to a build, which is what to do when changing the driver)" >&2
-  exit 1
-fi
+case "$driver_version" in
+  "ps-qa 0.9.8"|"ps-qa 0.9.9") ;;
+  *)
+    echo "$PS_QA reported '$driver_version'; use ps-qa 0.9.8 or 0.9.9 (QA_PS_QA)." >&2
+    exit 1
+    ;;
+esac
 
 # Say which two binaries produced the verdicts. Every wrong result this harness
 # has reported came from one of them not being the one under test.
-echo "sweeping with ps-qa $ps_qa_version at $PS_QA"
+echo "sweeping with $driver_version at $PS_QA"
 echo "           and host $HOST"
 
 ids=()
@@ -110,15 +94,20 @@ fi
 #
 # Comparing timestamps rather than rebuilding: a rebuild is a minute for 71
 # pages, and doing it silently on every run would hide which source changed.
-if [[ ! -d "$HERE/dist" ]]; then
+if ! dists="$(cd -- "$HERE/dist" 2>/dev/null && pwd -P)"; then
   echo "no build at $HERE/dist; run: bun run qa:build" >&2
+  exit 1
+fi
+# Chuzz splits CHUZZ_READ_DIRS on colons on Unix. Refuse an ambiguous root.
+if [[ "$dists" == *:* ]]; then
+  echo "QA build path cannot contain a colon: $dists" >&2
   exit 1
 fi
 
 # The bundles, not a page: rsbuild emits `<id>.html` per component and no
 # `index.html`, so there is no single file that stands for the whole build.
 # Any built script is younger than the compile that produced it.
-reference="$(ls -t "$HERE/dist/static/js/"*.js 2>/dev/null | head -1)"
+reference="$(ls -t "$dists/static/js/"*.js 2>/dev/null | head -1)"
 if [[ -z "$reference" ]]; then
   echo "no bundles under $HERE/dist/static/js; run: bun run qa:build" >&2
   exit 1
@@ -149,12 +138,8 @@ fi
 # beside `button.js`, and both the sweep and the host take a page directly, so
 # there is nothing to copy anywhere first.
 
-# `--app` is not optional here. Every check resolves through the profile,
-# and without one ps-qa panics rather than guessing at an application it
-# knows nothing about.
-# `--checks` is still passed, but at the standard location rather than a
-# project-specific one: ps-qa resolves its default `tests/ps-qa` against the
-# working directory, and this script runs from wherever it was invoked.
+# The driver validates the app profile before launching any host. Pass both
+# paths explicitly so the checks and profile are independent of the caller's cwd.
 # Keep local runs on ps-qa's strict scale of 1. An overloaded CI runner may
 # opt into a visible multiplier without changing any rendered-state verdict.
 readonly TIMEOUT_SCALE="${QA_TIMEOUT_SCALE:-1}"
@@ -187,13 +172,24 @@ case "$PROFILE" in
 esac
 readonly checks
 
+# QA_PROFILE selects both the manifest and driver mode.
+unset PS_QA_HEADLESS
+# Parse and validate the entire selected manifest before starting any browser.
+if ! "$PS_QA" list --checks "$checks" >/dev/null; then
+  echo "ps-qa could not validate the $PROFILE check manifest at $checks" >&2
+  exit 1
+fi
+
+# ps-qa passes one HTML file in QA_INSPECT_PAGE. Admit its build tree so
+# Chuzz can read the JS and CSS it serves alongside that page.
+export CHUZZ_READ_DIRS="$dists${CHUZZ_READ_DIRS:+:$CHUZZ_READ_DIRS}"
 exec "$PS_QA" \
   --app "$HERE/ps-qa.ron" \
   --timeout-scale "$TIMEOUT_SCALE" \
   ${target_flag:+$target_flag} \
   sweep-components \
   --host "$HOST" \
-  --dists "$HERE/dist" \
+  --dists "$dists" \
   --checks "$checks" \
   --mode sweep \
   "${ids[@]}"

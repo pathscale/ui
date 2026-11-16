@@ -36,7 +36,7 @@ const MenuSectionRoot: Layout<typeof componentRecipe, MenuSectionRootProps> = ()
   );
 };
 
-const MenuSection = MenuSectionRoot;
+const MenuSection: typeof MenuSectionRoot = MenuSectionRoot;
 
 export default MenuSection;
 export { MenuSection, MenuSectionRoot };

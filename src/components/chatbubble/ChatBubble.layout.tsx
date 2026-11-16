@@ -41,10 +41,18 @@ const ChatBubble: Layout<typeof componentRecipe, ChatBubbleProps> = () => {
   );
 };
 
-export default Object.assign(ChatBubble, {
+const ChatBubbleCompound: typeof ChatBubble & {
+  Header: typeof ChatBubbleHeader;
+  Time: typeof ChatBubbleTime;
+  Avatar: typeof ChatBubbleAvatar;
+  Message: typeof ChatBubbleMessage;
+  Footer: typeof ChatBubbleFooter;
+} = Object.assign(ChatBubble, {
   Header: ChatBubbleHeader,
   Time: ChatBubbleTime,
   Avatar: ChatBubbleAvatar,
   Message: ChatBubbleMessage,
   Footer: ChatBubbleFooter,
 });
+
+export default ChatBubbleCompound;
