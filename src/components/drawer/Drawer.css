@@ -56,6 +56,11 @@
     transition-duration: 200ms;
   }
 
+  /* Settled: the fade has had its full duration; see the panel rule below. */
+  .drawer__backdrop[data-settled="true"] {
+    transition: none;
+  }
+
   .drawer__backdrop--opaque {
     background-color: color-mix(
       in oklab,
@@ -333,6 +338,16 @@
   .drawer__content--bottom[data-entering="true"] .drawer__dialog,
   .drawer__content--bottom[data-exiting="true"] .drawer__dialog {
     translate: 0 100%;
+  }
+
+  /*
+   * Settled: the slide in has had its full duration. Dropping the transition
+   * cancels one the host never advanced, so the open position does not depend
+   * on a frame clock; in a browser the slide has already finished. `exiting`
+   * clears the attribute in the same update, so the exit still slides.
+   */
+  .drawer__content[data-settled="true"] .drawer__dialog {
+    transition: none;
   }
 
   @media (prefers-reduced-motion: reduce) {

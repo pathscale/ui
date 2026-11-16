@@ -1,5 +1,5 @@
 import "./Drawer.css";
-import {Show, createSignal, createTrackedEffect, createUniqueId, onCleanup, omit, type Component, type ParentComponent, type ValidComponent} from "solid-js";
+import {Show, children as resolveChildren, createMemo, createSignal, createTrackedEffect, createUniqueId, onCleanup, omit, type Component, type ParentComponent, type ValidComponent} from "solid-js";
 import { Dynamic, Portal, type JSX} from "@solidjs/web";
 import { twMerge } from "../../lib/twMerge";
 import { lockBodyScroll, registerOverlay } from "../../lib/overlay";
@@ -161,6 +161,8 @@ export type DrawerCloseProps = {
 
 /* ---------------------------------- root --------------------------------- */
 
+// Mirror `--drawer-enter-duration` and `--drawer-exit-duration` in Drawer.css.
+const ENTER_MS = 250;
 const EXIT_MS = 200;
 
 const DrawerRoot: Layout<typeof componentRecipe, DrawerRootProps> = () => {
@@ -282,6 +284,30 @@ const DrawerRoot: Layout<typeof componentRecipe, DrawerRootProps> = () => {
     if (exitTimer) clearTimeout(exitTimer);
   });
 
+  /*
+   * The slide in is a CSS transition, and a transition only moves when the
+   * host samples its animation clock. A windowed browser does that every
+   * frame. A headless native host may only do it when something restyles,
+   * and nothing restyles an open drawer, so content mounted at the start of
+   * `entering` stayed one sample into its slide, almost entirely outside the
+   * viewport. Once the slide has had its full duration the drawer is marked
+   * settled: that restyles it and drops the transition, so the panel stands
+   * at its open position whether or not a frame clock ever ran. In a browser
+   * the slide has already finished by then.
+   */
+  const [enterElapsed, setEnterElapsed] = createSignal(animState() === "open");
+  createTrackedEffect(() => {
+    if (animState() !== "open") {
+      setEnterElapsed(false);
+      return;
+    }
+    const timer = setTimeout(() => setEnterElapsed(true), ENTER_MS);
+    return () => clearTimeout(timer);
+  });
+  // Derived rather than stored: the frame that starts `exiting` must already
+  // have its transition back, or the exit would jump instead of slide.
+  const settled = () => animState() === "open" && enterElapsed();
+
   let releaseScrollLock: (() => void) | undefined;
   createTrackedEffect(() => {
     const visible = isVisibleState(animState());
@@ -299,14 +325,22 @@ const DrawerRoot: Layout<typeof componentRecipe, DrawerRootProps> = () => {
   });
 
   let restoreFocusTarget: HTMLElement | null = null;
+  const setRestoreFocusTarget = (node: HTMLElement | undefined) => {
+    if (node) restoreFocusTarget = node;
+  };
   createTrackedEffect(() => {
     const state = animState();
     const dialog = dialogRef();
     if (!isVisibleState(state) || !dialog) return;
 
+    // Fallback for drawers opened without Drawer.Trigger. Body is what the
+    // active element reads as when the opener was clicked but not focused;
+    // returning focus there is no return at all.
     if (!restoreFocusTarget) {
       const active = document.activeElement;
-      if (active instanceof HTMLElement) restoreFocusTarget = active;
+      if (active instanceof HTMLElement && active !== document.body) {
+        restoreFocusTarget = active;
+      }
     }
 
     queueMicrotask(() => {
@@ -354,6 +388,7 @@ const DrawerRoot: Layout<typeof componentRecipe, DrawerRootProps> = () => {
     setIsOpen,
     requestClose,
     animState,
+    settled,
     placement,
     size,
     backdrop,
@@ -363,6 +398,7 @@ const DrawerRoot: Layout<typeof componentRecipe, DrawerRootProps> = () => {
     shouldCloseOnBackdropClick,
     trapFocus: trapFocusEnabled,
     restoreFocus: restoreFocusEnabled,
+    setRestoreFocusTarget,
     dialogRef,
     setDialogRef,
     labelledBy,
@@ -411,6 +447,9 @@ const DrawerTrigger: Layout<typeof componentRecipe, DrawerTriggerProps> = () => 
   const ctx = useDrawerContext();
 
   const handleClick: JSX.EventHandlerUnion<HTMLButtonElement, MouseEvent> = (event) => {
+    if (event.currentTarget instanceof HTMLElement) {
+      ctx.setRestoreFocusTarget(event.currentTarget);
+    }
     ctx.setIsOpen(true);
     if (typeof props.onClick === "function") props.onClick(event);
   };
@@ -475,29 +514,40 @@ const DrawerContent: Layout<typeof componentRecipe, DrawerContentProps> = () => 
     return () => ctx.setPlacementOverride(undefined);
   });
 
+  /*
+   * Gated exactly like the backdrop. Content written beside `Drawer.Backdrop`
+   * rather than inside it used to stay mounted after the exit animation, with
+   * nothing translating it away, so every control in a closed drawer was still
+   * in the accessibility tree and still focusable. It stays mounted through
+   * `exiting`, so the exit animation runs, and leaves once the drawer is
+   * `closed`.
+   */
   return (
-    <div
-      {...others}
-      class={twMerge(
-        CLASSES.Content.base,
-        CLASSES.Content.placement[placement()],
-        CLASSES.Content.scroll[scrollBehavior()],
-        ctx.animState() === "entering" && CLASSES.Content.state.entering,
-        ctx.animState() === "exiting" && CLASSES.Content.state.exiting,
-        props.class,
-      )}
-      data-slot="drawer-content"
-      data-material={props.material ?? "solid"}
-      data-material-explicit={props.material ? "" : undefined}
-      data-placement={placement()}
-      data-scroll={scrollBehavior()}
-      data-entering={ctx.animState() === "entering" ? "true" : undefined}
-      data-exiting={ctx.animState() === "exiting" ? "true" : undefined}
-      data-theme={props.dataTheme}
-      style={props.style}
-    >
-      {props.children}
-    </div>
+    <Show when={ctx.animState() !== "closed"}>
+      <div
+        {...others}
+        class={twMerge(
+          CLASSES.Content.base,
+          CLASSES.Content.placement[placement()],
+          CLASSES.Content.scroll[scrollBehavior()],
+          ctx.animState() === "entering" && CLASSES.Content.state.entering,
+          ctx.animState() === "exiting" && CLASSES.Content.state.exiting,
+          props.class,
+        )}
+        data-slot="drawer-content"
+        data-material={props.material ?? "solid"}
+        data-material-explicit={props.material ? "" : undefined}
+        data-placement={placement()}
+        data-scroll={scrollBehavior()}
+        data-entering={ctx.animState() === "entering" ? "true" : undefined}
+        data-exiting={ctx.animState() === "exiting" ? "true" : undefined}
+        data-settled={ctx.settled() ? "true" : undefined}
+        data-theme={props.dataTheme}
+        style={props.style}
+      >
+        {props.children}
+      </div>
+    </Show>
   );
 };
 
@@ -551,6 +601,7 @@ const DrawerBackdrop: Layout<typeof componentRecipe, DrawerBackdropProps> = () =
           data-slot="drawer-backdrop"
           data-entering={ctx.animState() === "entering" ? "true" : undefined}
           data-exiting={ctx.animState() === "exiting" ? "true" : undefined}
+          data-settled={ctx.settled() ? "true" : undefined}
           data-theme={props.dataTheme}
           style={props.style}
           onClick={handleClick}
@@ -609,10 +660,19 @@ const DrawerDialog: Layout<typeof componentRecipe, DrawerDialogProps> = () => {
   const hasCustomPadding = () => Boolean(props.padding);
   const hasCustomBg = () => Boolean(props.bg);
 
+  // The dialog unmounts with a closed drawer; a stale ref would make the next
+  // open register its overlay and move focus against the detached node.
+  let dialogNode: HTMLDivElement | undefined;
+  onCleanup(() => {
+    if (dialogNode && ctx.dialogRef() === dialogNode) ctx.setDialogRef(undefined);
+    dialogNode = undefined;
+  });
+
   return (
     <div
       {...others}
       ref={(node) => {
+        dialogNode = node;
         ctx.setDialogRef(node);
         if (typeof props.ref === "function") props.ref(node);
       }}
@@ -764,6 +824,22 @@ const DrawerCloseTrigger: Layout<typeof componentRecipe, DrawerCloseTriggerProps
 
   const ctx = useDrawerContext();
 
+  /*
+   * "Close" names a trigger that has nothing else to be named by: no children,
+   * or only an icon. Written over a visible label it replaced that label, so
+   * `<Drawer.CloseTrigger>Close drawer</Drawer.CloseTrigger>` was announced
+   * and addressed as "Close" and nothing named "Close drawer" existed.
+   */
+  const resolvedChildren = resolveChildren(() => props.children);
+  const hasTextLabel = createMemo(() =>
+    resolvedChildren.toArray().some((child) => {
+      if (typeof child === "string" || typeof child === "number") {
+        return String(child).trim() !== "";
+      }
+      return typeof Node !== "undefined" && child instanceof Node && Boolean(child.textContent?.trim());
+    }),
+  );
+
   const handleClick: JSX.EventHandlerUnion<HTMLButtonElement, MouseEvent> = (event) => {
     ctx.requestClose("trigger");
     if (typeof props.onClick === "function") props.onClick(event);
@@ -773,7 +849,7 @@ const DrawerCloseTrigger: Layout<typeof componentRecipe, DrawerCloseTriggerProps
     <button
       {...others}
       type="button"
-      aria-label={local["aria-label"] ?? "Close"}
+      aria-label={local["aria-label"] ?? (hasTextLabel() ? undefined : "Close")}
       class={twMerge(CLASSES.CloseTrigger.base, props.class)}
       data-slot="drawer-close-trigger"
       data-theme={props.dataTheme}
@@ -785,7 +861,7 @@ const DrawerCloseTrigger: Layout<typeof componentRecipe, DrawerCloseTriggerProps
           {props.startIcon}
         </span>
       ) : null}
-      {props.children}
+      {resolvedChildren()}
       {props.endIcon ? (
         <span class={twMerge(CLASSES.CloseTrigger.icon, CLASSES.CloseTrigger.iconEnd)}>
           {props.endIcon}

@@ -13,6 +13,8 @@ export type DrawerContextValue = {
   setIsOpen: (next: boolean) => void;
   requestClose: (reason: DrawerCloseReason) => void;
   animState: () => DrawerAnimState;
+  /** The drawer is open and its enter slide has had its full duration. */
+  settled: () => boolean;
   placement: () => DrawerPlacement;
   size: () => DrawerSize;
   backdrop: () => DrawerBackdropVariant;
@@ -22,6 +24,12 @@ export type DrawerContextValue = {
   shouldCloseOnBackdropClick: () => boolean;
   trapFocus: () => boolean;
   restoreFocus: () => boolean;
+  /**
+   * Records the element that opened the drawer so closing returns focus to
+   * it. A clicked button is not focused in every host, so the active element
+   * at open time is not a reliable stand-in for the opener.
+   */
+  setRestoreFocusTarget: (node: HTMLElement | undefined) => void;
   dialogRef: () => HTMLDivElement | undefined;
   setDialogRef: (node: HTMLDivElement | undefined) => void;
   labelledBy: () => string | undefined;
