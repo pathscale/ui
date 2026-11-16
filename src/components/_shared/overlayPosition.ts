@@ -98,11 +98,11 @@ const round = (value: number) => Math.round(value * 100) / 100;
 export const resolveOverlayAnchorRect = (
   trigger: Pick<HTMLElement, "getBoundingClientRect"> | undefined,
   anchorRect: OverlayAnchorRect | undefined,
-) => anchorRect ?? trigger?.getBoundingClientRect();
+): OverlayAnchorRect | DOMRect | undefined => anchorRect ?? trigger?.getBoundingClientRect();
 
 export const createOverlayPosition = (
   options: CreateOverlayPositionOptions,
-) => {
+): { style: Accessor<JSX.CSSProperties>; placement: Accessor<OverlayPlacement> } => {
   // Visibility belongs to each overlay component's `data-open` CSS contract.
   // Positioning must never write an inline visibility override: portal refs can
   // settle after the open signal, and an override left behind here makes a

@@ -27,10 +27,13 @@ const createPalette = (mode: ColorWheelFlowerMode): readonly string[] => {
  * Default literal palettes. Dark mode stays dark-oriented; light mode uses
  * the same hue positions at materially lighter levels.
  */
-export const COLOR_WHEEL_FLOWER_PALETTES = {
+export const COLOR_WHEEL_FLOWER_PALETTES: Record<
+  ColorWheelFlowerMode,
+  readonly string[]
+> = {
   light: createPalette("light"),
   dark: createPalette("dark"),
-} satisfies Record<ColorWheelFlowerMode, readonly string[]>;
+};
 
 export function resolveColorWheelFlowerPalette(
   mode: ColorWheelFlowerMode,

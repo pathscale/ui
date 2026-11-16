@@ -1,4 +1,4 @@
-import { recipe } from "../../lib/layouts";
+import { type Recipe, recipe } from "../../lib/layouts";
 
 /**
  * Presentation, owned here rather than assembled in the component.
@@ -14,7 +14,7 @@ import { recipe } from "../../lib/layouts";
  * the compiler mirrors it to `data-disabled`, which is what the component was
  * already setting by hand alongside the class.
  */
-export const componentRecipe = recipe({
+const recipeDefinition = {
   component: "switch",
   element: "label",
   slots: {
@@ -69,4 +69,6 @@ export const componentRecipe = recipe({
     flavor: "accent",
     size: "md",
   },
-});
+} as const;
+
+export const componentRecipe: Recipe<typeof recipeDefinition> = recipe(recipeDefinition);

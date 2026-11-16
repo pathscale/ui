@@ -1,6 +1,6 @@
-import { recipe } from "../../lib/layouts";
+import { type Recipe, recipe } from "../../lib/layouts";
 
-export const complexColorWheel = recipe({
+const complexColorWheelDefinition = {
   component: "complex-color-wheel",
   slots: {
     root: { base: "complex-color-wheel" },
@@ -33,4 +33,7 @@ export const complexColorWheel = recipe({
     },
   },
   defaults: { layout: "auto" },
-});
+} as const;
+
+export const complexColorWheel: Recipe<typeof complexColorWheelDefinition> =
+  recipe(complexColorWheelDefinition);

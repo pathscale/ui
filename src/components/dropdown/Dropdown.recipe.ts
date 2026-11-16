@@ -1,4 +1,4 @@
-import { recipe } from "../../lib/layouts";
+import { type Recipe, recipe } from "../../lib/layouts";
 export const CLASSES = {
   // `ui-overlay-host` is the shared containing block every non-portaled overlay
   // needs; see `_shared/overlayHost.css`. Without it the fixed menu paints
@@ -13,4 +13,5 @@ export const CLASSES = {
     separator: "dropdown__separator",
   },
 } as const;
-export const componentRecipe = recipe({component:"dropdown",slots:{"dropdown":{},"dropdown-group":{},"dropdown-menu":{},"dropdown-popover":{},"dropdown-trigger":{},"menu-item":{},"root":{},"separator":{},},});
+const recipeDefinition = {component:"dropdown",slots:{"dropdown":{},"dropdown-group":{},"dropdown-menu":{},"dropdown-popover":{},"dropdown-trigger":{},"menu-item":{},"root":{},"separator":{},},} as const;
+export const componentRecipe: Recipe<typeof recipeDefinition> = recipe(recipeDefinition);

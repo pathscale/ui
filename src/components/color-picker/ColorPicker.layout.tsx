@@ -405,7 +405,12 @@ const ColorPickerRoot: Layout<typeof componentRecipe, ColorPickerProps> = () => 
   );
 };
 
-const ColorPicker = Object.assign(ColorPickerRoot, {
+const ColorPicker: typeof ColorPickerRoot & {
+  Root: typeof ColorPickerRoot;
+  Area: typeof ColorPickerArea;
+  Slider: typeof ColorPickerSlider;
+  Field: typeof ColorPickerField;
+} = Object.assign(ColorPickerRoot, {
   Root: ColorPickerRoot,
   Area: ColorPickerArea,
   Slider: ColorPickerSlider,

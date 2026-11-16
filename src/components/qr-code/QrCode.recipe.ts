@@ -1,6 +1,6 @@
-import { recipe } from "../../lib/layouts";
+import { type Recipe, recipe } from "../../lib/layouts";
 
-export const componentRecipe = recipe({
+const recipeDefinition = {
   component: "qr-code",
   element: "svg",
   slots: {
@@ -9,4 +9,6 @@ export const componentRecipe = recipe({
     "qr-code": {},
     "qr-code-modules": {},
   },
-});
+} as const;
+
+export const componentRecipe: Recipe<typeof recipeDefinition> = recipe(recipeDefinition);

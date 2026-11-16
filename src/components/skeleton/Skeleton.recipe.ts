@@ -1,11 +1,11 @@
-import { recipe } from "../../lib/layouts";
+import { type Recipe, recipe } from "../../lib/layouts";
 
 /**
  * Skeleton had no API at all: 340 call sites across 3 apps, every one styled
  * by `class`, and not one declared parameter ever passed anywhere in the
  * fleet. Its size and shape are the whole point of it, and it had neither.
  */
-export const skeleton = recipe({
+const skeletonDefinition = {
   component: "skeleton",
   element: "div",
   slots: {
@@ -45,4 +45,6 @@ export const skeleton = recipe({
     },
   },
   defaults: { shape: "line", width: "full", size: "md", radius: "sm", animation: "shimmer" },
-});
+} as const;
+
+export const skeleton: Recipe<typeof skeletonDefinition> = recipe(skeletonDefinition);

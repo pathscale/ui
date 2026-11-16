@@ -374,7 +374,11 @@ const MenuItemSubmenuIndicator: Layout<typeof componentRecipe, MenuItemSubmenuIn
   );
 };
 
-const MenuItem = Object.assign(MenuItemRoot, {
+const MenuItem: typeof MenuItemRoot & {
+  Root: typeof MenuItemRoot;
+  Indicator: typeof MenuItemIndicator;
+  SubmenuIndicator: typeof MenuItemSubmenuIndicator;
+} = Object.assign(MenuItemRoot, {
   Root: MenuItemRoot,
   Indicator: MenuItemIndicator,
   SubmenuIndicator: MenuItemSubmenuIndicator,

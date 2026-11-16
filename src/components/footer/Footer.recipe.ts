@@ -1,4 +1,4 @@
-import { recipe } from "../../lib/layouts";
+import { type Recipe, recipe } from "../../lib/layouts";
 export const CLASSES = {
   base: "footer",
   title: "footer__title",
@@ -8,4 +8,5 @@ export const CLASSES = {
     vertical: "footer--vertical",
   },
 } as const;
-export const componentRecipe = recipe({component:"footer",slots:{"root":{},},});
+const recipeDefinition = {component:"footer",slots:{"root":{},},} as const;
+export const componentRecipe: Recipe<typeof recipeDefinition> = recipe(recipeDefinition);

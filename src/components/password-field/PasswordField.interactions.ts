@@ -49,12 +49,27 @@ export type PasswordFieldInputContractParams = {
   isVisible: boolean;
 };
 
-export const getPasswordInputType = (isVisible: boolean) =>
+export const getPasswordInputType = (isVisible: boolean): "text" | "password" =>
   isVisible ? "text" : "password";
 
 export const createPasswordFieldInputContract = (
   params: PasswordFieldInputContractParams,
-) => ({
+): {
+  id: string | undefined;
+  name: string | undefined;
+  label: JSX.Element | undefined;
+  type: "text" | "password";
+  placeholder: string | undefined;
+  required: boolean | undefined;
+  autofocus: boolean | undefined;
+  autocomplete: PasswordFieldInputContractParams["autocomplete"];
+  "aria-describedby": string | undefined;
+  value: string | undefined;
+  disabled: boolean;
+  state: "invalid" | undefined;
+  startIcon: JSX.Element | undefined;
+  class: string;
+} => ({
   id: params.id,
   name: params.name,
   label: params.label,
@@ -95,7 +110,7 @@ export const selectPasswordToggleIcon = (
   visibleIcon: JSX.Element | undefined,
   hiddenIcon: JSX.Element | undefined,
   fallback: JSX.Element,
-) => (isVisible ? visibleIcon : hiddenIcon) ?? fallback;
+): JSX.Element => (isVisible ? visibleIcon : hiddenIcon) ?? fallback;
 
 export const capturePasswordToggleSnapshot = (
   field: PasswordFieldLike | undefined,
@@ -113,7 +128,7 @@ export const capturePasswordToggleSnapshot = (
 export const restorePasswordFieldAfterToggle = (
   field: PasswordFieldLike | undefined,
   snapshot: PasswordToggleSnapshot,
-) => {
+): void => {
   if (!field) return;
 
   if (
@@ -151,10 +166,10 @@ export const restorePasswordFieldAfterToggle = (
 export const schedulePasswordFieldRestore = (
   field: PasswordFieldLike | undefined,
   snapshot: PasswordToggleSnapshot,
-) => {
+): void => {
   queueMicrotask(() => restorePasswordFieldAfterToggle(field, snapshot));
 };
 
 export const preventPasswordTogglePointerDown = (
   event: Pick<PointerEvent, "preventDefault">,
-) => event.preventDefault();
+): void => event.preventDefault();

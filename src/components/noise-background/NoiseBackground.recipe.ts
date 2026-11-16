@@ -1,4 +1,4 @@
-import { recipe } from "../../lib/layouts";
+import { type Recipe, recipe } from "../../lib/layouts";
 export const CLASSES = {
   base: "noise-background",
   flag: {
@@ -14,4 +14,5 @@ export const CLASSES = {
     content: "noise-background__content",
   },
 } as const;
-export const componentRecipe = recipe({component:"noise-background",slots:{"root":{},},});
+const recipeDefinition = {component:"noise-background",slots:{"root":{},},} as const;
+export const componentRecipe: Recipe<typeof recipeDefinition> = recipe(recipeDefinition);

@@ -18,7 +18,7 @@ export const createCalendarDate = (
   year: number,
   monthIndex: number,
   day: number,
-) => new Date(year, monthIndex, day, 12, 0, 0, 0);
+): Date => new Date(year, monthIndex, day, 12, 0, 0, 0);
 
 export const normalizeDate = (value: Date | null | undefined): Date | null => {
   if (!(value instanceof Date)) return null;
@@ -31,7 +31,7 @@ export const normalizeDate = (value: Date | null | undefined): Date | null => {
   );
 };
 
-export const getToday = () => {
+export const getToday = (): Date => {
   const now = new Date();
   return createCalendarDate(now.getFullYear(), now.getMonth(), now.getDate());
 };
@@ -78,7 +78,7 @@ export const parseDate = (value: string | null | undefined): Date | null => {
 export const formatDate = (
   value: Date | null | undefined,
   names: DateNames = EN_US_DATE_NAMES,
-) => {
+): string => {
   const date = normalizeDate(value);
   if (!date) return "";
 
@@ -87,7 +87,7 @@ export const formatDate = (
 
 const pad = (value: number) => String(value).padStart(2, "0");
 
-export const toISODate = (value: Date | null | undefined) => {
+export const toISODate = (value: Date | null | undefined): string => {
   const date = normalizeDate(value);
   if (!date) return "";
 
@@ -97,34 +97,34 @@ export const toISODate = (value: Date | null | undefined) => {
 const toDateKey = (date: Date) =>
   date.getFullYear() * 10_000 + (date.getMonth() + 1) * 100 + date.getDate();
 
-export const compareDates = (left: Date, right: Date) =>
+export const compareDates = (left: Date, right: Date): number =>
   toDateKey(left) - toDateKey(right);
 
-export const compareMonths = (left: Date, right: Date) =>
+export const compareMonths = (left: Date, right: Date): number =>
   (left.getFullYear() - right.getFullYear()) * 12 +
   (left.getMonth() - right.getMonth());
 
-export const isSameDay = (left: Date, right: Date) =>
+export const isSameDay = (left: Date, right: Date): boolean =>
   compareDates(left, right) === 0;
 
-export const isSameMonth = (left: Date, right: Date) =>
+export const isSameMonth = (left: Date, right: Date): boolean =>
   left.getFullYear() === right.getFullYear() &&
   left.getMonth() === right.getMonth();
 
-export const startOfMonth = (date: Date) =>
+export const startOfMonth = (date: Date): Date =>
   createCalendarDate(date.getFullYear(), date.getMonth(), 1);
 
-export const addDays = (date: Date, amount: number) =>
+export const addDays = (date: Date, amount: number): Date =>
   createCalendarDate(
     date.getFullYear(),
     date.getMonth(),
     date.getDate() + amount,
   );
 
-export const addMonths = (date: Date, amount: number) =>
+export const addMonths = (date: Date, amount: number): Date =>
   createCalendarDate(date.getFullYear(), date.getMonth() + amount, 1);
 
-export const shiftDateByMonths = (date: Date, amount: number) => {
+export const shiftDateByMonths = (date: Date, amount: number): Date => {
   const base = createCalendarDate(
     date.getFullYear(),
     date.getMonth() + amount,
@@ -139,7 +139,7 @@ export const shiftDateByMonths = (date: Date, amount: number) => {
   );
 };
 
-export const buildCalendarGrid = (monthStart: Date, weekStartsOn = 0) => {
+export const buildCalendarGrid = (monthStart: Date, weekStartsOn = 0): Date[] => {
   const monthFirstDay = startOfMonth(monthStart);
   const offset =
     (monthFirstDay.getDay() - weekStartsOn + DAYS_PER_WEEK) % DAYS_PER_WEEK;
@@ -150,7 +150,7 @@ export const buildCalendarGrid = (monthStart: Date, weekStartsOn = 0) => {
   );
 };
 
-export const splitWeeks = <T>(items: T[], daysPerWeek = DAYS_PER_WEEK) => {
+export const splitWeeks = <T>(items: T[], daysPerWeek: number = DAYS_PER_WEEK): T[][] => {
   const weeks: T[][] = [];
 
   for (let index = 0; index < items.length; index += daysPerWeek) {
@@ -194,7 +194,7 @@ export const createPreviewRange = (
   start: Date | null | undefined,
   end: Date | null | undefined,
   preview: Date | null | undefined,
-) => {
+): { start: Date | null; end: Date | null } => {
   const normalizedStart = normalizeDate(start);
   const normalizedEnd = normalizeDate(end);
   const normalizedPreview = normalizeDate(preview);

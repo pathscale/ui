@@ -57,7 +57,9 @@ const LabelRoot: Layout<typeof componentRecipe, LabelRootProps> = () => {
   );
 };
 
-const Label = Object.assign(LabelRoot, {
+const Label: typeof LabelRoot & {
+  Root: typeof LabelRoot;
+} = Object.assign(LabelRoot, {
   Root: LabelRoot,
 });
 

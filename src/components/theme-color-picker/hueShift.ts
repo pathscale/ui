@@ -169,7 +169,7 @@ function applyThemeColor(hex: string) {
   }
 }
 
-function resetHueShift() {
+function resetHueShift(): void {
   if (!checkCspAllowsInlineStyles()) return;
 
   const root = document.documentElement;

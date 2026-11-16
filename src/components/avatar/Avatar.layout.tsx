@@ -167,7 +167,11 @@ const AvatarFallback: Layout<typeof componentRecipe, AvatarFallbackProps> = () =
 /* -------------------------------------------------------------------------------------------------
  * Compound Component
  * -----------------------------------------------------------------------------------------------*/
-const Avatar = Object.assign(AvatarRoot, {
+const Avatar: typeof AvatarRoot & {
+  Root: typeof AvatarRoot;
+  Image: typeof AvatarImage;
+  Fallback: typeof AvatarFallback;
+} = Object.assign(AvatarRoot, {
   Root: AvatarRoot,
   Image: AvatarImage,
   Fallback: AvatarFallback,

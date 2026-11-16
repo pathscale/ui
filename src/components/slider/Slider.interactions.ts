@@ -46,7 +46,15 @@ const releasePointerCapture = (target: EventTarget, pointerId: number) => {
 
 export const createSliderInteractionHandlers = (
   options: SliderInteractionOptions,
-) => {
+): {
+  onPointerDown: (event: PointerEvent) => void;
+  onPointerMove: (event: PointerEvent) => void;
+  onPointerUp: (event: PointerEvent) => void;
+  onPointerCancel: (event: PointerEvent) => void;
+  onKeyDown: (event: KeyboardEvent) => void;
+  onKeyUp: (event: KeyboardEvent) => void;
+  onBlur: () => void;
+} => {
   let pointerId: number | undefined;
   let pointerValue = 0;
   let pointerChanged = false;

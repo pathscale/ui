@@ -135,7 +135,7 @@ export const resolveDateNames = (
 export const formatMonthYear = (
   date: Date,
   names: DateNames = EN_US_DATE_NAMES,
-) => `${names.monthsLong[date.getMonth()] ?? ""} ${date.getFullYear()}`;
+): string => `${names.monthsLong[date.getMonth()] ?? ""} ${date.getFullYear()}`;
 
 /**
  * A day button's `aria-label`. `{ dateStyle: "full" }` in `en-US`.
@@ -146,7 +146,7 @@ export const formatMonthYear = (
 export const formatFullDate = (
   date: Date,
   names: DateNames = EN_US_DATE_NAMES,
-) =>
+): string =>
   `${names.weekdaysLong[date.getDay()] ?? ""}, ${names.monthsLong[date.getMonth()] ?? ""} ${date.getDate()}, ${date.getFullYear()}`;
 
 /**
@@ -159,7 +159,7 @@ export const formatFullDate = (
 export const formatCompactDate = (
   date: Date,
   names: DateNames = EN_US_DATE_NAMES,
-) =>
+): string =>
   `${names.monthsShort[date.getMonth()] ?? ""} ${date.getDate()}, ${date.getFullYear()}`;
 
 /**

@@ -1,4 +1,4 @@
-import { recipe } from "../../lib/layouts";
+import { type Recipe, recipe } from "../../lib/layouts";
 export const CLASSES = {
   base: "radial-progress",
   svg: "radial-progress__track",
@@ -24,4 +24,5 @@ export const CLASSES = {
     disabled: "radial-progress--disabled",
   },
 } as const;
-export const componentRecipe = recipe({component:"radial-progress",slots:{"root":{},},});
+const recipeDefinition = {component:"radial-progress",slots:{"root":{},},} as const;
+export const componentRecipe: Recipe<typeof recipeDefinition> = recipe(recipeDefinition);

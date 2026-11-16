@@ -9,7 +9,7 @@ export const observeTabIndicator = (
   targets: Element[],
   scheduleMeasure: () => void,
   Observer: ResizeObserverConstructor | undefined = getResizeObserver(),
-) => {
+): (() => void) => {
   if (!Observer) return () => {};
 
   const observer = new Observer(() => scheduleMeasure());

@@ -1,4 +1,4 @@
-import { type Accessor, createContext } from "solid-js";
+import { type Accessor, type Context, createContext } from "solid-js";
 
 export type ListBoxVariant = "default" | "danger";
 export type ListBoxSelectionMode = "none" | "single" | "multiple";
@@ -29,4 +29,4 @@ export type ListBoxContextValue = {
   focusBoundary: (target: ListBoxFocusTarget) => void;
 };
 
-export const ListBoxContext = createContext<ListBoxContextValue | null>(null);
+export const ListBoxContext: Context<ListBoxContextValue | null> = createContext<ListBoxContextValue | null>(null);

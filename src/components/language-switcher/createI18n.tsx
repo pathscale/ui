@@ -1,5 +1,6 @@
 import type { JSX } from "@solidjs/web";
 import {
+  type Context,
   createContext,
   createSignal,
   type FlowComponent,
@@ -212,7 +213,7 @@ export interface I18nContextValue {
   i18n: I18nStore;
 }
 
-export const I18nContext = createContext<I18nContextValue | null>(null);
+export const I18nContext: Context<I18nContextValue | null> = createContext<I18nContextValue | null>(null);
 
 export function useI18n(): I18nStore {
   const context = useContext(I18nContext);

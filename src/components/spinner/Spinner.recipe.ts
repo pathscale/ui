@@ -1,4 +1,4 @@
-import { recipe } from "../../lib/layouts";
+import { type Recipe, recipe } from "../../lib/layouts";
 
 /**
  * `shape` rather than `variant`: the thing that varies here is the animation
@@ -6,7 +6,7 @@ import { recipe } from "../../lib/layouts";
  * means solid/soft/outline everywhere else. The fleet passed `bars` at 23 of
  * the 38 sites that used the old `Loading` alias.
  */
-export const spinner = recipe({
+const spinnerDefinition = {
   component: "spinner",
   element: "span",
   slots: { root: { base: "spinner" } },
@@ -43,4 +43,6 @@ export const spinner = recipe({
     label: {},
   },
   defaults: { size: "md", flavor: "current", shape: "spinner", label: "Loading" },
-});
+} as const;
+
+export const spinner: Recipe<typeof spinnerDefinition> = recipe(spinnerDefinition);

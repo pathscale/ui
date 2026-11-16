@@ -1,4 +1,4 @@
-import { recipe } from "../../lib/layouts";
+import { type Recipe, recipe } from "../../lib/layouts";
 export const CLASSES = {
   // `ui-overlay-host` is the shared containing block every non-portaled overlay
   // needs; see `_shared/overlayHost.css`.
@@ -25,4 +25,5 @@ export const CLASSES = {
     optionIndicator: "ui-select__option-indicator",
   },
 } as const;
-export const componentRecipe = recipe({component:"select",slots:{"root":{},"ui-select":{},"ui-select-indicator":{},"ui-select-indicator-end-icon":{},"ui-select-indicator-start-icon":{},"ui-select-listbox":{},"ui-select-option":{},"ui-select-option-end-icon":{},"ui-select-option-indicator":{},"ui-select-option-label":{},"ui-select-option-start-icon":{},"ui-select-popover":{},"ui-select-trigger":{},"ui-select-trigger-end-icon":{},"ui-select-trigger-start-icon":{},"ui-select-value":{},},});
+const recipeDefinition = {component:"select",slots:{"root":{},"ui-select":{},"ui-select-indicator":{},"ui-select-indicator-end-icon":{},"ui-select-indicator-start-icon":{},"ui-select-listbox":{},"ui-select-option":{},"ui-select-option-end-icon":{},"ui-select-option-indicator":{},"ui-select-option-label":{},"ui-select-option-start-icon":{},"ui-select-popover":{},"ui-select-trigger":{},"ui-select-trigger-end-icon":{},"ui-select-trigger-start-icon":{},"ui-select-value":{},},} as const;
+export const componentRecipe: Recipe<typeof recipeDefinition> = recipe(recipeDefinition);

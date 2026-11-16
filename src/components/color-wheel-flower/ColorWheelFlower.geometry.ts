@@ -5,7 +5,12 @@
  * browser engines accept `calc(50% + …px)`, while Blitz currently drops that
  * mixed-unit position and piles every petal onto the centre.
  */
-export function flowerPetalPosition(offsetX: number, offsetY: number) {
+export function flowerPetalPosition(offsetX: number, offsetY: number): {
+  readonly left: "50%";
+  readonly top: "50%";
+  readonly "margin-left": `${number}px`;
+  readonly "margin-top": `${number}px`;
+} {
   return {
     left: "50%",
     top: "50%",

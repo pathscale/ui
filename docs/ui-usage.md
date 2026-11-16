@@ -185,6 +185,8 @@ Components require `solid-layouts >=0.2.4` so caller styles reach their root ele
   `Button` take an `href` that makes them anchors. Nothing else is polymorphic;
   reach for the component that renders the element you want rather than
   repointing one that does not.
+- When a `Button` or `Card` link opens with `target="_blank"`, it keeps caller
+  `rel` tokens and adds `noopener noreferrer`.
 
 ```tsx
 <Flex direction="col" gap="sm">
@@ -577,12 +579,9 @@ what it names.
 **Two things it does that a hand-rolled version usually gets wrong**, both of
 which shipped as bugs in the application this came from:
 
-The open state is a plain variable and the swap is written to the elements, not
-held in a signal. A `createSignal` setter called from a click handler does not
-take effect within that handler in the Solid version this targets: the write
-lands a microtask later, after the handler that would have read it has finished.
-A component whose whole job is "this click changes what is on screen" cannot be
-built on that, and the failure is silent - the trigger looks dead.
+Only the active row is mounted. When the field mounts, it receives the draft
+and takes focus. This keeps the focus request tied to the field that will
+actually be on screen.
 
 The field ignores the blur that arrives before it has focus. Revealing the field
 moves focus, and that first blur reaches the field's own handler while the mode
@@ -841,7 +840,7 @@ export const connection = createConnectionSettings({
   storageKey: "acme.connection",          // namespace it; two apps on one origin collide
   endpoints: [
     { name: "api", fallback: "wss://api.acme.com" },
-    { name: "auth", fallback: "wss://auth.honey.id" },
+    { name: "auth", fallback: "wss://auth.example.com" },
   ],
   appPublicId: DEFAULT_APP_ID,
   onApply: async ({ urls, appPublicId }) => {
@@ -868,6 +867,10 @@ export const connection = createConnectionSettings({
   }
 />
 ```
+
+The default endpoint validator accepts absolute HTTP, HTTPS, WS, and WSS URLs.
+It does not determine which transport an endpoint supports; provide that
+endpoint's `validate` callback when it needs a narrower scheme or origin rule.
 
 When `showAppPublicId`, `labels.appPublicId`, and `validateAppPublicId` are all
 present, Save validates the visible application ID before changing persisted

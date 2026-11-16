@@ -1053,11 +1053,11 @@ const createToastFunction = (queue: ToastQueue<ToastContentValue>): ToastFunctio
   return toastFn;
 };
 
-const toastQueue = new ToastQueue<ToastContentValue>({
+const toastQueue: ToastQueue<ToastContentValue> = new ToastQueue<ToastContentValue>({
   maxVisibleToasts: DEFAULT_QUEUE_MAX_VISIBLE_TOAST,
 });
 
-const toast = createToastFunction(toastQueue);
+const toast: ToastFunction = createToastFunction(toastQueue);
 
 type ToastComponent = ParentComponent<ToastRootProps> & {
   Provider: ParentComponent<ToastProviderProps>;

@@ -26,7 +26,7 @@ const HeaderRoot: Layout<typeof componentRecipe, HeaderRootProps> = () => {
   );
 };
 
-const Header = HeaderRoot;
+const Header: typeof HeaderRoot = HeaderRoot;
 
 export default Header;
 export { Header, HeaderRoot };

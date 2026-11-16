@@ -1,4 +1,4 @@
-import { recipe } from "../../lib/layouts";
+import { type Recipe, recipe } from "../../lib/layouts";
 export const CLASSES = {
   Root: {
     base: "button-group",
@@ -14,4 +14,5 @@ export const CLASSES = {
     base: "button-group__separator",
   },
 } as const;
-export const componentRecipe = recipe({component:"button-group",slots:{"button-group":{},"button-group-separator":{},"root":{},},});
+const recipeDefinition = {component:"button-group",slots:{"button-group":{},"button-group-separator":{},"root":{},},} as const;
+export const componentRecipe: Recipe<typeof recipeDefinition> = recipe(recipeDefinition);

@@ -1,6 +1,6 @@
-import { recipe } from "../../lib/layouts";
+import { type Recipe, recipe } from "../../lib/layouts";
 
-export const componentRecipe = recipe({
+const recipeDefinition = {
   component: "close-button",
   element: "button",
   slots: {
@@ -16,4 +16,6 @@ export const componentRecipe = recipe({
   defaults: {
     variant: "default",
   },
-});
+} as const;
+
+export const componentRecipe: Recipe<typeof recipeDefinition> = recipe(recipeDefinition);

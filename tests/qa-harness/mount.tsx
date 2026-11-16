@@ -1057,7 +1057,13 @@ function FieldFixture(props: { spec: ComponentSpec; under?: unknown }) {
 
 function SliderFixture(props: { spec: ComponentSpec; under?: unknown }) {
   const [value, setValue] = createSignal(50);
-  const [committed, setCommitted] = createSignal<number>();
+  const [commit, setCommit] = createSignal<{ count: number; value?: number }>({
+    count: 0,
+  });
+  const recordCommit = (value: number) => {
+    setCommit(({ count }) => ({ count: count + 1, value }));
+  };
+
   return (
     <Show
       when={
@@ -1073,12 +1079,13 @@ function SliderFixture(props: { spec: ComponentSpec; under?: unknown }) {
             component={Component()}
             value={value()}
             onChange={setValue}
-            onChangeEnd={setCommitted}
+            onChangeEnd={recordCommit}
             label={props.spec.subject}
           />
-          <Show when={committed() !== undefined}>
-            <h2>Slider committed: {committed()}</h2>
-          </Show>
+          {/* NameChanges needs a baseline box even on a fontless host. */}
+          <h2 id="qa-slider-commit" style={{ "min-height": "1.5rem" }}>
+            Slider commit #{commit().count}: {commit().value ?? "none"}
+          </h2>
         </>
       )}
     </Show>

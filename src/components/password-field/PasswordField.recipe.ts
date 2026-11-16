@@ -1,10 +1,13 @@
-import { recipe } from "../../lib/layouts";
+import { type Recipe, recipe } from "../../lib/layouts";
 
-export const passwordField = recipe({
+const passwordFieldDefinition = {
   component: "password-field",
   element: "div",
   slots: {
     root: { base: "password-field" },
     toggle: { base: "password-field__toggle" },
   },
-});
+} as const;
+
+export const passwordField: Recipe<typeof passwordFieldDefinition> =
+  recipe(passwordFieldDefinition);

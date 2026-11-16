@@ -460,7 +460,12 @@ const InputOTPSeparator: Layout<typeof componentRecipe, InputOTPSeparatorProps> 
   );
 };
 
-const InputOTP = Object.assign(InputOTPRoot, {
+const InputOTP: typeof InputOTPRoot & {
+  Root: typeof InputOTPRoot;
+  Group: typeof InputOTPGroup;
+  Slot: typeof InputOTPSlot;
+  Separator: typeof InputOTPSeparator;
+} = Object.assign(InputOTPRoot, {
   Root: InputOTPRoot,
   Group: InputOTPGroup,
   Slot: InputOTPSlot,

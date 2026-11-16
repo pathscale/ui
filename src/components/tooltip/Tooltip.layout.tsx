@@ -372,7 +372,12 @@ const TooltipArrow: Layout<typeof componentRecipe, TooltipArrowProps> = () => {
 /* -------------------------------------------------------------------------------------------------
  * Compound Component
  * -----------------------------------------------------------------------------------------------*/
-const Tooltip = Object.assign(TooltipRoot, {
+const Tooltip: typeof TooltipRoot & {
+  Root: typeof TooltipRoot;
+  Trigger: typeof TooltipTrigger;
+  Content: typeof TooltipContent;
+  Arrow: typeof TooltipArrow;
+} = Object.assign(TooltipRoot, {
   Root: TooltipRoot,
   Trigger: TooltipTrigger,
   Content: TooltipContent,

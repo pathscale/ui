@@ -1,7 +1,7 @@
 import { type Accessor, createMemo } from "solid-js";
 import { createTagName } from "./createTagName";
 
-export const BUTTON_INPUT_TYPES = [
+export const BUTTON_INPUT_TYPES: string[] = [
   "button",
   "color",
   "file",

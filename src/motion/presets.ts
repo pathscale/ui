@@ -100,7 +100,7 @@ export const createMotionPresets = (
 export const motionPresets: Record<string, MotionPreset> =
   createMotionPresets(defaultMotionTokens);
 
-export const routeTransition = motionPresets.route;
+export const routeTransition: MotionPreset = motionPresets.route;
 
 export const noMotion: MotionPreset = {
   initial: { opacity: 1, y: 0, x: 0, scale: 1 },
@@ -109,16 +109,16 @@ export const noMotion: MotionPreset = {
   transition: { duration: 0 },
 };
 
-export const getPreset = (name: string) => motionPresets[name];
+export const getPreset = (name: string): MotionPreset => motionPresets[name];
 
-export const registerPreset = (name: string, preset: MotionPreset) => {
+export const registerPreset = (name: string, preset: MotionPreset): void => {
   motionPresets[name] = preset;
 };
 
 export const resolvePreset = (
   name: string,
   options?: { reduceMotion?: boolean },
-) => {
+): MotionPreset => {
   const reduce = options?.reduceMotion ?? prefersReducedMotion();
   if (reduce) return noMotion;
   return motionPresets[name] ?? noMotion;

@@ -59,7 +59,9 @@ const TextareaRoot: Layout<typeof componentRecipe, TextareaRootProps> = () => {
   );
 };
 
-const Textarea = Object.assign(TextareaRoot, {
+const Textarea: typeof TextareaRoot & {
+  Root: typeof TextareaRoot;
+} = Object.assign(TextareaRoot, {
   Root: TextareaRoot,
 });
 

@@ -104,7 +104,9 @@ const TextRoot: Layout<typeof componentRecipe, TextRootProps> = () => {
   );
 };
 
-const Text = Object.assign(TextRoot, {
+const Text: typeof TextRoot & {
+  Root: typeof TextRoot;
+} = Object.assign(TextRoot, {
   Root: TextRoot,
 });
 

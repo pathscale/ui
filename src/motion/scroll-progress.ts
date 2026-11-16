@@ -26,7 +26,7 @@ const clamp = (value: number, min: number, max: number) =>
  * Check the named view timeline and the exact contain attachment range used by
  * ScrollHorizontal. Returns false in server and partial CSS API environments.
  */
-export const supportsViewTimeline = () => {
+export const supportsViewTimeline = (): boolean => {
   const css = globalThis.CSS;
   if (typeof css?.supports !== "function") return false;
 

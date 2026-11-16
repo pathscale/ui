@@ -8,7 +8,13 @@ type DateSelectionOptions = {
   onChange: Accessor<((value: Date) => void) | undefined>;
 };
 
-export const useDateSelection = (options: DateSelectionOptions) => {
+export const useDateSelection = (
+  options: DateSelectionOptions,
+): {
+  isControlled: Accessor<boolean>;
+  selectedDate: Accessor<Date | null>;
+  setSelectedDate: (value: Date) => void;
+} => {
   const [internalValue, setInternalValue] = createSignal<Date | null>(
     normalizeDate(options.defaultValue()),
   );

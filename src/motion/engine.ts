@@ -20,7 +20,7 @@ export const runMotion = (
   to: MotionState,
   transition?: MotionTransition,
   onComplete?: () => void,
-) => {
+): { stop: () => void } => {
   const duration = resolveDuration(transition);
   const delay = resolveDelay(transition);
   const ease = resolveEase(transition?.easing);

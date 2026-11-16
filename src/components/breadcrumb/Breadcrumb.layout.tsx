@@ -141,7 +141,10 @@ const BreadcrumbItem: Layout<typeof componentRecipe, BreadcrumbItemProps> = () =
 /* -------------------------------------------------------------------------------------------------
  * Compound Component
  * -----------------------------------------------------------------------------------------------*/
-const Breadcrumb = Object.assign(BreadcrumbRoot, {
+const Breadcrumb: typeof BreadcrumbRoot & {
+  Root: typeof BreadcrumbRoot;
+  Item: typeof BreadcrumbItem;
+} = Object.assign(BreadcrumbRoot, {
   Root: BreadcrumbRoot,
   Item: BreadcrumbItem,
 });

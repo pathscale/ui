@@ -56,7 +56,17 @@ export type CalendarCellState = {
   isAriaSelected: boolean;
 };
 
-export const useCalendarState = (options: CalendarStateOptions) => {
+export const useCalendarState = (
+  options: CalendarStateOptions,
+): {
+  monthLabel: Accessor<string>;
+  formatDayLabel: (date: Date) => string;
+  weekdayLabels: Accessor<readonly string[]>;
+  calendarWeeks: Accessor<Date[][]>;
+  normalizedRange: Accessor<ReturnType<typeof normalizeRange>>;
+  previewRange: Accessor<ReturnType<typeof createPreviewRange>>;
+  getCellState: (date: Date) => CalendarCellState;
+} => {
   /** The grid heading, e.g. "June 2025". */
   const monthLabel = createMemo(() =>
     formatMonthYear(options.visibleMonth(), options.dateNames()),

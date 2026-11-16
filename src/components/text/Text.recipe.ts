@@ -1,4 +1,4 @@
-import { recipe } from "../../lib/layouts";
+import { type Recipe, recipe } from "../../lib/layouts";
 
 /**
  * The root class, owned here.
@@ -13,10 +13,12 @@ import { recipe } from "../../lib/layouts";
  * So the only thing that was manual here is the base class, and that is what
  * moves: the layout spreads `{...slot.root}` instead of calling `twMerge`.
  */
-export const componentRecipe = recipe({
+const recipeDefinition = {
   component: "text",
   element: "span",
   slots: {
     root: { base: "text" },
   },
-});
+} as const;
+
+export const componentRecipe: Recipe<typeof recipeDefinition> = recipe(recipeDefinition);
