@@ -42,3 +42,4 @@ src/styles/icons/
 # Generated harness entry points and run output.
 tests/qa-harness/entries
 tests/qa-harness/dist
+/target
